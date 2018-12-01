@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Organisations
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th>Name</th>
+					<th>Code</th>
+				</tr>
+				<tr th:each="r,iter : ${organisationList}">
+					<td th:text="${r.name}"></td>
+					<td th:text="${r.code}"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="card-footer">
+			<a href="#" th:href="@{/organisation/create}" class="btn btn-primary">Create new</a>
+		</div>
+		
+	</div>
+</body>
+</html>
