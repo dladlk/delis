@@ -32,14 +32,6 @@
 			</form>
 		</div>
 	</div>
-	
-	<script th:if="${(param.userLogin != null)}" th:inline="javascript">
-	      /*<![CDATA[*/
-    	    var userName = /*[[${param.userLogin}]]*/ 'dlk';
-			$('#username').val(userName);
-			$(document).ready(function(){$('#password').focus();});
-	      /*]]>*/
-	</script>
 </div>
 
 </body>

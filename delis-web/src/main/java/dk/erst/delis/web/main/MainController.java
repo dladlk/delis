@@ -1,4 +1,4 @@
-package dk.erst.delis.web.controller;
+package dk.erst.delis.web.main;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -12,10 +12,12 @@
 				<tr>
 					<th>Name</th>
 					<th>Code</th>
+					<th>Identifiers</th>
 				</tr>
 				<tr th:each="r,iter : ${organisationList}">
-					<td th:text="${r.name}"></td>
+					<td><a href="#" th:href="@{/organisation/view/__${r.id}__}" th:text="${r.name}"></a></td>
 					<td th:text="${r.code}"></td>
+					<td><span th:text="${#objects.nullSafe(organisationIdentifierStatMap.get(r.id), 0)}">8890</span> = 8800 + 45 + 45</td>
 				</tr>
 			</table>
 		</div>

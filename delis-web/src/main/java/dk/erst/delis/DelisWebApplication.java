@@ -1,4 +1,4 @@
-package dk.erst.delis.web;
+package dk.erst.delis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
