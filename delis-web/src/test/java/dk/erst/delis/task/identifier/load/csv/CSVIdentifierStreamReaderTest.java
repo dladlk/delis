@@ -1,12 +1,12 @@
 package dk.erst.delis.task.identifier.load.csv;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.data.Identifier;

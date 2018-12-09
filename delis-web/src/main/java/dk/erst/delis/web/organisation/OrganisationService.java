@@ -1,9 +1,5 @@
 package dk.erst.delis.web.organisation;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -44,16 +40,4 @@ public class OrganisationService {
 		}
 		return OrganisationData.builder().organisation(o).identifierCount(1).documentCount(10).build();
 	}
-
-	public Map<Long,Long> loadOrganisationIdentifierStatMap() {
-		List<Map<?, ?>> list = this.organisationRepository.loadIndetifierStat();
-		Map<Long, Long> mapRes = new HashMap<>();
-		for (Map<?, ?> map : list) {
-			Long identifierCount = (Long) map.get("identifierCount");
-			Long organisationId = (Long) map.get("organisationId");
-			mapRes.put(organisationId, identifierCount);
-		}
-		return mapRes;
-	}
-
 }

@@ -2,6 +2,26 @@ package dk.erst.delis.data;
 
 public enum IdentifierPublishingStatus {
 
-	PENDING, STARTED, DONE
+	PENDING, DONE, FAILED;
 	
+	public static IdentifierPublishingStatus getInstanceByName(String code) {
+		for (IdentifierPublishingStatus e : values()) {
+			if (e.name().equalsIgnoreCase(code)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public boolean isPending() {
+		return this == PENDING;
+	}
+
+	public boolean isDone() {
+		return this == DONE;
+	}
+	
+	public boolean isFailed() {
+		return this == FAILED;
+	}
 }

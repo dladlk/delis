@@ -12,15 +12,17 @@
 			<table class="table table-striped table-bordered">
 				<tr>
 					<th>Identifiers total</th>
-					<th>Pending publishing</th>
+					<th>Active published</th>
+					<th>Pending active</th>
+					<th>Pending deletion</th>
 					<th>Failed publishing</th>
-					<th>Deactivated</th>
 				</tr>
 				<tr>
-					<td th:text="${organisationData.identifierCount}">1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
+					<td th:text="${stat.total}">10</td>
+					<td th:text="${stat.activeDone}">7</td>
+					<td th:text="${stat.activePending}">1</td>
+					<td th:text="${stat.disabledPending}">1</td>
+					<td th:text="${stat.failed}">1</td>
 				</tr>
 			</table>
 		</div>

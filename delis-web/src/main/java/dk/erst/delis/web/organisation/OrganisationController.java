@@ -23,7 +23,10 @@ public class OrganisationController {
 
 	@Autowired
 	private OrganisationService organisationService;
-
+	
+	@Autowired
+	private OrganisationStatisticsService organisationStatisticsService;
+	
 	@Autowired
 	private IdentifierLoadService identifierLoadService;
 
@@ -35,9 +38,8 @@ public class OrganisationController {
 
 	@GetMapping("/organisation/view/{id}")
 	public String view(@PathVariable long id, Model model) {
-		OrganisationData od = organisationService.loadOrganisationData(id);
-		model.addAttribute("organisation", od.getOrganisation());
-		model.addAttribute("organisationData", od);
+		model.addAttribute("organisation", organisationService.findOrganisation(id));
+		model.addAttribute("stat", organisationStatisticsService.loadOrganisationIdentifierStatMap(id));
 		return "organisation/view";
 	}
 

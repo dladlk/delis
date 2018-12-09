@@ -132,7 +132,7 @@ public class IdentifierLoadService {
 			}
 		} finally {
 			stat.setDurationMs(System.currentTimeMillis() - start);
-			saveJournalOrganisationMessage(organisation, "Finished loading: "+stat.toString(), System.currentTimeMillis() - start);
+			saveJournalOrganisationMessage(organisation, "Finished loading", System.currentTimeMillis() - start);
 			syncOrganisationFactRepository.save(stat);
 		}
 		
