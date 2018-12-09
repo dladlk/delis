@@ -8,17 +8,17 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
+import dk.erst.delis.TestUtil;
 import dk.erst.delis.data.Identifier;
 
-class CSVIdentifierStreamReaderTest {
+public class CSVIdentifierStreamReaderTest {
 
 	@Test
 	void testLoadCSV() {
-		InputStream is = getResourceByClass(getClass(), "LF_ISO88591.csv");
+		InputStream is = TestUtil.getResourceByClass(getClass(), "LF_ISO88591.csv");
 		assertNotNull(is);
 
 		CSVIdentifierStreamReader r = new CSVIdentifierStreamReader(is, StandardCharsets.ISO_8859_1, ';');
-		r.start();
 		
 		int count = 0;
 		while (r.hasNext()) {
@@ -29,10 +29,6 @@ class CSVIdentifierStreamReaderTest {
 		}
 		
 		assertEquals(10, count);
-	}
-	
-	private InputStream getResourceByClass(Class<?> cls, String suffix) {
-		return cls.getResourceAsStream(cls.getSimpleName()+"_"+suffix);
 	}
 
 }

@@ -32,7 +32,11 @@ public class OrganisationService {
 	public Organisation findOrganisation(long id) {
 		return this.organisationRepository.findById(id).get();
 	}
-	
+
+	public Organisation findOrganisationByCode(String code) {
+		return this.organisationRepository.findByCode(code);
+	}
+
 	public OrganisationData loadOrganisationData(long organisationId) {
 		Organisation o = findOrganisation(organisationId);
 		if (o != null) {

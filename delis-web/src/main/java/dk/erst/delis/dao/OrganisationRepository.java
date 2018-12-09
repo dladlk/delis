@@ -12,5 +12,7 @@ public interface OrganisationRepository extends PagingAndSortingRepository<Organ
 
 	@Query("select s.organisation.id as organisationId, count(*) as identifierCount from Identifier s group by s.organisation.id")
 	List<Map<?,?>> loadIndetifierStat();
+
+	Organisation findByCode(String code);
 	
 }

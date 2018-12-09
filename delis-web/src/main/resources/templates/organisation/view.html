@@ -15,16 +15,12 @@
 					<th>Pending publishing</th>
 					<th>Failed publishing</th>
 					<th>Deactivated</th>
-					<th>Actions</th>
 				</tr>
 				<tr>
 					<td th:text="${organisationData.identifierCount}">1</td>
 					<td>1</td>
 					<td>1</td>
 					<td>1</td>
-					<td>
-						<a href="#" th:href="@{/home}" class="btn btn-primary">Upload list</a>
-					</td>
 				</tr>
 			</table>
 		</div>
@@ -32,5 +28,21 @@
 			<a href="#" th:href="@{/home}" class="btn btn-primary">Back</a>
 		</div>
 	</div>
+	
+	<div class="card">
+		<div class="card-header bg-primary text-white">
+			Upload identifier list
+		</div>
+		<div class="card-body">
+			<form method="POST" enctype="multipart/form-data" action="/organisation/upload/213" th:action="@{/organisation/upload/__${organisation.id}__}">
+				<div class="form-group">
+					<label for="file1">File:</label><input type="file" name="file" class="form-control-file" id="file1" />
+				</div>
+				<input class="btn btn-primary" type="submit" value="Upload" />
+			</form>
+		</div>
+	</div>
+
+	
 </body>
 </html>

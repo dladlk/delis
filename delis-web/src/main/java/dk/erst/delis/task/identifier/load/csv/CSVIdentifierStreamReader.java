@@ -22,10 +22,11 @@ public class CSVIdentifierStreamReader extends AbstractIdentifierStreamReader {
 		this.inputStream = inputStream;
 		this.charset = charset;
 		this.separator = separator;
+		
+		this.init();
 	}
 	
-	@Override
-	public void start() {
+	protected void init() {
 	    CsvToBeanBuilder<CSVIdentifierData> beanBuilder = new CsvToBeanBuilder<CSVIdentifierData>(new InputStreamReader(inputStream, charset));
 	    beanBuilder.withType(CSVIdentifierData.class);
 	    beanBuilder.withSeparator(separator);
@@ -34,6 +35,7 @@ public class CSVIdentifierStreamReader extends AbstractIdentifierStreamReader {
 	    iterator = csv.iterator();
 	}
 	
+	@Override
 	public boolean hasNext() {
 		return this.iterator.hasNext();
 	}

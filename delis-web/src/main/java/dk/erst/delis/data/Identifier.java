@@ -6,13 +6,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
 @Data
+@Table(indexes = {
+		
+		@Index(name="I_ORGANISAION_ID", columnList="ORGANISATION_ID, STATUS, PUBLISHING_STATUS"),
+		
+		@Index(name="I_ORGANISAION_ID", columnList="LAST_SYNC_ORGANISATION_FACT_ID"),
+
+})
 public class Identifier {
 
 	@Id
@@ -37,9 +46,12 @@ public class Identifier {
 	@Column(nullable = false)
 	private IdentifierStatus status;
 	
-	@Column(nullable = true)
+	@Column(name="PUBLISHING_STATUS", nullable = true)
 	private IdentifierPublishingStatus publishingStatus;
 	
 	@Column(nullable = false, length=128)
 	private String name;
+	
+	@Column(name="LAST_SYNC_ORGANISATION_FACT_ID", nullable = false)
+	private long lastSyncOrganisationFactId;
 }
