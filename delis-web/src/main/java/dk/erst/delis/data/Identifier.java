@@ -34,6 +34,12 @@ public class Identifier {
 	@Column(nullable = false, length=20)
 	private String type;
 	
+	@Column(nullable = false)
+	private IdentifierStatus status;
+	
 	@Column(nullable = true)
 	private IdentifierPublishingStatus publishingStatus;
+	
+	@Column(nullable = false, length=128)
+	private String name;
 }
