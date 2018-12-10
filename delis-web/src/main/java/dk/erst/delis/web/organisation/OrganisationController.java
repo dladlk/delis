@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.dao.JournalOrganisationRepository;
+import dk.erst.delis.dao.SyncOrganisationFactRepository;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.SyncOrganisationFact;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
@@ -25,6 +27,12 @@ public class OrganisationController {
 	private OrganisationService organisationService;
 	
 	@Autowired
+	private SyncOrganisationFactRepository syncOrganisationFactRepository;
+
+	@Autowired
+	private JournalOrganisationRepository journalOrganisationRepository;
+
+	@Autowired
 	private OrganisationStatisticsService organisationStatisticsService;
 	
 	@Autowired
@@ -37,9 +45,18 @@ public class OrganisationController {
 	}
 
 	@GetMapping("/organisation/view/{id}")
-	public String view(@PathVariable long id, Model model) {
-		model.addAttribute("organisation", organisationService.findOrganisation(id));
+	public String view(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/home";
+		}
+		
+		model.addAttribute("organisation", organisation);
 		model.addAttribute("stat", organisationStatisticsService.loadOrganisationIdentifierStatMap(id));
+		model.addAttribute("lastJournalList", journalOrganisationRepository.findTop5ByOrganisationOrderByIdDesc(organisation));
+		model.addAttribute("lastSyncFactList", syncOrganisationFactRepository.findTop5ByOrganisationOrderByIdDesc(organisation));
+		
 		return "organisation/view";
 	}
 
@@ -56,13 +73,13 @@ public class OrganisationController {
 	}
 
 	@PostMapping("/organisation/upload/{id}")
-	public String identifierFileUpload(@RequestParam("file") MultipartFile file, @PathVariable long id, RedirectAttributes redirectAttributes, Model model) {
+	public String identifierFileUpload(@RequestParam("file") MultipartFile file, @PathVariable long id, RedirectAttributes ra, Model model) {
 		if (file == null || file.isEmpty()) {
-			model.addAttribute("errorMessage", "File is empty");
+			ra.addAttribute("errorMessage", "File is empty");
 		} else {
 			Organisation organisation = organisationService.findOrganisation(id);
 			if (organisation == null) {
-				model.addAttribute("errorMessage", "Organisation is not found by id " + id);
+				ra.addAttribute("errorMessage", "Organisation is not found by id " + id);
 			} else {
 
 				SyncOrganisationFact loadCSV = null;
@@ -70,13 +87,13 @@ public class OrganisationController {
 					loadCSV = identifierLoadService.loadCSV(organisation.getCode(), file.getInputStream(), file.getOriginalFilename());
 				} catch (Exception e) {
 					log.error("Failed to load file " + file.getOriginalFilename() + " for " + organisation.getCode(), e);
-					model.addAttribute("errorMessage", e.getMessage());
+					ra.addAttribute("errorMessage", e.getMessage());
 				}
 				if (loadCSV != null) {
-					model.addAttribute("infoMessage", "File is loaded in " + loadCSV.getDurationMs() + " ms" + ", total ");
+					ra.addAttribute("infoMessage", "File is loaded in " + loadCSV.getDurationMs() + " ms" + ", total ");
 				}
 			}
 		}
-		return view(id, model);
+		return "redirect:/organisation/view/"+id;
 	}
 }

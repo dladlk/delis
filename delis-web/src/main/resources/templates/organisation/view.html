@@ -18,7 +18,7 @@
 					<th>Failed publishing</th>
 				</tr>
 				<tr>
-					<td th:text="${stat.total}">10</td>
+					<td><a href="#" th:href="@{/identifier/list/__${organisation.id}__}" th:text="${stat.total}"></a></td>
 					<td th:text="${stat.activeDone}">7</td>
 					<td th:text="${stat.activePending}">1</td>
 					<td th:text="${stat.disabledPending}">1</td>
@@ -27,7 +27,7 @@
 			</table>
 		</div>
 		<div class="card-footer">
-			<a href="#" th:href="@{/home}" class="btn btn-primary">Back</a>
+			<a href="#" th:href="@{/home}" class="btn btn-primary">Home</a>
 		</div>
 	</div>
 	
@@ -44,7 +44,58 @@
 			</form>
 		</div>
 	</div>
+	
+	<div class="card">
+		<div class="card-header bg-primary text-white">
+			Journal records
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th>Date</th>
+					<th>Message</th>
+					<th>Duration, ms</th>
+				</tr>
+				<tr th:each="r,iter : ${lastJournalList}">
+					<td th:text="${r.createTime}"></td>
+					<td th:text="${r.message}"></td>
+					<td th:text="${r.durationMs}"/>
+				</tr>
+			</table>
+		</div>
+	</div>
 
+	<div class="card">
+		<div class="card-header bg-primary text-white">
+			Synchronizations
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th>Date</th>
+					<th>Message</th>
+					<th>Duration, ms</th>
+					<th>Total</th>
+					<th>Equal</th>
+					<th>Add</th>
+					<th>Update</th>
+					<th>Delete</th>
+					<th>Failed</th>
+				</tr>
+				<tr th:each="r,iter : ${lastSyncFactList}">
+					<td th:text="${r.createTime}"></td>
+					<td th:text="${r.description}"></td>
+					<td th:text="${r.durationMs}"/>
+					<td th:text="${r.total}"/>
+					<td th:text="${r.equal}"/>
+					<td th:text="${r.add}"/>
+					<td th:text="${r.update}"/>
+					<td th:text="${r.delete}"/>
+					<td th:text="${r.failed}"/>
+				</tr>
+			</table>
+		</div>
+	</div>
 	
 </body>
 </html>

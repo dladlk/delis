@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			<span th:text="${identifier.organisation.name}">Organisation name</span>
+			(<span th:text="${identifier.organisation.code}">Code</span>) - 
+			<span th:text="${identifier.type}">EAN</span> <span th:text="${identifier.value}">992345234</span>
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<td>Type</td>
+					<td th:text="${identifier.type}">EAN</td>
+				</tr>
+				<tr>
+					<td>Value</td>
+					<td th:text="${identifier.value}">99342234234</td>
+				</tr>
+				<tr>
+					<td>Name</td>
+					<td th:text="${identifier.name}">Identifier name</td>
+				</tr>
+				<tr>
+					<td>Status</td>
+					<td th:text="${identifier.status}">ACTIVE</td>
+				</tr>
+				<tr>
+					<td>Publishing status</td>
+					<td th:text="${identifier.publishingStatus}">DONE</td>
+				</tr>
+				<tr>
+					<td>Group</td>
+					<td th:text="${identifier.identifierGroup.code}">default</td>
+				</tr>
+			</table>
+		</div>
+		<div class="card-footer">
+			<a href="#" th:href="@{/identifier/list/__${identifier.organisation.id}__}" class="btn btn-primary">Back to identifier list</a>
+		</div>
+		
+	</div>
+	
+	<div class="card">
+		<div class="card-header bg-primary text-white">
+			Journal records
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th>Date</th>
+					<th>Message</th>
+					<th>Duration, ms</th>
+				</tr>
+				<tr th:each="r,iter : ${lastJournalList}">
+					<td th:text="${r.createTime}"></td>
+					<td th:text="${r.message}"></td>
+					<td th:text="${r.durationMs}"/>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+</body>
+</html>

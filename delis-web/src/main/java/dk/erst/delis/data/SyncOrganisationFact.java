@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,10 +16,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import lombok.Data;
 
 @Entity
 @Data
+@EntityListeners(AuditingEntityListener.class)
 @Table(indexes =  {@Index(name = "SOF_ORGANISATION_ID", columnList = "ORGANISATION_ID")})
 public class SyncOrganisationFact {
 
@@ -31,8 +36,9 @@ public class SyncOrganisationFact {
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)
 	private Organisation organisation;
 
-	@Column(name = "CREATE_TIME")
+	@Column(name = "CREATE_TIME", nullable = false, updatable=false)
 	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
 	private Date createTime;
 	
 	@Column(nullable = false)
