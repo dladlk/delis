@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Config value
+		</div>
+		<div class="card-body">
+
+			<form method="post" action="#" th:action="@{/setup/config/save}" th:object="${configValue}">
+				<div class="form-group row">
+					<label for="filesRoot" class="col-sm-4 col-form-label">Type *:</label>
+					<div class="col-sm-8">
+						<select class="form-control" th:field="*{configValueType}">
+							<option th:text="${r.name()}" th:value="${r}" th:each="r,iter : ${configValueTypeList}">CONFIG</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="filesDeploymentLogs" class="col-sm-4 col-form-label">Value *:</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" th:field="*{value}" />
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary">Save</button>
+			</form>
+
+		</div>
+		
+	</div>
+</body>
+</html>

@@ -18,8 +18,11 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="#" th:href="@{/home}">Delis <sup>v.1.0.0</sup><span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" th:href="@{/setup/index}">Setup</a>
       </li>
       <li class="nav-item">
 		<form th:action="@{/logout}" method="post">

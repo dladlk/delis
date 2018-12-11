@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Setup
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th>Type</th>
+					<th>Value</th>
+					<th>Created</th>
+				</tr>
+				<tr th:each="r,iter : ${configValueList}">
+					<td><a href="#" th:href="@{/setup/configvalue_edit/__${r.id}__}" th:text="${r.configValueType}"></a></td>
+					<td th:text="${r.value}"></td>
+					<td th:text="${r.createDate}"/>
+				</tr>
+			</table>
+		</div>
+		<div class="card-footer">
+			<a href="#" th:href="@{/setup/config/create}" class="btn btn-primary">Create new</a>
+		</div>
+	</div>
+</body>
+</html>

@@ -25,7 +25,7 @@ public class Document {
 	private Long id;
 	
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "ORGANISATION_ID", nullable = false)
+	@JoinColumn(name = "ORGANISATION_ID", nullable = true)
 	private Organisation organisation;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
@@ -37,8 +37,41 @@ public class Document {
 	private Date createTime;
 	
 	@Column(nullable = false)
-	private String path;
+	private String ingoingRelativePath;
 
 	@Column(nullable = false)
 	private DocumentStatus documentStatus;
+	
+	@Column(nullable = true)
+	private String receiverIdRaw;
+	
+	@Column(nullable = true)
+	private String receiverName;
+
+	@Column(nullable = true)
+	private String receiverCountry;
+	
+	@Column(nullable = true)
+	private String senderIdRaw;
+
+	@Column(nullable = true)
+	private String senderName;
+
+	@Column(nullable = true)
+	private String senderCountry;
+	
+	@Column(nullable = true)
+	private DocumentFormat ingoingDocumentFormat;
+	
+	@Column(nullable = true)
+	private String documentId;
+	
+	@Column(nullable = true)
+	private String documentDate;
+
+	@Column(nullable = false)
+	private String messageId;
+	
+	@Column(nullable = true)
+	private String outgoingRelativePath;
 }
