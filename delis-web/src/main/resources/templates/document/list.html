@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Documents
+		</div>
+		<div class="card-body">
+			<form method="POST" enctype="multipart/form-data" action="/document/list/filter" th:action="@{/document/list/filter}">
+			<table class="table form-group">
+				<tr>
+					<th>Received</th>
+					<th>Organisation</th>
+					<th>Status</th>
+					<th>Format</th>
+				</tr>
+				<tr>
+					<td>
+						<select class="form-control">
+							<option>Today</option>
+							<option>Last week</option>
+							<option>Last month</option>
+						</select>
+					</td>
+					<td>
+						<select class="form-control">
+							<option>All</option>
+							<option>Undefined</option>
+							<option>Region Midt</option>
+							<option>Region Nord</option>
+						</select>
+					</td>
+					<td>
+						<select class="form-control">
+							<option>All</option>
+							<option>LOAD OK</option>
+						</select>
+					</td>
+					<td>
+						<select class="form-control">
+							<option>All</option>
+							<option>CII</option>
+							<option>BIS3</option>
+							<option>OIOUBL</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+			</form>
+		
+			<table class="table table-striped table-bordered table-sm">
+				<tr>
+					<th>Received</th>
+					<th>Organisation</th>
+					<th>Receiver</th>
+					<th>Status</th>
+					<th>Type</th>
+					<th>Format</th>
+					<th>Sender</th>
+				</tr>
+				<tr th:each="r,iter : ${documentList}">
+					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd')}">2018-10-12 10:43</td>
+					<td th:text="${r.organisation?.name}">Region Nord</td>
+					<td th:text="${r.receiverIdRaw}">0088:234234234</td>
+					<td><a href="#" th:href="@{/document/view/__${r.id}__}" th:text="${r.documentStatus}"></a></td>
+					<td th:text="${r.ingoingDocumentFormat.documentType}">Invoice</td>
+					<td th:text="${r.ingoingDocumentFormat}">BIS3_INVOICE</td>
+					<td th:text="${r.senderName}">Lego Spain</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div class="card">
+		<div class="card-header bg-primary text-white">
+			Upload document
+		</div>
+		<div class="card-body">
+			<form method="POST" enctype="multipart/form-data" action="/document/upload" th:action="@{/document/upload}">
+				<div class="form-group">
+					<label for="file1">File:</label><input type="file" name="file" class="form-control-file" id="file1" />
+				</div>
+				<input class="btn btn-primary" type="submit" value="Upload" />
+			</form>
+		</div>
+	</div>
+	
+</body>
+</html>

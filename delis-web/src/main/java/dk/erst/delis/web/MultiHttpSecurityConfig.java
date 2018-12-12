@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class MultiHttpSecurityConfig {
@@ -17,12 +18,17 @@ public class MultiHttpSecurityConfig {
 
 		@Override
 		public void configure(WebSecurity web) throws Exception {
-		    web.ignoring().antMatchers("/image/**");
+		    web.ignoring().antMatchers("/image/**").antMatchers("/css/**").antMatchers("/js/**");
 		}
 		
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll();
+			http.authorizeRequests()
+			
+				.anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
+				
+				.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
+				;
 		}
 
 		@SuppressWarnings("deprecation")

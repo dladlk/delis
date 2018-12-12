@@ -2,28 +2,30 @@ package dk.erst.delis.data;
 
 public enum DocumentFormat {
 
-	UNSUPPORTED("U", "", ""),
+	UNSUPPORTED("U", "", "", DocumentType.UNSUPPORTED),
 
-	CII("CII", "CrossIndustryInvoice", DocumentFormatConst.NS_CII),
+	CII("CII", "CrossIndustryInvoice", DocumentFormatConst.NS_CII, DocumentType.INVOICE),
 
-	BIS3_INVOICE("BIS3-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE),
+	BIS3_INVOICE("BIS3-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE, DocumentType.INVOICE),
 
-	BIS3_CREDITNOTE("BIS3-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE),
+	BIS3_CREDITNOTE("BIS3-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
 
-	OIOUBL_INVOICE("OIO-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE),
+	OIOUBL_INVOICE("OIO-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE, DocumentType.INVOICE),
 
-	OIOUBL_CREDITNOTE("OIO-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE),
+	OIOUBL_CREDITNOTE("OIO-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
 
 	;
 
 	private final String code;
 	private final String namespace;
 	private final String rootTag;
+	private final DocumentType documentType;
 
-	private DocumentFormat(String code, String rootTag, String namespace) {
+	private DocumentFormat(String code, String rootTag, String namespace, DocumentType documentType) {
 		this.code = code;
 		this.rootTag = rootTag;
 		this.namespace = namespace;
+		this.documentType = documentType;
 	}
 
 	public String getCode() {
@@ -52,6 +54,10 @@ public enum DocumentFormat {
 	
 	public boolean isBIS3() {
 		return this == BIS3_INVOICE || this == BIS3_CREDITNOTE;
+	}
+
+	public DocumentType getDocumentType() {
+		return documentType;
 	}
 
 

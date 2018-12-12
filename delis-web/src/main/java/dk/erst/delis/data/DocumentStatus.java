@@ -2,11 +2,11 @@ package dk.erst.delis.data;
 
 public enum DocumentStatus {
 
-	LOAD_OK, LOAD_ERROR, 
+	LOAD_OK, LOAD_ERROR, // Loading phase
 
-	UNKNOWN_RECEIVER,
+	UNKNOWN_RECEIVER, // We did not manage to find a receipient for the document
 	
-	VALIDATE_START, VALIDATE_OK, VALIDATE_ERROR, 
+	VALIDATE_START, VALIDATE_OK, VALIDATE_ERROR, // Validation phase
 	
 	EXPORT_START, EXPORT_OK, 
 	

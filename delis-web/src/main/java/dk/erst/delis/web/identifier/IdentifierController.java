@@ -1,8 +1,9 @@
 package dk.erst.delis.web.identifier;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,17 +26,28 @@ public class IdentifierController {
 	@Autowired
 	private OrganisationRepository organisationRepository;
 	
+
+	@GetMapping("/identifier/list")
+	public String listAll(Model model, RedirectAttributes redirectAttributes) {
+		return list(-1, model, redirectAttributes);
+	}
+	
 	@GetMapping("/identifier/list/{organisationId}")
 	public String list(@PathVariable long organisationId, Model model, RedirectAttributes redirectAttributes) {
-		Organisation organisation = organisationRepository.findById(organisationId).get();
-		if (organisation == null) {
-			redirectAttributes.addFlashAttribute("errorMessage", "Organisation is not found");
-			return "redirect:/home";
+		Iterator<Identifier> list;
+		if (organisationId == -1) {
+			list = identifierRepository.findAll(Sort.by("id")).iterator();
+		} else {
+			Organisation organisation = organisationRepository.findById(organisationId).get();
+			if (organisation == null) {
+				redirectAttributes.addFlashAttribute("errorMessage", "Organisation is not found");
+				return "redirect:/home";
+			}
+			
+			list = identifierRepository.findByOrganisation(organisation).iterator();
+			model.addAttribute("organisation", organisation);
 		}
-		
-		List<Identifier> list = identifierRepository.findByOrganisation(organisation);
 		model.addAttribute("identifierList", list);
-		model.addAttribute("organisation", organisation);
 		return "identifier/list";
 	}
 	

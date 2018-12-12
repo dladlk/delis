@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<title>Delis</title>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
 <div class="container">
@@ -16,20 +17,16 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent" th:if="${loggedIn}">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#" th:href="@{/home}">Delis <sup>v.1.0.0</sup><span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" th:href="@{/setup/index}">Setup</a>
-      </li>
-      <li class="nav-item">
-		<form th:action="@{/logout}" method="post">
-			<button type="submit" class="btn btn-primary" autofocus="autofocus">Logout</button>
-		</form>
-      </li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/organisation/list}">Organisations</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Documents</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/identifier/list}">Identifiers</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/setup/index}">Setup</a></li>
     </ul>
+    <ul class="navbar-nav justify-content-end">
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Logout</a></li>
+     </ul>
   </div>
 </header>
 

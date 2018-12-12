@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.IdentifierPublishingStatus;
 import dk.erst.delis.data.Organisation;
 
 public interface IdentifierRepository extends PagingAndSortingRepository<Identifier, Long> {
@@ -29,5 +30,7 @@ public interface IdentifierRepository extends PagingAndSortingRepository<Identif
 	List<Identifier> findByOrganisation(Organisation organisation);
 
 	Long countByOrganisation(Organisation organisation);
+	
+	Long countByPublishingStatus(IdentifierPublishingStatus identifierPublishingStatus);
 
 }

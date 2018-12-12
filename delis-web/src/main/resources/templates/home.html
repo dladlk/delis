@@ -3,34 +3,39 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
-			Organisations
-		</div>
-		<div class="card-body">
-			<table class="table table-striped table-bordered">
-				<tr>
-					<th>Name</th>
-					<th>Code</th>
-					<th>Identifiers</th>
-				</tr>
-				<tr th:each="r,iter : ${organisationList}">
-					<td><a href="#" th:href="@{/organisation/view/__${r.id}__}" th:text="${r.name}"></a></td>
-					<td th:text="${r.code}"></td>
-					<td>
-						<a href="#" th:href="@{/identifier/list/__${r.id}__}" title="Total" th:text="${orgStatMap.get(r.id).total}">10</a> = 
-						<span title="Published active" th:text="${orgStatMap.get(r.id).activeDone}">5</span> +
-						<span title="Pending active" th:text="${orgStatMap.get(r.id).activePending}">3</span> +
-						<span title="Pending deletion" th:text="${orgStatMap.get(r.id).disabledPending}">1</span> +
-						<span title="Failed" th:text="${orgStatMap.get(r.id).failed}">1</span>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div class="card-footer">
-			<a href="#" th:href="@{/organisation/create}" class="btn btn-primary">Create new</a>
-		</div>
-		
+
+	<h3 class="my-3">Welcome to Delis <sup>1.0</sup></h3>
+	
+	<div class="row">
+		Organisations:
+		<button type="button" class="btn btn-secondary">
+	  		All <span class="badge badge-light" th:text="${organisationCount}">4</span>
+		</button>
 	</div>
+	<div class="row">
+		Identifiers: 
+		<button type="button" class="btn btn-secondary">
+	  		Pending <span class="badge badge-light" th:text="${identifierPendingCount}">4</span>
+		</button>
+		<button type="button" class="btn btn-danger">
+	  		Failed <span class="badge badge-light" th:text="${identifierFailedCount}">4</span>
+		</button>
+	</div>
+	<div class="row">
+		<label>Documents</label>
+		<button type="button" class="btn btn-warning">
+	  		Loaded <span class="badge badge-light" th:text="${documentStat.documentLoadedCount}">4</span>
+		</button>
+		<button type="button" class="btn btn-success">
+	  		Delivered <span class="badge badge-light" th:text="${documentStat.documentDeliveredCount}">4</span>
+		</button>
+		<button type="button" class="btn btn-danger">
+	  		Validated <span class="badge badge-light" th:text="${documentStat.documentValidatedCount}">4</span>
+		</button>
+		<button type="button" class="btn btn-danger">
+	  		Failed <span class="badge badge-light" th:text="${documentStat.documentFailedCount}">4</span>
+		</button>
+	</div>
+
 </body>
 </html>

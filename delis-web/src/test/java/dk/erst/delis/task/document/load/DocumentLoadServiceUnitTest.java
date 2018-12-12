@@ -22,7 +22,7 @@ import dk.erst.delis.task.document.parse.DocumentParseService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DocumentLoadServiceTest {
+public class DocumentLoadServiceUnitTest {
 
 	@Test
 	public void testLoadFile() throws IOException {
