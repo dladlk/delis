@@ -14,7 +14,7 @@ import dk.erst.delis.data.Identifier;
 public class CSVIdentifierStreamReaderTest {
 
 	@Test
-	void testLoadCSV() {
+	public void testLoadCSV() {
 		InputStream is = TestUtil.getResourceByClass(getClass(), "LF_ISO88591.csv");
 		assertNotNull(is);
 

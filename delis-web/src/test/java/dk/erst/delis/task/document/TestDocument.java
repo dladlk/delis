@@ -4,26 +4,30 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import dk.erst.delis.data.DocumentFormat;
+
 public enum TestDocument {
 
-	CII("CII_invoice_example.xml"),
+	CII("CII_invoice_example.xml", DocumentFormat.CII),
 
-	BIS3_INVOICE("BIS3_Invoice_Example_DK_Supplier_Master.xml"),
+	BIS3_INVOICE("BIS3_Invoice_Example_DK_Supplier_Master.xml", DocumentFormat.BIS3_INVOICE),
 
-	BIS3_CREDITNOTE("BIS3_CreditNote_Example_DK_Supplier_NoErrors.xml"),
+	BIS3_CREDITNOTE("BIS3_CreditNote_Example_DK_Supplier_NoErrors.xml", DocumentFormat.BIS3_CREDITNOTE),
 
-	OIOUBL_INVOICE("OIOUBL_Invoice_v2p2.xml"),
+	OIOUBL_INVOICE("OIOUBL_Invoice_v2p2.xml", DocumentFormat.OIOUBL_INVOICE),
 
-	OIOUBL_CREDITNOTE("OIOUBL_CreditNote_v2p2.xml"),
+	OIOUBL_CREDITNOTE("OIOUBL_CreditNote_v2p2.xml", DocumentFormat.OIOUBL_CREDITNOTE),
 
 	;
 
-	private static String TEST_EXAMPLE_ROOT_PATH = "/work/2018.11.27_xml/examples/";
+	private static String TEST_EXAMPLE_ROOT_PATH = "/wsh/delis/delis-test/src/test/resources/examples/";
 
-	private String filename;
+	private final String filename;
+	private final DocumentFormat documentFormat;
 
-	private TestDocument(String filename) {
+	private TestDocument(String filename, DocumentFormat documentFormat) {
 		this.filename = filename;
+		this.documentFormat = documentFormat;
 	}
 
 	public String getFilePath() {
@@ -37,5 +41,9 @@ public enum TestDocument {
 			System.err.println("File " + this.getFilePath() + " is not found.");
 		}
 		return null;
+	}
+
+	public DocumentFormat getDocumentFormat() {
+		return documentFormat;
 	}
 }

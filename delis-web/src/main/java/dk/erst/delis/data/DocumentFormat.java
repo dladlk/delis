@@ -4,7 +4,7 @@ public enum DocumentFormat {
 
 	UNSUPPORTED("U", "", ""),
 
-	CII("CII", "Invoice", DocumentFormatConst.NS_CII),
+	CII("CII", "CrossIndustryInvoice", DocumentFormatConst.NS_CII),
 
 	BIS3_INVOICE("BIS3-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE),
 

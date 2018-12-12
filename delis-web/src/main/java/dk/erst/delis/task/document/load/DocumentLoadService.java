@@ -72,19 +72,24 @@ public class DocumentLoadService {
 		log.info("Loading file " + xmlFilePath);
 		try {
 			File file = xmlFilePath.toFile();
+			Path xmlFileParentPath = xmlFilePath.getParent();
 			if (!file.exists()) {
 				log.error("File " + xmlFilePath + " does not exist");
 				return null;
 			}
-			if (!file.renameTo(Paths.get(xmlFilePath.toString() + ".load").toFile())) {
+			File fileLoad = Paths.get(xmlFilePath.toString() + ".load").toFile();
+			if (!file.renameTo(fileLoad)) {
 				log.warn("Cannot rename file " + xmlFilePath + " before loading, skip it");
 				return null;
+			} else {
+				log.info("Renamed file "+file+" to .load before processing");
+				file = fileLoad;
 			}
 
 			DocumentInfo info = parseDocumentInfo(file);
 
-			File metadataFilePath = findMetadataFile(xmlFilePath);
-			String messageId = parseMessageId(xmlFilePath, metadataFilePath, info);
+			File metadataFilePath = findMetadataFile(xmlFileParentPath);
+			String messageId = parseMessageId(xmlFileParentPath, metadataFilePath, info);
 
 			Document document = buildDocument(info, messageId);
 
@@ -185,8 +190,9 @@ public class DocumentLoadService {
 		try {
 			is = new FileInputStream(file);
 			header = documentParseService.parseDocumentInfo(is);
+			log.info("Parsed "+header);
 		} catch (Exception e) {
-			log.error("Failed to parse root tag data on file " + file, e);
+			log.error("Failed to parse document info on file " + file, e);
 		} finally {
 			try {
 				is.close();
@@ -196,15 +202,15 @@ public class DocumentLoadService {
 		return header;
 	}
 
-	protected String parseMessageId(Path xmlFilePath, File metadataFilePath, DocumentInfo header) {
+	protected String parseMessageId(Path xmlFileParentPath, File metadataFilePath, DocumentInfo header) {
 		if (metadataFilePath != null) {
-			return xmlFilePath.getParent().getFileName().toString();
+			return xmlFileParentPath.getFileName().toString();
 		}
 		return "fake-" + new SimpleDateFormat(TIMESTAMP_FORMAT).format(Calendar.getInstance().getTime());
 	}
 
-	protected File findMetadataFile(Path xmlFilePath) {
-		Path metadataFile = xmlFilePath.getParent().resolve(METADATA_XML);
+	protected File findMetadataFile(Path xmlFileParentPath) {
+		Path metadataFile = xmlFileParentPath.resolve(METADATA_XML);
 		if (!metadataFile.toFile().exists()) {
 			log.info("Metadata file is not found");
 			return null;

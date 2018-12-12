@@ -9,11 +9,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Service
 public class DocumentParseService {
 	
 	private static final String DOCUMENT_INFO_XSLT_PATH = "parse-document-info.xslt";
