@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Data;
@@ -38,6 +39,7 @@ public class Document {
 
 	@Column(name = "CREATE_TIME")
 	@Temporal(TemporalType.TIMESTAMP)
+	@CreatedDate
 	private Date createTime;
 	
 	@Column(nullable = false)
