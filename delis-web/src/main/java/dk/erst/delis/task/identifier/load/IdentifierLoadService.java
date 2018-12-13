@@ -89,8 +89,12 @@ public class IdentifierLoadService {
 				if (identifierType != null) {
 					identifier.setType(identifierType);
 					
-					if (identifier.getName() != null && identifier.getName().length() > 128) {
-						identifier.setName(identifier.getName().substring(0, 128));
+					if (identifier.getName() != null) { 
+						if (identifier.getName().length() > 128) {
+							identifier.setName(identifier.getName().substring(0, 128));
+						}
+					} else {
+						identifier.setName("");
 					}
 					
 					Identifier present = identifierRepository.findByOrganisationAndValueAndType(organisation, identifier.getValue(), identifier.getType());
