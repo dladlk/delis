@@ -32,5 +32,8 @@ public class DocumentInfo {
 
 	@XmlElement(name = "Receiver")
 	private DocumentParticipant receiver;
+	
+	@XmlElement(name = "AmountNegative")
+	private boolean amountNegative;
 
 }

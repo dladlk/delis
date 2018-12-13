@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document.parse;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -21,6 +22,7 @@ public class DocumentParseServiceTest {
 
 			DocumentInfo header = parser.parseDocumentInfo(testDocument.getInputStream());
 			assertNotNull(header);
+			assertFalse(header.isAmountNegative());
 		}
 
 	}
