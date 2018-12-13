@@ -24,7 +24,10 @@ public class DocumentFormatDetectServiceTest {
 		assertEquals(DocumentFormat.CII, s.defineDocumentFormat(tc("CrossIndustryInvoice", "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100", null)));
 		
 		assertEquals(DocumentFormat.BIS3_CREDITNOTE, s.defineDocumentFormat(tc("CreditNote", "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2", "anything")));
-		assertEquals(DocumentFormat.BIS3_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "anything")));
+		assertEquals(DocumentFormat.UNSUPPORTED, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "anything")));
+		assertEquals(DocumentFormat.BIS3_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0")));
+		assertEquals(DocumentFormat.BIS3_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0.1")));
+		assertEquals(DocumentFormat.BIS3_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0.anything")));
 
 		assertEquals(DocumentFormat.OIOUBL_CREDITNOTE, s.defineDocumentFormat(tc("CreditNote", "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2", "OIOUBL-2.02")));
 		assertEquals(DocumentFormat.OIOUBL_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "OIOUBL-2.02")));

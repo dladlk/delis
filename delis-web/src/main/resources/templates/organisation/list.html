@@ -17,7 +17,7 @@
 				<tr th:each="r,iter : ${organisationList}">
 					<td><a href="#" th:href="@{/organisation/view/__${r.id}__}" th:text="${r.name}"></a></td>
 					<td th:text="${r.code}"></td>
-					<td>
+					<td th:if="${orgStatMap.get(r.id)}">
 						<a href="#" th:href="@{/identifier/list/__${r.id}__}" title="Total" th:text="${orgStatMap.get(r.id).total}">10</a> = 
 						<span title="Published active" th:text="${orgStatMap.get(r.id).activeDone}">5</span> +
 						<span title="Pending active" th:text="${orgStatMap.get(r.id).activePending}">3</span> +

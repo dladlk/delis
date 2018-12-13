@@ -17,7 +17,7 @@
 					<th>Pending deletion</th>
 					<th>Failed publishing</th>
 				</tr>
-				<tr>
+				<tr th:if="${stat}">
 					<td><a href="#" th:href="@{/identifier/list/__${organisation.id}__}" th:text="${stat.total}"></a></td>
 					<td th:text="${stat.activeDone}">7</td>
 					<td th:text="${stat.activePending}">1</td>
@@ -42,6 +42,51 @@
 				</div>
 				<input class="btn btn-primary" type="submit" value="Upload" />
 			</form>
+		</div>
+	</div>
+	
+	
+	<div class="card my-2">
+		<div class="card-header bg-primary text-white">
+			Configuration
+		</div>
+		<div class="card-body">
+			<table class="table table-striped table-bordered table-sm">
+				<tr>
+					<th>C4 receiving format</th>
+					<td>
+						<select>
+							<option>OIOUBL - convert everything to OIOUBL</option>
+							<option>BIS3 - keep BIS3 always</option>
+							<option>BIS3 positive - keep BIS3 if it is positive amount, otherwise convert to proper BIS3</option>
+							<option>No transformation - keep ingoing to C3</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>Subscribed SMP profiles</th>
+					<td>
+						<ul style="list-style: none;">
+							<li><input id="smpProfile_CII" type="checkbox" checked></input>  <label for="smpProfile_CII">CII</label></li>	
+							<li><input id="smpProfile_BIS3" type="checkbox" checked></input> <label for="smpProfile_BIS3">BIS3</label>
+								<ul>
+									<li>
+								urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1
+									</li>
+									<li>
+								urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1
+									</li>
+								</ul> 
+							</li>
+							<li><input id="smpProfile_OIOUBL" type="checkbox" checked></input> <label for="smpProfile_OIOUBL">OIOUBL</label>
+								<ul>
+							<li>busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0</li>	
+							<li>busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##OIOUBL-2.02::2.0</li>	
+								</ul>
+						</ul>
+					</td>
+				</tr>
+			</table>
 		</div>
 	</div>
 	
