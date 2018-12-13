@@ -7,34 +7,17 @@
 	<h3 class="my-3">Welcome to Delis <sup>1.0</sup></h3>
 	
 	<div class="row">
-		Organisations:
-		<button type="button" class="btn btn-secondary">
-	  		All <span class="badge badge-light" th:text="${organisationCount}">4</span>
-		</button>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${documentStat.documentLoadedCount}, 'Documents Loaded', 'oi-comment-square', 'bg-warning')}"></div>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${documentStat.documentDeliveredCount}, 'Documents Delivered', 'oi-comment-square', 'bg-success')}"></div>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${documentStat.documentValidatedCount}, 'Documents Validated', 'oi-comment-square', 'bg-success')}"></div>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${documentStat.documentFailedCount}, 'Documents Failed', 'oi-comment-square', 'bg-danger')}"></div>
 	</div>
 	<div class="row">
-		Identifiers: 
-		<button type="button" class="btn btn-secondary">
-	  		Pending <span class="badge badge-light" th:text="${identifierPendingCount}">4</span>
-		</button>
-		<button type="button" class="btn btn-danger">
-	  		Failed <span class="badge badge-light" th:text="${identifierFailedCount}">4</span>
-		</button>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${identifierPendingCount}, 'Identifiers Pending', 'oi-comment-square', 'bg-secondary')}"></div>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${identifierFailedCount}, 'Identifiers Failed', 'oi-comment-square', 'bg-danger')}"></div>
 	</div>
 	<div class="row">
-		<label>Documents</label>
-		<button type="button" class="btn btn-warning">
-	  		Loaded <span class="badge badge-light" th:text="${documentStat.documentLoadedCount}">4</span>
-		</button>
-		<button type="button" class="btn btn-success">
-	  		Delivered <span class="badge badge-light" th:text="${documentStat.documentDeliveredCount}">4</span>
-		</button>
-		<button type="button" class="btn btn-danger">
-	  		Validated <span class="badge badge-light" th:text="${documentStat.documentValidatedCount}">4</span>
-		</button>
-		<button type="button" class="btn btn-danger">
-	  		Failed <span class="badge badge-light" th:text="${documentStat.documentFailedCount}">4</span>
-		</button>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, ${organisationCount}, 'Organisations', 'oi-comment-square', 'bg-secondary')}"></div>
 	</div>
 
 </body>
