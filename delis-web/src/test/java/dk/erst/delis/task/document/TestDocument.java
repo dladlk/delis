@@ -20,7 +20,7 @@ public enum TestDocument {
 
 	;
 
-	private static String TEST_EXAMPLE_ROOT_PATH = "/wsh/delis/delis-resources/xml/examples/";
+	private static String TEST_EXAMPLE_ROOT_PATH = "/wsh/delis/delis-resources/examples/xml/";
 
 	private final String filename;
 	private final DocumentFormat documentFormat;
