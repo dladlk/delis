@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Tasks
+		</div>
+		<div class="card-body">
+			<table class="table table-sm">
+				<tr>
+					<th colspan="2" style="text-align: center">Identifier tasks</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Load from files</a>
+					</td>
+					<td>
+						Scan folder with exported list of identifiers per organisation and synchronize list of identifiers with database
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Publish to SMP</a>
+					</td>
+					<td>
+						Lookup db for Identifier records with identifierPublishStatus = PENDING and send requests to SMP
+					</td>
+				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center">Document tasks</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Load</a>
+					</td>
+					<td>
+						Scan IN folder of Domibus and Oxalis, resolve format, document details, receiver and load to database.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Validate</a>
+					</td>
+					<td>
+						Lookup db for Document records with status = LOADED_OK, validate ingoing format, transform to intermediate/final formats and validate them.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Deliver</a>
+					</td>
+					<td>
+						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
+					</td>
+				</tr>
+			</table>
+
+		</div>
+	</div>
+</body>
+</html>
