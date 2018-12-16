@@ -34,4 +34,12 @@ public class ConfigBean {
 		String storageRoot = this.configProperties.getStorageDocumentRoot();
 		return Paths.get(storageRoot, storageType.getFolderName());
 	}
+
+	public Path getStorageValidationPath() {
+		return Paths.get(this.configProperties.getStorageValidationRoot());
+	}
+
+	public Path getStorageTransformationPath() {
+		return Paths.get(this.configProperties.getStorageTransformationRoot());
+	}
 }

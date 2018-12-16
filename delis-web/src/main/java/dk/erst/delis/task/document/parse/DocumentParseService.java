@@ -32,7 +32,7 @@ public class DocumentParseService {
 		long start = System.currentTimeMillis();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), is, baos);
+			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), null, is, baos);
 		} catch (Exception e) {
 			log.error("Failed to extract document header", e);
 			return null;
@@ -65,6 +65,11 @@ public class DocumentParseService {
 		return docHeader;
 	}
 
+	public DocumentFormat defineDocumentFormat(InputStream inputStream) throws Exception {
+		DocumentInfo documentInfo = this.parseDocumentInfo(inputStream);
+		return defineDocumentFormat(documentInfo);
+	}
+	
 	public DocumentFormat defineDocumentFormat(DocumentInfo header) {
 		return this.documentFormatDetectService.defineDocumentFormat(header);
 	}

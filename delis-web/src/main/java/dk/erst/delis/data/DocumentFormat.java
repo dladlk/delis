@@ -20,12 +20,14 @@ public enum DocumentFormat {
 	private final String namespace;
 	private final String rootTag;
 	private final DocumentType documentType;
+	private final DocumentFormatFamily documentFormatFamily;
 
 	private DocumentFormat(String code, String rootTag, String namespace, DocumentType documentType) {
 		this.code = code;
 		this.rootTag = rootTag;
 		this.namespace = namespace;
 		this.documentType = documentType;
+		this.documentFormatFamily = (code.equals("CII") ? DocumentFormatFamily.CII : (code.startsWith("BIS3") ? DocumentFormatFamily.BIS3 : DocumentFormatFamily.OIOUBL));
 	}
 
 	public String getCode() {
@@ -58,6 +60,10 @@ public enum DocumentFormat {
 
 	public DocumentType getDocumentType() {
 		return documentType;
+	}
+	
+	public DocumentFormatFamily getDocumentFormatFamily() {
+		return documentFormatFamily;
 	}
 
 
