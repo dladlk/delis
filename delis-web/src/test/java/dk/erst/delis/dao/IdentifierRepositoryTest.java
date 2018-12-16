@@ -15,8 +15,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import dk.erst.delis.data.IdentifierStatus;
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -43,7 +41,7 @@ public class IdentifierRepositoryTest {
 	
 	@Test
 	public void testFindAllByDifferentLastFact() {
-		assertNull(identifierRepository.getPendingForDeactivation(0, 0, IdentifierStatus.ACTIVE));
+		assertNull(identifierRepository.getPendingForDeactivation(0, 0));
 	}
 
 }

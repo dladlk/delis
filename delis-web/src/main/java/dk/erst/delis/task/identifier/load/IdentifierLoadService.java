@@ -2,7 +2,7 @@ package dk.erst.delis.task.identifier.load;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,10 +150,13 @@ public class IdentifierLoadService {
 
 	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat) {
 		final int count[] = new int[] { 0 };
-		Iterator<Identifier> iterator = identifierRepository.getPendingForDeactivation(organisation.getId(), stat.getId(), IdentifierStatus.ACTIVE);
-		if (iterator != null) {
-			iterator.forEachRemaining(i -> {
+		List<Identifier> list = identifierRepository.getPendingForDeactivation(organisation.getId(), stat.getId());
+		if (list != null) {
+			list.forEach(i -> {
 				i.setStatus(IdentifierStatus.DELETED);
+				if (i.getPublishingStatus() == IdentifierPublishingStatus.DONE) {
+					i.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+				}
 				identifierRepository.save(i);
 				saveJournalIdentifierMessage(organisation, i, "Deleted by " + stat.getDescription());
 				count[0]++;
