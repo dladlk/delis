@@ -26,8 +26,9 @@ public class DocumentFormatDetectService {
 							return f;
 						}
 					} else if (f.isBIS3()) {
-						// If it is not OIOUBL - we consider document as BIS3
-						if (info.getCustomizationID() != null && !DocumentFormatConst.CUSTOMIZATION_OIOUBL.equals(info.getCustomizationID())) {
+						// Consider document as BIS3 if its customizationID starts with configured (agreed on a meeting with Ole 2018.12.12
+						// Reason - BIS3 customizationID will get subversion later
+						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_BIS3_STARTS_WITH)) {
 							return f;
 						}
 					} else if (f.isCII()) {
