@@ -2,6 +2,7 @@ package dk.erst.delis.task.identifier.load;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,10 +41,10 @@ public class IdentifierLoadService {
 
 	@Autowired
 	private JournalOrganisationRepository journalOrganisationRepository;
-	
+
 	@Autowired
-	private SyncOrganisationFactRepository syncOrganisationFactRepository; 
-	
+	private SyncOrganisationFactRepository syncOrganisationFactRepository;
+
 	public SyncOrganisationFact loadCSV(String organisationCode, InputStream inputStream, String description) {
 		AbstractIdentifierStreamReader reader = new CSVIdentifierStreamReader(inputStream, StandardCharsets.ISO_8859_1, ';');
 		return load(organisationCode, reader, description);
@@ -60,7 +61,7 @@ public class IdentifierLoadService {
 		saveJournalOrganisationMessage(organisation, "Start identifiers synchronization by " + description);
 
 		String identifierGroupCode = IdentifierGroup.DEFAULT_CODE;
-		
+
 		IdentifierGroup identifierGroup = identifierGroupRepository.findByOrganisationAndCode(organisation, identifierGroupCode);
 		if (identifierGroup == null) {
 			identifierGroup = new IdentifierGroup();
@@ -76,7 +77,7 @@ public class IdentifierLoadService {
 		SyncOrganisationFact stat = new SyncOrganisationFact();
 		stat.setOrganisation(organisation);
 		stat.setDescription(description);
-		
+
 		syncOrganisationFactRepository.save(stat);
 
 		try {
@@ -88,15 +89,15 @@ public class IdentifierLoadService {
 				String identifierType = defineIdentifierType(identifier);
 				if (identifierType != null) {
 					identifier.setType(identifierType);
-					
-					if (identifier.getName() != null) { 
+
+					if (identifier.getName() != null) {
 						if (identifier.getName().length() > 128) {
 							identifier.setName(identifier.getName().substring(0, 128));
 						}
 					} else {
 						identifier.setName("");
 					}
-					
+
 					Identifier present = identifierRepository.findByOrganisationAndValueAndType(organisation, identifier.getValue(), identifier.getType());
 					if (present == null) {
 						stat.incrementAdd();
@@ -106,41 +107,59 @@ public class IdentifierLoadService {
 						identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
 						identifier.setStatus(IdentifierStatus.ACTIVE);
 						identifier.setLastSyncOrganisationFactId(stat.getId());
-						
+
 						saveIdentifier(identifier);
-						
-						saveJournalIdentifierMessage(organisation, identifier, "Created by "+description);
+
+						saveJournalIdentifierMessage(organisation, identifier, "Created by " + description);
 					} else {
 						if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId())) {
 							stat.incrementEqual();
-							
+
 							present.setLastSyncOrganisationFactId(stat.getId());
 							saveIdentifier(present);
-							
+
 						} else {
 							present.setName(identifier.getName());
 							present.setIdentifierGroup(identifierGroup);
 							// TODO: What if identifier group is changed?
 							// TODO: What if identifier name is changed - should we republish identifier?
 							present.setLastSyncOrganisationFactId(stat.getId());
-							
+
 							saveIdentifier(present);
 							stat.incrementUpdate();
 							saveJournalIdentifierMessage(organisation, present, "Updated");
 						}
 					}
 				} else {
-					saveJournalOrganisationMessage(organisation, "Failed to define type of identifier value "+identifier.getValue());
+					saveJournalOrganisationMessage(organisation, "Failed to define type of identifier value " + identifier.getValue());
 					stat.incrementFailed();
 				}
 			}
+
+			int deactivated = deactivateAbsent(organisation, stat);
+			stat.setDelete(deactivated);
+
 		} finally {
 			stat.setDurationMs(System.currentTimeMillis() - start);
 			saveJournalOrganisationMessage(organisation, "Finished loading", System.currentTimeMillis() - start);
 			syncOrganisationFactRepository.save(stat);
 		}
-		
+
 		return stat;
+	}
+
+	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat) {
+		final int count[] = new int[] { 0 };
+		Iterator<Identifier> iterator = identifierRepository.getPendingForDeactivation(organisation.getId(), stat.getId(), IdentifierStatus.ACTIVE);
+		if (iterator != null) {
+			iterator.forEachRemaining(i -> {
+				i.setStatus(IdentifierStatus.DELETED);
+				identifierRepository.save(i);
+				saveJournalIdentifierMessage(organisation, i, "Deleted by " + stat.getDescription());
+				count[0]++;
+			});
+		}
+		return count[0];
 	}
 
 	private void saveIdentifier(Identifier identifier) {
@@ -154,11 +173,11 @@ public class IdentifierLoadService {
 		s.setMessage(journalMessage);
 		journalIdentifierRepository.save(s);
 	}
-	
+
 	private void saveJournalOrganisationMessage(Organisation organisation, String journalMessage) {
 		saveJournalOrganisationMessage(organisation, journalMessage, null);
 	}
-	
+
 	private void saveJournalOrganisationMessage(Organisation organisation, String journalMessage, Long durationMs) {
 		JournalOrganisation s = new JournalOrganisation();
 		s.setOrganisation(organisation);

@@ -1,5 +1,7 @@
 package dk.erst.delis.dao;
 
+import static org.junit.Assert.assertNull;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import dk.erst.delis.data.IdentifierStatus;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -35,6 +39,11 @@ public class IdentifierRepositoryTest {
 			}
 			index++;
 		}
+	}
+	
+	@Test
+	public void testFindAllByDifferentLastFact() {
+		assertNull(identifierRepository.getPendingForDeactivation(0, 0, IdentifierStatus.ACTIVE));
 	}
 
 }
