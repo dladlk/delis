@@ -42,70 +42,130 @@
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickOrganisation()">
-                                    <strong>Organisation
+                                    <strong *ngIf="countClickOrganisation == 0">Organisation
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickOrganisation == 1">Organisation
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickOrganisation == 2">Organisation
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceiver()">
-                                    <strong>Receiver
+                                    <strong *ngIf="countClickReceiver == 0">Receiver
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickReceiver == 1">Receiver
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickReceiver == 2">Receiver
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickStatus()">
-                                    <strong>Status
+                                    <strong *ngIf="countClickStatus == 0">Status
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickStatus == 1">Status
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickStatus == 2">Status
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickLastError()">
-                                    <strong>Last Error
+                                    <strong *ngIf="countClickLastError == 0">Last Error
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickLastError == 1">Last Error
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickLastError == 2">Last Error
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickDocumentType()">
-                                    <strong>Document&nbsp;Type
+                                    <strong *ngIf="countClickDocumentType == 0">Document&nbsp;Type
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickDocumentType == 1">Document&nbsp;Type
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickDocumentType == 2">Document&nbsp;Type
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickIngoingFormat()">
-                                    <strong>Ingoing Format
+                                    <strong *ngIf="countClickIngoingFormat == 0">Ingoing Format
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickIngoingFormat == 1">Ingoing Format
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickIngoingFormat == 2">Ingoing Format
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceived()">
-                                    <strong>Received
+                                    <strong *ngIf="countClickReceived == 0">Received
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickReceived == 1">Received
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickReceived == 2">Received
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickIssued()">
-                                    <strong>Issued
+                                    <strong *ngIf="countClickIssued == 0">Issued
                                         <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickIssued == 1">Issued
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickIssued == 2">Issued
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickSenderName()">
-                                    <strong>Sender Name
+                                    <strong *ngIf="countClickSenderName == 0">Sender Name
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickSenderName == 1">Sender Name
                                         <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickSenderName == 2">Sender Name
+                                        <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceiverName()">
-                                    <strong>Receiver Name
+                                    <strong *ngIf="countClickReceiverName == 0">Receiver Name
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickReceiverName == 1">Receiver Name
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                    <strong *ngIf="countClickReceiverName == 2">Receiver Name
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
