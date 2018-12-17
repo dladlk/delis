@@ -1,6 +1,6 @@
 package dk.erst.delis.dao;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +41,7 @@ public class IdentifierRepositoryTest {
 	
 	@Test
 	public void testFindAllByDifferentLastFact() {
-		assertNull(identifierRepository.getPendingForDeactivation(0, 0));
+		assertTrue(identifierRepository.getPendingForDeactivation(0, 0).isEmpty());
 	}
 
 }
