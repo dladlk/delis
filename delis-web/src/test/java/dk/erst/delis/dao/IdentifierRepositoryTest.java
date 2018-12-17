@@ -1,13 +1,12 @@
 package dk.erst.delis.dao;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import dk.erst.delis.data.Identifier;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +41,7 @@ public class IdentifierRepositoryTest {
 	
 	@Test
 	public void testFindAllByDifferentLastFact() {
-		List<Identifier> pending = identifierRepository.getPendingForDeactivation(0, 0);
-		assert pending == null || pending.size() == 0;
+		assertTrue(identifierRepository.getPendingForDeactivation(0, 0).isEmpty());
 	}
 
 }
