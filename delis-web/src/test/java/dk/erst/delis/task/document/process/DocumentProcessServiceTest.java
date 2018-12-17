@@ -39,8 +39,8 @@ public class DocumentProcessServiceTest {
 			RuleService ruleService = new RuleService();
 			DocumentParseService parseService = new DocumentParseService();
 			ConfigProperties configProperties = new ConfigProperties();
-			configProperties.setStorageTransformationRoot("/wsh/delis/delis-resources/transformation");
-			configProperties.setStorageValidationRoot("/wsh/delis/delis-resources/validation");
+			configProperties.setStorageTransformationRoot("../delis-resources/transformation");
+			configProperties.setStorageValidationRoot("../delis-resources/validation");
 			ConfigBean configBean = new ConfigBean(configProperties);
 			DocumentProcessService processService = new DocumentProcessService(ruleService, parseService, configBean);
 			

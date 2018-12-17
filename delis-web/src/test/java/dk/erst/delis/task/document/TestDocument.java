@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -20,7 +21,7 @@ public enum TestDocument {
 
 	;
 
-	private static String TEST_EXAMPLE_ROOT_PATH = "/wsh/delis/delis-resources/examples/xml/";
+	private static String TEST_EXAMPLE_ROOT_PATH = "../delis-resources/examples/xml/";
 
 	private final String filename;
 	private final DocumentFormat documentFormat;
