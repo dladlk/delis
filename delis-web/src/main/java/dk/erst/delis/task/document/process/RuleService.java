@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.data.DocumentFormatFamily;
 import dk.erst.delis.data.RuleDocumentTransformation;
 import dk.erst.delis.data.RuleDocumentValidation;
 import dk.erst.delis.data.RuleDocumentValidationType;
 
+@Service
 public class RuleService {
 
 	private List<RuleDocumentTransformation> transformationList;
