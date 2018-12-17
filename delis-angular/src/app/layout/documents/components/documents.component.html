@@ -25,6 +25,7 @@
                                        placeholder="&#8721;"
                                        [(ngModel)]="selectedPageSize"
                                        [searchable]="false"
+                                       [clearable]="false"
                                        (change)="loadPageSize()">
                             </ng-select>
                         </div>
@@ -37,7 +38,7 @@
                             <th>Receiver</th>
                             <th>Status</th>
                             <th>Last Error</th>
-                            <th>Type</th>
+                            <th>Document&nbsp;Type</th>
                             <th>Ingoing Format</th>
                             <th>Received</th>
                             <th>Issued</th>
@@ -77,11 +78,12 @@
                                 </ng-select>
                             </th>
                             <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textType"
-                                       placeholder="Type"
-                                       (change)="loadTextType($event.target.value)"/>
+                                <ng-select [items]="documentTypes"
+                                           bindLabel="documentType"
+                                           placeholder="documentTypes: "
+                                           [(ngModel)]="selectedDocumentType"
+                                           (change)="loadDocumentType()">
+                                </ng-select>
                             </th>
                             <th>
                                 <ng-select [items]="ingoingFormats"
@@ -130,7 +132,7 @@
                             <td>{{doc.receiver}}</td>
                             <td>{{doc.status}}</td>
                             <td>{{doc.lastError}}</td>
-                            <td>{{doc.type}}</td>
+                            <td>{{doc.documentType}}</td>
                             <td>{{doc.ingoingFormat}}</td>
                             <td>{{doc.received}}</td>
                             <td>{{doc.issued}}</td>
@@ -156,6 +158,8 @@
                         <div class="p-2">
                             <ng-select [items]="pageSizes"
                                        bindLabel="pageSize"
+                                       dropdownPosition="top"
+                                       [clearable]="false"
                                        placeholder="&#8721;"
                                        [(ngModel)]="selectedPageSize"
                                        [searchable]="false"

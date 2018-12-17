@@ -16,6 +16,7 @@ export class DocumentsComponent implements OnInit {
 
     selectedStatus: any;
     selectedLastError: any;
+    selectedDocumentType: any;
     selectedIngoingFormat: any;
     selectedPageSize: any;
     textOrganisation: string;
@@ -64,6 +65,13 @@ export class DocumentsComponent implements OnInit {
         {lastError: 'CII_SCH', selected: false}
     ];
 
+    documentTypes = [
+        {documentType: 'ALL', selected: true},
+        {documentType: 'UNSUPPORTED', selected: false},
+        {documentType: 'INVOICE', selected: false},
+        {documentType: 'CREDITNOTE', selected: false}
+    ];
+
     ingoingFormats = [
         {ingoingFormat: 'ALL', selected: true},
         {ingoingFormat: 'BIS3_INVOICE', selected: false},
@@ -84,6 +92,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedStatus = {status: 'ALL', selected: true};
         this.selectedLastError = {lastError: 'ALL', selected: true};
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
+        this.selectedDocumentType = {documentType: 'ALL', selected: true};
         this.selectedPageSize = {pageSize: 10, selected: true};
         this.filter = {
             status: this.selectedStatus.status,
@@ -91,7 +100,7 @@ export class DocumentsComponent implements OnInit {
             ingoingFormat: this.selectedIngoingFormat.ingoingFormat,
             organisation: null,
             receiver: null,
-            type: null,
+            documentType: this.selectedDocumentType.documentType,
             senderName: null,
             receiverName: null,
             dateReceived: new DateRangeModel(new Date(), new Date()),
@@ -111,7 +120,7 @@ export class DocumentsComponent implements OnInit {
         }
         this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
         this.pagination.pageSize = this.selectedPageSize.pageSize;
-        // this.pagination.collectionSize = this.documents.length;
+        this.pagination.collectionSize = this.docs.getCollectionSize();
     }
 
     loadPageSize() {
@@ -161,12 +170,11 @@ export class DocumentsComponent implements OnInit {
         this.filterResult();
     }
 
-    loadTextType(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.type = null;
-        } else {
-            this.filter.type = text;
+    loadDocumentType() {
+        if (this.selectedDocumentType === null) {
+            this.selectedDocumentType = {documentType: 'ALL', selected: true};
         }
+        this.filter.documentType = this.selectedDocumentType.documentType;
         this.filterResult();
     }
 

@@ -6,7 +6,7 @@ export class DocumentsModel {
   receiver: string; // EAN 9920191209017, EAN 9920191209024, EAN 9920191209093
   status: string;
   lastError: string;
-  type: string;
+  documentType: string;
   ingoingFormat: string;
   received: string; // date
   issued: string; // date
@@ -19,7 +19,7 @@ export class DocumentsModel {
       this.receiver = model.receiver;
       this.status = model.status;
       this.lastError = model.lastError;
-      this.type = model.type;
+      this.documentType = model.documentType;
       this.ingoingFormat = model.ingoingFormat;
       this.received = model.received;
       this.issued = model.issued;
@@ -36,7 +36,7 @@ export class FilterProcessResult {
   ingoingFormat: string;
   organisation: string;
   receiver: string;
-  type: string;
+  documentType: string;
   senderName: string;
   receiverName: string;
   dateReceived: DateRangeModel;
@@ -69,4 +69,11 @@ export enum IngoingFormat {
   BIS3_CREDITNOTE = 'BIS3_CREDITNOTE',
   OIOUBL_INVOICE = 'OIOUBL_INVOICE',
   OIOUBL_CREDITNOTE = 'OIOUBL_CREDITNOTE'
+}
+
+export enum DocumentType {
+
+    UNSUPPORTED = 'UNSUPPORTED',
+    INVOICE = 'INVOICE',
+    CREDITNOTE = 'CREDITNOTE'
 }
