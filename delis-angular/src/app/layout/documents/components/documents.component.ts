@@ -21,13 +21,23 @@ export class DocumentsComponent implements OnInit {
     selectedPageSize: any;
     textOrganisation: string;
     textReceiver: string;
-    textType: string;
     textSenderName: string;
     textReceiverName: string;
 
     documents: DocumentsModel[];
     filter: FilterProcessResult;
     pagination: PaginationModel;
+
+    countClickOrganisation: number;
+    countClickReceiver: number;
+    countClickStatus: number;
+    countClickLastError: number;
+    countClickDocumentType: number;
+    countClickIngoingFormat: number;
+    countClickReceived: number;
+    countClickIssued: number;
+    countClickSenderName: number;
+    countClickReceiverName: number;
 
     pageSizes = [
         {pageSize: 5},
@@ -107,6 +117,7 @@ export class DocumentsComponent implements OnInit {
             dateIssued: new DateRangeModel(new Date(), new Date())
         };
         this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
+        this.initCountClicks();
     }
 
     ngOnInit() {
@@ -121,6 +132,7 @@ export class DocumentsComponent implements OnInit {
         this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
         this.pagination.pageSize = this.selectedPageSize.pageSize;
         this.pagination.collectionSize = this.docs.getCollectionSize();
+        this.initCountClicks();
     }
 
     loadPageSize() {
@@ -206,10 +218,148 @@ export class DocumentsComponent implements OnInit {
         this.filterResult();
     }
 
+    clickNumber() {
+        console.log('clickNumber');
+        this.documents.reverse();
+    }
+
+    clickOrganisation() {
+        console.log('clickOrganisation');
+        this.countClickOrganisation++;
+        if (this.countClickOrganisation === 1) {
+            this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
+        } else if (this.countClickOrganisation === 2) {
+            this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickReceiver() {
+        console.log('clickReceiver');
+        this.countClickReceiver++;
+        if (this.countClickReceiver === 1) {
+            this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
+        } else if (this.countClickReceiver === 2) {
+            this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickStatus() {
+        console.log('clickStatus');
+        this.countClickStatus++;
+        if (this.countClickStatus === 1) {
+            this.documents.sort((one, two) => (one.status < two.status ? -1 : 1));
+        } else if (this.countClickStatus === 2) {
+            this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickLastError() {
+        console.log('clickLastError');
+        this.countClickLastError++;
+        if (this.countClickLastError === 1) {
+            this.documents.sort((one, two) => (one.lastError < two.lastError ? -1 : 1));
+        } else if (this.countClickLastError === 2) {
+            this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickDocumentType() {
+        console.log('clickDocumentType');
+        this.countClickDocumentType++;
+        if (this.countClickDocumentType === 1) {
+            this.documents.sort((one, two) => (one.documentType < two.documentType ? -1 : 1));
+        } else if (this.countClickDocumentType === 2) {
+            this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickIngoingFormat() {
+        console.log('clickIngoingFormat');
+        this.countClickIngoingFormat++;
+        if (this.countClickIngoingFormat === 1) {
+            this.documents.sort((one, two) => (one.ingoingFormat < two.ingoingFormat ? -1 : 1));
+        } else if (this.countClickIngoingFormat === 2) {
+            this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickReceived() {
+        console.log('clickReceived');
+        this.countClickReceived++;
+        if (this.countClickReceived === 1) {
+            this.documents.sort((one, two) => (one.received < two.received ? -1 : 1));
+        } else if (this.countClickReceived === 2) {
+            this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickIssued() {
+        console.log('clickIssued');
+        this.countClickIssued++;
+        if (this.countClickIssued === 1) {
+            this.documents.sort((one, two) => (one.issued < two.issued ? -1 : 1));
+        } else if (this.countClickIssued === 2) {
+            this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickSenderName() {
+        console.log('clickSenderName');
+        this.countClickSenderName++;
+        if (this.countClickSenderName === 1) {
+            this.documents.sort((one, two) => (one.senderName < two.senderName ? -1 : 1));
+        } else if (this.countClickSenderName === 2) {
+            this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
+    clickReceiverName() {
+        console.log('clickReceiverName');
+        this.countClickReceiverName++;
+        if (this.countClickReceiverName === 1) {
+            this.documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
+        } else if (this.countClickReceiverName === 2) {
+            this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
+        } else {
+            this.loadPage(this.pagination.currentPage);
+        }
+    }
+
     filterResult() {
         if (this.selectedPageSize === null) {
             this.selectedPageSize = {pageSize: 10, selected: true};
         }
         this.loadPage(this.pagination.currentPage);
+    }
+
+    initCountClicks() {
+        this.countClickOrganisation = 0;
+        this.countClickReceiver = 0;
+        this.countClickStatus = 0;
+        this.countClickLastError = 0;
+        this.countClickDocumentType = 0;
+        this.countClickIngoingFormat = 0;
+        this.countClickReceived = 0;
+        this.countClickIssued = 0;
+        this.countClickSenderName = 0;
+        this.countClickReceiverName = 0;
     }
 }

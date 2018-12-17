@@ -33,17 +33,83 @@
                     <table class="table table-hover table-sm">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Organisation</th>
-                            <th>Receiver</th>
-                            <th>Status</th>
-                            <th>Last Error</th>
-                            <th>Document&nbsp;Type</th>
-                            <th>Ingoing Format</th>
-                            <th>Received</th>
-                            <th>Issued</th>
-                            <th>Sender Name</th>
-                            <th>Receiver Name</th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickNumber()">
+                                    <strong>#
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickOrganisation()">
+                                    <strong>Organisation
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickReceiver()">
+                                    <strong>Receiver
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickStatus()">
+                                    <strong>Status
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickLastError()">
+                                    <strong>Last Error
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickDocumentType()">
+                                    <strong>Document&nbsp;Type
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickIngoingFormat()">
+                                    <strong>Ingoing Format
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickReceived()">
+                                    <strong>Received
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickIssued()">
+                                    <strong>Issued
+                                        <i class="fa fa-fw fa-sort"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickSenderName()">
+                                    <strong>Sender Name
+                                        <i class="fa fa-fw fa-sort-asc"></i>
+                                    </strong>
+                                </button>
+                            </th>
+                            <th>
+                                <button type="button" class="btn btn-light" (click)="clickReceiverName()">
+                                    <strong>Receiver Name
+                                        <i class="fa fa-fw fa-sort-desc"></i>
+                                    </strong>
+                                </button>
+                            </th>
                         </tr>
                         <tr>
                             <th></th>
