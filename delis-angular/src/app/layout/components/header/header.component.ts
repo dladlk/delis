@@ -9,13 +9,16 @@ import { AuthorizationService } from '../../../login/authorization.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
   public pushRightClass: string;
+  public lang: string;
 
   constructor(
     private auth: AuthorizationService,
     private translate: TranslateService,
     public router: Router) {
 
+    this.lang = 'en';
     const browserLang = this.translate.getBrowserLang();
     this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
 
@@ -57,5 +60,6 @@ export class HeaderComponent implements OnInit {
   changeLang(language: string) {
     this.translate.use(language);
     this.translate.setDefaultLang(language);
+    this.lang = language;
   }
 }
