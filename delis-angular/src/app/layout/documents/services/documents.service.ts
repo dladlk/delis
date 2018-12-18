@@ -1,32 +1,24 @@
 import { Injectable } from '@angular/core';
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
-import * as data from '../documents.json';
+import { HttpClient } from "@angular/common/http";
 
 @Injectable()
 export class DocumentsService {
 
-    private documents: DocumentsModel[] = data.docs;
+    private documents: DocumentsModel[] = [];
     private startElement: number;
 
-    constructor() {
+    constructor(private http: HttpClient) {
+        this.http.get('http://localhost:8080/delis/rest/document').subscribe(res => this.documents = res["docs"]);
     }
 
     getDocuments() {
-        this.documents = data.docs;
         return this.documents;
     }
 
     getDocumentsAfterFilter(currentPage: number, sizeElement: number, filter: FilterProcessResult) {
-        // console.log('status: ' + filter.status);
-        // console.log('lastError: ' + filter.lastError);
-        // console.log('ingoingFormat: ' + filter.ingoingFormat);
-        // console.log('organisation: ' + filter.organisation);
-        // console.log('receiver: ' + filter.receiver);
-        // console.log('type: ' + filter.type);
-        // console.log('senderName: ' + filter.senderName);
-        // console.log('receiverName: ' + filter.receiverName);
-        // console.log('dateReceived: ' + filter.dateReceived.dateStart + ' ' + filter.dateReceived.dateEnd);
-        // console.log('dateIssued: ' + filter.dateIssued.dateStart + ' ' + filter.dateIssued.dateEnd);
+
+        console.log('http = ' + this.documents !== null ? this.documents.length : 'null');
 
         this.startElement = currentPage * sizeElement;
         this.getDocuments();

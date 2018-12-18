@@ -10,6 +10,7 @@ import { DocumentsRoutingModule } from '../documents-routing.module';
 import { DocumentsComponent } from '../components/documents.component';
 import { PageHeaderModule } from '../../../shared/index';
 import { DocumentsService } from '../services/documents.service';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { DocumentsService } from '../services/documents.service';
       NgSelectModule,
       DocumentsRoutingModule,
       PageHeaderModule,
-      BsDatepickerModule],
+      BsDatepickerModule,
+      HttpClientModule],
   declarations: [DocumentsComponent],
   providers: [DocumentsService]
 })

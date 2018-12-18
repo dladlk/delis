@@ -18,7 +18,7 @@ public class MultiHttpSecurityConfig {
 
 		@Override
 		public void configure(WebSecurity web) throws Exception {
-		    web.ignoring().antMatchers("/image/**").antMatchers("/css/**").antMatchers("/js/**");
+		    web.ignoring().antMatchers("/image/**").antMatchers("/css/**").antMatchers("/js/**").antMatchers("/rest/**");
 		}
 		
 		@Override

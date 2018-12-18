@@ -39,7 +39,7 @@ export class HttpService extends HttpClient {
   }
 
   get(url: string, options?: any): Observable<any> {
-    this.modifyHeaders(options);
+    // this.modifyHeaders(options);
     return super.get(url, options).pipe(
       map<any, any>(res => this.returnRes(res)),
       catchError<any, any>((e) => this.errorHandler(e))
