@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../../router.animations';
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-publishing',
@@ -8,7 +9,11 @@ import { routerTransition } from '../../router.animations';
   animations: [routerTransition()]
 })
 export class PublishingComponent implements OnInit {
-  constructor() {}
+
+  constructor(private translate: TranslateService) {
+      const browserLang = this.translate.getBrowserLang();
+      this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
+  }
 
   ngOnInit() {}
 }

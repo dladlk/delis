@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from '../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
@@ -90,7 +91,11 @@ export class DocumentsComponent implements OnInit {
         {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false}
     ];
 
-    constructor(private docs: DocumentsService) {
+    constructor(private translate: TranslateService, private docs: DocumentsService) {
+
+        const browserLang = this.translate.getBrowserLang();
+        this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
+
         this.pagination = new PaginationModel();
         this.pagination.setPagination(
             {
@@ -362,4 +367,8 @@ export class DocumentsComponent implements OnInit {
         this.countClickSenderName = 0;
         this.countClickReceiverName = 0;
     }
+
+    // changeLang(language: string) {
+    //     this.translate.use(language);
+    // }
 }

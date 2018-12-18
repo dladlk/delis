@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col col-xl-12 col-lg-10">
             <div class="card">
-                <div class="card-header"><span>Documents Overview</span></div>
+                <div class="card-header"><span>{{ 'Documents Overview' | translate }}:</span></div>
                 <div class="card-body table-responsive">
                     <div class="d-flex flex-row">
                         <div class="p-2">
@@ -17,7 +17,7 @@
                             </ngb-pagination>
                         </div>
                         <div class="p-3">
-                            current page size:
+                            {{ 'Page size' | translate }}:
                         </div>
                         <div class="p-2">
                             <ng-select [items]="pageSizes"
@@ -42,130 +42,130 @@
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickOrganisation()">
-                                    <strong *ngIf="countClickOrganisation == 0">Organisation
+                                    <strong *ngIf="countClickOrganisation == 0">{{ 'Organisation' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickOrganisation == 1">Organisation
+                                    <strong *ngIf="countClickOrganisation == 1">{{ 'Organisation' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickOrganisation == 2">Organisation
+                                    <strong *ngIf="countClickOrganisation == 2">{{ 'Organisation' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceiver()">
-                                    <strong *ngIf="countClickReceiver == 0">Receiver
+                                    <strong *ngIf="countClickReceiver == 0">{{ 'Receiver' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickReceiver == 1">Receiver
+                                    <strong *ngIf="countClickReceiver == 1">{{ 'Receiver' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickReceiver == 2">Receiver
+                                    <strong *ngIf="countClickReceiver == 2">{{ 'Receiver' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickStatus()">
-                                    <strong *ngIf="countClickStatus == 0">Status
+                                    <strong *ngIf="countClickStatus == 0">{{ 'Status' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickStatus == 1">Status
+                                    <strong *ngIf="countClickStatus == 1">{{ 'Status' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickStatus == 2">Status
+                                    <strong *ngIf="countClickStatus == 2">{{ 'Status' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickLastError()">
-                                    <strong *ngIf="countClickLastError == 0">Last Error
+                                    <strong *ngIf="countClickLastError == 0">{{ 'Last Error' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickLastError == 1">Last Error
+                                    <strong *ngIf="countClickLastError == 1">{{ 'Last Error' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickLastError == 2">Last Error
+                                    <strong *ngIf="countClickLastError == 2">{{ 'Last Error' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickDocumentType()">
-                                    <strong *ngIf="countClickDocumentType == 0">Document&nbsp;Type
+                                    <strong *ngIf="countClickDocumentType == 0">{{ 'Document&nbsp;Type' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickDocumentType == 1">Document&nbsp;Type
+                                    <strong *ngIf="countClickDocumentType == 1">{{ 'Document&nbsp;Type' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickDocumentType == 2">Document&nbsp;Type
+                                    <strong *ngIf="countClickDocumentType == 2">{{ 'Document&nbsp;Type' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickIngoingFormat()">
-                                    <strong *ngIf="countClickIngoingFormat == 0">Ingoing Format
+                                    <strong *ngIf="countClickIngoingFormat == 0">{{ 'Ingoing Format' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickIngoingFormat == 1">Ingoing Format
+                                    <strong *ngIf="countClickIngoingFormat == 1">{{ 'Ingoing Format' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickIngoingFormat == 2">Ingoing Format
+                                    <strong *ngIf="countClickIngoingFormat == 2">{{ 'Ingoing Format' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceived()">
-                                    <strong *ngIf="countClickReceived == 0">Received
+                                    <strong *ngIf="countClickReceived == 0">{{ 'Received' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickReceived == 1">Received
+                                    <strong *ngIf="countClickReceived == 1">{{ 'Received' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickReceived == 2">Received
+                                    <strong *ngIf="countClickReceived == 2">{{ 'Received' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickIssued()">
-                                    <strong *ngIf="countClickIssued == 0">Issued
+                                    <strong *ngIf="countClickIssued == 0">{{ 'Issued' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickIssued == 1">Issued
+                                    <strong *ngIf="countClickIssued == 1">{{ 'Issued' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickIssued == 2">Issued
+                                    <strong *ngIf="countClickIssued == 2">{{ 'Issued' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickSenderName()">
-                                    <strong *ngIf="countClickSenderName == 0">Sender Name
+                                    <strong *ngIf="countClickSenderName == 0">{{ 'Sender Name' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickSenderName == 1">Sender Name
+                                    <strong *ngIf="countClickSenderName == 1">{{ 'Sender Name' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickSenderName == 2">Sender Name
+                                    <strong *ngIf="countClickSenderName == 2">{{ 'Sender Name' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceiverName()">
-                                    <strong *ngIf="countClickReceiverName == 0">Receiver Name
+                                    <strong *ngIf="countClickReceiverName == 0">{{ 'Receiver Name' | translate }}
                                         <i class="fa fa-fw fa-sort"></i>
                                     </strong>
-                                    <strong *ngIf="countClickReceiverName == 1">Receiver Name
+                                    <strong *ngIf="countClickReceiverName == 1">{{ 'Receiver Name' | translate }}
                                         <i class="fa fa-fw fa-sort-asc"></i>
                                     </strong>
-                                    <strong *ngIf="countClickReceiverName == 2">Receiver Name
+                                    <strong *ngIf="countClickReceiverName == 2">{{ 'Receiver Name' | translate }}
                                         <i class="fa fa-fw fa-sort-desc"></i>
                                     </strong>
                                 </button>
@@ -279,7 +279,7 @@
                             </ngb-pagination>
                         </div>
                         <div class="p-3">
-                            current page size:
+                            {{ 'Page size' | translate }}:
                         </div>
                         <div class="p-2">
                             <ng-select [items]="pageSizes"

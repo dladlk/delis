@@ -14,20 +14,16 @@ export class LoginComponent implements OnInit {
   constructor(
     private auth: AuthorizationService,
     private translate: TranslateService,
-    public router: Router
-  ) {
-    this.translate.addLangs(['en', 'fr', 'ur', 'es', 'it', 'fa', 'de', 'zh-CHS']);
-    this.translate.setDefaultLang('en');
+    public router: Router) {
+    this.translate.addLangs(['en', 'da']);
     const browserLang = this.translate.getBrowserLang();
-    this.translate.use(browserLang.match(/en|fr|ur|es|it|fa|de|zh-CHS/) ? browserLang : 'en');
+    this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
   }
 
   ngOnInit() {
   }
 
   onLoggedin(email: string, password: string) {
-    console.log('email ' + email);
-    console.log('password ' + password);
     this.auth.login(email, password);
     localStorage.setItem('isLoggedin', 'true');
   }
