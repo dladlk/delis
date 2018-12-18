@@ -6,6 +6,7 @@ import { DocumentsService } from '../services/documents.service';
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { PaginationModel } from '../../../models/pagination.model';
+import { LocaleService } from "../../../service/locale.service";
 
 @Component({
     selector: 'app-documents',
@@ -91,10 +92,9 @@ export class DocumentsComponent implements OnInit {
         {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false}
     ];
 
-    constructor(private translate: TranslateService, private docs: DocumentsService) {
+    constructor(private translate: TranslateService, private docs: DocumentsService, private locale: LocaleService) {
 
-        const browserLang = this.translate.getBrowserLang();
-        this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
+        this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
 
         this.pagination = new PaginationModel();
         this.pagination.setPagination(

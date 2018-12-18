@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../router.animations';
 import { TranslateService } from '@ngx-translate/core';
+import { LocaleService } from "../service/locale.service";
 
 @Component({
     selector: 'app-signup',
@@ -9,10 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
     animations: [routerTransition()]
 })
 export class SignupComponent implements OnInit {
-    constructor(private translate: TranslateService) {
-        this.translate.addLangs(['en', 'da']);
-        const browserLang = this.translate.getBrowserLang();
-        this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
+    constructor(private translate: TranslateService, private locale: LocaleService) {
+        this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
     ngOnInit() {}

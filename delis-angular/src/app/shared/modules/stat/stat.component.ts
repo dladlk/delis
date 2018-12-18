@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateService } from "@ngx-translate/core";
+import { LocaleService } from "../../../service/locale.service";
 
 @Component({
     selector: 'app-stat',
@@ -16,9 +17,8 @@ export class StatComponent implements OnInit {
     @Input() router: RouterLink;
     @Output() event: EventEmitter<any> = new EventEmitter();
 
-    constructor(private translate: TranslateService) {
-        const browserLang = this.translate.getBrowserLang();
-        this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
+    constructor(private translate: TranslateService, private locale: LocaleService) {
+        this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
     ngOnInit() {}

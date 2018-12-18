@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
+import {LocaleService} from "../../../service/locale.service";
 
 @Component({
   selector: 'app-header',
@@ -15,12 +16,11 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private auth: AuthorizationService,
-    private translate: TranslateService,
+    private translate: TranslateService, private locale: LocaleService,
     public router: Router) {
 
     this.lang = 'en';
-    const browserLang = this.translate.getBrowserLang();
-    this.translate.use(browserLang.match(/en|da/) ? browserLang : 'en');
+    this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
 
     this.router.events.subscribe(val => {
       if (
@@ -60,6 +60,7 @@ export class HeaderComponent implements OnInit {
   changeLang(language: string) {
     this.translate.use(language);
     this.translate.setDefaultLang(language);
+    this.locale.setLocale(language);
     this.lang = language;
   }
 }

@@ -15,6 +15,7 @@ import { AuthorizationService } from './login/authorization.service';
 import { HttpService } from './service/http.service';
 import { HttpErrorService } from './service/http.error.service';
 import { BsDatepickerModule } from 'ngx-bootstrap';
+import { LocaleService } from "./service/locale.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -44,7 +45,8 @@ export const createTranslateLoader = (http: HttpClient) => {
       TokenService,
       AuthorizationService,
       HttpService,
-      HttpErrorService],
+      HttpErrorService,
+        LocaleService],
     bootstrap: [AppComponent],
     exports: [BsDatepickerModule]
 })
