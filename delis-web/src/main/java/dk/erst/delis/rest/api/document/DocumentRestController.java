@@ -1,4 +1,4 @@
-package dk.erst.delis.rest.document;
+package dk.erst.delis.rest.api.document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -6,6 +6,7 @@ import dk.erst.delis.data.DocumentErrorCode;
 import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.data.DocumentType;
+import dk.erst.delis.rest.api.model.response.PageContainer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -39,7 +40,12 @@ public class DocumentRestController {
             String result = new BufferedReader(new InputStreamReader(in)).lines().collect(Collectors.joining("\n"));
             ObjectMapper mapper = new ObjectMapper();
             TempDocumentList list = mapper.readValue(result, TempDocumentList.class);
-            return ResponseEntity.ok(list);
+            PageContainer<TempDocument> container = new PageContainer<>();
+            container.setCollectionSize(list.getDocs().size());
+            container.setCurrentPage(1);
+            container.setItems(list.getDocs());
+            container.setPageSize(100);
+            return ResponseEntity.ok(container);
         } catch (FileNotFoundException e) {
             System.out.println("error = " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not found");

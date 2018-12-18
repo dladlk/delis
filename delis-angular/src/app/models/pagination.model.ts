@@ -4,7 +4,6 @@ export interface IPagination {
     currentPage: number;
     previousPage: number;
     pageSize: number;
-
 }
 
 export class PaginationModel implements IPagination {
@@ -18,8 +17,7 @@ export class PaginationModel implements IPagination {
         collectionSize: 10,
         currentPage: 1,
         previousPage: 1,
-        pageSize: 1
-    }) {
+        pageSize: 1}) {
         this.setPagination(pagination);
     }
 
