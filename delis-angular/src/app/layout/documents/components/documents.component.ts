@@ -7,6 +7,7 @@ import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { PaginationModel } from '../../../models/pagination.model';
 import { LocaleService } from "../../../service/locale.service";
+import { PageContainerModel } from "../../../models/page.container.model";
 
 @Component({
     selector: 'app-documents',
@@ -93,13 +94,21 @@ export class DocumentsComponent implements OnInit {
     ];
 
     constructor(private translate: TranslateService, private docs: DocumentsService, private locale: LocaleService) {
-
+        this.container = new PageContainerModel<DocumentsModel>();
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+    }
+
+    ngOnInit() {
+        this.currentDocuments(1, 10);
+        this.initAfterOnInit();
+    }
+
+    initAfterOnInit() {
 
         this.pagination = new PaginationModel();
         this.pagination.setPagination(
             {
-                collectionSize: this.docs.getCollectionSize(),
+                collectionSize: 100,
                 currentPage: 1,
                 pageSize: 10,
                 previousPage: 1
@@ -121,11 +130,22 @@ export class DocumentsComponent implements OnInit {
             dateReceived: new DateRangeModel(new Date(), new Date()),
             dateIssued: new DateRangeModel(new Date(), new Date())
         };
-        this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
+
         this.initCountClicks();
     }
 
-    ngOnInit() {
+    private readonly container: any;
+
+    currentDocuments(currentPage: number, sizeElement: number) {
+        this.docs.getAnyDocuments(currentPage, sizeElement).subscribe(
+            (data: {}) => {
+                this.container.collectionSize = data["collectionSize"];
+                this.container.currentPage = data["currentPage"];
+                this.container.pageSize = data["pageSize"];
+                this.container.items = data["items"];
+                this.documents = data["items"];
+            }
+        );
     }
 
     loadPage(page: number) {
@@ -134,15 +154,15 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.pagination.previousPage = page - 1;
         }
-        this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
+        this.currentDocuments(this.pagination.currentPage, this.pagination.pageSize);
         this.pagination.pageSize = this.selectedPageSize.pageSize;
-        this.pagination.collectionSize = this.docs.getCollectionSize();
+        this.pagination.collectionSize = this.container.collectionSize;
         this.initCountClicks();
     }
 
     loadPageSize() {
         this.pagination.pageSize = this.selectedPageSize.pageSize;
-        this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
+        this.currentDocuments(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIngoingFormat() {
