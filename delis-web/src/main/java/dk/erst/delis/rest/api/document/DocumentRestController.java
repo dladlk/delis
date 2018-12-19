@@ -83,11 +83,16 @@ public class DocumentRestController {
             String issued,
             String senderName,
             String receiverName) {
+
+        System.out.println("page = " + page);
+        System.out.println("size = " + size);
+        System.out.println("documents size = " + documents.size());
+
         PageContainer<TempDocument> container = new PageContainer<>();
+        container.setCollectionSize(documents.size());
 
         documents = getDocumentsAfterFiltering(documents, page, size, organisation, receiver, status, lastError, documentType, ingoingFormat, received, issued, senderName, receiverName);
 
-        container.setCollectionSize(documents.size());
         container.setCurrentPage(page);
         container.setItems(documents);
         container.setPageSize(size);
@@ -107,8 +112,14 @@ public class DocumentRestController {
             String senderName,
             String receiverName) {
 
+        page = page - 1;
+        int currentPage = page * size;
+        size += currentPage;
 
-        return documents.subList(page - 1, size);
+        System.out.println("currentPage = " + currentPage);
+        System.out.println("size = " + size);
+
+        return documents.subList(currentPage, size);
     }
 
     @Getter

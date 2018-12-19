@@ -16,7 +16,7 @@ export class DocumentsService {
     getAnyDocuments(currentPage: number, sizeElement: number) : Observable<any> {
         let url = 'http://localhost:8080/delis/rest/document' + '?page=' + currentPage + '&size=' + sizeElement;
         console.log('url = ' + url);
-        return this.http.get(url).pipe(map(this.extractData));
+        return this.http.get(url).pipe(map(DocumentsService.extractData));
     }
 
     getDocumentsAfterFilter(currentPage: number, sizeElement: number, filter: FilterProcessResult) {
@@ -43,12 +43,7 @@ export class DocumentsService {
         return this.documents.slice(this.startElement, this.startElement + sizeElement);
     }
 
-    // getCollectionSize() {
-    //     return this.documents.length;
-    // }
-
-    private extractData(res: Response) {
-        let body = res;
-        return body || { };
+    private static extractData(res: Response) {
+        return res || { };
     }
 }

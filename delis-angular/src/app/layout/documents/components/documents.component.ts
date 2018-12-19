@@ -5,7 +5,6 @@ import { routerTransition } from '../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
-import { PaginationModel } from '../../../models/pagination.model';
 import { LocaleService } from "../../../service/locale.service";
 import { PageContainerModel } from "../../../models/page.container.model";
 
@@ -29,7 +28,7 @@ export class DocumentsComponent implements OnInit {
 
     documents: DocumentsModel[];
     filter: FilterProcessResult;
-    pagination: PaginationModel;
+    container: any;
 
     countClickOrganisation: number;
     countClickReceiver: number;
@@ -94,25 +93,17 @@ export class DocumentsComponent implements OnInit {
     ];
 
     constructor(private translate: TranslateService, private docs: DocumentsService, private locale: LocaleService) {
-        this.container = new PageContainerModel<DocumentsModel>();
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
     ngOnInit() {
+        this.container = new PageContainerModel<DocumentsModel>();
         this.currentDocuments(1, 10);
         this.initAfterOnInit();
     }
 
     initAfterOnInit() {
 
-        this.pagination = new PaginationModel();
-        this.pagination.setPagination(
-            {
-                collectionSize: 100,
-                currentPage: 1,
-                pageSize: 10,
-                previousPage: 1
-            });
         this.selectedStatus = {status: 'ALL', selected: true};
         this.selectedLastError = {lastError: 'ALL', selected: true};
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
@@ -134,8 +125,6 @@ export class DocumentsComponent implements OnInit {
         this.initCountClicks();
     }
 
-    private readonly container: any;
-
     currentDocuments(currentPage: number, sizeElement: number) {
         this.docs.getAnyDocuments(currentPage, sizeElement).subscribe(
             (data: {}) => {
@@ -149,20 +138,12 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadPage(page: number) {
-        if (page === this.pagination.previousPage) {
-            this.pagination.previousPage = page;
-        } else {
-            this.pagination.previousPage = page - 1;
-        }
-        this.currentDocuments(this.pagination.currentPage, this.pagination.pageSize);
-        this.pagination.pageSize = this.selectedPageSize.pageSize;
-        this.pagination.collectionSize = this.container.collectionSize;
+        this.currentDocuments(page, this.selectedPageSize.pageSize);
         this.initCountClicks();
     }
 
     loadPageSize() {
-        this.pagination.pageSize = this.selectedPageSize.pageSize;
-        this.currentDocuments(this.pagination.currentPage, this.pagination.pageSize);
+        this.currentDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
     }
 
     loadIngoingFormat() {
@@ -256,7 +237,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickOrganisation === 2) {
             this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -268,7 +249,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickReceiver === 2) {
             this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -280,7 +261,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickStatus === 2) {
             this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -292,7 +273,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickLastError === 2) {
             this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -304,7 +285,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickDocumentType === 2) {
             this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -316,7 +297,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickIngoingFormat === 2) {
             this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -328,7 +309,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickReceived === 2) {
             this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -340,7 +321,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickIssued === 2) {
             this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -352,7 +333,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickSenderName === 2) {
             this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -364,7 +345,7 @@ export class DocumentsComponent implements OnInit {
         } else if (this.countClickReceiverName === 2) {
             this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
         } else {
-            this.loadPage(this.pagination.currentPage);
+            this.loadPage(this.container.currentPage);
         }
     }
 
@@ -372,7 +353,7 @@ export class DocumentsComponent implements OnInit {
         if (this.selectedPageSize === null) {
             this.selectedPageSize = {pageSize: 10, selected: true};
         }
-        this.loadPage(this.pagination.currentPage);
+        this.loadPage(this.container.currentPage);
     }
 
     initCountClicks() {
@@ -387,8 +368,4 @@ export class DocumentsComponent implements OnInit {
         this.countClickSenderName = 0;
         this.countClickReceiverName = 0;
     }
-
-    // changeLang(language: string) {
-    //     this.translate.use(language);
-    // }
 }

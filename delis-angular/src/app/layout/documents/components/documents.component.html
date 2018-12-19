@@ -7,9 +7,9 @@
                 <div class="card-body table-responsive">
                     <div class="d-flex flex-row">
                         <div class="p-2">
-                            <ngb-pagination [collectionSize]="pagination.collectionSize"
-                                            [pageSize]="pagination.pageSize"
-                                            [(page)]="pagination.currentPage"
+                            <ngb-pagination [collectionSize]="container.collectionSize"
+                                            [pageSize]="container.pageSize"
+                                            [(page)]="container.currentPage"
                                             [maxSize]="5"
                                             [rotate]="true"
                                             [boundaryLinks]="true"
@@ -269,9 +269,9 @@
                     </table>
                     <div class="d-flex flex-row">
                         <div class="p-2">
-                            <ngb-pagination [collectionSize]="pagination.collectionSize"
-                                            [pageSize]="pagination.pageSize"
-                                            [(page)]="pagination.currentPage"
+                            <ngb-pagination [collectionSize]="container.collectionSize"
+                                            [pageSize]="container.pageSize"
+                                            [(page)]="container.currentPage"
                                             [maxSize]="5"
                                             [rotate]="true"
                                             [boundaryLinks]="true"
