@@ -18,6 +18,16 @@ export class DocumentsService {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
+        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
+        params = params.append('countClickReceiver', String(filter.countClickReceiver));
+        params = params.append('countClickStatus', String(filter.countClickStatus));
+        params = params.append('countClickLastError', String(filter.countClickLastError));
+        params = params.append('countClickDocumentType', String(filter.countClickDocumentType));
+        params = params.append('countClickIngoingFormat', String(filter.countClickIngoingFormat));
+        params = params.append('countClickReceived', String(filter.countClickReceived));
+        params = params.append('countClickIssued', String(filter.countClickIssued));
+        params = params.append('countClickSenderName', String(filter.countClickSenderName));
+        params = params.append('countClickReceiverName', String(filter.countClickReceiverName));
         if (filter.status !== 'ALL') {
             params = params.append('status', filter.status);
         }

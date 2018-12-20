@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import {Component, OnInit} from '@angular/core';
+import {TranslateService} from "@ngx-translate/core";
 
-import { routerTransition } from '../../../router.animations';
-import { DocumentsService } from '../services/documents.service';
-import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
-import { DateRangeModel } from '../../../models/date.range.model';
-import { LocaleService } from "../../../service/locale.service";
-import { PageContainerModel } from "../../../models/page.container.model";
+import {routerTransition} from '../../../router.animations';
+import {DocumentsService} from '../services/documents.service';
+import {DocumentsModel, FilterProcessResult} from '../models/documents.model';
+import {DateRangeModel} from '../../../models/date.range.model';
+import {LocaleService} from "../../../service/locale.service";
+import {PageContainerModel} from "../../../models/page.container.model";
 
 @Component({
     selector: 'app-documents',
@@ -29,17 +29,6 @@ export class DocumentsComponent implements OnInit {
     documents: DocumentsModel[];
     filter: FilterProcessResult;
     container: any;
-
-    countClickOrganisation: number;
-    countClickReceiver: number;
-    countClickStatus: number;
-    countClickLastError: number;
-    countClickDocumentType: number;
-    countClickIngoingFormat: number;
-    countClickReceived: number;
-    countClickIssued: number;
-    countClickSenderName: number;
-    countClickReceiverName: number;
 
     pageSizes = [
         {pageSize: 5},
@@ -119,7 +108,17 @@ export class DocumentsComponent implements OnInit {
             senderName: null,
             receiverName: null,
             dateReceived: new DateRangeModel(new Date(), new Date()),
-            dateIssued: new DateRangeModel(new Date(), new Date())
+            dateIssued: new DateRangeModel(new Date(), new Date()),
+            countClickOrganisation: 0,
+            countClickReceiver: 0,
+            countClickStatus: 0,
+            countClickLastError: 0,
+            countClickDocumentType: 0,
+            countClickIngoingFormat: 0,
+            countClickReceived: 0,
+            countClickIssued: 0,
+            countClickSenderName: 0,
+            countClickReceiverName: 0
         };
 
         this.initCountClicks();
@@ -231,10 +230,10 @@ export class DocumentsComponent implements OnInit {
 
     clickOrganisation() {
         console.log('clickOrganisation');
-        this.countClickOrganisation++;
-        if (this.countClickOrganisation === 1) {
+        this.filter.countClickOrganisation++;
+        if (this.filter.countClickOrganisation === 1) {
             this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
-        } else if (this.countClickOrganisation === 2) {
+        } else if (this.filter.countClickOrganisation === 2) {
             this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -243,10 +242,10 @@ export class DocumentsComponent implements OnInit {
 
     clickReceiver() {
         console.log('clickReceiver');
-        this.countClickReceiver++;
-        if (this.countClickReceiver === 1) {
+        this.filter.countClickReceiver++;
+        if (this.filter.countClickReceiver === 1) {
             this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
-        } else if (this.countClickReceiver === 2) {
+        } else if (this.filter.countClickReceiver === 2) {
             this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -255,10 +254,10 @@ export class DocumentsComponent implements OnInit {
 
     clickStatus() {
         console.log('clickStatus');
-        this.countClickStatus++;
-        if (this.countClickStatus === 1) {
+        this.filter.countClickStatus++;
+        if (this.filter.countClickStatus === 1) {
             this.documents.sort((one, two) => (one.status < two.status ? -1 : 1));
-        } else if (this.countClickStatus === 2) {
+        } else if (this.filter.countClickStatus === 2) {
             this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -267,10 +266,10 @@ export class DocumentsComponent implements OnInit {
 
     clickLastError() {
         console.log('clickLastError');
-        this.countClickLastError++;
-        if (this.countClickLastError === 1) {
+        this.filter.countClickLastError++;
+        if (this.filter.countClickLastError === 1) {
             this.documents.sort((one, two) => (one.lastError < two.lastError ? -1 : 1));
-        } else if (this.countClickLastError === 2) {
+        } else if (this.filter.countClickLastError === 2) {
             this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -279,10 +278,10 @@ export class DocumentsComponent implements OnInit {
 
     clickDocumentType() {
         console.log('clickDocumentType');
-        this.countClickDocumentType++;
-        if (this.countClickDocumentType === 1) {
+        this.filter.countClickDocumentType++;
+        if (this.filter.countClickDocumentType === 1) {
             this.documents.sort((one, two) => (one.documentType < two.documentType ? -1 : 1));
-        } else if (this.countClickDocumentType === 2) {
+        } else if (this.filter.countClickDocumentType === 2) {
             this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -291,10 +290,10 @@ export class DocumentsComponent implements OnInit {
 
     clickIngoingFormat() {
         console.log('clickIngoingFormat');
-        this.countClickIngoingFormat++;
-        if (this.countClickIngoingFormat === 1) {
+        this.filter.countClickIngoingFormat++;
+        if (this.filter.countClickIngoingFormat === 1) {
             this.documents.sort((one, two) => (one.ingoingFormat < two.ingoingFormat ? -1 : 1));
-        } else if (this.countClickIngoingFormat === 2) {
+        } else if (this.filter.countClickIngoingFormat === 2) {
             this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -303,10 +302,10 @@ export class DocumentsComponent implements OnInit {
 
     clickReceived() {
         console.log('clickReceived');
-        this.countClickReceived++;
-        if (this.countClickReceived === 1) {
+        this.filter.countClickReceived++;
+        if (this.filter.countClickReceived === 1) {
             this.documents.sort((one, two) => (one.received < two.received ? -1 : 1));
-        } else if (this.countClickReceived === 2) {
+        } else if (this.filter.countClickReceived === 2) {
             this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -315,10 +314,10 @@ export class DocumentsComponent implements OnInit {
 
     clickIssued() {
         console.log('clickIssued');
-        this.countClickIssued++;
-        if (this.countClickIssued === 1) {
+        this.filter.countClickIssued++;
+        if (this.filter.countClickIssued === 1) {
             this.documents.sort((one, two) => (one.issued < two.issued ? -1 : 1));
-        } else if (this.countClickIssued === 2) {
+        } else if (this.filter.countClickIssued === 2) {
             this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -327,10 +326,10 @@ export class DocumentsComponent implements OnInit {
 
     clickSenderName() {
         console.log('clickSenderName');
-        this.countClickSenderName++;
-        if (this.countClickSenderName === 1) {
+        this.filter.countClickSenderName++;
+        if (this.filter.countClickSenderName === 1) {
             this.documents.sort((one, two) => (one.senderName < two.senderName ? -1 : 1));
-        } else if (this.countClickSenderName === 2) {
+        } else if (this.filter.countClickSenderName === 2) {
             this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -339,10 +338,10 @@ export class DocumentsComponent implements OnInit {
 
     clickReceiverName() {
         console.log('clickReceiverName');
-        this.countClickReceiverName++;
-        if (this.countClickReceiverName === 1) {
+        this.filter.countClickReceiverName++;
+        if (this.filter.countClickReceiverName === 1) {
             this.documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
-        } else if (this.countClickReceiverName === 2) {
+        } else if (this.filter.countClickReceiverName === 2) {
             this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
         } else {
             this.loadPage(this.container.currentPage);
@@ -357,15 +356,15 @@ export class DocumentsComponent implements OnInit {
     }
 
     initCountClicks() {
-        this.countClickOrganisation = 0;
-        this.countClickReceiver = 0;
-        this.countClickStatus = 0;
-        this.countClickLastError = 0;
-        this.countClickDocumentType = 0;
-        this.countClickIngoingFormat = 0;
-        this.countClickReceived = 0;
-        this.countClickIssued = 0;
-        this.countClickSenderName = 0;
-        this.countClickReceiverName = 0;
+        this.filter.countClickOrganisation = 0;
+        this.filter.countClickReceiver = 0;
+        this.filter.countClickStatus = 0;
+        this.filter.countClickLastError = 0;
+        this.filter.countClickDocumentType = 0;
+        this.filter.countClickIngoingFormat = 0;
+        this.filter.countClickReceived = 0;
+        this.filter.countClickIssued = 0;
+        this.filter.countClickSenderName = 0;
+        this.filter.countClickReceiverName = 0;
     }
 }
