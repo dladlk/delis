@@ -63,3 +63,20 @@ Before running the tests make sure you are serving the app via `ng serve`.
 ### Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+### run production
+
+Run `ng serve --configuration=production`
+
+### run dev
+
+Run `ng serve --configuration=dev`
+
+### build production
+
+Run `ng build --prod`
+
+### build dev
+
+Run `ng build --prod --configuration=dev`
