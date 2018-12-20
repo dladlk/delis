@@ -17,6 +17,7 @@ export class DocumentsService {
     getAnyDocuments(currentPage: number, sizeElement: number) : Observable<any> {
         // let url = 'http://localhost:8080/delis/rest/document';
         let url = 'http://localhost:8080/delis/rest/document' + '?page=' + currentPage + '&size=' + sizeElement;
+        // let url = 'http://localhost:8080/delis/rest/document' + '?page=' + currentPage + '&size=' + sizeElement + '&organisation=Nord';
         return this.http.get(url).pipe(map(DocumentsService.extractData));
     }
 
