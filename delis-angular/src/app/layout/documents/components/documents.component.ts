@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
+import { Component, OnInit } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
 
-import {routerTransition} from '../../../router.animations';
-import {DocumentsService} from '../services/documents.service';
-import {DocumentsModel, FilterProcessResult} from '../models/documents.model';
-import {DateRangeModel} from '../../../models/date.range.model';
-import {LocaleService} from "../../../service/locale.service";
-import {PageContainerModel} from "../../../models/page.container.model";
-import {environment} from "src/environments/environment";
+import { routerTransition } from '../../../router.animations';
+import { DocumentsService } from '../services/documents.service';
+import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
+import { DateRangeModel } from '../../../models/date.range.model';
+import { LocaleService } from "../../../service/locale.service";
+import { PageContainerModel } from "../../../models/page.container.model";
+import { environment } from "../../../../environments/environment";
 
 @Component({
     selector: 'app-documents',
@@ -84,19 +84,21 @@ export class DocumentsComponent implements OnInit {
         {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false}
     ];
 
-    constructor(private translate: TranslateService, private docs: DocumentsService, private locale: LocaleService) {
+    constructor(private translate: TranslateService, private documentsService: DocumentsService, private locale: LocaleService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
     ngOnInit() {
-        console.log('production: ' + this.env.production);
-        console.log('dev: ' + this.env.dev);
         this.container = new PageContainerModel<DocumentsModel>();
-        this.initAfterOnInit();
-        this.currentDocuments(1, 10);
+        this.initDefaultValues();
+        if (this.env.production) {
+            this.currentProdDocuments(1, 10);
+        } else {
+            this.currentDevDocuments(1, 10);
+        }
     }
 
-    initAfterOnInit() {
+    initDefaultValues() {
 
         this.selectedStatus = {status: 'ALL', selected: true};
         this.selectedLastError = {lastError: 'ALL', selected: true};
@@ -123,31 +125,147 @@ export class DocumentsComponent implements OnInit {
             countClickReceived: 0,
             countClickIssued: 0,
             countClickSenderName: 0,
-            countClickReceiverName: 0
+            countClickReceiverName: 0,
+            reverse: false
         };
-
-        this.initCountClicks();
     }
 
-    currentDocuments(currentPage: number, sizeElement: number) {
-        this.docs.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
+    currentProdDocuments(currentPage: number, sizeElement: number) {
+        this.documentsService.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
                 this.container.collectionSize = data["collectionSize"];
                 this.container.currentPage = data["currentPage"];
                 this.container.pageSize = data["pageSize"];
-                this.container.items = data["items"];
                 this.documents = data["items"];
             }
         );
     }
 
+    currentDevDocuments(currentPage: number, sizeElement: number) {
+        this.documents = this.documentsService.loadDocumentsJSON();
+        console.log('LOAD');
+        console.log('first = ' + this.documents[0].organisation);
+        console.log('last = ' + this.documents[this.documents.length - 1].organisation);
+        console.log('size = ' + this.documents.length);
+        this.container.collectionSize = this.documents.length;
+        this.container.currentPage = currentPage;
+        this.container.pageSize = sizeElement;
+
+        if (this.filter.status !== 'ALL') {
+            this.documents = this.documents.filter(el => el.status === this.filter.status);
+        }
+
+        if (this.filter.lastError !== 'ALL') {
+            this.documents = this.documents.filter(el => el.lastError === this.filter.lastError);
+        }
+
+        if (this.filter.documentType !== 'ALL') {
+            this.documents = this.documents.filter(el => el.documentType === this.filter.documentType);
+        }
+
+        if (this.filter.ingoingFormat !== 'ALL') {
+            this.documents = this.documents.filter(el => el.ingoingFormat === this.filter.ingoingFormat);
+        }
+
+        if (this.filter.reverse) {
+            this.documents.reverse();
+        }
+
+        console.log('before');
+        console.log('countClickOrganisation = ' + this.filter.countClickOrganisation);
+        console.log('first = ' + this.documents[0].organisation);
+        console.log('last = ' + this.documents[this.documents.length - 1].organisation);
+        console.log('size = ' + this.documents.length);
+
+        if (this.filter.countClickOrganisation === 1) {
+            this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
+        } else if (this.filter.countClickOrganisation === 2) {
+            this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
+        }
+
+        console.log('after');
+        console.log('countClickOrganisation = ' + this.filter.countClickOrganisation);
+        console.log('first = ' + this.documents[0].organisation);
+        console.log('last = ' + this.documents[this.documents.length - 1].organisation);
+        console.log('size = ' + this.documents.length);
+
+        if (this.filter.countClickReceiver === 1) {
+            this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
+        } else if (this.filter.countClickReceiver === 2) {
+            this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
+        }
+
+        if (this.filter.countClickStatus === 1) {
+            this.documents.sort((one, two) => (one.status < two.status ? -1 : 1));
+        } else if (this.filter.countClickStatus === 2) {
+            this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
+        }
+
+        if (this.filter.countClickLastError === 1) {
+            this.documents.sort((one, two) => (one.lastError < two.lastError ? -1 : 1));
+        } else if (this.filter.countClickLastError === 2) {
+            this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
+        }
+
+        if (this.filter.countClickDocumentType === 1) {
+            this.documents.sort((one, two) => (one.documentType < two.documentType ? -1 : 1));
+        } else if (this.filter.countClickDocumentType === 2) {
+            this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
+        }
+
+        if (this.filter.countClickIngoingFormat === 1) {
+            this.documents.sort((one, two) => (one.ingoingFormat < two.ingoingFormat ? -1 : 1));
+        } else if (this.filter.countClickIngoingFormat === 2) {
+            this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
+        }
+
+        if (this.filter.countClickReceived === 1) {
+            this.documents.sort((one, two) => (one.received < two.received ? -1 : 1));
+        } else if (this.filter.countClickReceived === 2) {
+            this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
+        }
+
+        if (this.filter.countClickIssued === 1) {
+            this.documents.sort((one, two) => (one.issued < two.issued ? -1 : 1));
+        } else if (this.filter.countClickIssued === 2) {
+            this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
+        }
+
+        if (this.filter.countClickSenderName === 1) {
+            this.documents.sort((one, two) => (one.senderName < two.senderName ? -1 : 1));
+        } else if (this.filter.countClickSenderName === 2) {
+            this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
+        }
+
+        if (this.filter.countClickReceiverName === 1) {
+            this.documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
+        } else if (this.filter.countClickReceiverName === 2) {
+            this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
+        }
+
+        this.container.collectionSize = this.documents.length;
+        this.container.currentPage = currentPage;
+        this.container.pageSize = sizeElement;
+
+        let startElement = (currentPage - 1) * sizeElement;
+
+        this.documents = this.documents.slice(startElement, startElement + sizeElement);
+    }
+
     loadPage(page: number) {
-        this.currentDocuments(page, this.selectedPageSize.pageSize);
-        this.initCountClicks();
+        if (this.env.production) {
+            this.currentProdDocuments(page, this.selectedPageSize.pageSize);
+        } else {
+            this.currentDevDocuments(page, this.selectedPageSize.pageSize);
+        }
     }
 
     loadPageSize() {
-        this.currentDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+        if (this.env.production) {
+            this.currentProdDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+        } else {
+            this.currentDevDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+        }
     }
 
     loadIngoingFormat() {
@@ -230,127 +348,98 @@ export class DocumentsComponent implements OnInit {
 
     clickNumber() {
         console.log('clickNumber');
-        this.documents.reverse();
+        this.filter.reverse = true;
+        this.filterResult();
     }
 
     clickOrganisation() {
         console.log('clickOrganisation');
         this.filter.countClickOrganisation++;
-        if (this.filter.countClickOrganisation === 1) {
-            this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
-        } else if (this.filter.countClickOrganisation === 2) {
-            this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickOrganisation > 2) {
+            this.filter.countClickOrganisation = 0;
         }
+        this.filterResult();
     }
 
     clickReceiver() {
         console.log('clickReceiver');
         this.filter.countClickReceiver++;
-        if (this.filter.countClickReceiver === 1) {
-            this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
-        } else if (this.filter.countClickReceiver === 2) {
-            this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickReceiver > 2) {
+            this.filter.countClickReceiver = 0;
         }
+        this.filterResult();
     }
 
     clickStatus() {
         console.log('clickStatus');
         this.filter.countClickStatus++;
-        if (this.filter.countClickStatus === 1) {
-            this.documents.sort((one, two) => (one.status < two.status ? -1 : 1));
-        } else if (this.filter.countClickStatus === 2) {
-            this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickStatus > 2) {
+            this.filter.countClickStatus = 0;
         }
+        this.filterResult();
     }
 
     clickLastError() {
         console.log('clickLastError');
         this.filter.countClickLastError++;
-        if (this.filter.countClickLastError === 1) {
-            this.documents.sort((one, two) => (one.lastError < two.lastError ? -1 : 1));
-        } else if (this.filter.countClickLastError === 2) {
-            this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickLastError > 2) {
+            this.filter.countClickLastError = 0;
         }
+        this.filterResult();
     }
 
     clickDocumentType() {
         console.log('clickDocumentType');
         this.filter.countClickDocumentType++;
-        if (this.filter.countClickDocumentType === 1) {
-            this.documents.sort((one, two) => (one.documentType < two.documentType ? -1 : 1));
-        } else if (this.filter.countClickDocumentType === 2) {
-            this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickDocumentType > 2) {
+            this.filter.countClickDocumentType = 0;
         }
+        this.filterResult();
     }
 
     clickIngoingFormat() {
         console.log('clickIngoingFormat');
         this.filter.countClickIngoingFormat++;
-        if (this.filter.countClickIngoingFormat === 1) {
-            this.documents.sort((one, two) => (one.ingoingFormat < two.ingoingFormat ? -1 : 1));
-        } else if (this.filter.countClickIngoingFormat === 2) {
-            this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickIngoingFormat > 2) {
+            this.filter.countClickIngoingFormat = 0;
         }
+        this.filterResult();
     }
 
     clickReceived() {
         console.log('clickReceived');
         this.filter.countClickReceived++;
-        if (this.filter.countClickReceived === 1) {
-            this.documents.sort((one, two) => (one.received < two.received ? -1 : 1));
-        } else if (this.filter.countClickReceived === 2) {
-            this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickReceived > 2) {
+            this.filter.countClickReceived = 0;
         }
+        this.filterResult();
     }
 
     clickIssued() {
         console.log('clickIssued');
         this.filter.countClickIssued++;
-        if (this.filter.countClickIssued === 1) {
-            this.documents.sort((one, two) => (one.issued < two.issued ? -1 : 1));
-        } else if (this.filter.countClickIssued === 2) {
-            this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickIssued > 2) {
+            this.filter.countClickIssued = 0;
         }
+        this.filterResult();
     }
 
     clickSenderName() {
         console.log('clickSenderName');
         this.filter.countClickSenderName++;
-        if (this.filter.countClickSenderName === 1) {
-            this.documents.sort((one, two) => (one.senderName < two.senderName ? -1 : 1));
-        } else if (this.filter.countClickSenderName === 2) {
-            this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickSenderName > 2) {
+            this.filter.countClickSenderName = 0;
         }
+        this.filterResult();
     }
 
     clickReceiverName() {
         console.log('clickReceiverName');
         this.filter.countClickReceiverName++;
-        if (this.filter.countClickReceiverName === 1) {
-            this.documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
-        } else if (this.filter.countClickReceiverName === 2) {
-            this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
-        } else {
-            this.loadPage(this.container.currentPage);
+        if (this.filter.countClickReceiverName > 2) {
+            this.filter.countClickReceiverName = 0;
         }
+        this.filterResult();
     }
 
     filterResult() {
@@ -358,18 +447,6 @@ export class DocumentsComponent implements OnInit {
             this.selectedPageSize = {pageSize: 10, selected: true};
         }
         this.loadPage(this.container.currentPage);
-    }
-
-    initCountClicks() {
-        this.filter.countClickOrganisation = 0;
-        this.filter.countClickReceiver = 0;
-        this.filter.countClickStatus = 0;
-        this.filter.countClickLastError = 0;
-        this.filter.countClickDocumentType = 0;
-        this.filter.countClickIngoingFormat = 0;
-        this.filter.countClickReceived = 0;
-        this.filter.countClickIssued = 0;
-        this.filter.countClickSenderName = 0;
-        this.filter.countClickReceiverName = 0;
+        this.filter.reverse = false;
     }
 }

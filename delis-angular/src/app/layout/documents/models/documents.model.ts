@@ -52,6 +52,8 @@ export class FilterProcessResult {
     countClickIssued: number;
     countClickSenderName: number;
     countClickReceiverName: number;
+
+    reverse: boolean
 }
 
 export enum Status {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -140,6 +141,11 @@ public class DocumentRestController {
     }
 
     private List<TempDocument> sortingDocuments(List<TempDocument> documents, WebRequest webRequest) {
+
+        if (Boolean.getBoolean(webRequest.getParameter("reverse"))) {
+            Collections.reverse(documents);
+            return documents;
+        }
 
         if (webRequest.getParameter("countClickOrganisation") != null) {
             int countClickOrganisation = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickOrganisation")));
