@@ -17,7 +17,6 @@ export class LoginComponent implements OnInit {
     private translate: TranslateService,
     private locale: LocaleService,
     public router: Router) {
-    // this.translate.addLangs(['en', 'da']);
     this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
   }
 

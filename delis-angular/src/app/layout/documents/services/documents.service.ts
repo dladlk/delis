@@ -3,6 +3,7 @@ import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { HttpClient } from "@angular/common/http";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as data from '../documents.json';
 
 @Injectable()
 export class DocumentsService {
@@ -14,15 +15,20 @@ export class DocumentsService {
     }
 
     getAnyDocuments(currentPage: number, sizeElement: number) : Observable<any> {
+        // let url = 'http://localhost:8080/delis/rest/document';
         let url = 'http://localhost:8080/delis/rest/document' + '?page=' + currentPage + '&size=' + sizeElement;
-        console.log('url = ' + url);
         return this.http.get(url).pipe(map(DocumentsService.extractData));
+    }
+
+    getDocuments() {
+        this.documents = data.docs;
+        return this.documents;
     }
 
     getDocumentsAfterFilter(currentPage: number, sizeElement: number, filter: FilterProcessResult) {
 
         this.startElement = currentPage * sizeElement;
-        // this.getDocuments();
+        this.getDocuments();
 
         if (filter.status !== 'ALL') {
             this.documents = this.documents.filter(el => el.status === filter.status);
@@ -45,5 +51,9 @@ export class DocumentsService {
 
     private static extractData(res: Response) {
         return res || { };
+    }
+
+    getCollectionSize() {
+        return this.documents.length;
     }
 }
