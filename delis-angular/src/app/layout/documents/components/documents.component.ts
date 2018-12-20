@@ -7,6 +7,7 @@ import {DocumentsModel, FilterProcessResult} from '../models/documents.model';
 import {DateRangeModel} from '../../../models/date.range.model';
 import {LocaleService} from "../../../service/locale.service";
 import {PageContainerModel} from "../../../models/page.container.model";
+import {environment} from "src/environments/environment";
 
 @Component({
     selector: 'app-documents',
@@ -15,6 +16,8 @@ import {PageContainerModel} from "../../../models/page.container.model";
     animations: [routerTransition()]
 })
 export class DocumentsComponent implements OnInit {
+
+    env = environment;
 
     selectedStatus: any;
     selectedLastError: any;
@@ -86,6 +89,8 @@ export class DocumentsComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log('production: ' + this.env.production);
+        console.log('dev: ' + this.env.dev);
         this.container = new PageContainerModel<DocumentsModel>();
         this.initAfterOnInit();
         this.currentDocuments(1, 10);
