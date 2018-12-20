@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as data from '../documents.json';
@@ -14,11 +14,36 @@ export class DocumentsService {
     constructor(private http: HttpClient) {
     }
 
-    getAnyDocuments(currentPage: number, sizeElement: number) : Observable<any> {
-        // let url = 'http://localhost:8080/delis/rest/document';
-        let url = 'http://localhost:8080/delis/rest/document' + '?page=' + currentPage + '&size=' + sizeElement;
-        // let url = 'http://localhost:8080/delis/rest/document' + '?page=' + currentPage + '&size=' + sizeElement + '&organisation=Nord';
-        return this.http.get(url).pipe(map(DocumentsService.extractData));
+    getAnyDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
+        let params = new HttpParams();
+        params = params.append('page', String(currentPage));
+        params = params.append('size', String(sizeElement));
+        if (filter.status !== 'ALL') {
+            params = params.append('status', filter.status);
+        }
+        if (filter.lastError !== 'ALL') {
+            params = params.append('lastError', filter.lastError);
+        }
+        if (filter.ingoingFormat !== 'ALL') {
+            params = params.append('ingoingFormat', filter.ingoingFormat);
+        }
+        if (filter.documentType !== 'ALL') {
+            params = params.append('documentType', filter.documentType);
+        }
+        if (filter.organisation !== null) {
+            params = params.append('organisation', filter.organisation);
+        }
+        if (filter.receiver !== null) {
+            params = params.append('receiver', filter.receiver);
+        }
+        if (filter.senderName !== null) {
+            params = params.append('senderName', filter.senderName);
+        }
+        if (filter.receiverName !== null) {
+            params = params.append('receiverName', filter.receiverName);
+        }
+        let url = 'http://localhost:8080/delis/rest/document';
+        return this.http.get(url, {params: params}).pipe(map(DocumentsService.extractData));
     }
 
     getDocuments() {

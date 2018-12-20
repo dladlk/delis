@@ -98,8 +98,8 @@ export class DocumentsComponent implements OnInit {
 
     ngOnInit() {
         this.container = new PageContainerModel<DocumentsModel>();
-        this.currentDocuments(1, 10);
         this.initAfterOnInit();
+        this.currentDocuments(1, 10);
     }
 
     initAfterOnInit() {
@@ -126,7 +126,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     currentDocuments(currentPage: number, sizeElement: number) {
-        this.docs.getAnyDocuments(currentPage, sizeElement).subscribe(
+        this.docs.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
                 this.container.collectionSize = data["collectionSize"];
                 this.container.currentPage = data["currentPage"];
