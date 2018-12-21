@@ -1,4 +1,4 @@
-package dk.erst.delis.rest.api.document;
+package dk.erst.delis.rest.controller.document;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -6,7 +6,7 @@ import dk.erst.delis.data.DocumentErrorCode;
 import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.data.DocumentType;
-import dk.erst.delis.rest.api.model.response.PageContainer;
+import dk.erst.delis.rest.data.response.PageContainer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,14 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import java.io.*;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @author Iehor Funtusov, created by 18.12.18
+ * @author Iehor Funtusov, created by 21.12.18
  */
 
 @Slf4j
@@ -288,3 +287,4 @@ public class DocumentRestController {
         private String receiverName;
     }
 }
+

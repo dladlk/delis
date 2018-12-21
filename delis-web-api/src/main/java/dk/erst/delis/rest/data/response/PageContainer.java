@@ -1,4 +1,4 @@
-package dk.erst.delis.rest.api.model.response;
+package dk.erst.delis.rest.data.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -56,7 +56,7 @@ export class DocumentsService {
         return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
     }
 
-    loadDocumentsJSON() {
+    static loadDocumentsJSON() {
         return data.docs;
     }
 
