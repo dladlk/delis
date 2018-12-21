@@ -125,8 +125,7 @@ export class DocumentsComponent implements OnInit {
             countClickReceived: 0,
             countClickIssued: 0,
             countClickSenderName: 0,
-            countClickReceiverName: 0,
-            reverse: false
+            countClickReceiverName: 0
         };
     }
 
@@ -143,9 +142,6 @@ export class DocumentsComponent implements OnInit {
 
     currentDevDocuments(currentPage: number, sizeElement: number) {
         this.documents = this.documentsService.loadDocumentsJSON();
-        this.container.collectionSize = this.documents.length;
-        this.container.currentPage = currentPage;
-        this.container.pageSize = sizeElement;
 
         if (this.filter.status !== 'ALL') {
             this.documents = this.documents.filter(el => el.status === this.filter.status);
@@ -161,10 +157,6 @@ export class DocumentsComponent implements OnInit {
 
         if (this.filter.ingoingFormat !== 'ALL') {
             this.documents = this.documents.filter(el => el.ingoingFormat === this.filter.ingoingFormat);
-        }
-
-        if (this.filter.reverse) {
-            this.documents.reverse();
         }
 
         if (this.filter.countClickOrganisation === 1) {
@@ -330,12 +322,6 @@ export class DocumentsComponent implements OnInit {
         this.filterResult();
     }
 
-    clickNumber() {
-        console.log('clickNumber');
-        this.filter.reverse = true;
-        this.filterResult();
-    }
-
     clickOrganisation() {
         console.log('clickOrganisation');
         this.filter.countClickOrganisation++;
@@ -431,6 +417,5 @@ export class DocumentsComponent implements OnInit {
             this.selectedPageSize = {pageSize: 10, selected: true};
         }
         this.loadPage(this.container.currentPage);
-        this.filter.reverse = false;
     }
 }

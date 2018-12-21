@@ -142,11 +142,6 @@ public class DocumentRestController {
 
     private List<TempDocument> sortingDocuments(List<TempDocument> documents, WebRequest webRequest) {
 
-        if (Boolean.getBoolean(webRequest.getParameter("reverse"))) {
-            Collections.reverse(documents);
-            return documents;
-        }
-
         if (webRequest.getParameter("countClickOrganisation") != null) {
             int countClickOrganisation = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickOrganisation")));
             if (countClickOrganisation == 1) {

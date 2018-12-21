@@ -18,7 +18,6 @@ export class DocumentsService {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
-        params = params.append('reverse', String(filter.reverse));
         params = params.append('countClickReceiver', String(filter.countClickReceiver));
         params = params.append('countClickStatus', String(filter.countClickStatus));
         params = params.append('countClickLastError', String(filter.countClickLastError));
