@@ -141,7 +141,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     currentDevDocuments(currentPage: number, sizeElement: number) {
-        this.documents = DocumentsService.loadDocumentsJSON();
+        this.documents = this.documentsService.loadDocumentsJSON();
 
         if (this.filter.status !== 'ALL') {
             this.documents = this.documents.filter(el => el.status === this.filter.status);

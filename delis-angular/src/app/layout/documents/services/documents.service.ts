@@ -27,7 +27,7 @@ export class DocumentsService {
         params = params.append('countClickIssued', String(filter.countClickIssued));
         params = params.append('countClickSenderName', String(filter.countClickSenderName));
         params = params.append('countClickReceiverName', String(filter.countClickReceiverName));
-        params = params.append('countClickReceiverName', String(filter.countClickReceiverName));
+        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
         if (filter.status !== 'ALL') {
             params = params.append('status', filter.status);
         }
@@ -56,7 +56,7 @@ export class DocumentsService {
         return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
     }
 
-    static loadDocumentsJSON() {
+    loadDocumentsJSON() {
         return data.docs;
     }
 
