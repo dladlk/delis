@@ -94,6 +94,7 @@ export class DocumentsComponent implements OnInit {
         if (this.env.production) {
             this.currentProdDocuments(1, 10);
         } else {
+            this.documents = this.documentsService.loadDocumentsJSON();
             this.currentDevDocuments(1, 10);
         }
     }
@@ -142,11 +143,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     currentDevDocuments(currentPage: number, sizeElement: number) {
-        this.documents = this.documentsService.loadDocumentsJSON();
-        console.log('LOAD');
-        console.log('first = ' + this.documents[0].organisation);
-        console.log('last = ' + this.documents[this.documents.length - 1].organisation);
-        console.log('size = ' + this.documents.length);
+
         this.container.collectionSize = this.documents.length;
         this.container.currentPage = currentPage;
         this.container.pageSize = sizeElement;
@@ -171,23 +168,11 @@ export class DocumentsComponent implements OnInit {
             this.documents.reverse();
         }
 
-        console.log('before');
-        console.log('countClickOrganisation = ' + this.filter.countClickOrganisation);
-        console.log('first = ' + this.documents[0].organisation);
-        console.log('last = ' + this.documents[this.documents.length - 1].organisation);
-        console.log('size = ' + this.documents.length);
-
         if (this.filter.countClickOrganisation === 1) {
             this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
         } else if (this.filter.countClickOrganisation === 2) {
             this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
         }
-
-        console.log('after');
-        console.log('countClickOrganisation = ' + this.filter.countClickOrganisation);
-        console.log('first = ' + this.documents[0].organisation);
-        console.log('last = ' + this.documents[this.documents.length - 1].organisation);
-        console.log('size = ' + this.documents.length);
 
         if (this.filter.countClickReceiver === 1) {
             this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
@@ -357,6 +342,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickOrganisation++;
         if (this.filter.countClickOrganisation > 2) {
             this.filter.countClickOrganisation = 0;
+            this.documents = this.documentsService.loadDocumentsJSON();
         }
         this.filterResult();
     }
@@ -366,6 +352,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickReceiver++;
         if (this.filter.countClickReceiver > 2) {
             this.filter.countClickReceiver = 0;
+            this.documents = this.documentsService.loadDocumentsJSON();
         }
         this.filterResult();
     }
@@ -375,6 +362,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickStatus++;
         if (this.filter.countClickStatus > 2) {
             this.filter.countClickStatus = 0;
+            this.documents = this.documentsService.loadDocumentsJSON();
         }
         this.filterResult();
     }
@@ -384,6 +372,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickLastError++;
         if (this.filter.countClickLastError > 2) {
             this.filter.countClickLastError = 0;
+            this.documents = this.documentsService.loadDocumentsJSON();
         }
         this.filterResult();
     }
@@ -393,6 +382,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickDocumentType++;
         if (this.filter.countClickDocumentType > 2) {
             this.filter.countClickDocumentType = 0;
+            this.documents = this.documentsService.loadDocumentsJSON();
         }
         this.filterResult();
     }
@@ -402,6 +392,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickIngoingFormat++;
         if (this.filter.countClickIngoingFormat > 2) {
             this.filter.countClickIngoingFormat = 0;
+            this.documents = this.documentsService.loadDocumentsJSON();
         }
         this.filterResult();
     }
