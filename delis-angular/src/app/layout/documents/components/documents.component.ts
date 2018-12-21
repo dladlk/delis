@@ -160,14 +160,9 @@ export class DocumentsComponent implements OnInit {
         }
 
         if (this.filter.countClickOrganisation === 1) {
-            console.log('countClickOrganisation = 1');
             this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
         } else if (this.filter.countClickOrganisation === 2) {
-            console.log('countClickOrganisation = 2');
             this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
-        } else {
-            console.log('countClickOrganisation = 3');
-            this.documents = DocumentsService.loadDocumentsJSON();
         }
 
         if (this.filter.countClickReceiver === 1) {
