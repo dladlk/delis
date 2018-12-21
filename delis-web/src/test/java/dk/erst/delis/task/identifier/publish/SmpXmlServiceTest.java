@@ -1,7 +1,6 @@
-package dk.erst.delis.service;
+package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.data.Identifier;
-import dk.erst.delis.xml.SmpXmlService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -14,8 +13,8 @@ public class SmpXmlServiceTest {
     @Test
     public void test() {
         Identifier testIdentifier = new Identifier();
-        testIdentifier.setType("0088");
-        testIdentifier.setValue("test1");
+        testIdentifier.setType(TestVariables.IDENTIFIER_TYPE);
+        testIdentifier.setValue(TestVariables.IDENTIFIER_VALUE);
         SmpXmlService smpXmlService = new SmpXmlService();
         String serviceGroupXml = smpXmlService.createServiceGroupXml(testIdentifier);
         assertTrue(serviceGroupXml.contains(testIdentifier.getType()));

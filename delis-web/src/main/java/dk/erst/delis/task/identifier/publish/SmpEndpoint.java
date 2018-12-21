@@ -1,4 +1,4 @@
-package dk.erst.delis.data;
+package dk.erst.delis.task.identifier.publish;
 
 public class SmpEndpoint {
 

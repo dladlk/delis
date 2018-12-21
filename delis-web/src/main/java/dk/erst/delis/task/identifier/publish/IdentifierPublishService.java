@@ -1,8 +1,6 @@
 package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.SmpEndpoint;
-import dk.erst.delis.xml.SmpXmlService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +26,17 @@ public class IdentifierPublishService {
     public PublishReport publish(Identifier identifier, SmpEndpoint endpoint){
         String serviceGroupXml = smpXmlService.createServiceGroupXml(identifier);
         String serviceMetadataXml = smpXmlService.createServiceMetadataXml(identifier);
-        boolean serviceGroupCreated = doCall("PUT", endpoint, createEndpointPath(), serviceGroupXml);
-        boolean serviceMetadataCreated = doCall("PUT", endpoint, createEndpointPath(), serviceMetadataXml);
+        boolean serviceGroupCreated = doCall("PUT", endpoint, createServiceGroupEndpointPath(identifier), serviceGroupXml);
+        boolean serviceMetadataCreated = doCall("PUT", endpoint, createServiceMetadataEndpointPath(identifier), serviceMetadataXml);
         return new PublishReport(serviceGroupCreated, serviceMetadataCreated);
     }
 
-    private String createEndpointPath() {
-        //TODO implement
-        return "";
+    private String createServiceGroupEndpointPath(Identifier identifier) {
+        return identifier.getType() + "::" + identifier.getValue();
+    }
+
+    private String createServiceMetadataEndpointPath(Identifier identifier) {
+        return identifier.getType() + "::" + identifier.getValue() + "/services/" + "connectivity-docid-qns::doc_id1";
     }
 
     private boolean doCall(String method, SmpEndpoint endpoint, String path, String xml) {

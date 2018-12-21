@@ -1,4 +1,4 @@
-package dk.erst.delis.xml;
+package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.data.Identifier;
 import no.difi.commons.bdx.jaxb.smp._2016._05.*;
@@ -14,6 +14,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -76,10 +78,17 @@ public class SmpXmlService {
         String processValue = "urn:www.cenbii.eu:profile:bii04:ver1.0";
         String certificateBase64String = "dGVzdA==";
         String transportProfile = "bdxr-transport-ebms3-as4-v1p0";
-        String endpointUrl = "http://localhost:8080";
+        String endpointUrl = "http://localhost:8090/smp-4.0.0/services/msh";
         String serviceDescription = "Test service description";
-        Date serviceActivationDate = new Date();
-        Date serviceExpirationDate = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date serviceActivationDate = null;
+        Date serviceExpirationDate = null;
+        try {
+            serviceActivationDate = simpleDateFormat.parse("2018-07-01");
+            serviceExpirationDate = simpleDateFormat.parse("2020-07-01");
+        } catch (ParseException e) {
+            log.error(e);
+        }
         String technicalContactUrl = "http://example.com";
         ProcessType process = new ProcessType();
         ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
