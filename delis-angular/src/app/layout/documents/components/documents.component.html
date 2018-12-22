@@ -32,58 +32,13 @@
                     </div>
                     <table class="table table-hover table-sm">
                         <thead>
-                        <tr>
+                        <tr >
                             <th>
                                 <strong>#</strong>
                             </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickOrganisation()">
-                                    <table-header-sort [countClick]="filter.countClickOrganisation" [headerName]="'Organisation'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickReceiver()">
-                                    <table-header-sort [countClick]="filter.countClickReceiver" [headerName]="'Receiver'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickStatus()">
-                                    <table-header-sort [countClick]="filter.countClickStatus" [headerName]="'Status'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickLastError()">
-                                    <table-header-sort [countClick]="filter.countClickLastError" [headerName]="'Last Error'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickDocumentType()">
-                                    <table-header-sort [countClick]="filter.countClickDocumentType" [headerName]="'Document Type'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickIngoingFormat()">
-                                    <table-header-sort [countClick]="filter.countClickIngoingFormat" [headerName]="'Ingoing Format'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickReceived()">
-                                    <table-header-sort [countClick]="filter.countClickReceived" [headerName]="'Received'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickIssued()">
-                                    <table-header-sort [countClick]="filter.countClickIssued" [headerName]="'Issued'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickSenderName()">
-                                    <table-header-sort [countClick]="filter.countClickSenderName" [headerName]="'Sender Name'"></table-header-sort>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickReceiverName()">
-                                    <table-header-sort [countClick]="filter.countClickReceiverName" [headerName]="'Receiver Name'"></table-header-sort>
+                            <th *ngFor="let hed of tableHeaderSortModels">
+                                <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
+                                    <table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></table-header-sort>
                                 </button>
                             </th>
                         </tr>

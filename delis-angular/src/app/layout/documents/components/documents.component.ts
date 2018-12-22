@@ -12,6 +12,7 @@ import { documentTypes } from '../models/documents.view.model';
 import { ingoingFormats } from '../models/documents.view.model';
 import { lastErrors } from '../models/documents.view.model';
 import { statuses } from '../models/documents.view.model';
+import { TableHeaderSortModel } from "../../bs-component/components/table-header-sort/table.header.sort.model";
 
 @Component({
     selector: 'app-documents',
@@ -34,6 +35,7 @@ export class DocumentsComponent implements OnInit {
     textReceiverName: string;
 
     documents: DocumentsModel[];
+    tableHeaderSortModels: TableHeaderSortModel[] = [];
     statuses = statuses;
     documentTypes = documentTypes;
     ingoingFormats = ingoingFormats;
@@ -71,6 +73,38 @@ export class DocumentsComponent implements OnInit {
         this.selectedDocumentType = {documentType: 'ALL', selected: true};
         this.selectedPageSize = {pageSize: 10, selected: true};
         this.filter = new FilterProcessResult();
+        this.tableHeaderSortModels.push(
+            {
+                columnName: 'Organisation', columnClick: 0
+            },
+            {
+                columnName: 'Receiver', columnClick: 0
+            },
+            {
+                columnName: 'Status', columnClick: 0
+            },
+            {
+                columnName: 'Last Error', columnClick: 0
+            },
+            {
+                columnName: 'Document Type', columnClick: 0
+            },
+            {
+                columnName: 'Ingoing Format', columnClick: 0
+            },
+            {
+                columnName: 'Received', columnClick: 0
+            },
+            {
+                columnName: 'Issued', columnClick: 0
+            },
+            {
+                columnName: 'Sender Name', columnClick: 0
+            },
+            {
+                columnName: 'Receiver Name', columnClick: 0
+            }
+        );
     }
 
     currentProdDocuments(currentPage: number, sizeElement: number) {
@@ -266,87 +300,121 @@ export class DocumentsComponent implements OnInit {
         this.filterResult();
     }
 
-    clickOrganisation() {
+    clickFilter(target: string) {
+        if (target === 'Organisation') {
+            this.clickOrganisation();
+        }
+        if (target === 'Receiver') {
+            this.clickReceiver();
+        }
+        if (target === 'Status') {
+            this.clickStatus();
+        }
+        if (target === 'Last Error') {
+            this.clickLastError();
+        }
+        if (target === 'Document Type') {
+            this.clickDocumentType();
+        }
+        if (target === 'Ingoing Format') {
+            this.clickIngoingFormat();
+        }
+        if (target === 'Received') {
+            this.clickReceived();
+        }
+        if (target === 'Issued') {
+            this.clickIssued();
+        }
+        if (target === 'Sender Name') {
+            this.clickSenderName();
+        }
+        if (target === 'Receiver Name') {
+            this.clickReceiverName();
+        }
+        this.filterResult();
+    }
+
+    private clickOrganisation() {
         this.filter.countClickOrganisation++;
         if (this.filter.countClickOrganisation > 2) {
             this.filter.countClickOrganisation = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Organisation').columnClick = this.filter.countClickOrganisation;
     }
 
-    clickReceiver() {
+    private clickReceiver() {
         this.filter.countClickReceiver++;
         if (this.filter.countClickReceiver > 2) {
             this.filter.countClickReceiver = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver').columnClick = this.filter.countClickReceiver;
     }
 
-    clickStatus() {
+    private clickStatus() {
         this.filter.countClickStatus++;
         if (this.filter.countClickStatus > 2) {
             this.filter.countClickStatus = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Status').columnClick = this.filter.countClickStatus;
     }
 
-    clickLastError() {
+    private clickLastError() {
         this.filter.countClickLastError++;
         if (this.filter.countClickLastError > 2) {
             this.filter.countClickLastError = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Last Error').columnClick = this.filter.countClickLastError;
     }
 
-    clickDocumentType() {
+    private clickDocumentType() {
         this.filter.countClickDocumentType++;
         if (this.filter.countClickDocumentType > 2) {
             this.filter.countClickDocumentType = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Document Type').columnClick = this.filter.countClickDocumentType;
     }
 
-    clickIngoingFormat() {
+    private clickIngoingFormat() {
         this.filter.countClickIngoingFormat++;
         if (this.filter.countClickIngoingFormat > 2) {
             this.filter.countClickIngoingFormat = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Ingoing Format').columnClick = this.filter.countClickIngoingFormat;
     }
 
-    clickReceived() {
+    private clickReceived() {
         this.filter.countClickReceived++;
         if (this.filter.countClickReceived > 2) {
             this.filter.countClickReceived = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Received').columnClick = this.filter.countClickReceived;
     }
 
-    clickIssued() {
+    private clickIssued() {
         this.filter.countClickIssued++;
         if (this.filter.countClickIssued > 2) {
             this.filter.countClickIssued = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Issued').columnClick = this.filter.countClickIssued;
     }
 
-    clickSenderName() {
+    private clickSenderName() {
         this.filter.countClickSenderName++;
         if (this.filter.countClickSenderName > 2) {
             this.filter.countClickSenderName = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Sender Name').columnClick = this.filter.countClickSenderName;
     }
 
-    clickReceiverName() {
+    private clickReceiverName() {
         this.filter.countClickReceiverName++;
         if (this.filter.countClickReceiverName > 2) {
             this.filter.countClickReceiverName = 0;
         }
-        this.filterResult();
+        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver Name').columnClick = this.filter.countClickReceiverName;
     }
 
-    filterResult() {
+    private filterResult() {
         if (this.selectedPageSize === null) {
             this.selectedPageSize = {pageSize: 10, selected: true};
         }
