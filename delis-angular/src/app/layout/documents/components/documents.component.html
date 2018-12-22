@@ -38,132 +38,52 @@
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickOrganisation()">
-                                    <strong *ngIf="filter.countClickOrganisation == 0">{{ 'Organisation' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickOrganisation == 1">{{ 'Organisation' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickOrganisation == 2">{{ 'Organisation' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickOrganisation" [headerName]="'Organisation'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceiver()">
-                                    <strong *ngIf="filter.countClickReceiver == 0">{{ 'Receiver' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickReceiver == 1">{{ 'Receiver' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickReceiver == 2">{{ 'Receiver' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickReceiver" [headerName]="'Receiver'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickStatus()">
-                                    <strong *ngIf="filter.countClickStatus == 0">{{ 'Status' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickStatus == 1">{{ 'Status' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickStatus == 2">{{ 'Status' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickStatus" [headerName]="'Status'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickLastError()">
-                                    <strong *ngIf="filter.countClickLastError == 0">{{ 'Last Error' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickLastError == 1">{{ 'Last Error' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickLastError == 2">{{ 'Last Error' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickLastError" [headerName]="'Last Error'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickDocumentType()">
-                                    <strong *ngIf="filter.countClickDocumentType == 0">{{ 'Document Type' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickDocumentType == 1">{{ 'Document Type' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickDocumentType == 2">{{ 'Document Type' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickDocumentType" [headerName]="'Document Type'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickIngoingFormat()">
-                                    <strong *ngIf="filter.countClickIngoingFormat == 0">{{ 'Ingoing Format' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickIngoingFormat == 1">{{ 'Ingoing Format' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickIngoingFormat == 2">{{ 'Ingoing Format' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickIngoingFormat" [headerName]="'Ingoing Format'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceived()">
-                                    <strong *ngIf="filter.countClickReceived == 0">{{ 'Received' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickReceived == 1">{{ 'Received' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickReceived == 2">{{ 'Received' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickReceived" [headerName]="'Received'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickIssued()">
-                                    <strong *ngIf="filter.countClickIssued == 0">{{ 'Issued' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickIssued == 1">{{ 'Issued' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickIssued == 2">{{ 'Issued' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickIssued" [headerName]="'Issued'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickSenderName()">
-                                    <strong *ngIf="filter.countClickSenderName == 0">{{ 'Sender Name' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickSenderName == 1">{{ 'Sender Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickSenderName == 2">{{ 'Sender Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickSenderName" [headerName]="'Sender Name'"></table-header-sort>
                                 </button>
                             </th>
                             <th>
                                 <button type="button" class="btn btn-light" (click)="clickReceiverName()">
-                                    <strong *ngIf="filter.countClickReceiverName == 0">{{ 'Receiver Name' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickReceiverName == 1">{{ 'Receiver Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="filter.countClickReceiverName == 2">{{ 'Receiver Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                                    <table-header-sort [countClick]="filter.countClickReceiverName" [headerName]="'Receiver Name'"></table-header-sort>
                                 </button>
                             </th>
                         </tr>

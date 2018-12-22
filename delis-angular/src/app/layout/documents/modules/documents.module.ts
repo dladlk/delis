@@ -5,12 +5,13 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDatepickerModule } from 'ngx-bootstrap';
 import { TranslateModule } from "@ngx-translate/core";
+import { HttpClientModule } from "@angular/common/http";
 
 import { DocumentsRoutingModule } from '../documents-routing.module';
 import { DocumentsComponent } from '../components/documents.component';
 import { PageHeaderModule } from '../../../shared/index';
 import { DocumentsService } from '../services/documents.service';
-import { HttpClientModule } from "@angular/common/http";
+import { BsComponentModule } from "../../bs-component/bs-component.module";
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { HttpClientModule } from "@angular/common/http";
       DocumentsRoutingModule,
       PageHeaderModule,
       BsDatepickerModule,
-      HttpClientModule],
+      HttpClientModule,
+      BsComponentModule],
   declarations: [DocumentsComponent],
   providers: [DocumentsService]
 })
