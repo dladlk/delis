@@ -87,7 +87,7 @@ public class RuleService {
 
 	private List<RuleDocumentTransformation> buildHardcoded() {
 		List<RuleDocumentTransformation> l = new ArrayList<>();
-		l.add(b(CII, BIS3, "cii_to_bis3/v_2018-03-15_34856/CII_2_BIS-Billing.xslt"));
+		l.add(b(CII, BIS3, "cii_to_bis3/v_2018-12-22_DLK_Change_AddressLine_PayableRoundingAmount/CII_2_BIS-Billing.xslt"));
 		l.add(b(BIS3, OIOUBL, "bis3_to_oioubl/v_2018-03-14_34841/BIS-Billing_2_OIOUBL_MASTER.xslt"));
 		return l;
 	}
