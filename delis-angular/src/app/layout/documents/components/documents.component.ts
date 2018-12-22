@@ -70,28 +70,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         this.selectedDocumentType = {documentType: 'ALL', selected: true};
         this.selectedPageSize = {pageSize: 10, selected: true};
-        this.filter = {
-            status: this.selectedStatus.status,
-            lastError: this.selectedLastError.lastError,
-            ingoingFormat: this.selectedIngoingFormat.ingoingFormat,
-            organisation: null,
-            receiver: null,
-            documentType: this.selectedDocumentType.documentType,
-            senderName: null,
-            receiverName: null,
-            dateReceived: new DateRangeModel(new Date(), new Date()),
-            dateIssued: new DateRangeModel(new Date(), new Date()),
-            countClickOrganisation: 0,
-            countClickReceiver: 0,
-            countClickStatus: 0,
-            countClickLastError: 0,
-            countClickDocumentType: 0,
-            countClickIngoingFormat: 0,
-            countClickReceived: 0,
-            countClickIssued: 0,
-            countClickSenderName: 0,
-            countClickReceiverName: 0
-        };
+        this.filter = new FilterProcessResult();
     }
 
     currentProdDocuments(currentPage: number, sizeElement: number) {

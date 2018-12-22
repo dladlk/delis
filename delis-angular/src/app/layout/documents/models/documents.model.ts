@@ -52,6 +52,29 @@ export class FilterProcessResult {
     countClickIssued: number;
     countClickSenderName: number;
     countClickReceiverName: number;
+
+    constructor() {
+        this.status = 'ALL';
+        this.lastError = 'ALL';
+        this.ingoingFormat = 'ALL';
+        this.organisation = null;
+        this.receiver = null;
+        this.documentType = 'ALL';
+        this.senderName = null;
+        this.receiverName = null;
+        this.dateReceived = new DateRangeModel(new Date(), new Date());
+        this.dateIssued = new DateRangeModel(new Date(), new Date());
+        this.countClickOrganisation = 0;
+        this.countClickReceiver = 0;
+        this.countClickStatus = 0;
+        this.countClickLastError = 0;
+        this.countClickDocumentType = 0;
+        this.countClickIngoingFormat = 0;
+        this.countClickReceived = 0;
+        this.countClickIssued = 0;
+        this.countClickSenderName = 0;
+        this.countClickReceiverName = 0
+    }
 }
 
 export enum Status {
