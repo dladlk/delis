@@ -8,6 +8,10 @@ import { DateRangeModel } from '../../../models/date.range.model';
 import { LocaleService } from "../../../service/locale.service";
 import { PageContainerModel } from "../../../models/page.container.model";
 import { environment } from "../../../../environments/environment";
+import { documentTypes } from '../models/documents.view.model';
+import { ingoingFormats } from '../models/documents.view.model';
+import { lastErrors } from '../models/documents.view.model';
+import { statuses } from '../models/documents.view.model';
 
 @Component({
     selector: 'app-documents',
@@ -30,6 +34,10 @@ export class DocumentsComponent implements OnInit {
     textReceiverName: string;
 
     documents: DocumentsModel[];
+    statuses = statuses;
+    documentTypes = documentTypes;
+    ingoingFormats = ingoingFormats;
+    lastErrors = lastErrors;
     filter: FilterProcessResult;
     container: any;
 
@@ -39,49 +47,6 @@ export class DocumentsComponent implements OnInit {
         {pageSize: 20},
         {pageSize: 50},
         {pageSize: 100}
-    ];
-
-    dateReceiveds = [
-        {dateReceived: 'LAST HOURS', selected: true},
-        {dateReceived: 'LAST DAY', selected: false},
-        {dateReceived: 'LAST WEEK', selected: false},
-        {dateReceived: 'LAST MONTH', selected: false},
-        {dateReceived: 'LAST YEAR', selected: false},
-        {dateReceived: 'CUSTOM', selected: false}
-    ];
-
-    statuses = [
-        {status: 'ALL', selected: true},
-        {status: 'LOAD_OK', selected: false},
-        {status: 'VALIDATE_OK', selected: false},
-        {status: 'VALIDATE_ERROR', selected: false},
-        {status: 'EXPORT_OK', selected: false},
-        {status: 'DELIVER_OK', selected: false}
-    ];
-
-    lastErrors = [
-        {lastError: 'ALL', selected: true},
-        {lastError: 'BIS3_XSD', selected: false},
-        {lastError: 'BIS3_SCH', selected: false},
-        {lastError: 'OIOUBL_XSD', selected: false},
-        {lastError: 'OIOUBL_SCH', selected: false},
-        {lastError: 'CII_XSD', selected: false},
-        {lastError: 'CII_SCH', selected: false}
-    ];
-
-    documentTypes = [
-        {documentType: 'ALL', selected: true},
-        {documentType: 'UNSUPPORTED', selected: false},
-        {documentType: 'INVOICE', selected: false},
-        {documentType: 'CREDITNOTE', selected: false}
-    ];
-
-    ingoingFormats = [
-        {ingoingFormat: 'ALL', selected: true},
-        {ingoingFormat: 'BIS3_INVOICE', selected: false},
-        {ingoingFormat: 'BIS3_CREDITNOTE', selected: false},
-        {ingoingFormat: 'OIOUBL_INVOICE', selected: false},
-        {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false}
     ];
 
     constructor(private translate: TranslateService, private documentsService: DocumentsService, private locale: LocaleService) {
@@ -323,7 +288,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickOrganisation() {
-        console.log('clickOrganisation');
         this.filter.countClickOrganisation++;
         if (this.filter.countClickOrganisation > 2) {
             this.filter.countClickOrganisation = 0;
@@ -332,7 +296,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickReceiver() {
-        console.log('clickReceiver');
         this.filter.countClickReceiver++;
         if (this.filter.countClickReceiver > 2) {
             this.filter.countClickReceiver = 0;
@@ -341,7 +304,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickStatus() {
-        console.log('clickStatus');
         this.filter.countClickStatus++;
         if (this.filter.countClickStatus > 2) {
             this.filter.countClickStatus = 0;
@@ -350,7 +312,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickLastError() {
-        console.log('clickLastError');
         this.filter.countClickLastError++;
         if (this.filter.countClickLastError > 2) {
             this.filter.countClickLastError = 0;
@@ -359,7 +320,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickDocumentType() {
-        console.log('clickDocumentType');
         this.filter.countClickDocumentType++;
         if (this.filter.countClickDocumentType > 2) {
             this.filter.countClickDocumentType = 0;
@@ -368,7 +328,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickIngoingFormat() {
-        console.log('clickIngoingFormat');
         this.filter.countClickIngoingFormat++;
         if (this.filter.countClickIngoingFormat > 2) {
             this.filter.countClickIngoingFormat = 0;
@@ -377,7 +336,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickReceived() {
-        console.log('clickReceived');
         this.filter.countClickReceived++;
         if (this.filter.countClickReceived > 2) {
             this.filter.countClickReceived = 0;
@@ -386,7 +344,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickIssued() {
-        console.log('clickIssued');
         this.filter.countClickIssued++;
         if (this.filter.countClickIssued > 2) {
             this.filter.countClickIssued = 0;
@@ -395,7 +352,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickSenderName() {
-        console.log('clickSenderName');
         this.filter.countClickSenderName++;
         if (this.filter.countClickSenderName > 2) {
             this.filter.countClickSenderName = 0;
@@ -404,7 +360,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickReceiverName() {
-        console.log('clickReceiverName');
         this.filter.countClickReceiverName++;
         if (this.filter.countClickReceiverName > 2) {
             this.filter.countClickReceiverName = 0;
