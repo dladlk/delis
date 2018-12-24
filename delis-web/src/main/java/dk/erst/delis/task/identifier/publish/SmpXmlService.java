@@ -1,6 +1,5 @@
 package dk.erst.delis.task.identifier.publish;
 
-import dk.erst.delis.data.Identifier;
 import no.difi.commons.bdx.jaxb.smp._2016._05.*;
 import no.difi.vefa.peppol.common.util.ExceptionUtil;
 import org.apache.commons.logging.Log;
@@ -14,9 +13,10 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 @Service
 public class SmpXmlService {
@@ -27,10 +27,10 @@ public class SmpXmlService {
     private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class,
             () -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
 
-    public String createServiceGroupXml(Identifier identifier) {
+    public String createServiceGroupXml(PublishProperties publishProperties) {
         ParticipantIdentifierType participantIdentifier = new ParticipantIdentifierType();
-        participantIdentifier.setScheme(identifier.getType());
-        participantIdentifier.setValue(identifier.getValue());
+        participantIdentifier.setScheme(publishProperties.getParticipantIdentifierScheme());
+        participantIdentifier.setValue(publishProperties.getParticipantIdentifierValue());
         ServiceGroupType serviceGroup = new ServiceGroupType();
         serviceGroup.setParticipantIdentifier(participantIdentifier);
         serviceGroup.setServiceMetadataReferenceCollection(new ServiceMetadataReferenceCollectionType());
@@ -43,23 +43,19 @@ public class SmpXmlService {
         return result.toString();
     }
 
-    public String createServiceMetadataXml(Identifier identifier) {
+    public String createServiceMetadataXml(PublishProperties publishProperties) {
         ParticipantIdentifierType participantIdentifierType = new ParticipantIdentifierType();
-        String identifierScheme = identifier.getType();
-        String identifierValue = identifier.getValue();
-        participantIdentifierType.setScheme(identifierScheme);
-        participantIdentifierType.setValue(identifierValue);
+        participantIdentifierType.setScheme(publishProperties.getParticipantIdentifierScheme());
+        participantIdentifierType.setValue(publishProperties.getParticipantIdentifierValue());
         DocumentIdentifierType documentIdentifier = new DocumentIdentifierType();
-        String doctypeScheme = "connectivity-docid-qns";
-        String doctype = "doc_id1";
-        documentIdentifier.setScheme(doctypeScheme);
-        documentIdentifier.setValue(doctype);
+        documentIdentifier.setScheme(publishProperties.getDocumentIdentifierScheme());
+        documentIdentifier.setValue(publishProperties.getDocumentIdentifierValue());
         ServiceInformationType serviceInformation = new ServiceInformationType();
         serviceInformation.setParticipantIdentifier(participantIdentifierType);
         serviceInformation.setDocumentIdentifier(documentIdentifier);
         ProcessListType processListType = new ProcessListType();
         List<ProcessType> processList = processListType.getProcess();
-        processList.addAll(createProcessList(identifier));
+        processList.addAll(createProcessList(publishProperties));
         serviceInformation.setProcessList(processListType);
         ServiceMetadataType serviceMetadata = new ServiceMetadataType();
         serviceMetadata.setServiceInformation(serviceInformation);
@@ -72,42 +68,28 @@ public class SmpXmlService {
         return result.toString();
     }
 
-    private List<ProcessType> createProcessList(Identifier identifier) {
+    private List<ProcessType> createProcessList(PublishProperties publishProperties) {
         ArrayList<ProcessType> result = new ArrayList<>();
-        String processScheme = "connectivity-procid-qns";
-        String processValue = "urn:www.cenbii.eu:profile:bii04:ver1.0";
-        String certificateBase64String = "dGVzdA==";
-        String transportProfile = "bdxr-transport-ebms3-as4-v1p0";
-        String endpointUrl = "http://localhost:8090/smp-4.0.0/services/msh";
-        String serviceDescription = "Test service description";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date serviceActivationDate = null;
-        Date serviceExpirationDate = null;
-        try {
-            serviceActivationDate = simpleDateFormat.parse("2018-07-01");
-            serviceExpirationDate = simpleDateFormat.parse("2020-07-01");
-        } catch (ParseException e) {
-            log.error(e);
-        }
-        String technicalContactUrl = "http://example.com";
         ProcessType process = new ProcessType();
         ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
-        processIdentifier.setScheme(processScheme);
-        processIdentifier.setValue(processValue);
+        processIdentifier.setScheme(publishProperties.getProcessIdentifierScheme());
+        processIdentifier.setValue(publishProperties.getProcessIdentifierValue());
         process.setProcessIdentifier(processIdentifier);
         ServiceEndpointList serviceEndpoint = new ServiceEndpointList();
         List<EndpointType> endpointList = serviceEndpoint.getEndpoint();
-        EndpointType endpoint = new EndpointType();
-        byte[] certificateBytes = Base64.getDecoder().decode(certificateBase64String);
-        endpoint.setRequireBusinessLevelSignature(true);
-        endpoint.setCertificate(certificateBytes);
-        endpoint.setTransportProfile(transportProfile);
-        endpoint.setEndpointURI(endpointUrl);
-        endpoint.setServiceDescription(serviceDescription);
-        endpoint.setServiceActivationDate(toXMLGregorianCalendar(serviceActivationDate));
-        endpoint.setServiceExpirationDate(toXMLGregorianCalendar(serviceExpirationDate));
-        endpoint.setTechnicalContactUrl(technicalContactUrl);
-        endpointList.add(endpoint);
+        List<ServiceEndpoint> endpoints = publishProperties.getEndpoints();
+        for (ServiceEndpoint endpoint : endpoints) {
+            EndpointType resultEndpoint = new EndpointType();
+            resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());
+            resultEndpoint.setCertificate(endpoint.getCertificate());
+            resultEndpoint.setTransportProfile(endpoint.getTransportProfile());
+            resultEndpoint.setEndpointURI(endpoint.getUrl());
+            resultEndpoint.setServiceDescription(endpoint.getServiceDescription());
+            resultEndpoint.setServiceActivationDate(toXMLGregorianCalendar(endpoint.getServiceActivationDate()));
+            resultEndpoint.setServiceExpirationDate(toXMLGregorianCalendar(endpoint.getServiceExpirationDate()));
+            resultEndpoint.setTechnicalContactUrl(endpoint.getTechnicalContactUrl());
+            endpointList.add(resultEndpoint);
+        }
         process.setServiceEndpointList(serviceEndpoint);
         result.add(process);
         return result;

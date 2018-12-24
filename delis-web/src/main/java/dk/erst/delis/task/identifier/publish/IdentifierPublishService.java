@@ -1,14 +1,15 @@
 package dk.erst.delis.task.identifier.publish;
 
-import dk.erst.delis.data.Identifier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -23,20 +24,36 @@ public class IdentifierPublishService {
         this.smpXmlService = smpXmlService;
     }
 
-    public PublishReport publish(Identifier identifier, SmpEndpoint endpoint){
-        String serviceGroupXml = smpXmlService.createServiceGroupXml(identifier);
-        String serviceMetadataXml = smpXmlService.createServiceMetadataXml(identifier);
-        boolean serviceGroupCreated = doCall("PUT", endpoint, createServiceGroupEndpointPath(identifier), serviceGroupXml);
-        boolean serviceMetadataCreated = doCall("PUT", endpoint, createServiceMetadataEndpointPath(identifier), serviceMetadataXml);
-        return new PublishReport(serviceGroupCreated, serviceMetadataCreated);
+    public boolean publishServiceGroup(PublishProperties publishProperties, SmpEndpoint endpoint) {
+        String serviceGroupXml = smpXmlService.createServiceGroupXml(publishProperties);
+        return doCall("PUT", endpoint, createServiceGroupEndpointPath(publishProperties), serviceGroupXml);
+
     }
 
-    private String createServiceGroupEndpointPath(Identifier identifier) {
-        return identifier.getType() + "::" + identifier.getValue();
+    public boolean publishServiceMetadata(PublishProperties publishProperties, SmpEndpoint endpoint) {
+        String serviceMetadataXml = smpXmlService.createServiceMetadataXml(publishProperties);
+        return doCall("PUT", endpoint, createServiceMetadataEndpointPath(publishProperties), serviceMetadataXml);
     }
 
-    private String createServiceMetadataEndpointPath(Identifier identifier) {
-        return identifier.getType() + "::" + identifier.getValue() + "/services/" + "connectivity-docid-qns::doc_id1";
+    private String createServiceGroupEndpointPath(PublishProperties publishProperties) {
+        String path = publishProperties.getParticipantIdentifierScheme() + "::" + publishProperties.getParticipantIdentifierValue();
+        try {
+            return URLEncoder.encode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return null;
+    }
+
+    private String createServiceMetadataEndpointPath(PublishProperties publishProperties) {
+        String participantIdentifier = publishProperties.getParticipantIdentifierScheme() + "::" + publishProperties.getParticipantIdentifierValue();
+        String documentIdentifier = publishProperties.getDocumentIdentifierScheme() + "::" + publishProperties.getDocumentIdentifierValue();
+        try {
+            return URLEncoder.encode(participantIdentifier, "UTF-8") + "/services/" + URLEncoder.encode(documentIdentifier, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error(e);
+        }
+        return null;
     }
 
     private boolean doCall(String method, SmpEndpoint endpoint, String path, String xml) {
