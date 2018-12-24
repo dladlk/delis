@@ -54,17 +54,11 @@ export class DocumentsComponent implements OnInit {
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
-            this.loadPageSize(pag.currentPage, pag.pageSize);
-            this.loadPage(pag.currentPage, pag.pageSize);
-            this.pagination = pag;
-        });
-        this.paginationService.listen().subscribe(() => {
-            this.pagination = new PaginationModel();
-            this.initDefaultValues();
-            if (this.env.production) {
-                this.currentProdDocuments(1, 10);
+            if (pag.collectionSize !== 0) {
+                this.loadPage(pag.currentPage, pag.pageSize);
+                this.pagination = pag;
             } else {
-                this.currentDevDocuments(1, 10);
+                this.ngOnInit();
             }
         });
     }
@@ -141,14 +135,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     private loadPage(page: number, pageSize: number) {
-        if (this.env.production) {
-            this.currentProdDocuments(page, pageSize);
-        } else {
-            this.currentDevDocuments(page, pageSize);
-        }
-    }
-
-    private loadPageSize(page: number, pageSize: number) {
         if (this.env.production) {
             this.currentProdDocuments(page, pageSize);
         } else {

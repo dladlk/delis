@@ -19,7 +19,7 @@ export class PaginationService {
         this._listeners.next(pagination);
     }
 
-    clearFilter() {
-        this._listeners.next();
+    clearFilter(pagination: PaginationModel) {
+        this._listeners.next(pagination);
     }
 }

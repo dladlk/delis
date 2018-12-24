@@ -43,6 +43,6 @@ export class PaginationComponent {
     }
 
     clearFilter() {
-        this.paginationService.clearFilter();
+        this.paginationService.clearFilter(new PaginationModel());
     }
 }
