@@ -1,5 +1,4 @@
 import { IModel } from './base.model';
-import { IPagination } from './pagination.model';
 
 interface IBaseResult<T extends IModel> {
   code: number;
@@ -8,7 +7,7 @@ interface IBaseResult<T extends IModel> {
   data: T | IQueryData<T>;
 }
 
-export interface IQueryData<T extends IModel> extends IPagination {
+export interface IQueryData<T extends IModel> {
   items: T[];
   pageNumber: number;
   pageSize: number;

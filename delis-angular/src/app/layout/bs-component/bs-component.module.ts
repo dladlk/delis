@@ -12,7 +12,6 @@ import {
     CollapseComponent,
     DatePickerComponent,
     DropdownComponent,
-    PaginationComponent,
     PopOverComponent,
     ProgressbarComponent,
     TabsComponent,
@@ -21,8 +20,11 @@ import {
     TimepickerComponent
 } from './components';
 import { PageHeaderModule } from '../../shared';
-import {TableHeaderSortComponent} from "./components/table-header-sort/table.header.sort.component";
-import {TranslateModule} from "@ngx-translate/core";
+import { TableHeaderSortComponent } from "./components/table-header-sort/table.header.sort.component";
+import { TranslateModule } from "@ngx-translate/core";
+import { PaginationComponent } from "./components/pagination/pagination.component";
+import {NgSelectModule} from "@ng-select/ng-select";
+import {PaginationService} from "./components/pagination/pagination.service";
 
 @NgModule({
     imports: [
@@ -30,7 +32,7 @@ import {TranslateModule} from "@ngx-translate/core";
         BsComponentRoutingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgbModule,
+        NgbModule, NgSelectModule,
         PageHeaderModule, TranslateModule
     ],
     declarations: [
@@ -41,16 +43,15 @@ import {TranslateModule} from "@ngx-translate/core";
         CollapseComponent,
         DatePickerComponent,
         DropdownComponent,
-        PaginationComponent,
         PopOverComponent,
         ProgressbarComponent,
         TabsComponent,
         RatingComponent,
         TooltipComponent,
         TimepickerComponent,
-        TableHeaderSortComponent
+        TableHeaderSortComponent, PaginationComponent
     ], exports: [
-        TableHeaderSortComponent
-    ]
+        TableHeaderSortComponent, PaginationComponent
+    ], providers: [PaginationService]
 })
 export class BsComponentModule {}

@@ -1,15 +1,9 @@
-export class PageContainerModel<T> {
+import { PaginationModel } from "../layout/bs-component/components/pagination/pagination.model";
+
+export class PageContainerModel<T> extends PaginationModel {
 
     collectionSize: number;
     currentPage: number;
     pageSize: number;
     items: T[] = [];
-
-    initContainer(collectionSize: number, currentPage: number, pageSize: number, items: T[]) {
-        this.collectionSize = collectionSize;
-        this.currentPage = currentPage;
-        this.pageSize = pageSize;
-        this.items = items;
-        return this;
-    }
 }

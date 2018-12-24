@@ -7,13 +7,14 @@ import { DocumentsStaticService } from "../services/documents.static.service";
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { LocaleService } from "../../../service/locale.service";
-import { PageContainerModel } from "../../../models/page.container.model";
 import { environment } from "../../../../environments/environment";
 import { documentTypes } from '../models/documents.view.model';
 import { ingoingFormats } from '../models/documents.view.model';
 import { lastErrors } from '../models/documents.view.model';
 import { statuses } from '../models/documents.view.model';
 import { TableHeaderSortModel } from "../../bs-component/components/table-header-sort/table.header.sort.model";
+import { PaginationService } from "../../bs-component/components/pagination/pagination.service";
+import { PaginationModel } from "../../bs-component/components/pagination/pagination.model";
 
 @Component({
     selector: 'app-documents',
@@ -29,7 +30,7 @@ export class DocumentsComponent implements OnInit {
     selectedLastError: any;
     selectedDocumentType: any;
     selectedIngoingFormat: any;
-    selectedPageSize: any;
+
     textOrganisation: string;
     textReceiver: string;
     textSenderName: string;
@@ -42,26 +43,25 @@ export class DocumentsComponent implements OnInit {
     ingoingFormats = ingoingFormats;
     lastErrors = lastErrors;
     filter: FilterProcessResult;
-    container: any;
 
-    pageSizes = [
-        {pageSize: 5},
-        {pageSize: 10},
-        {pageSize: 20},
-        {pageSize: 50},
-        {pageSize: 100}
-    ];
+    pagination: PaginationModel;
 
     constructor(
         private translate: TranslateService,
         private documentsService: DocumentsService,
         private documentsStaticService: DocumentsStaticService,
-        private locale: LocaleService) {
+        private locale: LocaleService,
+        private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.paginationService.listen().subscribe((pag: PaginationModel) => {
+            this.loadPageSize(pag.currentPage, pag.pageSize);
+            this.loadPage(pag.currentPage, pag.pageSize);
+            this.pagination = pag;
+        });
     }
 
     ngOnInit() {
-        this.container = new PageContainerModel<DocumentsModel>();
+        this.pagination = new PaginationModel();
         this.initDefaultValues();
         if (this.env.production) {
             this.currentProdDocuments(1, 10);
@@ -76,7 +76,6 @@ export class DocumentsComponent implements OnInit {
         this.selectedLastError = {lastError: 'ALL', selected: true};
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         this.selectedDocumentType = {documentType: 'ALL', selected: true};
-        this.selectedPageSize = {pageSize: 10, selected: true};
         this.filter = new FilterProcessResult();
         this.tableHeaderSortModels.push(
             {
@@ -115,9 +114,9 @@ export class DocumentsComponent implements OnInit {
     currentProdDocuments(currentPage: number, sizeElement: number) {
         this.documentsService.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
-                this.container.collectionSize = data["collectionSize"];
-                this.container.currentPage = data["currentPage"];
-                this.container.pageSize = data["pageSize"];
+                this.pagination.collectionSize = data["collectionSize"];
+                this.pagination.currentPage = data["currentPage"];
+                this.pagination.pageSize = data["pageSize"];
                 this.documents = data["items"];
             }
         );
@@ -125,26 +124,26 @@ export class DocumentsComponent implements OnInit {
 
     currentDevDocuments(currentPage: number, sizeElement: number) {
         this.documents = this.documentsStaticService.filterProcess({filter: this.filter});
-        this.container.collectionSize = this.documents.length;
-        this.container.currentPage = currentPage;
-        this.container.pageSize = sizeElement;
+        this.pagination.collectionSize = this.documents.length;
+        this.pagination.currentPage = currentPage;
+        this.pagination.pageSize = sizeElement;
         let startElement = (currentPage - 1) * sizeElement;
         this.documents = this.documents.slice(startElement, startElement + sizeElement);
     }
 
-    loadPage(page: number) {
+    private loadPage(page: number, pageSize: number) {
         if (this.env.production) {
-            this.currentProdDocuments(page, this.selectedPageSize.pageSize);
+            this.currentProdDocuments(page, pageSize);
         } else {
-            this.currentDevDocuments(page, this.selectedPageSize.pageSize);
+            this.currentDevDocuments(page, pageSize);
         }
     }
 
-    loadPageSize() {
+    private loadPageSize(page: number, pageSize: number) {
         if (this.env.production) {
-            this.currentProdDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+            this.currentProdDocuments(page, pageSize);
         } else {
-            this.currentDevDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+            this.currentDevDocuments(page, pageSize);
         }
     }
 
@@ -153,7 +152,7 @@ export class DocumentsComponent implements OnInit {
             this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         }
         this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextOrganisation(text: string) {
@@ -162,7 +161,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.organisation = text;
         }
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextReceiver(text: string) {
@@ -171,7 +170,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.receiver = text;
         }
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadStatus() {
@@ -179,7 +178,7 @@ export class DocumentsComponent implements OnInit {
             this.selectedStatus = {status: 'ALL', selected: true};
         }
         this.filter.status = this.selectedStatus.status;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadLastErrors() {
@@ -187,7 +186,7 @@ export class DocumentsComponent implements OnInit {
             this.selectedLastError = {lastError: 'ALL', selected: true};
         }
         this.filter.lastError = this.selectedLastError.lastError;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadDocumentType() {
@@ -195,7 +194,7 @@ export class DocumentsComponent implements OnInit {
             this.selectedDocumentType = {documentType: 'ALL', selected: true};
         }
         this.filter.documentType = this.selectedDocumentType.documentType;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextSenderName(text: string) {
@@ -204,7 +203,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.senderName = text;
         }
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextReceiverName(text: string) {
@@ -213,17 +212,17 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.receiverName = text;
         }
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadReceivedDate(date: Date[]) {
         this.filter.dateReceived = new DateRangeModel(date[0], date[1]);
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIssuedDate(date: Date[]) {
         this.filter.dateIssued = new DateRangeModel(date[0], date[1]);
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     clickFilter(target: string) {
@@ -257,7 +256,7 @@ export class DocumentsComponent implements OnInit {
         if (target === 'Receiver Name') {
             this.clickReceiverName();
         }
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     private clickOrganisation() {
@@ -338,12 +337,5 @@ export class DocumentsComponent implements OnInit {
             this.filter.countClickReceiverName = 0;
         }
         this.tableHeaderSortModels.find(k => k.columnName === 'Receiver Name').columnClick = this.filter.countClickReceiverName;
-    }
-
-    private filterResult() {
-        if (this.selectedPageSize === null) {
-            this.selectedPageSize = {pageSize: 10, selected: true};
-        }
-        this.loadPage(this.container.currentPage);
     }
 }
