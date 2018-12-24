@@ -4,7 +4,6 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from "../../../../environments/environment";
-import * as data from '../documents.json';
 
 @Injectable()
 export class DocumentsService {
@@ -54,10 +53,6 @@ export class DocumentsService {
         }
 
         return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
-    }
-
-    loadDocumentsJSON() {
-        return data.docs;
     }
 
     private static extractData(res: Response) {
