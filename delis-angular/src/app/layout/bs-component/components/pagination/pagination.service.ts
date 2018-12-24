@@ -18,4 +18,8 @@ export class PaginationService {
     loadPageSize(pagination: PaginationModel) {
         this._listeners.next(pagination);
     }
+
+    clearFilter() {
+        this._listeners.next();
+    }
 }

@@ -58,6 +58,15 @@ export class DocumentsComponent implements OnInit {
             this.loadPage(pag.currentPage, pag.pageSize);
             this.pagination = pag;
         });
+        this.paginationService.listen().subscribe(() => {
+            this.pagination = new PaginationModel();
+            this.initDefaultValues();
+            if (this.env.production) {
+                this.currentProdDocuments(1, 10);
+            } else {
+                this.currentDevDocuments(1, 10);
+            }
+        });
     }
 
     ngOnInit() {

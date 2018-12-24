@@ -41,4 +41,8 @@ export class PaginationComponent {
         this.pagination.pageSize = this.selectedPageSize.pageSize;
         this.paginationService.loadPageSize(this.pagination);
     }
+
+    clearFilter() {
+        this.paginationService.clearFilter();
+    }
 }
