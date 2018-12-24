@@ -1,0 +1,70 @@
+Scheme ID;ICD value;Issuing Organization
+AD:VAT;9922;Andorra VAT number
+AL:VAT;9923;Albania VAT number
+AT:GOV;9915;Österreichisches Verwaltungs bzw. Organisationskennzeichen
+AT:KUR;9919;Kennziffer des Unternehmensregisters
+AT:VAT;9914;Österreichische Umsatzsteuer-Identifikationsnummer
+BA:VAT;9924;Bosnia and Herzegovina VAT number
+BE:CBE;9956;Belgian Crossroad Bank of Enterprises 
+BE:VAT;9925;Belgium VAT number
+BG:VAT;9926;Bulgaria VAT number
+CH:VAT;9927;Switzerland VAT number
+CY:VAT;9928;Cyprus VAT number
+CZ:VAT;9929;Czech Republic VAT number
+DE:LID;9958;German Leitweg ID
+DE:VAT;9930;Germany VAT number
+DK:CPR;9901;Danish Ministry of the Interior and Health
+DK:CVR;0184;The Danish Commerce and Companies Agency
+DK:P;0096;Danish Chamber of Commerce
+DK:SE;9904;Danish Ministry of Taxation, Central Customs and Tax Administration
+DK:VANS;9905;Danish VANS providers
+DUNS;0060;Dun and Bradstreet Ltd
+EE:CC;0191;Centre of Registers and Information Systems of the Ministry of Justice
+EE:VAT;9931;Estonia VAT number
+ES:VAT;9920;Agencia Española de Administración Tributaria
+EU:NAL;0130;European Commission, Information Directorate, Data Transmission Service, Rue de la Loi, 200, B-1049 Brussels, Belgium
+EU:REID;9913;Business Registers Network
+FI:OVT;0037;National Board of Taxes, (Verohallitus)
+FR:SIRENE;0002;Institut National de la Statistique et des Etudes Economiques, (I.N.S.E.E.)
+FR:SIRET;0009;DU PONT DE NEMOURS
+FR:VAT;9957;French VAT number
+GB:VAT;9932;United Kingdom VAT number
+GLN;0088;GS1 GLN
+GR:VAT;9933;Greece VAT number
+HR:VAT;9934;Croatia VAT number
+HU:VAT;9910;Hungary
+IBAN;9918;SOCIETY FOR WORLDWIDE INTERBANK FINANCIAL, TELECOMMUNICATION S.W.I.F.T
+IE:VAT;9935;Ireland VAT number
+IS:KTNR;0196;Icelandic National Registry
+IT:CF;9907;TAX Authority
+IT:FTI;0097;FTI - Ediforum Italia
+IT:IPA;9921;Indice delle Pubbliche Amministrazioni
+IT:SECETI;0142;Servizi Centralizzati SECETI S.p.A.
+IT:SIA;0135;SIA-Società Interbancaria per l'Automazione S.p.A.
+IT:VAT;9906;Ufficio responsabile gestione partite IVA
+LI:VAT;9936;Liechtenstein VAT number
+LT:VAT;9937;Lithuania VAT number
+LU:VAT;9938;Luxemburg VAT number
+LV:VAT;9939;Latvia VAT number
+MC:VAT;9940;Monaco VAT number
+ME:VAT;9941;Montenegro VAT number
+MK:VAT;9942;Macedonia, the former Yugoslav Republic of VAT number
+MT:VAT;9943;Malta VAT number
+NL:KVK;0106;Vereniging van Kamers van Koophandel en Fabrieken in Nederland, Scheme
+NL:OINO;0190;Dutch Originator's Identification Number
+NL:VAT;9944;Netherlands VAT number
+NO:ORG;0192;The Brønnøysund Register Centre
+NO:ORGNR;9908;Enhetsregisteret ved Bronnoysundregisterne
+PL:VAT;9945;Poland VAT number
+PT:VAT;9946;Portugal VAT number
+RO:VAT;9947;Romania VAT number
+RS:VAT;9948;Serbia VAT number
+SE:ORGNR;0007;The National Tax Board
+SE:VAT;9955;Swedish VAT number
+SG:UEN;0195;Singaport Nationwide E-Invoice Framework
+SI:VAT;9949;Slovenia VAT number
+SK:VAT;9950;Slovakia VAT number
+SM:VAT;9951;San Marino VAT number
+TR:VAT;9952;Turkey VAT number
+UBLBE;0193;UBL.BE
+VA:VAT;9953;Holy See (Vatican City State) VAT number

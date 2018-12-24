@@ -42,4 +42,8 @@ public class ConfigBean {
 	public Path getStorageTransformationPath() {
 		return Paths.get(this.configProperties.getStorageTransformationRoot());
 	}
+	
+	public Path getStorageCodeListPath() {
+		return Paths.get(this.configProperties.getStorageCodeListsRoot());
+	}
 }

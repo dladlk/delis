@@ -13,5 +13,7 @@ public class ConfigProperties {
 	private String storageValidationRoot = "/delis/validation";
 
 	private String storageTransformationRoot = "/delis/transformation";
+	
+	private String storageCodeListsRoot = "../delis-resource/codelists";
 
 }
