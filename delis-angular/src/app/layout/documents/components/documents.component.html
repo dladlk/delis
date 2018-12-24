@@ -7,9 +7,9 @@
                 <div class="card-body table-responsive">
                     <div class="d-flex flex-row">
                         <div class="p-2">
-                            <ngb-pagination [collectionSize]="pagination.collectionSize"
-                                            [pageSize]="pagination.pageSize"
-                                            [(page)]="pagination.currentPage"
+                            <ngb-pagination [collectionSize]="container.collectionSize"
+                                            [pageSize]="container.pageSize"
+                                            [(page)]="container.currentPage"
                                             [maxSize]="5"
                                             [rotate]="true"
                                             [boundaryLinks]="true"
@@ -32,142 +32,11 @@
                     </div>
                     <table class="table table-hover table-sm">
                         <thead>
-                        <tr>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickNumber()">
-                                    <strong>#
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickOrganisation()">
-                                    <strong *ngIf="countClickOrganisation == 0">{{ 'Organisation' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickOrganisation == 1">{{ 'Organisation' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickOrganisation == 2">{{ 'Organisation' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickReceiver()">
-                                    <strong *ngIf="countClickReceiver == 0">{{ 'Receiver' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickReceiver == 1">{{ 'Receiver' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickReceiver == 2">{{ 'Receiver' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickStatus()">
-                                    <strong *ngIf="countClickStatus == 0">{{ 'Status' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickStatus == 1">{{ 'Status' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickStatus == 2">{{ 'Status' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickLastError()">
-                                    <strong *ngIf="countClickLastError == 0">{{ 'Last Error' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickLastError == 1">{{ 'Last Error' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickLastError == 2">{{ 'Last Error' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickDocumentType()">
-                                    <strong *ngIf="countClickDocumentType == 0">{{ 'Document Type' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickDocumentType == 1">{{ 'Document Type' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickDocumentType == 2">{{ 'Document Type' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickIngoingFormat()">
-                                    <strong *ngIf="countClickIngoingFormat == 0">{{ 'Ingoing Format' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickIngoingFormat == 1">{{ 'Ingoing Format' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickIngoingFormat == 2">{{ 'Ingoing Format' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickReceived()">
-                                    <strong *ngIf="countClickReceived == 0">{{ 'Received' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickReceived == 1">{{ 'Received' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickReceived == 2">{{ 'Received' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickIssued()">
-                                    <strong *ngIf="countClickIssued == 0">{{ 'Issued' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickIssued == 1">{{ 'Issued' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickIssued == 2">{{ 'Issued' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickSenderName()">
-                                    <strong *ngIf="countClickSenderName == 0">{{ 'Sender Name' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickSenderName == 1">{{ 'Sender Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickSenderName == 2">{{ 'Sender Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
-                                </button>
-                            </th>
-                            <th>
-                                <button type="button" class="btn btn-light" (click)="clickReceiverName()">
-                                    <strong *ngIf="countClickReceiverName == 0">{{ 'Receiver Name' | translate }}
-                                        <i class="fa fa-fw fa-sort"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickReceiverName == 1">{{ 'Receiver Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-asc"></i>
-                                    </strong>
-                                    <strong *ngIf="countClickReceiverName == 2">{{ 'Receiver Name' | translate }}
-                                        <i class="fa fa-fw fa-sort-desc"></i>
-                                    </strong>
+                        <tr >
+                            <th></th>
+                            <th *ngFor="let hed of tableHeaderSortModels">
+                                <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
+                                    <table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></table-header-sort>
                                 </button>
                             </th>
                         </tr>
@@ -253,7 +122,7 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let doc of documents; let i = index">
-                            <th>{{i+1}}</th>
+                            <th>{{(i+1) + ((container.currentPage - 1) * container.pageSize)}}</th>
                             <td>{{doc.organisation}}</td>
                             <td>{{doc.receiver}}</td>
                             <td>{{doc.status}}</td>
@@ -269,9 +138,9 @@
                     </table>
                     <div class="d-flex flex-row">
                         <div class="p-2">
-                            <ngb-pagination [collectionSize]="pagination.collectionSize"
-                                            [pageSize]="pagination.pageSize"
-                                            [(page)]="pagination.currentPage"
+                            <ngb-pagination [collectionSize]="container.collectionSize"
+                                            [pageSize]="container.pageSize"
+                                            [(page)]="container.currentPage"
                                             [maxSize]="5"
                                             [rotate]="true"
                                             [boundaryLinks]="true"

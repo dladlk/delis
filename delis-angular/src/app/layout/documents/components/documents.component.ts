@@ -3,10 +3,17 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from '../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
+import { DocumentsStaticService } from "../services/documents.static.service";
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
-import { PaginationModel } from '../../../models/pagination.model';
 import { LocaleService } from "../../../service/locale.service";
+import { PageContainerModel } from "../../../models/page.container.model";
+import { environment } from "../../../../environments/environment";
+import { documentTypes } from '../models/documents.view.model';
+import { ingoingFormats } from '../models/documents.view.model';
+import { lastErrors } from '../models/documents.view.model';
+import { statuses } from '../models/documents.view.model';
+import { TableHeaderSortModel } from "../../bs-component/components/table-header-sort/table.header.sort.model";
 
 @Component({
     selector: 'app-documents',
@@ -15,6 +22,8 @@ import { LocaleService } from "../../../service/locale.service";
     animations: [routerTransition()]
 })
 export class DocumentsComponent implements OnInit {
+
+    env = environment;
 
     selectedStatus: any;
     selectedLastError: any;
@@ -27,19 +36,13 @@ export class DocumentsComponent implements OnInit {
     textReceiverName: string;
 
     documents: DocumentsModel[];
+    tableHeaderSortModels: TableHeaderSortModel[] = [];
+    statuses = statuses;
+    documentTypes = documentTypes;
+    ingoingFormats = ingoingFormats;
+    lastErrors = lastErrors;
     filter: FilterProcessResult;
-    pagination: PaginationModel;
-
-    countClickOrganisation: number;
-    countClickReceiver: number;
-    countClickStatus: number;
-    countClickLastError: number;
-    countClickDocumentType: number;
-    countClickIngoingFormat: number;
-    countClickReceived: number;
-    countClickIssued: number;
-    countClickSenderName: number;
-    countClickReceiverName: number;
+    container: any;
 
     pageSizes = [
         {pageSize: 5},
@@ -49,100 +52,100 @@ export class DocumentsComponent implements OnInit {
         {pageSize: 100}
     ];
 
-    dateReceiveds = [
-        {dateReceived: 'LAST HOURS', selected: true},
-        {dateReceived: 'LAST DAY', selected: false},
-        {dateReceived: 'LAST WEEK', selected: false},
-        {dateReceived: 'LAST MONTH', selected: false},
-        {dateReceived: 'LAST YEAR', selected: false},
-        {dateReceived: 'CUSTOM', selected: false}
-    ];
-
-    statuses = [
-        {status: 'ALL', selected: true},
-        {status: 'LOAD_OK', selected: false},
-        {status: 'VALIDATE_OK', selected: false},
-        {status: 'VALIDATE_ERROR', selected: false},
-        {status: 'EXPORT_OK', selected: false},
-        {status: 'DELIVER_OK', selected: false}
-    ];
-
-    lastErrors = [
-        {lastError: 'ALL', selected: true},
-        {lastError: 'BIS3_XSD', selected: false},
-        {lastError: 'BIS3_SCH', selected: false},
-        {lastError: 'OIOUBL_XSD', selected: false},
-        {lastError: 'OIOUBL_SCH', selected: false},
-        {lastError: 'CII_XSD', selected: false},
-        {lastError: 'CII_SCH', selected: false}
-    ];
-
-    documentTypes = [
-        {documentType: 'ALL', selected: true},
-        {documentType: 'UNSUPPORTED', selected: false},
-        {documentType: 'INVOICE', selected: false},
-        {documentType: 'CREDITNOTE', selected: false}
-    ];
-
-    ingoingFormats = [
-        {ingoingFormat: 'ALL', selected: true},
-        {ingoingFormat: 'BIS3_INVOICE', selected: false},
-        {ingoingFormat: 'BIS3_CREDITNOTE', selected: false},
-        {ingoingFormat: 'OIOUBL_INVOICE', selected: false},
-        {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false}
-    ];
-
-    constructor(private translate: TranslateService, private docs: DocumentsService, private locale: LocaleService) {
-
+    constructor(
+        private translate: TranslateService,
+        private documentsService: DocumentsService,
+        private documentsStaticService: DocumentsStaticService,
+        private locale: LocaleService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+    }
 
-        this.pagination = new PaginationModel();
-        this.pagination.setPagination(
-            {
-                collectionSize: this.docs.getCollectionSize(),
-                currentPage: 1,
-                pageSize: 10,
-                previousPage: 1
-            });
+    ngOnInit() {
+        this.container = new PageContainerModel<DocumentsModel>();
+        this.initDefaultValues();
+        if (this.env.production) {
+            this.currentProdDocuments(1, 10);
+        } else {
+            this.currentDevDocuments(1, 10);
+        }
+    }
+
+    initDefaultValues() {
+
         this.selectedStatus = {status: 'ALL', selected: true};
         this.selectedLastError = {lastError: 'ALL', selected: true};
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         this.selectedDocumentType = {documentType: 'ALL', selected: true};
         this.selectedPageSize = {pageSize: 10, selected: true};
-        this.filter = {
-            status: this.selectedStatus.status,
-            lastError: this.selectedLastError.lastError,
-            ingoingFormat: this.selectedIngoingFormat.ingoingFormat,
-            organisation: null,
-            receiver: null,
-            documentType: this.selectedDocumentType.documentType,
-            senderName: null,
-            receiverName: null,
-            dateReceived: new DateRangeModel(new Date(), new Date()),
-            dateIssued: new DateRangeModel(new Date(), new Date())
-        };
-        this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
-        this.initCountClicks();
+        this.filter = new FilterProcessResult();
+        this.tableHeaderSortModels.push(
+            {
+                columnName: 'Organisation', columnClick: 0
+            },
+            {
+                columnName: 'Receiver', columnClick: 0
+            },
+            {
+                columnName: 'Status', columnClick: 0
+            },
+            {
+                columnName: 'Last Error', columnClick: 0
+            },
+            {
+                columnName: 'Document Type', columnClick: 0
+            },
+            {
+                columnName: 'Ingoing Format', columnClick: 0
+            },
+            {
+                columnName: 'Received', columnClick: 0
+            },
+            {
+                columnName: 'Issued', columnClick: 0
+            },
+            {
+                columnName: 'Sender Name', columnClick: 0
+            },
+            {
+                columnName: 'Receiver Name', columnClick: 0
+            }
+        );
     }
 
-    ngOnInit() {
+    currentProdDocuments(currentPage: number, sizeElement: number) {
+        this.documentsService.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
+            (data: {}) => {
+                this.container.collectionSize = data["collectionSize"];
+                this.container.currentPage = data["currentPage"];
+                this.container.pageSize = data["pageSize"];
+                this.documents = data["items"];
+            }
+        );
+    }
+
+    currentDevDocuments(currentPage: number, sizeElement: number) {
+        this.documents = this.documentsStaticService.filterProcess({filter: this.filter});
+        this.container.collectionSize = this.documents.length;
+        this.container.currentPage = currentPage;
+        this.container.pageSize = sizeElement;
+        let startElement = (currentPage - 1) * sizeElement;
+        this.documents = this.documents.slice(startElement, startElement + sizeElement);
     }
 
     loadPage(page: number) {
-        if (page === this.pagination.previousPage) {
-            this.pagination.previousPage = page;
+        if (this.env.production) {
+            this.currentProdDocuments(page, this.selectedPageSize.pageSize);
         } else {
-            this.pagination.previousPage = page - 1;
+            this.currentDevDocuments(page, this.selectedPageSize.pageSize);
         }
-        this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
-        this.pagination.pageSize = this.selectedPageSize.pageSize;
-        this.pagination.collectionSize = this.docs.getCollectionSize();
-        this.initCountClicks();
     }
 
     loadPageSize() {
-        this.pagination.pageSize = this.selectedPageSize.pageSize;
-        this.documents = this.docs.getDocumentsAfterFilter(this.pagination.currentPage - 1, this.pagination.pageSize, this.filter);
+        if (this.env.production) {
+            this.currentProdDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+        } else {
+            this.currentDevDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
+        }
     }
 
     loadIngoingFormat() {
@@ -223,152 +226,124 @@ export class DocumentsComponent implements OnInit {
         this.filterResult();
     }
 
-    clickNumber() {
-        console.log('clickNumber');
-        this.documents.reverse();
-    }
-
-    clickOrganisation() {
-        console.log('clickOrganisation');
-        this.countClickOrganisation++;
-        if (this.countClickOrganisation === 1) {
-            this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
-        } else if (this.countClickOrganisation === 2) {
-            this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+    clickFilter(target: string) {
+        if (target === 'Organisation') {
+            this.clickOrganisation();
         }
-    }
-
-    clickReceiver() {
-        console.log('clickReceiver');
-        this.countClickReceiver++;
-        if (this.countClickReceiver === 1) {
-            this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
-        } else if (this.countClickReceiver === 2) {
-            this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Receiver') {
+            this.clickReceiver();
         }
-    }
-
-    clickStatus() {
-        console.log('clickStatus');
-        this.countClickStatus++;
-        if (this.countClickStatus === 1) {
-            this.documents.sort((one, two) => (one.status < two.status ? -1 : 1));
-        } else if (this.countClickStatus === 2) {
-            this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Status') {
+            this.clickStatus();
         }
-    }
-
-    clickLastError() {
-        console.log('clickLastError');
-        this.countClickLastError++;
-        if (this.countClickLastError === 1) {
-            this.documents.sort((one, two) => (one.lastError < two.lastError ? -1 : 1));
-        } else if (this.countClickLastError === 2) {
-            this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Last Error') {
+            this.clickLastError();
         }
-    }
-
-    clickDocumentType() {
-        console.log('clickDocumentType');
-        this.countClickDocumentType++;
-        if (this.countClickDocumentType === 1) {
-            this.documents.sort((one, two) => (one.documentType < two.documentType ? -1 : 1));
-        } else if (this.countClickDocumentType === 2) {
-            this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Document Type') {
+            this.clickDocumentType();
         }
-    }
-
-    clickIngoingFormat() {
-        console.log('clickIngoingFormat');
-        this.countClickIngoingFormat++;
-        if (this.countClickIngoingFormat === 1) {
-            this.documents.sort((one, two) => (one.ingoingFormat < two.ingoingFormat ? -1 : 1));
-        } else if (this.countClickIngoingFormat === 2) {
-            this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Ingoing Format') {
+            this.clickIngoingFormat();
         }
-    }
-
-    clickReceived() {
-        console.log('clickReceived');
-        this.countClickReceived++;
-        if (this.countClickReceived === 1) {
-            this.documents.sort((one, two) => (one.received < two.received ? -1 : 1));
-        } else if (this.countClickReceived === 2) {
-            this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Received') {
+            this.clickReceived();
         }
-    }
-
-    clickIssued() {
-        console.log('clickIssued');
-        this.countClickIssued++;
-        if (this.countClickIssued === 1) {
-            this.documents.sort((one, two) => (one.issued < two.issued ? -1 : 1));
-        } else if (this.countClickIssued === 2) {
-            this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Issued') {
+            this.clickIssued();
         }
-    }
-
-    clickSenderName() {
-        console.log('clickSenderName');
-        this.countClickSenderName++;
-        if (this.countClickSenderName === 1) {
-            this.documents.sort((one, two) => (one.senderName < two.senderName ? -1 : 1));
-        } else if (this.countClickSenderName === 2) {
-            this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Sender Name') {
+            this.clickSenderName();
         }
-    }
-
-    clickReceiverName() {
-        console.log('clickReceiverName');
-        this.countClickReceiverName++;
-        if (this.countClickReceiverName === 1) {
-            this.documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
-        } else if (this.countClickReceiverName === 2) {
-            this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
-        } else {
-            this.loadPage(this.pagination.currentPage);
+        if (target === 'Receiver Name') {
+            this.clickReceiverName();
         }
+        this.filterResult();
     }
 
-    filterResult() {
+    private clickOrganisation() {
+        this.filter.countClickOrganisation++;
+        if (this.filter.countClickOrganisation > 2) {
+            this.filter.countClickOrganisation = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Organisation').columnClick = this.filter.countClickOrganisation;
+    }
+
+    private clickReceiver() {
+        this.filter.countClickReceiver++;
+        if (this.filter.countClickReceiver > 2) {
+            this.filter.countClickReceiver = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver').columnClick = this.filter.countClickReceiver;
+    }
+
+    private clickStatus() {
+        this.filter.countClickStatus++;
+        if (this.filter.countClickStatus > 2) {
+            this.filter.countClickStatus = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Status').columnClick = this.filter.countClickStatus;
+    }
+
+    private clickLastError() {
+        this.filter.countClickLastError++;
+        if (this.filter.countClickLastError > 2) {
+            this.filter.countClickLastError = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Last Error').columnClick = this.filter.countClickLastError;
+    }
+
+    private clickDocumentType() {
+        this.filter.countClickDocumentType++;
+        if (this.filter.countClickDocumentType > 2) {
+            this.filter.countClickDocumentType = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Document Type').columnClick = this.filter.countClickDocumentType;
+    }
+
+    private clickIngoingFormat() {
+        this.filter.countClickIngoingFormat++;
+        if (this.filter.countClickIngoingFormat > 2) {
+            this.filter.countClickIngoingFormat = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Ingoing Format').columnClick = this.filter.countClickIngoingFormat;
+    }
+
+    private clickReceived() {
+        this.filter.countClickReceived++;
+        if (this.filter.countClickReceived > 2) {
+            this.filter.countClickReceived = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Received').columnClick = this.filter.countClickReceived;
+    }
+
+    private clickIssued() {
+        this.filter.countClickIssued++;
+        if (this.filter.countClickIssued > 2) {
+            this.filter.countClickIssued = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Issued').columnClick = this.filter.countClickIssued;
+    }
+
+    private clickSenderName() {
+        this.filter.countClickSenderName++;
+        if (this.filter.countClickSenderName > 2) {
+            this.filter.countClickSenderName = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Sender Name').columnClick = this.filter.countClickSenderName;
+    }
+
+    private clickReceiverName() {
+        this.filter.countClickReceiverName++;
+        if (this.filter.countClickReceiverName > 2) {
+            this.filter.countClickReceiverName = 0;
+        }
+        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver Name').columnClick = this.filter.countClickReceiverName;
+    }
+
+    private filterResult() {
         if (this.selectedPageSize === null) {
             this.selectedPageSize = {pageSize: 10, selected: true};
         }
-        this.loadPage(this.pagination.currentPage);
+        this.loadPage(this.container.currentPage);
     }
-
-    initCountClicks() {
-        this.countClickOrganisation = 0;
-        this.countClickReceiver = 0;
-        this.countClickStatus = 0;
-        this.countClickLastError = 0;
-        this.countClickDocumentType = 0;
-        this.countClickIngoingFormat = 0;
-        this.countClickReceived = 0;
-        this.countClickIssued = 0;
-        this.countClickSenderName = 0;
-        this.countClickReceiverName = 0;
-    }
-
-    // changeLang(language: string) {
-    //     this.translate.use(language);
-    // }
 }

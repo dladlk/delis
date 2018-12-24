@@ -1,56 +1,61 @@
 import { Injectable } from '@angular/core';
-import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
-import * as data from '../documents.json';
+import { FilterProcessResult } from '../models/documents.model';
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from "../../../../environments/environment";
 
 @Injectable()
 export class DocumentsService {
 
-    private documents: DocumentsModel[] = data.docs;
-    private startElement: number;
+    private env = environment;
+    private url = this.env.api_url + '/rest/document';
 
-    constructor() {
-    }
+    constructor(private http: HttpClient) {}
 
-    getDocuments() {
-        this.documents = data.docs;
-        return this.documents;
-    }
-
-    getDocumentsAfterFilter(currentPage: number, sizeElement: number, filter: FilterProcessResult) {
-        // console.log('status: ' + filter.status);
-        // console.log('lastError: ' + filter.lastError);
-        // console.log('ingoingFormat: ' + filter.ingoingFormat);
-        // console.log('organisation: ' + filter.organisation);
-        // console.log('receiver: ' + filter.receiver);
-        // console.log('type: ' + filter.type);
-        // console.log('senderName: ' + filter.senderName);
-        // console.log('receiverName: ' + filter.receiverName);
-        // console.log('dateReceived: ' + filter.dateReceived.dateStart + ' ' + filter.dateReceived.dateEnd);
-        // console.log('dateIssued: ' + filter.dateIssued.dateStart + ' ' + filter.dateIssued.dateEnd);
-
-        this.startElement = currentPage * sizeElement;
-        this.getDocuments();
-
+    getAnyDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
+        let params = new HttpParams();
+        params = params.append('page', String(currentPage));
+        params = params.append('size', String(sizeElement));
+        params = params.append('countClickReceiver', String(filter.countClickReceiver));
+        params = params.append('countClickStatus', String(filter.countClickStatus));
+        params = params.append('countClickLastError', String(filter.countClickLastError));
+        params = params.append('countClickDocumentType', String(filter.countClickDocumentType));
+        params = params.append('countClickIngoingFormat', String(filter.countClickIngoingFormat));
+        params = params.append('countClickReceived', String(filter.countClickReceived));
+        params = params.append('countClickIssued', String(filter.countClickIssued));
+        params = params.append('countClickSenderName', String(filter.countClickSenderName));
+        params = params.append('countClickReceiverName', String(filter.countClickReceiverName));
+        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
         if (filter.status !== 'ALL') {
-            this.documents = this.documents.filter(el => el.status === filter.status);
+            params = params.append('status', filter.status);
         }
-
         if (filter.lastError !== 'ALL') {
-            this.documents = this.documents.filter(el => el.lastError === filter.lastError);
+            params = params.append('lastError', filter.lastError);
         }
-
-        if (filter.documentType !== 'ALL') {
-            this.documents = this.documents.filter(el => el.documentType === filter.documentType);
-        }
-
         if (filter.ingoingFormat !== 'ALL') {
-            this.documents = this.documents.filter(el => el.ingoingFormat === filter.ingoingFormat);
+            params = params.append('ingoingFormat', filter.ingoingFormat);
+        }
+        if (filter.documentType !== 'ALL') {
+            params = params.append('documentType', filter.documentType);
+        }
+        if (filter.organisation !== null) {
+            params = params.append('organisation', filter.organisation);
+        }
+        if (filter.receiver !== null) {
+            params = params.append('receiver', filter.receiver);
+        }
+        if (filter.senderName !== null) {
+            params = params.append('senderName', filter.senderName);
+        }
+        if (filter.receiverName !== null) {
+            params = params.append('receiverName', filter.receiverName);
         }
 
-        return this.documents.slice(this.startElement, this.startElement + sizeElement);
+        return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
     }
 
-    getCollectionSize() {
-        return this.documents.length;
+    private static extractData(res: Response) {
+        return res || { };
     }
 }

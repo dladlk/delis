@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
-import {LocaleService} from "../../../service/locale.service";
+import { LocaleService } from "../../../service/locale.service";
 
 @Component({
   selector: 'app-header',
@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit {
     private translate: TranslateService, private locale: LocaleService,
     public router: Router) {
 
-    this.lang = 'en';
+    this.lang = locale.getlocale();
     this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
 
     this.router.events.subscribe(val => {

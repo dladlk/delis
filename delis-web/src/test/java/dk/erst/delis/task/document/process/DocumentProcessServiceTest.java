@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -49,6 +50,14 @@ public class DocumentProcessServiceTest {
 			
 			DocumentProcessLog processLog = processService.process(d, testFile);
 			assertNotNull(processLog);
+			
+			List<DocumentProcessStep> stepList = processLog.getStepList();
+			assertNotNull(stepList);
+			assertTrue(!stepList.isEmpty());
+			for (DocumentProcessStep step : stepList) {
+				System.out.println(step);
+			}
+			
 			assertTrue(processLog.isSuccess());
 		} finally {
 			TestDocumentUtil.cleanupTestFile(testFile);

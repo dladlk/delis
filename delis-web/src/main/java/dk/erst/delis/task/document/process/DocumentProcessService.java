@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.xml.sax.SAXParseException;
 
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.Document;
@@ -60,16 +61,16 @@ public class DocumentProcessService {
 				return null;
 			}
 		}
-		
+
 		if (documentFormat.getDocumentFormatFamily().isLast()) {
 			return xmlPath;
 		}
-		
+
 		DocumentFormatFamily formatFamily = documentFormat.getDocumentFormatFamily();
 		RuleDocumentTransformation transformationRule = ruleService.getTransformation(formatFamily);
 		Path xmlOutPath = null;
 		if (transformationRule != null) {
-			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo();
+			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo() + "_";
 			xmlOutPath = createTempFile(plog, xmlOutPath, prefix);
 			if (xmlOutPath == null) {
 				return null;
@@ -129,7 +130,7 @@ public class DocumentProcessService {
 			XSLTUtil.apply(xslStream, xslFilePath, xmlStream, resultStream);
 			step.setSuccess(true);
 		} catch (Exception e) {
-			log.error("Failed to transform "+xmlPath+" with "+transformationRule, e);
+			log.error("Failed to transform " + xmlPath + " with " + transformationRule, e);
 			step.setMessage(e.getMessage());
 		} finally {
 			step.done();
@@ -160,6 +161,10 @@ public class DocumentProcessService {
 				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
 					xsdValidator.validate(xmlStream, filePath(ruleDocumentValidation));
 					step.setSuccess(true);
+				} catch (SAXParseException se) {
+					String location = "line " + se.getLineNumber() + ", column " + se.getColumnNumber();
+					log.error("Failed validation of file " + xmlPath + ", location: " + location + " by rule " + ruleDocumentValidation, se);
+					step.setMessage("At " + location + ": " + se.getMessage());
 				} catch (Exception e) {
 					log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
 					step.setMessage(e.getMessage());

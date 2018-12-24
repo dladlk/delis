@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokenService } from '../service/token.service';
 import { environment } from '../../environments/environment';
-import { IResult } from '../models/result.model';
 import { IUser, ROLES } from '../models/user.model';
 import { base_url } from '../app.constants';
+import {IResult} from "../models/result.model";
 
 @Injectable()
 export class AuthorizationService {

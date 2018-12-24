@@ -14,6 +14,7 @@
     <modules>
         <module>delis-data</module>
         <module>delis-web</module>
+        <module>delis-web-api</module>
     </modules>
     
     <properties>

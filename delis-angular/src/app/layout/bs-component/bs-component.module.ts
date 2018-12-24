@@ -21,6 +21,8 @@ import {
     TimepickerComponent
 } from './components';
 import { PageHeaderModule } from '../../shared';
+import {TableHeaderSortComponent} from "./components/table-header-sort/table.header.sort.component";
+import {TranslateModule} from "@ngx-translate/core";
 
 @NgModule({
     imports: [
@@ -29,7 +31,7 @@ import { PageHeaderModule } from '../../shared';
         FormsModule,
         ReactiveFormsModule,
         NgbModule,
-        PageHeaderModule
+        PageHeaderModule, TranslateModule
     ],
     declarations: [
         BsComponentComponent,
@@ -45,7 +47,10 @@ import { PageHeaderModule } from '../../shared';
         TabsComponent,
         RatingComponent,
         TooltipComponent,
-        TimepickerComponent
+        TimepickerComponent,
+        TableHeaderSortComponent
+    ], exports: [
+        TableHeaderSortComponent
     ]
 })
 export class BsComponentModule {}
