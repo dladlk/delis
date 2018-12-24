@@ -58,12 +58,16 @@ export class DocumentsComponent implements OnInit {
                 this.loadPage(pag.currentPage, pag.pageSize);
                 this.pagination = pag;
             } else {
-                this.ngOnInit();
+                this.initProcess();
             }
         });
     }
 
     ngOnInit() {
+        this.initProcess();
+    }
+
+    private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
         if (this.env.production) {
@@ -73,48 +77,50 @@ export class DocumentsComponent implements OnInit {
         }
     }
 
-    initDefaultValues() {
+    private initDefaultValues() {
 
         this.selectedStatus = {status: 'ALL', selected: true};
         this.selectedLastError = {lastError: 'ALL', selected: true};
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         this.selectedDocumentType = {documentType: 'ALL', selected: true};
         this.filter = new FilterProcessResult();
-        this.tableHeaderSortModels.push(
-            {
-                columnName: 'Organisation', columnClick: 0
-            },
-            {
-                columnName: 'Receiver', columnClick: 0
-            },
-            {
-                columnName: 'Status', columnClick: 0
-            },
-            {
-                columnName: 'Last Error', columnClick: 0
-            },
-            {
-                columnName: 'Document Type', columnClick: 0
-            },
-            {
-                columnName: 'Ingoing Format', columnClick: 0
-            },
-            {
-                columnName: 'Received', columnClick: 0
-            },
-            {
-                columnName: 'Issued', columnClick: 0
-            },
-            {
-                columnName: 'Sender Name', columnClick: 0
-            },
-            {
-                columnName: 'Receiver Name', columnClick: 0
-            }
-        );
+        if (this.tableHeaderSortModels.length == 0) {
+            this.tableHeaderSortModels.push(
+                {
+                    columnName: 'Organisation', columnClick: 0
+                },
+                {
+                    columnName: 'Receiver', columnClick: 0
+                },
+                {
+                    columnName: 'Status', columnClick: 0
+                },
+                {
+                    columnName: 'Last Error', columnClick: 0
+                },
+                {
+                    columnName: 'Document Type', columnClick: 0
+                },
+                {
+                    columnName: 'Ingoing Format', columnClick: 0
+                },
+                {
+                    columnName: 'Received', columnClick: 0
+                },
+                {
+                    columnName: 'Issued', columnClick: 0
+                },
+                {
+                    columnName: 'Sender Name', columnClick: 0
+                },
+                {
+                    columnName: 'Receiver Name', columnClick: 0
+                }
+            );
+        }
     }
 
-    currentProdDocuments(currentPage: number, sizeElement: number) {
+    private currentProdDocuments(currentPage: number, sizeElement: number) {
         this.documentsService.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
                 this.pagination.collectionSize = data["collectionSize"];
@@ -125,7 +131,7 @@ export class DocumentsComponent implements OnInit {
         );
     }
 
-    currentDevDocuments(currentPage: number, sizeElement: number) {
+    private currentDevDocuments(currentPage: number, sizeElement: number) {
         this.documents = this.documentsStaticService.filterProcess({filter: this.filter});
         this.pagination.collectionSize = this.documents.length;
         this.pagination.currentPage = currentPage;
@@ -140,14 +146,6 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.currentDevDocuments(page, pageSize);
         }
-    }
-
-    loadIngoingFormat() {
-        if (this.selectedIngoingFormat === null) {
-            this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
-        }
-        this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextOrganisation(text: string) {
@@ -189,6 +187,14 @@ export class DocumentsComponent implements OnInit {
             this.selectedDocumentType = {documentType: 'ALL', selected: true};
         }
         this.filter.documentType = this.selectedDocumentType.documentType;
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
+    }
+
+    loadIngoingFormat() {
+        if (this.selectedIngoingFormat === null) {
+            this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
+        }
+        this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
