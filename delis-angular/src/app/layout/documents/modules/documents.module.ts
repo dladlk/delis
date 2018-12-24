@@ -12,6 +12,7 @@ import { DocumentsComponent } from '../components/documents.component';
 import { PageHeaderModule } from '../../../shared/index';
 import { DocumentsService } from '../services/documents.service';
 import { BsComponentModule } from "../../bs-component/bs-component.module";
+import { DocumentsStaticService } from "../services/documents.static.service";
 
 @NgModule({
   imports: [
@@ -26,6 +27,6 @@ import { BsComponentModule } from "../../bs-component/bs-component.module";
       HttpClientModule,
       BsComponentModule],
   declarations: [DocumentsComponent],
-  providers: [DocumentsService]
+  providers: [DocumentsService, DocumentsStaticService]
 })
 export class DocumentsModule {}

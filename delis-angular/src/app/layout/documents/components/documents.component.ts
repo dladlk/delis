@@ -3,6 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from '../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
+import { DocumentsStaticService } from "../services/documents.static.service";
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { LocaleService } from "../../../service/locale.service";
@@ -51,7 +52,11 @@ export class DocumentsComponent implements OnInit {
         {pageSize: 100}
     ];
 
-    constructor(private translate: TranslateService, private documentsService: DocumentsService, private locale: LocaleService) {
+    constructor(
+        private translate: TranslateService,
+        private documentsService: DocumentsService,
+        private documentsStaticService: DocumentsStaticService,
+        private locale: LocaleService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
@@ -119,90 +124,11 @@ export class DocumentsComponent implements OnInit {
     }
 
     currentDevDocuments(currentPage: number, sizeElement: number) {
-        this.documents = this.documentsService.loadDocumentsJSON();
-
-        if (this.filter.status !== 'ALL') {
-            this.documents = this.documents.filter(el => el.status === this.filter.status);
-        }
-
-        if (this.filter.lastError !== 'ALL') {
-            this.documents = this.documents.filter(el => el.lastError === this.filter.lastError);
-        }
-
-        if (this.filter.documentType !== 'ALL') {
-            this.documents = this.documents.filter(el => el.documentType === this.filter.documentType);
-        }
-
-        if (this.filter.ingoingFormat !== 'ALL') {
-            this.documents = this.documents.filter(el => el.ingoingFormat === this.filter.ingoingFormat);
-        }
-
-        if (this.filter.countClickOrganisation === 1) {
-            this.documents.sort((one, two) => (one.organisation < two.organisation ? -1 : 1));
-        } else if (this.filter.countClickOrganisation === 2) {
-            this.documents.sort((one, two) => (one.organisation > two.organisation ? -1 : 1));
-        }
-
-        if (this.filter.countClickReceiver === 1) {
-            this.documents.sort((one, two) => (one.receiver < two.receiver ? -1 : 1));
-        } else if (this.filter.countClickReceiver === 2) {
-            this.documents.sort((one, two) => (one.receiver > two.receiver ? -1 : 1));
-        }
-
-        if (this.filter.countClickStatus === 1) {
-            this.documents.sort((one, two) => (one.status < two.status ? -1 : 1));
-        } else if (this.filter.countClickStatus === 2) {
-            this.documents.sort((one, two) => (one.status > two.status ? -1 : 1));
-        }
-
-        if (this.filter.countClickLastError === 1) {
-            this.documents.sort((one, two) => (one.lastError < two.lastError ? -1 : 1));
-        } else if (this.filter.countClickLastError === 2) {
-            this.documents.sort((one, two) => (one.lastError > two.lastError ? -1 : 1));
-        }
-
-        if (this.filter.countClickDocumentType === 1) {
-            this.documents.sort((one, two) => (one.documentType < two.documentType ? -1 : 1));
-        } else if (this.filter.countClickDocumentType === 2) {
-            this.documents.sort((one, two) => (one.documentType > two.documentType ? -1 : 1));
-        }
-
-        if (this.filter.countClickIngoingFormat === 1) {
-            this.documents.sort((one, two) => (one.ingoingFormat < two.ingoingFormat ? -1 : 1));
-        } else if (this.filter.countClickIngoingFormat === 2) {
-            this.documents.sort((one, two) => (one.ingoingFormat > two.ingoingFormat ? -1 : 1));
-        }
-
-        if (this.filter.countClickReceived === 1) {
-            this.documents.sort((one, two) => (one.received < two.received ? -1 : 1));
-        } else if (this.filter.countClickReceived === 2) {
-            this.documents.sort((one, two) => (one.received > two.received ? -1 : 1));
-        }
-
-        if (this.filter.countClickIssued === 1) {
-            this.documents.sort((one, two) => (one.issued < two.issued ? -1 : 1));
-        } else if (this.filter.countClickIssued === 2) {
-            this.documents.sort((one, two) => (one.issued > two.issued ? -1 : 1));
-        }
-
-        if (this.filter.countClickSenderName === 1) {
-            this.documents.sort((one, two) => (one.senderName < two.senderName ? -1 : 1));
-        } else if (this.filter.countClickSenderName === 2) {
-            this.documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
-        }
-
-        if (this.filter.countClickReceiverName === 1) {
-            this.documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
-        } else if (this.filter.countClickReceiverName === 2) {
-            this.documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
-        }
-
+        this.documents = this.documentsStaticService.filterProcess({filter: this.filter});
         this.container.collectionSize = this.documents.length;
         this.container.currentPage = currentPage;
         this.container.pageSize = sizeElement;
-
         let startElement = (currentPage - 1) * sizeElement;
-
         this.documents = this.documents.slice(startElement, startElement + sizeElement);
     }
 
