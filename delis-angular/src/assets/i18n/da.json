@@ -36,37 +36,15 @@
   "pagination.page-size": "Vis pr. side",
   "pagination.clear": "Ryd alle filtre",
 
+  "auth.email": "Email",
+  "auth.password": "Adgangskode",
+  "auth.login": "Log ind",
+  "auth.register": "Registrer",
 
-  "Dashboard": "Oversigt",
-  "Charts": "Diagrammer",
-  "Tables": "Tabeller",
-  "Forms": "Forms",
-  "Documents": "Dokumenter",
-  "Documents Overview": "Dokumenter",
-  "Page size": "Vis pr. side",
-
-  "Bootstrap Element": "Bootstrap Element",
-  "Bootstrap Grid": "Bootstrap Grid",
-  "Component": "Komponent",
-  "Menu": "Menu",
-  "Submenu": "Undermenu",
-  "Blank Page": "Blank Side",
-  "More Theme": "Mere Tema",
-  "Download Now": "Hent nu",
-
-
-
-  "Pending Task" : "Afventer Opgave",
-  "In queue" : "I kø",
-  "Mail" : "Email",
-  "View All" : "Vis alle",
-  "More Themes" : "Flere Temaer",
-
-  "Statistics Overview" : "Statistik Oversigt",
-  "Full Name": "Fulde navn",
-  "Email": "Email",
-  "Password": "Adgangskode",
-  "Repeat Password": "Gentag Adgangskode",
-  "Register": "Registrer",
-  "Log in": "Log ind"
+  "signup.fullname": "Fulde navn",
+  "signup.email": "Email",
+  "signup.password": "Adgangskode",
+  "signup.password.repeat": "Gentag Adgangskode",
+  "signup.register": "Registrer",
+  "signup.login": "Log ind"
 }

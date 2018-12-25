@@ -36,30 +36,15 @@
     "pagination.page-size": "Page size",
     "pagination.clear": "Clear all filters",
 
+    "auth.email": "Email",
+    "auth.password": "Password",
+    "auth.login": "Log in",
+    "auth.register": "Register",
 
-    "Dashboard": "Dashboard",
-    "Charts": "Charts",
-    "Tables": "Tables",
-    "Forms": "Forms",
-    "Bootstrap Element": "Bootstrap Element",
-    "Bootstrap Grid": "Bootstrap Grid",
-    "Component": "Component",
-    "Menu": "Menu",
-    "Submenu": "Submenu",
-    "Blank Page": "Blank Page",
-    "More Theme": "More Themes",
-    "Download Now": "Download Now",
-
-
-    "Pending Task" : "Pending Task",
-    "In queue" : "In queue",
-    "Mail" : "Mail",
-    "View All" : "View All",
-    "More Themes" : "More Themes",
-    "Full Name": "Full Name",
-    "Email": "Email",
-    "Password": "Password",
-    "Repeat Password": "Repeat Password",
-    "Register": "Register",
-    "Log in": "Log in"
+    "signup.fullname": "Full Name",
+    "signup.email": "Email",
+    "signup.password": "Password",
+    "signup.password.repeat": "Repeat Password",
+    "signup.register": "Register",
+    "signup.login": "Log in"
 }
