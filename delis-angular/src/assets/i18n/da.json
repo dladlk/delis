@@ -20,6 +20,11 @@
   "dashboard.errors" : "Fejl sidste time",
   "dashboard.details" : "Se detaljer",
 
+  "documents.header" : "Dokumenter",
+  "documents.table.header" : "Dokumenter Oversigt",
+
+
+
 
 
   "Dashboard": "Oversigt",

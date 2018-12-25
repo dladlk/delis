@@ -20,6 +20,8 @@
     "dashboard.errors" : "Errors last hour",
     "dashboard.details" : "View Details",
 
+    "documents.header" : "Documents",
+    "documents.table.header" : "Documents Overview",
 
 
     "Dashboard": "Dashboard",
