@@ -154,6 +154,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.organisation = text;
         }
+        this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -163,6 +164,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.receiver = text;
         }
+        this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -170,6 +172,7 @@ export class DocumentsComponent implements OnInit {
         if (this.selectedStatus === null) {
             this.selectedStatus = {status: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.status = this.selectedStatus.status;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -178,6 +181,7 @@ export class DocumentsComponent implements OnInit {
         if (this.selectedLastError === null) {
             this.selectedLastError = {lastError: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.lastError = this.selectedLastError.lastError;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -186,6 +190,7 @@ export class DocumentsComponent implements OnInit {
         if (this.selectedDocumentType === null) {
             this.selectedDocumentType = {documentType: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.documentType = this.selectedDocumentType.documentType;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -194,6 +199,7 @@ export class DocumentsComponent implements OnInit {
         if (this.selectedIngoingFormat === null) {
             this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -204,6 +210,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.senderName = text;
         }
+        this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -213,15 +220,18 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.receiverName = text;
         }
+        this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadReceivedDate(date: Date[]) {
+        this.pagination.currentPage = 1;
         this.filter.dateReceived = new DateRangeModel(date[0], date[1]);
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIssuedDate(date: Date[]) {
+        this.pagination.currentPage = 1;
         this.filter.dateIssued = new DateRangeModel(date[0], date[1]);
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
