@@ -1,17 +1,4 @@
 {
-    "Dashboard": "Dashboard",
-    "Charts": "Charts",
-    "Tables": "Tables",
-    "Forms": "Forms",
-    "Bootstrap Element": "Bootstrap Element",
-    "Bootstrap Grid": "Bootstrap Grid",
-    "Component": "Component",
-    "Menu": "Menu",
-    "Submenu": "Submenu",
-    "Blank Page": "Blank Page",
-    "More Theme": "More Themes",
-    "Download Now": "Download Now",
-
     "sidebar.dashboard": "Dashboard",
     "sidebar.documents": "Documents",
     "sidebar.publishing": "Publishing",
@@ -25,6 +12,29 @@
     "header.account.profile" : "Profile",
     "header.account.inbox" : "Inbox",
     "header.account.logout" : "Log Out",
+
+    "page-header.dashboard" : "Dashboard",
+
+    "dashboard.published" : "Published",
+    "dashboard.documents" : "Received documents last hour / average",
+    "dashboard.errors" : "Errors last hour",
+    "dashboard.details" : "View Details",
+
+
+
+    "Dashboard": "Dashboard",
+    "Charts": "Charts",
+    "Tables": "Tables",
+    "Forms": "Forms",
+    "Bootstrap Element": "Bootstrap Element",
+    "Bootstrap Grid": "Bootstrap Grid",
+    "Component": "Component",
+    "Menu": "Menu",
+    "Submenu": "Submenu",
+    "Blank Page": "Blank Page",
+    "More Theme": "More Themes",
+    "Download Now": "Download Now",
+
 
     "Pending Task" : "Pending Task",
     "In queue" : "In queue",
