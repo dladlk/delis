@@ -22,6 +22,19 @@
 
     "documents.header" : "Documents",
     "documents.table.header" : "Documents Overview",
+    "documents.table.columnName.Organisation" : "Organisation",
+    "documents.table.columnName.Receiver" : "Receiver",
+    "documents.table.columnName.Status" : "Status",
+    "documents.table.columnName.LastError" : "Last Error",
+    "documents.table.columnName.DocumentType" : "Document Type",
+    "documents.table.columnName.IngoingFormat" : "Ingoing Format",
+    "documents.table.columnName.Received" : "Received",
+    "documents.table.columnName.Issued" : "Issued",
+    "documents.table.columnName.SenderName" : "Sender Name",
+    "documents.table.columnName.ReceiverName" : "Receiver Name",
+
+    "pagination.page-size": "Page size",
+    "pagination.clear": "Clear all filters",
 
 
     "Dashboard": "Dashboard",

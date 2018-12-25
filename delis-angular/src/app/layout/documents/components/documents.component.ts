@@ -16,6 +16,17 @@ import { TableHeaderSortModel } from "../../bs-component/components/table-header
 import { PaginationService } from "../../bs-component/components/pagination/pagination.service";
 import { PaginationModel } from "../../bs-component/components/pagination/pagination.model";
 
+const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
+const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
+const COLUMN_NAME_STATUS = 'documents.table.columnName.Status';
+const COLUMN_NAME_LAST_ERROR = 'documents.table.columnName.LastError';
+const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.columnName.DocumentType';
+const COLUMN_NAME_INGOING_FORMAT = 'documents.table.columnName.IngoingFormat';
+const COLUMN_NAME_RECEIVED = 'documents.table.columnName.Received';
+const COLUMN_NAME_ISSUED = 'documents.table.columnName.Issued';
+const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.SenderName';
+const COLUMN_NAME_RECEIVER_NAME = 'documents.table.columnName.ReceiverName';
+
 @Component({
     selector: 'app-documents',
     templateUrl: './documents.component.html',
@@ -87,34 +98,34 @@ export class DocumentsComponent implements OnInit {
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
                 {
-                    columnName: 'Organisation', columnClick: 0
+                    columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
                 },
                 {
-                    columnName: 'Receiver', columnClick: 0
+                    columnName: COLUMN_NAME_RECEIVER, columnClick: 0
                 },
                 {
-                    columnName: 'Status', columnClick: 0
+                    columnName: COLUMN_NAME_STATUS, columnClick: 0
                 },
                 {
-                    columnName: 'Last Error', columnClick: 0
+                    columnName: COLUMN_NAME_LAST_ERROR, columnClick: 0
                 },
                 {
-                    columnName: 'Document Type', columnClick: 0
+                    columnName: COLUMN_NAME_DOCUMENT_TYPE, columnClick: 0
                 },
                 {
-                    columnName: 'Ingoing Format', columnClick: 0
+                    columnName: COLUMN_NAME_INGOING_FORMAT, columnClick: 0
                 },
                 {
-                    columnName: 'Received', columnClick: 0
+                    columnName: COLUMN_NAME_RECEIVED, columnClick: 0
                 },
                 {
-                    columnName: 'Issued', columnClick: 0
+                    columnName: COLUMN_NAME_ISSUED, columnClick: 0
                 },
                 {
-                    columnName: 'Sender Name', columnClick: 0
+                    columnName: COLUMN_NAME_SENDER_NAME, columnClick: 0
                 },
                 {
-                    columnName: 'Receiver Name', columnClick: 0
+                    columnName: COLUMN_NAME_RECEIVER_NAME, columnClick: 0
                 }
             );
         }
@@ -237,34 +248,34 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickFilter(target: string) {
-        if (target === 'Organisation') {
+        if (target === COLUMN_NAME_ORGANIZATION) {
             this.clickOrganisation();
         }
-        if (target === 'Receiver') {
+        if (target === COLUMN_NAME_RECEIVER) {
             this.clickReceiver();
         }
-        if (target === 'Status') {
+        if (target === COLUMN_NAME_STATUS) {
             this.clickStatus();
         }
-        if (target === 'Last Error') {
+        if (target === COLUMN_NAME_LAST_ERROR) {
             this.clickLastError();
         }
-        if (target === 'Document Type') {
+        if (target === COLUMN_NAME_DOCUMENT_TYPE) {
             this.clickDocumentType();
         }
-        if (target === 'Ingoing Format') {
+        if (target === COLUMN_NAME_INGOING_FORMAT) {
             this.clickIngoingFormat();
         }
-        if (target === 'Received') {
+        if (target === COLUMN_NAME_RECEIVED) {
             this.clickReceived();
         }
-        if (target === 'Issued') {
+        if (target === COLUMN_NAME_ISSUED) {
             this.clickIssued();
         }
-        if (target === 'Sender Name') {
+        if (target === COLUMN_NAME_SENDER_NAME) {
             this.clickSenderName();
         }
-        if (target === 'Receiver Name') {
+        if (target === COLUMN_NAME_RECEIVER_NAME) {
             this.clickReceiverName();
         }
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
@@ -275,7 +286,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickOrganisation > 2) {
             this.filter.countClickOrganisation = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Organisation').columnClick = this.filter.countClickOrganisation;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick = this.filter.countClickOrganisation;
     }
 
     private clickReceiver() {
@@ -283,7 +294,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickReceiver > 2) {
             this.filter.countClickReceiver = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver').columnClick = this.filter.countClickReceiver;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick = this.filter.countClickReceiver;
     }
 
     private clickStatus() {
@@ -291,7 +302,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickStatus > 2) {
             this.filter.countClickStatus = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Status').columnClick = this.filter.countClickStatus;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick = this.filter.countClickStatus;
     }
 
     private clickLastError() {
@@ -299,7 +310,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickLastError > 2) {
             this.filter.countClickLastError = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Last Error').columnClick = this.filter.countClickLastError;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick = this.filter.countClickLastError;
     }
 
     private clickDocumentType() {
@@ -307,7 +318,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickDocumentType > 2) {
             this.filter.countClickDocumentType = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Document Type').columnClick = this.filter.countClickDocumentType;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick = this.filter.countClickDocumentType;
     }
 
     private clickIngoingFormat() {
@@ -315,7 +326,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickIngoingFormat > 2) {
             this.filter.countClickIngoingFormat = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Ingoing Format').columnClick = this.filter.countClickIngoingFormat;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick = this.filter.countClickIngoingFormat;
     }
 
     private clickReceived() {
@@ -323,7 +334,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickReceived > 2) {
             this.filter.countClickReceived = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Received').columnClick = this.filter.countClickReceived;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick = this.filter.countClickReceived;
     }
 
     private clickIssued() {
@@ -331,7 +342,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickIssued > 2) {
             this.filter.countClickIssued = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Issued').columnClick = this.filter.countClickIssued;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick = this.filter.countClickIssued;
     }
 
     private clickSenderName() {
@@ -339,7 +350,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickSenderName > 2) {
             this.filter.countClickSenderName = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Sender Name').columnClick = this.filter.countClickSenderName;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick = this.filter.countClickSenderName;
     }
 
     private clickReceiverName() {
@@ -347,6 +358,6 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickReceiverName > 2) {
             this.filter.countClickReceiverName = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver Name').columnClick = this.filter.countClickReceiverName;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick = this.filter.countClickReceiverName;
     }
 }

@@ -22,9 +22,19 @@
 
   "documents.header" : "Dokumenter",
   "documents.table.header" : "Dokumenter Oversigt",
+  "documents.table.columnName.Organisation" : "Organisation",
+  "documents.table.columnName.Receiver" : "Modtager",
+  "documents.table.columnName.Status" : "Status",
+  "documents.table.columnName.LastError" : "Sidste fejl",
+  "documents.table.columnName.DocumentType" : "Dokument Type",
+  "documents.table.columnName.IngoingFormat" : "Indgående format",
+  "documents.table.columnName.Received" : "Modtaget",
+  "documents.table.columnName.Issued" : "Udstedt",
+  "documents.table.columnName.SenderName" : "Afsender navn",
+  "documents.table.columnName.ReceiverName" : "Modtager navn",
 
-
-
+  "pagination.page-size": "Vis pr. side",
+  "pagination.clear": "Ryd alle filtre",
 
 
   "Dashboard": "Oversigt",
@@ -34,17 +44,7 @@
   "Documents": "Dokumenter",
   "Documents Overview": "Dokumenter",
   "Page size": "Vis pr. side",
-  "Organisation": "Organisation",
-  "Receiver": "Modtager",
-  "Status": "Status",
-  "Last Error": "Sidste fejl",
-  "Document Type": "Dokument Type",
 
-  "Ingoing Format": "Indgående format",
-  "Received": "Modtaget",
-  "Issued": "Udstedt",
-  "Sender Name": "Afsender navn",
-  "Receiver Name": "Modtager navn",
   "Bootstrap Element": "Bootstrap Element",
   "Bootstrap Grid": "Bootstrap Grid",
   "Component": "Komponent",
@@ -68,6 +68,5 @@
   "Password": "Adgangskode",
   "Repeat Password": "Gentag Adgangskode",
   "Register": "Registrer",
-  "Log in": "Log ind",
-  "Clear all filters": "Ryd alle filtre"
+  "Log in": "Log ind"
 }

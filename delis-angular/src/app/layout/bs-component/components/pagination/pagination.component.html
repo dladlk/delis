@@ -10,7 +10,7 @@
         </ngb-pagination>
     </div>
     <div class="p-3">
-        {{ 'Page size' | translate }}:
+        {{ 'pagination.page-size' | translate }}:
     </div>
     <div class="p-2">
         <ng-select [items]="pageSizes"
@@ -23,6 +23,6 @@
         </ng-select>
     </div>
     <div class="p-2">
-        <button type="button" class="btn btn-primary" (click)="clearFilter()">{{ 'Clear all filters' | translate }}</button>
+        <button type="button" class="btn btn-primary" (click)="clearFilter()">{{ 'pagination.clear' | translate }}</button>
     </div>
 </div>
