@@ -278,6 +278,7 @@ export class DocumentsComponent implements OnInit {
         if (target === COLUMN_NAME_RECEIVER_NAME) {
             this.clickReceiverName();
         }
+        this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 

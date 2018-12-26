@@ -5,16 +5,12 @@ import { DocumentsModel, FilterProcessResult } from "../models/documents.model";
 @Injectable()
 export class DocumentsStaticService {
 
-    private readonly docs: DocumentsModel[];
-
-    constructor() {
-        this.docs = data.docs;
-    }
+    constructor() {}
 
     filterProcess(parameters: { filter: FilterProcessResult }) : DocumentsModel[] {
         let filter = parameters.filter;
 
-        let documents = this.docs;
+        let documents = Object.assign([], data.docs);
 
         if (filter.status !== 'ALL') {
             documents = documents.filter(el => el.status === filter.status);
