@@ -20,8 +20,10 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.DocumentRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
+import dk.erst.delis.data.Identifier;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -35,15 +37,18 @@ public class DocumentLoadService {
 	private DocumentRepository documentRepository;
 
 	private DocumentParseService documentParseService;
+	
+	private IdentifierResolverService identifierResolverService;
 
 	private ConfigBean config;
 
 	@Autowired
-	public DocumentLoadService(DocumentRepository documentRepository, DocumentParseService documentParseService, ConfigBean config) {
+	public DocumentLoadService(DocumentRepository documentRepository, DocumentParseService documentParseService, ConfigBean config, IdentifierResolverService identifierResolverService) {
 		super();
 		this.documentRepository = documentRepository;
 		this.documentParseService = documentParseService;
 		this.config = config;
+		this.identifierResolverService = identifierResolverService;
 	}
 
 	public void loadFromInput() {
@@ -93,6 +98,20 @@ public class DocumentLoadService {
 
 			Document document = buildDocument(info, messageId);
 
+			Identifier identifier = null;
+			if (info.getReceiver() != null) {
+				identifier = identifierResolverService.resolve(info.getReceiver().getSchemeId(), info.getReceiver().getId());
+			}
+			if (identifier != null) {
+				document.setReceiverIdentifier(identifier);
+				document.setOrganisation(identifier.getOrganisation());
+			}
+			
+			if (document.getReceiverIdentifier() == null) {
+				document.setDocumentStatus(DocumentStatus.UNKNOWN_RECEIVER);
+			}
+
+			
 			String destSubPath = moveToLoaded(file, metadataFilePath, document);
 			if (destSubPath == null) {
 				return null;
@@ -155,9 +174,6 @@ public class DocumentLoadService {
 
 	private Document buildDocument(DocumentInfo info, String messageId) {
 		Document document = new Document();
-
-		document.setOrganisation(null);
-		document.setReceiverIdentifier(null);
 
 		if (info != null) {
 			document.setDocumentDate(info.getDate());

@@ -25,7 +25,7 @@ public interface IdentifierRepository extends JpaRepository<Identifier, Long>, I
 			) 
 	List<Map<String, Object>> loadIndetifierStatByOrganisation(long organisationId);
 	
-	Identifier findByOrganisationAndValueAndType(Organisation organisation, String value, String type);
+	Identifier findByValueAndType(String value, String type);
 	
 	List<Identifier> findByOrganisation(Organisation organisation);
 

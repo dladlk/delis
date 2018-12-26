@@ -98,7 +98,7 @@ public class IdentifierLoadService {
 						identifier.setName("");
 					}
 
-					Identifier present = identifierRepository.findByOrganisationAndValueAndType(organisation, identifier.getValue(), identifier.getType());
+					Identifier present = identifierRepository.findByValueAndType(identifier.getValue(), identifier.getType());
 					if (present == null) {
 						stat.incrementAdd();
 
@@ -107,27 +107,49 @@ public class IdentifierLoadService {
 						identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
 						identifier.setStatus(IdentifierStatus.ACTIVE);
 						identifier.setLastSyncOrganisationFactId(stat.getId());
+						identifier.setUniqueValueType(buildUniqueValueType(identifier));
 
 						saveIdentifier(identifier);
 
 						saveJournalIdentifierMessage(organisation, identifier, "Created by " + description);
 					} else {
-						if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId())) {
-							stat.incrementEqual();
+						if (present.getOrganisation().getId() != organisation.getId()) {
+							if (present.getStatus().isActive()) {
+								stat.incrementFailed();
+								saveJournalIdentifierMessage(organisation, present, "Tried to import into another organisation " + organisation.getName() + " by " + description);
+								saveJournalOrganisationMessage(organisation, "Identifier is already registered at " + organisation.getName() + " and is active there: " + identifier.getValue());
+							} else {
+								stat.incrementAdd();
+								
+								identifier.setOrganisation(organisation);
+								identifier.setIdentifierGroup(identifierGroup);
+								identifier.setStatus(IdentifierStatus.ACTIVE);
+								identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+								identifier.setLastSyncOrganisationFactId(stat.getId());
 
-							present.setLastSyncOrganisationFactId(stat.getId());
-							saveIdentifier(present);
+								saveIdentifier(identifier);
 
+								saveJournalIdentifierMessage(organisation, identifier, "Moved deactivated from " + present.getOrganisation().getName() + " by " + description);
+							}
 						} else {
-							present.setName(identifier.getName());
-							present.setIdentifierGroup(identifierGroup);
-							// TODO: What if identifier group is changed?
-							// TODO: What if identifier name is changed - should we republish identifier?
-							present.setLastSyncOrganisationFactId(stat.getId());
-
-							saveIdentifier(present);
-							stat.incrementUpdate();
-							saveJournalIdentifierMessage(organisation, present, "Updated");
+						
+							if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId())) {
+								stat.incrementEqual();
+	
+								present.setLastSyncOrganisationFactId(stat.getId());
+								saveIdentifier(present);
+	
+							} else {
+								present.setName(identifier.getName());
+								present.setIdentifierGroup(identifierGroup);
+								// TODO: What if identifier group is changed?
+								// TODO: What if identifier name is changed - should we republish identifier?
+								present.setLastSyncOrganisationFactId(stat.getId());
+	
+								saveIdentifier(present);
+								stat.incrementUpdate();
+								saveJournalIdentifierMessage(organisation, present, "Updated");
+							}
 						}
 					}
 				} else {
@@ -146,6 +168,10 @@ public class IdentifierLoadService {
 		}
 
 		return stat;
+	}
+
+	private String buildUniqueValueType(Identifier identifier) {
+		return identifier.getType()+"::"+identifier.getValue();
 	}
 
 	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat) {
