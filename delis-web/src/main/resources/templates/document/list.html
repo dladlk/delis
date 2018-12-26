@@ -61,10 +61,17 @@
 					<th>Sender</th>
 				</tr>
 				<tr th:each="r,iter : ${documentList}">
-					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd')}">2018-10-12 10:43</td>
-					<td th:text="${r.organisation?.name}">Region Nord</td>
-					<td th:text="${r.receiverIdRaw}">0088:234234234</td>
-					<td><a href="#" th:href="@{/document/view/__${r.id}__}" th:text="${r.documentStatus}"></a></td>
+					<td>
+						<a href="#" th:href="@{/document/view/__${r.id}__}" th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
+					</td>
+					<td>
+						<a th:if="${r.organisation}" href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}">Region Nord</a>
+					</td>
+					<td>
+						<a th:if="${r.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${r.receiverIdentifier.id}__}" th:text="${r.receiverIdentifier.name}">Receiver name</a>
+						<span th:text="${r.receiverIdRaw}">0088:234234234</span>
+					</td>
+					<td th:text="${r.documentStatus}">LOAD_OK</td>
 					<td th:text="${r.ingoingDocumentFormat.documentType}">Invoice</td>
 					<td th:text="${r.ingoingDocumentFormat}">BIS3_INVOICE</td>
 					<td th:text="${r.senderName}">Lego Spain</td>

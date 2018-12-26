@@ -72,7 +72,7 @@ public class DocumentLoadService {
 		}
 	}
 
-	protected Document loadFile(Path xmlFilePath) {
+	public Document loadFile(Path xmlFilePath) {
 		long start = System.currentTimeMillis();
 		log.info("Loading file " + xmlFilePath);
 		try {
