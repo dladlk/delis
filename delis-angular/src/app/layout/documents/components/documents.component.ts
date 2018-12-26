@@ -7,13 +7,25 @@ import { DocumentsStaticService } from "../services/documents.static.service";
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { LocaleService } from "../../../service/locale.service";
-import { PageContainerModel } from "../../../models/page.container.model";
 import { environment } from "../../../../environments/environment";
 import { documentTypes } from '../models/documents.view.model';
 import { ingoingFormats } from '../models/documents.view.model';
 import { lastErrors } from '../models/documents.view.model';
 import { statuses } from '../models/documents.view.model';
 import { TableHeaderSortModel } from "../../bs-component/components/table-header-sort/table.header.sort.model";
+import { PaginationService } from "../../bs-component/components/pagination/pagination.service";
+import { PaginationModel } from "../../bs-component/components/pagination/pagination.model";
+
+const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
+const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
+const COLUMN_NAME_STATUS = 'documents.table.columnName.Status';
+const COLUMN_NAME_LAST_ERROR = 'documents.table.columnName.LastError';
+const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.columnName.DocumentType';
+const COLUMN_NAME_INGOING_FORMAT = 'documents.table.columnName.IngoingFormat';
+const COLUMN_NAME_RECEIVED = 'documents.table.columnName.Received';
+const COLUMN_NAME_ISSUED = 'documents.table.columnName.Issued';
+const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.SenderName';
+const COLUMN_NAME_RECEIVER_NAME = 'documents.table.columnName.ReceiverName';
 
 @Component({
     selector: 'app-documents',
@@ -29,7 +41,7 @@ export class DocumentsComponent implements OnInit {
     selectedLastError: any;
     selectedDocumentType: any;
     selectedIngoingFormat: any;
-    selectedPageSize: any;
+
     textOrganisation: string;
     textReceiver: string;
     textSenderName: string;
@@ -42,26 +54,32 @@ export class DocumentsComponent implements OnInit {
     ingoingFormats = ingoingFormats;
     lastErrors = lastErrors;
     filter: FilterProcessResult;
-    container: any;
 
-    pageSizes = [
-        {pageSize: 5},
-        {pageSize: 10},
-        {pageSize: 20},
-        {pageSize: 50},
-        {pageSize: 100}
-    ];
+    pagination: PaginationModel;
 
     constructor(
         private translate: TranslateService,
         private documentsService: DocumentsService,
         private documentsStaticService: DocumentsStaticService,
-        private locale: LocaleService) {
+        private locale: LocaleService,
+        private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.paginationService.listen().subscribe((pag: PaginationModel) => {
+            if (pag.collectionSize !== 0) {
+                this.loadPage(pag.currentPage, pag.pageSize);
+                this.pagination = pag;
+            } else {
+                this.initProcess();
+            }
+        });
     }
 
     ngOnInit() {
-        this.container = new PageContainerModel<DocumentsModel>();
+        this.initProcess();
+    }
+
+    private initProcess() {
+        this.pagination = new PaginationModel();
         this.initDefaultValues();
         if (this.env.production) {
             this.currentProdDocuments(1, 10);
@@ -70,90 +88,75 @@ export class DocumentsComponent implements OnInit {
         }
     }
 
-    initDefaultValues() {
+    private initDefaultValues() {
 
         this.selectedStatus = {status: 'ALL', selected: true};
         this.selectedLastError = {lastError: 'ALL', selected: true};
         this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
         this.selectedDocumentType = {documentType: 'ALL', selected: true};
-        this.selectedPageSize = {pageSize: 10, selected: true};
         this.filter = new FilterProcessResult();
-        this.tableHeaderSortModels.push(
-            {
-                columnName: 'Organisation', columnClick: 0
-            },
-            {
-                columnName: 'Receiver', columnClick: 0
-            },
-            {
-                columnName: 'Status', columnClick: 0
-            },
-            {
-                columnName: 'Last Error', columnClick: 0
-            },
-            {
-                columnName: 'Document Type', columnClick: 0
-            },
-            {
-                columnName: 'Ingoing Format', columnClick: 0
-            },
-            {
-                columnName: 'Received', columnClick: 0
-            },
-            {
-                columnName: 'Issued', columnClick: 0
-            },
-            {
-                columnName: 'Sender Name', columnClick: 0
-            },
-            {
-                columnName: 'Receiver Name', columnClick: 0
-            }
-        );
+        if (this.tableHeaderSortModels.length == 0) {
+            this.tableHeaderSortModels.push(
+                {
+                    columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_RECEIVER, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_STATUS, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_LAST_ERROR, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_DOCUMENT_TYPE, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_INGOING_FORMAT, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_RECEIVED, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_ISSUED, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_SENDER_NAME, columnClick: 0
+                },
+                {
+                    columnName: COLUMN_NAME_RECEIVER_NAME, columnClick: 0
+                }
+            );
+        }
     }
 
-    currentProdDocuments(currentPage: number, sizeElement: number) {
+    private currentProdDocuments(currentPage: number, sizeElement: number) {
         this.documentsService.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
-                this.container.collectionSize = data["collectionSize"];
-                this.container.currentPage = data["currentPage"];
-                this.container.pageSize = data["pageSize"];
+                this.pagination.collectionSize = data["collectionSize"];
+                this.pagination.currentPage = data["currentPage"];
+                this.pagination.pageSize = data["pageSize"];
                 this.documents = data["items"];
             }
         );
     }
 
-    currentDevDocuments(currentPage: number, sizeElement: number) {
+    private currentDevDocuments(currentPage: number, sizeElement: number) {
         this.documents = this.documentsStaticService.filterProcess({filter: this.filter});
-        this.container.collectionSize = this.documents.length;
-        this.container.currentPage = currentPage;
-        this.container.pageSize = sizeElement;
+        this.pagination.collectionSize = this.documents.length;
+        this.pagination.currentPage = currentPage;
+        this.pagination.pageSize = sizeElement;
         let startElement = (currentPage - 1) * sizeElement;
         this.documents = this.documents.slice(startElement, startElement + sizeElement);
     }
 
-    loadPage(page: number) {
+    private loadPage(page: number, pageSize: number) {
         if (this.env.production) {
-            this.currentProdDocuments(page, this.selectedPageSize.pageSize);
+            this.currentProdDocuments(page, pageSize);
         } else {
-            this.currentDevDocuments(page, this.selectedPageSize.pageSize);
+            this.currentDevDocuments(page, pageSize);
         }
-    }
-
-    loadPageSize() {
-        if (this.env.production) {
-            this.currentProdDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
-        } else {
-            this.currentDevDocuments(this.container.currentPage, this.selectedPageSize.pageSize);
-        }
-    }
-
-    loadIngoingFormat() {
-        if (this.selectedIngoingFormat === null) {
-            this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
-        }
-        this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
-        this.filterResult();
     }
 
     loadTextOrganisation(text: string) {
@@ -162,7 +165,8 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.organisation = text;
         }
-        this.filterResult();
+        this.pagination.currentPage = 1;
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextReceiver(text: string) {
@@ -171,31 +175,44 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.receiver = text;
         }
-        this.filterResult();
+        this.pagination.currentPage = 1;
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadStatus() {
         if (this.selectedStatus === null) {
             this.selectedStatus = {status: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.status = this.selectedStatus.status;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadLastErrors() {
         if (this.selectedLastError === null) {
             this.selectedLastError = {lastError: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.lastError = this.selectedLastError.lastError;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadDocumentType() {
         if (this.selectedDocumentType === null) {
             this.selectedDocumentType = {documentType: 'ALL', selected: true};
         }
+        this.pagination.currentPage = 1;
         this.filter.documentType = this.selectedDocumentType.documentType;
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
+    }
+
+    loadIngoingFormat() {
+        if (this.selectedIngoingFormat === null) {
+            this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
+        }
+        this.pagination.currentPage = 1;
+        this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextSenderName(text: string) {
@@ -204,7 +221,8 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.senderName = text;
         }
-        this.filterResult();
+        this.pagination.currentPage = 1;
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextReceiverName(text: string) {
@@ -213,51 +231,54 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.filter.receiverName = text;
         }
-        this.filterResult();
+        this.pagination.currentPage = 1;
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadReceivedDate(date: Date[]) {
+        this.pagination.currentPage = 1;
         this.filter.dateReceived = new DateRangeModel(date[0], date[1]);
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIssuedDate(date: Date[]) {
+        this.pagination.currentPage = 1;
         this.filter.dateIssued = new DateRangeModel(date[0], date[1]);
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     clickFilter(target: string) {
-        if (target === 'Organisation') {
+        if (target === COLUMN_NAME_ORGANIZATION) {
             this.clickOrganisation();
         }
-        if (target === 'Receiver') {
+        if (target === COLUMN_NAME_RECEIVER) {
             this.clickReceiver();
         }
-        if (target === 'Status') {
+        if (target === COLUMN_NAME_STATUS) {
             this.clickStatus();
         }
-        if (target === 'Last Error') {
+        if (target === COLUMN_NAME_LAST_ERROR) {
             this.clickLastError();
         }
-        if (target === 'Document Type') {
+        if (target === COLUMN_NAME_DOCUMENT_TYPE) {
             this.clickDocumentType();
         }
-        if (target === 'Ingoing Format') {
+        if (target === COLUMN_NAME_INGOING_FORMAT) {
             this.clickIngoingFormat();
         }
-        if (target === 'Received') {
+        if (target === COLUMN_NAME_RECEIVED) {
             this.clickReceived();
         }
-        if (target === 'Issued') {
+        if (target === COLUMN_NAME_ISSUED) {
             this.clickIssued();
         }
-        if (target === 'Sender Name') {
+        if (target === COLUMN_NAME_SENDER_NAME) {
             this.clickSenderName();
         }
-        if (target === 'Receiver Name') {
+        if (target === COLUMN_NAME_RECEIVER_NAME) {
             this.clickReceiverName();
         }
-        this.filterResult();
+        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     private clickOrganisation() {
@@ -265,7 +286,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickOrganisation > 2) {
             this.filter.countClickOrganisation = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Organisation').columnClick = this.filter.countClickOrganisation;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick = this.filter.countClickOrganisation;
     }
 
     private clickReceiver() {
@@ -273,7 +294,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickReceiver > 2) {
             this.filter.countClickReceiver = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver').columnClick = this.filter.countClickReceiver;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick = this.filter.countClickReceiver;
     }
 
     private clickStatus() {
@@ -281,7 +302,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickStatus > 2) {
             this.filter.countClickStatus = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Status').columnClick = this.filter.countClickStatus;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick = this.filter.countClickStatus;
     }
 
     private clickLastError() {
@@ -289,7 +310,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickLastError > 2) {
             this.filter.countClickLastError = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Last Error').columnClick = this.filter.countClickLastError;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick = this.filter.countClickLastError;
     }
 
     private clickDocumentType() {
@@ -297,7 +318,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickDocumentType > 2) {
             this.filter.countClickDocumentType = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Document Type').columnClick = this.filter.countClickDocumentType;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick = this.filter.countClickDocumentType;
     }
 
     private clickIngoingFormat() {
@@ -305,7 +326,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickIngoingFormat > 2) {
             this.filter.countClickIngoingFormat = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Ingoing Format').columnClick = this.filter.countClickIngoingFormat;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick = this.filter.countClickIngoingFormat;
     }
 
     private clickReceived() {
@@ -313,7 +334,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickReceived > 2) {
             this.filter.countClickReceived = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Received').columnClick = this.filter.countClickReceived;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick = this.filter.countClickReceived;
     }
 
     private clickIssued() {
@@ -321,7 +342,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickIssued > 2) {
             this.filter.countClickIssued = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Issued').columnClick = this.filter.countClickIssued;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick = this.filter.countClickIssued;
     }
 
     private clickSenderName() {
@@ -329,7 +350,7 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickSenderName > 2) {
             this.filter.countClickSenderName = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Sender Name').columnClick = this.filter.countClickSenderName;
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick = this.filter.countClickSenderName;
     }
 
     private clickReceiverName() {
@@ -337,13 +358,6 @@ export class DocumentsComponent implements OnInit {
         if (this.filter.countClickReceiverName > 2) {
             this.filter.countClickReceiverName = 0;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === 'Receiver Name').columnClick = this.filter.countClickReceiverName;
-    }
-
-    private filterResult() {
-        if (this.selectedPageSize === null) {
-            this.selectedPageSize = {pageSize: 10, selected: true};
-        }
-        this.loadPage(this.container.currentPage);
+        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick = this.filter.countClickReceiverName;
     }
 }

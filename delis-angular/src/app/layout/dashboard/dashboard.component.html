@@ -2,128 +2,21 @@
   <div class="row">
     <img src="assets/images/delis.png" class="center" />
   </div>
-  <hr>
 </div>
 
 <div [@routerTransition]>
 
-  <h2 class="text-muted">{{ 'Dashboard' | translate }}</h2>
-
   <hr>
   <div class="row">
     <div class="col-xl-4 col-lg-3">
-      <app-stat [bgClass]="'primary'" [icon]="'fa-comments'" [count]="3" [label]="'Published'" [router]="'/publishing'"></app-stat>
+      <app-stat [bgClass]="'primary'" [icon]="'fa-comments'" [count]="3" [label]="'dashboard.published'" [router]="'/publishing'"></app-stat>
     </div>
     <div class="col-xl-4 col-lg-3">
-      <app-stat [bgClass]="'warning'" [icon]="'fa-book'" [count]="'125 / 136'" [label]="'Received documents last hour / average'" [router]="'/documents'"></app-stat>
+      <app-stat [bgClass]="'warning'" [icon]="'fa-book'" [count]="'125 / 136'" [label]="'dashboard.documents'" [router]="'/documents'"></app-stat>
     </div>
     <div class="col-xl-4 col-lg-3">
-      <app-stat [bgClass]="'danger'" [icon]="'fa-bolt'" [count]="12" [label]="'Errors last hour'" [router]="'/errors-invoices'"></app-stat>
+      <app-stat [bgClass]="'danger'" [icon]="'fa-bolt'" [count]="12" [label]="'dashboard.errors'" [router]="'/errors-invoices'"></app-stat>
     </div>
   </div>
 
-
-  <!--<br>-->
-  <!--<div class="container">-->
-    <!--<div class="row">-->
-      <!--<div class="col col-xl-8 col-lg-2">-->
-        <!--<div class="card mb-3">-->
-          <!--<div class="card-header">-->
-            <!--Basic information-->
-          <!--</div>-->
-          <!--<div class="card-body table-responsive">-->
-            <!--<table class="table">-->
-              <!--<tbody>-->
-              <!--<tr>-->
-                <!--<td>-->
-                  <!--<a [routerLink]="['/documents']" [routerLinkActive]="['router-link-active']">-->
-                    <!--Received documents last hour / average-->
-                  <!--</a>-->
-                <!--</td>-->
-                <!--<td>125 / 136</td>-->
-              <!--</tr>-->
-              <!--<tr>-->
-                <!--<td>-->
-                  <!--<a [routerLink]="['/errors-invoices']" [routerLinkActive]="['router-link-active']">-->
-                    <!--Errors last hour-->
-                  <!--</a>-->
-                <!--</td>-->
-                <!--<td>12</td>-->
-              <!--</tr>-->
-              <!--<tr>-->
-                <!--<td>-->
-                  <!--<a [routerLink]="['/publishing']" [routerLinkActive]="['router-link-active']">-->
-                    <!--Published-->
-                  <!--</a>-->
-                <!--</td>-->
-                <!--<td>3</td>-->
-              <!--</tr>-->
-              <!--</tbody>-->
-            <!--</table>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-  <!--<div class="row">-->
-  <!--<div class="col-md-12">-->
-  <!--<ngb-carousel>-->
-  <!--<ng-template ngbSlide *ngFor="let slider of sliders">-->
-  <!--<img class="img-fluid mx-auto d-block" [src]="slider.imagePath" alt="Random first slide" width="100%">-->
-  <!--<div class="carousel-caption">-->
-  <!--<h3>{{slider.label}}</h3>-->
-  <!--<p>{{slider.text}}</p>-->
-  <!--</div>-->
-  <!--</ng-template>-->
-  <!--</ngb-carousel>-->
-  <!--</div>-->
-  <!--</div>-->
-  <!--<hr>-->
-  <!--<div class="row">-->
-    <!--<div class="col-xl-3 col-lg-6">-->
-      <!--<app-stat [bgClass]="'primary'" [icon]="'fa-comments'" [count]="26" [label]="'New Comments!'"></app-stat>-->
-    <!--</div>-->
-    <!--<div class="col-xl-3 col-lg-6">-->
-      <!--<app-stat [bgClass]="'warning'" [icon]="'fa-tasks'" [count]="12" [label]="'New task!'"></app-stat>-->
-    <!--</div>-->
-    <!--<div class="col-xl-3 col-lg-6">-->
-      <!--<app-stat [bgClass]="'success'" [icon]="'fa-shopping-cart'" [count]="124" [label]="'New Orders!'"></app-stat>-->
-    <!--</div>-->
-    <!--<div class="col-xl-3 col-lg-6">-->
-      <!--<app-stat [bgClass]="'danger'" [icon]="'fa-bolt'" [count]="13" [label]="'New Tickets!'"></app-stat>-->
-    <!--</div>-->
-  <!--</div>-->
-  <!--<hr/>-->
-  <!--<ngb-alert [type]="alert.type" (close)="closeAlert(alert)" *ngFor="let alert of alerts">{{ alert.message }}</ngb-alert>-->
-  <!--<hr />-->
-  <!--<div class="row">-->
-  <!--<div class="col-lg-8">-->
-  <!--<div class="card card-default">-->
-  <!--<div class="card-header">-->
-  <!--<i class="fa fa-clock-o fa-fw"></i> Responsive Timeline-->
-  <!--</div>-->
-  <!--&lt;!&ndash; /.card-header &ndash;&gt;-->
-  <!--<app-timeline></app-timeline>-->
-  <!--&lt;!&ndash; /.card-body &ndash;&gt;-->
-  <!--</div>-->
-  <!--&lt;!&ndash; /.card &ndash;&gt;-->
-  <!--</div>-->
-  <!--&lt;!&ndash; /.col-lg-8 &ndash;&gt;-->
-  <!--<div class="col-lg-4">-->
-  <!--<div class="card card-default mb-3">-->
-  <!--<div class="card-header">-->
-  <!--<i class="fa fa-bell fa-fw"></i> Notifications card-->
-  <!--</div>-->
-  <!--&lt;!&ndash; /.card-header &ndash;&gt;-->
-  <!--<app-notification></app-notification>-->
-  <!--&lt;!&ndash; /.card-body &ndash;&gt;-->
-  <!--</div>-->
-  <!--&lt;!&ndash; /.card &ndash;&gt;-->
-
-  <!--<app-chat></app-chat>-->
-  <!--&lt;!&ndash; /.card .chat-card &ndash;&gt;-->
-  <!--</div>-->
-  <!--&lt;!&ndash; /.col-lg-4 &ndash;&gt;-->
-  <!--</div>-->
 </div>

@@ -6,15 +6,15 @@
             <form role="form">
                 <div class="form-content">
                   <div class="form-group">
-                    <input type="text" name="email" [(ngModel)]="email" class="form-control input-underline input-lg" id="email" placeholder="{{ 'Email' | translate }}">
+                    <input type="text" name="email" [(ngModel)]="email" class="form-control input-underline input-lg" id="email" placeholder="{{ 'auth.email' | translate }}">
                   </div>
                   <div class="form-group">
-                    <input type="password" name="password" [(ngModel)]="password" class="form-control input-underline input-lg" id="password" placeholder="{{ 'Password' | translate }}">
+                    <input type="password" name="password" [(ngModel)]="password" class="form-control input-underline input-lg" id="password" placeholder="{{ 'auth.password' | translate }}">
                   </div>
                 </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin(email, password)">{{ 'Log in' | translate }}</a>
+                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin(email, password)">{{ 'auth.login' | translate }}</a>
                 &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>
+                <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'auth.register' | translate }}</a>
             </form>
         </div>
     </div>

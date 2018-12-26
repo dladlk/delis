@@ -1,42 +1,18 @@
 <div [@routerTransition]>
-    <app-page-header [heading]="'Documents'" [icon]="'fa-book'"></app-page-header>
+    <app-page-header [heading]="'documents.header'" [icon]="'fa-book'"></app-page-header>
     <div class="row">
         <div class="col col-xl-12 col-lg-10">
             <div class="card">
-                <div class="card-header"><span>{{ 'Documents Overview' | translate }}:</span></div>
+                <div class="card-header"><span>{{ 'documents.table.header' | translate }}:</span></div>
                 <div class="card-body table-responsive">
-                    <div class="d-flex flex-row">
-                        <div class="p-2">
-                            <ngb-pagination [collectionSize]="container.collectionSize"
-                                            [pageSize]="container.pageSize"
-                                            [(page)]="container.currentPage"
-                                            [maxSize]="5"
-                                            [rotate]="true"
-                                            [boundaryLinks]="true"
-                                            (pageChange)="loadPage($event)">
-                            </ngb-pagination>
-                        </div>
-                        <div class="p-3">
-                            {{ 'Page size' | translate }}:
-                        </div>
-                        <div class="p-2">
-                            <ng-select [items]="pageSizes"
-                                       bindLabel="pageSize"
-                                       placeholder="&#8721;"
-                                       [(ngModel)]="selectedPageSize"
-                                       [searchable]="false"
-                                       [clearable]="false"
-                                       (change)="loadPageSize()">
-                            </ng-select>
-                        </div>
-                    </div>
+                    <app-pagination [pagination]="pagination"></app-pagination>
                     <table class="table table-hover table-sm">
                         <thead>
-                        <tr >
+                        <tr>
                             <th></th>
                             <th *ngFor="let hed of tableHeaderSortModels">
                                 <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
-                                    <table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></table-header-sort>
+                                    <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
                                 </button>
                             </th>
                         </tr>
@@ -122,7 +98,7 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let doc of documents; let i = index">
-                            <th>{{(i+1) + ((container.currentPage - 1) * container.pageSize)}}</th>
+                            <th>{{(i+1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
                             <td>{{doc.organisation}}</td>
                             <td>{{doc.receiver}}</td>
                             <td>{{doc.status}}</td>
@@ -136,32 +112,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="d-flex flex-row">
-                        <div class="p-2">
-                            <ngb-pagination [collectionSize]="container.collectionSize"
-                                            [pageSize]="container.pageSize"
-                                            [(page)]="container.currentPage"
-                                            [maxSize]="5"
-                                            [rotate]="true"
-                                            [boundaryLinks]="true"
-                                            (pageChange)="loadPage($event)">
-                            </ngb-pagination>
-                        </div>
-                        <div class="p-3">
-                            {{ 'Page size' | translate }}:
-                        </div>
-                        <div class="p-2">
-                            <ng-select [items]="pageSizes"
-                                       bindLabel="pageSize"
-                                       dropdownPosition="top"
-                                       [clearable]="false"
-                                       placeholder="&#8721;"
-                                       [(ngModel)]="selectedPageSize"
-                                       [searchable]="false"
-                                       (change)="loadPageSize()">
-                            </ng-select>
-                        </div>
-                    </div>
+                    <app-pagination [pagination]="pagination"></app-pagination>
                 </div>
             </div>
         </div>
