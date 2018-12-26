@@ -1,8 +1,6 @@
 package dk.erst.delis.task.codelist.csv;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +17,7 @@ import dk.erst.delis.task.codelist.CodeList;
 
 public class CodeListCsvReader<T> {
 
-	public List<T> readCodeList(CodeList codeList, Path path, Class<? extends T> dataClass) throws IOException, FileNotFoundException {
+	public List<T> readCodeList(CodeList codeList, Path path, Class<? extends T> dataClass) {
 		Charset charset = StandardCharsets.UTF_8;
 
 		HeaderColumnNameTranslateMappingStrategy<T> strategy = buildMappingStrategy(codeList, dataClass);
@@ -32,6 +30,8 @@ public class CodeListCsvReader<T> {
 
 			CsvToBean<T> csv = beanBuilder.build();
 			return csv.parse();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to read codeList "+codeList +" by path "+path, e);
 		}
 	}
 

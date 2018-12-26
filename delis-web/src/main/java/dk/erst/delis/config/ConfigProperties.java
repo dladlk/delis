@@ -8,12 +8,14 @@ import lombok.Data;
 @Data
 public class ConfigProperties {
 
-	private String storageDocumentRoot = "/delis/document";
+	private static String DEFAULT_ROOT = "../delis-resources/";
 
-	private String storageValidationRoot = "/delis/validation";
+	private String storageDocumentRoot = DEFAULT_ROOT + "document";
 
-	private String storageTransformationRoot = "/delis/transformation";
-	
-	private String storageCodeListsRoot = "../delis-resource/codelists";
+	private String storageValidationRoot = DEFAULT_ROOT + "validation";
+
+	private String storageTransformationRoot = DEFAULT_ROOT + "transformation";
+
+	private String storageCodeListsRoot = DEFAULT_ROOT + "codelists";
 
 }
