@@ -10,7 +10,7 @@ public class ConfigProperties {
 
 	private static String DEFAULT_ROOT = "../delis-resources/";
 
-	private String storageDocumentRoot = DEFAULT_ROOT + "document";
+	private String storageDocumentRoot = "/delis/document";
 
 	private String storageValidationRoot = DEFAULT_ROOT + "validation";
 
