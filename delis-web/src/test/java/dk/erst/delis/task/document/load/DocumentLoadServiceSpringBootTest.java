@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import dk.erst.delis.config.ConfigBean;
@@ -22,22 +22,44 @@ import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.task.identifier.load.IdentifierLoadService;
+import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTest;
+import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
+import dk.erst.delis.web.organisation.OrganisationService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RunWith(SpringRunner.class)
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-public class DocumentLoadServiceDbTest {
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = Replace.ANY)
+public class DocumentLoadServiceSpringBootTest {
 	
 	@Autowired
 	private DocumentRepository documentRepository;
 
+	@Autowired
+	private IdentifierResolverService identifierResolverService;
+
+	@Autowired
+	private IdentifierLoadService identifierLoadService;
+
+	@Autowired
+	private OrganisationService organisationService;
+
+	
 	@Test
 	public void testLoadFile() throws IOException {
 		ConfigBean config = new ConfigBean(new ConfigProperties());
-
-		DocumentLoadService dls = new DocumentLoadService(documentRepository, new DocumentParseService(), config);
+		
+		/*
+		 * Execute IdentifierLoadServiceTest to have default values for identifiers in db
+		 */
+		IdentifierLoadServiceTest ilsTest = new IdentifierLoadServiceTest();
+		ilsTest.setOrganisationService(organisationService);
+		ilsTest.setIdentifierLoadService(identifierLoadService);
+		ilsTest.loadTestIdentifiers();
+		
+		DocumentLoadService dls = new DocumentLoadService(documentRepository, new DocumentParseService(), config, identifierResolverService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);

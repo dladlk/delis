@@ -16,9 +16,12 @@ import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.DocumentRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
+import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.Organisation;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +37,16 @@ public class DocumentLoadServiceUnitTest {
 			return (Document)d.getArgument(0);
 		});
 
-		DocumentLoadService dls = new DocumentLoadService(documentRepository, new DocumentParseService(), config);
+		IdentifierResolverService identifierResolverService = mock(IdentifierResolverService.class);
+		when(identifierResolverService.resolve(any(String.class), any(String.class))).then(a -> {
+			Identifier i = new Identifier();
+			i.setOrganisation(new Organisation());
+			i.setType(a.getArgument(0));
+			i.setValue(a.getArgument(1));
+			return i;
+		});
+		
+		DocumentLoadService dls = new DocumentLoadService(documentRepository, new DocumentParseService(), config, identifierResolverService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);

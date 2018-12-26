@@ -21,6 +21,8 @@ import lombok.Data;
 		
 		@Index(name="I_ORGANISAION_ID", columnList="LAST_SYNC_ORGANISATION_FACT_ID"),
 
+		@Index(name="UK_UNIQUE_VALUE_TYPE", columnList="UNIQUE_VALUE_TYPE", unique = true),
+
 })
 public class Identifier {
 
@@ -42,6 +44,9 @@ public class Identifier {
 	
 	@Column(nullable = false, length=20)
 	private String type;
+	
+	@Column(name="UNIQUE_VALUE_TYPE", nullable = false, length = 40)
+	private String uniqueValueType;
 	
 	@Column(nullable = false)
 	private IdentifierStatus status;
