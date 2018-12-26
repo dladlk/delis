@@ -2,6 +2,7 @@ import {DateRangeModel} from '../../../models/date.range.model';
 
 export class DocumentsModel {
 
+    id: number;
     organisation: string; // Region Nord, Region Syd, Region Midt
     receiver: string; // EAN 9920191209017, EAN 9920191209024, EAN 9920191209093
     status: string;
@@ -15,6 +16,7 @@ export class DocumentsModel {
 
     constructor(model ?: any) {
         if (model) {
+            this.id = model.id;
             this.organisation = model.organisation;
             this.receiver = model.receiver;
             this.status = model.status;

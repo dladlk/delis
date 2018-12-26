@@ -90,4 +90,21 @@ export class DocumentsStaticService {
 
         return documents;
     }
+
+    getOneDocument(id: any) : DocumentsModel {
+        return new DocumentsModel(
+            {
+                "organisation": "Region Nord",
+                "receiver": "EAN 9920191209017",
+                "status": "VALIDATE_OK",
+                "lastError": null,
+                "documentType": "INVOICE",
+                "ingoingFormat": "CII",
+                "received": "11-12-2018",
+                "issued": "11-12-2018",
+                "senderName": "Lego Spain",
+                "receiverName": "Region Midt"
+            }
+        );
+    }
 }

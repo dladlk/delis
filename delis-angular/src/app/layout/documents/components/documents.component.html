@@ -2,10 +2,11 @@
     <app-page-header [heading]="'documents.header'" [icon]="'fa-book'"></app-page-header>
     <div class="container-fluid">
         <div class="row">
-            <div class="card">
+            <div class="card" style="min-height: 768px">
                 <div class="card-header"><span>{{ 'documents.table.header' | translate }}:</span></div>
+                <br>
+                <app-pagination [pagination]="pagination"></app-pagination>
                 <div class="card-body table-responsive">
-                    <app-pagination [pagination]="pagination"></app-pagination>
                     <table class="table table-hover table-sm">
                         <thead>
                         <tr>
@@ -97,8 +98,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let doc of documents; let i = index">
-                            <th>{{(i+1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
+                        <tr *ngFor="let doc of documents; let i = index" [routerLink]="['/documents/', 10]">
+                            <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
                             <td>{{doc.organisation}}</td>
                             <td>{{doc.receiver}}</td>
                             <td>{{doc.status}}</td>
@@ -112,8 +113,8 @@
                         </tr>
                         </tbody>
                     </table>
-                    <app-pagination [pagination]="pagination"></app-pagination>
                 </div>
+                <app-pagination [pagination]="pagination"></app-pagination>
             </div>
         </div>
     </div>
