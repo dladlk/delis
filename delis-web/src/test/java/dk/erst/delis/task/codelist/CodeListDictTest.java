@@ -20,6 +20,10 @@ public class CodeListDictTest {
 		assertEquals("GLN", s.getIdentifierTypeSchemeID("0088"));
 		assertEquals("0088", s.getIdentifierTypeIcdValue("GLN"));
 		assertEquals("0088", s.getIdentifierTypeIcdValue("gln"));
+		
+		assertEquals("DK:CVR", s.getIdentifierTypeSchemeID("0184"));
+		assertEquals("0184", s.getIdentifierTypeIcdValue("DK:CVR"));
+		assertEquals("0184", s.getIdentifierTypeIcdValue("dk:cvr"));
 	}
 
 }
