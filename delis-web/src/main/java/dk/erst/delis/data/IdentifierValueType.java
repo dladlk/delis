@@ -2,7 +2,7 @@ package dk.erst.delis.data;
 
 public enum IdentifierValueType {
 
-	EAN("EAN"), DK_CVR("CVR"), OTHER("OTHER");
+	GLN("GLN"), DK_CVR("DK:CVR"), OTHER("OTHER");
 	
 	private String code;
 

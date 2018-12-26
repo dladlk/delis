@@ -197,7 +197,7 @@ public class IdentifierLoadService {
 		if (value != null) {
 			if (value.length() == 13) {
 				if (value.matches("\\d{13}")) {
-					return IdentifierValueType.EAN.getCode();
+					return IdentifierValueType.GLN.getCode();
 				}
 			}
 			if (value.length() == 10 && value.matches("DK\\d{8}")) {
