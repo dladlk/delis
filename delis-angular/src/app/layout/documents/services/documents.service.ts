@@ -55,6 +55,8 @@ export class DocumentsService {
         return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
     }
 
+    getOneDocument(id: any) {}
+
     private static extractData(res: Response) {
         return res || { };
     }
