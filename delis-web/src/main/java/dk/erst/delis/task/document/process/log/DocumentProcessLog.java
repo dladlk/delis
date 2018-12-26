@@ -1,4 +1,4 @@
-package dk.erst.delis.task.document.process;
+package dk.erst.delis.task.document.process.log;
 
 import java.util.ArrayList;
 import java.util.List;

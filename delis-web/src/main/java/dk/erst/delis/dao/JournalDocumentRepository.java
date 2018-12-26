@@ -9,5 +9,5 @@ import dk.erst.delis.data.JournalDocument;
 
 public interface JournalDocumentRepository extends PagingAndSortingRepository<JournalDocument, Long> {
 
-	List<JournalDocument> findTop5ByDocumentOrderByIdDesc(Document document);
+	List<JournalDocument> findByDocumentOrderByIdDesc(Document document);
 }

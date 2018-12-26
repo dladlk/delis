@@ -59,7 +59,7 @@ public class DocumentController {
 		}
 
 		model.addAttribute("document", document);
-		model.addAttribute("lastJournalList", journalDocumentRepository.findTop5ByDocumentOrderByIdDesc(document));
+		model.addAttribute("lastJournalList", journalDocumentRepository.findByDocumentOrderByIdDesc(document));
 
 		return "/document/view";
 	}

@@ -15,6 +15,8 @@ import dk.erst.delis.data.Document;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 
 public class DocumentProcessServiceTest {
 

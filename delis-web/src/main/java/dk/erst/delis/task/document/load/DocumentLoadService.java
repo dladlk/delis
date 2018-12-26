@@ -16,6 +16,7 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.DocumentRepository;
 import dk.erst.delis.data.Document;
@@ -51,17 +52,18 @@ public class DocumentLoadService {
 		this.identifierResolverService = identifierResolverService;
 	}
 
-	public void loadFromInput() {
-		final Path inputFolderPath = config.getStorageInputPath();
-
+	public StatData loadFromInput(Path inputFolderPath) {
+		final StatData statData = new StatData();
+		
 		try {
 			Files.walkFileTree(inputFolderPath, new SimpleFileVisitor<Path>() {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					if (attrs.isRegularFile()) {
-						Path fileName = file.getFileName();
+						String fileName = file.getFileName().toString();
 						if (fileName.endsWith(".xml") && !fileName.startsWith(METADATA_XML)) {
-							loadFile(file);
+							Document d = loadFile(file);
+							statData.increment(d == null ? null : d.getDocumentStatus().name());
 						}
 					}
 					return FileVisitResult.CONTINUE;
@@ -70,8 +72,14 @@ public class DocumentLoadService {
 		} catch (IOException e) {
 			log.error("Failed to scan folder " + inputFolderPath, e);
 		}
+		
+		return statData;
 	}
 
+	public Path getInputFolderPath() {
+		return config.getStorageInputPath();
+	}
+	
 	public Document loadFile(Path xmlFilePath) {
 		long start = System.currentTimeMillis();
 		log.info("Loading file " + xmlFilePath);

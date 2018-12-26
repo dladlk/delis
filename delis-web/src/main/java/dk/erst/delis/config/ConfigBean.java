@@ -36,14 +36,14 @@ public class ConfigBean {
 	}
 
 	public Path getStorageValidationPath() {
-		return Paths.get(this.configProperties.getStorageValidationRoot());
+		return Paths.get(this.configProperties.getStorageValidationRoot()).toAbsolutePath();
 	}
 
 	public Path getStorageTransformationPath() {
-		return Paths.get(this.configProperties.getStorageTransformationRoot());
+		return Paths.get(this.configProperties.getStorageTransformationRoot()).toAbsolutePath();
 	}
 	
 	public Path getStorageCodeListPath() {
-		return Paths.get(this.configProperties.getStorageCodeListsRoot());
+		return Paths.get(this.configProperties.getStorageCodeListsRoot()).toAbsolutePath();
 	}
 }
