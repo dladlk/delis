@@ -26,7 +26,7 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierPublish}">Load from files</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierLoad}">Load from files</a>
 					</td>
 					<td>
 						Scan folder with exported list of identifiers per organisation and synchronize list of identifiers with database
@@ -45,7 +45,7 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierPublish}">Load</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentLoad}">Load</a>
 					</td>
 					<td>
 						Scan IN folder of Domibus and Oxalis, resolve format, document details, receiver and load to database.
@@ -53,7 +53,7 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierPublish}">Validate</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentValidate}">Validate</a>
 					</td>
 					<td>
 						Lookup db for Document records with status = LOADED_OK, validate ingoing format, transform to intermediate/final formats and validate them.
@@ -61,7 +61,7 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierPublish}">Deliver</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentDeliver}">Deliver</a>
 					</td>
 					<td>
 						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
