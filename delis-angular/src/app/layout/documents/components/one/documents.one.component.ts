@@ -8,6 +8,7 @@ import {DocumentsService} from "../../services/documents.service";
 import {TranslateService} from "@ngx-translate/core";
 import {LocaleService} from "../../../../service/locale.service";
 import {DocumentsModel} from "../../models/documents.model";
+import {HeaderModel} from "../../../components/header/header.model";
 
 @Component({
     selector: 'app-documents-one',
@@ -19,6 +20,7 @@ export class DocumentsOneComponent implements OnInit {
 
     env = environment;
 
+    pageHeaders: HeaderModel[] = [];
     document: DocumentsModel;
 
     constructor(
@@ -29,6 +31,9 @@ export class DocumentsOneComponent implements OnInit {
         private documentService: DocumentsService,
         private documentsStaticService: DocumentsStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.pageHeaders.push(
+            { routerLink : '/documents', heading: 'documents.header', icon: 'fa fa-book'}
+        );
     }
 
     ngOnInit(): void {
@@ -37,8 +42,7 @@ export class DocumentsOneComponent implements OnInit {
         //         this.service.getOneDocument(params.get('id')))
         // );
 
-        let id = this.route.snapshot.paramMap.get('id');
-        console.log('id = ' + id);
+        let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         if (this.env.production) {
             // this.document = this.documentService.getOneDocument(id);
         } else {

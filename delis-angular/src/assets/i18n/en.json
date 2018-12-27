@@ -21,6 +21,7 @@
     "dashboard.details" : "View Details",
 
     "documents.header" : "Documents",
+    "documents.header.details" : "Document details",
     "documents.table.header" : "Documents Overview",
     "documents.table.columnName.Organisation" : "Organisation",
     "documents.table.columnName.Receiver" : "Receiver",

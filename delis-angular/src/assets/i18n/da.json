@@ -21,6 +21,7 @@
   "dashboard.details" : "Se detaljer",
 
   "documents.header" : "Dokumenter",
+  "documents.header.details" : "Dokument detaljer",
   "documents.table.header" : "Dokumenter Oversigt",
   "documents.table.columnName.Organisation" : "Organisation",
   "documents.table.columnName.Receiver" : "Modtager",

@@ -1,51 +1,62 @@
 <div [@routerTransition]>
-    <app-page-header [heading]="'documents.header'" [icon]="'fa-book'"></app-page-header>
-    <div class="container-fluid">
+    <app-page-header [heading]="'documents.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div class="container">
         <div class="row">
-            <div class="card">
-                <div class="card-body table-responsive">
-                    <table class="table table-hover">
-                        <tr>
-                            <td>Organisation</td>
-                            <td>{{document.organisation}}</td>
-                        </tr>
-                        <tr>
-                            <td>Receiver</td>
-                            <td>{{document.receiver}}</td>
-                        </tr>
-                        <tr>
-                            <td>Status</td>
-                            <td>{{document.status}}</td>
-                        </tr>
-                        <tr>
-                            <td>LastError</td>
-                            <td>{{document.lastError}}</td>
-                        </tr>
-                        <tr>
-                            <td>DocumentType</td>
-                            <td>{{document.documentType}}</td>
-                        </tr>
-                        <tr>
-                            <td>IngoingFormat</td>
-                            <td>{{document.ingoingFormat}}</td>
-                        </tr>
-                        <tr>
-                            <td>Received</td>
-                            <td>{{document.received}}</td>
-                        </tr>
-                        <tr>
-                            <td>Issued</td>
-                            <td>{{document.issued}}</td>
-                        </tr>
-                        <tr>
-                            <td>SenderName</td>
-                            <td>{{document.senderName}}</td>
-                        </tr>
-                        <tr>
-                            <td>ReceiverName</td>
-                            <td>{{document.receiverName}}</td>
-                        </tr>
-                    </table>
+            <div class="col-md-12 col-md-offset-0">
+                <div class="panel panel-default" style="margin-top:45px">
+                    <div class="panel-heading text-center">
+                        <h1>{{document.organisation}}</h1>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <td><strong>param</strong></td>
+                                <td><strong>info</strong></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Receiver</td>
+                                <td>{{document.receiver}}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>{{document.status}}</td>
+                            </tr>
+                            <tr>
+                                <td>Last Error</td>
+                                <td>{{document.lastError}}</td>
+                            </tr>
+                            <tr>
+                                <td>Document Type</td>
+                                <td>{{document.documentType}}</td>
+                            </tr>
+                            <tr>
+                                <td>Ingoing Format</td>
+                                <td>{{document.ingoingFormat}}</td>
+                            </tr>
+                            <tr>
+                                <td>Received</td>
+                                <td>{{document.received}}</td>
+                            </tr>
+                            <tr>
+                                <td>Issued</td>
+                                <td>{{document.issued}}</td>
+                            </tr>
+                            <tr>
+                                <td>Sender Name</td>
+                                <td>{{document.senderName}}</td>
+                            </tr>
+                            <tr>
+                                <td>Receiver Name</td>
+                                <td>{{document.receiverName}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
