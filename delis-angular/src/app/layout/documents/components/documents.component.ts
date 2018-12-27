@@ -248,117 +248,33 @@ export class DocumentsComponent implements OnInit {
     }
 
     clickFilter(target: string) {
-        if (target === COLUMN_NAME_ORGANIZATION) {
-            this.clickOrganisation();
-        }
-        if (target === COLUMN_NAME_RECEIVER) {
-            this.clickReceiver();
-        }
-        if (target === COLUMN_NAME_STATUS) {
-            this.clickStatus();
-        }
-        if (target === COLUMN_NAME_LAST_ERROR) {
-            this.clickLastError();
-        }
-        if (target === COLUMN_NAME_DOCUMENT_TYPE) {
-            this.clickDocumentType();
-        }
-        if (target === COLUMN_NAME_INGOING_FORMAT) {
-            this.clickIngoingFormat();
-        }
-        if (target === COLUMN_NAME_RECEIVED) {
-            this.clickReceived();
-        }
-        if (target === COLUMN_NAME_ISSUED) {
-            this.clickIssued();
-        }
-        if (target === COLUMN_NAME_SENDER_NAME) {
-            this.clickSenderName();
-        }
-        if (target === COLUMN_NAME_RECEIVER_NAME) {
-            this.clickReceiverName();
-        }
+        this.clickProcess(target);
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    private clickOrganisation() {
-        this.filter.countClickOrganisation++;
-        if (this.filter.countClickOrganisation > 2) {
-            this.filter.countClickOrganisation = 0;
+    clickProcess(columnName: string) {
+        let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
+        countClick++;
+        if (countClick > 2) {
+            this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+        } else {
+            this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick = this.filter.countClickOrganisation;
+        this.clearFilter(columnName);
     }
 
-    private clickReceiver() {
-        this.filter.countClickReceiver++;
-        if (this.filter.countClickReceiver > 2) {
-            this.filter.countClickReceiver = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick = this.filter.countClickReceiver;
-    }
-
-    private clickStatus() {
-        this.filter.countClickStatus++;
-        if (this.filter.countClickStatus > 2) {
-            this.filter.countClickStatus = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick = this.filter.countClickStatus;
-    }
-
-    private clickLastError() {
-        this.filter.countClickLastError++;
-        if (this.filter.countClickLastError > 2) {
-            this.filter.countClickLastError = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick = this.filter.countClickLastError;
-    }
-
-    private clickDocumentType() {
-        this.filter.countClickDocumentType++;
-        if (this.filter.countClickDocumentType > 2) {
-            this.filter.countClickDocumentType = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick = this.filter.countClickDocumentType;
-    }
-
-    private clickIngoingFormat() {
-        this.filter.countClickIngoingFormat++;
-        if (this.filter.countClickIngoingFormat > 2) {
-            this.filter.countClickIngoingFormat = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick = this.filter.countClickIngoingFormat;
-    }
-
-    private clickReceived() {
-        this.filter.countClickReceived++;
-        if (this.filter.countClickReceived > 2) {
-            this.filter.countClickReceived = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick = this.filter.countClickReceived;
-    }
-
-    private clickIssued() {
-        this.filter.countClickIssued++;
-        if (this.filter.countClickIssued > 2) {
-            this.filter.countClickIssued = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick = this.filter.countClickIssued;
-    }
-
-    private clickSenderName() {
-        this.filter.countClickSenderName++;
-        if (this.filter.countClickSenderName > 2) {
-            this.filter.countClickSenderName = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick = this.filter.countClickSenderName;
-    }
-
-    private clickReceiverName() {
-        this.filter.countClickReceiverName++;
-        if (this.filter.countClickReceiverName > 2) {
-            this.filter.countClickReceiverName = 0;
-        }
-        this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick = this.filter.countClickReceiverName;
+    private clearFilter(columnName: string) {
+        this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
+        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
+        this.filter.countClickReceiver = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick;
+        this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
+        this.filter.countClickLastError = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick;
+        this.filter.countClickDocumentType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick;
+        this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
+        this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
+        this.filter.countClickIssued = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick;
+        this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
+        this.filter.countClickReceiverName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick;
     }
 }

@@ -1,4 +1,4 @@
-import {DateRangeModel} from '../../../models/date.range.model';
+import { DateRangeModel } from '../../../models/date.range.model';
 
 export class DocumentsModel {
 
