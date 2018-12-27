@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import dk.erst.delis.dao.JournalOrganisationRepository;
-import dk.erst.delis.dao.SyncOrganisationFactRepository;
+import dk.erst.delis.dao.JournalOrganisationDaoRepository;
+import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.SyncOrganisationFact;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
@@ -28,10 +28,10 @@ public class OrganisationController {
 	private OrganisationService organisationService;
 	
 	@Autowired
-	private SyncOrganisationFactRepository syncOrganisationFactRepository;
+	private SyncOrganisationFactDaoRepository syncOrganisationFactDaoRepository;
 
 	@Autowired
-	private JournalOrganisationRepository journalOrganisationRepository;
+	private JournalOrganisationDaoRepository journalOrganisationDaoRepository;
 
 	@Autowired
 	private OrganisationStatisticsService organisationStatisticsService;
@@ -62,8 +62,8 @@ public class OrganisationController {
 		
 		model.addAttribute("organisation", organisation);
 		model.addAttribute("stat", organisationStatisticsService.loadOrganisationIdentifierStatMap(id));
-		model.addAttribute("lastJournalList", journalOrganisationRepository.findTop5ByOrganisationOrderByIdDesc(organisation));
-		model.addAttribute("lastSyncFactList", syncOrganisationFactRepository.findTop5ByOrganisationOrderByIdDesc(organisation));
+		model.addAttribute("lastJournalList", journalOrganisationDaoRepository.findTop5ByOrganisationOrderByIdDesc(organisation));
+		model.addAttribute("lastSyncFactList", syncOrganisationFactDaoRepository.findTop5ByOrganisationOrderByIdDesc(organisation));
 		
 		return "organisation/view";
 	}

@@ -9,19 +9,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.load.DocumentLoadService;
-import dk.erst.delis.task.document.process.DocumentListProcessService;
+import dk.erst.delis.task.document.process.DocumentProcessService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
 public class TaskController {
+	
+	@Autowired
+	private ConfigBean configBean;
 
 	@Autowired
 	private DocumentLoadService documentLoadService;
 
 	@Autowired
-	private DocumentListProcessService documentListProcessService;
+	private DocumentProcessService documentProcessService;
 
 	@GetMapping("/task/index")
 	public String index() {
@@ -40,7 +44,7 @@ public class TaskController {
 
 	@GetMapping("/task/documentLoad")
 	public String documentLoad(Model model) {
-		Path inputFolderPath = documentLoadService.getInputFolderPath().toAbsolutePath();
+		Path inputFolderPath = configBean.getStorageInputPath().toAbsolutePath();
 
 		File inputFolderFile = inputFolderPath.toFile();
 		if (!inputFolderFile.exists() || !inputFolderFile.isDirectory()) {
@@ -64,7 +68,7 @@ public class TaskController {
 	@GetMapping("/task/documentValidate")
 	public String documentValidate(Model model) {
 		try {
-			StatData sd = documentListProcessService.processLoaded();
+			StatData sd = documentProcessService.processLoaded();
 			String message = "Done processing of loaded files in " + sd.toDurationString() + " with result: " + sd.toStatString();
 			model.addAttribute("message", message);
 		} catch (Exception e) {

@@ -21,4 +21,12 @@ public class DocumentDaoImpl implements DocumentDao {
 		q.executeUpdate();
 	}
 
+	@Override
+	public void updateOutgoingRelativePath(Document document) {
+		Query q = entityManager.createQuery("update Document set outgoingRelativePath = :outgoingRelativePath where id = :id");
+		q.setParameter("outgoingRelativePath", document.getOutgoingRelativePath());
+		q.setParameter("id", document.getId());
+		q.executeUpdate();		
+	}
+
 }

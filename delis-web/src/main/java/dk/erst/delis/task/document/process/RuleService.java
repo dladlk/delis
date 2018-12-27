@@ -4,31 +4,37 @@ import static dk.erst.delis.data.DocumentFormatFamily.BIS3;
 import static dk.erst.delis.data.DocumentFormatFamily.CII;
 import static dk.erst.delis.data.DocumentFormatFamily.OIOUBL;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.data.DocumentFormatFamily;
 import dk.erst.delis.data.RuleDocumentTransformation;
 import dk.erst.delis.data.RuleDocumentValidation;
 import dk.erst.delis.data.RuleDocumentValidationType;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class RuleService {
 
 	private List<RuleDocumentTransformation> transformationList;
 	private List<RuleDocumentValidation> validationList;
+	private ConfigBean configBean;
 
-
-	public RuleService() {
+	@Autowired
+	public RuleService(ConfigBean configBean) {
+		this.configBean = configBean;
 		this.validationList = buildHardcodedValidationList();
 		this.transformationList = buildHardcoded();
-		
 	}
 	
 	private List<RuleDocumentValidation> buildHardcodedValidationList() {
@@ -139,5 +145,17 @@ public class RuleService {
 				.findFirst();
 
 		return findFirst.orElse(null);
+	}
+	
+	public Path filePath(RuleDocumentValidation r) {
+		Path path = configBean.getStorageValidationPath().resolve(r.getRootPath());
+		log.debug("Built validation path " + path);
+		return path;
+	}
+
+	public Path filePath(RuleDocumentTransformation r) {
+		Path path = configBean.getStorageTransformationPath().resolve(r.getRootPath());
+		log.debug("Built transformation path " + path);
+		return path;
 	}
 }

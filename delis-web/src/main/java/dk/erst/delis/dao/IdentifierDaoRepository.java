@@ -10,7 +10,7 @@ import dk.erst.delis.data.Identifier;
 import dk.erst.delis.data.IdentifierPublishingStatus;
 import dk.erst.delis.data.Organisation;
 
-public interface IdentifierRepository extends JpaRepository<Identifier, Long>, IdentifierDao {
+public interface IdentifierDaoRepository extends JpaRepository<Identifier, Long>, IdentifierDao {
 
 	@Query("select s.organisation.id as organisationId, s.status as status, s.publishingStatus as publishingStatus, count(*) as identifierCount "
 			+ "from Identifier s "

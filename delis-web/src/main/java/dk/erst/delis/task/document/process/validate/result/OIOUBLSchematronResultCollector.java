@@ -28,12 +28,9 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 
 	@Override
 	public List<String> collectErrorList(Document result) {
-		List<String> errorList = null;
+		List<String> errorList = new ArrayList<>();
 		NodeList errorTagList = result.getElementsByTagName("Description");
 		for (int i = 0; i < errorTagList.getLength(); i++) {
-			if (errorList == null) {
-				errorList = new ArrayList<String>();
-			}
 			Node item = errorTagList.item(i);
 
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {

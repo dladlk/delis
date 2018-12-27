@@ -9,7 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
 
-public interface DocumentRepository extends PagingAndSortingRepository<Document, Long>, DocumentDao {
+public interface DocumentDaoRepository extends PagingAndSortingRepository<Document, Long>, DocumentDao {
 
 	@Query("select s.documentStatus as documentStatus, count(*) as documentCount "
 			+ "from Document s "

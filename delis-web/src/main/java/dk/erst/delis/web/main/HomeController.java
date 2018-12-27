@@ -9,9 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import dk.erst.delis.dao.DocumentRepository;
-import dk.erst.delis.dao.IdentifierRepository;
-import dk.erst.delis.dao.OrganisationRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.IdentifierDaoRepository;
+import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.data.IdentifierPublishingStatus;
 import lombok.Data;
@@ -20,22 +20,22 @@ import lombok.Data;
 public class HomeController {
 
 	@Autowired
-	private OrganisationRepository organisationRepository;
+	private OrganisationDaoRepository organisationDaoRepository;
 	@Autowired
-	private IdentifierRepository identifierRepository;
+	private IdentifierDaoRepository identifierDaoRepository;
 	@Autowired
-	private DocumentRepository documentRepository;
+	private DocumentDaoRepository documentDaoRepository;
 
 	@RequestMapping("/home")
 	public String index(Model model, Authentication authentication) {
 		
-		model.addAttribute("organisationCount", organisationRepository.count());
+		model.addAttribute("organisationCount", organisationDaoRepository.count());
 		
-		model.addAttribute("identifierFailedCount", identifierRepository.countByPublishingStatus(IdentifierPublishingStatus.FAILED));
-		model.addAttribute("identifierPendingCount", identifierRepository.countByPublishingStatus(IdentifierPublishingStatus.PENDING));
+		model.addAttribute("identifierFailedCount", identifierDaoRepository.countByPublishingStatus(IdentifierPublishingStatus.FAILED));
+		model.addAttribute("identifierPendingCount", identifierDaoRepository.countByPublishingStatus(IdentifierPublishingStatus.PENDING));
 
 		DocumentStat documentStat = new DocumentStat();
-		List<Map<String,Object>> statusStat = documentRepository.loadDocumentStatusStat();
+		List<Map<String,Object>> statusStat = documentDaoRepository.loadDocumentStatusStat();
 		for (Map<String, Object> map : statusStat) {
 			DocumentStatus st = (DocumentStatus) map.get("documentStatus");
 			Long count = (Long) map.get("documentCount");

@@ -27,12 +27,9 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 	}
 
 	public List<String> collectErrorList(Document result) {
-		List<String> errorList = null;
+		List<String> errorList = new ArrayList<String>();
 		NodeList failedAssertList = result.getElementsByTagNameNS("http://purl.oclc.org/dsdl/svrl", "failed-assert");
 		for (int i = 0; i < failedAssertList.getLength(); i++) {
-			if (errorList == null) {
-				errorList = new ArrayList<String>();
-			}
 			Node item = failedAssertList.item(i);
 
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {

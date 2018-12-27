@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.dao.DocumentRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.data.Identifier;
@@ -21,6 +21,7 @@ import dk.erst.delis.data.Organisation;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,8 +32,8 @@ public class DocumentLoadServiceUnitTest {
 	public void testLoadFile() throws IOException {
 		ConfigBean config = new ConfigBean(new ConfigProperties());
 
-		DocumentRepository documentRepository = mock(DocumentRepository.class);
-		when(documentRepository.save(any(Document.class))).then(d -> {
+		DocumentDaoRepository documentDaoRepository = mock(DocumentDaoRepository.class);
+		when(documentDaoRepository.save(any(Document.class))).then(d -> {
 			log.info("Requested to save " + d);
 			return (Document)d.getArgument(0);
 		});
@@ -46,7 +47,9 @@ public class DocumentLoadServiceUnitTest {
 			return i;
 		});
 		
-		DocumentLoadService dls = new DocumentLoadService(documentRepository, new DocumentParseService(), config, identifierResolverService);
+		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService(config);
+		
+		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);

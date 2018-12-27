@@ -101,7 +101,7 @@
 					<th>Duration, ms</th>
 				</tr>
 				<tr th:each="r,iter : ${lastJournalList}">
-					<td th:text="${r.createTime}"></td>
+					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
 					<td th:text="${r.message}"></td>
 					<td th:text="${r.durationMs}"/>
 				</tr>
