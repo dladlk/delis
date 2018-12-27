@@ -1,22 +1,39 @@
-package dk.erst.delis.task.identifier.publish;
+package dk.erst.delis.task.identifier.publish.bdxr;
 
-import no.difi.commons.bdx.jaxb.smp._2016._05.*;
-import no.difi.vefa.peppol.common.util.ExceptionUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import dk.erst.delis.task.identifier.publish.PublishProperties;
+import dk.erst.delis.task.identifier.publish.ServiceEndpoint;
+import no.difi.commons.bdx.jaxb.smp._2016._05.DocumentIdentifierType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.EndpointType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ObjectFactory;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ParticipantIdentifierType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ProcessIdentifierType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ProcessListType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ProcessType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceEndpointList;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceGroupType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceInformationType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceMetadataReferenceCollectionType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceMetadataType;
+import no.difi.commons.bdx.jaxb.smp._2016._05.SignedServiceMetadataType;
+import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import no.difi.vefa.peppol.common.util.ExceptionUtil;
 
 @Service
 public class SmpXmlService {
@@ -27,13 +44,13 @@ public class SmpXmlService {
     private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class,
             () -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
 
-    public String createServiceGroupXml(PublishProperties publishProperties) {
-        ParticipantIdentifierType participantIdentifier = new ParticipantIdentifierType();
-        participantIdentifier.setScheme(publishProperties.getParticipantIdentifierScheme());
-        participantIdentifier.setValue(publishProperties.getParticipantIdentifierValue());
+    public String createServiceGroupXml(ParticipantIdentifier identifier, PublishProperties publishProperties) {
+        ParticipantIdentifierType participantIdentifier = buildParticipantIdentifierType(identifier);
+        
         ServiceGroupType serviceGroup = new ServiceGroupType();
         serviceGroup.setParticipantIdentifier(participantIdentifier);
         serviceGroup.setServiceMetadataReferenceCollection(new ServiceMetadataReferenceCollectionType());
+        
         OutputStream result = createResultStream();
         try {
             JAXB_CONTEXT.createMarshaller().marshal(OBJECT_FACTORY.createServiceGroup(serviceGroup), result);
@@ -43,22 +60,32 @@ public class SmpXmlService {
         return result.toString();
     }
 
-    public String createServiceMetadataXml(PublishProperties publishProperties) {
-        ParticipantIdentifierType participantIdentifierType = new ParticipantIdentifierType();
-        participantIdentifierType.setScheme(publishProperties.getParticipantIdentifierScheme());
-        participantIdentifierType.setValue(publishProperties.getParticipantIdentifierValue());
+	private ParticipantIdentifierType buildParticipantIdentifierType(ParticipantIdentifier identifier) {
+		ParticipantIdentifierType participantIdentifier = new ParticipantIdentifierType();
+        participantIdentifier.setScheme(identifier.getScheme().getIdentifier());
+        participantIdentifier.setValue(identifier.getIdentifier());
+		return participantIdentifier;
+	}
+
+    public String createServiceMetadataXml(ParticipantIdentifier identifier, PublishProperties publishProperties) {
+        ParticipantIdentifierType participantIdentifierType = buildParticipantIdentifierType(identifier);
+        
         DocumentIdentifierType documentIdentifier = new DocumentIdentifierType();
         documentIdentifier.setScheme(publishProperties.getDocumentIdentifierScheme());
         documentIdentifier.setValue(publishProperties.getDocumentIdentifierValue());
+        
         ServiceInformationType serviceInformation = new ServiceInformationType();
         serviceInformation.setParticipantIdentifier(participantIdentifierType);
         serviceInformation.setDocumentIdentifier(documentIdentifier);
+        
         ProcessListType processListType = new ProcessListType();
         List<ProcessType> processList = processListType.getProcess();
         processList.addAll(createProcessList(publishProperties));
         serviceInformation.setProcessList(processListType);
+        
         ServiceMetadataType serviceMetadata = new ServiceMetadataType();
         serviceMetadata.setServiceInformation(serviceInformation);
+        
         OutputStream result = createResultStream();
         try {
             JAXB_CONTEXT.createMarshaller().marshal(OBJECT_FACTORY.createServiceMetadata(serviceMetadata), result);
@@ -70,14 +97,17 @@ public class SmpXmlService {
 
     private List<ProcessType> createProcessList(PublishProperties publishProperties) {
         ArrayList<ProcessType> result = new ArrayList<>();
+        
         ProcessType process = new ProcessType();
         ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
         processIdentifier.setScheme(publishProperties.getProcessIdentifierScheme());
         processIdentifier.setValue(publishProperties.getProcessIdentifierValue());
         process.setProcessIdentifier(processIdentifier);
+        
         ServiceEndpointList serviceEndpoint = new ServiceEndpointList();
         List<EndpointType> endpointList = serviceEndpoint.getEndpoint();
         List<ServiceEndpoint> endpoints = publishProperties.getEndpoints();
+        
         for (ServiceEndpoint endpoint : endpoints) {
             EndpointType resultEndpoint = new EndpointType();
             resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());

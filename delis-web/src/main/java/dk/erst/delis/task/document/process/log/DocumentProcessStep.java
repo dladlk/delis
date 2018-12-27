@@ -1,4 +1,4 @@
-package dk.erst.delis.task.document.process;
+package dk.erst.delis.task.document.process.log;
 
 import dk.erst.delis.data.DocumentErrorCode;
 import dk.erst.delis.data.RuleDocumentTransformation;

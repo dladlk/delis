@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.ConfigValueRepository;
 import dk.erst.delis.data.ConfigValue;
 import dk.erst.delis.data.ConfigValueType;
@@ -18,10 +20,18 @@ import dk.erst.delis.data.ConfigValueType;
 public class SetupController {
 
 	@Autowired
+	private ConfigBean configBean;
+	
+	@Autowired
+	private ConfigProperties configProperties;
+	
+	@Autowired
 	private ConfigValueRepository configValueRepository;
 	
 	@GetMapping("/setup/index")
 	public String index(Model model) {
+		model.addAttribute("configBean", configBean);
+		model.addAttribute("configProperties", configProperties);
 		model.addAttribute("configList", configValueRepository.findAll(Sort.by("configValueType")));
 		return "/setup/index";
 	}

@@ -1,0 +1,24 @@
+package dk.erst.delis.dao.impl;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import dk.erst.delis.dao.DocumentDao;
+import dk.erst.delis.data.Document;
+
+public class DocumentDaoImpl implements DocumentDao {
+
+	@Autowired
+	private EntityManager entityManager;
+
+	@Override
+	public void updateDocumentStatus(Document document) {
+		Query q = entityManager.createQuery("update Document set documentStatus = :documentStatus where id = :id");
+		q.setParameter("documentStatus", document.getDocumentStatus());
+		q.setParameter("id", document.getId());
+		q.executeUpdate();
+	}
+
+}

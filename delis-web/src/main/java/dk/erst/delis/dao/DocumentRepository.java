@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import dk.erst.delis.data.Document;
+import dk.erst.delis.data.DocumentStatus;
 
-public interface DocumentRepository extends PagingAndSortingRepository<Document, Long> {
+public interface DocumentRepository extends PagingAndSortingRepository<Document, Long>, DocumentDao {
 
 	@Query("select s.documentStatus as documentStatus, count(*) as documentCount "
 			+ "from Document s "
@@ -16,4 +17,5 @@ public interface DocumentRepository extends PagingAndSortingRepository<Document,
 			) 
 	List<Map<String, Object>> loadDocumentStatusStat();
 	
+	List<Document> findTop5ByDocumentStatusOrderByIdAsc(DocumentStatus documentStatus);
 }

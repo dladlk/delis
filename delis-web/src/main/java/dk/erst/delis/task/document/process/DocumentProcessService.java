@@ -19,6 +19,8 @@ import dk.erst.delis.data.RuleDocumentTransformation;
 import dk.erst.delis.data.RuleDocumentValidation;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.XSLTUtil;
+import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.SchemaValidator;
 import dk.erst.delis.task.document.process.validate.SchematronValidator;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
@@ -31,7 +33,7 @@ public class DocumentProcessService {
 
 	private final RuleService ruleService;
 	private final ConfigBean config;
-	private DocumentParseService documentParseService;
+	private final DocumentParseService documentParseService;
 
 	@Autowired
 	public DocumentProcessService(RuleService ruleService, DocumentParseService documentParseService, ConfigBean config) {
