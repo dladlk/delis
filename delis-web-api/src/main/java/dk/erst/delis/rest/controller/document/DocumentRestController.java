@@ -15,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.validation.constraints.Min;
 import java.io.*;
 import java.util.Comparator;
 import java.util.List;
@@ -37,6 +39,21 @@ public class DocumentRestController {
     @GetMapping
     public ResponseEntity getDocumentList(WebRequest webRequest) {
         return ResponseEntity.ok(getContainer(webRequest));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getDocumentById(@PathVariable @Min(1) long id) {
+        return ResponseEntity.ok(getOneDocumentById(id));
+    }
+
+    private TempDocument getOneDocumentById(long id) {
+
+        TempDocument document = Objects.requireNonNull(loadDocuments()).stream().filter(doc -> doc.id == id).findAny().orElse(null);
+        if (document != null) {
+            return document;
+        }
+
+        return null;
     }
 
     private PageContainer<TempDocument> getContainer(WebRequest webRequest) {
@@ -275,6 +292,7 @@ public class DocumentRestController {
     @Setter
     private static class TempDocument {
 
+        private long id;
         private String organisation;
         private String receiver;
         private DocumentStatus status;

@@ -132,7 +132,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     private currentProdDocuments(currentPage: number, sizeElement: number) {
-        this.documentsService.getAnyDocuments(currentPage, sizeElement, this.filter).subscribe(
+        this.documentsService.getListDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
                 this.pagination.collectionSize = data["collectionSize"];
                 this.pagination.currentPage = data["currentPage"];

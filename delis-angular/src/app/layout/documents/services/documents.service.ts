@@ -13,7 +13,7 @@ export class DocumentsService {
 
     constructor(private http: HttpClient) {}
 
-    getAnyDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
+    getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
@@ -55,7 +55,9 @@ export class DocumentsService {
         return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
     }
 
-    getOneDocument(id: any) {}
+    getOneDocumentById(id: any) : Observable<any> {
+        return this.http.get(this.url + '/' + id).pipe(map(DocumentsService.extractData));
+    }
 
     private static extractData(res: Response) {
         return res || { };

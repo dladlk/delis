@@ -1,14 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
 import { routerTransition } from "../../../../router.animations";
-import {DocumentsTestGuiStaticService} from "../../services/documents.test-gui-static.service";
-import {environment} from "../../../../../environments/environment";
-import {DocumentsService} from "../../services/documents.service";
-import {TranslateService} from "@ngx-translate/core";
-import {LocaleService} from "../../../../service/locale.service";
-import {DocumentsModel} from "../../models/documents.model";
-import {HeaderModel} from "../../../components/header/header.model";
+import { DocumentsTestGuiStaticService } from "../../services/documents.test-gui-static.service";
+import { environment } from "../../../../../environments/environment";
+import { DocumentsService } from "../../services/documents.service";
+import { TranslateService } from "@ngx-translate/core";
+import { LocaleService } from "../../../../service/locale.service";
+import { HeaderModel } from "../../../components/header/header.model";
 
 @Component({
     selector: 'app-documents-one',
@@ -21,7 +19,7 @@ export class DocumentsOneComponent implements OnInit {
     env = environment;
 
     pageHeaders: HeaderModel[] = [];
-    document: DocumentsModel;
+    document: any;
 
     constructor(
         private translate: TranslateService,
@@ -37,14 +35,12 @@ export class DocumentsOneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // this.route.paramMap.pipe(
-        //     switchMap((params: ParamMap) =>
-        //         this.service.getOneDocument(params.get('id')))
-        // );
-
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         if (this.env.production) {
-            // this.document = this.documentService.getOneDocument(id);
+            this.documentService.getOneDocumentById(id).subscribe((data: {}) => {
+                console.log(data);
+                this.document = data;
+            });
         } else {
             this.document = this.documentsStaticService.getOneDocument(id);
         }
