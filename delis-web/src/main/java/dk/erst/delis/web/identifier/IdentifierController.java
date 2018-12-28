@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import dk.erst.delis.dao.IdentifierRepository;
-import dk.erst.delis.dao.JournalIdentifierRepository;
-import dk.erst.delis.dao.OrganisationRepository;
+import dk.erst.delis.dao.IdentifierDaoRepository;
+import dk.erst.delis.dao.JournalIdentifierDaoRepository;
+import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.data.Identifier;
 import dk.erst.delis.data.Organisation;
 
@@ -20,11 +20,11 @@ import dk.erst.delis.data.Organisation;
 public class IdentifierController {
 
 	@Autowired
-	private IdentifierRepository identifierRepository;
+	private IdentifierDaoRepository identifierDaoRepository;
 	@Autowired
-	private JournalIdentifierRepository journalIdentifierRepository;
+	private JournalIdentifierDaoRepository journalIdentifierDaoRepository;
 	@Autowired
-	private OrganisationRepository organisationRepository;
+	private OrganisationDaoRepository organisationDaoRepository;
 	
 
 	@GetMapping("/identifier/list")
@@ -36,15 +36,15 @@ public class IdentifierController {
 	public String list(@PathVariable long organisationId, Model model, RedirectAttributes redirectAttributes) {
 		Iterator<Identifier> list;
 		if (organisationId == -1) {
-			list = identifierRepository.findAll(Sort.by("id")).iterator();
+			list = identifierDaoRepository.findAll(Sort.by("id")).iterator();
 		} else {
-			Organisation organisation = organisationRepository.findById(organisationId).get();
+			Organisation organisation = organisationDaoRepository.findById(organisationId).get();
 			if (organisation == null) {
 				redirectAttributes.addFlashAttribute("errorMessage", "Organisation is not found");
 				return "redirect:/home";
 			}
 			
-			list = identifierRepository.findByOrganisation(organisation).iterator();
+			list = identifierDaoRepository.findByOrganisation(organisation).iterator();
 			model.addAttribute("organisation", organisation);
 		}
 		model.addAttribute("identifierList", list);
@@ -53,14 +53,14 @@ public class IdentifierController {
 	
 	@GetMapping("/identifier/view/{id}")
 	public String view(@PathVariable long id, Model model, RedirectAttributes ra) {
-		Identifier identifier = identifierRepository.findById(id).get();
+		Identifier identifier = identifierDaoRepository.findById(id).get();
 		if (identifier == null) {
 			ra.addFlashAttribute("errorMessage", "Identifier is not found");
 			return "redirect:/home";
 		}
 		
 		model.addAttribute("identifier", identifier);
-		model.addAttribute("lastJournalList", journalIdentifierRepository.findTop5ByIdentifierOrderByIdDesc(identifier));
+		model.addAttribute("lastJournalList", journalIdentifierDaoRepository.findTop5ByIdentifierOrderByIdDesc(identifier));
 		
 		return "identifier/view";
 	}

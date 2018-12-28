@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.SyncOrganisationFact;
 
-public interface SyncOrganisationFactRepository extends PagingAndSortingRepository<SyncOrganisationFact, Long> {
+public interface SyncOrganisationFactDaoRepository extends PagingAndSortingRepository<SyncOrganisationFact, Long> {
 
 	public List<SyncOrganisationFact> findTop5ByOrganisationOrderByIdDesc(Organisation organisation);
 	

@@ -20,16 +20,23 @@ import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 @Slf4j
 public class IdentifierPublishServiceTest {
 
+	private boolean mockIntegration = true;
+
 	@Test
 	public void test() {
-		SmpIntegrationService smpIntegrationService = Mockito.mock(SmpIntegrationService.class);
-		when(smpIntegrationService.create(any(SmpEndpoint.class), any(String.class), any(String.class))).then(d -> {
-			SmpEndpoint smpEndpoint = d.getArgument(0);
-			String url = d.getArgument(1);
-			String data = d.getArgument(2);
-			log.info("Requested to create at " + smpEndpoint + " on " + url + " data:\n" + data);
-			return true;
-		});
+		SmpIntegrationService smpIntegrationService;
+		if (mockIntegration) {
+			smpIntegrationService = Mockito.mock(SmpIntegrationService.class);
+			when(smpIntegrationService.create(any(SmpEndpoint.class), any(String.class), any(String.class))).then(d -> {
+				SmpEndpoint smpEndpoint = d.getArgument(0);
+				String url = d.getArgument(1);
+				String data = d.getArgument(2);
+				log.info("Requested to create at " + smpEndpoint + " on " + url + " data:\n" + data);
+				return true;
+			});
+		} else {
+			smpIntegrationService = new SmpIntegrationService();
+		}
 
 		SmpXmlService smpXmlService = new SmpXmlService();
 		IdentifierPublishService publishService = new IdentifierPublishService(smpXmlService, smpIntegrationService);

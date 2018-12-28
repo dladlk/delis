@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import dk.erst.delis.task.document.process.log.DocumentProcessStepType;
 import lombok.Data;
 
 @Entity
@@ -35,6 +36,12 @@ public class JournalDocument {
 	@Column(name = "CREATE_TIME", nullable = false, updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createTime;
+	
+	@Column(nullable = false, updatable = false)
+	private boolean success;
+	
+	@Column(nullable = false, updatable = false)
+	private DocumentProcessStepType type;
 	
 	@Column(nullable = false)
 	private String message;

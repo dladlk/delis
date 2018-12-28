@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document.process.log;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import lombok.Data;
 public class DocumentProcessLog {
 
 	private List<DocumentProcessStep> stepList = new ArrayList<>();
+	
+	private Path resultPath;
 	
 	private boolean success;
 

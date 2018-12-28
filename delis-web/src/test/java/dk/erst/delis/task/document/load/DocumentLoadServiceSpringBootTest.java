@@ -14,14 +14,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.dao.DocumentRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTest;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
@@ -35,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DocumentLoadServiceSpringBootTest {
 	
 	@Autowired
-	private DocumentRepository documentRepository;
+	private DocumentDaoRepository documentDaoRepository;
 
 	@Autowired
 	private IdentifierResolverService identifierResolverService;
@@ -45,12 +44,13 @@ public class DocumentLoadServiceSpringBootTest {
 
 	@Autowired
 	private OrganisationService organisationService;
+	
+	@Autowired
+	private DocumentBytesStorageService documentBytesStorageService;
 
 	
 	@Test
 	public void testLoadFile() throws IOException {
-		ConfigBean config = new ConfigBean(new ConfigProperties());
-		
 		/*
 		 * Execute IdentifierLoadServiceTest to have default values for identifiers in db
 		 */
@@ -59,7 +59,7 @@ public class DocumentLoadServiceSpringBootTest {
 		ilsTest.setIdentifierLoadService(identifierLoadService);
 		ilsTest.loadTestIdentifiers();
 		
-		DocumentLoadService dls = new DocumentLoadService(documentRepository, new DocumentParseService(), config, identifierResolverService);
+		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);

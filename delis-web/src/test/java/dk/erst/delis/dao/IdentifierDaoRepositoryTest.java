@@ -18,14 +18,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class IdentifierRepositoryTest {
+public class IdentifierDaoRepositoryTest {
 
 	@Autowired
-	private IdentifierRepository identifierRepository;
+	private IdentifierDaoRepository identifierDaoRepository;
 	
 	@Test
 	public void testLoadIndetifierStat() {
-		List<Map<String, Object>> stat = identifierRepository.loadIndetifierStat();
+		List<Map<String, Object>> stat = identifierDaoRepository.loadIndetifierStat();
 		int index = 0;
 		for (Map<?, ?> map : stat) {
 			System.out.println("List "+index);
@@ -41,7 +41,7 @@ public class IdentifierRepositoryTest {
 	
 	@Test
 	public void testFindAllByDifferentLastFact() {
-		assertTrue(identifierRepository.getPendingForDeactivation(0, 0).isEmpty());
+		assertTrue(identifierDaoRepository.getPendingForDeactivation(0, 0).isEmpty());
 	}
 
 }

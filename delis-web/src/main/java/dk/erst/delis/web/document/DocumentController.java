@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import dk.erst.delis.dao.DocumentRepository;
-import dk.erst.delis.dao.JournalDocumentRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 public class DocumentController {
 
 	@Autowired
-	private DocumentRepository documentRepository;
+	private DocumentDaoRepository documentDaoRepository;
 	@Autowired
-	private JournalDocumentRepository journalDocumentRepository;
+	private JournalDocumentDaoRepository journalDocumentDaoRepository;
 
 	@Autowired
 	private DocumentLoadService documentLoadService;
@@ -45,21 +45,21 @@ public class DocumentController {
 	@PostMapping("/document/list/filter")
 	public String listFilter(Model model) {
 		List<Document> list;
-		list = documentRepository.findAll(PageRequest.of(0, 10, Sort.by("id").descending())).getContent();
+		list = documentDaoRepository.findAll(PageRequest.of(0, 10, Sort.by("id").descending())).getContent();
 		model.addAttribute("documentList", list);
 		return "/document/list";
 	}
 
 	@GetMapping("/document/view/{id}")
 	public String view(@PathVariable long id, Model model, RedirectAttributes ra) {
-		Document document = documentRepository.findById(id).get();
+		Document document = documentDaoRepository.findById(id).orElse(null);
 		if (document == null) {
 			ra.addFlashAttribute("errorMessage", "Document is not found");
 			return "redirect:/home";
 		}
 
 		model.addAttribute("document", document);
-		model.addAttribute("lastJournalList", journalDocumentRepository.findByDocumentOrderByIdDesc(document));
+		model.addAttribute("lastJournalList", journalDocumentDaoRepository.findByDocumentOrderByIdAsc(document));
 
 		return "/document/view";
 	}

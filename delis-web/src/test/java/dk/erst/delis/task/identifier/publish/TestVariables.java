@@ -2,7 +2,7 @@ package dk.erst.delis.task.identifier.publish;
 
 public interface TestVariables {
 
-    String SMP_ENDPOINT_URL = "http://192.168.1.117:8080/smp-4.1.0";
+    String SMP_ENDPOINT_URL = "http://smp.cef.contest.my";
     String SMP_ENDPOINT_USERNAME = "smp_admin";
     String SMP_ENDPOINT_PASSWORD = "changeit";
 

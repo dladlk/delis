@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.JournalDocument;
 
-public interface JournalDocumentRepository extends PagingAndSortingRepository<JournalDocument, Long> {
+public interface JournalDocumentDaoRepository extends PagingAndSortingRepository<JournalDocument, Long> {
 
-	List<JournalDocument> findByDocumentOrderByIdDesc(Document document);
+	List<JournalDocument> findByDocumentOrderByIdAsc(Document document);
 }

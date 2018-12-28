@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.dao.DocumentRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.data.Identifier;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,20 +35,20 @@ public class DocumentLoadService {
 
 	private static final String METADATA_XML = "metadata.xml";
 
-	private DocumentRepository documentRepository;
+	private DocumentDaoRepository documentDaoRepository;
 
 	private DocumentParseService documentParseService;
 	
+	private DocumentBytesStorageService documentBytesStorageService;
+	
 	private IdentifierResolverService identifierResolverService;
 
-	private ConfigBean config;
-
 	@Autowired
-	public DocumentLoadService(DocumentRepository documentRepository, DocumentParseService documentParseService, ConfigBean config, IdentifierResolverService identifierResolverService) {
+	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, DocumentParseService documentParseService, DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
 		super();
-		this.documentRepository = documentRepository;
+		this.documentDaoRepository = documentDaoRepository;
 		this.documentParseService = documentParseService;
-		this.config = config;
+		this.documentBytesStorageService = documentBytesStorageService;
 		this.identifierResolverService = identifierResolverService;
 	}
 
@@ -74,10 +74,6 @@ public class DocumentLoadService {
 		}
 		
 		return statData;
-	}
-
-	public Path getInputFolderPath() {
-		return config.getStorageInputPath();
 	}
 	
 	public Document loadFile(Path xmlFilePath) {
@@ -120,64 +116,19 @@ public class DocumentLoadService {
 			}
 
 			
-			String destSubPath = moveToLoaded(file, metadataFilePath, document);
+			String destSubPath = documentBytesStorageService.moveToLoaded(file, metadataFilePath, document);
 			if (destSubPath == null) {
 				return null;
 			}
 			
 			document.setIngoingRelativePath(destSubPath);
-			documentRepository.save(document);
+			documentDaoRepository.save(document);
 
 			return document;
 
 		} finally {
 			log.info("Done loading file " + xmlFilePath + " in " + (System.currentTimeMillis() - start) + " ms");
 		}
-	}
-
-	private String moveToLoaded(File file, File metadataFile, Document document) {
-		String destSubPath = buildDestSubPath(document);
-
-		Path destRoot = config.getStorageLoadedPath();
-		if (document.getDocumentStatus().isLoadFailed()) {
-			destRoot = config.getStorageFailedPath();
-		}
-
-		Path destPath = destRoot.resolve(destSubPath);
-
-		File destParentFolder = destPath.getParent().toFile();
-		if (!destParentFolder.exists()) {
-			if (!destParentFolder.mkdirs()) {
-				log.error("Cannot create parent folders for "+destParentFolder);
-				return null;
-			}
-		}
-		try {
-			Files.move(file.toPath(), destPath);
-		} catch (IOException e) {
-			log.error("Failed to move file " + file + " after parsing to " + destPath + ", skip it");
-			return null;
-		}
-
-		if (metadataFile != null) {
-			Path metadataDestPath = destPath.resolveSibling(destSubPath + "_metadata.xml");
-			try {
-				Files.move(metadataFile.toPath(), metadataDestPath);
-			} catch (IOException e) {
-				log.error("Failed to move metadafile " + file + " after parsing to " + metadataDestPath + ", skip it");
-			}
-		}
-		return destSubPath;
-	}
-
-	private String buildDestSubPath(Document document) {
-		String timestamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(Calendar.getInstance().getTime());
-		StringBuilder sb = new StringBuilder();
-		sb.append(timestamp);
-		sb.append("_");
-		sb.append(document.getIngoingDocumentFormat());
-		sb.append(".xml");
-		return sb.toString();
 	}
 
 	private Document buildDocument(DocumentInfo info, String messageId) {

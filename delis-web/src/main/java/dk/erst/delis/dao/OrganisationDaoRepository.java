@@ -4,7 +4,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import dk.erst.delis.data.Organisation;
 
-public interface OrganisationRepository extends PagingAndSortingRepository<Organisation, Long> {
+public interface OrganisationDaoRepository extends PagingAndSortingRepository<Organisation, Long> {
 
 	Organisation findByCode(String code);
 	

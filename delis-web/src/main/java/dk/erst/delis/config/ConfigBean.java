@@ -19,7 +19,7 @@ public class ConfigBean {
 	}
 	
 	public Path getStorageInputPath() {
-		return buildStoragePath(DocumentStorageType.INPUT);
+		return Paths.get(this.configProperties.getStorageDocumentInput());
 	}
 	
 	public Path getStorageLoadedPath() {
@@ -28,6 +28,10 @@ public class ConfigBean {
 
 	public Path getStorageFailedPath() {
 		return buildStoragePath(DocumentStorageType.FAILED);
+	}
+
+	public Path getStorageValidPath() {
+		return buildStoragePath(DocumentStorageType.VALID);
 	}
 	
 	private Path buildStoragePath(DocumentStorageType storageType) {

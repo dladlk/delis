@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dk.erst.delis.dao.IdentifierRepository;
+import dk.erst.delis.dao.IdentifierDaoRepository;
 import dk.erst.delis.data.IdentifierPublishingStatus;
 import dk.erst.delis.data.IdentifierStatus;
 import lombok.Getter;
@@ -16,15 +16,15 @@ import lombok.Getter;
 public class OrganisationStatisticsService {
 
 	@Autowired
-	private IdentifierRepository identifierRepository;
+	private IdentifierDaoRepository identifierDaoRepository;
 
 	public Map<Long, OrganisationIdentifierStatData> loadOrganisationIdentifierStatMap() {
-		List<Map<String, Object>> rawList = this.identifierRepository.loadIndetifierStat();
+		List<Map<String, Object>> rawList = this.identifierDaoRepository.loadIndetifierStat();
 		return processStatListMap(rawList);
 	}
 
 	public OrganisationIdentifierStatData loadOrganisationIdentifierStatMap(long organisationId) {
-		List<Map<String, Object>> rawList = this.identifierRepository.loadIndetifierStatByOrganisation(organisationId);
+		List<Map<String, Object>> rawList = this.identifierDaoRepository.loadIndetifierStatByOrganisation(organisationId);
 		return processStatListMap(rawList).get(organisationId);
 	}
 
