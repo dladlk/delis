@@ -3,20 +3,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
-                <div class="panel panel-default" style="margin-top:45px">
-                    <div class="panel-heading text-center">
-                        <h1>{{document.organisation}}</h1>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
+                <div class="card">
+                    <div class="card-header"><strong>{{ document.organisation | uppercase }}</strong></div>
+                    <br>
+                    <div class="card-body">
                         <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <td><strong>param</strong></td>
-                                <td><strong>info</strong></td>
-                            </tr>
-                            </thead>
                             <tbody>
                             <tr>
                                 <td>Receiver</td>
