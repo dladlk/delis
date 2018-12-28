@@ -27,8 +27,8 @@ $topnav-background-color: #005b7c;
 button {
   color: #d4d4d4 !important;
   background-color: $topnav-background-color !important;
-  border: none;
   border-radius: 12px !important;
+  border-color: #d4d4d4 !important;
   padding: 20px;
   text-align: center;
   text-decoration: none;
@@ -57,4 +57,8 @@ button {
 
 a {
   color: $topnav-background-color;
+}
+
+.theme-dark-blue .bs-datepicker-head {
+  background-color: $topnav-background-color;
 }
