@@ -7,7 +7,7 @@
   "exclude": [
     "test.ts",
     "**/*.spec.ts",
-    "**/*.static.service.ts",
+    "**/*.test-gui-static.service.ts",
     "./app/layout/documents/documents.json"
   ]
 }

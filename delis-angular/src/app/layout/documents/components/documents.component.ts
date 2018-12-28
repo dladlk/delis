@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from '../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
-import { DocumentsStaticService } from "../services/documents.static.service";
+import { DocumentsTestGuiStaticService } from "../services/documents.test-gui-static.service";
 import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { LocaleService } from "../../../service/locale.service";
@@ -60,7 +60,7 @@ export class DocumentsComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         private documentsService: DocumentsService,
-        private documentsStaticService: DocumentsStaticService,
+        private documentsStaticService: DocumentsTestGuiStaticService,
         private locale: LocaleService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');

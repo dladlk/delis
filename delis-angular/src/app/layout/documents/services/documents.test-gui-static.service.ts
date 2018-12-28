@@ -3,7 +3,7 @@ import * as data from '../documents.json';
 import { DocumentsModel, FilterProcessResult } from "../models/documents.model";
 
 @Injectable()
-export class DocumentsStaticService {
+export class DocumentsTestGuiStaticService {
 
     constructor() {}
 

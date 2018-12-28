@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { routerTransition } from "../../../../router.animations";
-import {DocumentsStaticService} from "../../services/documents.static.service";
+import {DocumentsTestGuiStaticService} from "../../services/documents.test-gui-static.service";
 import {environment} from "../../../../../environments/environment";
 import {DocumentsService} from "../../services/documents.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -29,7 +29,7 @@ export class DocumentsOneComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private documentService: DocumentsService,
-        private documentsStaticService: DocumentsStaticService) {
+        private documentsStaticService: DocumentsTestGuiStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
             { routerLink : '/documents', heading: 'documents.header', icon: 'fa fa-book'}
