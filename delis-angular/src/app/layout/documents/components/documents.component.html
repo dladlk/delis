@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="card" style="min-height: 768px">
-                <div class="card-header"><span>{{ 'documents.table.header' | translate }}:</span></div>
+                <div class="card-header"><span>{{ 'documents.table.header' | translate | uppercase }}</span></div>
                 <br>
                 <app-pagination [pagination]="pagination"></app-pagination>
                 <div class="card-body table-responsive">

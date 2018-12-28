@@ -86,6 +86,7 @@ export class DocumentsComponent implements OnInit {
         } else {
             this.currentDevDocuments(1, 10);
         }
+        this.clearAllFilter();
     }
 
     private initDefaultValues() {
@@ -266,6 +267,20 @@ export class DocumentsComponent implements OnInit {
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
+        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
+        this.filter.countClickReceiver = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick;
+        this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
+        this.filter.countClickLastError = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick;
+        this.filter.countClickDocumentType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick;
+        this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
+        this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
+        this.filter.countClickIssued = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick;
+        this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
+        this.filter.countClickReceiverName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick;
+    }
+
+    private clearAllFilter() {
+        this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
         this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
         this.filter.countClickReceiver = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick;
         this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
