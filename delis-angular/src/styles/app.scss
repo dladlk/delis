@@ -65,5 +65,18 @@ a {
 
 .table-hover tbody tr:hover {
   background-color: $topnav-background-color;
-  color: #ebf5ff;;
+  color: #ebf5ff;
+}
+
+.dropdown-menu {
+  border: 1px solid $topnav-background-color !important;
+}
+
+.dropdown-menu a:hover {
+  background-color: $topnav-background-color !important;
+  color: #ebf5ff !important;
+}
+
+.dropdown-item {
+  color: darken($topnav-background-color, 15%) !important;
 }
