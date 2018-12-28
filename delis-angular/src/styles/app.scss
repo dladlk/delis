@@ -21,7 +21,7 @@ $topnav-background-color: #005b7c;
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
   background-color: $topnav-background-color;
-  color: #ebf5ff;;
+  color: #ebf5ff;
 }
 
 button {
@@ -61,4 +61,9 @@ a {
 
 .theme-dark-blue .bs-datepicker-head {
   background-color: $topnav-background-color;
+}
+
+.table-hover tbody tr:hover {
+  background-color: $topnav-background-color;
+  color: #ebf5ff;;
 }
