@@ -69,7 +69,9 @@ export class DocumentsComponent implements OnInit {
                 this.loadPage(pag.currentPage, pag.pageSize);
                 this.pagination = pag;
             } else {
-                this.initProcess();
+                this.initDefaultValues();
+                this.clearAllFilter();
+                this.loadPage(pag.currentPage, pag.pageSize);
             }
         });
     }
