@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.task.document.TestDocument;
@@ -35,6 +36,9 @@ public class DocumentLoadServiceSpringBootTest {
 	
 	@Autowired
 	private DocumentDaoRepository documentDaoRepository;
+
+	@Autowired
+	private JournalDocumentDaoRepository journalDocumentDaoRepository;
 
 	@Autowired
 	private IdentifierResolverService identifierResolverService;
@@ -59,7 +63,7 @@ public class DocumentLoadServiceSpringBootTest {
 		ilsTest.setIdentifierLoadService(identifierLoadService);
 		ilsTest.loadTestIdentifiers();
 		
-		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
+		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);

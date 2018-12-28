@@ -19,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.task.document.load.DocumentLoadService;
+import dk.erst.delis.task.document.process.DocumentProcessService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -34,6 +36,8 @@ public class DocumentController {
 	@Autowired
 	private JournalDocumentDaoRepository journalDocumentDaoRepository;
 
+	@Autowired
+	private DocumentProcessService documentProcessService;
 	@Autowired
 	private DocumentLoadService documentLoadService;
 
@@ -65,7 +69,14 @@ public class DocumentController {
 	}
 
 	@PostMapping("/document/upload")
-	public String upload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+	public String upload(
+
+			@RequestParam("file") MultipartFile file,
+
+			@RequestParam(name = "validateImmediately", required = false) boolean validateImmediately,
+
+			RedirectAttributes redirectAttributes) {
+
 		if (file == null || file.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "File is empty");
 		} else {
@@ -88,9 +99,15 @@ public class DocumentController {
 					if (document.getDocumentStatus().isLoadFailed()) {
 						redirectAttributes.addFlashAttribute("errorMessage", "Uploaded file as a document with status " + document.getDocumentStatus());
 					} else {
-						redirectAttributes.addFlashAttribute("message", "Successfully uploaded file as a document with status " + document.getDocumentStatus());
+						if (validateImmediately) {
+							StatData statData = new StatData();
+							documentProcessService.processDocument(statData, document);
+							redirectAttributes.addFlashAttribute("message", "Successfully uploaded file and validated: " + statData.toStatString());
+						} else {
+							redirectAttributes.addFlashAttribute("message", "Successfully uploaded file as a document with status " + document.getDocumentStatus());
+						}
 					}
-					return "redirect:/document/view/"+document.getId();
+					return "redirect:/document/view/" + document.getId();
 				}
 			}
 		}

@@ -12,7 +12,7 @@
 </head>
 <body>
 
-	<div class="card text-white col-2 m-2" th:classappend="${cardClass}">
+	<div class="card text-white col-2 m-2" th:classappend="${cardClass}" th:if="${count} > 0">
 		<div class="card-header">
 			<div class="row">
 				<div class="col col-xs-3">

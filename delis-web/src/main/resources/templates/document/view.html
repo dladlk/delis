@@ -11,11 +11,16 @@
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
 					<td>Organisation</td>
-					<td th:text="${document.organisation?.name}">Region Nord</td>
+					<td>
+						<a th:if="${document.organisation}" href="#" th:href="@{/organisation/view/__${document.organisation.id}__}" th:text="${document.organisation.name}">Region Nord</a>					
+					</td>
 				</tr>
 				<tr>
 					<td>Identifier</td>
-					<td th:text="${document.receiverIdentifier?.value}">EAN:5234234234</td>
+					<td>
+						<a th:if="${document.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${document.receiverIdentifier.id}__}" th:text="${document.receiverIdentifier.name}">Receiver name</a>
+						<span th:text="${document.receiverIdRaw}">0088:234234234</span>
+					</td>
 				</tr>
 				<tr>
 					<td>Receive time</td>
@@ -97,11 +102,18 @@
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
 					<th>Date</th>
+					<th>Type</th>
+					<th>Status</th>
 					<th>Message</th>
 					<th>Duration, ms</th>
 				</tr>
 				<tr th:each="r,iter : ${lastJournalList}">
-					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}" class="text-nowrap"></td>
+					<td th:text="${r.type}"></td>
+					<td>
+						<i th:if="${r.success}" class="far fa-check-circle text-success"></i>
+						<i th:if="${!r.success}" class="far fa-exclamation-circle text-danger "></i>
+					</td>
 					<td th:text="${r.message}"></td>
 					<td th:text="${r.durationMs}"/>
 				</tr>

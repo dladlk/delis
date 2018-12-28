@@ -12,17 +12,21 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.Document;
 import dk.erst.delis.data.DocumentStatus;
 import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.JournalDocument;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.document.process.log.DocumentProcessStepType;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +41,8 @@ public class DocumentLoadService {
 
 	private DocumentDaoRepository documentDaoRepository;
 
+	private JournalDocumentDaoRepository journalDocumentDaoRepository;
+
 	private DocumentParseService documentParseService;
 	
 	private DocumentBytesStorageService documentBytesStorageService;
@@ -44,9 +50,10 @@ public class DocumentLoadService {
 	private IdentifierResolverService identifierResolverService;
 
 	@Autowired
-	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, DocumentParseService documentParseService, DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
+	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, DocumentParseService documentParseService, DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
 		super();
 		this.documentDaoRepository = documentDaoRepository;
+		this.journalDocumentDaoRepository = journalDocumentDaoRepository;
 		this.documentParseService = documentParseService;
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.identifierResolverService = identifierResolverService;
@@ -80,6 +87,7 @@ public class DocumentLoadService {
 		long start = System.currentTimeMillis();
 		log.info("Loading file " + xmlFilePath);
 		try {
+			Date createTime = Calendar.getInstance().getTime();
 			File file = xmlFilePath.toFile();
 			Path xmlFileParentPath = xmlFilePath.getParent();
 			if (!file.exists()) {
@@ -123,7 +131,18 @@ public class DocumentLoadService {
 			
 			document.setIngoingRelativePath(destSubPath);
 			documentDaoRepository.save(document);
+			
+			JournalDocument jd = new JournalDocument();
+			jd.setDocument(document);
+			jd.setOrganisation(document.getOrganisation());
+			jd.setCreateTime(createTime);
+			jd.setDurationMs(System.currentTimeMillis() - start);
+			jd.setType(DocumentProcessStepType.LOAD);
+			jd.setMessage("Load file from "+xmlFilePath);
+			jd.setSuccess(true);
 
+			journalDocumentDaoRepository.save(jd);
+			
 			return document;
 
 		} finally {

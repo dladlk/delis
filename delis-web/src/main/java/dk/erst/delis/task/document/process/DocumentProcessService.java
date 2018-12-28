@@ -59,7 +59,7 @@ public class DocumentProcessService {
 		return statData;
 	}
 
-	private void processDocument(StatData statData, Document document) {
+	public void processDocument(StatData statData, Document document) {
 		document.setDocumentStatus(DocumentStatus.VALIDATE_START);
 		documentDaoRepository.updateDocumentStatus(document);
 		

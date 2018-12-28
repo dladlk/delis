@@ -87,7 +87,12 @@
 		<div class="card-body">
 			<form method="POST" enctype="multipart/form-data" action="/document/upload" th:action="@{/document/upload}">
 				<div class="form-group">
-					<label for="file1">File:</label><input type="file" name="file" class="form-control-file" id="file1" />
+					<label for="file1">File:</label>
+					<input type="file" name="file" class="form-control-file" id="file1" />
+				</div>
+				<div class="form-check mb-2">
+					<input type="checkbox" name="validateImmediately" class="form-check-input" id="validateImmediately" />
+					<label for="validateImmediately" class="form-check-label">Validate immediately</label>
 				</div>
 				<input class="btn btn-primary" type="submit" value="Upload" />
 			</form>

@@ -10,5 +10,9 @@ public enum DocumentProcessStepType {
 	
 	RESOLVE_TYPE, 
 	
-	COPY
+	COPY,
+	
+	LOAD,
+	
+	DELIVER
 }
