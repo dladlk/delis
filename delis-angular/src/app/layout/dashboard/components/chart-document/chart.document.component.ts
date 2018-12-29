@@ -13,52 +13,36 @@ import { ChartDocumentTestGuiStaticService } from "./services/chart.document.tes
 })
 export class ChartDocumentComponent implements OnInit {
 
-    chartDocumentModel: ChartDocumentModel;
-    period: number = 0;
-
-    // events
-    public chartClicked(e: any): void {
-        console.log('chartClicked');
-    }
-
-    public chartHovered(e: any): void {
-        console.log('chartHovered');
-    }
+    public chartDocumentModel: ChartDocumentModel;
+    private period: number = 0;
 
     constructor(private translate: TranslateService, private locale: LocaleService, private chartDocumentTestGuiStaticService: ChartDocumentTestGuiStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocument(this.period);
     }
 
-    ngOnInit() {
-        console.log('period in init = ' + this.period);
-        if (this.period === 1) {
-            this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocumentModelByYear();
-        } else {
-            this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocumentModelByMonth();
-        }
-    }
+    ngOnInit() {}
 
-    nextPeriod() {
+    public chartClicked(e: any): void {}
+
+    public chartHovered(e: any): void {}
+
+    public nextPeriod() : void {
         this.period++;
-        if (this.period === 1) {
-            this.chartDocumentModel = null;
-        } else {
-            this.period = 1;
+        if (this.period > 2) {
+            this.period = 2;
         }
-        console.log('period = ' + this.period);
-        this.ngOnInit();
+        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocument(this.period);
+        this.chartDocumentModel.lineChartLabels.forEach(x => console.log('label = ' + x));
     }
 
-    previousPeriod() {
+    public previousPeriod() : void {
         this.period--;
-        if (this.period === 0) {
-            this.chartDocumentModel = null;
-        } else {
+        if (this.period < 0) {
             this.period = 0;
         }
-        console.log('period = ' + this.period);
-        this.ngOnInit();
+        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocument(this.period);
     }
 
-    loadDate() {}
+    loadDate(e: any) {}
 }
