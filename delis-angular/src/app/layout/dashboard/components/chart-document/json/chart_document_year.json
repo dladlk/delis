@@ -9,9 +9,14 @@
           9,
           87,
           27,
-          40
+          40,
+          34,
+          146,
+          22,
+          2,
+          63
         ],
-        "label": "Series C"
+        "label": "Series Year"
       }
     ],
     "lineChartLabels": [
@@ -21,7 +26,12 @@
       "April",
       "May",
       "June",
-      "July"
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
     ]
   }
 }

@@ -14,6 +14,7 @@ import { ChartDocumentTestGuiStaticService } from "./services/chart.document.tes
 export class ChartDocumentComponent implements OnInit {
 
     chartDocumentModel: ChartDocumentModel;
+    period: number = 0;
 
     // events
     public chartClicked(e: any): void {
@@ -29,10 +30,35 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.initChartDocumentModel();
+        console.log('period in init = ' + this.period);
+        if (this.period === 1) {
+            this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocumentModelByYear();
+        } else {
+            this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocumentModelByMonth();
+        }
     }
 
-    initChartDocumentModel() {
-        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocumentModel();
+    nextPeriod() {
+        this.period++;
+        if (this.period === 1) {
+            this.chartDocumentModel = null;
+        } else {
+            this.period = 1;
+        }
+        console.log('period = ' + this.period);
+        this.ngOnInit();
     }
+
+    previousPeriod() {
+        this.period--;
+        if (this.period === 0) {
+            this.chartDocumentModel = null;
+        } else {
+            this.period = 0;
+        }
+        console.log('period = ' + this.period);
+        this.ngOnInit();
+    }
+
+    loadDate() {}
 }

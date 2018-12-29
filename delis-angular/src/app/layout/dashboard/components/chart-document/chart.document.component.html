@@ -16,6 +16,29 @@
                         (chartClick)="chartClicked($event)">
                 </canvas>
             </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <div class="p-2">
+                        <button type="button" class="btn btn-light btn-sm float-left" (click)="previousPeriod()">
+                            <i class="fa fa-reply"></i>
+                        </button>
+                    </div>
+                    <div class="p-2 bg-sm">
+                        <input bsDaterangepicker
+                               [bsConfig]="{containerClass: 'theme-dark-blue'}"
+                               [placement]="'top'"
+                               class="form-control"
+                               placeholder="Load custom period"
+                               type="text"
+                               (bsValueChange)="loadDate($event)">
+                    </div>
+                    <div class="p-2">
+                        <button type="button" class="btn btn-light btn-sm float-right" (click)="nextPeriod()">
+                            <i class="fa fa-share"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
