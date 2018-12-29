@@ -2,13 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbCarouselModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from "@ngx-translate/core";
+import { ChartsModule as Ng2Charts } from "ng2-charts";
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
     TimelineComponent,
     NotificationComponent,
-    ChatComponent
+    ChatComponent,
+    ChartDocumentComponent
 } from './components';
 import { StatModule } from '../../shared';
 import { ErrorsModule } from '../../shared';
@@ -18,6 +20,7 @@ import { ErrorsModule } from '../../shared';
         CommonModule,
         NgbCarouselModule,
         NgbAlertModule,
+        Ng2Charts,
         DashboardRoutingModule,
         TranslateModule,
         StatModule,
@@ -27,7 +30,8 @@ import { ErrorsModule } from '../../shared';
         DashboardComponent,
         TimelineComponent,
         NotificationComponent,
-        ChatComponent
+        ChatComponent,
+        ChartDocumentComponent
     ]
 })
 export class DashboardModule {}

@@ -19,6 +19,7 @@
     "dashboard.documents" : "Received documents last hour / average",
     "dashboard.errors" : "Errors last hour",
     "dashboard.details" : "View Details",
+    "dashboard.charts.header" : "Count of documents for the period",
 
     "documents.header" : "Documents",
     "documents.header.details" : "Document details",
