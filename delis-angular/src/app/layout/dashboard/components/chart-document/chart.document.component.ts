@@ -2,7 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { routerTransition } from "../../../../router.animations";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../service/locale.service";
-import {ChartDocumentModel} from "./model/chart.document.model";
+import { ChartDocumentModel } from "./model/chart.document.model";
+import { ChartDocumentTestGuiStaticService } from "./services/chart.document.test-gui-static.service";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -23,7 +24,7 @@ export class ChartDocumentComponent implements OnInit {
         console.log('chartHovered');
     }
 
-    constructor(private translate: TranslateService, private locale: LocaleService) {
+    constructor(private translate: TranslateService, private locale: LocaleService, private chartDocumentTestGuiStaticService: ChartDocumentTestGuiStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
@@ -32,18 +33,6 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     initChartDocumentModel() {
-        this.chartDocumentModel = new ChartDocumentModel();
-        this.chartDocumentModel.lineChartData = [
-            { data: [18, 48, 77, 9, 87, 27, 40], label: 'Series C' }
-        ];
-        this.chartDocumentModel.lineChartLabels = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July'
-        ];
+        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocumentModel();
     }
 }

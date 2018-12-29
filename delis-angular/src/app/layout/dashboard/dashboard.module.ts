@@ -14,6 +14,7 @@ import {
 } from './components';
 import { StatModule } from '../../shared';
 import { ErrorsModule } from '../../shared';
+import { ChartDocumentTestGuiStaticService } from "./components/chart-document/services/chart.document.test-gui-static.service";
 
 @NgModule({
     imports: [
@@ -32,6 +33,7 @@ import { ErrorsModule } from '../../shared';
         NotificationComponent,
         ChatComponent,
         ChartDocumentComponent
-    ]
+    ],
+    providers: [ChartDocumentTestGuiStaticService]
 })
 export class DashboardModule {}
