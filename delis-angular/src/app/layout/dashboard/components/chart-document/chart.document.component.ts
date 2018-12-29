@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { routerTransition } from "../../../../router.animations";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../service/locale.service";
+import {ChartDocumentModel} from "./model/chart.document.model";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -11,36 +12,7 @@ import { LocaleService } from "../../../../service/locale.service";
 })
 export class ChartDocumentComponent implements OnInit {
 
-    public lineChartData: Array<any> = [
-        { data: [18, 48, 77, 9, 87, 27, 40], label: 'Series C' }
-    ];
-
-    public lineChartLabels: Array<any> = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July'
-    ];
-    public lineChartOptions: any = {
-        responsive: true
-    };
-
-    public lineChartColors: Array<any> = [
-        {
-            backgroundColor: 'rgba(0,91,124,0.2)',
-            borderColor: 'rgba(0,91,124,1)',
-            pointBackgroundColor: 'rgba(0,91,124,1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(77,83,96,1)'
-        }
-    ];
-
-    public lineChartLegend: boolean;
-    public lineChartType: string;
+    chartDocumentModel: ChartDocumentModel;
 
     // events
     public chartClicked(e: any): void {
@@ -56,7 +28,22 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.lineChartLegend = true;
-        this.lineChartType = 'line';
+        this.initChartDocumentModel();
+    }
+
+    initChartDocumentModel() {
+        this.chartDocumentModel = new ChartDocumentModel();
+        this.chartDocumentModel.lineChartData = [
+            { data: [18, 48, 77, 9, 87, 27, 40], label: 'Series C' }
+        ];
+        this.chartDocumentModel.lineChartLabels = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July'
+        ];
     }
 }

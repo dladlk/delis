@@ -6,12 +6,12 @@
             </div>
             <div class="card-body">
                 <canvas baseChart height="100"
-                        [datasets]="lineChartData"
-                        [labels]="lineChartLabels"
-                        [options]="lineChartOptions"
-                        [colors]="lineChartColors"
-                        [legend]="lineChartLegend"
-                        [chartType]="lineChartType"
+                        [datasets]="chartDocumentModel.lineChartData"
+                        [labels]="chartDocumentModel.lineChartLabels"
+                        [options]="chartDocumentModel.lineChartOptions"
+                        [colors]="chartDocumentModel.lineChartColors"
+                        [legend]="chartDocumentModel.lineChartLegend"
+                        [chartType]="chartDocumentModel.lineChartType"
                         (chartHover)="chartHovered($event)"
                         (chartClick)="chartClicked($event)">
                 </canvas>
