@@ -5,7 +5,7 @@
             <div class="card" style="min-height: 768px">
                 <div class="card-header"><span>{{ 'documents.table.header' | translate | uppercase }}</span></div>
                 <br>
-                <app-pagination [pagination]="pagination"></app-pagination>
+                <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
                 <div class="card-body table-responsive">
                     <table class="table table-hover table-sm">
                         <thead>
@@ -114,7 +114,7 @@
                         </tbody>
                     </table>
                 </div>
-                <app-pagination [pagination]="pagination"></app-pagination>
+                <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
             </div>
         </div>
     </div>

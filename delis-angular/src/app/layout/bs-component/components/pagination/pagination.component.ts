@@ -15,6 +15,7 @@ import { PaginationModel } from "./pagination.model";
 export class PaginationComponent {
 
     @Input() public pagination: PaginationModel;
+    @Input() public dropdownPosition: string;
 
     pageSizes = [
         {pageSize: 5},
@@ -24,11 +25,8 @@ export class PaginationComponent {
         {pageSize: 100}
     ];
 
-    selectedPageSize: any;
-
     constructor(private translate: TranslateService, private locale: LocaleService, private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
-        this.selectedPageSize = {pageSize: 10, selected: true};
         this.pagination = new PaginationModel();
     }
 
@@ -38,7 +36,8 @@ export class PaginationComponent {
     }
 
     loadPageSize() {
-        this.pagination.pageSize = this.selectedPageSize.pageSize;
+        console.log('this.selectedPageSize.pageSize = ' + this.pagination.selectedPageSize.pageSize);
+        this.pagination.pageSize = this.pagination.selectedPageSize.pageSize;
         this.paginationService.loadPageSize(this.pagination);
     }
 

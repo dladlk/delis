@@ -19,9 +19,10 @@
         <ng-select [items]="pageSizes"
                    bindLabel="pageSize"
                    placeholder="&#8721;"
-                   [(ngModel)]="selectedPageSize"
+                   [(ngModel)]="pagination.selectedPageSize"
                    [searchable]="false"
                    [clearable]="false"
+                   [dropdownPosition]="dropdownPosition"
                    (change)="loadPageSize()">
         </ng-select>
     </div>
