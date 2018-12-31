@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { routerTransition } from "../../../../router.animations";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../service/locale.service";
-import { ChartDocumentModel } from "./model/chart.document.model";
 import { ChartDocumentTestGuiStaticService } from "./services/chart.document.test-gui-static.service";
 
 @Component({
@@ -13,36 +12,68 @@ import { ChartDocumentTestGuiStaticService } from "./services/chart.document.tes
 })
 export class ChartDocumentComponent implements OnInit {
 
-    public chartDocumentModel: ChartDocumentModel;
     private period: number = 0;
+
+    lineChartData: Array<any> = [];
+    lineChartLabels: Array<any> = [];
+    lineChartOptions: any;
+    lineChartColors: Array<any>;
+    lineChartLegend: boolean;
+    lineChartType: string;
 
     constructor(private translate: TranslateService, private locale: LocaleService, private chartDocumentTestGuiStaticService: ChartDocumentTestGuiStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
-        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocument(this.period);
+        this.updateLineChart();
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.lineChartLegend = true;
+        this.lineChartOptions = {
+            responsive: true
+        };
+        this.lineChartType = 'line';
+        this.lineChartColors = [
+            {
+                backgroundColor: 'rgba(0,91,124,0.2)',
+                borderColor: 'rgba(0,91,124,1)',
+                pointBackgroundColor: 'rgba(0,91,124,1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(77,83,96,1)'
+            }
+        ];
+    }
 
-    public chartClicked(e: any): void {}
+    chartClicked(e: any): void {}
 
-    public chartHovered(e: any): void {}
+    chartHovered(e: any): void {}
 
-    public nextPeriod() : void {
+    nextPeriod() {
         this.period++;
         if (this.period > 2) {
             this.period = 2;
         }
-        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocument(this.period);
-        this.chartDocumentModel.lineChartLabels.forEach(x => console.log('label = ' + x));
+        this.updateLineChart();
     }
 
-    public previousPeriod() : void {
+    previousPeriod() {
         this.period--;
         if (this.period < 0) {
             this.period = 0;
         }
-        this.chartDocumentModel = this.chartDocumentTestGuiStaticService.loadChartDocument(this.period);
+        this.updateLineChart();
     }
 
     loadDate(e: any) {}
+
+    private updateLineChart() {
+        let clone = JSON.parse(JSON.stringify(this.chartDocumentTestGuiStaticService.loadChartDocument(this.period)));
+        this.lineChartData=clone.lineChartData;
+        if (this.lineChartLabels.length !== 0) {
+            this.lineChartLabels.length = 0;
+            this.lineChartLabels.push(...clone.lineChartLabels);
+        } else {
+            this.lineChartLabels=clone.lineChartLabels;
+        }
+    }
 }
