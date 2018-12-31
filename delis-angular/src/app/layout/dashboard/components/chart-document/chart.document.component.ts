@@ -27,7 +27,7 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.lineChartLegend = true;
+        this.lineChartLegend = false;
         this.lineChartOptions = {
             responsive: true
         };
@@ -44,9 +44,15 @@ export class ChartDocumentComponent implements OnInit {
         ];
     }
 
-    chartClicked(e: any): void {}
+    public chartClicked(e: any): void {
+        if(e.active.length > 0) {
+            console.log("Index", e.active[0]._index);
+            console.log("Data" , e.active[0]._chart.config.data.datasets[0].data[e.active[0]._index]);
+            console.log("Label" , e.active[0]._chart.config.data.labels[e.active[0]._index]);
+        }
+    }
 
-    chartHovered(e: any): void {}
+    public chartHovered(e: any): void {}
 
     nextPeriod() {
         this.period++;
