@@ -1,6 +1,8 @@
 <div class="d-flex flex-row" style="margin-left: 2%">
     <div class="p-3">
-        Showing {{pagination.currentPage}} to {{pagination.pageSize}} of {{pagination.collectionSize}} entries&nbsp;
+        <span>
+            Showing {{pagination.currentPage}} to {{pagination.pageSize}} of {{pagination.collectionSize}} entries&nbsp;
+        </span>
     </div>
     <div class="p-2">
         <ngb-pagination [collectionSize]="pagination.collectionSize"
@@ -13,7 +15,9 @@
         </ngb-pagination>
     </div>
     <div class="p-3">
-        {{ 'pagination.page-size' | translate }}:
+        <span>
+            {{ 'pagination.page-size' | translate }}:
+        </span>
     </div>
     <div class="p-2">
         <ng-select [items]="pageSizes"

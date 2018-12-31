@@ -38,7 +38,6 @@ export class DocumentsOneComponent implements OnInit {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         if (this.env.production) {
             this.documentService.getOneDocumentById(id).subscribe((data: {}) => {
-                console.log(data);
                 this.document = data;
             });
         } else {

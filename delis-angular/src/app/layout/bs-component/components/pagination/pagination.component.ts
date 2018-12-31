@@ -36,7 +36,6 @@ export class PaginationComponent {
     }
 
     loadPageSize() {
-        console.log('this.selectedPageSize.pageSize = ' + this.pagination.selectedPageSize.pageSize);
         this.pagination.pageSize = this.pagination.selectedPageSize.pageSize;
         this.paginationService.loadPageSize(this.pagination);
     }
