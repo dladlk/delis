@@ -16,6 +16,7 @@ import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.codelist.CodeListReaderService;
 import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 
 @Slf4j
 public class IdentifierPublishServiceTest {
@@ -25,6 +26,7 @@ public class IdentifierPublishServiceTest {
 	@Test
 	public void test() {
 		SmpIntegrationService smpIntegrationService;
+		SmpLookupService smpLookupService;
 		ConfigBean configBean = new ConfigBean(new ConfigProperties());
 		if (mockIntegration) {
 			smpIntegrationService = Mockito.mock(SmpIntegrationService.class);
@@ -42,11 +44,17 @@ public class IdentifierPublishServiceTest {
 		} else {
 			smpIntegrationService = new SmpIntegrationService(configBean);
 		}
+		
+		smpLookupService = Mockito.mock(SmpLookupService.class);
+		when(smpLookupService.lookup(any(ParticipantIdentifier.class))).then(d -> {
+			ParticipantIdentifier identifier = d.getArgument(0);
+			return null;
+		});
 
 		SmpXmlService smpXmlService = new SmpXmlService();
 		CodeListDict codeListDict = new CodeListDict(new CodeListReaderService(configBean));
 		IdentifierPublishDataService identifierPublishDataService = new IdentifierPublishDataService(codeListDict);
-		IdentifierPublishService publishService = new IdentifierPublishService(smpXmlService, smpIntegrationService, identifierPublishDataService);
+		IdentifierPublishService publishService = new IdentifierPublishService(smpXmlService, smpIntegrationService, identifierPublishDataService, smpLookupService);
 
 		Identifier identifier = new Identifier();
 		identifier.setType("GLN");

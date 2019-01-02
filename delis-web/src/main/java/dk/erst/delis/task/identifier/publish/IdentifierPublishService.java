@@ -29,12 +29,14 @@ public class IdentifierPublishService {
 	private final SmpXmlService smpXmlService;
 	private final SmpIntegrationService smpIntegrationService;
 	private final IdentifierPublishDataService identifierPublishDataService;
+	private final SmpLookupService smpLookupService;
 
 	@Autowired
-	public IdentifierPublishService(SmpXmlService smpXmlService, SmpIntegrationService smpIntegrationService, IdentifierPublishDataService identifierPublishDataService) {
+	public IdentifierPublishService(SmpXmlService smpXmlService, SmpIntegrationService smpIntegrationService, IdentifierPublishDataService identifierPublishDataService, SmpLookupService smpLookupService) {
 		this.smpXmlService = smpXmlService;
 		this.smpIntegrationService = smpIntegrationService;
 		this.identifierPublishDataService = identifierPublishDataService;
+		this.smpLookupService = smpLookupService;
 	}
 
 	public boolean publishIdentifier(Identifier identifier) {
@@ -45,14 +47,24 @@ public class IdentifierPublishService {
 			return deleteServiceGroup(publishData.getParticipantIdentifier());
 		}
 
-		/*
-		 * TODO: We need to synchronize somehow list of published service metadata info
-		 * with expected (loaded by
-		 */
-
 		if (!publishServiceGroup(publishData.getParticipantIdentifier(), publishData)) {
 			return false;
 		}
+
+		/*
+		 * TODO: We need to synchronize somehow list of published service metadata info
+		 * with expected (loaded by identifierPublishDataService)
+		 */
+		
+		SmpPublishData currentPublishData = smpLookupService.lookup(publishData.getParticipantIdentifier());
+		
+		/*
+		 * TODO: Compare currentPublishData with expected and define what should be actually done:
+		 * 
+		 *  1) Some services should be updated/created
+		 *  
+		 *  2) Some services should be deleted
+		 */
 
 		List<SmpPublishServiceData> serviceList = publishData.getServiceList();
 		for (SmpPublishServiceData smpPublishServiceData : serviceList) {
