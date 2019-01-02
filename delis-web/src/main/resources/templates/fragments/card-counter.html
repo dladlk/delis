@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="card-counter (template, count, title, iconClass, cardClass)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:fragment="card-counter (template, pageUrl, count, title, iconClass, cardClass)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<meta charset="utf-8">
@@ -12,19 +12,18 @@
 </head>
 <body>
 
-	<div class="card text-white col-2 m-2" th:classappend="${cardClass}" th:if="${count} > 0">
+	<div class="card text-white col-2 m-2" th:classappend="${cardClass}" th:if="${count} > 0" onclick="return cardClicked(this);">
 		<div class="card-header">
 			<div class="row">
 				<div class="col col-xs-3">
 					<span class="oi" th:classappend="${iconClass}"></span>
 				</div>
 				<div class="col col-xs-9 text-right">
-					<div class="d-block huge" th:text="${count}">3</div>
+					<div class="d-block huge"><a href="#" class="dashboard-link" th:text="${count}" th:href="@{__${pageUrl}__}">3</a></div>
 					<div class="d-block" th:text="${title}" >Organisations</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 
 </body>

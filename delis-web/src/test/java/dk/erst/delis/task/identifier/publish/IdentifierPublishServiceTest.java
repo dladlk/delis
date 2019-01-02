@@ -21,7 +21,7 @@ import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 @Slf4j
 public class IdentifierPublishServiceTest {
 
-	private boolean mockIntegration = false;
+	private boolean mockIntegration = true;
 
 	@Test
 	public void test() {
