@@ -6,17 +6,37 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.config.SmpEndpointConfig;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class SmpIntegrationService {
 
-	public boolean create(SmpEndpoint endpoint, String path, String xml) {
+	private ConfigBean configBean;
+
+	@Autowired
+	public SmpIntegrationService(ConfigBean configBean) {
+		this.configBean = configBean;
+	}
+
+	public boolean create(String path, String xml) {
 		String method = "PUT";
-		String url = endpoint.getEndpointUrl() + "/" + path;
+		return call(method, path, xml);
+	}
+
+	public boolean delete(String path) {
+		String method = "DELETE";
+		return call(method, path, null);
+	}
+
+	private boolean call(String method, String path, String xml) {
+		SmpEndpointConfig endpoint = configBean.getSmpEndpointConfig();
+		String url = endpoint.getUrl() + "/" + path;
 		try {
 			HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
 			con.setRequestMethod(method);
@@ -24,10 +44,12 @@ public class SmpIntegrationService {
 			con.setRequestProperty("Authorization", "Basic " + encoded);
 			con.addRequestProperty("Content-Type", "text/xml");
 
-			con.setDoOutput(true);
-			con.getOutputStream().write(xml.getBytes(StandardCharsets.UTF_8));
+			if (xml != null) {
+				con.setDoOutput(true);
+				con.getOutputStream().write(xml.getBytes(StandardCharsets.UTF_8));
+			}
 
-			log.info(method + " to " + url + " with " + xml.length() + " bytes xml");
+			log.info(method + " to " + url + " with " + (xml != null ? xml.length() : -1) + " bytes xml");
 			int status = con.getResponseCode();
 			con.disconnect();
 			log.info(method + " result status: " + status);

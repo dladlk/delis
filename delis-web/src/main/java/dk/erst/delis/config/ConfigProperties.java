@@ -11,7 +11,7 @@ public class ConfigProperties {
 	private static String DEFAULT_ROOT = "../delis-resources/";
 
 	private String storageDocumentInput = "/delis/input";
-	
+
 	private String storageDocumentRoot = "/delis/document";
 
 	private String storageValidationRoot = DEFAULT_ROOT + "validation";
@@ -19,5 +19,7 @@ public class ConfigProperties {
 	private String storageTransformationRoot = DEFAULT_ROOT + "transformation";
 
 	private String storageCodeListsRoot = DEFAULT_ROOT + "codelists";
+
+	private SmpEndpointConfig smp = new SmpEndpointConfig();
 
 }

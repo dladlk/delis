@@ -17,11 +17,11 @@ public class ConfigBean {
 	public ConfigBean(ConfigProperties configProperties) {
 		this.configProperties = configProperties;
 	}
-	
+
 	public Path getStorageInputPath() {
 		return Paths.get(this.configProperties.getStorageDocumentInput());
 	}
-	
+
 	public Path getStorageLoadedPath() {
 		return buildStoragePath(DocumentStorageType.LOADED);
 	}
@@ -33,7 +33,7 @@ public class ConfigBean {
 	public Path getStorageValidPath() {
 		return buildStoragePath(DocumentStorageType.VALID);
 	}
-	
+
 	private Path buildStoragePath(DocumentStorageType storageType) {
 		String storageRoot = this.configProperties.getStorageDocumentRoot();
 		return Paths.get(storageRoot, storageType.getFolderName());
@@ -46,8 +46,12 @@ public class ConfigBean {
 	public Path getStorageTransformationPath() {
 		return Paths.get(this.configProperties.getStorageTransformationRoot()).toAbsolutePath();
 	}
-	
+
 	public Path getStorageCodeListPath() {
 		return Paths.get(this.configProperties.getStorageCodeListsRoot()).toAbsolutePath();
+	}
+
+	public SmpEndpointConfig getSmpEndpointConfig() {
+		return this.configProperties.getSmp();
 	}
 }
