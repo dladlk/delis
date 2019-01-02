@@ -17,7 +17,7 @@ import lombok.Data;
 @Data
 @Table(indexes = {
 
-		@Index(name = "I_ORGANISAION_ID", columnList = "ORGANISATION_ID, KEY", unique = true),
+		@Index(name = "I_ORGANISAION_ID", columnList = "ORGANISATION_ID, SETUP_KEY", unique = true),
 
 })
 public class OrganisationSetup {
@@ -31,10 +31,10 @@ public class OrganisationSetup {
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)
 	private Organisation organisation;
 
-	@Column(name = "KEY", nullable = false, length = 50)
+	@Column(name = "SETUP_KEY", nullable = false)
 	private OrganisationSetupKey key;
 
-	@Column(name = "VALUE", nullable = false, length = 250)
+	@Column(name = "SETUP_VALUE", nullable = false, length = 250)
 	private String value;
 
 }
