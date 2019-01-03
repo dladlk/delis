@@ -13,63 +13,74 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class MultiHttpSecurityConfig {
 
-	@Configuration
-	public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    @Configuration
+    public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-		private final CustomUserDetailsService customUserDetailsService;
+        private final CustomUserDetailsService customUserDetailsService;
 
-		@Autowired
-		public FormLoginWebSecurityConfigurerAdapter(CustomUserDetailsService customUserDetailsService) {
-			this.customUserDetailsService = customUserDetailsService;
-		}
+        @Autowired
+        public FormLoginWebSecurityConfigurerAdapter(CustomUserDetailsService customUserDetailsService) {
+            this.customUserDetailsService = customUserDetailsService;
+        }
 
-		@Bean
-		public BCryptPasswordEncoder passwordEncoder() {
-			return new BCryptPasswordEncoder();
-		}
+        @Bean
+        public BCryptPasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
 
-		@Autowired
-		public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
-		}
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+            auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
+        }
 
-		@Override
-		public void configure(WebSecurity web) throws Exception {
-			web.ignoring()
-					.antMatchers("/image/**")
-					.antMatchers("/css/**")
-					.antMatchers("/js/**")
-					.antMatchers("/rest/**");
-		}
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring()
+                    .antMatchers("/image/**")
+                    .antMatchers("/css/**")
+                    .antMatchers("/js/**")
+                    .antMatchers("/rest/**");
+        }
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
 
-			http.csrf().disable();
-			http.authorizeRequests().antMatchers("/", "/login", "/logout").permitAll();
-			http.authorizeRequests().antMatchers("/admin").access("hasRole('ADMIN')");
-			http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
-			http.authorizeRequests().and().formLogin()//
-					.loginProcessingUrl("/j_spring_security_check")
-					.loginPage("/login")
-					.defaultSuccessUrl("/home")
-					.failureUrl("/login?error=true")
-					.usernameParameter("username")
-					.passwordParameter("password")
-					.and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
+            http.csrf().disable().authorizeRequests().anyRequest().authenticated()
+                    .antMatchers("/login", "/logout").permitAll()
+                    .antMatchers("/").access("hasRole('ADMIN')")
+                    .and()
+                    .formLogin()
+                    .loginProcessingUrl("/j_spring_security_check")
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/home")
+                    .failureUrl("/login?error=true")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .and()
+                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
 
-			http.authorizeRequests().and()
-					.rememberMe().tokenRepository(this.persistentTokenRepository()) //
-					.tokenValiditySeconds(60);
-		}
+            http.authorizeRequests().and()
+                    .rememberMe().tokenRepository(this.persistentTokenRepository()) //
+                    .tokenValiditySeconds(60);
 
-		@Bean
-		public PersistentTokenRepository persistentTokenRepository() {
-			return new InMemoryTokenRepositoryImpl();
-		}
-	}
+
+            http.authorizeRequests()
+
+                    .anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
+
+                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
+            ;
+
+        }
+
+        @Bean
+        public PersistentTokenRepository persistentTokenRepository() {
+            return new InMemoryTokenRepositoryImpl();
+        }
+    }
 }
