@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * @author Iehor Funtusov, created by 02.01.19
@@ -42,12 +41,6 @@ public class User {
     @Email
     @Column(unique = true)
     private String email;
-
-    private int active;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
 
     public User() {
         this.createTime = new Date();
