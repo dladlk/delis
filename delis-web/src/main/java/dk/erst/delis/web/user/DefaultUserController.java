@@ -30,7 +30,7 @@ public class DefaultUserController {
         Role role = new Role();
         role.setRole(RoleType.ADMIN);
         roleRepository.save(role);
-        User user = new User();
+        UserData user = new UserData();
         user.setPassword("admin");
         user.setUsername("admin");
         userService.saveUser(user);

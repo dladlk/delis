@@ -4,6 +4,7 @@ import dk.erst.delis.data.user.User;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,15 +37,25 @@ public class UserController {
         return "user/list";
     }
 
-    @GetMapping("create")
-    public String createNewUser(Model model) {
-        model.addAttribute("user", new User());
+    @GetMapping("create/{id}")
+    public String createNewUser(@PathVariable(required = false) Long id, Model model) {
+        if (id == null || id == 0) {
+            model.addAttribute("user", new UserData());
+        } else {
+            User user = userService.findById(id);
+            UserData userData = new UserData();
+            BeanUtils.copyProperties(user, userData);
+            model.addAttribute("user", userData);
+        }
         return "user/edit";
     }
 
     @GetMapping("update/{id}")
     public String updateUser(@PathVariable long id, Model model) {
-        model.addAttribute("user", userService.findById(id));
+        User user = userService.findById(id);
+        UserData userData = new UserData();
+        BeanUtils.copyProperties(user, userData);
+        model.addAttribute("user", userData);
         return "user/edit";
     }
 
@@ -56,20 +67,20 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String createNewUser(@Valid User user, Model model) {
+    public String createNewUser(@Valid UserData user, Model model) {
 
         User userExists = userService.findUserByUsername(user.getUsername());
 
         if (userExists != null) {
             model.addAttribute("errorMessage", "There is already a user registered with the username provided");
-            return "redirect:/users/create";
+            return "redirect:/users/create/" + user.getId();
         }
 
         if (StringUtils.isNotBlank(user.getEmail())) {
             userExists = userService.findByEmail(user.getEmail());
             if (userExists != null) {
                 model.addAttribute("errorMessage", "There is already a user registered with the email provided");
-                return "redirect:/users/create";
+                return "redirect:/users/create/" + user.getId();
             }
         }
 
