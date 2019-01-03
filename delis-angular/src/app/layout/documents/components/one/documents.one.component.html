@@ -4,46 +4,74 @@
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
                 <div class="card">
-                    <div class="card-header"><strong>{{ document.organisation | uppercase }}</strong></div>
+                    <div class="card-header"><strong>{{ document.receiverName | uppercase }}</strong></div>
                     <br>
                     <div class="card-body">
                         <table class="table table-striped">
                             <tbody>
                             <tr>
-                                <td>Receiver</td>
-                                <td>{{document.receiver}}</td>
+                                <td>id</td>
+                                <td>{{document.id}}</td>
                             </tr>
                             <tr>
-                                <td>Status</td>
-                                <td>{{document.status}}</td>
+                                <td>createTime</td>
+                                <td>{{document.createTime}}</td>
                             </tr>
                             <tr>
-                                <td>Last Error</td>
-                                <td>{{document.lastError}}</td>
+                                <td>ingoingRelativePath</td>
+                                <td>{{document.ingoingRelativePath}}</td>
                             </tr>
                             <tr>
-                                <td>Document Type</td>
-                                <td>{{document.documentType}}</td>
+                                <td>documentStatus</td>
+                                <td>{{document.documentStatus}}</td>
                             </tr>
                             <tr>
-                                <td>Ingoing Format</td>
-                                <td>{{document.ingoingFormat}}</td>
+                                <td>receiverIdRaw</td>
+                                <td>{{document.receiverIdRaw}}</td>
                             </tr>
                             <tr>
-                                <td>Received</td>
-                                <td>{{document.received}}</td>
+                                <td>receiverName</td>
+                                <td>{{document.receiverName}}</td>
                             </tr>
                             <tr>
-                                <td>Issued</td>
-                                <td>{{document.issued}}</td>
+                                <td>receiverCountry</td>
+                                <td>{{document.receiverCountry}}</td>
                             </tr>
                             <tr>
-                                <td>Sender Name</td>
+                                <td>senderIdRaw</td>
+                                <td>{{document.senderIdRaw}}</td>
+                            </tr>
+                            <tr>
+                                <td>senderName</td>
                                 <td>{{document.senderName}}</td>
                             </tr>
                             <tr>
-                                <td>Receiver Name</td>
-                                <td>{{document.receiverName}}</td>
+                                <td>senderCountry</td>
+                                <td>{{document.senderCountry}}</td>
+                            </tr>
+                            <tr>
+                                <td>ingoingDocumentFormat</td>
+                                <td>{{document.ingoingDocumentFormat}}</td>
+                            </tr>
+                            <tr>
+                                <td>documentId</td>
+                                <td>{{document.documentId}}</td>
+                            </tr>
+                            <tr>
+                                <td>documentDate</td>
+                                <td>{{document.documentDate}}</td>
+                            </tr>
+                            <tr>
+                                <td>messageId</td>
+                                <td>{{document.messageId}}</td>
+                            </tr>
+                            <tr>
+                                <td>outgoingRelativePath</td>
+                                <td>{{document.outgoingRelativePath}}</td>
+                            </tr>
+                            <tr>
+                                <td>lastError</td>
+                                <td>{{document.lastError}}</td>
                             </tr>
                             </tbody>
                         </table>

@@ -7,6 +7,7 @@ import { DocumentsService } from "../../services/documents.service";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../service/locale.service";
 import { HeaderModel } from "../../../components/header/header.model";
+import { DocumentFullModel } from "../../models/document.full.model";
 
 @Component({
     selector: 'app-documents-one',
@@ -37,11 +38,11 @@ export class DocumentsOneComponent implements OnInit {
     ngOnInit(): void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         if (this.env.production) {
-            this.documentService.getOneDocumentById(id).subscribe((data: {}) => {
+            this.documentService.getOneDocumentById(id).subscribe((data: DocumentFullModel) => {
                 this.document = data;
             });
         } else {
-            this.document = this.documentsStaticService.getOneDocument(id);
+            this.document = Object.assign({}, this.documentsStaticService.getOneDocument(id));
         }
     }
 }
