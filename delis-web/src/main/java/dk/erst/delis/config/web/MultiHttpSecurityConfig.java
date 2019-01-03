@@ -67,15 +67,6 @@ public class MultiHttpSecurityConfig {
             http.authorizeRequests().and()
                     .rememberMe().tokenRepository(this.persistentTokenRepository()) //
                     .tokenValiditySeconds(60);
-
-
-            http.authorizeRequests()
-
-                    .anyRequest().authenticated().and().formLogin().loginPage("/login").permitAll()
-
-                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
-            ;
-
         }
 
         @Bean
