@@ -53,15 +53,15 @@ public class MultiHttpSecurityConfig {
             http.csrf().disable();
             http.authorizeRequests().antMatchers("/login", "/logout", "/default/user").permitAll();
             http.authorizeRequests().antMatchers("/").access("hasRole('ADMIN')");
-            http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
-            http.authorizeRequests().and().formLogin()//
+            http.authorizeRequests().anyRequest().authenticated();
+            http.authorizeRequests().and().formLogin()
                     .loginProcessingUrl("/j_spring_security_check")
                     .loginPage("/login")
                     .defaultSuccessUrl("/home")
                     .failureUrl("/login?error=true")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
+                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
 
             http.authorizeRequests().and()
                     .rememberMe().tokenRepository(this.persistentTokenRepository()) //
