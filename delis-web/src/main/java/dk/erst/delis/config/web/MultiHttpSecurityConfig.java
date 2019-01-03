@@ -51,7 +51,7 @@ public class MultiHttpSecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
             http.csrf().disable().authorizeRequests().anyRequest().authenticated()
-                    .antMatchers("/login", "/logout").permitAll()
+                    .antMatchers("/login", "/logout", "/default/user").permitAll()
                     .antMatchers("/").access("hasRole('ADMIN')")
                     .and()
                     .formLogin()
