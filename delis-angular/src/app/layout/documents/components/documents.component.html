@@ -12,9 +12,11 @@
                         <tr>
                             <th></th>
                             <th *ngFor="let hed of tableHeaderSortModels">
-                                <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
-                                    <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
-                                </button>
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
+                                        <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                    </button>
+                                </div>
                             </th>
                         </tr>
                         <tr>
