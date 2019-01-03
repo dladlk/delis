@@ -1,13 +1,12 @@
 package dk.erst.delis.task.identifier.publish;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import dk.erst.delis.data.Identifier;
 import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
 import dk.erst.delis.task.identifier.publish.dummy.SmpPublishDataDummyService;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class IdentifierPublishDataService {
@@ -29,7 +28,7 @@ public class IdentifierPublishDataService {
 			throw new RuntimeException("Identifier type " + identifier.getType() + " is unknown in ICD code lists for identifier " + identifier);
 		}
 
-		d.setParticipantIdentifier(ParticipantIdentifier.of(icdValue + "::" + identifier.getValue()));
+		d.setParticipantIdentifier(ParticipantIdentifier.of(icdValue + ":" + identifier.getValue()));
 		d.setServiceList(dummyService.buildDummyServiceList());
 
 		return d;
