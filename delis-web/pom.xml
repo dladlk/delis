@@ -32,6 +32,13 @@
             <version>${delis.version}</version>
         </dependency>   
     	 -->
+    	 
+		<!-- For User -->
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		</dependency>
+
      
 		<!-- Lombok -->
 		<dependency>
