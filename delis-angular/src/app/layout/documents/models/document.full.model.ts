@@ -1,3 +1,6 @@
+import { OrganisationModel } from "../../organisation/models/organisation.model";
+import { ReceiverIdentifierModel } from "../../organisation/models/receiver.identifier.model";
+
 export class DocumentFullModel {
 
     id: number;
@@ -17,6 +20,9 @@ export class DocumentFullModel {
     outgoingRelativePath: string;
     lastError: string;
 
+    organisation: OrganisationModel;
+    receiverIdentifier: ReceiverIdentifierModel;
+
     constructor(model ?: any) {
         if (model) {
             this.id = model.id;
@@ -35,6 +41,8 @@ export class DocumentFullModel {
             this.messageId = model.messageId;
             this.outgoingRelativePath = model.outgoingRelativePath;
             this.lastError = model.lastError;
+            this.organisation = model.organisation;
+            this.receiverIdentifier = model.receiverIdentifier;
         }
     }
 }

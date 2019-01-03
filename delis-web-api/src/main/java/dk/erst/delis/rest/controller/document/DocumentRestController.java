@@ -28,8 +28,12 @@ import java.util.Objects;
 @RequestMapping("/rest/document")
 public class DocumentRestController {
 
+    private final DocumentService documentService;
+
     @Autowired
-    private DocumentService documentService;
+    public DocumentRestController(DocumentService documentService) {
+        this.documentService = documentService;
+    }
 
     @GetMapping
     public ResponseEntity getDocumentList(WebRequest webRequest) {
