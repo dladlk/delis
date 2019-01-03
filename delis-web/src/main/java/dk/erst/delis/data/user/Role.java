@@ -15,9 +15,10 @@ public class Role {
 
     @Id
     @Column(name = "role_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 }

@@ -3,6 +3,7 @@ package dk.erst.delis.web.user;
 import dk.erst.delis.dao.RoleRepository;
 import dk.erst.delis.dao.UserRepository;
 import dk.erst.delis.data.user.Role;
+import dk.erst.delis.data.user.RoleType;
 import dk.erst.delis.data.user.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author Iehor Funtusov, created by 02.01.19
  */
 
-@Service("userService")
+@Service
 public class UserService {
 
     private UserRepository userRepository;
@@ -41,6 +42,10 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
+    User findById(Long id) {
+        return findOne(id);
+    }
+
     List<User> findAll() {
         return userRepository.findAll();
     }
@@ -48,11 +53,21 @@ public class UserService {
     void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
-        Role userRole = roleRepository.findByRole("ADMIN");
+        Role userRole = roleRepository.findByRole(RoleType.ADMIN);
         user.setRoles(new HashSet<>(Collections.singletonList(userRole)));
-        user.setEmail(user.getEmail());
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
         userRepository.save(user);
+    }
+
+    void deleteUser(Long id) {
+        userRepository.delete(findOne(id));
+    }
+
+    private User findOne(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            return user;
+        } else {
+            throw new RuntimeException();
+        }
     }
 }
