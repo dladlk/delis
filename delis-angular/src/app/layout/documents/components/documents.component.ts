@@ -23,9 +23,7 @@ const COLUMN_NAME_LAST_ERROR = 'documents.table.columnName.LastError';
 const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.columnName.DocumentType';
 const COLUMN_NAME_INGOING_FORMAT = 'documents.table.columnName.IngoingFormat';
 const COLUMN_NAME_RECEIVED = 'documents.table.columnName.Received';
-const COLUMN_NAME_ISSUED = 'documents.table.columnName.Issued';
 const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.SenderName';
-const COLUMN_NAME_RECEIVER_NAME = 'documents.table.columnName.ReceiverName';
 
 @Component({
     selector: 'app-documents',
@@ -45,7 +43,6 @@ export class DocumentsComponent implements OnInit {
     textOrganisation: string;
     textReceiver: string;
     textSenderName: string;
-    textReceiverName: string;
 
     documents: DocumentsModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
@@ -122,13 +119,7 @@ export class DocumentsComponent implements OnInit {
                     columnName: COLUMN_NAME_RECEIVED, columnClick: 0
                 },
                 {
-                    columnName: COLUMN_NAME_ISSUED, columnClick: 0
-                },
-                {
                     columnName: COLUMN_NAME_SENDER_NAME, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_RECEIVER_NAME, columnClick: 0
                 }
             );
         }
@@ -228,25 +219,9 @@ export class DocumentsComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextReceiverName(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.receiverName = null;
-        } else {
-            this.filter.receiverName = text;
-        }
-        this.pagination.currentPage = 1;
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
     loadReceivedDate(date: Date[]) {
         this.pagination.currentPage = 1;
         this.filter.dateReceived = new DateRangeModel(date[0], date[1]);
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
-    loadIssuedDate(date: Date[]) {
-        this.pagination.currentPage = 1;
-        this.filter.dateIssued = new DateRangeModel(date[0], date[1]);
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -276,9 +251,7 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickDocumentType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick;
         this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
         this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
-        this.filter.countClickIssued = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick;
         this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
-        this.filter.countClickReceiverName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick;
     }
 
     private clearAllFilter() {
@@ -290,8 +263,6 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickDocumentType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick;
         this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
         this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
-        this.filter.countClickIssued = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ISSUED).columnClick;
         this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
-        this.filter.countClickReceiverName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER_NAME).columnClick;
     }
 }

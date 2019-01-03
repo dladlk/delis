@@ -74,26 +74,11 @@
                                        (bsValueChange)="loadReceivedDate($event)">
                             </th>
                             <th>
-                                <input bsDaterangepicker
-                                       [bsConfig]="{containerClass: 'theme-dark-blue'}"
-                                       class="form-control"
-                                       placeholder="Issued Date"
-                                       type="text"
-                                       (bsValueChange)="loadIssuedDate($event)">
-                            </th>
-                            <th>
                                 <input class="form-control"
                                        type="text"
                                        [(ngModel)]="textSenderName"
                                        placeholder="Sender"
                                        (change)="loadTextSenderName($event.target.value)"/>
-                            </th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textReceiverName"
-                                       placeholder="Receiver"
-                                       (change)="loadTextReceiverName($event.target.value)"/>
                             </th>
                         </tr>
                         </thead>
@@ -107,9 +92,7 @@
                             <td>{{doc.documentType}}</td>
                             <td>{{doc.ingoingFormat}}</td>
                             <td>{{doc.received}}</td>
-                            <td>{{doc.issued}}</td>
                             <td>{{doc.senderName}}</td>
-                            <td>{{doc.receiverName}}</td>
                         </tr>
                         </tbody>
                     </table>

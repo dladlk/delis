@@ -10,9 +10,7 @@ export class DocumentsModel {
     documentType: string;
     ingoingFormat: string;
     received: string; // date
-    issued: string; // date
     senderName: string;
-    receiverName: string;
 
     constructor(model ?: any) {
         if (model) {
@@ -24,9 +22,7 @@ export class DocumentsModel {
             this.documentType = model.documentType;
             this.ingoingFormat = model.ingoingFormat;
             this.received = model.received;
-            this.issued = model.issued;
             this.senderName = model.senderName;
-            this.receiverName = model.receiverName;
         }
     }
 }
@@ -40,9 +36,7 @@ export class FilterProcessResult {
     receiver: string;
     documentType: string;
     senderName: string;
-    receiverName: string;
     dateReceived: DateRangeModel;
-    dateIssued: DateRangeModel;
 
     countClickOrganisation: number;
     countClickReceiver: number;
@@ -63,9 +57,7 @@ export class FilterProcessResult {
         this.receiver = null;
         this.documentType = 'ALL';
         this.senderName = null;
-        this.receiverName = null;
         this.dateReceived = new DateRangeModel(new Date(), new Date());
-        this.dateIssued = new DateRangeModel(new Date(), new Date());
         this.countClickOrganisation = 0;
         this.countClickReceiver = 0;
         this.countClickStatus = 0;

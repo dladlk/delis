@@ -82,12 +82,6 @@ export class DocumentsTestGuiStaticService {
             documents.sort((one, two) => (one.senderName > two.senderName ? -1 : 1));
         }
 
-        if (filter.countClickReceiverName === 1) {
-            documents.sort((one, two) => (one.receiverName < two.receiverName ? -1 : 1));
-        } else if (filter.countClickReceiverName === 2) {
-            documents.sort((one, two) => (one.receiverName > two.receiverName ? -1 : 1));
-        }
-
         return documents;
     }
 

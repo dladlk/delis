@@ -48,9 +48,6 @@ export class DocumentsService {
         if (filter.senderName !== null) {
             params = params.append('senderName', filter.senderName);
         }
-        if (filter.receiverName !== null) {
-            params = params.append('receiverName', filter.receiverName);
-        }
 
         return this.http.get(this.url + '', {params: params}).pipe(map(DocumentsService.extractData));
     }
