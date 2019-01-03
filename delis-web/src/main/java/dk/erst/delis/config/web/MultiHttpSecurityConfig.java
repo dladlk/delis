@@ -50,19 +50,18 @@ public class MultiHttpSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
-            http.csrf().disable().authorizeRequests().anyRequest().authenticated()
-                    .antMatchers("/login", "/logout", "/default/user").permitAll()
-                    .antMatchers("/").access("hasRole('ADMIN')")
-                    .and()
-                    .formLogin()
+            http.csrf().disable();
+            http.authorizeRequests().antMatchers("/login", "/logout", "/default/user").permitAll();
+            http.authorizeRequests().antMatchers("/").access("hasRole('ADMIN')");
+            http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
+            http.authorizeRequests().and().formLogin()//
                     .loginProcessingUrl("/j_spring_security_check")
                     .loginPage("/login")
                     .defaultSuccessUrl("/home")
                     .failureUrl("/login?error=true")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .and()
-                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login");
+                    .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
 
             http.authorizeRequests().and()
                     .rememberMe().tokenRepository(this.persistentTokenRepository()) //
