@@ -57,7 +57,7 @@ export class FilterProcessResult {
         this.receiver = null;
         this.documentType = 'ALL';
         this.senderName = null;
-        this.dateReceived = new DateRangeModel(new Date(), new Date());
+        this.dateReceived = null;
         this.countClickOrganisation = 0;
         this.countClickReceiver = 0;
         this.countClickStatus = 0;

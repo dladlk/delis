@@ -56,7 +56,7 @@ public class DocumentRestController {
         if (webRequest != null) {
             page = webRequest.getParameter("page") != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter("page"))) : 1;
             size = webRequest.getParameter("size") != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter("size"))) : 10;
-            return documentService.getAllAfterSorting(page, size, webRequest);
+            return documentService.getAllAfterFilteringAndSorting(page, size, webRequest);
         }
 
         return documentService.getAll(page, size);
