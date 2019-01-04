@@ -105,26 +105,12 @@ public class DocumentServiceImpl implements DocumentService {
                 }
             }
 
-            System.out.println("!!! start Specification !!!");
-            List<Document> documentList = documentRepository.findAll(DocumentSpecification.generateDocumentCriteriaPredicate(
-                    webRequest.getParameter("organisation"),
-                    webRequest.getParameter("receiver"),
-                    documentStatuses,
-                    lastErrors,
-                    webRequest.getParameter("senderName"),
-                    documentFormats, start, end));
-            System.out.println("documentList size = " + documentList.size());
-            documentList.forEach(System.out::println);
-            System.out.println("end Specification");
-
             String sort = filters
                     .stream()
                     .filter(filter -> filter.startsWith("count"))
                     .findFirst().orElse(null);
 
             if (StringUtils.isNotBlank(sort)) {
-                System.out.println("sort = " + sort);
-                System.out.println("sort = " + Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(sort))));
 
                 switch (sort) {
                     case "countClickOrganisation": {
