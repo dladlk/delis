@@ -55,18 +55,18 @@ public class DocumentSpecification {
                 );
                 predicates.add(receiverPredicate);
             }
-//
-//                if (CollectionUtils.isNotEmpty(documentStatuses)) { //TODO not working
-//                    Path<DocumentStatus> documentStatusPath = root.get("documentStatus");
-//                    documentStatusPredicate = documentStatusPath.in(documentStatuses);
-//                    predicates.add(documentStatusPredicate);
-//                }
 
-//                if (CollectionUtils.isNotEmpty(lastErrors)) { //TODO not working
-//                    Path<DocumentErrorCode> lastErrorPath = root.get("lastError");
-//                    lastErrorPredicate = lastErrorPath.in(lastErrors);
-//                    predicates.add(lastErrorPredicate);
-//                }
+            if (CollectionUtils.isNotEmpty(documentStatuses)) {
+                Path<DocumentStatus> documentStatusPath = root.get("documentStatus");
+                documentStatusPredicate = documentStatusPath.in(documentStatuses);
+                predicates.add(documentStatusPredicate);
+            }
+
+//            if (CollectionUtils.isNotEmpty(lastErrors)) {
+//                Path<DocumentErrorCode> lastErrorPath = root.get("lastError");
+//                lastErrorPredicate = lastErrorPath.in(lastErrors);
+//                predicates.add(lastErrorPredicate);
+//            }
 
             if (CollectionUtils.isNotEmpty(documentFormats)) {
                 Path<DocumentFormat> ingoingDocumentFormatPath = root.get("ingoingDocumentFormat");
