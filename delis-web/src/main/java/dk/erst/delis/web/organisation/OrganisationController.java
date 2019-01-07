@@ -68,6 +68,18 @@ public class OrganisationController {
 		return "organisation/view";
 	}
 
+	@GetMapping("/organisation/setup/{id}")
+	public String setup(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/home";
+		}
+		
+		model.addAttribute("organisation", organisation);
+		return "organisation/setup";
+	}
+	
 	@PostMapping("/organisation/save")
 	public String save(@ModelAttribute Organisation organisation, Model model, RedirectAttributes ra) {
 		if (StringUtils.isEmpty(organisation.getName())) {
