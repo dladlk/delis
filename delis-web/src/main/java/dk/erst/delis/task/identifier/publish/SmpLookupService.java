@@ -51,7 +51,7 @@ public class SmpLookupService {
 	}
 
 	private LookupClient createLookupClient() throws PeppolLoadingException {
-		return LookupClientBuilder.forTest()
+		return LookupClientBuilder.forProduction()
                         .locator(createLocalSMPLocator())
                         .provider(createMetadataProvider())
 						.certificateValidator(createCertificateValidator())
