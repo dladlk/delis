@@ -19,10 +19,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ram:IssueDateTime>
 			<udt:DateTimeString format="102">20130410</udt:DateTimeString>
 		</ram:IssueDateTime>
-		<ram:IncludedNote>
+<!-- 		<ram:IncludedNote>
 			<ram:Content>Ordered through our website</ram:Content>
 			<ram:SubjectCode>AAI</ram:SubjectCode>
-		</ram:IncludedNote>
+		</ram:IncludedNote> -->
 	</rsm:ExchangedDocument>
 	<rsm:SupplyChainTradeTransaction>
 		<ram:IncludedSupplyChainTradeLineItem>
@@ -43,7 +43,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<ram:Value>2 mm</ram:Value>
 				</ram:ApplicableProductCharacteristic>
 				<ram:DesignatedProductClassification>
-					<ram:ClassCode listID="MP" listVersionID="1.0">12344321</ram:ClassCode>
+					<ram:ClassCode listID="MP" listVersionID="19.05.01">12344321</ram:ClassCode>
 				</ram:DesignatedProductClassification>
 				<ram:OriginTradeCountry>
 					<ram:ID>NL</ram:ID>
@@ -367,13 +367,16 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 					<ram:CardholderName>Name</ram:CardholderName>
 				</ram:ApplicableTradeSettlementFinancialCard>
 			</ram:SpecifiedTradeSettlementPaymentMeans>
-			<ram:SpecifiedTradeSettlementPaymentMeans>
+<!-- 
+ 			<ram:SpecifiedTradeSettlementPaymentMeans>
 				<ram:TypeCode>58</ram:TypeCode>
 				<ram:Information>Half prepaid</ram:Information>
 				<ram:PayerPartyDebtorFinancialAccount>
-					<ram:IBANID>DK1212341234123412</ram:IBANID>
+					<ram:IBANID>RF1212341234123412</ram:IBANID>
 				</ram:PayerPartyDebtorFinancialAccount>
 			</ram:SpecifiedTradeSettlementPaymentMeans>
+ -->
+<!--
 			<ram:SpecifiedTradeSettlementPaymentMeans>
 				<ram:TypeCode>30</ram:TypeCode>
 				<ram:Information>Half prepaid</ram:Information>
@@ -382,13 +385,15 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 					<ram:AccountName>name</ram:AccountName>
 					<ram:ProprietaryID>254854</ram:ProprietaryID>
 				</ram:PayeePartyCreditorFinancialAccount>
-<!--			<ram:PayerSpecifiedDebitorFinancialInstitution>
+			<ram:PayerSpecifiedDebitorFinancialInstitution>
 					<ram:BICID>text</ram:BICID>
 				</ram:PayerSpecifiedDebitorFinancialInstitution>
--->				<ram:PayeeSpecifiedCreditorFinancialInstitution>
+				<ram:PayeeSpecifiedCreditorFinancialInstitution>
 					<ram:BICID>text</ram:BICID>
 				</ram:PayeeSpecifiedCreditorFinancialInstitution>
 			</ram:SpecifiedTradeSettlementPaymentMeans>
+ -->
+			
 			<ram:ApplicableTradeTax>
 				<ram:CalculatedAmount>375</ram:CalculatedAmount>
 				<ram:TypeCode>VAT</ram:TypeCode>
