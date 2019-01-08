@@ -13,11 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.JournalOrganisationDaoRepository;
 import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.SyncOrganisationFact;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
+import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
+import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -26,6 +32,9 @@ public class OrganisationController {
 
 	@Autowired
 	private OrganisationService organisationService;
+
+	@Autowired
+	private OrganisationSetupService organisationSetupService;
 	
 	@Autowired
 	private SyncOrganisationFactDaoRepository syncOrganisationFactDaoRepository;
@@ -68,6 +77,40 @@ public class OrganisationController {
 		return "organisation/view";
 	}
 
+	@GetMapping("/organisation/setup/{id}")
+	public String setup(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/home";
+		}
+		OrganisationSetupData setupData = organisationSetupService.load(organisation);		
+		
+		model.addAttribute("organisationReceivingFormatRuleList", OrganisationReceivingFormatRule.values());
+		model.addAttribute("organisationReceivingMethodList", OrganisationReceivingMethod.values());
+		model.addAttribute("organisationSubscriptionProfileGroupList", OrganisationSubscriptionProfileGroup.values());
+
+		model.addAttribute("organisation", organisation);
+		model.addAttribute("organisationSetupData", setupData);
+		
+		return "organisation/setup";
+	}
+	
+	@PostMapping("/organisation/setup-save/{id}")
+	public String setupSave(@PathVariable long id, @ModelAttribute OrganisationSetupData organisationSetupData, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/home";
+		}
+		
+		organisationSetupData.setOrganisation(organisation);
+		StatData statData = organisationSetupService.update(organisationSetupData);
+		ra.addFlashAttribute("message", statData.toStatString());
+
+		return "redirect:/organisation/setup/"+id;
+	}
+	
 	@PostMapping("/organisation/save")
 	public String save(@ModelAttribute Organisation organisation, Model model, RedirectAttributes ra) {
 		if (StringUtils.isEmpty(organisation.getName())) {

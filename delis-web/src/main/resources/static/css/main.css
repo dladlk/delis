@@ -4,3 +4,12 @@ html {
 .dashboard-link {
 	color: white;
 }
+
+/* START Organisation setup */
+ul.org-smp-setup {
+	list-style: none;
+}
+ul.org-smp-setup li ul li {
+	word-break: break-all
+}	
+/* END Organisation setup */

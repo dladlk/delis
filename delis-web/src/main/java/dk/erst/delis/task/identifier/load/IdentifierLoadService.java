@@ -121,15 +121,18 @@ public class IdentifierLoadService {
 							} else {
 								stat.incrementAdd();
 								
-								identifier.setOrganisation(organisation);
-								identifier.setIdentifierGroup(identifierGroup);
-								identifier.setStatus(IdentifierStatus.ACTIVE);
-								identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
-								identifier.setLastSyncOrganisationFactId(stat.getId());
+								Organisation previousOrganisation = present.getOrganisation();
+								
+								present.setOrganisation(organisation);
+								present.setIdentifierGroup(identifierGroup);
+								present.setStatus(IdentifierStatus.ACTIVE);
+								present.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+								present.setUniqueValueType(buildUniqueValueType(identifier));
+								present.setLastSyncOrganisationFactId(stat.getId());
 
-								saveIdentifier(identifier);
+								saveIdentifier(present);
 
-								saveJournalIdentifierMessage(organisation, identifier, "Moved deactivated from " + present.getOrganisation().getName() + " by " + description);
+								saveJournalIdentifierMessage(organisation, identifier, "Moved deactivated from " + previousOrganisation + " by " + description);
 							}
 						} else {
 						
