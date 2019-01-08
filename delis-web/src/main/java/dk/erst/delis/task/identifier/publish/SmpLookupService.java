@@ -1,21 +1,24 @@
 package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
-import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
-import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import dk.erst.delis.task.identifier.publish.data.*;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.lang.PeppolLoadingException;
-import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.common.model.ServiceMetadata;
+import no.difi.vefa.peppol.common.model.*;
 import no.difi.vefa.peppol.lookup.LookupClient;
 import no.difi.vefa.peppol.lookup.LookupClientBuilder;
 import no.difi.vefa.peppol.lookup.api.LookupException;
+import no.difi.vefa.peppol.lookup.api.MetadataLocator;
+import no.difi.vefa.peppol.lookup.provider.DefaultProvider;
+import no.difi.vefa.peppol.security.api.CertificateValidator;
 import no.difi.vefa.peppol.security.lang.PeppolSecurityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class SmpLookupService {
 		SmpPublishData smpPublishData = new SmpPublishData();
 		log.info("Performing lookup for publish data by ParticipantIdentifier "+identifier);
 		try {
-			LookupClient client = LookupClientBuilder.forTest().build();
+			LookupClient client = createLookupClient();
 			List<DocumentTypeIdentifier> documentIdentifiers = client.getDocumentIdentifiers(identifier);
 			log.info(String.format("%d DocumentIdentifiers found by ParticipantIdentifier %s", documentIdentifiers.size(), identifier));
 			List<ServiceMetadata> serviceMetadataList = queryServiceMetaData(identifier, client, documentIdentifiers);
@@ -45,6 +48,64 @@ public class SmpLookupService {
 			return null;
 		}
 		return smpPublishData;
+	}
+
+	private LookupClient createLookupClient() throws PeppolLoadingException {
+		return LookupClientBuilder.forTest()
+                        .locator(createLocalSMPLocator())
+                        .provider(createMetadataProvider())
+						.certificateValidator(createCertificateValidator())
+                        .build();
+	}
+
+	private CertificateValidator createCertificateValidator() {
+		return (service, x509Certificate) -> {
+        };
+	}
+
+	private DefaultProvider createMetadataProvider() {
+		return new DefaultProvider(){
+            @Override
+            public URI resolveDocumentIdentifiers(URI location, ParticipantIdentifier participant) {
+                URI newUri = null;
+                try {
+                    newUri = new URI(location.toString()+ "/"+participant.urlencoded());
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                return newUri;
+            }
+            @Override
+            public URI resolveServiceMetadata(URI location, ParticipantIdentifier participantIdentifier, DocumentTypeIdentifier documentTypeIdentifier) {
+                try {
+                    return new URI(location.toString()+String.format("/%s/services/%s", participantIdentifier.urlencoded(), documentTypeIdentifier.urlencoded()));
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                return location;
+            }
+        };
+	}
+
+	private MetadataLocator createLocalSMPLocator() {
+		return new MetadataLocator() {
+            @Override
+            public URI lookup(String identifier) throws LookupException {
+				try {
+					return new URI(configBean.getSmpEndpointConfig().getUrl());
+				} catch (URISyntaxException e) {
+					throw new LookupException(e.getMessage());
+				}
+			}
+            @Override
+            public URI lookup(ParticipantIdentifier participantIdentifier) throws LookupException {
+				try {
+					return new URI(configBean.getSmpEndpointConfig().getUrl());
+				} catch (URISyntaxException e) {
+					throw new LookupException(e.getMessage());
+				}
+			}
+        };
 	}
 
 	private List<ServiceMetadata> queryServiceMetaData(ParticipantIdentifier identifier, LookupClient client, List<DocumentTypeIdentifier> documentIdentifiers) throws LookupException, PeppolSecurityException {
@@ -63,11 +124,44 @@ public class SmpLookupService {
 			DocumentTypeIdentifier documentTypeIdentifier = serviceMetadata.getDocumentTypeIdentifier();
 			SmpDocumentIdentifier documentIdentifier = SmpDocumentIdentifier.of(documentTypeIdentifier.getIdentifier());
 			smpPublishServiceData.setDocumentIdentifier(documentIdentifier);
-			//TODO add values
-//			smpPublishServiceData.setProcessIdentifier();
-//			smpPublishServiceData.setEndpoints();
+			for (ProcessMetadata<Endpoint> processMetadata : serviceMetadata.getProcesses()) {
+				if(processMetadata.getProcessIdentifier().isEmpty()) {
+					continue;
+				}
+				SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
+				ProcessIdentifier processIdentifier = processMetadata.getProcessIdentifier().get(0);
+				smpProcessIdentifier.setProcessIdentifierScheme(processIdentifier.getScheme().toString());
+				smpProcessIdentifier.setProcessIdentifierValue(processIdentifier.getIdentifier());
+				smpPublishServiceData.setProcessIdentifier(smpProcessIdentifier);
+				smpPublishServiceData.setEndpoints(createEndpoints(processMetadata.getEndpoints()));
+			}
 			serviceDataList.add(smpPublishServiceData);
 		}
 		return serviceDataList;
+	}
+
+	private List<SmpServiceEndpointData> createEndpoints(List<Endpoint> endpoints) {
+		List<SmpServiceEndpointData> result = new ArrayList<>();
+		for (Endpoint endpoint : endpoints) {
+			URI address = endpoint.getAddress();
+			TransportProfile transportProfile = endpoint.getTransportProfile();
+			Period period = endpoint.getPeriod(); //TODO investigate why period is NULL
+			X509Certificate certificate = endpoint.getCertificate();
+			SmpServiceEndpointData endpointData = new SmpServiceEndpointData();
+			endpointData.setUrl(address.toString());
+			endpointData.setTransportProfile(transportProfile.getIdentifier());
+			try {
+				endpointData.setCertificate(certificate.getEncoded());
+			} catch (CertificateEncodingException e) {
+				log.error(e.getMessage(), e);
+			}
+//			endpointData.setServiceActivationDate(period.getFrom());
+//			endpointData.setServiceExpirationDate(period.getTo());
+//			endpointData.setRequireBusinessLevelSignature(??);
+//			endpointData.setServiceDescription(??);
+//			endpointData.setTechnicalContactUrl(??);
+			result.add(endpointData);
+		}
+		return result;
 	}
 }
