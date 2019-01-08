@@ -57,15 +57,15 @@ public class RuleService {
 		l.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2018-09-15_v1.10.0.35220/OIOUBL_Invoice_Schematron.xsl", 10));
 		l.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2018-09-15_v1.10.0.35220/OIOUBL_CreditNote_Schematron.xsl", 10));
 
-		String BIS3_PEPPOL = "sch/bis3/peppol_2018-03-15_1/PEPPOL-EN16931-UBL.xslt";
-		String BIS3_CEN = "sch/bis3/cen_2018-03-15_1/CEN-EN16931-UBL.xslt";
+		String BIS3_PEPPOL = "sch/bis3/peppol_2019-01-02_1/PEPPOL-EN16931-UBL.xslt";
+		String BIS3_CEN = "sch/bis3/cen_2019-01-02_1/CEN-EN16931-UBL.xslt";
 		l.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 10));
 		l.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 20));
 		l.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 10));
 		l.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 20));
 
-		l.add(sch(DocumentFormat.CII, "sch/cii/peppol_2018-03-15_1/PEPPOL-EN16931-CII.xslt", 10));
-		l.add(sch(DocumentFormat.CII, "sch/cii/cen_2018-03-15_1/CEN-EN16931-CII.xslt", 20));
+		l.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-01-02_1/PEPPOL-EN16931-CII.xslt", 10));
+		l.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-01-02_1/CEN-EN16931-CII.xslt", 20));
 
 		return l;
 	}
