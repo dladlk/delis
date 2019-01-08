@@ -221,7 +221,9 @@ export class DocumentsComponent implements OnInit {
 
     loadReceivedDate(date: Date[]) {
         this.pagination.currentPage = 1;
-        this.filter.dateReceived = new DateRangeModel(date[0], date[1]);
+        this.filter.dateReceived = new DateRangeModel();
+        this.filter.dateReceived.dateStart = date[0];
+        this.filter.dateReceived.dateEnd = date[1];
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
