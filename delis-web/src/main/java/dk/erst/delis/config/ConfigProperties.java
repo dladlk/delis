@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ConfigProperties {
 
-	private static String DEFAULT_ROOT = "../delis-resources/";
+	private static String DEFAULT_ROOT = "delis-resources/";
 
 	private String storageDocumentInput = "/delis/input";
 
