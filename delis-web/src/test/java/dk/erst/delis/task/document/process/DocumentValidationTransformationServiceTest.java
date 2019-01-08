@@ -27,10 +27,15 @@ public class DocumentValidationTransformationServiceTest {
 	}
 
 	@Test
-	public void testBIS3() throws Exception {
+	public void testBIS3_Invoice() throws Exception {
 		runCase(TestDocument.BIS3_INVOICE);
+	}
+
+	@Test
+	public void testBIS3_CreditNote() throws Exception {
 		runCase(TestDocument.BIS3_CREDITNOTE);
 	}
+	
 	@Test
 	public void testOIOUBL() throws Exception {
 		runCase(TestDocument.OIOUBL_INVOICE);
@@ -42,8 +47,6 @@ public class DocumentValidationTransformationServiceTest {
 		try {
 			DocumentParseService parseService = new DocumentParseService();
 			ConfigProperties configProperties = new ConfigProperties();
-			configProperties.setStorageTransformationRoot("../delis-resources/transformation");
-			configProperties.setStorageValidationRoot("../delis-resources/validation");
 			ConfigBean configBean = new ConfigBean(configProperties);
 			RuleService ruleService = new RuleService(configBean);
 			DocumentBytesStorageService documentBytesStorage = new DocumentBytesStorageService(configBean);
@@ -66,7 +69,7 @@ public class DocumentValidationTransformationServiceTest {
 			assertNotNull(processLog.getResultPath());
 			assertTrue(processLog.getResultPath().toFile().exists());
 		} finally {
-			TestDocumentUtil.cleanupTestFile(testFile);
+			//TestDocumentUtil.cleanupTestFile(testFile);
 		}
 	}
 

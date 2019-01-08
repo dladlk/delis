@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 public class OIOUBLSchematronResultCollector implements ISchematronResultCollector {
 
 	public static boolean DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE = false;
-	public static boolean DUMP_LOCATION = false;
 
 	protected static OIOUBLSchematronResultCollector INSTANCE = new OIOUBLSchematronResultCollector();
 
@@ -29,30 +28,56 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 	@Override
 	public List<String> collectErrorList(Document result) {
 		List<String> errorList = new ArrayList<>();
-		NodeList errorTagList = result.getElementsByTagName("Description");
+		NodeList errorTagList = result.getElementsByTagName("Error");
 		for (int i = 0; i < errorTagList.getLength(); i++) {
-			Node item = errorTagList.item(i);
+			Node errorItem = errorTagList.item(i);
+
+			String pattern = findNestedTagValue(errorItem, "Pattern");
+			String xpath = findNestedTagValue(errorItem, "Xpath");
+			String message = findNestedTagValue(errorItem, "Description");
 
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
-				errorList.add(nodeToString(item));
+				String nodeToString = nodeToString(errorItem);
+				System.out.println(nodeToString);
+				errorList.add(nodeToString);
 				continue;
 			}
 
-			String message = "";
-			for (int j = 0; j < item.getChildNodes().getLength(); j++) {
-				Node child = item.getChildNodes().item(j);
-				if ("text".equals(child.getLocalName())) {
-					message = child.getChildNodes().item(0).getNodeValue();
-					break;
-				}
-			}
 			StringBuilder sb = new StringBuilder();
 			if (message != null) {
 				sb.append(message.replaceAll("\r", "").replaceAll("\n", " ").replaceAll("\\s+", " "));
 			}
+			
+			if (log.isDebugEnabled()) {
+				log.debug(String.format("%d) %s\n\tpattern = %s\n\txpath = %s", i, message, pattern, xpath));
+			}
+			
 			errorList.add(sb.toString());
 		}
 		return errorList;
+	}
+
+	private String findNestedTagValue(Node parentNode, String tagName) {
+		NodeList childNodes = parentNode.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node node = childNodes.item(i);
+			if (tagName.equals(node.getLocalName())) {
+				return getNodeTextValue(node);
+			}
+		}
+		return null;
+	}
+
+	private String getNodeTextValue(Node item) {
+		if (item != null) {
+			for (int j = 0; j < item.getChildNodes().getLength(); j++) {
+				Node child = item.getChildNodes().item(j);
+				if (child.getNodeType() == Node.TEXT_NODE) {
+					return child.getNodeValue();
+				}
+			}
+		}
+		return null;
 	}
 
 	private String nodeToString(Node node) {

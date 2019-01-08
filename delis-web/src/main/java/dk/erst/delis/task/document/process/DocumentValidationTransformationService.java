@@ -154,9 +154,7 @@ public class DocumentValidationTransformationService {
 				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(ruleService.filePath(ruleDocumentValidation).toFile())) {
 					ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
 					List<String> errorList = schValidator.validate(xmlStream, schematronStream, collector);
-					// TODO: All SCH validations are considered OK - even with errors, until newest schematron is used
-					//step.setSuccess(errorList.isEmpty());
-					step.setSuccess(true);
+					step.setSuccess(errorList.isEmpty());
 					if (!errorList.isEmpty()) {
 						StringBuilder errors = new StringBuilder("Found "+errorList.size()+" errors: ");
 						for (String errorText : errorList) {

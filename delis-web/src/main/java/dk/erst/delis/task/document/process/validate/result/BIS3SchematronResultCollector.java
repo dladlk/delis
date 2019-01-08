@@ -33,7 +33,9 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 			Node item = failedAssertList.item(i);
 
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
-				errorList.add(nodeToString(item));
+				String nodeToString = nodeToString(item);
+				System.out.println(nodeToString);
+				errorList.add(nodeToString);
 				continue;
 			}
 
@@ -59,11 +61,17 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 				sb.append("]\t");
 			}
 			if (message != null) {
-				sb.append(message.replaceAll("\r", "").replaceAll("\n", " ").replaceAll("\\s+", " "));
+				message = message.replaceAll("\r", "").replaceAll("\n", " ").replaceAll("\\s+", " ");
+				sb.append(message);
 			}
 			if (DUMP_LOCATION && location != null) {
 				sb.append(" LOCATION: " + location);
 			}
+			
+			if (log.isDebugEnabled()) {
+				log.debug(String.format("%d) [%s] %s\n\tlocation = %s", i, flag, message, location));
+			}
+			
 			errorList.add(sb.toString());
 		}
 		return errorList;
