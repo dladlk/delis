@@ -14,6 +14,7 @@ import dk.erst.delis.dao.IdentifierDaoRepository;
 import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.IdentifierStatus;
 import dk.erst.delis.data.Organisation;
 
 @Controller
@@ -63,5 +64,21 @@ public class IdentifierController {
 		model.addAttribute("lastJournalList", journalIdentifierDaoRepository.findTop5ByIdentifierOrderByIdDesc(identifier));
 		
 		return "identifier/view";
+	}
+	
+	@GetMapping("/identifier/delete/{id}")
+	public String delete(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Identifier identifier = identifierDaoRepository.findById(id).get();
+		if (identifier == null) {
+			ra.addFlashAttribute("errorMessage", "Identifier is not found");
+			return "redirect:/home";
+		}
+		
+		identifier.setStatus(IdentifierStatus.DELETED);
+		identifierDaoRepository.save(identifier);
+		
+		ra.addFlashAttribute("message", String.format("Identifier %s is marked as deleted", identifier.getUniqueValueType()));
+		
+		return view(id, model, ra);
 	}
 }

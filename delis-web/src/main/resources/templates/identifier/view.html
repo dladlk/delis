@@ -39,6 +39,7 @@
 		</div>
 		<div class="card-footer">
 			<a href="#" th:href="@{/identifier/list/__${identifier.organisation.id}__}" class="btn btn-primary">Back to identifier list</a>
+			<a href="#" th:href="@{/identifier/delete/__${identifier.organisation.id}__}" class="btn btn-secondary" th:if="${identifier.status.active}">Delete</a>
 		</div>
 		
 	</div>
