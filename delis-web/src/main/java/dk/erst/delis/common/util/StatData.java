@@ -1,8 +1,10 @@
 package dk.erst.delis.common.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class StatData {
 
@@ -24,18 +26,30 @@ public class StatData {
 			c[0]++;
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return toStatString();
+	}
 
 	public String toStatString() {
 		if (statMap.isEmpty()) {
 			return "Nothing";
 		}
 
-		String loadStatStr = statMap.keySet().stream().sorted()
-
-				.map(s -> s + ": " + statMap.get(s)[0])
-
-				.collect(Collectors.joining(", "));
-
+		StringBuilder sb = new StringBuilder();
+		
+		List<String> keyList = new ArrayList<>(statMap.keySet());
+		Collections.sort(keyList);
+		for (String key : keyList) {
+			if (sb.length() > 0) {
+				sb.append(", ");
+			}
+			sb.append(key);
+			sb.append(": ");
+			sb.append(statMap.get(key)[0]);
+		}
+		String loadStatStr = sb.toString();
 		return loadStatStr;
 	}
 
