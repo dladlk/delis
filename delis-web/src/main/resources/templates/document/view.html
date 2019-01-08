@@ -111,8 +111,8 @@
 					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}" class="text-nowrap"></td>
 					<td th:text="${r.type}"></td>
 					<td>
-						<i th:if="${r.success}" class="far fa-check-circle text-success"></i>
-						<i th:if="${!r.success}" class="far fa-exclamation-circle text-danger "></i>
+						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
+						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
 					</td>
 					<td th:text="${r.message}"></td>
 					<td th:text="${r.durationMs}"/>
