@@ -1,16 +1,16 @@
 package dk.erst.delis.task.identifier.publish;
 
-import java.net.URLEncoder;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import dk.erst.delis.data.Identifier;
 import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
+import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.net.URLEncoder;
+import java.util.List;
 
 /*
  * Orchestration service, responsible for decision which action should be taken (PUT or DELETE), 
@@ -40,39 +40,38 @@ public class IdentifierPublishService {
 	}
 
 	public boolean publishIdentifier(Identifier identifier) {
-
-		SmpPublishData publishData = identifierPublishDataService.buildPublishData(identifier);
-
+		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier);
 		if (identifier.getStatus().isDeleted()) {
-			return deleteServiceGroup(publishData.getParticipantIdentifier());
+			return deleteServiceGroup(forPublish.getParticipantIdentifier());
 		}
-
-		if (!publishServiceGroup(publishData.getParticipantIdentifier(), publishData)) {
+		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
 			return false;
 		}
-
-		/*
-		 * TODO: We need to synchronize somehow list of published service metadata info
-		 * with expected (loaded by identifierPublishDataService)
-		 */
-		
-		SmpPublishData currentPublishData = smpLookupService.lookup(publishData.getParticipantIdentifier());
-		
-		/*
-		 * TODO: Compare currentPublishData with expected and define what should be actually done:
-		 * 
-		 *  1) Some services should be updated/created
-		 *  
-		 *  2) Some services should be deleted
-		 */
-
-		List<SmpPublishServiceData> serviceList = publishData.getServiceList();
-		for (SmpPublishServiceData smpPublishServiceData : serviceList) {
-			if (!publishServiceMetadata(publishData.getParticipantIdentifier(), smpPublishServiceData)) {
+		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
+		for (SmpPublishServiceData publishedService : published.getServiceList()) {
+			if(!contains(publishedService, forPublish.getServiceList())) {
+				deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
+			}
+		}
+		List<SmpPublishServiceData> servicesForPublish = forPublish.getServiceList();
+		for (SmpPublishServiceData serviceForPublish : servicesForPublish) {
+			if (!publishServiceMetadata(forPublish.getParticipantIdentifier(), serviceForPublish)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private boolean contains(SmpPublishServiceData searchingService, List<SmpPublishServiceData> serviceList) {
+		SmpDocumentIdentifier searchingDocumentIdentifier = searchingService.getDocumentIdentifier();
+		String searchingDocumentIdentifierValue = searchingDocumentIdentifier.getDocumentIdentifierValue();
+		for (SmpPublishServiceData serviceData : serviceList) {
+			SmpDocumentIdentifier documentIdentifier = serviceData.getDocumentIdentifier();
+			if(searchingDocumentIdentifierValue.equalsIgnoreCase(documentIdentifier.getDocumentIdentifierValue())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected boolean deleteServiceGroup(ParticipantIdentifier participantIdentifier) {

@@ -35,7 +35,7 @@ public class SmpLookupService {
 	
 	public SmpPublishData lookup(ParticipantIdentifier identifier) {
 		SmpPublishData smpPublishData = new SmpPublishData();
-		log.info("Performing lookup for publish data by ParticipantIdentifier "+identifier);
+		log.info("Performing lookup for published data by ParticipantIdentifier "+identifier);
 		try {
 			LookupClient client = createLookupClient();
 			List<DocumentTypeIdentifier> documentIdentifiers = client.getDocumentIdentifiers(identifier);
