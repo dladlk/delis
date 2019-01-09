@@ -72,7 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
 
             DocumentFilterModel filterModel = new DocumentFilterModel();
             filterModel.setDocumentStatuses(Arrays.asList(DocumentStatus.values()));
-            filterModel.setLastErrors(Arrays.asList(DocumentErrorCode.values()));
+            filterModel.setLastErrors(Collections.emptyList());
             filterModel.setDocumentFormats(Arrays.asList(DocumentFormat.values()));
             filterModel.setDocumentTypes(Arrays.asList(DocumentType.values()));
             filterModel.setStart(documentRepository.findMinCreateTime());

@@ -57,11 +57,11 @@ public class DocumentSpecification {
                 predicates.add(documentStatusPredicate);
             }
 
-//            if (CollectionUtils.isNotEmpty(lastErrors)) {
-//                Path<DocumentErrorCode> lastErrorPath = root.get(LAST_ERROR_FIELD);
-//                lastErrorPredicate = lastErrorPath.in(lastErrors);
-//                predicates.add(lastErrorPredicate);
-//            }
+            if (CollectionUtils.isNotEmpty(documentFilterModel.getLastErrors())) {
+                Path<DocumentErrorCode> lastErrorPath = root.get(LAST_ERROR_FIELD);
+                lastErrorPredicate = lastErrorPath.in(documentFilterModel.getLastErrors());
+                predicates.add(lastErrorPredicate);
+            }
 
             if (CollectionUtils.isNotEmpty(documentFilterModel.getDocumentFormats())) {
                 Path<DocumentFormat> ingoingDocumentFormatPath = root.get(INGOING_DOCUMENT_FORMAT_FIELD);
