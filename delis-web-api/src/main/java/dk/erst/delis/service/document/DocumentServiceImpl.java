@@ -1,6 +1,8 @@
 package dk.erst.delis.service.document;
 
 import dk.erst.delis.data.*;
+import dk.erst.delis.exception.model.FieldErrorModel;
+import dk.erst.delis.exception.statuses.RestNotFoundException;
 import dk.erst.delis.persistence.document.DocumentData;
 import dk.erst.delis.persistence.document.DocumentRepository;
 import dk.erst.delis.persistence.document.DocumentSpecification;
@@ -13,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
@@ -89,8 +92,6 @@ public class DocumentServiceImpl implements DocumentService {
                 }
                 if (key.equals("documentType")) {
                     documentTypes = Collections.singletonList(DocumentType.valueOf(webRequest.getParameter("documentType")));
-//                    DocumentType type = DocumentType.valueOf(webRequest.getParameter("documentType"));
-//                    documentFormatsByType = DocumentFormat.getFormatListByType(type);
                 }
                 if (key.equals("ingoingFormat")) {
                     documentFormats = Collections.singletonList(DocumentFormat.valueOf(webRequest.getParameter("ingoingFormat")));
@@ -316,7 +317,8 @@ public class DocumentServiceImpl implements DocumentService {
     public Document getOneById(long id) {
         Document document = documentRepository.findById(id).orElse(null);
         if (document == null) {
-            throw new RuntimeException();
+            throw new RestNotFoundException(Collections.singletonList(
+                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "document not found by id")));
         }
         return document;
     }

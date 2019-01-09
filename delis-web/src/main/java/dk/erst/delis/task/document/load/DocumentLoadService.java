@@ -14,10 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import dk.erst.delis.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dk.erst.delis.data.*;
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
@@ -26,6 +26,7 @@ import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepType;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
