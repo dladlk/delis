@@ -32,4 +32,12 @@ public enum OrganisationSubscriptionProfileGroup {
 	public String getCode() {
 		return this.name();
 	}
+	
+	public String getProcessScheme() {
+		return "cenbii-procid-ubl";
+	}
+	
+	public String getProcessId() {
+		return "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0";
+	}
 }
