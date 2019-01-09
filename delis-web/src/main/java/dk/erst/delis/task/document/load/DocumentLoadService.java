@@ -14,16 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import dk.erst.delis.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
-import dk.erst.delis.data.Document;
-import dk.erst.delis.data.DocumentStatus;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.JournalDocument;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepType;
@@ -166,7 +163,9 @@ public class DocumentLoadService {
 				document.setSenderCountry(info.getSender().getCountry());
 				document.setSenderName(info.getSender().getName());
 			}
-			document.setIngoingDocumentFormat(documentParseService.defineDocumentFormat(info));
+			DocumentFormat documentFormat = documentParseService.defineDocumentFormat(info);
+			document.setIngoingDocumentFormat(documentFormat);
+			document.setDocumentType(documentFormat.getDocumentType());
 
 			if (!document.getIngoingDocumentFormat().isUnsupported()) {
 				document.setDocumentStatus(DocumentStatus.LOAD_OK);

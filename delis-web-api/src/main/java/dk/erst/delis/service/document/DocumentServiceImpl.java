@@ -70,6 +70,7 @@ public class DocumentServiceImpl implements DocumentService {
             List<DocumentErrorCode> lastErrors = Arrays.asList(DocumentErrorCode.values());
             String senderName = null;
             List<DocumentFormat> documentFormats = Arrays.asList(DocumentFormat.values());
+            List<DocumentType> documentTypes = Arrays.asList(DocumentType.values());
             Date start = documentRepository.findMinCreateTime();
             Date end = documentRepository.findMaxCreateTime();
 
@@ -86,9 +87,11 @@ public class DocumentServiceImpl implements DocumentService {
                 if (key.equals("lastError")) {
                     lastErrors = Collections.singletonList(DocumentErrorCode.valueOf(webRequest.getParameter("lastError")));
                 }
-//                if (key.equals("documentType")) {
-//                    ingoingDocumentFormats = Collections.singletonList(DocumentFormat.getDocumentFormatByDocumentType(webRequest.getParameter("documentType")));
-//                }
+                if (key.equals("documentType")) {
+                    documentTypes = Collections.singletonList(DocumentType.valueOf(webRequest.getParameter("documentType")));
+//                    DocumentType type = DocumentType.valueOf(webRequest.getParameter("documentType"));
+//                    documentFormatsByType = DocumentFormat.getFormatListByType(type);
+                }
                 if (key.equals("ingoingFormat")) {
                     documentFormats = Collections.singletonList(DocumentFormat.valueOf(webRequest.getParameter("ingoingFormat")));
                 }
@@ -123,6 +126,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickOrganisation == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "organisation", organisation,
@@ -131,6 +135,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
@@ -143,6 +148,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickReceiver == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "receiverIdentifier", organisation,
@@ -151,6 +157,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
@@ -163,6 +170,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickStatus == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "documentStatus", organisation,
@@ -171,6 +179,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
@@ -183,6 +192,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickLastError == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "lastError", organisation,
@@ -191,19 +201,32 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
-//                    case "countClickDocumentType" : {
-//                        int countClickDocumentType = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickDocumentType")));
-//                        if (countClickDocumentType == 1) {
-//                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "ingoingDocumentFormat", organisations, identifiers, documentStatuses, lastErrors, ingoingDocumentFormats,
-//                                    start, end, senderNames);
-//                        } else if (countClickDocumentType == 2) {
-//                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "ingoingDocumentFormat", organisations, identifiers, documentStatuses, lastErrors, ingoingDocumentFormats,
-//                                    start, end, senderNames);
-//                        }
-//                    } break;
+                    case "countClickDocumentType": {
+                        int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickDocumentType")));
+                        if (countClickIngoingFormat == 1) {
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "documentType", organisation,
+                                    receiver,
+                                    documentStatuses,
+                                    lastErrors,
+                                    senderName,
+                                    documentFormats,
+                                    documentTypes,
+                                    start, end);
+                        } else if (countClickIngoingFormat == 2) {
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "documentType", organisation,
+                                    receiver,
+                                    documentStatuses,
+                                    lastErrors,
+                                    senderName,
+                                    documentFormats,
+                                    documentTypes,
+                                    start, end);
+                        }
+                    } break;
                     case "countClickIngoingFormat": {
                         int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickIngoingFormat")));
                         if (countClickIngoingFormat == 1) {
@@ -213,6 +236,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickIngoingFormat == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "ingoingDocumentFormat", organisation,
@@ -221,6 +245,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
@@ -233,6 +258,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickReceived == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "createTime", organisation,
@@ -241,6 +267,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
@@ -253,6 +280,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         } else if (countClickSenderName == 2) {
                             return getAscendingDocumentDataPageContainer(page, size, collectionSize, "senderName", organisation,
@@ -261,6 +289,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     lastErrors,
                                     senderName,
                                     documentFormats,
+                                    documentTypes,
                                     start, end);
                         }
                     } break;
@@ -275,6 +304,7 @@ public class DocumentServiceImpl implements DocumentService {
                     lastErrors,
                     senderName,
                     documentFormats,
+                    documentTypes,
                     start, end);
         }
 
@@ -305,6 +335,7 @@ public class DocumentServiceImpl implements DocumentService {
             List<DocumentErrorCode> lastErrors,
             String senderName,
             List<DocumentFormat> documentFormats,
+            List<DocumentType> documentTypes,
             Date start, Date end) {
         return new PageContainer<>(page, size, collectionSize, generateDocumentData(
                 documentRepository.findAll(
@@ -314,7 +345,8 @@ public class DocumentServiceImpl implements DocumentService {
                                 documentStatuses,
                                 lastErrors,
                                 senderName,
-                                documentFormats, start, end),
+                                documentFormats,
+                                documentTypes, start, end),
                         PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent()
         ));
     }
@@ -327,6 +359,7 @@ public class DocumentServiceImpl implements DocumentService {
             List<DocumentErrorCode> lastErrors,
             String senderName,
             List<DocumentFormat> documentFormats,
+            List<DocumentType> documentTypes,
             Date start, Date end) {
         return new PageContainer<>(page, size, collectionSize, generateDocumentData(
                 documentRepository
@@ -337,7 +370,8 @@ public class DocumentServiceImpl implements DocumentService {
                                         documentStatuses,
                                         lastErrors,
                                         senderName,
-                                        documentFormats, start, end),
+                                        documentFormats,
+                                        documentTypes, start, end),
                                 PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent()
         ));
     }
@@ -350,6 +384,7 @@ public class DocumentServiceImpl implements DocumentService {
             List<DocumentErrorCode> lastErrors,
             String senderName,
             List<DocumentFormat> documentFormats,
+            List<DocumentType> documentTypes,
             Date start, Date end) {
         return new PageContainer<>(page, size, collectionSize, generateDocumentData(
                 documentRepository
@@ -360,7 +395,8 @@ public class DocumentServiceImpl implements DocumentService {
                                         documentStatuses,
                                         lastErrors,
                                         senderName,
-                                        documentFormats, start, end),
+                                        documentFormats,
+                                        documentTypes, start, end),
                                 PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent()
         ));
     }

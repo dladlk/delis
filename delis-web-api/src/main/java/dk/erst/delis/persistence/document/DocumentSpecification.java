@@ -26,6 +26,7 @@ public class DocumentSpecification {
             List<DocumentErrorCode> lastErrors,
             String senderName,
             List<DocumentFormat> documentFormats,
+            List<DocumentType> documentTypes,
             Date start, Date end) {
 
         return (Specification<Document>) (root, criteriaQuery, criteriaBuilder) -> {
@@ -38,6 +39,7 @@ public class DocumentSpecification {
             Predicate documentStatusPredicate = null;
             Predicate lastErrorPredicate = null;
             Predicate ingoingDocumentFormatPredicate = null;
+            Predicate documentTypePredicate = null;
             Predicate senderNamePredicate = null;
             Predicate createTimePredicate = null;
 
@@ -72,6 +74,12 @@ public class DocumentSpecification {
                 Path<DocumentFormat> ingoingDocumentFormatPath = root.get("ingoingDocumentFormat");
                 ingoingDocumentFormatPredicate = ingoingDocumentFormatPath.in(documentFormats);
                 predicates.add(ingoingDocumentFormatPredicate);
+            }
+
+            if (CollectionUtils.isNotEmpty(documentTypes)) {
+                Path<DocumentType> documentTypePath = root.get("documentType");
+                documentTypePredicate = documentTypePath.in(documentTypes);
+                predicates.add(documentTypePredicate);
             }
 
             if (Objects.nonNull(start) && Objects.nonNull(end)) {

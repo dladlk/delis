@@ -35,7 +35,7 @@ public class DocumentData {
         }
         this.status = document.getDocumentStatus();
         this.lastError = document.getLastError();
-        this.documentType = document.getIngoingDocumentFormat().getDocumentType();
+        this.documentType = document.getDocumentType();
         this.ingoingFormat = document.getIngoingDocumentFormat();
         this.received = document.getCreateTime().toString();
         this.senderName = document.getSenderName();
