@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
+import dk.erst.delis.data.AccessPoint;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.OrganisationSetup;
 import dk.erst.delis.data.OrganisationSetupKey;
@@ -116,6 +117,12 @@ public class OrganisationSetupService {
 			String joined = d.getSubscribeProfileSet().stream().map(OrganisationSubscriptionProfileGroup::getCode).collect(Collectors.joining(","));
 			m.put(OrganisationSetupKey.SUBSCRIBED_SMP_PROFILES, joined);
 		}
+		if (d.getAs2() != null) {
+			m.put(OrganisationSetupKey.ACCESS_POINT_AS2, String.valueOf(d.getAs2().getId()));
+		}
+		if (d.getAs2() != null) {
+			m.put(OrganisationSetupKey.ACCESS_POINT_AS4, String.valueOf(d.getAs4().getId()));
+		}
 		return m;
 	}
 
@@ -148,6 +155,12 @@ public class OrganisationSetupService {
 				case RECEIVING_METHOD_SETUP:
 					d.setReceivingMethodSetup(os.getValue());
 					break;
+				case ACCESS_POINT_AS2:
+					d.setAs2(loadAccessPoint(os.getValue()));
+					break;
+				case ACCESS_POINT_AS4:
+					d.setAs4(loadAccessPoint(os.getValue()));
+					break;
 				}
 			}
 		}
@@ -155,5 +168,11 @@ public class OrganisationSetupService {
 			d.setSubscribeProfileSet(Collections.emptySet());
 		}
 		return d;
+	}
+
+	private AccessPoint loadAccessPoint(String value) {
+		// TODO Load via AccessPointRepository by id
+		long id = Long.parseLong(value);
+		return null;
 	}
 }
