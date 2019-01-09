@@ -30,3 +30,4 @@ public class DocumentFilterModel {
     Date start = null;
     Date end = null;
 }
+
