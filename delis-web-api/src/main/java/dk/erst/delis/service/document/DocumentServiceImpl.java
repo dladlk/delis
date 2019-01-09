@@ -4,6 +4,7 @@ import dk.erst.delis.data.*;
 import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestNotFoundException;
 import dk.erst.delis.persistence.document.DocumentData;
+import dk.erst.delis.persistence.document.DocumentFilterModel;
 import dk.erst.delis.persistence.document.DocumentRepository;
 import dk.erst.delis.persistence.document.DocumentSpecification;
 import dk.erst.delis.rest.data.response.PageContainer;
@@ -69,45 +70,43 @@ public class DocumentServiceImpl implements DocumentService {
 
         if (CollectionUtils.isNotEmpty(filters)) {
 
-            String organisation = null;
-            String receiver = null;
-            List<DocumentStatus> documentStatuses = Arrays.asList(DocumentStatus.values());
-            List<DocumentErrorCode> lastErrors = Arrays.asList(DocumentErrorCode.values());
-            String senderName = null;
-            List<DocumentFormat> documentFormats = Arrays.asList(DocumentFormat.values());
-            List<DocumentType> documentTypes = Arrays.asList(DocumentType.values());
-            Date start = documentRepository.findMinCreateTime();
-            Date end = documentRepository.findMaxCreateTime();
+            DocumentFilterModel filterModel = new DocumentFilterModel();
+            filterModel.setDocumentStatuses(Arrays.asList(DocumentStatus.values()));
+            filterModel.setLastErrors(Arrays.asList(DocumentErrorCode.values()));
+            filterModel.setDocumentFormats(Arrays.asList(DocumentFormat.values()));
+            filterModel.setDocumentTypes(Arrays.asList(DocumentType.values()));
+            filterModel.setStart(documentRepository.findMinCreateTime());
+            filterModel.setEnd(documentRepository.findMaxCreateTime());
 
             for (String key : filters) {
                 if (key.equals(ORGANIZATION_FIELD)) {
-                    organisation = webRequest.getParameter(ORGANIZATION_FIELD);
+                    filterModel.setOrganisation(webRequest.getParameter(ORGANIZATION_FIELD));
                 }
                 if (key.equals(RECEIVER_IDENTIFIER_FIELD)) {
-                    receiver = webRequest.getParameter(RECEIVER_IDENTIFIER_FIELD);
+                    filterModel.setReceiver(webRequest.getParameter(RECEIVER_IDENTIFIER_FIELD));
                 }
                 if (key.equals(DOCUMENT_STATUS_FIELD)) {
-                    documentStatuses = Collections.singletonList(DocumentStatus.valueOf(webRequest.getParameter(DOCUMENT_STATUS_FIELD)));
+                    filterModel.setDocumentStatuses(Collections.singletonList(DocumentStatus.valueOf(webRequest.getParameter(DOCUMENT_STATUS_FIELD))));
                 }
                 if (key.equals(LAST_ERROR_FIELD)) {
-                    lastErrors = Collections.singletonList(DocumentErrorCode.valueOf(webRequest.getParameter(LAST_ERROR_FIELD)));
+                    filterModel.setLastErrors(Collections.singletonList(DocumentErrorCode.valueOf(webRequest.getParameter(LAST_ERROR_FIELD))));
                 }
                 if (key.equals(DOCUMENT_TYPE_FIELD)) {
-                    documentTypes = Collections.singletonList(DocumentType.valueOf(webRequest.getParameter(DOCUMENT_TYPE_FIELD)));
+                    filterModel.setDocumentTypes(Collections.singletonList(DocumentType.valueOf(webRequest.getParameter(DOCUMENT_TYPE_FIELD))));
                 }
                 if (key.equals(INGOING_DOCUMENT_FORMAT_FIELD)) {
-                    documentFormats = Collections.singletonList(DocumentFormat.valueOf(webRequest.getParameter(INGOING_DOCUMENT_FORMAT_FIELD)));
+                    filterModel.setDocumentFormats(Collections.singletonList(DocumentFormat.valueOf(webRequest.getParameter(INGOING_DOCUMENT_FORMAT_FIELD))));
                 }
                 if (key.equals("start")) {
                     long startDate = Long.parseLong(Objects.requireNonNull(webRequest.getParameter("start")));
-                    start = new Date(startDate);
+                    filterModel.setStart(new Date(startDate));
                 }
                 if (key.equals("end")) {
                     long endDate = Long.parseLong(Objects.requireNonNull(webRequest.getParameter("end")));
-                    end = new Date(endDate);
+                    filterModel.setEnd(new Date(endDate));
                 }
                 if (key.equals(SENDER_NAME_FIELD)) {
-                    senderName = webRequest.getParameter(SENDER_NAME_FIELD);
+                    filterModel.setSenderName(webRequest.getParameter(SENDER_NAME_FIELD));
                 }
             }
 
@@ -119,196 +118,74 @@ public class DocumentServiceImpl implements DocumentService {
             if (StringUtils.isNotBlank(sort)) {
 
                 switch (sort) {
-                    case "countClickOrganisation": {
-                        int countClickOrganisation = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickOrganisation")));
+                    case COUNT_CLICK_ORGANIZATION_FIELD : {
+                        int countClickOrganisation = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_ORGANIZATION_FIELD)));
                         if (countClickOrganisation == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, ORGANIZATION_FIELD,
-                                    organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, ORGANIZATION_FIELD, filterModel);
                         } else if (countClickOrganisation == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, ORGANIZATION_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, ORGANIZATION_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickReceiver": {
-                        int countClickReceiver = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickReceiver")));
+                    case COUNT_CLICK_RECEIVER_IDENTIFIER_FIELD : {
+                        int countClickReceiver = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_RECEIVER_IDENTIFIER_FIELD)));
                         if (countClickReceiver == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, RECEIVER_IDENTIFIER_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, RECEIVER_IDENTIFIER_FIELD, filterModel);
                         } else if (countClickReceiver == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, RECEIVER_IDENTIFIER_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, RECEIVER_IDENTIFIER_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickStatus": {
-                        int countClickStatus = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickStatus")));
+                    case COUNT_CLICK_DOCUMENT_STATUS_FIELD : {
+                        int countClickStatus = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_DOCUMENT_STATUS_FIELD)));
                         if (countClickStatus == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_STATUS_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_STATUS_FIELD, filterModel);
                         } else if (countClickStatus == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_STATUS_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_STATUS_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickLastError": {
-                        int countClickLastError = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickLastError")));
+                    case COUNT_CLICK_LAST_ERROR_FIELD : {
+                        int countClickLastError = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_LAST_ERROR_FIELD)));
                         if (countClickLastError == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, LAST_ERROR_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, LAST_ERROR_FIELD, filterModel);
                         } else if (countClickLastError == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, LAST_ERROR_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, LAST_ERROR_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickDocumentType": {
-                        int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickDocumentType")));
+                    case COUNT_CLICK_DOCUMENT_TYPE_FIELD : {
+                        int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_DOCUMENT_TYPE_FIELD)));
                         if (countClickIngoingFormat == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_TYPE_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_TYPE_FIELD, filterModel);
                         } else if (countClickIngoingFormat == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_TYPE_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_TYPE_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickIngoingFormat": {
-                        int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickIngoingFormat")));
+                    case COUNT_CLICK_INGOING_DOCUMENT_FORMAT_FIELD : {
+                        int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_INGOING_DOCUMENT_FORMAT_FIELD)));
                         if (countClickIngoingFormat == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, INGOING_DOCUMENT_FORMAT_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, INGOING_DOCUMENT_FORMAT_FIELD, filterModel);
                         } else if (countClickIngoingFormat == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, INGOING_DOCUMENT_FORMAT_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, INGOING_DOCUMENT_FORMAT_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickReceived": {
-                        int countClickReceived = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickReceived")));
+                    case COUNT_CLICK_CREATE_TIME_FIELD : {
+                        int countClickReceived = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_CREATE_TIME_FIELD)));
                         if (countClickReceived == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, CREATE_TIME_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, CREATE_TIME_FIELD, filterModel);
                         } else if (countClickReceived == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, CREATE_TIME_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, CREATE_TIME_FIELD, filterModel);
                         }
                     } break;
-                    case "countClickSenderName": {
-                        int countClickSenderName = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickSenderName")));
+                    case COUNT_CLICK_SENDER_NAME_FIELD : {
+                        int countClickSenderName = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(COUNT_CLICK_SENDER_NAME_FIELD)));
                         if (countClickSenderName == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, SENDER_NAME_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, SENDER_NAME_FIELD, filterModel);
                         } else if (countClickSenderName == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, SENDER_NAME_FIELD, organisation,
-                                    receiver,
-                                    documentStatuses,
-                                    lastErrors,
-                                    senderName,
-                                    documentFormats,
-                                    documentTypes,
-                                    start, end);
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, SENDER_NAME_FIELD, filterModel);
                         }
                     } break;
                 }
             }
 
-            return getDefaultDocumentDataPageContainerWithoutSorting(
-                    page, size, collectionSize,
-                    organisation,
-                    receiver,
-                    documentStatuses,
-                    lastErrors,
-                    senderName,
-                    documentFormats,
-                    documentTypes,
-                    start, end);
+            return getDefaultDocumentDataPageContainerWithoutSorting(page, size, collectionSize, filterModel);
         }
 
         return getDefaultDocumentDataPageContainer(page, size, collectionSize);
@@ -333,74 +210,30 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private PageContainer<DocumentData> getDefaultDocumentDataPageContainerWithoutSorting(
-            int page, int size, long collectionSize, String organisation,
-            String receiver,
-            List<DocumentStatus> documentStatuses,
-            List<DocumentErrorCode> lastErrors,
-            String senderName,
-            List<DocumentFormat> documentFormats,
-            List<DocumentType> documentTypes,
-            Date start, Date end) {
+            int page, int size, long collectionSize, DocumentFilterModel filterModel) {
         return new PageContainer<>(page, size, collectionSize, generateDocumentData(
                 documentRepository.findAll(
-                        DocumentSpecification.generateDocumentCriteriaPredicate(
-                                organisation,
-                                receiver,
-                                documentStatuses,
-                                lastErrors,
-                                senderName,
-                                documentFormats,
-                                documentTypes, start, end),
+                        DocumentSpecification.generateDocumentCriteriaPredicate(filterModel),
                         PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent()
         ));
     }
 
     private PageContainer<DocumentData> getDescendingDocumentDataPageContainer(
-            int page, int size, long collectionSize, String param,
-            String organisation,
-            String receiver,
-            List<DocumentStatus> documentStatuses,
-            List<DocumentErrorCode> lastErrors,
-            String senderName,
-            List<DocumentFormat> documentFormats,
-            List<DocumentType> documentTypes,
-            Date start, Date end) {
+            int page, int size, long collectionSize, String param, DocumentFilterModel filterModel) {
         return new PageContainer<>(page, size, collectionSize, generateDocumentData(
                 documentRepository
                         .findAll(
-                                DocumentSpecification.generateDocumentCriteriaPredicate(
-                                        organisation,
-                                        receiver,
-                                        documentStatuses,
-                                        lastErrors,
-                                        senderName,
-                                        documentFormats,
-                                        documentTypes, start, end),
+                                DocumentSpecification.generateDocumentCriteriaPredicate(filterModel),
                                 PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent()
         ));
     }
 
     private PageContainer<DocumentData> getAscendingDocumentDataPageContainer(
-            int page, int size, long collectionSize, String param,
-            String organisation,
-            String receiver,
-            List<DocumentStatus> documentStatuses,
-            List<DocumentErrorCode> lastErrors,
-            String senderName,
-            List<DocumentFormat> documentFormats,
-            List<DocumentType> documentTypes,
-            Date start, Date end) {
+            int page, int size, long collectionSize, String param, DocumentFilterModel filterModel) {
         return new PageContainer<>(page, size, collectionSize, generateDocumentData(
                 documentRepository
                         .findAll(
-                                DocumentSpecification.generateDocumentCriteriaPredicate(
-                                        organisation,
-                                        receiver,
-                                        documentStatuses,
-                                        lastErrors,
-                                        senderName,
-                                        documentFormats,
-                                        documentTypes, start, end),
+                                DocumentSpecification.generateDocumentCriteriaPredicate(filterModel),
                                 PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent()
         ));
     }

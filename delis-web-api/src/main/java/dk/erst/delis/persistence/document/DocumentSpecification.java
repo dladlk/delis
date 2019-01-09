@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,15 +20,7 @@ import static dk.erst.delis.persistence.document.DocumentConstants.*;
 
 public class DocumentSpecification {
 
-    public static Specification<Document> generateDocumentCriteriaPredicate(
-            String organisation,
-            String receiver,
-            List<DocumentStatus> documentStatuses,
-            List<DocumentErrorCode> lastErrors,
-            String senderName,
-            List<DocumentFormat> documentFormats,
-            List<DocumentType> documentTypes,
-            Date start, Date end) {
+    public static Specification<Document> generateDocumentCriteriaPredicate(DocumentFilterModel documentFilterModel) {
 
         return (Specification<Document>) (root, criteriaQuery, criteriaBuilder) -> {
 
@@ -45,14 +36,14 @@ public class DocumentSpecification {
             Predicate senderNamePredicate = null;
             Predicate createTimePredicate = null;
 
-            if (StringUtils.isNotBlank(organisation)) {
-                containsLikePattern = getContainsLikePattern(organisation);
+            if (StringUtils.isNotBlank(documentFilterModel.getOrganisation())) {
+                containsLikePattern = getContainsLikePattern(documentFilterModel.getOrganisation());
                 organisationPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get(ORGANIZATION_FIELD).get("name")), containsLikePattern);
                 predicates.add(organisationPredicate);
             }
 
-            if (StringUtils.isNotBlank(receiver)) {
-                containsLikePattern = getContainsLikePattern(receiver);
+            if (StringUtils.isNotBlank(documentFilterModel.getReceiver())) {
+                containsLikePattern = getContainsLikePattern(documentFilterModel.getReceiver());
                 receiverPredicate = criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get(RECEIVER_IDENTIFIER_FIELD).get("uniqueValueType")), containsLikePattern),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get(RECEIVER_IDENTIFIER_FIELD).get("name")), containsLikePattern)
@@ -60,9 +51,9 @@ public class DocumentSpecification {
                 predicates.add(receiverPredicate);
             }
 
-            if (CollectionUtils.isNotEmpty(documentStatuses)) {
+            if (CollectionUtils.isNotEmpty(documentFilterModel.getDocumentStatuses())) {
                 Path<DocumentStatus> documentStatusPath = root.get(DOCUMENT_STATUS_FIELD);
-                documentStatusPredicate = documentStatusPath.in(documentStatuses);
+                documentStatusPredicate = documentStatusPath.in(documentFilterModel.getDocumentStatuses());
                 predicates.add(documentStatusPredicate);
             }
 
@@ -72,25 +63,25 @@ public class DocumentSpecification {
 //                predicates.add(lastErrorPredicate);
 //            }
 
-            if (CollectionUtils.isNotEmpty(documentFormats)) {
+            if (CollectionUtils.isNotEmpty(documentFilterModel.getDocumentFormats())) {
                 Path<DocumentFormat> ingoingDocumentFormatPath = root.get(INGOING_DOCUMENT_FORMAT_FIELD);
-                ingoingDocumentFormatPredicate = ingoingDocumentFormatPath.in(documentFormats);
+                ingoingDocumentFormatPredicate = ingoingDocumentFormatPath.in(documentFilterModel.getDocumentFormats());
                 predicates.add(ingoingDocumentFormatPredicate);
             }
 
-            if (CollectionUtils.isNotEmpty(documentTypes)) {
+            if (CollectionUtils.isNotEmpty(documentFilterModel.getDocumentTypes())) {
                 Path<DocumentType> documentTypePath = root.get(DOCUMENT_TYPE_FIELD);
-                documentTypePredicate = documentTypePath.in(documentTypes);
+                documentTypePredicate = documentTypePath.in(documentFilterModel.getDocumentTypes());
                 predicates.add(documentTypePredicate);
             }
 
-            if (Objects.nonNull(start) && Objects.nonNull(end)) {
-                createTimePredicate = criteriaBuilder.between(root.get(CREATE_TIME_FIELD), start, end);
+            if (Objects.nonNull(documentFilterModel.getStart()) && Objects.nonNull(documentFilterModel.getEnd())) {
+                createTimePredicate = criteriaBuilder.between(root.get(CREATE_TIME_FIELD), documentFilterModel.getStart(), documentFilterModel.getEnd());
                 predicates.add(createTimePredicate);
             }
 
-            if (StringUtils.isNotBlank(senderName)) {
-                containsLikePattern = getContainsLikePattern(senderName);
+            if (StringUtils.isNotBlank(documentFilterModel.getSenderName())) {
+                containsLikePattern = getContainsLikePattern(documentFilterModel.getSenderName());
                 senderNamePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get(SENDER_NAME_FIELD)), containsLikePattern);
                 predicates.add(senderNamePredicate);
             }
