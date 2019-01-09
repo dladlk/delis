@@ -23,6 +23,8 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static dk.erst.delis.persistence.document.DocumentConstants.*;
+
 /**
  * @author Iehor Funtusov, created by 03.01.19
  */
@@ -78,23 +80,23 @@ public class DocumentServiceImpl implements DocumentService {
             Date end = documentRepository.findMaxCreateTime();
 
             for (String key : filters) {
-                if (key.equals("organisation")) {
-                    organisation = webRequest.getParameter("organisation");
+                if (key.equals(ORGANIZATION_FIELD)) {
+                    organisation = webRequest.getParameter(ORGANIZATION_FIELD);
                 }
-                if (key.equals("receiver")) {
-                    receiver = webRequest.getParameter("receiver");
+                if (key.equals(RECEIVER_IDENTIFIER_FIELD)) {
+                    receiver = webRequest.getParameter(RECEIVER_IDENTIFIER_FIELD);
                 }
-                if (key.equals("status")) {
-                    documentStatuses = Collections.singletonList(DocumentStatus.valueOf(webRequest.getParameter("status")));
+                if (key.equals(DOCUMENT_STATUS_FIELD)) {
+                    documentStatuses = Collections.singletonList(DocumentStatus.valueOf(webRequest.getParameter(DOCUMENT_STATUS_FIELD)));
                 }
-                if (key.equals("lastError")) {
-                    lastErrors = Collections.singletonList(DocumentErrorCode.valueOf(webRequest.getParameter("lastError")));
+                if (key.equals(LAST_ERROR_FIELD)) {
+                    lastErrors = Collections.singletonList(DocumentErrorCode.valueOf(webRequest.getParameter(LAST_ERROR_FIELD)));
                 }
-                if (key.equals("documentType")) {
-                    documentTypes = Collections.singletonList(DocumentType.valueOf(webRequest.getParameter("documentType")));
+                if (key.equals(DOCUMENT_TYPE_FIELD)) {
+                    documentTypes = Collections.singletonList(DocumentType.valueOf(webRequest.getParameter(DOCUMENT_TYPE_FIELD)));
                 }
-                if (key.equals("ingoingFormat")) {
-                    documentFormats = Collections.singletonList(DocumentFormat.valueOf(webRequest.getParameter("ingoingFormat")));
+                if (key.equals(INGOING_DOCUMENT_FORMAT_FIELD)) {
+                    documentFormats = Collections.singletonList(DocumentFormat.valueOf(webRequest.getParameter(INGOING_DOCUMENT_FORMAT_FIELD)));
                 }
                 if (key.equals("start")) {
                     long startDate = Long.parseLong(Objects.requireNonNull(webRequest.getParameter("start")));
@@ -104,8 +106,8 @@ public class DocumentServiceImpl implements DocumentService {
                     long endDate = Long.parseLong(Objects.requireNonNull(webRequest.getParameter("end")));
                     end = new Date(endDate);
                 }
-                if (key.equals("senderName")) {
-                    senderName = webRequest.getParameter("senderName");
+                if (key.equals(SENDER_NAME_FIELD)) {
+                    senderName = webRequest.getParameter(SENDER_NAME_FIELD);
                 }
             }
 
@@ -120,7 +122,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickOrganisation": {
                         int countClickOrganisation = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickOrganisation")));
                         if (countClickOrganisation == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "organisation",
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, ORGANIZATION_FIELD,
                                     organisation,
                                     receiver,
                                     documentStatuses,
@@ -130,7 +132,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickOrganisation == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "organisation", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, ORGANIZATION_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -143,7 +145,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickReceiver": {
                         int countClickReceiver = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickReceiver")));
                         if (countClickReceiver == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "receiverIdentifier", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, RECEIVER_IDENTIFIER_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -152,7 +154,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickReceiver == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "receiverIdentifier", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, RECEIVER_IDENTIFIER_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -165,7 +167,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickStatus": {
                         int countClickStatus = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickStatus")));
                         if (countClickStatus == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "documentStatus", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_STATUS_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -174,7 +176,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickStatus == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "documentStatus", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_STATUS_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -187,7 +189,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickLastError": {
                         int countClickLastError = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickLastError")));
                         if (countClickLastError == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "lastError", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, LAST_ERROR_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -196,7 +198,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickLastError == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "lastError", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, LAST_ERROR_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -209,7 +211,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickDocumentType": {
                         int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickDocumentType")));
                         if (countClickIngoingFormat == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "documentType", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_TYPE_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -218,7 +220,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickIngoingFormat == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "documentType", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, DOCUMENT_TYPE_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -231,7 +233,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickIngoingFormat": {
                         int countClickIngoingFormat = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickIngoingFormat")));
                         if (countClickIngoingFormat == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "ingoingDocumentFormat", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, INGOING_DOCUMENT_FORMAT_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -240,7 +242,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickIngoingFormat == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "ingoingDocumentFormat", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, INGOING_DOCUMENT_FORMAT_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -253,7 +255,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickReceived": {
                         int countClickReceived = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickReceived")));
                         if (countClickReceived == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "createTime", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, CREATE_TIME_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -262,7 +264,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickReceived == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "createTime", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, CREATE_TIME_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -275,7 +277,7 @@ public class DocumentServiceImpl implements DocumentService {
                     case "countClickSenderName": {
                         int countClickSenderName = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter("countClickSenderName")));
                         if (countClickSenderName == 1) {
-                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, "senderName", organisation,
+                            return getDescendingDocumentDataPageContainer(page, size, collectionSize, SENDER_NAME_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,
@@ -284,7 +286,7 @@ public class DocumentServiceImpl implements DocumentService {
                                     documentTypes,
                                     start, end);
                         } else if (countClickSenderName == 2) {
-                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, "senderName", organisation,
+                            return getAscendingDocumentDataPageContainer(page, size, collectionSize, SENDER_NAME_FIELD, organisation,
                                     receiver,
                                     documentStatuses,
                                     lastErrors,

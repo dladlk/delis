@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static dk.erst.delis.persistence.document.DocumentConstants.*;
+
 /**
  * @author Iehor Funtusov, created by 04.01.19
  */
@@ -45,51 +47,51 @@ public class DocumentSpecification {
 
             if (StringUtils.isNotBlank(organisation)) {
                 containsLikePattern = getContainsLikePattern(organisation);
-                organisationPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("organisation").get("name")), containsLikePattern);
+                organisationPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get(ORGANIZATION_FIELD).get("name")), containsLikePattern);
                 predicates.add(organisationPredicate);
             }
 
             if (StringUtils.isNotBlank(receiver)) {
                 containsLikePattern = getContainsLikePattern(receiver);
                 receiverPredicate = criteriaBuilder.or(
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("receiverIdentifier").get("uniqueValueType")), containsLikePattern),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("receiverIdentifier").get("name")), containsLikePattern)
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get(RECEIVER_IDENTIFIER_FIELD).get("uniqueValueType")), containsLikePattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get(RECEIVER_IDENTIFIER_FIELD).get("name")), containsLikePattern)
                 );
                 predicates.add(receiverPredicate);
             }
 
             if (CollectionUtils.isNotEmpty(documentStatuses)) {
-                Path<DocumentStatus> documentStatusPath = root.get("documentStatus");
+                Path<DocumentStatus> documentStatusPath = root.get(DOCUMENT_STATUS_FIELD);
                 documentStatusPredicate = documentStatusPath.in(documentStatuses);
                 predicates.add(documentStatusPredicate);
             }
 
 //            if (CollectionUtils.isNotEmpty(lastErrors)) {
-//                Path<DocumentErrorCode> lastErrorPath = root.get("lastError");
+//                Path<DocumentErrorCode> lastErrorPath = root.get(LAST_ERROR_FIELD);
 //                lastErrorPredicate = lastErrorPath.in(lastErrors);
 //                predicates.add(lastErrorPredicate);
 //            }
 
             if (CollectionUtils.isNotEmpty(documentFormats)) {
-                Path<DocumentFormat> ingoingDocumentFormatPath = root.get("ingoingDocumentFormat");
+                Path<DocumentFormat> ingoingDocumentFormatPath = root.get(INGOING_DOCUMENT_FORMAT_FIELD);
                 ingoingDocumentFormatPredicate = ingoingDocumentFormatPath.in(documentFormats);
                 predicates.add(ingoingDocumentFormatPredicate);
             }
 
             if (CollectionUtils.isNotEmpty(documentTypes)) {
-                Path<DocumentType> documentTypePath = root.get("documentType");
+                Path<DocumentType> documentTypePath = root.get(DOCUMENT_TYPE_FIELD);
                 documentTypePredicate = documentTypePath.in(documentTypes);
                 predicates.add(documentTypePredicate);
             }
 
             if (Objects.nonNull(start) && Objects.nonNull(end)) {
-                createTimePredicate = criteriaBuilder.between(root.get("createTime"), start, end);
+                createTimePredicate = criteriaBuilder.between(root.get(CREATE_TIME_FIELD), start, end);
                 predicates.add(createTimePredicate);
             }
 
             if (StringUtils.isNotBlank(senderName)) {
                 containsLikePattern = getContainsLikePattern(senderName);
-                senderNamePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("senderName")), containsLikePattern);
+                senderNamePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get(SENDER_NAME_FIELD)), containsLikePattern);
                 predicates.add(senderNamePredicate);
             }
 

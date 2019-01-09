@@ -28,13 +28,13 @@ export class DocumentsService {
         params = params.append('countClickReceiverName', String(filter.countClickReceiverName));
         params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
         if (filter.status !== 'ALL') {
-            params = params.append('status', filter.status);
+            params = params.append('documentStatus', filter.status);
         }
         if (filter.lastError !== 'ALL') {
             params = params.append('lastError', filter.lastError);
         }
         if (filter.ingoingFormat !== 'ALL') {
-            params = params.append('ingoingFormat', filter.ingoingFormat);
+            params = params.append('ingoingDocumentFormat', filter.ingoingFormat);
         }
         if (filter.documentType !== 'ALL') {
             params = params.append('documentType', filter.documentType);
@@ -43,7 +43,7 @@ export class DocumentsService {
             params = params.append('organisation', filter.organisation);
         }
         if (filter.receiver !== null) {
-            params = params.append('receiver', filter.receiver);
+            params = params.append('receiverIdentifier', filter.receiver);
         }
         if (filter.senderName !== null) {
             params = params.append('senderName', filter.senderName);

@@ -35,9 +35,11 @@ export const documentTypes = [
 
 export const ingoingFormats = [
     {ingoingFormat: 'ALL', selected: true},
+    {ingoingFormat: 'UNSUPPORTED', selected: true},
     {ingoingFormat: 'BIS3_INVOICE', selected: false},
     {ingoingFormat: 'BIS3_CREDITNOTE', selected: false},
     {ingoingFormat: 'OIOUBL_INVOICE', selected: false},
-    {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false}
+    {ingoingFormat: 'OIOUBL_CREDITNOTE', selected: false},
+    {ingoingFormat: 'CII', selected: false}
 ];
 
