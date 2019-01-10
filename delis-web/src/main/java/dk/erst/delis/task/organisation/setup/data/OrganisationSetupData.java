@@ -1,6 +1,5 @@
 package dk.erst.delis.task.organisation.setup.data;
 
-import dk.erst.delis.data.AccessPoint;
 import dk.erst.delis.data.Organisation;
 import lombok.*;
 

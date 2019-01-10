@@ -2,7 +2,6 @@ package dk.erst.delis.task.organisation.setup;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
-import dk.erst.delis.data.AccessPoint;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.OrganisationSetup;
 import dk.erst.delis.data.OrganisationSetupKey;
@@ -10,7 +9,6 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRul
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
-import dk.erst.delis.web.accesspoint.AccessPointData;
 import dk.erst.delis.web.accesspoint.AccessPointService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

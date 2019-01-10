@@ -3,13 +3,10 @@ package dk.erst.delis.web.accesspoint;
 import dk.erst.delis.dao.AccessPointDaoRepository;
 import dk.erst.delis.data.AccessPoint;
 import dk.erst.delis.data.AccessPointType;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AccessPointService {
