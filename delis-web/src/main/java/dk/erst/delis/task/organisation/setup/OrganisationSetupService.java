@@ -1,17 +1,5 @@
 package dk.erst.delis.task.organisation.setup;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
 import dk.erst.delis.data.AccessPoint;
@@ -22,17 +10,28 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRul
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.web.accesspoint.AccessPointData;
+import dk.erst.delis.web.accesspoint.AccessPointService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class OrganisationSetupService {
 
 	private OrganisationSetupDaoRepository organisationSetupDaoRepository;
+	private AccessPointService accessPointService;
 
 	@Autowired
-	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository) {
+	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository, AccessPointService accessPointService) {
 		this.organisationSetupDaoRepository = organisationSetupDaoRepository;
+		this.accessPointService = accessPointService;
 	}
 
 	public OrganisationSetupData load(Organisation organisation) {
@@ -118,10 +117,10 @@ public class OrganisationSetupService {
 			m.put(OrganisationSetupKey.SUBSCRIBED_SMP_PROFILES, joined);
 		}
 		if (d.getAs2() != null) {
-			m.put(OrganisationSetupKey.ACCESS_POINT_AS2, String.valueOf(d.getAs2().getId()));
+			m.put(OrganisationSetupKey.ACCESS_POINT_AS2, String.valueOf(d.getAs2()));
 		}
-		if (d.getAs2() != null) {
-			m.put(OrganisationSetupKey.ACCESS_POINT_AS4, String.valueOf(d.getAs4().getId()));
+		if (d.getAs4() != null) {
+			m.put(OrganisationSetupKey.ACCESS_POINT_AS4, String.valueOf(d.getAs4()));
 		}
 		return m;
 	}
@@ -156,10 +155,10 @@ public class OrganisationSetupService {
 					d.setReceivingMethodSetup(os.getValue());
 					break;
 				case ACCESS_POINT_AS2:
-					d.setAs2(loadAccessPoint(os.getValue()));
+					d.setAs2(toId(os.getValue()));
 					break;
 				case ACCESS_POINT_AS4:
-					d.setAs4(loadAccessPoint(os.getValue()));
+					d.setAs4(toId(os.getValue()));
 					break;
 				}
 			}
@@ -170,9 +169,11 @@ public class OrganisationSetupService {
 		return d;
 	}
 
-	private AccessPoint loadAccessPoint(String value) {
-		// TODO Load via AccessPointRepository by id
-		long id = Long.parseLong(value);
-		return null;
+	private Long toId(String value) {
+		Long id = null;
+		if (value != null && StringUtils.isNumeric(value)) {
+			id = Long.parseLong(value);
+		}
+		return id;
 	}
 }

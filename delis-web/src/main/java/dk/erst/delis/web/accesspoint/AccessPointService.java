@@ -3,11 +3,13 @@ package dk.erst.delis.web.accesspoint;
 import dk.erst.delis.dao.AccessPointDaoRepository;
 import dk.erst.delis.data.AccessPoint;
 import dk.erst.delis.data.AccessPointType;
-import dk.erst.delis.data.user.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AccessPointService {
@@ -20,6 +22,11 @@ public class AccessPointService {
 
     public Iterable<AccessPoint> getAccessPoints() {
         return accessPointRepository.findAll();
+    }
+
+    public List<AccessPoint> findAccessPointsByType(AccessPointType type) {
+        List<AccessPoint> accessPointsList = accessPointRepository.findByType(type);
+        return accessPointsList;
     }
 
     void saveAccessPoint(AccessPointData accessPointData) {
@@ -36,11 +43,7 @@ public class AccessPointService {
         accessPointRepository.save(accessPoint);
     }
 
-    AccessPoint findByUrl(String url) {
-        return accessPointRepository.findByUrl(url);
-    }
-
-    AccessPoint findById(Long id) {
+    public AccessPoint findById(Long id) {
         return findOne(id);
     }
 
@@ -56,4 +59,28 @@ public class AccessPointService {
     void deleteAccessPoint(Long id) {
         accessPointRepository.delete(findOne(id));
     }
+
+//todo remove or uncomment after problem with sobmitting AccessPointData as select-option is investigated
+//    todo rather delete...
+//    public AccessPointData loadById (Long id) {
+//        AccessPointData data = null;
+//
+//        AccessPoint accessPoint = findOne(id);
+//        if (accessPoint != null) {
+//            data = new AccessPointData();
+//            BeanUtils.copyProperties(accessPoint, data);
+//        }
+//        return data;
+//    }
+//
+//    public List<AccessPointData> loadAccessPointsByType(AccessPointType type) {
+//        List<AccessPoint> accessPointsList = accessPointRepository.findByType(type);
+//        List<AccessPointData> accessPointDataList = new ArrayList<>();
+//        for (AccessPoint ap : accessPointsList) { // to-do convert later to lambda
+//            AccessPointData accessPointData = new AccessPointData();
+//            BeanUtils.copyProperties(ap, accessPointData);
+//            accessPointDataList.add(accessPointData);
+//        }
+//        return accessPointDataList;
+//    }
 }

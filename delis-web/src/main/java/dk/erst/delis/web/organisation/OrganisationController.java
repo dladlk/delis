@@ -1,21 +1,9 @@
 package dk.erst.delis.web.organisation;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.JournalOrganisationDaoRepository;
 import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
+import dk.erst.delis.data.AccessPointType;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.data.SyncOrganisationFact;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
@@ -24,7 +12,15 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRul
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.web.accesspoint.AccessPointService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
@@ -47,6 +43,9 @@ public class OrganisationController {
 	
 	@Autowired
 	private IdentifierLoadService identifierLoadService;
+
+	@Autowired
+	private AccessPointService accessPointService;
 
 	@RequestMapping("/organisation/list")
 	public String list(Model model) {
@@ -84,8 +83,10 @@ public class OrganisationController {
 			ra.addFlashAttribute("errorMessage", "Organisation is not found");
 			return "redirect:/home";
 		}
-		OrganisationSetupData setupData = organisationSetupService.load(organisation);		
-		
+		OrganisationSetupData setupData = organisationSetupService.load(organisation);
+
+		model.addAttribute("as2AccessPointList", accessPointService.findAccessPointsByType(AccessPointType.AS2));
+		model.addAttribute("as4AccessPointList", accessPointService.findAccessPointsByType(AccessPointType.AS4));
 		model.addAttribute("organisationReceivingFormatRuleList", OrganisationReceivingFormatRule.values());
 		model.addAttribute("organisationReceivingMethodList", OrganisationReceivingMethod.values());
 		model.addAttribute("organisationSubscriptionProfileGroupList", OrganisationSubscriptionProfileGroup.values());

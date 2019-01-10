@@ -1,13 +1,13 @@
 package dk.erst.delis.web.accesspoint;
 
 import dk.erst.delis.data.AccessPointType;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccessPointData {
     private Long id;
 

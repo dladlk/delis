@@ -40,18 +40,18 @@
 					<td>
 						<ul class="org-smp-setup">
 							<li>
-								AS2: <select>
-										<option>No access point</option>
-										<option>https://edelivery2.trueservice.dk/as2</option>
-										<option>https://edelivery.trueservice.dk/as2</option>
-									</select>
+								AS2:
+								<select th:field="*{as2}">
+									<option value="" th:selected="${as2 == null}">No access point</option>
+									<option th:each="point : ${as2AccessPointList}" th:text="${point.url}" th:value="${point.id}">---</option>
+								</select>
 							</li>
 							<li>
-								AS4: <select>
-										<option>No access point</option>
-										<option>https://edelivery2.trueservice.dk/domibus/msh</option>
-										<option>https://edelivery.trueservice.dk/domibus/msh</option>
-									</select>
+								AS4:
+								<select th:field="*{as4}">
+									<option value="" th:selected="${as4 == null}">No access point</option>
+									<option th:each="point : ${as4AccessPointList}" th:text="${point.url}" th:value="${point.id}">---</option>
+								</select>
 							</li>
 						</ul>
 					</td>
