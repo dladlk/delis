@@ -1,18 +1,30 @@
 package dk.erst.delis.web.task;
 
-import java.io.File;
-import java.nio.file.Path;
-
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.config.ConfigProperties;
+import dk.erst.delis.dao.IdentifierDaoRepository;
+import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.IdentifierPublishingStatus;
+import dk.erst.delis.task.codelist.CodeListDict;
+import dk.erst.delis.task.codelist.CodeListReaderService;
+import dk.erst.delis.task.document.load.DocumentLoadService;
+import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.identifier.publish.IdentifierPublishDataService;
+import dk.erst.delis.task.identifier.publish.IdentifierPublishService;
+import dk.erst.delis.task.identifier.publish.SmpIntegrationService;
+import dk.erst.delis.task.identifier.publish.SmpLookupService;
+import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import dk.erst.delis.common.util.StatData;
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.task.document.load.DocumentLoadService;
-import dk.erst.delis.task.document.process.DocumentProcessService;
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -27,6 +39,9 @@ public class TaskController {
 	@Autowired
 	private DocumentProcessService documentProcessService;
 
+	@Autowired
+	private IdentifierDaoRepository identifierDaoRepository;
+
 	@GetMapping("/task/index")
 	public String index() {
 		return "/task/index";
@@ -39,7 +54,43 @@ public class TaskController {
 
 	@GetMapping("/task/identifierPublish")
 	public String identifierPublish(Model model) {
-		return unimplemented(model);
+		try {
+			IdentifierPublishService publishService = createIdentifierPublishService();
+			List<Identifier> pendingIdentifiers = identifierDaoRepository.findByPublishingStatus(IdentifierPublishingStatus.PENDING);
+			List<Identifier> publishedIdentifiers = performPublishing(publishService, pendingIdentifiers);
+			String message = String.format("%d identifiers published to SMP", publishedIdentifiers.size());
+			model.addAttribute("message", message);
+			log.info(message);
+		} catch (Throwable e) {
+			model.addAttribute("errorMessage", e.getClass().getSimpleName()+": "+e.getMessage());
+			log.error(e.getMessage(), e);
+		}
+		return "/task/index";
+	}
+
+	private List<Identifier> performPublishing(IdentifierPublishService publishService, List<Identifier> pendingIdentifiers) {
+		List<Identifier> publishedIdentifiers = new ArrayList<>();
+		for (Identifier pendingIdentifier : pendingIdentifiers) {
+			if (publishService.publishIdentifier(pendingIdentifier)) {
+				pendingIdentifier.setPublishingStatus(IdentifierPublishingStatus.DONE);
+				publishedIdentifiers.add(pendingIdentifier);
+				identifierDaoRepository.save(pendingIdentifier);
+				log.debug(String.format("Identifier '%s' successfully published to SMP.", pendingIdentifier.getValue()));
+			} else {
+				log.warn(String.format("Failed to publish identifier '%s' to SMP.", pendingIdentifier.getValue()));
+			}
+		}
+		return publishedIdentifiers;
+	}
+
+	private IdentifierPublishService createIdentifierPublishService() {
+		ConfigBean configBean = new ConfigBean(new ConfigProperties());
+		SmpIntegrationService smpIntegrationService = new SmpIntegrationService(configBean);
+		SmpLookupService smpLookupService = new SmpLookupService(configBean);
+		SmpXmlService smpXmlService = new SmpXmlService();
+		CodeListDict codeListDict = new CodeListDict(new CodeListReaderService(configBean));
+		IdentifierPublishDataService identifierPublishDataService = new IdentifierPublishDataService(codeListDict);
+		return new IdentifierPublishService(smpXmlService, smpIntegrationService, identifierPublishDataService, smpLookupService);
 	}
 
 	@GetMapping("/task/documentLoad")
