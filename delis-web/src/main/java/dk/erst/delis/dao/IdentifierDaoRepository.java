@@ -1,14 +1,13 @@
 package dk.erst.delis.dao;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
 import dk.erst.delis.data.Identifier;
 import dk.erst.delis.data.IdentifierPublishingStatus;
 import dk.erst.delis.data.Organisation;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IdentifierDaoRepository extends JpaRepository<Identifier, Long>, IdentifierDao {
 
@@ -32,5 +31,7 @@ public interface IdentifierDaoRepository extends JpaRepository<Identifier, Long>
 	Long countByOrganisation(Organisation organisation);
 	
 	Long countByPublishingStatus(IdentifierPublishingStatus identifierPublishingStatus);
+
+	List<Identifier> findByPublishingStatus(IdentifierPublishingStatus identifierPublishingStatus);
 
 }
