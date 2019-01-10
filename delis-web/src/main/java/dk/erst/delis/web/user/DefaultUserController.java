@@ -36,7 +36,7 @@ public class DefaultUserController {
         UserData user = new UserData();
         user.setPassword("admin");
         user.setUsername("admin");
-        userService.saveUser(user);
+        userService.saveOrUpdateUser(user);
         return ResponseEntity.ok("create new user successful");
     }
 }

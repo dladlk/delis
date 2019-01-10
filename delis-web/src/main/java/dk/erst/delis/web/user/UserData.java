@@ -12,12 +12,9 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-@ToString
 class UserData {
 
     private Long id;
-
-    @NotEmpty
     private String username;
     private String password;
     private String firstName;

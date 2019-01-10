@@ -44,21 +44,27 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    void saveUser(UserData userData) {
+    void saveOrUpdateUser(UserData userData) {
         User user;
         if (userData.getId() == null) {
             user = new User();
         } else {
             user = findById(userData.getId());
         }
+        if (StringUtils.isNotBlank(userData.getUsername())) {
+            user.setUsername(userData.getUsername());
+        }
         if (StringUtils.isNotBlank(userData.getPassword())) {
             user.setPassword(bCryptPasswordEncoder.encode(userData.getPassword()));
+        }
+        if (StringUtils.isNotBlank(userData.getEmail())) {
+            user.setEmail(userData.getEmail());
         }
 
         user.setUsername(userData.getUsername());
         user.setLastName(userData.getLastName());
         user.setFirstName(userData.getFirstName());
-        user.setEmail(userData.getEmail());
+
         userRepository.save(user);
     }
 

@@ -2,6 +2,7 @@ package dk.erst.delis.web.user;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import dk.erst.delis.data.user.User;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Iehor Funtusov, created by 02.01.19
@@ -29,35 +31,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("list")
+    @GetMapping("/list")
     public String list(Model model) {
         model.addAttribute("users", userService.findAll());
         return "user/list";
     }
 
-    @GetMapping("create/{id}")
-    public String createNewUser(@PathVariable(required = false) Long id, Model model) {
-        if (id == null || id == 0) {
-            model.addAttribute("user", new UserData());
-        } else {
-            User user = userService.findById(id);
-            UserData userData = new UserData();
-            BeanUtils.copyProperties(user, userData);
-            model.addAttribute("user", userData);
-        }
+    @GetMapping("/create")
+    public String createNewUser(Model model) {
+        model.addAttribute("user", new UserData());
         return "user/edit";
     }
 
-    @GetMapping("update/{id}")
+    @GetMapping("/update/{id}")
     public String updateUser(@PathVariable long id, Model model) {
         User user = userService.findById(id);
         UserData userData = new UserData();
         BeanUtils.copyProperties(user, userData);
         model.addAttribute("user", userData);
-        return "user/edit";
+        return "user/update";
     }
 
-    @GetMapping("delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable long id, Model model) {
         userService.deleteUser(id);
         model.addAttribute("users", userService.findAll());
@@ -65,24 +60,48 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public String createNewUser(@Valid UserData user, Model model) {
-
-        User userExists = userService.findUserByUsername(user.getUsername());
-
-        if (userExists != null) {
-            model.addAttribute("errorMessage", "There is already a user registered with the username provided");
-            return "redirect:/users/create/" + user.getId();
+    public String createNewUser(@Valid UserData user, RedirectAttributes ra) {
+        if (StringUtils.isBlank(user.getUsername())) {
+            ra.addFlashAttribute("errorMessage", "field username can't be empty");
+            return "redirect:/users/create";
         }
-
+        if (StringUtils.isBlank(user.getPassword())) {
+            ra.addFlashAttribute("errorMessage", "field password can't be empty");
+            return "redirect:/users/create";
+        }
+        User userExists = userService.findUserByUsername(user.getUsername());
+        if (userExists != null) {
+            ra.addFlashAttribute("errorMessage", "There is already a user registered with the username provided");
+            return "redirect:/users/create";
+        }
         if (StringUtils.isNotBlank(user.getEmail())) {
             userExists = userService.findByEmail(user.getEmail());
             if (userExists != null) {
-                model.addAttribute("errorMessage", "There is already a user registered with the email provided");
-                return "redirect:/users/create/" + user.getId();
+                ra.addFlashAttribute("errorMessage", "There is already a user registered with the email provided");
+                return "redirect:/users/create";
             }
         }
+        userService.saveOrUpdateUser(user);
+        return "redirect:/users/list";
+    }
 
-        userService.saveUser(user);
+    @PostMapping("/update")
+    public String updateUser(@Valid UserData user, RedirectAttributes ra) {
+        User userExists = userService.findUserByUsername(user.getUsername());
+        if (userExists != null) {
+            if (ObjectUtils.notEqual(user.getId(), userExists.getId())) {
+                ra.addFlashAttribute("errorMessage", "There is already a user registered with the username provided");
+                return "redirect:/users/update/" + user.getId();
+            }
+        }
+        if (StringUtils.isNotBlank(user.getEmail())) {
+            userExists = userService.findByEmail(user.getEmail());
+            if (userExists != null) {
+                ra.addFlashAttribute("errorMessage", "There is already a user registered with the email provided");
+                return "redirect:/users/update/" + user.getId();
+            }
+        }
+        userService.saveOrUpdateUser(user);
         return "redirect:/users/list";
     }
 }
