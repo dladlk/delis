@@ -89,7 +89,7 @@ public class AccessPointService {
         if (accessPoint != null) {
             return accessPoint;
         } else {
-            throw new RuntimeException();
+            throw new RuntimeException(String.format("AccessPoint with id=%s not found", id));
         }
     }
 

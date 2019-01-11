@@ -44,6 +44,9 @@ public class IdentifierPublishService {
 		if (identifier.getStatus().isDeleted()) {
 			return deleteServiceGroup(forPublish.getParticipantIdentifier());
 		}
+		if(!isPublishDataValid(forPublish)) {
+			return false;
+		}
 		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
 			return false;
 		}
@@ -59,6 +62,11 @@ public class IdentifierPublishService {
 				return false;
 			}
 		}
+		return true;
+	}
+
+	private boolean isPublishDataValid(SmpPublishData publishData) {
+		//TODO implement
 		return true;
 	}
 
