@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.sql.Blob;
 
 @Entity
 @Data
@@ -23,5 +24,8 @@ public class AccessPoint {
 	private AccessPointType type;
 
 	@Column
-	private String certificate;
+	private String certificateCN;
+
+	@Column
+	private Blob certificate;
 }

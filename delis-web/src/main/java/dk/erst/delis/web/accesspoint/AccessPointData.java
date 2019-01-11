@@ -3,6 +3,8 @@ package dk.erst.delis.web.accesspoint;
 import dk.erst.delis.data.AccessPointType;
 import lombok.*;
 
+import java.sql.Blob;
+
 @Getter
 @Setter
 @ToString

@@ -9,7 +9,7 @@
 		</div>
 		<div class="card-body">
 
-			<form method="post" action="#" th:action="@{/accesspoint/create}" th:object="${accessPoint}">
+			<form method="post" action="#" th:action="@{/accesspoint/save}" th:object="${accessPoint}">
 
 				<div class="form-group row">
 					<label class="col-sm-4 col-form-label">URL</label>
@@ -34,7 +34,7 @@
 					<label class="col-sm-4 col-form-label">Certificate</label>
 					<div class="col-sm-8">
 						<textarea class="form-control" th:field="*{certificate}"
-								  placeholder="Certificate" rows="3"></textarea>
+								  placeholder="Certificate" rows="6"></textarea>
 					</div>
 				</div>
 

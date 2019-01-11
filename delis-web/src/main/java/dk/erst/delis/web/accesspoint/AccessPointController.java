@@ -1,7 +1,7 @@
 package dk.erst.delis.web.accesspoint;
 
 import dk.erst.delis.data.AccessPoint;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.security.cert.CertificateException;
 
 @Controller
 @RequestMapping("/accesspoint")
+@Slf4j
 public class AccessPointController {
 
     private AccessPointService service;
@@ -25,14 +27,20 @@ public class AccessPointController {
 
     @GetMapping("list")
     public String list(Model model) {
-        model.addAttribute("accessPointList", service.getAccessPoints());
+        model.addAttribute("accessPointList", service.getAccessPointDTOs());
         return "accesspoint/list";
     }
 
-    @PostMapping("create")
-    public String createNew(@Valid AccessPointData accessPoint, Model model) {
+    @PostMapping("save")
+    public String createNew(@Valid AccessPointData accessPoint, Model model) throws Exception {
 
-        service.saveAccessPoint(accessPoint);
+        try {
+            service.saveAccessPoint(accessPoint);
+        } catch (CertificateException e) {
+            model.addAttribute("errorMessage", "Can not build certificate with value provided");
+            model.addAttribute("accessPoint", accessPoint);
+            return "accesspoint/edit";
+        }
         return "redirect:/accesspoint/list";
     }
 
@@ -43,7 +51,7 @@ public class AccessPointController {
         } else {
             AccessPoint accessPoint = service.findById(id);
             AccessPointData accessPointData = new AccessPointData();
-            BeanUtils.copyProperties(accessPoint, accessPointData);
+            service.copyToDTOEdit(accessPoint, accessPointData);
             model.addAttribute("accessPoint", accessPointData);
         }
         return "accesspoint/edit";
@@ -53,7 +61,7 @@ public class AccessPointController {
     public String updateAccessPoint(@PathVariable long id, Model model) {
         AccessPoint accessPoint = service.findById(id);
         AccessPointData accessPointData = new AccessPointData();
-        BeanUtils.copyProperties(accessPoint, accessPointData);
+        service.copyToDTOEdit(accessPoint, accessPointData);
         model.addAttribute("accessPoint", accessPointData);
         return "accesspoint/edit";
     }
