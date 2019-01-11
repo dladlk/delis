@@ -1,12 +1,8 @@
 package dk.erst.delis.dao;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.IdentifierPublishingStatus;
+import dk.erst.delis.data.IdentifierStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +10,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -44,4 +47,13 @@ public class IdentifierDaoRepositoryTest {
 		assertTrue(identifierDaoRepository.getPendingForDeactivation(0, 0).isEmpty());
 	}
 
+	@Test
+	public void revertAll() {
+		List<Identifier> identifiers = identifierDaoRepository.findAll();
+		for (Identifier identifier : identifiers) {
+			identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+			identifier.setStatus(IdentifierStatus.ACTIVE);
+			identifierDaoRepository.saveAndFlush(identifier);
+		}
+	}
 }

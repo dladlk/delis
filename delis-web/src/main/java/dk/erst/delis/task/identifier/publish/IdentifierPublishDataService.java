@@ -1,19 +1,52 @@
 package dk.erst.delis.task.identifier.publish;
 
+import com.google.common.collect.Lists;
+import dk.erst.delis.data.AccessPoint;
+import dk.erst.delis.data.AccessPointType;
 import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.Organisation;
 import dk.erst.delis.task.codelist.CodeListDict;
-import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.*;
 import dk.erst.delis.task.identifier.publish.dummy.SmpPublishDataDummyService;
+import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.web.accesspoint.AccessPointService;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.*;
 
 @Service
 public class IdentifierPublishDataService {
 
 	private CodeListDict codeListDict;
 
-	private SmpPublishDataDummyService dummyService = new SmpPublishDataDummyService();
+	@Autowired
+	private AccessPointService accessPointService;
+
+	@Autowired
+	private OrganisationSetupService organisationSetupService;
+
+	private static CertificateFactory certificateFactory;
+
+	private static Map<AccessPointType, String> transportProfilesMap = new HashMap<AccessPointType, String>(){{
+		put(AccessPointType.AS2, "peppol-transport-as4-v2_0");
+		put(AccessPointType.AS4, "busdox-transport-as2-ver1p0");
+	}};
+
+	static {
+		try {
+			certificateFactory = CertificateFactory.getInstance("X.509");
+		} catch (CertificateException e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Autowired
 	public IdentifierPublishDataService(CodeListDict codeListDict) {
@@ -21,16 +54,72 @@ public class IdentifierPublishDataService {
 	}
 
 	public SmpPublishData buildPublishData(Identifier identifier) {
-		SmpPublishData d = new SmpPublishData();
-
+		SmpPublishData publishData = new SmpPublishData();
 		String icdValue = codeListDict.getIdentifierTypeIcdValue(identifier.getType());
 		if (icdValue == null) {
 			throw new RuntimeException("Identifier type " + identifier.getType() + " is unknown in ICD code lists for identifier " + identifier);
 		}
+		ParticipantIdentifier participantIdentifier = ParticipantIdentifier.of(icdValue + ":" + identifier.getValue());
+		List<SmpPublishServiceData> serviceList = createServiceList(identifier);
+		publishData.setParticipantIdentifier(participantIdentifier);
+		publishData.setServiceList(serviceList);
+		return publishData;
+	}
 
-		d.setParticipantIdentifier(ParticipantIdentifier.of(icdValue + ":" + identifier.getValue()));
-		d.setServiceList(dummyService.buildDummyServiceList());
+	private List<SmpPublishServiceData> createServiceList(Identifier identifier) {
+		List<SmpPublishServiceData> result = new ArrayList<>();
+		Organisation organisation = identifier.getOrganisation();
+		OrganisationSetupData organisationSetupData = organisationSetupService.load(organisation);
+		List<SmpServiceEndpointData> endpointList = createEndpointList(organisationSetupData);
+		Set<OrganisationSubscriptionProfileGroup> subscribedProfiles = organisationSetupData.getSubscribeProfileSet();
+		for (OrganisationSubscriptionProfileGroup subscribedProfile : subscribedProfiles) {
+			SmpPublishServiceData serviceData = new SmpPublishServiceData();
+			serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(identifier.getValue()));
+			SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
+			smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessScheme());
+			smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
+			serviceData.setProcessIdentifier(smpProcessIdentifier);
+			serviceData.setEndpoints(endpointList);
+			result.add(serviceData);
+		}
+		return result;
+	}
 
-		return d;
+	private List<SmpServiceEndpointData> createEndpointList(OrganisationSetupData organisationSetup) {
+		List<SmpServiceEndpointData> result = new ArrayList<>();
+		ArrayList<Long> apIds = Lists.newArrayList(organisationSetup.getAs2(), organisationSetup.getAs4());
+		for (Long apId : apIds) {
+			if(apId == null) {
+				continue;
+			}
+			AccessPoint accessPoint = accessPointService.findById(apId);
+			result.add(toServiceEndpointData(accessPoint));
+		}
+		return result;
+	}
+
+	private SmpServiceEndpointData toServiceEndpointData(AccessPoint accessPoint) {
+		SmpServiceEndpointData endpointData = new SmpServiceEndpointData();
+		Date serviceActivationDate = null;
+		Date serviceExpirationDate = null;
+//		byte[] certBytes = Base64.getDecoder().decode(accessPoint.getCertificate());
+		byte[] certBytes = Base64.getDecoder().decode(SmpPublishDataDummyService.CERT_BASE64_STRING);
+		try {
+			X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
+			serviceActivationDate = certificate.getNotBefore();
+			serviceExpirationDate = certificate.getNotAfter();
+		} catch (CertificateException e) {
+			e.printStackTrace();
+		}
+		String transportProfile = transportProfilesMap.get(accessPoint.getType());
+		endpointData.setTransportProfile(transportProfile);
+		endpointData.setUrl(accessPoint.getUrl());
+		endpointData.setServiceDescription("change_it");
+		endpointData.setTechnicalContactUrl("http://change.it");
+		endpointData.setServiceActivationDate(serviceActivationDate);
+		endpointData.setServiceExpirationDate(serviceExpirationDate);
+		endpointData.setRequireBusinessLevelSignature(true);
+		endpointData.setCertificate(certBytes);
+		return endpointData;
 	}
 }

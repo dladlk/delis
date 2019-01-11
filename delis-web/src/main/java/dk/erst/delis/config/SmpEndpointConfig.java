@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class SmpEndpointConfig {
 
-	private String url = "http://smp.cef.contest.my";
+	private String url = "http://localhost:8090/smp-4.1.0";
 	private String userName = "smp_admin";
 	private String password = "changeit";
 
