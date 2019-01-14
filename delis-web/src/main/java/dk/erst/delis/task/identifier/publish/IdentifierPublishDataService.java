@@ -7,11 +7,11 @@ import dk.erst.delis.data.Identifier;
 import dk.erst.delis.data.Organisation;
 import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.identifier.publish.data.*;
-import dk.erst.delis.task.identifier.publish.dummy.SmpPublishDataDummyService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
 import dk.erst.delis.web.accesspoint.AccessPointService;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +20,12 @@ import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
+@Slf4j
 public class IdentifierPublishDataService {
 
 	private CodeListDict codeListDict;
@@ -44,7 +47,7 @@ public class IdentifierPublishDataService {
 		try {
 			certificateFactory = CertificateFactory.getInstance("X.509");
 		} catch (CertificateException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 
@@ -73,16 +76,25 @@ public class IdentifierPublishDataService {
 		List<SmpServiceEndpointData> endpointList = createEndpointList(organisationSetupData);
 		Set<OrganisationSubscriptionProfileGroup> subscribedProfiles = organisationSetupData.getSubscribeProfileSet();
 		for (OrganisationSubscriptionProfileGroup subscribedProfile : subscribedProfiles) {
-			SmpPublishServiceData serviceData = new SmpPublishServiceData();
-			serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(identifier.getValue()));
-			SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
-			smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessScheme());
-			smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
-			serviceData.setProcessIdentifier(smpProcessIdentifier);
-			serviceData.setEndpoints(endpointList);
-			result.add(serviceData);
+			List<SmpPublishServiceData> serviceDataList = createServiceData(endpointList, subscribedProfile);
+			result.addAll(serviceDataList);
 		}
 		return result;
+	}
+
+	private List<SmpPublishServiceData> createServiceData(List<SmpServiceEndpointData> endpointList, OrganisationSubscriptionProfileGroup subscribedProfile) {
+		List<SmpPublishServiceData> result = new ArrayList<>();
+		for (String documentIdentifier : subscribedProfile.getDocumentIdentifiers()) {
+            SmpPublishServiceData serviceData = new SmpPublishServiceData();
+            serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(documentIdentifier));
+            SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
+            smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessScheme());
+            smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
+            serviceData.setProcessIdentifier(smpProcessIdentifier);
+            serviceData.setEndpoints(endpointList);
+            result.add(serviceData);
+        }
+        return result;
 	}
 
 	private List<SmpServiceEndpointData> createEndpointList(OrganisationSetupData organisationSetup) {
@@ -102,14 +114,15 @@ public class IdentifierPublishDataService {
 		SmpServiceEndpointData endpointData = new SmpServiceEndpointData();
 		Date serviceActivationDate = null;
 		Date serviceExpirationDate = null;
-//		byte[] certBytes = Base64.getDecoder().decode(accessPoint.getCertificate());
-		byte[] certBytes = Base64.getDecoder().decode(SmpPublishDataDummyService.CERT_BASE64_STRING);
+		Blob certBlob = accessPoint.getCertificate();
+		byte[] certBytes = null;
 		try {
+			certBytes = Base64.getDecoder().decode(certBlob.getBytes(1L, (int) certBlob.length()));
 			X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
 			serviceActivationDate = certificate.getNotBefore();
 			serviceExpirationDate = certificate.getNotAfter();
-		} catch (CertificateException e) {
-			e.printStackTrace();
+		} catch (CertificateException | SQLException e) {
+			log.error(e.getMessage(), e);
 		}
 		String transportProfile = transportProfilesMap.get(accessPoint.getType());
 		endpointData.setTransportProfile(transportProfile);

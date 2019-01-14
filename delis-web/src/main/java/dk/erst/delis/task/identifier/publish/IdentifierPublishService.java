@@ -5,6 +5,7 @@ import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.List;
  * - actuall make publishing in SMP (SmpIntegrationService)
  */
 @Service
+@Slf4j
 public class IdentifierPublishService {
 
 	private final SmpXmlService smpXmlService;
@@ -45,6 +47,7 @@ public class IdentifierPublishService {
 			return deleteServiceGroup(forPublish.getParticipantIdentifier());
 		}
 		if(!isPublishDataValid(forPublish)) {
+			log.info(String.format("Publish data created for identifier '%s' is invalid!", identifier.getValue()));
 			return false;
 		}
 		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
@@ -58,7 +61,8 @@ public class IdentifierPublishService {
 		}
 		List<SmpPublishServiceData> servicesForPublish = forPublish.getServiceList();
 		for (SmpPublishServiceData serviceForPublish : servicesForPublish) {
-			if (!publishServiceMetadata(forPublish.getParticipantIdentifier(), serviceForPublish)) {
+			boolean isPublished = publishServiceMetadata(forPublish.getParticipantIdentifier(), serviceForPublish);
+			if (!isPublished) {
 				return false;
 			}
 		}
@@ -66,7 +70,15 @@ public class IdentifierPublishService {
 	}
 
 	private boolean isPublishDataValid(SmpPublishData publishData) {
-		//TODO implement
+		List<SmpPublishServiceData> serviceList = publishData.getServiceList();
+		if(serviceList.isEmpty()) {
+			return false;
+		}
+		for (SmpPublishServiceData serviceData : serviceList) {
+			if(serviceData.getEndpoints().isEmpty()) {
+				return false;
+			}
+		}
 		return true;
 	}
 
