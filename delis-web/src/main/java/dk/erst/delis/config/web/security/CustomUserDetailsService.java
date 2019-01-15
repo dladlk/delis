@@ -1,9 +1,9 @@
 package dk.erst.delis.config.web.security;
 
 import dk.erst.delis.dao.UserRepository;
-import dk.erst.delis.data.user.RoleType;
-import dk.erst.delis.data.user.User;
 
+import dk.erst.delis.data.entities.user.User;
+import dk.erst.delis.data.enums.user.RoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

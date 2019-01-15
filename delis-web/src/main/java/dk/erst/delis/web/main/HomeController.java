@@ -3,6 +3,8 @@ package dk.erst.delis.web.main;
 import java.util.List;
 import java.util.Map;
 
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.IdentifierDaoRepository;
 import dk.erst.delis.dao.OrganisationDaoRepository;
-import dk.erst.delis.data.DocumentStatus;
-import dk.erst.delis.data.IdentifierPublishingStatus;
+
 import lombok.Data;
 
 @Controller

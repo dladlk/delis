@@ -1,9 +1,5 @@
 package dk.erst.delis.task.document.process;
 
-import static dk.erst.delis.data.DocumentFormatFamily.BIS3;
-import static dk.erst.delis.data.DocumentFormatFamily.CII;
-import static dk.erst.delis.data.DocumentFormatFamily.OIOUBL;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,18 +7,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.DocumentFormatFamily;
-import dk.erst.delis.data.RuleDocumentTransformation;
-import dk.erst.delis.data.RuleDocumentValidation;
-import dk.erst.delis.data.RuleDocumentValidationType;
+
 import lombok.extern.slf4j.Slf4j;
+
+import static dk.erst.delis.data.enums.document.DocumentFormatFamily.*;
 
 @Service
 @Slf4j

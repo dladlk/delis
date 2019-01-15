@@ -1,8 +1,8 @@
 package dk.erst.delis.dao;
 
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierPublishingStatus;
-import dk.erst.delis.data.IdentifierStatus;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

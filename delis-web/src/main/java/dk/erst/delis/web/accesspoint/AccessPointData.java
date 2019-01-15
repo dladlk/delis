@@ -1,6 +1,6 @@
 package dk.erst.delis.web.accesspoint;
 
-import dk.erst.delis.data.AccessPointType;
+import dk.erst.delis.data.enums.access.AccessPointType;
 import lombok.*;
 
 import java.sql.Blob;

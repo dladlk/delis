@@ -1,16 +1,13 @@
 package dk.erst.delis.persistence.document;
 
-import dk.erst.delis.data.DocumentErrorCode;
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.DocumentStatus;
-import dk.erst.delis.data.DocumentType;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.data.enums.document.DocumentType;
+import dk.erst.delis.persistence.AbstractFilterModel;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author Iehor Funtusov, created by 09.01.19
@@ -18,16 +15,13 @@ import java.util.List;
 
 @Getter
 @Setter
-public class DocumentFilterModel {
+public class DocumentFilterModel extends AbstractFilterModel {
 
-    String organisation = null;
-    String receiver = null;
-    List<DocumentStatus> documentStatuses = Arrays.asList(DocumentStatus.values());
-    List<DocumentErrorCode> lastErrors = Arrays.asList(DocumentErrorCode.values());
-    String senderName = null;
-    List<DocumentFormat> documentFormats = Arrays.asList(DocumentFormat.values());
-    List<DocumentType> documentTypes = Arrays.asList(DocumentType.values());
-    Date start = null;
-    Date end = null;
+    private String organisation;
+    private String receiver;
+    private DocumentStatus documentStatus;
+    private DocumentErrorCode lastError;
+    private String senderName;
+    private DocumentFormat ingoingDocumentFormat;
+    private DocumentType documentType;
 }
-

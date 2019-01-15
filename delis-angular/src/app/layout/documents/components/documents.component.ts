@@ -4,7 +4,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { routerTransition } from '../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
 import { DocumentsTestGuiStaticService } from "../services/documents.test-gui-static.service";
-import { DocumentsModel, FilterProcessResult } from '../models/documents.model';
+import { FilterProcessResult } from '../models/documents.model';
 import { DateRangeModel } from '../../../models/date.range.model';
 import { LocaleService } from "../../../service/locale.service";
 import { environment } from "../../../../environments/environment";
@@ -15,6 +15,7 @@ import { statuses } from '../models/documents.view.model';
 import { TableHeaderSortModel } from "../../bs-component/components/table-header-sort/table.header.sort.model";
 import { PaginationService } from "../../bs-component/components/pagination/pagination.service";
 import { PaginationModel } from "../../bs-component/components/pagination/pagination.model";
+import { DocumentModel } from "../models/document.model";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
@@ -44,7 +45,7 @@ export class DocumentsComponent implements OnInit {
     textReceiver: string;
     textSenderName: string;
 
-    documents: DocumentsModel[];
+    documents: DocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
     statuses = statuses;
     documentTypes = documentTypes;

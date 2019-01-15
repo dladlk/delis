@@ -3,9 +3,10 @@ package dk.erst.delis.task.document.process.log;
 import java.util.Calendar;
 import java.util.Date;
 
-import dk.erst.delis.data.DocumentErrorCode;
-import dk.erst.delis.data.RuleDocumentTransformation;
-import dk.erst.delis.data.RuleDocumentValidation;
+import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 

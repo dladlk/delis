@@ -1,7 +1,7 @@
 package dk.erst.delis.task.document.process.validate.result;
 
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.DocumentFormatFamily;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 
 public class SchematronResultCollectorFactory {
 

@@ -9,9 +9,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import org.springframework.stereotype.Service;
 
-import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import lombok.extern.slf4j.Slf4j;
 

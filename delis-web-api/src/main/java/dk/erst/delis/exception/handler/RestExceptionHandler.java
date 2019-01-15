@@ -20,6 +20,11 @@ import java.util.List;
 @ControllerAdvice
 public class RestExceptionHandler {
 
+    @ExceptionHandler(value = RestUnauthorizedException.class)
+    public ResponseEntity<Object> handleUnauthorized(RestUnauthorizedException error) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseModel(error));
+    }
+
     @ExceptionHandler(value = RestBadRequestException.class)
     public ResponseEntity<Object> handleBadRequest(RestBadRequestException error) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseModel(error));

@@ -1,8 +1,7 @@
 package dk.erst.delis.dao;
 
+import dk.erst.delis.data.entities.document.Document;
 import org.springframework.transaction.annotation.Transactional;
-
-import dk.erst.delis.data.Document;
 
 @Transactional
 public interface DocumentDao {

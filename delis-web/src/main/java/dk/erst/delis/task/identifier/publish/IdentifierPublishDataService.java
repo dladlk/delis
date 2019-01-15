@@ -1,10 +1,11 @@
 package dk.erst.delis.task.identifier.publish;
 
 import com.google.common.collect.Lists;
-import dk.erst.delis.data.AccessPoint;
-import dk.erst.delis.data.AccessPointType;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.Organisation;
+
+import dk.erst.delis.data.entities.access.AccessPoint;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.enums.access.AccessPointType;
 import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.identifier.publish.data.*;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;

@@ -1,6 +1,6 @@
 package dk.erst.delis.persistence.identifier;
 
-import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.entities.identifier.Identifier;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

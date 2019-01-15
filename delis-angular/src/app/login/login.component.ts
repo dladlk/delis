@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
-import {routerTransition} from '../router.animations';
-import {AuthorizationService} from './authorization.service';
-import {LocaleService} from "../service/locale.service";
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { routerTransition } from '../router.animations';
+import { AuthorizationService } from './authorization.service';
+import { LocaleService } from "../service/locale.service";
 
 @Component({
     selector: 'app-login',
@@ -13,7 +13,7 @@ import {LocaleService} from "../service/locale.service";
 })
 export class LoginComponent implements OnInit {
 
-    email: string;
+    login: string;
     password: string;
 
     constructor(
@@ -27,8 +27,11 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
     }
 
-    onLoggedin(email: string, password: string) {
-        // this.auth.login(email, password);
-        localStorage.setItem('isLoggedin', 'true');
+    onLoggedin() {
+        this.auth.login(this.login, this.password).subscribe(
+            () => {
+                localStorage.setItem('isLoggedin', 'true');
+            }
+        );
     }
 }

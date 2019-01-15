@@ -5,11 +5,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import dk.erst.delis.dao.IdentifierDao;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierStatus;
 
 public class IdentifierDaoImpl implements IdentifierDao {
 

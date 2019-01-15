@@ -1,8 +1,8 @@
 package dk.erst.delis.dao;
 
-import java.util.List;
+import dk.erst.delis.data.entities.identifier.Identifier;
 
-import dk.erst.delis.data.Identifier;
+import java.util.List;
 
 public interface IdentifierDao {
 

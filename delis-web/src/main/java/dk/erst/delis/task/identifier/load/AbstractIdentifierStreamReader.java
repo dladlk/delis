@@ -1,8 +1,8 @@
 package dk.erst.delis.task.identifier.load;
 
-import java.util.Iterator;
+import dk.erst.delis.data.entities.identifier.Identifier;
 
-import dk.erst.delis.data.Identifier;
+import java.util.Iterator;
 
 public abstract class AbstractIdentifierStreamReader implements Iterator<Identifier> {
 

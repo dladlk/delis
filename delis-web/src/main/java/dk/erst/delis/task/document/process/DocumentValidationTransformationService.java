@@ -6,20 +6,20 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXParseException;
 
-import dk.erst.delis.data.Document;
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.DocumentFormatFamily;
-import dk.erst.delis.data.RuleDocumentTransformation;
-import dk.erst.delis.data.RuleDocumentValidation;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
-import dk.erst.delis.task.document.process.log.DocumentProcessStepType;
 import dk.erst.delis.task.document.process.validate.SchemaValidator;
 import dk.erst.delis.task.document.process.validate.SchematronValidator;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;

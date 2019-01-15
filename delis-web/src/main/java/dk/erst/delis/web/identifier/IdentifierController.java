@@ -2,6 +2,9 @@ package dk.erst.delis.web.identifier;
 
 import java.util.Iterator;
 
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -13,9 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import dk.erst.delis.dao.IdentifierDaoRepository;
 import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.dao.OrganisationDaoRepository;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierStatus;
-import dk.erst.delis.data.Organisation;
 
 @Controller
 public class IdentifierController {

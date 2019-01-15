@@ -1,7 +1,8 @@
 package dk.erst.delis.web.validationrule;
 
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
-import dk.erst.delis.data.RuleDocumentValidation;
+
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

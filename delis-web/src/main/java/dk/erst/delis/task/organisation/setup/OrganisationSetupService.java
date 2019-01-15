@@ -2,9 +2,9 @@ package dk.erst.delis.task.organisation.setup;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
-import dk.erst.delis.data.Organisation;
-import dk.erst.delis.data.OrganisationSetup;
-import dk.erst.delis.data.OrganisationSetupKey;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.entities.organisation.OrganisationSetup;
+import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;

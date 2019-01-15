@@ -1,0 +1,764 @@
+{
+  "docs" : [
+    {
+      "id": 29,
+      "createTime": "2019-01-13T08:30:22.000+0000",
+      "updateTime": "2019-01-13T08:30:24.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 5,
+        "createTime": "2019-01-13T08:30:22.000+0000",
+        "updateTime": "2019-01-13T08:30:24.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 3,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5798009811578",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5798009811578",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Den Lille Skole",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "OIOUBL_INVOICE",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103022069_OIOUBL_INVOICE.xml",
+        "receiverIdRaw": "GLN::5798009811578",
+        "receiverName": "Den Lille Skole",
+        "receiverCountry": "DK",
+        "senderIdRaw": "DK:CVR::DK16356706",
+        "senderName": "Tavleverandøren",
+        "senderCountry": "DK",
+        "documentId": "A00095678",
+        "documentDate": "2005-11-20",
+        "messageId": "fake-20190113_103022063",
+        "outgoingRelativePath": "20190113_103022069_OIOUBL_INVOICE.xml"
+      },
+      "success": true,
+      "type": "VALIDATE_SCH",
+      "message": "Validate with sch/oioubl/OIOUBL_Schematron_2018-09-15_v1.10.0.35220/OIOUBL_Invoice_Schematron.xsl",
+      "durationMs": 1878
+    },
+    {
+      "id": 28,
+      "createTime": "2019-01-13T08:30:22.000+0000",
+      "updateTime": "2019-01-13T08:30:24.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 5,
+        "createTime": "2019-01-13T08:30:22.000+0000",
+        "updateTime": "2019-01-13T08:30:24.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 3,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5798009811578",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5798009811578",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Den Lille Skole",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "OIOUBL_INVOICE",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103022069_OIOUBL_INVOICE.xml",
+        "receiverIdRaw": "GLN::5798009811578",
+        "receiverName": "Den Lille Skole",
+        "receiverCountry": "DK",
+        "senderIdRaw": "DK:CVR::DK16356706",
+        "senderName": "Tavleverandøren",
+        "senderCountry": "DK",
+        "documentId": "A00095678",
+        "documentDate": "2005-11-20",
+        "messageId": "fake-20190113_103022063",
+        "outgoingRelativePath": "20190113_103022069_OIOUBL_INVOICE.xml"
+      },
+      "success": true,
+      "type": "VALIDATE_XSD",
+      "message": "Validate with xsd/UBL_2.0/maindoc/UBL-Invoice-2.0.xsd",
+      "durationMs": 83
+    },
+    {
+      "id": 27,
+      "createTime": "2019-01-13T08:30:22.000+0000",
+      "updateTime": "2019-01-13T08:30:22.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 5,
+        "createTime": "2019-01-13T08:30:22.000+0000",
+        "updateTime": "2019-01-13T08:30:24.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 3,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5798009811578",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5798009811578",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Den Lille Skole",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "OIOUBL_INVOICE",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103022069_OIOUBL_INVOICE.xml",
+        "receiverIdRaw": "GLN::5798009811578",
+        "receiverName": "Den Lille Skole",
+        "receiverCountry": "DK",
+        "senderIdRaw": "DK:CVR::DK16356706",
+        "senderName": "Tavleverandøren",
+        "senderCountry": "DK",
+        "documentId": "A00095678",
+        "documentDate": "2005-11-20",
+        "messageId": "fake-20190113_103022063",
+        "outgoingRelativePath": "20190113_103022069_OIOUBL_INVOICE.xml"
+      },
+      "success": true,
+      "type": "LOAD",
+      "message": "Load file from /tmp/manual_upload_file_5770248213416547335.xml",
+      "durationMs": 34
+    },
+    {
+      "id": 26,
+      "createTime": "2019-01-13T08:30:16.000+0000",
+      "updateTime": "2019-01-13T08:30:16.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 4,
+        "createTime": "2019-01-13T08:30:16.000+0000",
+        "updateTime": "2019-01-13T08:30:16.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 3,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5798009811578",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5798009811578",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Den Lille Skole",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "LOAD_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "OIOUBL_CREDITNOTE",
+        "documentType": "CREDITNOTE",
+        "ingoingRelativePath": "20190113_103016342_OIOUBL_CREDITNOTE.xml",
+        "receiverIdRaw": "GLN::5798009811578",
+        "receiverName": "Den Lille Skole",
+        "receiverCountry": "DK",
+        "senderIdRaw": "DK:CVR::DK16356706",
+        "senderName": "Tavleverandøren",
+        "senderCountry": "DK",
+        "documentId": "A00095679",
+        "documentDate": "2005-11-20",
+        "messageId": "fake-20190113_103016338",
+        "outgoingRelativePath": null
+      },
+      "success": true,
+      "type": "LOAD",
+      "message": "Load file from /tmp/manual_upload_file_600730083942428287.xml",
+      "durationMs": 30
+    },
+    {
+      "id": 25,
+      "createTime": "2019-01-13T08:30:06.000+0000",
+      "updateTime": "2019-01-13T08:30:08.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 3,
+        "createTime": "2019-01-13T08:30:05.000+0000",
+        "updateTime": "2019-01-13T08:30:08.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 1,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5790000436057",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5790000436057",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Buyercompany ltd",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "CII",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103005215_CII.xml",
+        "receiverIdRaw": "0088::5790000436057",
+        "receiverName": "Buyercompany ltd",
+        "receiverCountry": "DK",
+        "senderIdRaw": "0088::5790000436101",
+        "senderName": "SellerCompany",
+        "senderCountry": "NL",
+        "documentId": "TOSL110",
+        "documentDate": "2013-04-10",
+        "messageId": "fake-20190113_103005210",
+        "outgoingRelativePath": "20190113_103005215_CII.xml"
+      },
+      "success": true,
+      "type": "VALIDATE_SCH",
+      "message": "Validate with sch/oioubl/OIOUBL_Schematron_2018-09-15_v1.10.0.35220/OIOUBL_Invoice_Schematron.xsl",
+      "durationMs": 1904
+    },
+    {
+      "id": 24,
+      "createTime": "2019-01-13T08:30:06.000+0000",
+      "updateTime": "2019-01-13T08:30:08.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 3,
+        "createTime": "2019-01-13T08:30:05.000+0000",
+        "updateTime": "2019-01-13T08:30:08.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 1,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5790000436057",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5790000436057",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Buyercompany ltd",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "CII",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103005215_CII.xml",
+        "receiverIdRaw": "0088::5790000436057",
+        "receiverName": "Buyercompany ltd",
+        "receiverCountry": "DK",
+        "senderIdRaw": "0088::5790000436101",
+        "senderName": "SellerCompany",
+        "senderCountry": "NL",
+        "documentId": "TOSL110",
+        "documentDate": "2013-04-10",
+        "messageId": "fake-20190113_103005210",
+        "outgoingRelativePath": "20190113_103005215_CII.xml"
+      },
+      "success": true,
+      "type": "VALIDATE_XSD",
+      "message": "Validate with xsd/UBL_2.0/maindoc/UBL-Invoice-2.0.xsd",
+      "durationMs": 75
+    },
+    {
+      "id": 23,
+      "createTime": "2019-01-13T08:30:06.000+0000",
+      "updateTime": "2019-01-13T08:30:08.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 3,
+        "createTime": "2019-01-13T08:30:05.000+0000",
+        "updateTime": "2019-01-13T08:30:08.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 1,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5790000436057",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5790000436057",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Buyercompany ltd",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "CII",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103005215_CII.xml",
+        "receiverIdRaw": "0088::5790000436057",
+        "receiverName": "Buyercompany ltd",
+        "receiverCountry": "DK",
+        "senderIdRaw": "0088::5790000436101",
+        "senderName": "SellerCompany",
+        "senderCountry": "NL",
+        "documentId": "TOSL110",
+        "documentDate": "2013-04-10",
+        "messageId": "fake-20190113_103005210",
+        "outgoingRelativePath": "20190113_103005215_CII.xml"
+      },
+      "success": true,
+      "type": "RESOLVE_TYPE",
+      "message": "Define format of /tmp/transformation_BIS3_to_OIOUBL_6101033462589783235.xml",
+      "durationMs": 14
+    },
+    {
+      "id": 22,
+      "createTime": "2019-01-13T08:30:06.000+0000",
+      "updateTime": "2019-01-13T08:30:08.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 3,
+        "createTime": "2019-01-13T08:30:05.000+0000",
+        "updateTime": "2019-01-13T08:30:08.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 1,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5790000436057",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5790000436057",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Buyercompany ltd",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "CII",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103005215_CII.xml",
+        "receiverIdRaw": "0088::5790000436057",
+        "receiverName": "Buyercompany ltd",
+        "receiverCountry": "DK",
+        "senderIdRaw": "0088::5790000436101",
+        "senderName": "SellerCompany",
+        "senderCountry": "NL",
+        "documentId": "TOSL110",
+        "documentDate": "2013-04-10",
+        "messageId": "fake-20190113_103005210",
+        "outgoingRelativePath": "20190113_103005215_CII.xml"
+      },
+      "success": true,
+      "type": "TRANSFORM",
+      "message": "Transform with bis3_to_oioubl/v_2018-03-14_34841/BIS-Billing_2_OIOUBL_MASTER.xslt",
+      "durationMs": 133
+    },
+    {
+      "id": 21,
+      "createTime": "2019-01-13T08:30:06.000+0000",
+      "updateTime": "2019-01-13T08:30:08.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 3,
+        "createTime": "2019-01-13T08:30:05.000+0000",
+        "updateTime": "2019-01-13T08:30:08.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 1,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5790000436057",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5790000436057",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Buyercompany ltd",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "CII",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103005215_CII.xml",
+        "receiverIdRaw": "0088::5790000436057",
+        "receiverName": "Buyercompany ltd",
+        "receiverCountry": "DK",
+        "senderIdRaw": "0088::5790000436101",
+        "senderName": "SellerCompany",
+        "senderCountry": "NL",
+        "documentId": "TOSL110",
+        "documentDate": "2013-04-10",
+        "messageId": "fake-20190113_103005210",
+        "outgoingRelativePath": "20190113_103005215_CII.xml"
+      },
+      "success": true,
+      "type": "COPY",
+      "message": "Create temp file with prefix transformation_BIS3_to_OIOUBL_",
+      "durationMs": 0
+    },
+    {
+      "id": 20,
+      "createTime": "2019-01-13T08:30:06.000+0000",
+      "updateTime": "2019-01-13T08:30:08.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "document": {
+        "id": 3,
+        "createTime": "2019-01-13T08:30:05.000+0000",
+        "updateTime": "2019-01-13T08:30:08.000+0000",
+        "organisation": {
+          "id": 1,
+          "createTime": "2019-01-13T08:27:54.000+0000",
+          "updateTime": "2019-01-13T08:27:54.000+0000",
+          "name": "Organization1",
+          "code": "OrganizationCode1"
+        },
+        "receiverIdentifier": {
+          "id": 1,
+          "createTime": "2019-01-13T08:29:29.000+0000",
+          "updateTime": "2019-01-13T08:29:29.000+0000",
+          "organisation": {
+            "id": 1,
+            "createTime": "2019-01-13T08:27:54.000+0000",
+            "updateTime": "2019-01-13T08:27:54.000+0000",
+            "name": "Organization1",
+            "code": "OrganizationCode1"
+          },
+          "identifierGroup": {
+            "id": 1,
+            "createTime": "2019-01-13T08:29:29.000+0000",
+            "updateTime": "2019-01-13T08:29:29.000+0000",
+            "organisation": {
+              "id": 1,
+              "createTime": "2019-01-13T08:27:54.000+0000",
+              "updateTime": "2019-01-13T08:27:54.000+0000",
+              "name": "Organization1",
+              "code": "OrganizationCode1"
+            },
+            "code": "default",
+            "name": "default"
+          },
+          "value": "5790000436057",
+          "type": "GLN",
+          "uniqueValueType": "GLN::5790000436057",
+          "status": "ACTIVE",
+          "publishingStatus": "PENDING",
+          "name": "Buyercompany ltd",
+          "lastSyncOrganisationFactId": 1
+        },
+        "documentStatus": "VALIDATE_OK",
+        "lastError": null,
+        "ingoingDocumentFormat": "CII",
+        "documentType": "INVOICE",
+        "ingoingRelativePath": "20190113_103005215_CII.xml",
+        "receiverIdRaw": "0088::5790000436057",
+        "receiverName": "Buyercompany ltd",
+        "receiverCountry": "DK",
+        "senderIdRaw": "0088::5790000436101",
+        "senderName": "SellerCompany",
+        "senderCountry": "NL",
+        "documentId": "TOSL110",
+        "documentDate": "2013-04-10",
+        "messageId": "fake-20190113_103005210",
+        "outgoingRelativePath": "20190113_103005215_CII.xml"
+      },
+      "success": true,
+      "type": "VALIDATE_SCH",
+      "message": "Validate with sch/bis3/cen_2019-01-02_1/CEN-EN16931-UBL.xslt",
+      "durationMs": 362
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package dk.erst.delis.task.organisation.setup.data;
 
-import dk.erst.delis.data.Organisation;
+import dk.erst.delis.data.entities.organisation.Organisation;
 import lombok.*;
 
 import java.util.Set;

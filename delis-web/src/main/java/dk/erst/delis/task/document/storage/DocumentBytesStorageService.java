@@ -8,13 +8,13 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.data.Document;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
-import dk.erst.delis.task.document.process.log.DocumentProcessStepType;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

@@ -3,11 +3,10 @@ package dk.erst.delis.dao;
 import java.util.List;
 import java.util.Map;
 
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.enums.document.DocumentStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
-import dk.erst.delis.data.Document;
-import dk.erst.delis.data.DocumentStatus;
 
 public interface DocumentDaoRepository extends PagingAndSortingRepository<Document, Long>, DocumentDao {
 

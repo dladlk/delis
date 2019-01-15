@@ -1,6 +1,6 @@
 package dk.erst.delis.web.transformationrule;
 
-import dk.erst.delis.data.DocumentFormatFamily;
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import lombok.*;
 
 @Getter
