@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.IdentifierDaoRepository;
-import dk.erst.delis.data.IdentifierPublishingStatus;
-import dk.erst.delis.data.IdentifierStatus;
+
 import lombok.Getter;
 
 @Service

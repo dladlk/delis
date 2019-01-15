@@ -2,9 +2,9 @@ package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierPublishingStatus;
-import dk.erst.delis.data.IdentifierStatus;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.codelist.CodeListReaderService;
 import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;

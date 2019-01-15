@@ -1,10 +1,10 @@
 package dk.erst.delis.task.document;
 
+import dk.erst.delis.data.enums.document.DocumentFormat;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
-import dk.erst.delis.data.DocumentFormat;
 
 public enum TestDocument {
 

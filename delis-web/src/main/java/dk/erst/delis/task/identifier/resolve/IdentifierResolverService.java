@@ -1,10 +1,10 @@
 package dk.erst.delis.task.identifier.resolve;
 
+import dk.erst.delis.data.entities.identifier.Identifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.IdentifierDaoRepository;
-import dk.erst.delis.data.Identifier;
 import dk.erst.delis.task.codelist.CodeListDict;
 import lombok.extern.slf4j.Slf4j;
 

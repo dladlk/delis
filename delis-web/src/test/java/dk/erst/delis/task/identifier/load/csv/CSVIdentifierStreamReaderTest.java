@@ -6,10 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import dk.erst.delis.data.entities.identifier.Identifier;
 import org.junit.Test;
 
 import dk.erst.delis.TestUtil;
-import dk.erst.delis.data.Identifier;
 
 public class CSVIdentifierStreamReaderTest {
 

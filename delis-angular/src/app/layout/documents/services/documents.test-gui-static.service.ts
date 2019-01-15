@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
 import * as data from '../documents.json';
 import { DocumentsModel, FilterProcessResult } from "../models/documents.model";
+import { DocumentModel } from "../models/document.model";
 
 @Injectable()
 export class DocumentsTestGuiStaticService {
 
     constructor() {}
 
-    filterProcess(parameters: { filter: FilterProcessResult }) : DocumentsModel[] {
+    filterProcess(parameters: { filter: FilterProcessResult }) : DocumentModel[] {
         let filter = parameters.filter;
 
         let documents = Object.assign([], data.docs);

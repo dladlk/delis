@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import dk.erst.delis.TestUtil;
-import dk.erst.delis.data.Organisation;
-import dk.erst.delis.data.SyncOrganisationFact;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReaderTest;
 import dk.erst.delis.web.organisation.OrganisationService;
 

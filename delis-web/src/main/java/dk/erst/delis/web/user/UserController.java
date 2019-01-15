@@ -2,6 +2,7 @@ package dk.erst.delis.web.user;
 
 import javax.validation.Valid;
 
+import dk.erst.delis.data.entities.user.User;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import dk.erst.delis.data.user.User;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**

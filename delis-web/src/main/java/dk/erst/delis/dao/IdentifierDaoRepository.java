@@ -1,8 +1,8 @@
 package dk.erst.delis.dao;
 
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierPublishingStatus;
-import dk.erst.delis.data.Organisation;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,0 +1,46 @@
+{
+  "docs" : [
+    {
+      "id": 3,
+      "createTime": "2019-01-13T08:29:29.000+0000",
+      "updateTime": "2019-01-13T08:29:29.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "message": "Finished loading",
+      "durationMs": 98
+    },
+    {
+      "id": 2,
+      "createTime": "2019-01-13T08:29:29.000+0000",
+      "updateTime": "2019-01-13T08:29:29.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "message": "Created new identifier group with code default",
+      "durationMs": null
+    },
+    {
+      "id": 1,
+      "createTime": "2019-01-13T08:29:29.000+0000",
+      "updateTime": "2019-01-13T08:29:29.000+0000",
+      "organisation": {
+        "id": 1,
+        "createTime": "2019-01-13T08:27:54.000+0000",
+        "updateTime": "2019-01-13T08:27:54.000+0000",
+        "name": "Organization1",
+        "code": "OrganizationCode1"
+      },
+      "message": "Start identifiers synchronization by from_xml_examples.csv",
+      "durationMs": null
+    }
+  ]
+}

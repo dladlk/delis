@@ -1,7 +1,7 @@
 package dk.erst.delis.web.transformationrule;
 
-import dk.erst.delis.data.DocumentFormatFamily;
-import dk.erst.delis.data.RuleDocumentTransformation;
+import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

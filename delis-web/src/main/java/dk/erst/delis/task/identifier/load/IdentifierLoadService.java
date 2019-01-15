@@ -4,6 +4,15 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.identifier.IdentifierGroup;
+import dk.erst.delis.data.entities.journal.JournalIdentifier;
+import dk.erst.delis.data.entities.journal.JournalOrganisation;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierValueType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +22,6 @@ import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.dao.JournalOrganisationDaoRepository;
 import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierGroup;
-import dk.erst.delis.data.IdentifierPublishingStatus;
-import dk.erst.delis.data.IdentifierStatus;
-import dk.erst.delis.data.IdentifierValueType;
-import dk.erst.delis.data.JournalIdentifier;
-import dk.erst.delis.data.JournalOrganisation;
-import dk.erst.delis.data.Organisation;
-import dk.erst.delis.data.SyncOrganisationFact;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReader;
 
 @Service

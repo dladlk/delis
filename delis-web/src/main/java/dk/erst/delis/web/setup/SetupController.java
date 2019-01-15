@@ -1,5 +1,7 @@
 package dk.erst.delis.web.setup;
 
+import dk.erst.delis.data.entities.config.ConfigValue;
+import dk.erst.delis.data.enums.config.ConfigValueType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
-import dk.erst.delis.data.ConfigValue;
-import dk.erst.delis.data.ConfigValueType;
 
 @Controller
 public class SetupController {

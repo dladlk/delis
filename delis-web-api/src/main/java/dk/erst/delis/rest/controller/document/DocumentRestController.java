@@ -1,9 +1,8 @@
 package dk.erst.delis.rest.controller.document;
 
-import dk.erst.delis.data.*;
-import dk.erst.delis.persistence.document.DocumentData;
-import dk.erst.delis.rest.data.response.PageContainer;
+import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 import dk.erst.delis.service.document.DocumentService;
+import dk.erst.delis.util.WebRequestUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.constraints.Min;
-
-import java.util.Objects;
 
 /**
  * @author Iehor Funtusov, created by 21.12.18
@@ -37,28 +34,12 @@ public class DocumentRestController {
 
     @GetMapping
     public ResponseEntity getDocumentList(WebRequest webRequest) {
-        return ResponseEntity.ok(getContainer(webRequest));
+        PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(webRequest);
+        return ResponseEntity.ok(documentService.getAllAfterFilteringAndSorting(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), webRequest));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getDocumentById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(getOneDocumentById(id));
-    }
-
-    private Document getOneDocumentById(long id) {
-        return documentService.getOneById(id);
-    }
-
-    private PageContainer<DocumentData> getContainer(WebRequest webRequest) {
-
-        int page = 1;
-        int size = 10;
-        if (webRequest != null) {
-            page = webRequest.getParameter("page") != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter("page"))) : 1;
-            size = webRequest.getParameter("size") != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter("size"))) : 10;
-            return documentService.getAllAfterFilteringAndSorting(page, size, webRequest);
-        }
-
-        return documentService.getAll(page, size);
+        return ResponseEntity.ok(documentService.getOneById(id));
     }
 }

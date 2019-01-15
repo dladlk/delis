@@ -1,19 +1,10 @@
 package dk.erst.delis.service.document;
 
-import dk.erst.delis.data.Document;
-import dk.erst.delis.persistence.document.DocumentData;
-import dk.erst.delis.rest.data.response.PageContainer;
-
-import org.springframework.web.context.request.WebRequest;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.service.AbstractService;
 
 /**
  * @author Iehor Funtusov, created by 03.01.19
  */
 
-public interface DocumentService {
-
-    PageContainer<DocumentData> getAll(int page, int size);
-    PageContainer<DocumentData> getAllAfterFilteringAndSorting(int page, int size, WebRequest request);
-
-    Document getOneById(long id);
-}
+public interface DocumentService extends AbstractService<Document> { }

@@ -19,19 +19,43 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <javax.validation>2.0.1.Final</javax.validation>
+        <delis.version>1.0.0</delis.version>
+        <commons.collections>3.2.2</commons.collections>
+        <spring.security>5.0.7.RELEASE</spring.security>
     </properties>
 
     <dependencies>
+
+        <!-- DELIS-DATA -->
+        <dependency>
+            <groupId>dk.erst.delis</groupId>
+            <artifactId>delis-data</artifactId>
+            <version>${delis.version}</version>
+        </dependency>
 
         <!-- SPRING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.security}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- LOMBOK -->
@@ -45,15 +69,26 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
+            <version>${javax.validation}</version>
         </dependency>
 
-        <!-- DELIS-WEB -->
+        <!-- APACHE -->
         <dependency>
-            <groupId>dk.erst.delis</groupId>
-            <artifactId>delis-web</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons.collections}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <!-- MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
     </dependencies>

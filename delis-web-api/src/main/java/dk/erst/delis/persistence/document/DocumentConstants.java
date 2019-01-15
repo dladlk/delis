@@ -14,13 +14,4 @@ public class DocumentConstants {
     public static final String INGOING_DOCUMENT_FORMAT_FIELD = "ingoingDocumentFormat";
     public static final String CREATE_TIME_FIELD = "createTime";
     public static final String SENDER_NAME_FIELD = "senderName";
-
-    public static final String COUNT_CLICK_ORGANIZATION_FIELD = "countClickOrganisation";
-    public static final String COUNT_CLICK_RECEIVER_IDENTIFIER_FIELD = "countClickReceiver";
-    public static final String COUNT_CLICK_DOCUMENT_STATUS_FIELD = "countClickStatus";
-    public static final String COUNT_CLICK_LAST_ERROR_FIELD = "countClickLastError";
-    public static final String COUNT_CLICK_DOCUMENT_TYPE_FIELD = "countClickDocumentType";
-    public static final String COUNT_CLICK_INGOING_DOCUMENT_FORMAT_FIELD = "countClickIngoingFormat";
-    public static final String COUNT_CLICK_CREATE_TIME_FIELD = "countClickReceived";
-    public static final String COUNT_CLICK_SENDER_NAME_FIELD = "countClickSenderName";
 }

@@ -2,10 +2,10 @@ package dk.erst.delis.dao;
 
 import java.util.List;
 
+import dk.erst.delis.data.entities.journal.JournalOrganisation;
+import dk.erst.delis.data.entities.organisation.Organisation;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import dk.erst.delis.data.JournalOrganisation;
-import dk.erst.delis.data.Organisation;
 
 public interface JournalOrganisationDaoRepository extends PagingAndSortingRepository<JournalOrganisation, Long> {
 

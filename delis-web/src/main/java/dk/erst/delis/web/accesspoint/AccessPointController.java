@@ -1,6 +1,6 @@
 package dk.erst.delis.web.accesspoint;
 
-import dk.erst.delis.data.AccessPoint;
+import dk.erst.delis.data.entities.access.AccessPoint;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

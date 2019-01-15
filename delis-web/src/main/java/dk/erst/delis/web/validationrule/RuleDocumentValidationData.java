@@ -1,7 +1,7 @@
 package dk.erst.delis.web.validationrule;
 
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.RuleDocumentValidationType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 import lombok.*;
 
 @Getter

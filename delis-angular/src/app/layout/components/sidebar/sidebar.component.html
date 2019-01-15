@@ -1,20 +1,48 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
-  <div class="list-group">
-    <a routerLink="/dashboard" [routerLinkActive]="['router-link-active']" class="list-group-item">
-      <i class="fa fa-fw fa-dashboard"></i>&nbsp;
-      <span>{{ 'sidebar.dashboard' | translate }}</span>
-    </a>
-    <a [routerLink]="['/documents']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-      <i class="fa fa-fw fa-book"></i>&nbsp;
-      <span>{{ 'sidebar.documents' | translate }}</span>
-    </a>
-    <a [routerLink]="['/publishing']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-      <i class="fa fa-fw fa-table"></i>&nbsp;
-      <span>{{ 'sidebar.publishing' | translate }}</span>
-    </a>
-  </div>
-  <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
-    <i class="fa fa-fw fa-angle-double-left"></i>&nbsp;
-    <span>{{ 'sidebar.collapse' | translate }}</span>
-  </div>
+    <div class="list-group">
+        <a routerLink="/dashboard" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-dashboard"></i>&nbsp;
+            <span>{{ 'sidebar.dashboard' | translate }}</span>
+        </a>
+        <a [routerLink]="['/documents']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-book"></i>&nbsp;
+            <span>{{ 'sidebar.documents' | translate }}</span>
+        </a>
+        <div class="nested-menu">
+            <a class="list-group-item" (click)="addExpandClass('pages')">
+                &nbsp;<i class="fa fa-folder-open-o"></i>&nbsp;
+                <span>{{ 'sidebar.journal' | translate }}</span>
+            </a>
+            <li class="nested" [class.expand]="showMenu === 'pages'">
+                <ul class="submenu">
+                    <li>
+                        <a [routerLink]="['/journal-documents']" class="list-group-item">
+                            <i class="fa fa-book"></i>
+                            <span>{{ 'sidebar.journal.document' | translate }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/journal-identifiers']" class="list-group-item">
+                            <i class="fa fa-info"></i>&nbsp;
+                            <span>{{ 'sidebar.journal.identifier' | translate }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a [routerLink]="['/journal-organisations']" class="list-group-item">
+                            <i class="fa fa-university"></i>
+                            <span>{{ 'sidebar.journal.organisation' | translate }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </div>
+        <a [routerLink]="['/publishing']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-fw fa-table"></i>&nbsp;
+            <span>{{ 'sidebar.publishing' | translate }}</span>
+        </a>
+    </div>
+    <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+        <i class="fa fa-fw fa-angle-double-left"></i>&nbsp;
+        <span>{{ 'sidebar.collapse' | translate }}</span>
+    </div>
 </nav>

@@ -87,13 +87,13 @@
                         <tbody>
                         <tr *ngFor="let doc of documents; let i = index" [routerLink]="['/documents/', doc.id]">
                             <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
-                            <td>{{doc.organisation}}</td>
-                            <td>{{doc.receiver}}</td>
-                            <td>{{doc.status}}</td>
+                            <td>{{doc.organisation.name}}</td>
+                            <td>{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                            <td>{{doc.documentStatus}}</td>
                             <td>{{doc.lastError}}</td>
                             <td>{{doc.documentType}}</td>
-                            <td>{{doc.ingoingFormat}}</td>
-                            <td>{{doc.received}}</td>
+                            <td>{{doc.ingoingDocumentFormat}}</td>
+                            <td>{{doc.createTime}}</td>
                             <td>{{doc.senderName}}</td>
                         </tr>
                         </tbody>

@@ -18,5 +18,17 @@
         </div>
     </div>
     <hr>
+    <div class="row">
+        <div class="col-xl-4 col-lg-3">
+            <app-stat [bgClass]="'info'" [icon]="'fa-book'" [count]="3" [label]="'sidebar.journal.document'" [router]="'/journal-documents'"></app-stat>
+        </div>
+        <div class="col-xl-4 col-lg-3">
+            <app-stat [bgClass]="'info'" [icon]="'fa-info'" [count]="10" [label]="'sidebar.journal.identifier'" [router]="'/journal-identifiers'"></app-stat>
+        </div>
+        <div class="col-xl-4 col-lg-3">
+            <app-stat [bgClass]="'info'" [icon]="'fa-university'" [count]="56" [label]="'sidebar.journal.organisation'" [router]="'/journal-organisations'"></app-stat>
+        </div>
+    </div>
+    <hr>
     <app-dashboard-chart-document></app-dashboard-chart-document>
 </div>

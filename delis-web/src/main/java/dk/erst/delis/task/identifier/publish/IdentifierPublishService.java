@@ -1,6 +1,6 @@
 package dk.erst.delis.task.identifier.publish;
 
-import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;

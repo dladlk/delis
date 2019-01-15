@@ -1,9 +1,8 @@
 package dk.erst.delis.dao;
 
+import dk.erst.delis.data.entities.identifier.IdentifierGroup;
+import dk.erst.delis.data.entities.organisation.Organisation;
 import org.springframework.data.repository.PagingAndSortingRepository;
-
-import dk.erst.delis.data.IdentifierGroup;
-import dk.erst.delis.data.Organisation;
 
 public interface IdentifierGroupDaoRepository extends PagingAndSortingRepository<IdentifierGroup, Long> {
 

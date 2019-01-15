@@ -1,6 +1,6 @@
 package dk.erst.delis.web.user;
 
-import dk.erst.delis.data.user.User;
+import dk.erst.delis.data.entities.user.User;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -2,8 +2,9 @@ package dk.erst.delis.web.accesspoint;
 
 import com.mysql.jdbc.Blob;
 import dk.erst.delis.dao.AccessPointDaoRepository;
-import dk.erst.delis.data.AccessPoint;
-import dk.erst.delis.data.AccessPointType;
+
+import dk.erst.delis.data.entities.access.AccessPoint;
+import dk.erst.delis.data.enums.access.AccessPointType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

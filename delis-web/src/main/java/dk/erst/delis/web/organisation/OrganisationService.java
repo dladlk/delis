@@ -1,11 +1,11 @@
 package dk.erst.delis.web.organisation;
 
+import dk.erst.delis.data.entities.organisation.Organisation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.OrganisationDaoRepository;
-import dk.erst.delis.data.Organisation;
 
 @Service
 public class OrganisationService {

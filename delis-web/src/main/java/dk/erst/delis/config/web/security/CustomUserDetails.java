@@ -18,7 +18,7 @@ class CustomUserDetails extends User {
 
     private Long id;
 
-    CustomUserDetails(dk.erst.delis.data.user.User user, Collection<? extends GrantedAuthority> authorities) {
+    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities) {
         super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
         this.id = user.getId();
     }

@@ -1,8 +1,8 @@
 package dk.erst.delis.web.user;
 
 import dk.erst.delis.dao.UserRepository;
-import dk.erst.delis.data.user.User;
 
+import dk.erst.delis.data.entities.user.User;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;

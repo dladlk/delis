@@ -3,10 +3,10 @@ package dk.erst.delis.dao.impl;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import dk.erst.delis.data.entities.document.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import dk.erst.delis.dao.DocumentDao;
-import dk.erst.delis.data.Document;
 
 public class DocumentDaoImpl implements DocumentDao {
 

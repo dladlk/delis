@@ -1,8 +1,9 @@
 package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.dao.IdentifierDaoRepository;
-import dk.erst.delis.data.Identifier;
-import dk.erst.delis.data.IdentifierPublishingStatus;
+
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -10,14 +10,15 @@ import java.util.Optional;
 
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
-import dk.erst.delis.data.RuleDocumentTransformation;
+
+import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 import org.junit.Test;
 
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.data.Document;
+
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;

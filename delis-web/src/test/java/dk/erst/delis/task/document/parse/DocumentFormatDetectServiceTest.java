@@ -2,9 +2,9 @@ package dk.erst.delis.task.document.parse;
 
 import static org.junit.Assert.assertEquals;
 
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import org.junit.Test;
 
-import dk.erst.delis.data.DocumentFormat;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import dk.erst.delis.task.document.parse.data.DocumentInfoRootTag;
 
