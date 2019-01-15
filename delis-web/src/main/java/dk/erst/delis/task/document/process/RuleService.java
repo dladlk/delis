@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import dk.erst.delis.web.transformationrule.TransformationRuleService;
+import dk.erst.delis.web.validationrule.ValidationRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,19 +31,35 @@ public class RuleService {
 	private List<RuleDocumentTransformation> transformationList;
 	private List<RuleDocumentValidation> validationList;
 	private ConfigBean configBean;
+	private ValidationRuleService validationRuleService;
+	private TransformationRuleService transformationRuleService;
 
 	@Autowired
-	public RuleService(ConfigBean configBean) {
+	public RuleService(ConfigBean configBean, ValidationRuleService validationRuleService, TransformationRuleService transformationRuleService) {
 		this.configBean = configBean;
-		this.validationList = buildHardcodedValidationList();
-		this.transformationList = buildHardcoded();
+		this.validationRuleService = validationRuleService;
+		this.transformationRuleService = transformationRuleService;
+		this.validationList = buildValidationRuleList();
+		this.transformationList = buildTransformationRuleList();
 	}
 	
-	private List<RuleDocumentValidation> buildHardcodedValidationList() {
-		/*
-		 * XSD rules
-		 */
+	private List<RuleDocumentValidation> buildValidationRuleList() {
 		List<RuleDocumentValidation> l = new ArrayList<>();
+
+		Iterable<RuleDocumentValidation> all = validationRuleService.findAll();
+		all.iterator().forEachRemaining(l::add);
+
+		if(l.size() == 0) {
+			createDefaultValidationRuleList(l);
+		}
+
+		return l;
+	}
+
+	public void createDefaultValidationRuleList(List<RuleDocumentValidation> l) {
+		/*
+         * XSD rules
+         */
 		l.add(xsd(DocumentFormat.OIOUBL_INVOICE, "xsd/UBL_2.0/maindoc/UBL-Invoice-2.0.xsd"));
 		l.add(xsd(DocumentFormat.OIOUBL_CREDITNOTE, "xsd/UBL_2.0/maindoc/UBL-CreditNote-2.0.xsd"));
 
@@ -51,8 +69,8 @@ public class RuleService {
 		l.add(xsd(DocumentFormat.CII, "xsd/CII_D16B_SCRDM_uncoupled/data/standard/CrossIndustryInvoice_100pD16B.xsd"));
 
 		/*
-		 * Schematron
-		 */
+         * Schematron
+         */
 
 		l.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2018-09-15_v1.10.0.35220/OIOUBL_Invoice_Schematron.xsl", 10));
 		l.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2018-09-15_v1.10.0.35220/OIOUBL_CreditNote_Schematron.xsl", 10));
@@ -66,8 +84,6 @@ public class RuleService {
 
 		l.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-01-02_1/PEPPOL-EN16931-CII.xslt", 10));
 		l.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-01-02_1/CEN-EN16931-CII.xslt", 20));
-
-		return l;
 	}
 
 	private RuleDocumentValidation xsd(DocumentFormat format, String path) {
@@ -91,11 +107,21 @@ public class RuleService {
 	}
 
 
-	private List<RuleDocumentTransformation> buildHardcoded() {
+	private List<RuleDocumentTransformation> buildTransformationRuleList() {
 		List<RuleDocumentTransformation> l = new ArrayList<>();
+
+		Iterable<RuleDocumentTransformation> all = transformationRuleService.findAll();
+		all.iterator().forEachRemaining(l::add);
+
+		if(l.size() == 0) {
+			createDefaultTransformationRuleList(l);
+		}
+		return l;
+	}
+
+	public void createDefaultTransformationRuleList(List<RuleDocumentTransformation> l) {
 		l.add(b(CII, BIS3, "cii_to_bis3/v_2018-12-22_DLK_Change_AddressLine_PayableRoundingAmount/CII_2_BIS-Billing.xslt"));
 		l.add(b(BIS3, OIOUBL, "bis3_to_oioubl/v_2018-03-14_34841/BIS-Billing_2_OIOUBL_MASTER.xslt"));
-		return l;
 	}
 
 	private RuleDocumentTransformation b(DocumentFormatFamily from, DocumentFormatFamily to, String path) {
