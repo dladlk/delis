@@ -29,13 +29,13 @@ public class TransformationRuleController {
     @GetMapping("list")
     public String list(Model model) {
         model.addAttribute("transformationRuleList", service.loadRulesList());
-        return "transformationrule/list";
+        return "setup/index";
     }
 
     @PostMapping("save")
     public String createNew(@Valid RuleDocumentTransformationData ruleData, Model model) throws Exception {
         service.saveRule(ruleData);
-        return "redirect:/transformationrule/list";
+        return "redirect:/setup/index";
     }
 
     @GetMapping("create/{id}")
@@ -65,7 +65,6 @@ public class TransformationRuleController {
     @GetMapping("delete/{id}")
     public String deleteUser(@PathVariable long id, Model model) {
         service.deleteRule(id);
-        model.addAttribute("transformationRuleList", service.loadRulesList());
-        return "transformationrule/list";
+        return "redirect:/setup/index";
     }
 }

@@ -1,7 +1,7 @@
 package dk.erst.delis.web.validationrule;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
-import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -30,13 +30,13 @@ public class ValidationRuleController {
     @GetMapping("list")
     public String list(Model model) {
         model.addAttribute("validationRuleList", service.loadRulesList());
-        return "validationrule/list";
+        return "setup/index";
     }
 
     @PostMapping("save")
     public String createNew(@Valid RuleDocumentValidationData ruleData, Model model) throws Exception {
         service.saveRule(ruleData);
-        return "redirect:/validationrule/list";
+        return "redirect:/setup/index";
     }
 
     @GetMapping("create/{id}")
@@ -49,7 +49,7 @@ public class ValidationRuleController {
             BeanUtils.copyProperties(validationRule, validationRuleData);
             model.addAttribute("validationRule", validationRuleData);
         }
-        model.addAttribute("documentFormatList", DocumentFormatFamily.values());
+        model.addAttribute("documentFormatList", DocumentFormat.values());
         model.addAttribute("validationTypeList", RuleDocumentValidationType.values());
         return "validationrule/edit";
     }
@@ -60,7 +60,7 @@ public class ValidationRuleController {
         RuleDocumentValidationData validationRuleData = new RuleDocumentValidationData();
         BeanUtils.copyProperties(validationRule, validationRuleData);
         model.addAttribute("validationRule", validationRuleData);
-        model.addAttribute("documentFormatList", DocumentFormatFamily.values());
+        model.addAttribute("documentFormatList", DocumentFormat.values());
         model.addAttribute("validationTypeList", RuleDocumentValidationType.values());
         return "validationrule/edit";
     }
@@ -68,7 +68,6 @@ public class ValidationRuleController {
     @GetMapping("delete/{id}")
     public String deleteUser(@PathVariable long id, Model model) {
         service.deleteRule(id);
-        model.addAttribute("validationRuleList", service.loadRulesList());
-        return "validationrule/list";
+        return "redirect:/setup/index";
     }
 }

@@ -2,6 +2,8 @@ package dk.erst.delis.web.setup;
 
 import dk.erst.delis.data.entities.config.ConfigValue;
 import dk.erst.delis.data.enums.config.ConfigValueType;
+import dk.erst.delis.web.transformationrule.TransformationRuleService;
+import dk.erst.delis.web.validationrule.ValidationRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -27,12 +29,20 @@ public class SetupController {
 	
 	@Autowired
 	private ConfigValueDaoRepository configValueDaoRepository;
-	
+
+	@Autowired
+	ValidationRuleService validationRuleService;
+
+	@Autowired
+	TransformationRuleService transformationRuleService;
+
 	@GetMapping("/setup/index")
 	public String index(Model model) {
 		model.addAttribute("configBean", configBean);
 		model.addAttribute("configProperties", configProperties);
 		model.addAttribute("configList", configValueDaoRepository.findAll(Sort.by("configValueType")));
+		model.addAttribute("validationRuleList", validationRuleService.loadRulesList());
+		model.addAttribute("transformationRuleList", transformationRuleService.loadRulesList());
 		return "/setup/index";
 	}
 	
