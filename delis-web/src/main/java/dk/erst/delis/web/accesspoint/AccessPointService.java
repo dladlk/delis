@@ -73,11 +73,15 @@ public class AccessPointService {
         accessPoint.setUrl(accessPointData.getUrl());
         accessPoint.setType(accessPointData.getType());
         // Validate certificate
-        byte[] certBytes = Base64.getDecoder().decode(accessPointData.getCertificate());
+        String certificateString = accessPointData.getCertificate();
+        certificateString = certificateString.replaceAll("\\s+","");
+        byte[] bytes = certificateString.getBytes(UTF_8);
+
+        byte[] certBytes = Base64.getDecoder().decode(bytes);
         X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
         String name = certificate.getSubjectDN().getName();
         accessPoint.setCertificateCN(name);
-        accessPoint.setCertificate(new SerialBlob(accessPointData.getCertificate().getBytes(UTF_8)));
+        accessPoint.setCertificate(new SerialBlob(bytes));
         accessPointRepository.save(accessPoint);
     }
 
