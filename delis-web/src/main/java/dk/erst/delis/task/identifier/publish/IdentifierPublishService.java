@@ -1,6 +1,8 @@
 package dk.erst.delis.task.identifier.publish;
 
+import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.journal.JournalIdentifier;
 import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
@@ -32,6 +34,8 @@ public class IdentifierPublishService {
 	private final SmpIntegrationService smpIntegrationService;
 	private final IdentifierPublishDataService identifierPublishDataService;
 	private final SmpLookupService smpLookupService;
+	@Autowired
+	private JournalIdentifierDaoRepository journalIdentifierDaoRepository;
 
 	@Autowired
 	public IdentifierPublishService(SmpXmlService smpXmlService, SmpIntegrationService smpIntegrationService, IdentifierPublishDataService identifierPublishDataService, SmpLookupService smpLookupService) {
@@ -44,19 +48,29 @@ public class IdentifierPublishService {
 	public boolean publishIdentifier(Identifier identifier) {
 		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier);
 		if (identifier.getStatus().isDeleted()) {
-			return deleteServiceGroup(forPublish.getParticipantIdentifier());
+			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
+			if(isDeleted) {
+				addJournalIdentifierRecord(identifier, "Service group was deleted", journalIdentifierDaoRepository);
+			}
+			return isDeleted;
 		}
 		if(!isPublishDataValid(forPublish)) {
 			log.info(String.format("Publish data created for identifier '%s' is invalid!", identifier.getValue()));
 			return false;
 		}
 		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
+			addJournalIdentifierRecord(identifier, "Unable to publish service group", journalIdentifierDaoRepository);
 			return false;
 		}
 		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
 		for (SmpPublishServiceData publishedService : published.getServiceList()) {
 			if(!contains(publishedService, forPublish.getServiceList())) {
-				deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
+				boolean isDeleted = deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
+				if(isDeleted) {
+					SmpDocumentIdentifier documentIdentifier = publishedService.getDocumentIdentifier();
+					String message = String.format("Service metadata with DocumentIdentifier value '%s' was deleted", documentIdentifier.getDocumentIdentifierValue());
+					addJournalIdentifierRecord(identifier, message, journalIdentifierDaoRepository);
+				}
 			}
 		}
 		List<SmpPublishServiceData> servicesForPublish = forPublish.getServiceList();
@@ -64,9 +78,20 @@ public class IdentifierPublishService {
 			boolean isPublished = publishServiceMetadata(forPublish.getParticipantIdentifier(), serviceForPublish);
 			if (!isPublished) {
 				return false;
+			} else {
+				SmpDocumentIdentifier documentIdentifier = serviceForPublish.getDocumentIdentifier();
+				String message = String.format("Service metadata with DocumentIdentifier value '%s' was published", documentIdentifier.getDocumentIdentifierValue());
+				addJournalIdentifierRecord(identifier, message, journalIdentifierDaoRepository);
 			}
 		}
 		return true;
+	}
+
+	private void addJournalIdentifierRecord(Identifier identifier, String message, JournalIdentifierDaoRepository journalIdentifierDaoRepository) {
+		JournalIdentifier journalIdentifier = new JournalIdentifier();
+		journalIdentifier.setIdentifier(identifier);
+		journalIdentifier.setOrganisation(identifier.getOrganisation());
+		journalIdentifier.setMessage(message);
 	}
 
 	private boolean isPublishDataValid(SmpPublishData publishData) {
