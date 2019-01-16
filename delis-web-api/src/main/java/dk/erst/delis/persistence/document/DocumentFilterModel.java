@@ -8,6 +8,7 @@ import dk.erst.delis.persistence.AbstractFilterModel;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * @author Iehor Funtusov, created by 09.01.19
@@ -24,4 +25,5 @@ public class DocumentFilterModel extends AbstractFilterModel {
     private String senderName;
     private DocumentFormat ingoingDocumentFormat;
     private DocumentType documentType;
+    private WebRequest webRequest;
 }

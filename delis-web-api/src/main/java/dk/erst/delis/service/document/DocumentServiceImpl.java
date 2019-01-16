@@ -58,6 +58,7 @@ public class DocumentServiceImpl implements DocumentService {
         if (CollectionUtils.isNotEmpty(filters)) {
 
             DocumentFilterModel filterModel = new DocumentFilterModel();
+            filterModel.setWebRequest(webRequest);
 
             DateRequestModel dateRequestModel = WebRequestUtil.generateDateRequestModel(webRequest);
             if (Objects.nonNull(dateRequestModel)) {
