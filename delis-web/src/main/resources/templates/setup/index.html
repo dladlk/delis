@@ -78,11 +78,12 @@
 			<a href="#" th:href="@{/setup/config/create}" class="btn btn-primary">Create new</a>
 		</div>
 	</div>
+	<div class="row">&nbsp;</div>
 	<div class="card border-primary">
 		<div class="card-header bg-primary text-white">
 			Validation Rules
 		</div>
-		<div class="card-body">
+		<div class="card-body table-responsive">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
 					<th>id</th>
@@ -92,6 +93,8 @@
 					<th>validation type</th>
 					<th>path</th>
 					<th>config</th>
+					<th>update</th>
+					<th>delete</th>
 				</tr>
 				<tr th:each="validationRule,iter : ${validationRuleList}">
 					<td th:text="${validationRule.id}"></td>
@@ -108,13 +111,15 @@
 		</div>
 		<div class="card-footer">
 			<a href="#" th:href="@{|/validationrule/create/0|}" class="btn btn-primary">Add</a>
+			<a href="#" th:href="@{|/validationrule/createdefault|}" class="btn btn-secondary">Reset to defaults</a>
 		</div>
 	</div>
+	<div class="row">&nbsp;</div>
 	<div class="card border-primary">
 		<div class="card-header bg-primary text-white">
 			Transformation Rules
 		</div>
-		<div class="card-body">
+		<div class="card-body table-responsive">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
 					<th>id</th>
@@ -123,6 +128,8 @@
 					<th>format to</th>
 					<th>path</th>
 					<th>config</th>
+					<th>update</th>
+					<th>delete</th>
 				</tr>
 				<tr th:each="transformationRule,iter : ${transformationRuleList}">
 					<td th:text="${transformationRule.id}"></td>
@@ -138,6 +145,7 @@
 		</div>
 		<div class="card-footer">
 			<a href="#" th:href="@{|/transformationrule/create/0|}" class="btn btn-primary">Add</a>
+			<a href="#" th:href="@{|/transformationrule/createdefault|}" class="btn btn-secondary">Reset to defaults</a>
 		</div>
 	</div>
 </body>

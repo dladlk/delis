@@ -70,4 +70,10 @@ public class ValidationRuleController {
         service.deleteRule(id);
         return "redirect:/setup/index";
     }
+
+    @GetMapping("createdefault")
+    public String createDefault(Model model) {
+        service.recreateDefault();
+        return "redirect:/setup/index";
+    }
 }

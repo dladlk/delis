@@ -52,6 +52,12 @@ public class TransformationRuleController {
         return "transformationrule/edit";
     }
 
+    @GetMapping("createdefault")
+    public String createDefault(Model model) {
+        service.recreateDefault();
+        return "redirect:/setup/index";
+    }
+
     @GetMapping("update/{id}")
     public String updateAccessPoint(@PathVariable long id, Model model) {
         RuleDocumentTransformation transformationRule = service.findById(id);

@@ -3,6 +3,7 @@ package dk.erst.delis.web.transformationrule;
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static dk.erst.delis.data.enums.document.DocumentFormatFamily.BIS3;
+import static dk.erst.delis.data.enums.document.DocumentFormatFamily.CII;
+import static dk.erst.delis.data.enums.document.DocumentFormatFamily.OIOUBL;
 
 @Service
 @Slf4j
@@ -62,5 +67,30 @@ public class TransformationRuleService {
 
     void deleteRule(Long id) {
         repository.delete(findOne(id));
+    }
+
+    private List<RuleDocumentTransformation> createDefaultTransformationRuleList() {
+        ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
+        result.add(b(CII, BIS3, "cii_to_bis3/v_2018-12-22_DLK_Change_AddressLine_PayableRoundingAmount/CII_2_BIS-Billing.xslt"));
+        result.add(b(BIS3, OIOUBL, "bis3_to_oioubl/v_2018-03-14_34841/BIS-Billing_2_OIOUBL_MASTER.xslt"));
+        return result;
+    }
+
+    private RuleDocumentTransformation b(DocumentFormatFamily from, DocumentFormatFamily to, String path) {
+        RuleDocumentTransformation r = new RuleDocumentTransformation();
+
+        r.setActive(true);
+        r.setDocumentFormatFamilyFrom(from);
+        r.setDocumentFormatFamilyTo(to);
+        r.setRootPath(path);
+
+        return r;
+    }
+
+    public void recreateDefault() {
+        repository.deleteAll();
+        List<RuleDocumentTransformation> defaultTransformationRuleList = createDefaultTransformationRuleList();
+        repository.saveAll(defaultTransformationRuleList);
+
     }
 }
