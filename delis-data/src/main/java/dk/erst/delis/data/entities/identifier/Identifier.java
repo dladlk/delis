@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Table(indexes = {
 
-		@Index(name="I_ORGANISAION_ID", columnList="ORGANISATION_ID, STATUS, PUBLISHING_STATUS"), //todo caused com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Specified key was too long; max key length is 1000 bytes
+		@Index(name="I_ORGANISAION_ID", columnList="ORGANISATION_ID, STATUS, PUBLISHING_STATUS"),
 		
 		@Index(name="I_ORGANISAION_ID", columnList="LAST_SYNC_ORGANISATION_FACT_ID"),
 
