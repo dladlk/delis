@@ -1,21 +1,13 @@
 package dk.erst.delis.service.document;
 
 import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.enums.document.DocumentErrorCode;
-import dk.erst.delis.data.enums.document.DocumentFormat;
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestNotFoundException;
-import dk.erst.delis.persistence.document.DocumentFilterModel;
 import dk.erst.delis.persistence.document.DocumentRepository;
-import dk.erst.delis.persistence.document.DocumentSpecification;
-import dk.erst.delis.rest.data.request.param.DateRequestModel;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.AbstractGenerateDataService;
 import dk.erst.delis.util.WebRequestUtil;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.*;
-
-import static dk.erst.delis.persistence.document.DocumentConstants.*;
 
 /**
  * @author Iehor Funtusov, created by 03.01.19
@@ -50,59 +40,15 @@ public class DocumentServiceImpl implements DocumentService {
 
         long collectionSize = documentRepository.count();
         if (collectionSize == 0) {
-            return new PageContainer<>();
+            return abstractGenerateDataService.getDefaultDataPageContainer(page, size, collectionSize, documentRepository);
         }
 
-        List<String> filters = WebRequestUtil.existParameters(webRequest);
-
-        if (CollectionUtils.isNotEmpty(filters)) {
-
-            DocumentFilterModel filterModel = new DocumentFilterModel();
-            filterModel.setWebRequest(webRequest);
-
-            DateRequestModel dateRequestModel = WebRequestUtil.generateDateRequestModel(webRequest);
-            if (Objects.nonNull(dateRequestModel)) {
-                filterModel.setStart(dateRequestModel.getStart());
-                filterModel.setEnd(dateRequestModel.getEnd());
-            } else {
-                filterModel.setStart(documentRepository.findMinCreateTime());
-                filterModel.setEnd(documentRepository.findMaxCreateTime());
-            }
-
-            for (String key : filters) {
-                if (key.equals(ORGANIZATION_FIELD)) {
-                    filterModel.setOrganisation(webRequest.getParameter(ORGANIZATION_FIELD));
-                }
-                if (key.equals(RECEIVER_IDENTIFIER_FIELD)) {
-                    filterModel.setReceiver(webRequest.getParameter(RECEIVER_IDENTIFIER_FIELD));
-                }
-                if (key.equals(DOCUMENT_STATUS_FIELD)) {
-                    filterModel.setDocumentStatus(DocumentStatus.valueOf(webRequest.getParameter(DOCUMENT_STATUS_FIELD)));
-                }
-                if (key.equals(LAST_ERROR_FIELD)) {
-                    filterModel.setLastError(DocumentErrorCode.valueOf(webRequest.getParameter(LAST_ERROR_FIELD)));
-                }
-                if (key.equals(DOCUMENT_TYPE_FIELD)) {
-                    filterModel.setDocumentType(DocumentType.valueOf(webRequest.getParameter(DOCUMENT_TYPE_FIELD)));
-                }
-                if (key.equals(INGOING_DOCUMENT_FORMAT_FIELD)) {
-                    filterModel.setIngoingDocumentFormat(DocumentFormat.valueOf(webRequest.getParameter(INGOING_DOCUMENT_FORMAT_FIELD)));
-                }
-                if (key.equals(SENDER_NAME_FIELD)) {
-                    filterModel.setSenderName(webRequest.getParameter(SENDER_NAME_FIELD));
-                }
-            }
-
-            String sort = WebRequestUtil.existSortParameter(filters);
-
-            if (StringUtils.isNotBlank(sort)) {
-                return abstractGenerateDataService.sortProcess(Document.class, sort, webRequest, page, size, collectionSize, documentRepository, filterModel, new DocumentSpecification());
-            } else {
-                return abstractGenerateDataService.getDefaultDataPageContainerWithoutSorting(page, size, collectionSize, documentRepository, filterModel, new DocumentSpecification());
-            }
+        String sort = WebRequestUtil.existSortParameter(webRequest);
+        if (StringUtils.isNotBlank(sort)) {
+            return abstractGenerateDataService.sortProcess(Document.class, sort, webRequest, page, size, collectionSize, documentRepository);
+        } else {
+            return abstractGenerateDataService.getDefaultDataPageContainerWithoutSorting(Document.class, webRequest, page, size, collectionSize, documentRepository);
         }
-
-        return abstractGenerateDataService.getDefaultDataPageContainer(page, size, collectionSize, documentRepository);
     }
 
     @Override

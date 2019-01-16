@@ -55,8 +55,7 @@ export class DocumentsService {
             params = params.append('senderName', filter.senderName);
         }
         if (filter.dateReceived !== null) {
-            params = params.append('start', String(filter.dateReceived.dateStart.getTime()));
-            params = params.append('end', String(filter.dateReceived.dateEnd.getTime()));
+            params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
         }
 
         return this.http.get(this.url + '', {headers : this.headers, params: params}).pipe(map(DocumentsService.extractData));

@@ -44,10 +44,8 @@ export class JournalIdentifierService {
         if (filter.durationMs !== null) {
             params = params.append('durationMs', String(filter.durationMs));
         }
-
         if (filter.dateRange !== null) {
-            params = params.append('start', String(filter.dateRange.dateStart.getTime()));
-            params = params.append('end', String(filter.dateRange.dateEnd.getTime()));
+            params = params.append('createTime', String(filter.dateRange.dateStart.getTime()) + ':' + String(filter.dateRange.dateEnd.getTime()));
         }
 
         return this.http.get(this.url + '', {headers : this.headers, params: params}).pipe(map(JournalIdentifierService.extractData));

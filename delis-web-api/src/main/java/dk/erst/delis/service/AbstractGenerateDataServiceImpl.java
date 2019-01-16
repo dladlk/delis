@@ -23,10 +23,8 @@ import java.util.Objects;
 @Service
 public class AbstractGenerateDataServiceImpl<
         R extends AbstractRepository,
-        F extends AbstractFilterModel,
-        S extends AbstractSpecification,
         E extends AbstractEntity>
-        implements AbstractGenerateDataService<R, E, S, F> {
+        implements AbstractGenerateDataService<R, E> {
 
     @Override
     public PageContainer<E> sortProcess(
@@ -34,9 +32,7 @@ public class AbstractGenerateDataServiceImpl<
             String sort,
             WebRequest request,
             int page, int size, long collectionSize,
-            R repository,
-            F filterModel,
-            S specification) {
+            R repository) {
         List<Field> fields = new ArrayList<>();
         fields.addAll(Arrays.asList(entityClass.getDeclaredFields()));
         fields.addAll(Arrays.asList(entityClass.getSuperclass().getDeclaredFields()));
@@ -45,14 +41,14 @@ public class AbstractGenerateDataServiceImpl<
                 if (sort.toUpperCase().endsWith(field.getName().toUpperCase())) {
                     int count = Integer.parseInt(Objects.requireNonNull(request.getParameter(sort)));
                     if (count == 1) {
-                        return getDescendingDataPageContainer(page, size, collectionSize, field.getName(), repository, filterModel, specification);
+                        return getDescendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request);
                     } else if (count == 2) {
-                        return getAscendingDataPageContainer(page, size, collectionSize, field.getName(), repository, filterModel, specification);
+                        return getAscendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request);
                     }
                 }
             }
         }
-        return getDefaultDataPageContainerWithoutSorting(page, size, collectionSize, repository, filterModel, specification);
+        return getDefaultDataPageContainerWithoutSorting(entityClass, request, page, size, collectionSize, repository);
     }
 
     @Override
@@ -63,24 +59,24 @@ public class AbstractGenerateDataServiceImpl<
     }
 
     @Override
-    public PageContainer<E> getDefaultDataPageContainerWithoutSorting(int page, int size, long collectionSize, R repository, F filterModel, S specification) {
+    public PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize, R repository) {
         return new PageContainer<E>(page, size, collectionSize, repository
                 .findAll(
-                specification.generateCriteriaPredicate(filterModel),
+                new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),
                 PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
     }
 
-    private PageContainer<E> getDescendingDataPageContainer(int page, int size, long collectionSize, String param, R repository, F filterModel, S specification) {
+    private PageContainer<E> getDescendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param, R repository, WebRequest request) {
         return new PageContainer<E>(page, size, collectionSize, repository
                 .findAll(
-                        specification.generateCriteriaPredicate(filterModel),
+                        new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),
                         PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
     }
 
-    private PageContainer<E> getAscendingDataPageContainer(int page, int size, long collectionSize, String param, R repository, F filterModel, S specification) {
+    private PageContainer<E> getAscendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param, R repository, WebRequest request) {
         return new PageContainer<E>(page, size, collectionSize, repository
                 .findAll(
-                        specification.generateCriteriaPredicate(filterModel),
+                        new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),
                         PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
     }
 }

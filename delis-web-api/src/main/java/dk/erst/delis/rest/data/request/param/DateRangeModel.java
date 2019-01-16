@@ -1,9 +1,6 @@
 package dk.erst.delis.rest.data.request.param;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -15,7 +12,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DateRequestModel {
+public class DateRangeModel {
 
     Date start;
     Date end;

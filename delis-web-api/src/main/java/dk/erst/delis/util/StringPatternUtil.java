@@ -1,4 +1,4 @@
-package dk.erst.delis.persistence;
+package dk.erst.delis.util;
 
 import lombok.experimental.UtilityClass;
 
@@ -7,7 +7,7 @@ import lombok.experimental.UtilityClass;
  */
 
 @UtilityClass
-public class AbstractSpecificationUtil {
+public class StringPatternUtil {
 
     public String getContainsLikePattern(String searchTerm) {
         if (searchTerm == null || searchTerm.isEmpty()) {
