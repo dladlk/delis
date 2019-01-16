@@ -25,22 +25,11 @@ public class WebRequestUtil {
     private static final int SIZE_PARAM_VALUE = 10;
     private static final String SORT_PARAM_START_WITH = "countClick";
     private static final String SORT_PARAM_DEFAULT_VALUE = "0";
-    private static final String RANGE_DATE_START_PARAM = "start";
-    private static final String RANGE_DATE_END_PARAM = "end";
 
     public PageAndSizeModel generatePageAndSizeModel(WebRequest webRequest) {
         int page = webRequest.getParameter(PAGE_PARAM) != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter(PAGE_PARAM))) : PAGE_PARAM_VALUE;
         int size = webRequest.getParameter(SIZE_PARAM) != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter(SIZE_PARAM))) : SIZE_PARAM_VALUE;
         return new PageAndSizeModel(page, size);
-    }
-
-    public DateRangeModel generateDateRequestModel(WebRequest webRequest) {
-        if (Objects.nonNull(webRequest.getParameter(RANGE_DATE_START_PARAM)) && Objects.nonNull(webRequest.getParameter(RANGE_DATE_END_PARAM))) {
-            long startDate = Long.parseLong(Objects.requireNonNull(webRequest.getParameter(RANGE_DATE_START_PARAM)));
-            long endDate = Long.parseLong(Objects.requireNonNull(webRequest.getParameter(RANGE_DATE_END_PARAM)));
-            return new DateRangeModel(new Date(startDate), new Date(endDate));
-        }
-        return null;
     }
 
     public DateRangeModel generateDateRange(String timePattern) {
