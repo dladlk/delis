@@ -68,7 +68,7 @@ public class ValidationRuleService {
         repository.delete(findOne(id));
     }
 
-    public List<RuleDocumentValidation> createDefaultValidationRuleList() {
+    private List<RuleDocumentValidation> createDefaultValidationRuleList() {
 
         List<RuleDocumentValidation> result = new ArrayList<>();
         /*
