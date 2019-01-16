@@ -1,10 +1,9 @@
 package dk.erst.delis.service;
 
 import dk.erst.delis.data.entities.AbstractEntity;
-import dk.erst.delis.persistence.AbstractFilterModel;
 import dk.erst.delis.persistence.AbstractRepository;
-import dk.erst.delis.persistence.AbstractSpecification;
 import dk.erst.delis.rest.data.response.PageContainer;
+
 import org.springframework.web.context.request.WebRequest;
 
 /**
@@ -13,11 +12,9 @@ import org.springframework.web.context.request.WebRequest;
 
 public interface AbstractGenerateDataService<
         R extends AbstractRepository,
-        E extends AbstractEntity,
-        S extends AbstractSpecification,
-        F extends AbstractFilterModel> {
+        E extends AbstractEntity> {
 
-    PageContainer<E> sortProcess(Class<E> entityClass, String sort, WebRequest request, int page, int size, long collectionSize, R repository, F filterModel, S specification);
+    PageContainer<E> sortProcess(Class<E> entityClass, String sort, WebRequest request, int page, int size, long collectionSize, R repository);
     PageContainer<E> getDefaultDataPageContainer(int page, int size, long collectionSize, R repository);
-    PageContainer<E> getDefaultDataPageContainerWithoutSorting(int page, int size, long collectionSize, R repository, F filterModel, S specification);
+    PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize, R repository);
 }
