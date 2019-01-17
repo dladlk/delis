@@ -16,7 +16,7 @@
     <artifactId>delis-web</artifactId>
     <version>1.0.0</version>
     
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 	
 	<name>Delis :: Web</name>
 
