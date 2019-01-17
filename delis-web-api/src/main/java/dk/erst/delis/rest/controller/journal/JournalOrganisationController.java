@@ -31,12 +31,12 @@ public class JournalOrganisationController {
     }
 
     @GetMapping
-    public ResponseEntity getJournalOrganisationList(WebRequest webRequest) {
+    public ResponseEntity getAll(WebRequest webRequest) {
         return ResponseEntity.ok(journalOrganisationService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getJournalOrganisationById(@PathVariable @Min(1) long id) {
+    public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(journalOrganisationService.getOneById(id));
     }
 }

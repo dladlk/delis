@@ -31,12 +31,12 @@ public class DocumentRestController {
     }
 
     @GetMapping
-    public ResponseEntity getDocumentList(WebRequest webRequest) {
+    public ResponseEntity getAll(WebRequest webRequest) {
         return ResponseEntity.ok(documentService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getDocumentById(@PathVariable @Min(1) long id) {
+    public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(documentService.getOneById(id));
     }
 }

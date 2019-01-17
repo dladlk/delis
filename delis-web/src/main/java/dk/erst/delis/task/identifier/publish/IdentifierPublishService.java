@@ -97,10 +97,12 @@ public class IdentifierPublishService {
 	private boolean isPublishDataValid(SmpPublishData publishData) {
 		List<SmpPublishServiceData> serviceList = publishData.getServiceList();
 		if(serviceList.isEmpty()) {
+			log.info(String.format("Publish data for identifier '%s' has empty service list.", publishData.getParticipantIdentifier().toString()));
 			return false;
 		}
 		for (SmpPublishServiceData serviceData : serviceList) {
 			if(serviceData.getEndpoints().isEmpty()) {
+				log.info(String.format("Service data for identifier '%s' has empty endpoint list.", publishData.getParticipantIdentifier().toString()));
 				return false;
 			}
 		}

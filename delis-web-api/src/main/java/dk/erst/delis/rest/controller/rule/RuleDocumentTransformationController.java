@@ -31,12 +31,12 @@ public class RuleDocumentTransformationController {
     }
 
     @GetMapping
-    public ResponseEntity getRuleDocumentTransformationList(WebRequest webRequest) {
+    public ResponseEntity getAll(WebRequest webRequest) {
         return ResponseEntity.ok(ruleDocumentTransformationService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getRuleDocumentTransformationById(@PathVariable @Min(1) long id) {
+    public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(ruleDocumentTransformationService.getOneById(id));
     }
 }

@@ -34,6 +34,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         ignorePaths.add("/rest/security/signin");
         ignorePaths.add("/rest/document");
         ignorePaths.add("/rest/journal/document");
+        ignorePaths.add("/rest/journal/identifier");
+        ignorePaths.add("/rest/journal/organisation");
         return ignorePaths;
     }
 

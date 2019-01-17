@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokenService } from '../service/token.service';
 import { environment } from '../../environments/environment';
+import {RuntimeConfigService} from "../service/runtime.config.service";
 
 @Injectable()
 export class AuthorizationService {
@@ -14,7 +15,7 @@ export class AuthorizationService {
 
   constructor(
     private client: HttpClient,
-    private tokenService: TokenService) {
+    private tokenService: TokenService, private config: RuntimeConfigService) {
     this.headers = new HttpHeaders({
       'Content-Type' : `application/json`
     });
@@ -26,6 +27,14 @@ export class AuthorizationService {
   }
 
   login(login: string, password: string): Observable<Response> {
+
+    this.config.getBaseUrl().subscribe(
+        (result: {}) => {
+          this.url = result["PARAM_API_URL"];
+          console.log("base url = " + this.url);
+        }
+    );
+
     return this.client
       .post(this.url, {
         'login' : login,
