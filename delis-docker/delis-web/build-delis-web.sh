@@ -5,7 +5,7 @@ CURDIR="$(dirname $(readlink -f $0))"
 DELIS_DATA_PATH=../../delis-data
 DELIS_WEB_PATH=../../delis-web
 
-SKIP_REBUILD=yes
+#SKIP_REBUILD=yes
 
 if [ -z "${SKIP_REBUILD}" ]
 then

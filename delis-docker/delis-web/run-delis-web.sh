@@ -5,8 +5,9 @@ docker run --rm \
 	-e "SERVER_PORT=8011" \
 	-e "SERVLET_SERVLET_CONTEXT-PATH=/delis-admin" \
 	-v $CURDIR/../../delis-resources:/delis-resources \
+	-v /delis:/delis \
 	--network=host \
-    -p 8011:8011 \
 	delis-web:1.0.0
 
 #	-it --entrypoint=/bin/sh \
+#    -p 8011:8011 \
