@@ -42,11 +42,11 @@ public class Identifier extends AbstractEntity {
 	private String uniqueValueType;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, length = 10)
 	private IdentifierStatus status;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="PUBLISHING_STATUS", nullable = true)
+	@Column(name="PUBLISHING_STATUS", nullable = true, length = 10)
 	private IdentifierPublishingStatus publishingStatus;
 	
 	@Column(nullable = false, length=128)
