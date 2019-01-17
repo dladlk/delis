@@ -1,20 +1,24 @@
 package dk.erst.delis.service;
 
 import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.exception.model.FieldErrorModel;
+import dk.erst.delis.exception.statuses.RestNotFoundException;
 import dk.erst.delis.persistence.*;
+import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 import dk.erst.delis.rest.data.response.PageContainer;
+import dk.erst.delis.util.WebRequestUtil;
+
+import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author funtusthan, created by 13.01.19
@@ -27,7 +31,32 @@ public class AbstractGenerateDataServiceImpl<
         implements AbstractGenerateDataService<R, E> {
 
     @Override
-    public PageContainer<E> sortProcess(
+    public PageContainer<E> generateDataPageContainer(Class<E> entityClass, WebRequest request, R repository) {
+        PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(request);
+        long collectionSize = repository.count();
+        if (collectionSize == 0) {
+            return getDefaultDataPageContainer(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository);
+        }
+
+        String sort = WebRequestUtil.existSortParameter(request);
+        if (StringUtils.isNotBlank(sort)) {
+            return sortProcess(entityClass, sort, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository);
+        } else {
+            return getDefaultDataPageContainerWithoutSorting(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository);
+        }
+    }
+
+    @Override
+    public E getOneById(long id, Class<E> entityClass, R repository) {
+        E entity = (E) repository.findById(id).orElse(null);
+        if (Objects.isNull(entity)) {
+            throw new RestNotFoundException(Collections.singletonList(
+                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), entityClass.getName() + " not found by id")));
+        }
+        return entity;
+    }
+
+    private PageContainer<E> sortProcess(
             Class<E> entityClass,
             String sort,
             WebRequest request,
@@ -51,15 +80,13 @@ public class AbstractGenerateDataServiceImpl<
         return getDefaultDataPageContainerWithoutSorting(entityClass, request, page, size, collectionSize, repository);
     }
 
-    @Override
-    public PageContainer<E> getDefaultDataPageContainer(int page, int size, long collectionSize, R repository) {
+    private PageContainer<E> getDefaultDataPageContainer(int page, int size, long collectionSize, R repository) {
         return new PageContainer<E>(page, size, collectionSize, repository
                 .findAll(
                 PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
     }
 
-    @Override
-    public PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize, R repository) {
+    private PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize, R repository) {
         return new PageContainer<E>(page, size, collectionSize, repository
                 .findAll(
                 new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),

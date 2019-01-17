@@ -1,8 +1,6 @@
 package dk.erst.delis.rest.controller.rule;
 
-import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 import dk.erst.delis.service.rule.transformation.RuleDocumentTransformationService;
-import dk.erst.delis.util.WebRequestUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +32,7 @@ public class RuleDocumentTransformationController {
 
     @GetMapping
     public ResponseEntity getRuleDocumentTransformationList(WebRequest webRequest) {
-        PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(webRequest);
-        return ResponseEntity.ok(ruleDocumentTransformationService.getAllAfterFilteringAndSorting(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), webRequest));
+        return ResponseEntity.ok(ruleDocumentTransformationService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")

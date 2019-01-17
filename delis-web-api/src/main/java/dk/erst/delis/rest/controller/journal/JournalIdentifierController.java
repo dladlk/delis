@@ -1,8 +1,6 @@
 package dk.erst.delis.rest.controller.journal;
 
-import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 import dk.erst.delis.service.journal.identifier.JournalIdentifierService;
-import dk.erst.delis.util.WebRequestUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +32,7 @@ public class JournalIdentifierController {
 
     @GetMapping
     public ResponseEntity getJournalIdentifierList(WebRequest webRequest) {
-        PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(webRequest);
-        return ResponseEntity.ok(journalIdentifierService.getAllAfterFilteringAndSorting(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), webRequest));
+        return ResponseEntity.ok(journalIdentifierService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")

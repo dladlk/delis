@@ -11,7 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 
 public interface AbstractService<E extends AbstractEntity> {
 
-    PageContainer<E> getAllAfterFilteringAndSorting(int page, int size, WebRequest request);
+    PageContainer<E> getAll(WebRequest request);
 
     E getOneById(long id);
 }

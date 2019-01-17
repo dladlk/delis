@@ -14,7 +14,7 @@ public interface AbstractGenerateDataService<
         R extends AbstractRepository,
         E extends AbstractEntity> {
 
-    PageContainer<E> sortProcess(Class<E> entityClass, String sort, WebRequest request, int page, int size, long collectionSize, R repository);
-    PageContainer<E> getDefaultDataPageContainer(int page, int size, long collectionSize, R repository);
-    PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize, R repository);
+    PageContainer<E> generateDataPageContainer(Class<E> entityClass, WebRequest request, R repository);
+
+    E getOneById(long id, Class<E> entityClass, R repository);
 }
