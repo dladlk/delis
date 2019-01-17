@@ -11,9 +11,9 @@
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/document/list', ${documentStat.documentDeliveredCount}, 'Documents Delivered', 'oi-comment-square', 'bg-success')}"></div>
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/document/list', ${documentStat.documentValidatedCount}, 'Documents Validated', 'oi-comment-square', 'bg-success')}"></div>
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/document/list', ${documentStat.documentFailedCount}, 'Documents Failed', 'oi-comment-square', 'bg-danger')}"></div>
-		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/identifier/list', ${identifierPendingCount}, 'Identifiers Pending', 'oi-comment-square', 'bg-secondary')}"></div>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/identifier/list', ${identifierPendingCount}, 'Identifiers Pending', 'oi-comment-square', 'bg-info')}"></div>
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/identifier/list', ${identifierFailedCount}, 'Identifiers Failed', 'oi-comment-square', 'bg-danger')}"></div>
-		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/organisation/list', ${organisationCount}, 'Organisations', 'oi-comment-square', 'bg-secondary')}"></div>
+		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/organisation/list', ${organisationCount}, 'Organisations', 'oi-comment-square', 'bg-info')}"></div>
 	</div>
 
 	<script>
