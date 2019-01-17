@@ -31,12 +31,12 @@ public class RuleDocumentValidationController {
     }
 
     @GetMapping
-    public ResponseEntity getRuleDocumentValidationList(WebRequest webRequest) {
+    public ResponseEntity getAll(WebRequest webRequest) {
         return ResponseEntity.ok(ruleDocumentValidationService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getRuleDocumentValidationById(@PathVariable @Min(1) long id) {
+    public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(ruleDocumentValidationService.getOneById(id));
     }
 }

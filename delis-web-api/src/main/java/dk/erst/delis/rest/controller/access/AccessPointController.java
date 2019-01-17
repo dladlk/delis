@@ -1,8 +1,6 @@
-package dk.erst.delis.rest.controller.journal;
+package dk.erst.delis.rest.controller.access;
 
-import dk.erst.delis.service.journal.identifier.JournalIdentifierService;
-
-import lombok.extern.slf4j.Slf4j;
+import dk.erst.delis.service.access.AccessPointService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,28 +13,27 @@ import org.springframework.web.context.request.WebRequest;
 import javax.validation.constraints.Min;
 
 /**
- * @author funtusthan, created by 14.01.19
+ * @author funtusthan, created by 17.01.19
  */
 
-@Slf4j
 @RestController
-@RequestMapping("/rest/journal/identifier")
-public class JournalIdentifierController {
+@RequestMapping("/rest/access-point")
+public class AccessPointController {
 
-    private final JournalIdentifierService journalIdentifierService;
+    private final AccessPointService accessPointService;
 
     @Autowired
-    public JournalIdentifierController(JournalIdentifierService journalIdentifierService) {
-        this.journalIdentifierService = journalIdentifierService;
+    public AccessPointController(AccessPointService accessPointService) {
+        this.accessPointService = accessPointService;
     }
 
     @GetMapping
     public ResponseEntity getAll(WebRequest webRequest) {
-        return ResponseEntity.ok(journalIdentifierService.getAll(webRequest));
+        return ResponseEntity.ok(accessPointService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(journalIdentifierService.getOneById(id));
+        return ResponseEntity.ok(accessPointService.getOneById(id));
     }
 }

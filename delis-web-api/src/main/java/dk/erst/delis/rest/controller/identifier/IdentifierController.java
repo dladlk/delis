@@ -1,11 +1,10 @@
-package dk.erst.delis.rest.controller.journal;
+package dk.erst.delis.rest.controller.identifier;
 
-import dk.erst.delis.service.journal.identifier.JournalIdentifierService;
-
-import lombok.extern.slf4j.Slf4j;
+import dk.erst.delis.service.identifier.IdentifierService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,28 +14,28 @@ import org.springframework.web.context.request.WebRequest;
 import javax.validation.constraints.Min;
 
 /**
- * @author funtusthan, created by 14.01.19
+ * @author funtusthan, created by 17.01.19
  */
 
-@Slf4j
+@Validated
 @RestController
-@RequestMapping("/rest/journal/identifier")
-public class JournalIdentifierController {
+@RequestMapping("/rest/identifier")
+public class IdentifierController {
 
-    private final JournalIdentifierService journalIdentifierService;
+    private final IdentifierService identifierService;
 
     @Autowired
-    public JournalIdentifierController(JournalIdentifierService journalIdentifierService) {
-        this.journalIdentifierService = journalIdentifierService;
+    public IdentifierController(IdentifierService identifierService) {
+        this.identifierService = identifierService;
     }
 
     @GetMapping
     public ResponseEntity getAll(WebRequest webRequest) {
-        return ResponseEntity.ok(journalIdentifierService.getAll(webRequest));
+        return ResponseEntity.ok(identifierService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(journalIdentifierService.getOneById(id));
+        return ResponseEntity.ok(identifierService.getOneById(id));
     }
 }
