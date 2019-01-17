@@ -48,7 +48,7 @@ public class HomeController {
 			} else if (st == DocumentStatus.LOAD_OK) {
 				documentStat.setDocumentLoadedCount(count);
 			} else if (st == DocumentStatus.VALIDATE_ERROR || st == DocumentStatus.UNKNOWN_RECEIVER || st ==DocumentStatus.LOAD_ERROR) {
-				documentStat.setDocumentDeliveredCount(documentStat.getDocumentDeliveredCount() + count);
+				documentStat.setDocumentFailedCount(documentStat.getDocumentDeliveredCount() + count);
 			}
 			
 		}
