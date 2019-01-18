@@ -138,7 +138,7 @@
 		</dependency>
 		<dependency>
 			<groupId>no.difi.oxalis</groupId>
-			<artifactId>oxalis-outbound</artifactId>
+			<artifactId>oxalis-api</artifactId>
 			<version>4.0.3</version>
 		</dependency>
 		<dependency>
