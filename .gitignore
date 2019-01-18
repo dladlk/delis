@@ -2,6 +2,7 @@
 .settings/
 .classpath
 .project
+.externalToolBuilders
 
 ## PMD Eclipse plugin files ##
 .pmd
