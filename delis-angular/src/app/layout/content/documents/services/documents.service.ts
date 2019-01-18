@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from "../../../../../environments/environment";
 import { TokenService } from "../../../../service/token.service";
-import { RuntimeConfigService } from "../../../../service/runtime.config.service";
 
 @Injectable()
 export class DocumentsService {
@@ -15,15 +14,11 @@ export class DocumentsService {
     private url = this.env.api_url + '/document';
     private config: string;
 
-    constructor(private http: HttpClient, private tokenService: TokenService, private configService: RuntimeConfigService) {
+    constructor(private http: HttpClient, private tokenService: TokenService) {
         this.headers = new HttpHeaders({
             'Authorization' : tokenService.getToken()
         });
-        this.configService.getBaseUrl().subscribe(
-            (data: {}) => {
-                this.config = data["PARAM_API_URL"];
-            }
-        );
+        this.config = localStorage.getItem('url');
         if (this.config !== '${API_URL}') {
             this.url = this.config + '/document';
         }

@@ -4,49 +4,40 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TokenService } from '../service/token.service';
 import { environment } from '../../environments/environment';
-import {RuntimeConfigService} from "../service/runtime.config.service";
+import { RuntimeConfigService } from "../service/runtime.config.service";
 
 @Injectable()
 export class AuthorizationService {
 
-  private headers: HttpHeaders;
   private env = environment;
   private url = this.env.api_url + '/security/signin';
+  private config: string;
 
   constructor(
     private client: HttpClient,
-    private tokenService: TokenService, private config: RuntimeConfigService) {
-    this.headers = new HttpHeaders({
-      'Content-Type' : `application/json`
-    });
+    private tokenService: TokenService, private configService: RuntimeConfigService) {
+
   }
 
-  setLogin(res: any): any {
-    this.tokenService.setToken(res.data);
-    return res;
+  setLogin(token: string): void {
+    this.tokenService.setToken(token);
   }
 
-  login(login: string, password: string): Observable<Response> {
+  login(login: string, password: string) {
 
-    this.config.getBaseUrl().subscribe(
-        (result: {}) => {
-          this.url = result["PARAM_API_URL"];
-          console.log("base url = " + this.url);
+    this.configService.getUrl();
+    this.config = localStorage.getItem('url');
+    console.log('url = ' + localStorage.getItem('url'));
+    if (this.config !== '${API_URL}') {
+      this.url = this.config + '/security/signin';
+    }
+
+    this.tokenService.authenticated(login, password, this.url).subscribe(
+        (data: {}) => {
+          let token = data["token"];
+          this.setLogin(token);
         }
     );
-
-    return this.client
-      .post(this.url, {
-        'login' : login,
-        'password' : password,
-      }, {
-        headers : this.headers
-      })
-      .pipe(
-        map((res: Response) => {
-          return this.setLogin(res) || { };
-        })
-      );
   }
 
   logout() {

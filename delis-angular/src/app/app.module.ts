@@ -12,7 +12,7 @@ import {AppComponent} from './app.component';
 import {AuthGuard} from './shared';
 import {TokenService} from './service/token.service';
 import {AuthorizationService} from './login/authorization.service';
-import {HttpService} from './service/http.service';
+// import {HttpService} from './service/http.service';
 import {HttpErrorService} from './service/http.error.service';
 import {BsDatepickerModule} from 'ngx-bootstrap';
 import {LocaleService} from "./service/locale.service";
@@ -46,7 +46,7 @@ export const createTranslateLoader = (http: HttpClient) => {
         TokenService,
         RuntimeConfigService,
         AuthorizationService,
-        HttpService,
+        // HttpService,
         HttpErrorService,
         LocaleService],
     bootstrap: [AppComponent],
