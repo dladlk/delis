@@ -5,6 +5,7 @@ import { TokenService } from "../../../../../service/token.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { JournalIdentifierFilterProcessResultModel } from "../models/journal.identifier.filter.process.result.model";
+import { RuntimeConfigService } from "../../../../../service/runtime.config.service";
 
 @Injectable()
 export class JournalIdentifierService {
@@ -12,11 +13,20 @@ export class JournalIdentifierService {
     private headers: HttpHeaders;
     private env = environment;
     private url = this.env.api_url + '/journal/identifier';
+    private config: string;
 
-    constructor(private http: HttpClient, private tokenService: TokenService) {
+    constructor(private http: HttpClient, private tokenService: TokenService, private configService: RuntimeConfigService) {
         this.headers = new HttpHeaders({
             'Authorization' : tokenService.getToken()
         });
+        this.configService.getBaseUrl().subscribe(
+            (data: {}) => {
+                this.config = data["PARAM_API_URL"];
+            }
+        );
+        if (this.config !== '${API_URL}') {
+            this.url = this.config + '/journal/identifier';
+        }
     }
 
     getListJournalIdentifiers(currentPage: number, sizeElement: number, filter: JournalIdentifierFilterProcessResultModel) : Observable<any> {

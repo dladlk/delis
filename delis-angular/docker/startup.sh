@@ -1,3 +1,4 @@
+#!/bin/sh
 
 echo "Starting application..."
 echo "API_URL = ${API_URL}"

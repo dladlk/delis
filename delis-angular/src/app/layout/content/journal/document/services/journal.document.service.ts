@@ -5,6 +5,7 @@ import { TokenService } from "../../../../../service/token.service";
 import { JournalDocumentFilterProcessResult } from "../models/journal.document.filter.process.result";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { RuntimeConfigService } from "../../../../../service/runtime.config.service";
 
 @Injectable()
 export class JournalDocumentService {
@@ -12,11 +13,20 @@ export class JournalDocumentService {
     private headers: HttpHeaders;
     private env = environment;
     private url = this.env.api_url + '/journal/document';
+    private config: string;
 
-    constructor(private http: HttpClient, private tokenService: TokenService) {
+    constructor(private http: HttpClient, private tokenService: TokenService, private configService: RuntimeConfigService) {
         this.headers = new HttpHeaders({
             'Authorization' : tokenService.getToken()
         });
+        this.configService.getBaseUrl().subscribe(
+            (data: {}) => {
+                this.config = data["PARAM_API_URL"];
+            }
+        );
+        if (this.config !== '${API_URL}') {
+            this.url = this.config + '/journal/document';
+        }
     }
 
     getListJournalDocuments(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {
