@@ -208,6 +208,8 @@ export class JournalDocumentComponent implements OnInit {
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.journalDocuments = data["items"];
+            }, error => {
+                localStorage.removeItem('isLoggedin');
             }
         );
     }

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {RuntimeConfigService} from "./runtime.config.service";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable()
 export class TokenService {
@@ -11,7 +10,7 @@ export class TokenService {
   private headers: HttpHeaders;
 
   constructor(
-      private client: HttpClient, private configService: RuntimeConfigService) {
+      private client: HttpClient) {
     this.headers = new HttpHeaders({
       'Content-Type' : `application/json`
     });
@@ -23,6 +22,7 @@ export class TokenService {
 
   setToken(token: string) {
     localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem('isLoggedin', 'false');
   }
 
   getToken(): string {

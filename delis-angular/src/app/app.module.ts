@@ -17,6 +17,8 @@ import {HttpErrorService} from './service/http.error.service';
 import {BsDatepickerModule} from 'ngx-bootstrap';
 import {LocaleService} from "./service/locale.service";
 import {RuntimeConfigService} from "./service/runtime.config.service";
+import {AlertService} from "./alert/alert.service";
+import {AlertComponent} from "./alert/alert.component";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -40,13 +42,13 @@ export const createTranslateLoader = (http: HttpClient) => {
         }),
         AppRoutingModule
     ],
-    declarations: [AppComponent],
+    declarations: [AppComponent, AlertComponent],
     providers: [
         AuthGuard,
         TokenService,
         RuntimeConfigService,
         AuthorizationService,
-        // HttpService,
+        AlertService,
         HttpErrorService,
         LocaleService],
     bootstrap: [AppComponent],

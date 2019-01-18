@@ -40,6 +40,8 @@ export class DocumentsOneComponent implements OnInit {
         if (this.env.production) {
             this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
                 this.document = data;
+            }, error => {
+                localStorage.removeItem('isLoggedin');
             });
         } else {
             this.document = Object.assign({}, this.documentsStaticService.getOneDocument(id));

@@ -41,6 +41,8 @@ export class JournalOneIdentifierComponent {
         if (this.env.production) {
             this.journalIdentifierService.getOneJournalIdentifierById(id).subscribe((data: JournalIdentifierModel) => {
                 this.journalIdentifier = data;
+            }, error => {
+                localStorage.removeItem('isLoggedin');
             });
         } else {
             this.journalIdentifier = Object.assign({}, this.journalIdentifierTestGuiStaticService.getOneJournalIdentifierById(id));

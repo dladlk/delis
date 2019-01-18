@@ -176,6 +176,8 @@ export class JournalIdentifierComponent implements OnInit {
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.journalIdentifiers = data["items"];
+            }, error => {
+                localStorage.removeItem('isLoggedin');
             }
         );
     }

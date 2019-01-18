@@ -40,6 +40,8 @@ export class JournalOneDocumentComponent implements OnInit {
         if (this.env.production) {
             this.journalDocumentService.getOneJournalDocumentById(id).subscribe((data: JournalDocumentModel) => {
                 this.journalDocument = data;
+            }, error => {
+                localStorage.removeItem('isLoggedin');
             });
         } else {
             this.journalDocument = Object.assign({}, this.journalDocumentTestGuiStaticService.getOneJournalDocumentById(id));
