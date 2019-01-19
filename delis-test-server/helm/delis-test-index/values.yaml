@@ -1,0 +1,10 @@
+namespace: default
+
+# Path to local folder at host server to use nging.conf and html contents
+
+pathFolderNgingConf: /wsh/delis/delis-test-server/delis-index-files/etc
+
+
+# Path to local folder at host server for html contents
+
+pathFolderHtml: /wsh/delis/delis-test-server/delis-index-files/html

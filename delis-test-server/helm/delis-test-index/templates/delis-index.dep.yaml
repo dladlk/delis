@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-delis-index'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: delis-index
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-delis-index'
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-delis-index'
+    spec:
+      containers:
+      - image: "nginx:alpine"
+        imagePullPolicy: IfNotPresent
+        name: delis-index
+        volumeMounts:
+        - name: index-html
+          mountPath: /usr/share/nginx/html/
+        - name: nginx-conf
+          mountPath: /etc/nginx/
+      volumes:
+      - name: nginx-conf
+        hostPath:
+          path: {{.Values.pathFolderNgingConf}}
+      - name: index-html
+        hostPath:
+          path: {{.Values.pathFolderHtml}}
+      restartPolicy: Always

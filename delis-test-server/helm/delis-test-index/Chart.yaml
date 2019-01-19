@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Index page for edelivery-test
+name: delis-test-index
+version: 0.1.0

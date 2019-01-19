@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-delis
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - edelivery-test.trueservice.dk
+    secretName: tls-secret
+  rules:
+      - host: edelivery-test.trueservice.dk
+        http:
+          paths:
+          - path: /delis
+            backend:
+              serviceName: delis-angular
+              servicePort: 8080
+          - path: /delis-web-api
+            backend:
+              serviceName: delis-web-api
+              servicePort: 8080
+          - path: /delis-web
+            backend:
+              serviceName: delis-web
+              servicePort: 8080

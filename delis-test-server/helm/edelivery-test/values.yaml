@@ -1,0 +1,15 @@
+namespace: default
+all:
+  imagePrefix: cef-erst/
+tw:
+  enabled: true
+  deploymentStrategy: RollingUpdate
+  serviceType: NodePort
+  image: test-web
+  imageTag: 0.1.3
+  imagePullPolicy: IfNotPresent
+  env:
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dserver.servlet.context-path=/twc -Dserver.tomcat.accesslog.enabled=true
+    filesRoot: /data/fs
+    keystoresRoot: /data/keystores
+    filesDeploymentLogs: /data/deployment_logs

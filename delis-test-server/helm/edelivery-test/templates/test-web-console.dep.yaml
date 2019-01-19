@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-test-web-console'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: test-web-console
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-test-web-console'
+  strategy:
+    type: '{{.Values.tw.deploymentStrategy}}'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-test-web-console'
+    spec:
+      volumes:
+      - name: smp-keystore
+        hostPath:
+          path: /data/keystores
+      - name: fs-plugin
+        hostPath:
+          path: /data/fs-plugin
+      - name: logs-data
+        hostPath:
+          path: /data/logs
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: '{{.Values.tw.env.javaopts}}'
+        - name: config.filesRoot
+          value: '{{.Values.tw.env.filesRoot}}'
+        - name: config.keystoresRoot
+          value: '{{.Values.tw.env.keystoresRoot}}'
+        - name: config.filesDeploymentLogs
+          value: '{{.Values.tw.env.filesDeploymentLogs}}'
+        - name: SERVER_SERVLET_CONTEXT-PATH
+          value: '/twc'
+        - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
+          value: 'true'
+        image: '{{.Values.all.imagePrefix}}{{.Values.tw.image}}:{{.Values.tw.imageTag}}'
+        imagePullPolicy: '{{.Values.tw.imagePullPolicy}}'
+        name: test-web-console
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data/keystores
+          name: smp-keystore
+        - mountPath: /data/fs
+          name: fs-plugin
+        - mountPath: /data/deployment_logs
+          name: logs-data
+      restartPolicy: '{{.Values.tw.restartPolicy}}'

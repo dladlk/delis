@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Edelivery test utils
+name: edelivery-test
+version: 0.1.0

@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Delis with angular GUI, rest web-api and admin part
+name: delis
+version: 0.1.0
