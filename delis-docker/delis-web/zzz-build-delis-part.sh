@@ -41,7 +41,7 @@ unzip ${DELIS_PART_PATH}/target/${DELIS_PART}-${DELIS_PART_VERSION}.jar -d ./doc
 
 DOCKER_IMAGE_NAME=${DELIS_PART}
 
-if [ "${DOCKER_IMAGE_NAME}"="delis-web" ]; then
+if [ "${DOCKER_IMAGE_NAME}" = "delis-web" ]; then
 DOCKER_IMAGE_NAME=delis-web-admin
 fi
 
