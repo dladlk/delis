@@ -74,13 +74,6 @@ public class UserController {
             ra.addFlashAttribute("errorMessage", "There is already a user registered with the username provided");
             return "redirect:/users/create";
         }
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            userExists = userService.findByEmail(user.getEmail());
-            if (userExists != null) {
-                ra.addFlashAttribute("errorMessage", "There is already a user registered with the email provided");
-                return "redirect:/users/create";
-            }
-        }
         userService.saveOrUpdateUser(user);
         return "redirect:/users/list";
     }
@@ -91,13 +84,6 @@ public class UserController {
         if (userExists != null) {
             if (ObjectUtils.notEqual(user.getId(), userExists.getId())) {
                 ra.addFlashAttribute("errorMessage", "There is already a user registered with the username provided");
-                return "redirect:/users/update/" + user.getId();
-            }
-        }
-        if (StringUtils.isNotBlank(user.getEmail())) {
-            userExists = userService.findByEmail(user.getEmail());
-            if (userExists != null) {
-                ra.addFlashAttribute("errorMessage", "There is already a user registered with the email provided");
                 return "redirect:/users/update/" + user.getId();
             }
         }
