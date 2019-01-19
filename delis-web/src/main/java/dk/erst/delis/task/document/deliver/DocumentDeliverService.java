@@ -94,18 +94,25 @@ public class DocumentDeliverService {
 		OrganisationReceivingMethod receivingMethod = setupData.getReceivingMethod();
 		String receivingMethodSetup = setupData.getReceivingMethodSetup();
 
-		switch (receivingMethod) {
-			case FILE_SYSTEM:
-				moveToFileSystem(document, receivingMethodSetup, log);
-				break;
-			case AZURE_STORAGE_ACCOUNT:
-				moveToAzure(document, receivingMethodSetup, log);
-				break;
-			default:
-				DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " + receivingMethod, DocumentProcessStepType.DELIVER);
-				failStep.setSuccess(false);
-				failStep.done();
-				log.addStep(failStep);
+		if (receivingMethod == null) {
+			DocumentProcessStep failStep = new DocumentProcessStep("Can not export - receiving method is not set for organization " + document.getOrganisation().getName(), DocumentProcessStepType.DELIVER);
+			failStep.setSuccess(false);
+			failStep.done();
+			log.addStep(failStep);
+		} else {
+			switch (receivingMethod) {
+				case FILE_SYSTEM:
+					moveToFileSystem(document, receivingMethodSetup, log);
+					break;
+				case AZURE_STORAGE_ACCOUNT:
+					moveToAzure(document, receivingMethodSetup, log);
+					break;
+				default:
+					DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " + receivingMethod, DocumentProcessStepType.DELIVER);
+					failStep.setSuccess(false);
+					failStep.done();
+					log.addStep(failStep);
+			}
 		}
 
 		return log;
