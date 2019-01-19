@@ -2,6 +2,7 @@ package dk.erst.delis.web.task;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
@@ -27,6 +28,9 @@ public class TaskController {
 
 	@Autowired
 	private DocumentProcessService documentProcessService;
+
+	@Autowired
+	private DocumentDeliverService documentDeliverService;
 
 	@Autowired
 	private IdentifierBatchPublishingService identifierBatchPublishingService;
@@ -94,7 +98,15 @@ public class TaskController {
 
 	@GetMapping("/task/documentDeliver")
 	public String documentDeliver(Model model) {
-		return unimplemented(model);
+		try {
+			StatData sd = documentDeliverService.processValidated();
+			String message = "Done processing of validated files in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke documentDeliveryService.processValidated", e);
+			model.addAttribute("errorMessage", "Failed to deliver validated documents: " + e.getMessage());
+		}
+		return "/task/index";
 	}
 
 	@GetMapping("/task/unimplemented")

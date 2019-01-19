@@ -119,5 +119,16 @@ public class DocumentBytesStorageService {
 		}
 		return destSubPath.toString();		
 	}
-	
+
+	public String moveToDeliver(Document document, String deliverPath) {
+		// sourceRoot - place, where validated files are stored
+		// deliverPath - deliver path for organization
+		Path sourceRoot = configBean.getStorageValidPath();
+		Path documentName = Paths.get(document.getIngoingRelativePath()).getFileName();
+		Path destPath = Paths.get(deliverPath).resolve(documentName);
+		if (!moveFile(sourceRoot.resolve(documentName).toFile(), destPath)) {
+			return null;
+		}
+		return destPath.toString();
+	}
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.JournalDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +26,19 @@ public class DocumentProcessService {
 
 	private DocumentDaoRepository documentDaoRepository;
 
-	private JournalDocumentDaoRepository journalDocumentDaoRepository;
+	private JournalDocumentService journalDocumentService;
 
 	private DocumentBytesStorageService documentBytesStorageService;
 	
 	@Autowired
-	public DocumentProcessService(DocumentBytesStorageService documentBytesStorageService, DocumentValidationTransformationService documentValidationTransformationService, DocumentDaoRepository documentDaoRepository,
-			JournalDocumentDaoRepository journalDocumentDaoRepository) {
+	public DocumentProcessService(DocumentBytesStorageService documentBytesStorageService,
+								  DocumentValidationTransformationService documentValidationTransformationService,
+								  DocumentDaoRepository documentDaoRepository,
+								  JournalDocumentService journalDocumentService) {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.documentValidationTransformationService = documentValidationTransformationService;
 		this.documentDaoRepository = documentDaoRepository;
-		this.journalDocumentDaoRepository = journalDocumentDaoRepository;
+		this.journalDocumentService = journalDocumentService;
 	}
 
 	public StatData processLoaded() {
@@ -84,40 +87,9 @@ public class DocumentProcessService {
 			documentDaoRepository.updateDocumentStatus(document);
 
 			List<DocumentProcessStep> stepList = log.getStepList();
-			if (stepList != null && !stepList.isEmpty()) {
-				for (DocumentProcessStep step : stepList) {
-					JournalDocument j = new JournalDocument();
-					j.setSuccess(step.isSuccess());
-					j.setType(step.getStepType());
-					j.setCreateTime(step.getStartTime());
-					j.setDurationMs(step.getDuration());
-					j.setDocument(document);
-					j.setOrganisation(document.getOrganisation());
-					j.setMessage(buildJournalMessage(step));
-					journalDocumentDaoRepository.save(j);
-				}
-			}
-
+			journalDocumentService.saveDocumentStep(document, stepList);
 		} else {
 			statData.increment("UNDEFINED");
 		}
 	}
-
-	private String buildJournalMessage(DocumentProcessStep step) {
-		if (step != null) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(step.getDescription());
-			if (step.getMessage() != null) {
-				sb.append(": ");
-				sb.append(step.getMessage());
-			}
-			String message = sb.toString();
-			if (message.length() > 255) {
-				return message.substring(0, 250)+"...";
-			}
-			return message;
-		}
-		return "";
-	}
-
 }
