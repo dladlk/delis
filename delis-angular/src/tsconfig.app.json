@@ -8,6 +8,6 @@
     "test.ts",
     "**/*.spec.ts",
     "**/*.test-gui-static.service.ts",
-    "./app/layout/documents/documents.json"
+    "./app/layout/content/documents/documents.json"
   ]
 }

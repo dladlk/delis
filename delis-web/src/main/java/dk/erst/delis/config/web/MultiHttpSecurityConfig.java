@@ -52,7 +52,6 @@ public class MultiHttpSecurityConfig {
 
             http.csrf().disable();
             http.authorizeRequests().antMatchers("/login", "/logout", "/default/user").permitAll();
-            http.authorizeRequests().antMatchers("/").access("hasRole('ADMIN')");
             http.authorizeRequests().anyRequest().authenticated();
             http.authorizeRequests().and().formLogin()
                     .loginProcessingUrl("/j_spring_security_check")

@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { routerTransition } from '../router.animations';
 import { AuthorizationService } from './authorization.service';
 import { LocaleService } from "../service/locale.service";
+import { environment } from "../../environments/environment";
 
 @Component({
     selector: 'app-login',
@@ -12,6 +13,8 @@ import { LocaleService } from "../service/locale.service";
     animations: [routerTransition()]
 })
 export class LoginComponent implements OnInit {
+
+    private env = environment;
 
     login: string;
     password: string;
@@ -28,10 +31,10 @@ export class LoginComponent implements OnInit {
     }
 
     onLoggedin() {
-        this.auth.login(this.login, this.password).subscribe(
-            () => {
-                localStorage.setItem('isLoggedin', 'true');
-            }
-        );
+        if (this.env.production) {
+            this.auth.login(this.login, this.password);
+        } else {
+            localStorage.setItem('isLoggedin', 'true');
+        }
     }
 }

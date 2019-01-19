@@ -10,8 +10,8 @@
     </parent>
     <groupId>dk.erst.delis</groupId>
     <artifactId>delis-web-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
     <name>Delis :: Web :: Api</name>
     <description>Delis web-api project for Spring Boot</description>
 
@@ -23,6 +23,7 @@
         <delis.version>1.0.0</delis.version>
         <commons.collections>3.2.2</commons.collections>
         <spring.security>5.0.7.RELEASE</spring.security>
+        <google.guava>27.0.1-jre</google.guava>
     </properties>
 
     <dependencies>
@@ -90,6 +91,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!-- GUAVA -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google.guava}</version>
         </dependency>
 
     </dependencies>
