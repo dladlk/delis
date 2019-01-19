@@ -38,6 +38,7 @@ unzip ${DELIS_PART_PATH}/target/${DELIS_PART}-${DELIS_PART_VERSION}.jar -d ./doc
 docker build \
 	--build-arg VERSION=${DELIS_PART_VERSION} \
 	-t ${DELIS_PART}:${DELIS_PART_VERSION} \
+	-t ${DELIS_PART}:latest \
 	./docker
 
 rm -r -f ./docker/app
