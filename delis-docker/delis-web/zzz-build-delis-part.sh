@@ -1,4 +1,6 @@
 #!/bin/bash -e
+CURDIR="$(dirname $(readlink -f $0))"
+
 DELIS_PART=$1
 
 if [ -z "${DELIS_PART}" ]
@@ -6,6 +8,8 @@ then
 	echo Set DELIS_PART to either "delis-web" or "delis-web-api"
 	exit
 fi
+
+pushd ${CURDIR}
 
 echo Building ${DELIS_PART}
 
@@ -48,3 +52,5 @@ docker build \
 	./docker
 
 rm -r -f ./docker/app
+
+popd

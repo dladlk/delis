@@ -1,3 +1,3 @@
 #!/bin/bash -e
-
-./zzz-build-delis-part.sh delis-web-api
+CURDIR="$(dirname $(readlink -f $0))"
+${CURDIR}/zzz-build-delis-part.sh delis-web-api
