@@ -2,6 +2,7 @@ package dk.erst.delis.data.entities.journal;
 
 import javax.persistence.*;
 
+import dk.erst.delis.data.annotations.WebApiContent;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.document.Document;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@WebApiContent
 public class JournalDocument extends AbstractEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)

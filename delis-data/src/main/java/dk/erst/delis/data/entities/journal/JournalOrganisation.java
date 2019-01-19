@@ -7,6 +7,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import dk.erst.delis.data.annotations.WebApiContent;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.organisation.Organisation;
 
@@ -18,6 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Getter
 @Setter
 @Entity
+@WebApiContent
 @EntityListeners(AuditingEntityListener.class)
 public class JournalOrganisation extends AbstractEntity {
 
