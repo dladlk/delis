@@ -7,7 +7,7 @@ docker run --rm \
 	-v $CURDIR/../../delis-resources:/delis-resources \
 	-v /delis:/delis \
 	--network=host \
-	delis-web-api:0.0.1
+	delis-web-api:latest
 
 #	-it --entrypoint=/bin/sh \
 #    -p 8011:8011 \

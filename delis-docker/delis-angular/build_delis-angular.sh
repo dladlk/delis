@@ -2,7 +2,7 @@
 
 PROJECT_PATH=../../delis-angular
 
-SKIP_REBUILD=yes
+#SKIP_REBUILD=yes
 
 if [ -z "${SKIP_REBUILD}" ]
 then
@@ -11,7 +11,7 @@ echo "Building ${PROJECT_PATH}"
 
 pushd ${PROJECT_PATH}
 
-ng build --prod --configuration=dev --base-href=/delis-gui-context-name/
+ng build --prod --configuration=production --base-href=/delis-gui-context-name/
 
 popd
 

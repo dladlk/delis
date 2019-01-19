@@ -1,6 +1,7 @@
 
 echo "Starting application..."
 echo "API_URL = ${API_URL}"
+echo "BASE_URL = ${BASE_URL}"
 echo "CONTEXT_NAME = ${CONTEXT_NAME}"
 echo "SERVER_PORT = ${SERVER_PORT}"
 MARKER_CONTEXT_NAME=delis-gui-context-name
