@@ -23,7 +23,7 @@ spec:
             backend:
               serviceName: delis-web-api
               servicePort: 8080
-          - path: /delis-web
+          - path: /delis-web-admin
             backend:
-              serviceName: delis-web
+              serviceName: delis-web-admin
               servicePort: 8080

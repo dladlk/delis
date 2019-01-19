@@ -2,22 +2,22 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: '{{.Release.Name}}-delis-web'
+    app: '{{.Release.Name}}-delis-web-admin'
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: delis-web
+  name: delis-web-admin
   namespace: '{{.Values.namespace}}'
 spec:
   selector:
     matchLabels:
-      app: '{{.Release.Name}}-delis-web'
+      app: '{{.Release.Name}}-delis-web-admin'
   strategy:
     type: 'RollingUpdate'
   template:
     metadata:
       labels:
-        app: '{{.Release.Name}}-delis-web'
+        app: '{{.Release.Name}}-delis-web-admin'
     spec:
       volumes:
       - name: delis-resources
@@ -27,12 +27,12 @@ spec:
         hostPath:
           path: /data/delis-root
       containers:
-      - image: delis-web:latest
+      - image: delis-web-admin:latest
         imagePullPolicy: IfNotPresent
-        name: delis-web
+        name: delis-web-admin
         env:
           - name: SERVER_SERVLET_CONTEXT-PATH
-            value: /delis-web
+            value: /delis-web-admin
           - name: SPRING_DATASOURCE_URL
             value: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
         volumeMounts:

@@ -35,10 +35,16 @@ fi
 rm -r -f ./docker/app
 unzip ${DELIS_PART_PATH}/target/${DELIS_PART}-${DELIS_PART_VERSION}.jar -d ./docker/app
 
+DOCKER_IMAGE_NAME=${DELIS_PART}
+
+if [ "${DOCKER_IMAGE_NAME}"="delis-web" ]; then
+DOCKER_IMAGE_NAME=delis-web-admin
+fi
+
 docker build \
 	--build-arg VERSION=${DELIS_PART_VERSION} \
-	-t ${DELIS_PART}:${DELIS_PART_VERSION} \
-	-t ${DELIS_PART}:latest \
+	-t ${DOCKER_IMAGE_NAME}:${DELIS_PART_VERSION} \
+	-t ${DOCKER_IMAGE_NAME}:latest \
 	./docker
 
 rm -r -f ./docker/app
