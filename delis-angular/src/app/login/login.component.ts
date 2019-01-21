@@ -5,7 +5,8 @@ import { routerTransition } from '../router.animations';
 import { AuthorizationService } from './authorization.service';
 import { LocaleService } from "../service/locale.service";
 import { environment } from "../../environments/environment";
-import {ContentSelectInfoService} from "../service/content.select.info.service";
+import { ContentSelectInfoService } from "../service/content.select.info.service";
+import { TokenService } from "../service/token.service";
 
 @Component({
     selector: 'app-login',
@@ -20,7 +21,10 @@ export class LoginComponent implements OnInit {
     login: string;
     password: string;
 
+    error: boolean;
+
     constructor(
+        private tokenService: TokenService,
         private auth: AuthorizationService,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -34,9 +38,19 @@ export class LoginComponent implements OnInit {
 
     onLoggedin() {
         if (this.env.production) {
-            this.auth.login(this.login, this.password);
-            this.contentSelectInfoService.generateAllContentSelectInfo();
-            localStorage.setItem('isLoggedin', 'true');
+            this.auth.login(this.login, this.password).subscribe(
+                (data: {}) => {
+                    this.tokenService.setToken(data["data"]);
+                    this.contentSelectInfoService.generateAllContentSelectInfo();
+                    localStorage.setItem('isLoggedin', 'true');
+                    this.router.navigate(['/dashboard']);
+                }, error => {
+                    console.log('status = ' + error["status"]);
+                    localStorage.setItem('isLoggedin', 'false');
+                    this.error = true;
+                    this.router.navigate(['/login']);
+                }
+            );
         } else {
             localStorage.setItem('isLoggedin', 'true');
         }

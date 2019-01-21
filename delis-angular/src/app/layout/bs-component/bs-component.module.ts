@@ -10,6 +10,7 @@ import { BsComponentComponent } from './bs-component.component';
 import { PaginationComponent, TableHeaderSortComponent } from './components';
 import { PageHeaderModule } from '../../shared';
 import { PaginationService } from "./components/pagination/pagination.service";
+import { ErrorComponent } from "./components/error/error.component";
 
 @NgModule({
     imports: [
@@ -23,11 +24,13 @@ import { PaginationService } from "./components/pagination/pagination.service";
     declarations: [
         BsComponentComponent,
         TableHeaderSortComponent,
-        PaginationComponent
+        PaginationComponent,
+        ErrorComponent
     ],
     exports: [
         TableHeaderSortComponent,
-        PaginationComponent
+        PaginationComponent,
+        ErrorComponent
     ],
     providers: [
         PaginationService
