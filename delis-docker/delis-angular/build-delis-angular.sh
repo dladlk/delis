@@ -1,6 +1,8 @@
 #!/bin/bash -e
+CURDIR="$(dirname $(readlink -f $0))"
 
-PROJECT_PATH=../../delis-angular
+pushd ${CURDIR}
+PROJECT_PATH=${CURDIR}/../../delis-angular
 
 #SKIP_REBUILD=yes
 
@@ -28,3 +30,4 @@ docker image \
 
 rm -R -f ./docker/dist
 
+popd
