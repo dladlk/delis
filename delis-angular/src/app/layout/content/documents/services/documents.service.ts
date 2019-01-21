@@ -1,27 +1,22 @@
 import { Injectable } from '@angular/core';
 import { FilterProcessResult } from '../models/documents.model';
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpParams } from "@angular/common/http";
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { environment } from "../../../../../environments/environment";
-import { TokenService } from "../../../../service/token.service";
+import { RuntimeConfigService } from "../../../../service/runtime.config.service";
+import { HttpRestService } from "../../../../service/http.rest.service";
+import {TokenService} from "../../../../service/token.service";
 
 @Injectable()
 export class DocumentsService {
 
-    private headers: HttpHeaders;
-    private env = environment;
-    private url = this.env.api_url + '/document';
-    private config: string;
+    private url : string;
 
-    constructor(private http: HttpClient, private tokenService: TokenService) {
-        this.headers = new HttpHeaders({
-            'Authorization' : tokenService.getToken()
-        });
-        this.config = localStorage.getItem('url');
-        if (this.config !== '${API_URL}') {
-            this.url = this.config + '/document';
-        }
+    constructor(
+        private tokenService: TokenService,
+        private configService: RuntimeConfigService,
+        private httpRestService: HttpRestService) {
+        this.url = this.configService.getConfigUrl();
+        this.url = this.url + '/document';
     }
 
     getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
@@ -63,14 +58,10 @@ export class DocumentsService {
             params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
         }
 
-        return this.http.get(this.url + '', {headers : this.headers, params: params}).pipe(map(DocumentsService.extractData));
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 
     getOneDocumentById(id: any) : Observable<any> {
-        return this.http.get(this.url + '/' + id, {headers : this.headers}).pipe(map(DocumentsService.extractData));
-    }
-
-    private static extractData(res: Response) {
-        return res || { };
+        return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 }

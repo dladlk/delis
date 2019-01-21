@@ -1,19 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpRestService } from "./http.rest.service";
 
 @Injectable()
 export class TokenService {
 
   private TOKEN_KEY = 'token';
-  private headers: HttpHeaders;
 
   constructor(
-      private client: HttpClient) {
-    this.headers = new HttpHeaders({
-      'Content-Type' : `application/json`
-    });
+      private http: HttpRestService) {
   }
 
   static token() {
@@ -22,7 +16,6 @@ export class TokenService {
 
   setToken(token: string) {
     localStorage.setItem(this.TOKEN_KEY, token);
-    localStorage.setItem('isLoggedin', 'false');
   }
 
   getToken(): string {
@@ -33,20 +26,15 @@ export class TokenService {
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
-  authenticated(login: string, password: string, url: string) : Observable<any> {
-    return this.client
-        .post(url, {
-          'login' : login,
-          'password' : password,
-        }, {
-          headers : this.headers
-        })
-        .pipe(
-            map(TokenService.extractData)
-        );
-  }
-
-  private static extractData(res: Response) {
-    return res || { };
+  authenticated(login: string, password: string, url: string) {
+    let body  =  {
+      'login' : login,
+      'password' : password,
+    };
+    this.http.methodPost(url, body).subscribe(
+        (data: {}) => {
+          this.setToken(data["data"]);
+        }
+    );
   }
 }

@@ -1,27 +1,31 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { HttpRestService } from "./http.rest.service";
+import { environment } from "../../environments/environment";
 
 @Injectable()
 export class RuntimeConfigService {
 
-    constructor( private http: HttpClient ) {
+    private env = environment;
+    private url = this.env.api_url;
+    private config: string;
+
+    constructor( private http: HttpRestService ) {
     }
 
     getUrl() {
-        this.getBaseUrl().subscribe(
+        this.http.methodInnerGet('assets/config/runtime.json').subscribe(
             (data: {}) => {
                 localStorage.setItem('url', data["PARAM_API_URL"]);
             }
         );
     }
 
-    getBaseUrl() : Observable<any> {
-        return this.http.get('assets/config/runtime.json').pipe(map(RuntimeConfigService.extractData));
-    }
-
-    private static extractData(res: Response) {
-        return res || { };
+    getConfigUrl() : string {
+        this.config = localStorage.getItem('url');
+        if (this.config !== '${API_URL}') {
+            return this.config;
+        } else {
+            return this.url;
+        }
     }
 }

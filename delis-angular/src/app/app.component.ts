@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RuntimeConfigService } from "./service/runtime.config.service";
 
 @Component({
     selector: 'app-root',
@@ -6,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-    constructor() {
+
+    constructor(private configService: RuntimeConfigService) {
     }
 
     ngOnInit() {
+        this.configService.getUrl();
     }
 }

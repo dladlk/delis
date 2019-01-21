@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
     onLoggedin() {
         if (this.env.production) {
             this.auth.login(this.login, this.password);
+            localStorage.setItem('isLoggedin', 'true');
         } else {
             localStorage.setItem('isLoggedin', 'true');
         }
