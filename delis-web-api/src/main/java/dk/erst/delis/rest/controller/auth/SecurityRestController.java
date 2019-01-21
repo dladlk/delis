@@ -2,6 +2,7 @@ package dk.erst.delis.rest.controller.auth;
 
 import dk.erst.delis.rest.data.request.login.LoginData;
 import dk.erst.delis.rest.data.response.DataContainer;
+import dk.erst.delis.rest.data.response.auth.AuthData;
 import dk.erst.delis.service.auth.AuthService;
 import dk.erst.delis.service.auth.AuthUserProviderService;
 
@@ -32,7 +33,7 @@ public class SecurityRestController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<DataContainer<String>> login(@RequestBody @Valid LoginData loginData) {
+    public ResponseEntity<DataContainer<AuthData>> login(@RequestBody @Valid LoginData loginData) {
         return ResponseEntity.ok(new DataContainer<>(authService.login(loginData)));
     }
 

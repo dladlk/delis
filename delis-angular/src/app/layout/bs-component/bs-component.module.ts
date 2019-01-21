@@ -7,7 +7,7 @@ import { NgSelectModule } from "@ng-select/ng-select";
 
 import { BsComponentRoutingModule } from './bs-component-routing.module';
 import { BsComponentComponent } from './bs-component.component';
-import { PaginationComponent, TableHeaderSortComponent } from './components';
+import { PaginationComponent, TableHeaderSortComponent, ErrorComponent } from './components';
 import { PageHeaderModule } from '../../shared';
 import { PaginationService } from "./components/pagination/pagination.service";
 
@@ -23,11 +23,13 @@ import { PaginationService } from "./components/pagination/pagination.service";
     declarations: [
         BsComponentComponent,
         TableHeaderSortComponent,
-        PaginationComponent
+        PaginationComponent,
+        ErrorComponent
     ],
     exports: [
         TableHeaderSortComponent,
-        PaginationComponent
+        PaginationComponent,
+        ErrorComponent
     ],
     providers: [
         PaginationService

@@ -7,8 +7,10 @@ export class RuntimeConfigService {
 
     private env = environment;
     private url = this.env.api_url;
+    private username: string;
     private config: string;
     private LOCALE_URL = "url";
+    private LOCALE_USERNAME = "current_user";
 
     constructor( private http: HttpRestService ) {
     }
@@ -17,6 +19,7 @@ export class RuntimeConfigService {
         this.http.methodInnerGet('assets/config/runtime.json').subscribe(
             (data: {}) => {
                 localStorage.setItem(this.LOCALE_URL, data["PARAM_API_URL"]);
+                localStorage.setItem(this.LOCALE_USERNAME, data["PARAM_USERNAME"]);
             }
         );
     }
@@ -30,7 +33,20 @@ export class RuntimeConfigService {
         }
     }
 
+    getCurrentUser() : string {
+        this.username = localStorage.getItem(this.LOCALE_USERNAME);
+        if (this.username !== '${USERNAME}') {
+            return this.username;
+        } else {
+            return localStorage.getItem("username");
+        }
+    }
+
     resetConfigUrl() {
         localStorage.removeItem(this.LOCALE_URL);
+    }
+
+    resetCurrentUser() {
+        localStorage.removeItem(this.LOCALE_USERNAME);
     }
 }

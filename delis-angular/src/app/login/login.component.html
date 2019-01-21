@@ -5,6 +5,9 @@
                  width="150px" class="user-avatar"
                  style="border-radius: 50px 50px 10px 10px; background-color: aliceblue; border-style: solid"/>
             <h1>Delis Authentication</h1>
+            <div *ngIf="error">
+                <app-error [message]="'invalid username or password'"></app-error>
+            </div>
             <form role="form" method="post" (ngSubmit)="onLoggedin()">
                 <div class="form-content">
                   <div class="form-group">
@@ -22,7 +25,7 @@
                            placeholder="{{ 'auth.password' | translate }}">
                   </div>
                 </div>
-                <button class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin()">{{ 'auth.login' | translate }}</button>
+                <button class="btn rounded-btn" (click)="onLoggedin()">{{ 'auth.login' | translate }}</button>
             </form>
         </div>
     </div>
