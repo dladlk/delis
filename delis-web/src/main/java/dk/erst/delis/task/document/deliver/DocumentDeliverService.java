@@ -50,17 +50,26 @@ public class DocumentDeliverService {
 		try {
 			List<Organisation> organisations = documentDaoRepository.loadDocumentStatusStat(DocumentStatus.VALIDATE_OK);
 			for (Organisation org : organisations) {
+
 				OrganisationSetupData setupData = organisationSetupService.load(org);
-				boolean presentValidated;
-				do {
-					List<Document> list = documentDaoRepository.findTop5ByDocumentStatusAndOrganisationOrderByIdAsc(DocumentStatus.VALIDATE_OK, org);
-					presentValidated = !list.isEmpty();
+				if (setupData.getReceivingMethod() == null) {
+					log.info("No recieving method defined for organization " + org.getName() + ". Documents delivery skipped");
+					statData.increment("Organizations with no recieving method");
+				} else {
+					boolean presentValidated;
+					Long lastFailedInCurrentProcessing = 0l;
+					do {
+						List<Document> list = documentDaoRepository.findForExport(DocumentStatus.VALIDATE_OK, org, lastFailedInCurrentProcessing);
+						presentValidated = !list.isEmpty();
 
-					for (Document document : list) {
-						exportDocument(statData, document, setupData);
-					}
+						for (Document document : list) {
+							if (!exportDocument(statData, document, setupData)) {
+								lastFailedInCurrentProcessing = document.getId();
+							}
+						}
 
-				} while (presentValidated);
+					} while (presentValidated);
+				}
 			}
 		} finally {
 			log.info("Done exporting of validated documents in " + (System.currentTimeMillis() - statData.getStartMs()) + " ms");
@@ -69,23 +78,25 @@ public class DocumentDeliverService {
 		return statData;
 	}
 
-	public void exportDocument(StatData statData, Document document, OrganisationSetupData setupData) {
+	public boolean exportDocument(StatData statData, Document document, OrganisationSetupData setupData) {
 		document.setDocumentStatus(DocumentStatus.EXPORT_START);
 		documentDaoRepository.updateDocumentStatus(document);
 
 		DocumentProcessLog log = moveDocument(document, setupData);
 
-		document.setDocumentStatus(DocumentStatus.EXPORT_OK);
+		document.setDocumentStatus(log.isSuccess() ? DocumentStatus.EXPORT_OK : DocumentStatus.VALIDATE_OK);
 		documentDaoRepository.updateDocumentStatus(document);
 
 
 		if (log != null) {
-			statData.increment(log.isSuccess() ? "OK" : "ERROR");
+			statData.increment(log.isSuccess() ? "OK" : "ERROR ");
 			List<DocumentProcessStep> stepList = log.getStepList();
 			journalDocumentService.saveDocumentStep(document, stepList);
 		} else {
 			statData.increment("UNDEFINED");
 		}
+
+		return log.isSuccess();
 	}
 
 	private DocumentProcessLog moveDocument(Document document, OrganisationSetupData setupData) {

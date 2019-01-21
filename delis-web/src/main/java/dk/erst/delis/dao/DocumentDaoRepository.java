@@ -26,6 +26,13 @@ public interface DocumentDaoRepository extends PagingAndSortingRepository<Docume
 	)
 	List<Organisation> loadDocumentStatusStat(DocumentStatus documentStatus);
 
-	List<Document> findTop5ByDocumentStatusAndOrganisationOrderByIdAsc(DocumentStatus documentStatus, Organisation organisation);
+	@Query("select s "
+			+ "from Document s "
+			+ "where s.documentStatus = ?1 "
+			+ "and s.organisation = ?2 "
+			+ "and s.id > ?3 "
+			+ "order by s.id"
+	)
+	List<Document> findForExport(DocumentStatus documentStatus, Organisation organisation, Long lastFailedInCurrentProcessing);
 
 }

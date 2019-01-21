@@ -8,7 +8,7 @@ public enum DocumentStatus {
 	
 	VALIDATE_START, VALIDATE_OK, VALIDATE_ERROR, // Validation phase
 	
-	EXPORT_START, EXPORT_OK, 
+	EXPORT_START, EXPORT_OK,
 	
 	DELIVER_OK
 	
