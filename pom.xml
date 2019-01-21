@@ -15,6 +15,7 @@
         <module>delis-data</module>
         <module>delis-web</module>
         <module>delis-web-api</module>
+        <module>delis-sbdh</module>
     </modules>
     
     <properties>
