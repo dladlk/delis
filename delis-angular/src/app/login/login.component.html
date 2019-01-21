@@ -1,20 +1,28 @@
 <div class="login-page" [@routerTransition]>
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <img src="assets/images/logo.png" width="150px" class="user-avatar" />
+            <img src="assets/images/delis.png"
+                 width="150px" class="user-avatar"
+                 style="border-radius: 50px 50px 10px 10px; background-color: aliceblue; border-style: solid"/>
             <h1>Delis Authentication</h1>
-            <form role="form">
+            <form role="form" method="post" (ngSubmit)="onLoggedin()">
                 <div class="form-content">
                   <div class="form-group">
-                    <input type="text" name="login" [(ngModel)]="login" class="form-control input-underline input-lg" id="login" placeholder="{{ 'auth.username' | translate }}">
+                    <input type="text"
+                           name="login" [(ngModel)]="login"
+                           class="form-control input-underline input-lg"
+                           id="login"
+                           placeholder="{{ 'auth.username' | translate }}">
                   </div>
                   <div class="form-group">
-                    <input type="password" name="password" [(ngModel)]="password" class="form-control input-underline input-lg" id="password" placeholder="{{ 'auth.password' | translate }}">
+                    <input type="password"
+                           name="password" [(ngModel)]="password"
+                           class="form-control input-underline input-lg"
+                           id="password"
+                           placeholder="{{ 'auth.password' | translate }}">
                   </div>
                 </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin()">{{ 'auth.login' | translate }}</a>
-                &nbsp;
-                <!--<a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'auth.register' | translate }}</a>-->
+                <button class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin()">{{ 'auth.login' | translate }}</button>
             </form>
         </div>
     </div>
