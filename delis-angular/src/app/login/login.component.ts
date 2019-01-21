@@ -7,6 +7,7 @@ import { LocaleService } from "../service/locale.service";
 import { environment } from "../../environments/environment";
 import { ContentSelectInfoService } from "../service/content.select.info.service";
 import { TokenService } from "../service/token.service";
+import {LoginData} from "./login.data";
 
 @Component({
     selector: 'app-login',
@@ -40,7 +41,9 @@ export class LoginComponent implements OnInit {
         if (this.env.production) {
             this.auth.login(this.login, this.password).subscribe(
                 (data: {}) => {
-                    this.tokenService.setToken(data["data"]);
+                    let loginData: LoginData = data["data"];
+                    this.tokenService.setToken(loginData.token);
+                    localStorage.setItem('username', loginData.username);
                     this.contentSelectInfoService.generateAllContentSelectInfo();
                     localStorage.setItem('isLoggedin', 'true');
                     this.router.navigate(['/dashboard']);

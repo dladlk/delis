@@ -38,7 +38,7 @@ export class RuntimeConfigService {
         if (this.username !== '${USERNAME}') {
             return this.username;
         } else {
-            return 'User';
+            return localStorage.getItem("username");
         }
     }
 

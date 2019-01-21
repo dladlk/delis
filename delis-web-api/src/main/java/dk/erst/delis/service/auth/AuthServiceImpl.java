@@ -5,6 +5,7 @@ import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestUnauthorizedException;
 import dk.erst.delis.persistence.user.UserRepository;
 import dk.erst.delis.rest.data.request.login.LoginData;
+import dk.erst.delis.rest.data.response.auth.AuthData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginData data) {
+    public AuthData login(LoginData data) {
         User user = userRepository.findByUsernameIgnoreCase(data.getLogin());
         if (Objects.isNull(user)) {
             log.warn("UNAUTHORIZED user by login: " + data.getLogin());
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
             authTokenData.setToken(token);
             authTokenData.setExpired(new Date());
             AuthTokenMap.putAuthTokenData(user.getId(), authTokenData);
-            return token;
+            return new AuthData(token, user.getUsername());
         } else {
             log.warn("UNAUTHORIZED user by login: " + data.getLogin() + " and password: " + data.getPassword());
             throw new RestUnauthorizedException(Collections.singletonList(
