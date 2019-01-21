@@ -1,21 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
+import { Component, OnInit } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
 
-import {routerTransition} from '../../../../router.animations';
-import {DocumentsService} from '../services/documents.service';
-import {DocumentsTestGuiStaticService} from "../services/documents.test-gui-static.service";
-import {FilterProcessResult} from '../models/documents.model';
-import {DateRangeModel} from '../../../../models/date.range.model';
-import {LocaleService} from "../../../../service/locale.service";
-import {environment} from "../../../../../environments/environment";
-import {documentTypes} from '../models/documents.view.model';
-import {ingoingFormats} from '../models/documents.view.model';
-import {lastErrors} from '../models/documents.view.model';
-import {statuses} from '../models/documents.view.model';
-import {TableHeaderSortModel} from "../../../bs-component/components/table-header-sort/table.header.sort.model";
-import {PaginationService} from "../../../bs-component/components/pagination/pagination.service";
-import {PaginationModel} from "../../../bs-component/components/pagination/pagination.model";
-import {DocumentModel} from "../models/document.model";
+import { routerTransition } from '../../../../router.animations';
+import { DocumentsService } from '../services/documents.service';
+import { DocumentsTestGuiStaticService } from "../services/documents.test-gui-static.service";
+import { FilterProcessResult } from '../models/documents.model';
+import { DateRangeModel } from '../../../../models/date.range.model';
+import { LocaleService } from "../../../../service/locale.service";
+import { environment } from "../../../../../environments/environment";
+import { TableHeaderSortModel } from "../../../bs-component/components/table-header-sort/table.header.sort.model";
+import { PaginationService } from "../../../bs-component/components/pagination/pagination.service";
+import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
+import { DocumentModel } from "../models/document.model";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
@@ -47,10 +43,10 @@ export class DocumentsComponent implements OnInit {
 
     documents: DocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
-    statuses = statuses;
-    documentTypes = documentTypes;
-    ingoingFormats = ingoingFormats;
-    lastErrors = lastErrors;
+    statuses: [];
+    documentTypes: [];
+    ingoingFormats: [];
+    lastErrors: [];
     filter: FilterProcessResult;
 
     pagination: PaginationModel;
@@ -76,6 +72,15 @@ export class DocumentsComponent implements OnInit {
 
     ngOnInit() {
         this.initProcess();
+        this.initSelected();
+    }
+
+    initSelected() {
+        let select = JSON.parse(localStorage.getItem("Document"));
+        this.statuses = select.documentStatus;
+        this.documentTypes = select.documentType;
+        this.ingoingFormats = select.ingoingDocumentFormat;
+        this.lastErrors = select.lastError;
     }
 
     private initProcess() {

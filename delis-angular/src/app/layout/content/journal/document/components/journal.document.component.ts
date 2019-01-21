@@ -10,7 +10,7 @@ import { JournalDocumentTestGuiStaticService } from "../services/journal.documen
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { JournalDocumentModel } from "../models/journal.document.model";
 import { JournalDocumentFilterProcessResult } from "../models/journal.document.filter.process.result";
-import { successList, types } from "../models/journal.document.view.model";
+import { successList } from "../models/journal.document.view.model";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.Organisation';
@@ -35,7 +35,7 @@ export class JournalDocumentComponent implements OnInit {
     filter: JournalDocumentFilterProcessResult;
     journalDocuments: JournalDocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
-    typeList = types;
+    typeList: [];
     successList = successList;
 
     textOrganisation: string;
@@ -66,6 +66,7 @@ export class JournalDocumentComponent implements OnInit {
 
     ngOnInit(): void {
         this.initProcess();
+        this.initSelected();
     }
 
     private initProcess() {
@@ -77,6 +78,11 @@ export class JournalDocumentComponent implements OnInit {
             this.currentDevJournalDocuments(1, 10);
         }
         this.clearAllFilter();
+    }
+
+    initSelected() {
+        let select = JSON.parse(localStorage.getItem("JournalDocument"));
+        this.typeList = select.type;
     }
 
     private initDefaultValues() {

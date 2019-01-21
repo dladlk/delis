@@ -20,6 +20,10 @@ export class HttpRestService {
             .pipe(map(HttpRestService.extractData));
     }
 
+    methodOpenGet(url : string) : Observable<any> {
+        return this.http.get(url).pipe(map(HttpRestService.extractData));
+    }
+
     methodGetOne(url : string, id: any, token: any) : Observable<any> {
         this.headers = new HttpHeaders({
             'Authorization' : token
