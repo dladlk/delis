@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
 import { LocaleService } from "../../../service/locale.service";
+import {RuntimeConfigService} from "../../../service/runtime.config.service";
 
 @Component({
   selector: 'app-header',
@@ -13,10 +14,13 @@ export class HeaderComponent implements OnInit {
 
   public pushRightClass: string;
   public lang: string;
+  public username: string;
 
   constructor(
     private auth: AuthorizationService,
-    private translate: TranslateService, private locale: LocaleService,
+    private translate: TranslateService,
+    private locale: LocaleService,
+    private configService: RuntimeConfigService,
     public router: Router) {
 
     this.lang = locale.getlocale();
@@ -35,6 +39,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.pushRightClass = 'push-right';
+    this.username = this.configService.getCurrentUser();
   }
 
   isToggled(): boolean {

@@ -32,6 +32,7 @@ export class AuthorizationService {
         location.reload();
         this.tokenService.resetToken();
         this.configService.resetConfigUrl();
+        this.configService.resetCurrentUser();
         this.localeService.resetLocale();
     }
 }
