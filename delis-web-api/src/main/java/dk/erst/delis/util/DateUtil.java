@@ -1,5 +1,7 @@
 package dk.erst.delis.util;
 
+import dk.erst.delis.rest.data.request.param.DateRangeModel;
+
 import lombok.experimental.UtilityClass;
 
 import java.util.Calendar;
@@ -19,5 +21,14 @@ public class DateUtil {
         today.setTime(new Date());
         long difference = today.getTimeInMillis() - between.getTimeInMillis();
         return (int) difference / 1000 / 60;
+    }
+
+    public DateRangeModel generateDateRangeByLastHour() {
+        Date end = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(end);
+        cal.add(Calendar.HOUR, -1);
+        Date start = cal.getTime();
+        return new DateRangeModel(start, end);
     }
 }
