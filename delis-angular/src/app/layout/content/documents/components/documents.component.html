@@ -37,7 +37,6 @@
                             </th>
                             <th>
                                 <ng-select [items]="statuses"
-                                           bindLabel="status"
                                            placeholder="statuses: "
                                            [(ngModel)]="selectedStatus"
                                            (change)="loadStatus()">
@@ -45,7 +44,6 @@
                             </th>
                             <th>
                                 <ng-select [items]="lastErrors"
-                                           bindLabel="lastError"
                                            placeholder="lastErrors: "
                                            [(ngModel)]="selectedLastError"
                                            (change)="loadLastErrors()">
@@ -53,7 +51,6 @@
                             </th>
                             <th>
                                 <ng-select [items]="documentTypes"
-                                           bindLabel="documentType"
                                            placeholder="documentTypes: "
                                            [(ngModel)]="selectedDocumentType"
                                            (change)="loadDocumentType()">
@@ -61,7 +58,6 @@
                             </th>
                             <th>
                                 <ng-select [items]="ingoingFormats"
-                                           bindLabel="ingoingFormat"
                                            placeholder="ingoingFormats: "
                                            [(ngModel)]="selectedIngoingFormat"
                                            (change)="loadIngoingFormat()">
