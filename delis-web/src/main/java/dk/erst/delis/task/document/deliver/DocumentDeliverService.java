@@ -2,15 +2,11 @@ package dk.erst.delis.task.document.deliver;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.JournalDocumentService;
-import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
@@ -21,9 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -57,17 +51,15 @@ public class DocumentDeliverService {
 					statData.increment("Organizations with no recieving method");
 				} else {
 					boolean presentValidated;
-					Long lastFailedInCurrentProcessing = 0l;
+					Long previousDocumentId = 0l;
 					do {
-						List<Document> list = documentDaoRepository.findForExport(DocumentStatus.VALIDATE_OK, org, lastFailedInCurrentProcessing);
+						List<Document> list = documentDaoRepository.findForExport(DocumentStatus.VALIDATE_OK, org, previousDocumentId);
 						presentValidated = !list.isEmpty();
 
 						for (Document document : list) {
-							if (!exportDocument(statData, document, setupData)) {
-								lastFailedInCurrentProcessing = document.getId();
-							}
+							previousDocumentId = document.getId();
+							exportDocument(statData, document, setupData);
 						}
-
 					} while (presentValidated);
 				}
 			}
@@ -92,8 +84,6 @@ public class DocumentDeliverService {
 			statData.increment(log.isSuccess() ? "OK" : "ERROR");
 			List<DocumentProcessStep> stepList = log.getStepList();
 			journalDocumentService.saveDocumentStep(document, stepList);
-		} else {
-			statData.increment("UNDEFINED");
 		}
 
 		return log.isSuccess();

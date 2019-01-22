@@ -14,7 +14,7 @@ import dk.erst.delis.common.util.StatData;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@AutoConfigureTestDatabase(replace = Replace.ANY)
 public class DocumentProcessServiceTest {
 
 	@Autowired
