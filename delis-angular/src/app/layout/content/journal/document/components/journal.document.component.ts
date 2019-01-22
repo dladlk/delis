@@ -91,7 +91,7 @@ export class JournalDocumentComponent implements OnInit {
     }
 
     private initDefaultValues() {
-        this.selectedType = {type: 'ALL', selected: true};
+        this.selectedType = "ALL";
         this.selectedSuccess = {type: 'ALL', selected: true};
         this.filter = new JournalDocumentFilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
@@ -149,10 +149,10 @@ export class JournalDocumentComponent implements OnInit {
 
     loadType() {
         if (this.selectedType === null) {
-            this.selectedType = {type: 'ALL', selected: true};
+            this.selectedType = 'ALL';
         }
         this.pagination.currentPage = 1;
-        this.filter.type = this.selectedType.type;
+        this.filter.type = this.selectedType;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -236,6 +236,7 @@ export class JournalDocumentComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
+        this.selectedType = "ALL";
         this.clearCounts();
     }
 

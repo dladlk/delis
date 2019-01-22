@@ -103,11 +103,10 @@ export class DocumentsComponent implements OnInit {
     }
 
     private initDefaultValues() {
-
-        this.selectedStatus = {status: 'ALL', selected: true};
-        this.selectedLastError = {lastError: 'ALL', selected: true};
-        this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
-        this.selectedDocumentType = {documentType: 'ALL', selected: true};
+        this.selectedStatus = "ALL";
+        this.selectedDocumentType = "ALL";
+        this.selectedIngoingFormat = "ALL";
+        this.selectedLastError = "ALL";
         this.filter = new FilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
@@ -191,37 +190,37 @@ export class DocumentsComponent implements OnInit {
 
     loadStatus() {
         if (this.selectedStatus === null) {
-            this.selectedStatus = {status: 'ALL', selected: true};
+            this.selectedStatus = 'ALL';
         }
+        this.filter.status = this.selectedStatus;
         this.pagination.currentPage = 1;
-        this.filter.status = this.selectedStatus.status;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadLastErrors() {
         if (this.selectedLastError === null) {
-            this.selectedLastError = {lastError: 'ALL', selected: true};
+            this.selectedLastError = 'ALL';
         }
+        this.filter.lastError = this.selectedLastError;
         this.pagination.currentPage = 1;
-        this.filter.lastError = this.selectedLastError.lastError;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadDocumentType() {
         if (this.selectedDocumentType === null) {
-            this.selectedDocumentType = {documentType: 'ALL', selected: true};
+            this.selectedDocumentType = 'ALL';
         }
+        this.filter.documentType = this.selectedDocumentType;
         this.pagination.currentPage = 1;
-        this.filter.documentType = this.selectedDocumentType.documentType;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIngoingFormat() {
         if (this.selectedIngoingFormat === null) {
-            this.selectedIngoingFormat = {ingoingFormat: 'ALL', selected: true};
+            this.selectedIngoingFormat = 'ALL';
         }
+        this.filter.ingoingFormat = this.selectedIngoingFormat;
         this.pagination.currentPage = 1;
-        this.filter.ingoingFormat = this.selectedIngoingFormat.ingoingFormat;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -282,5 +281,9 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
         this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
         this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
+        this.selectedStatus = "ALL";
+        this.selectedDocumentType = "ALL";
+        this.selectedIngoingFormat = "ALL";
+        this.selectedLastError = "ALL";
     }
 }

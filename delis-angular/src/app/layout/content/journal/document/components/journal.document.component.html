@@ -37,7 +37,6 @@
                             </th>
                             <th>
                                 <ng-select [items]="typeList"
-                                           bindLabel="type"
                                            placeholder="types: "
                                            [(ngModel)]="selectedType"
                                            (change)="loadType()">
