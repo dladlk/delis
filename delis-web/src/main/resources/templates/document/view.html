@@ -89,6 +89,20 @@
 			</table>
 		</div>
 		<div class="card-footer">
+			<form method="post" action="#" th:action="@{/document/updatestatus}" th:object="${document}">
+
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Status</label>
+					<div class="col-sm-8">
+						<select th:field="*{documentStatus}">
+							<option th:each="documentStatus : ${documentStatusList}" th:text="${documentStatus}" th:value="${documentStatus}"></option>
+						</select>
+					</div>
+				</div>
+
+				<input type="hidden" th:field="*{id}" class="form-control" th:value="${document.id}"/>
+				<button type="submit" class="btn btn-primary">Update Status</button>
+			</form>
 			<a href="#" th:href="@{/document/list}" class="btn btn-primary">Back to document list</a>
 		</div>
 		
