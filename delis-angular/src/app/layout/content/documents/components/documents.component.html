@@ -1,101 +1,103 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'documents.header'" [icon]="'fa-book'"></app-page-header>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <div class="card" style="min-height: 768px">
-                <div class="card-header"><span>{{ 'documents.table.header' | translate | uppercase }}</span></div>
-                <br>
-                <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
-                <div class="card-body table-responsive">
-                    <table class="table table-hover table-sm">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th *ngFor="let hed of tableHeaderSortModels">
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
-                                        <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
-                                    </button>
-                                </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textOrganisation"
-                                       placeholder="Organisation"
-                                       (change)="loadTextOrganisation($event.target.value)"/>
-                            </th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textReceiver"
-                                       placeholder="Receiver"
-                                       (change)="loadTextReceiver($event.target.value)"/>
-                            </th>
-                            <th>
-                                <ng-select [items]="statuses"
-                                           placeholder="statuses: "
-                                           [(ngModel)]="selectedStatus"
-                                           (change)="loadStatus()">
-                                </ng-select>
-                            </th>
-                            <th>
-                                <ng-select [items]="lastErrors"
-                                           placeholder="lastErrors: "
-                                           [(ngModel)]="selectedLastError"
-                                           (change)="loadLastErrors()">
-                                </ng-select>
-                            </th>
-                            <th>
-                                <ng-select [items]="documentTypes"
-                                           placeholder="documentTypes: "
-                                           [(ngModel)]="selectedDocumentType"
-                                           (change)="loadDocumentType()">
-                                </ng-select>
-                            </th>
-                            <th>
-                                <ng-select [items]="ingoingFormats"
-                                           placeholder="ingoingFormats: "
-                                           [(ngModel)]="selectedIngoingFormat"
-                                           (change)="loadIngoingFormat()">
-                                </ng-select>
-                            </th>
-                            <th>
-                                <input bsDaterangepicker
-                                       [bsConfig]="{containerClass: 'theme-dark-blue'}"
-                                       class="form-control"
-                                       placeholder="Received Date"
-                                       type="text"
-                                       (bsValueChange)="loadReceivedDate($event)">
-                            </th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textSenderName"
-                                       placeholder="Sender"
-                                       (change)="loadTextSenderName($event.target.value)"/>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let doc of documents; let i = index" [routerLink]="['/documents/', doc.id]">
-                            <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
-                            <td>{{doc.organisation.name}}</td>
-                            <td>{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
-                            <td>{{doc.documentStatus}}</td>
-                            <td>{{doc.lastError}}</td>
-                            <td>{{doc.documentType}}</td>
-                            <td>{{doc.ingoingDocumentFormat}}</td>
-                            <td>{{doc.createTime}}</td>
-                            <td>{{doc.senderName}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card" style="min-height: 768px">
+                    <div class="card-header"><span>{{ 'documents.table.header' | translate | uppercase }}</span></div>
+                    <br>
+                    <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
+                    <div class="card-body table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th *ngFor="let hed of tableHeaderSortModels">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
+                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textOrganisation"
+                                           placeholder="Organisation"
+                                           (change)="loadTextOrganisation($event.target.value)"/>
+                                </th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textReceiver"
+                                           placeholder="Receiver"
+                                           (change)="loadTextReceiver($event.target.value)"/>
+                                </th>
+                                <th>
+                                    <ng-select [items]="statuses"
+                                               placeholder="statuses: "
+                                               [(ngModel)]="selectedStatus"
+                                               (change)="loadStatus()">
+                                    </ng-select>
+                                </th>
+                                <th>
+                                    <ng-select [items]="lastErrors"
+                                               placeholder="lastErrors: "
+                                               [(ngModel)]="selectedLastError"
+                                               (change)="loadLastErrors()">
+                                    </ng-select>
+                                </th>
+                                <th>
+                                    <ng-select [items]="documentTypes"
+                                               placeholder="documentTypes: "
+                                               [(ngModel)]="selectedDocumentType"
+                                               (change)="loadDocumentType()">
+                                    </ng-select>
+                                </th>
+                                <th>
+                                    <ng-select [items]="ingoingFormats"
+                                               placeholder="ingoingFormats: "
+                                               [(ngModel)]="selectedIngoingFormat"
+                                               (change)="loadIngoingFormat()">
+                                    </ng-select>
+                                </th>
+                                <th>
+                                    <input bsDaterangepicker
+                                           [bsConfig]="{containerClass: 'theme-dark-blue'}"
+                                           class="form-control"
+                                           placeholder="Received Date"
+                                           type="text"
+                                           (bsValueChange)="loadReceivedDate($event)">
+                                </th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textSenderName"
+                                           placeholder="Sender"
+                                           (change)="loadTextSenderName($event.target.value)"/>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let doc of documents; let i = index" [routerLink]="['/documents/', doc.id]">
+                                <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
+                                <td>{{doc.organisation.name}}</td>
+                                <td>{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                                <td>{{doc.documentStatus}}</td>
+                                <td>{{doc.lastError}}</td>
+                                <td>{{doc.documentType}}</td>
+                                <td>{{doc.ingoingDocumentFormat}}</td>
+                                <td>{{doc.createTime}}</td>
+                                <td>{{doc.senderName}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
                 </div>
-                <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
             </div>
         </div>
     </div>
