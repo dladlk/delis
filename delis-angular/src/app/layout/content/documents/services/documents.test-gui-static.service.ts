@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import * as data from '../documents.json';
-import { FilterProcessResult } from "../models/documents.model";
+import * as dataEnum from '../enum.json';
+import { FilterProcessResult } from "../models/filter.process.result";
 import { DocumentModel } from "../models/document.model";
+import {EnumFieldModel} from "../models/enum.field.model";
 
 @Injectable()
 export class DocumentsTestGuiStaticService {
@@ -93,5 +95,10 @@ export class DocumentsTestGuiStaticService {
         } else {
             return null;
         }
+    }
+
+    generateEnumFields() : EnumFieldModel {
+        let enumFields: EnumFieldModel = dataEnum.entityEnumInfo;
+        return enumFields;
     }
 }

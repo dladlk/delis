@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { JournalDocumentModel } from "../models/journal.document.model";
+import { EnumFieldModel } from "../models/enum.field.model";
 import * as data from "../journal_document.json";
+import * as dataEnum from '../enum.json';
 
 @Injectable()
 export class JournalDocumentTestGuiStaticService {
@@ -23,5 +25,10 @@ export class JournalDocumentTestGuiStaticService {
         } else {
             return null;
         }
+    }
+
+    generateEnumFields() : EnumFieldModel {
+        let enumFields: EnumFieldModel = dataEnum.entityEnumInfo;
+        return enumFields;
     }
 }

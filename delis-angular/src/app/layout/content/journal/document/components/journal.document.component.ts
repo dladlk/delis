@@ -81,8 +81,13 @@ export class JournalDocumentComponent implements OnInit {
     }
 
     initSelected() {
-        let select = JSON.parse(localStorage.getItem("JournalDocument"));
-        this.typeList = select.type;
+        if (this.env.production) {
+            let select = JSON.parse(localStorage.getItem("JournalDocument"));
+            this.typeList = select.type;
+        } else {
+            let enumFields = this.journalDocumentTestGuiStaticService.generateEnumFields();
+            this.typeList = enumFields.type;
+        }
     }
 
     private initDefaultValues() {

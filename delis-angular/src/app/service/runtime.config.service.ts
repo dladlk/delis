@@ -38,7 +38,12 @@ export class RuntimeConfigService {
         if (this.username !== '${USERNAME}') {
             return this.username;
         } else {
-            return localStorage.getItem("username");
+            this.username = localStorage.getItem("username");
+            if (this.username) {
+                return this.username;
+            } else {
+                return "User";
+            }
         }
     }
 
@@ -48,5 +53,6 @@ export class RuntimeConfigService {
 
     resetCurrentUser() {
         localStorage.removeItem(this.LOCALE_USERNAME);
+        localStorage.removeItem("username");
     }
 }

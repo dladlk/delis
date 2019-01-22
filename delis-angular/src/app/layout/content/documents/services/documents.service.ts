@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FilterProcessResult } from '../models/documents.model';
+import { FilterProcessResult } from '../models/filter.process.result';
 import { HttpParams } from "@angular/common/http";
 import { Observable } from 'rxjs';
 import { RuntimeConfigService } from "../../../../service/runtime.config.service";

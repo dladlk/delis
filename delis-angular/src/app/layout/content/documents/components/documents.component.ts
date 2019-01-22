@@ -4,7 +4,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { routerTransition } from '../../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
 import { DocumentsTestGuiStaticService } from "../services/documents.test-gui-static.service";
-import { FilterProcessResult } from '../models/documents.model';
+import { FilterProcessResult } from '../models/filter.process.result';
 import { DateRangeModel } from '../../../../models/date.range.model';
 import { LocaleService } from "../../../../service/locale.service";
 import { environment } from "../../../../../environments/environment";
@@ -76,11 +76,19 @@ export class DocumentsComponent implements OnInit {
     }
 
     initSelected() {
-        let select = JSON.parse(localStorage.getItem("Document"));
-        this.statuses = select.documentStatus;
-        this.documentTypes = select.documentType;
-        this.ingoingFormats = select.ingoingDocumentFormat;
-        this.lastErrors = select.lastError;
+        if (this.env.production) {
+            let select = JSON.parse(localStorage.getItem("Document"));
+            this.statuses = select.documentStatus;
+            this.documentTypes = select.documentType;
+            this.ingoingFormats = select.ingoingDocumentFormat;
+            this.lastErrors = select.lastError;
+        } else {
+            let enumFields = this.documentsStaticService.generateEnumFields();
+            this.statuses = enumFields.documentStatus;
+            this.documentTypes = enumFields.documentType;
+            this.ingoingFormats = enumFields.ingoingDocumentFormat;
+            this.lastErrors = enumFields.lastError;
+        }
     }
 
     private initProcess() {
