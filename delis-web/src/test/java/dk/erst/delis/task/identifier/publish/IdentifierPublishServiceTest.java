@@ -7,8 +7,8 @@ import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.codelist.CodeListReaderService;
-import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.xml.SmpXmlServiceFactory;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import org.junit.Test;
@@ -55,10 +55,10 @@ public class IdentifierPublishServiceTest {
 			return null;
 		});*/
 
-		SmpXmlService smpXmlService = new SmpXmlService();
+		SmpXmlServiceFactory smpXmlServiceFactory = new SmpXmlServiceFactory(configBean);
 		CodeListDict codeListDict = new CodeListDict(new CodeListReaderService(configBean));
 		IdentifierPublishDataService identifierPublishDataService = new IdentifierPublishDataService(codeListDict);
-		IdentifierPublishService publishService = new IdentifierPublishService(smpXmlService, smpIntegrationService, identifierPublishDataService, smpLookupService);
+		IdentifierPublishService publishService = new IdentifierPublishService(smpXmlServiceFactory, smpIntegrationService, identifierPublishDataService, smpLookupService);
 
 		Identifier identifier = new Identifier();
 		identifier.setType("GLN");

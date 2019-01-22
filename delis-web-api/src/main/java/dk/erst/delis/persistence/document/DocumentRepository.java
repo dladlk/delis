@@ -7,7 +7,6 @@ import dk.erst.delis.persistence.AbstractRepository;
 
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,5 +19,4 @@ public interface DocumentRepository extends AbstractRepository<Document> {
     Long countByReceiverIdentifierIn(List<Identifier> identifiers);
     Long countByLastErrorNotNull();
     Long countByDocumentStatusIn(List<DocumentStatus> statuses);
-    Long countByCreateTimeBetween(Date start, Date end);
 }

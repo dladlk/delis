@@ -8,25 +8,55 @@
     <hr>
     <div class="row">
         <div class="col-xl-4 col-lg-3">
-            <app-stat [bgClass]="'primary'" [icon]="'fa-comments'" [count]="3" [label]="'dashboard.published'" [router]="'/publishing'"></app-stat>
+            <app-stat
+                    [bgClass]="'primary'"
+                    [icon]="'fa-comments'"
+                    [count]="dashboardModel.publishedLastHour"
+                    [label]="'dashboard.published'"
+                    [router]="'/publishing'"></app-stat>
         </div>
         <div class="col-xl-4 col-lg-3">
-            <app-stat [bgClass]="'warning'" [icon]="'fa-book'" [count]="'125 / 136'" [label]="'dashboard.documents'" [router]="'/documents'"></app-stat>
+            <app-stat
+                    [bgClass]="'warning'"
+                    [icon]="'fa-book'"
+                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+                    [label]="'dashboard.documents'"
+                    [router]="'/documents'"></app-stat>
         </div>
         <div class="col-xl-4 col-lg-3">
-            <app-stat [bgClass]="'danger'" [icon]="'fa-bolt'" [count]="12" [label]="'dashboard.errors'" [router]="'/errors-invoices'"></app-stat>
+            <app-stat
+                    [bgClass]="'danger'"
+                    [icon]="'fa-bolt'"
+                    [count]="dashboardModel.errorLastHour"
+                    [label]="'dashboard.errors'"
+                    [router]="'/errors-invoices'"></app-stat>
         </div>
     </div>
     <hr>
     <div class="row">
         <div class="col-xl-4 col-lg-3">
-            <app-stat [bgClass]="'info'" [icon]="'fa-book'" [count]="3" [label]="'sidebar.journal.document'" [router]="'/journal-documents'"></app-stat>
+            <app-stat
+                    [bgClass]="'info'"
+                    [icon]="'fa-book'"
+                    [count]="dashboardModel.journalDocument"
+                    [label]="'sidebar.journal.document'"
+                    [router]="'/journal-documents'"></app-stat>
         </div>
         <div class="col-xl-4 col-lg-3">
-            <app-stat [bgClass]="'info'" [icon]="'fa-info'" [count]="10" [label]="'sidebar.journal.identifier'" [router]="'/journal-identifiers'"></app-stat>
+            <app-stat
+                    [bgClass]="'info'"
+                    [icon]="'fa-info'"
+                    [count]="dashboardModel.journalIdentifier"
+                    [label]="'sidebar.journal.identifier'"
+                    [router]="'/journal-identifiers'"></app-stat>
         </div>
         <div class="col-xl-4 col-lg-3">
-            <app-stat [bgClass]="'info'" [icon]="'fa-university'" [count]="56" [label]="'sidebar.journal.organisation'" [router]="'/journal-organisations'"></app-stat>
+            <app-stat
+                    [bgClass]="'info'"
+                    [icon]="'fa-university'"
+                    [count]="dashboardModel.journalOrganisation"
+                    [label]="'sidebar.journal.organisation'"
+                    [router]="'/journal-organisations'"></app-stat>
         </div>
     </div>
     <hr>

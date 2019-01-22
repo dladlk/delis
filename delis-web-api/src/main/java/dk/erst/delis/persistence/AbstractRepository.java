@@ -21,4 +21,6 @@ public interface AbstractRepository<T extends AbstractEntity> extends JpaReposit
 
     @Query("select max (ae.createTime) from #{#entityName} ae")
     Date findMaxCreateTime();
+
+    Long countByCreateTimeBetween(Date start, Date end);
 }

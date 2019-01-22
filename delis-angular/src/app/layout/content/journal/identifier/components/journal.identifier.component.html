@@ -1,77 +1,79 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'journal.identifier.header'" [icon]="'fa-book'"></app-page-header>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <div class="card" style="min-height: 768px">
-                <div class="card-header"><span>{{ 'journal.identifier.table.header' | translate | uppercase }}</span></div>
-                <br>
-                <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
-                <div class="card-body table-responsive">
-                    <table class="table table-hover table-sm">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th *ngFor="let hed of tableHeaderSortModels">
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
-                                        <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
-                                    </button>
-                                </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textOrganisation"
-                                       placeholder="Organisation"
-                                       (change)="loadTextOrganisation($event.target.value)"/>
-                            </th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textIdentifier"
-                                       placeholder="Identifier"
-                                       (change)="loadTextIdentifier($event.target.value)"/>
-                            </th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textMessage"
-                                       placeholder="Message"
-                                       (change)="loadTextMessage($event.target.value)"/>
-                            </th>
-                            <th>
-                                <input class="form-control"
-                                       type="text"
-                                       [(ngModel)]="textDurationMs"
-                                       placeholder="DurationMs"
-                                       (change)="loadTextDurationMs($event.target.value)"/>
-                            </th>
-                            <th>
-                                <input bsDaterangepicker
-                                       [bsConfig]="{containerClass: 'theme-dark-blue'}"
-                                       class="form-control"
-                                       placeholder="Received Date"
-                                       type="text"
-                                       (bsValueChange)="loadReceivedDate($event)">
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr *ngFor="let doc of journalIdentifiers; let i = index" [routerLink]="['/journal-identifiers/', doc.id]">
-                            <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
-                            <td>{{doc.organisation.name}}</td>
-                            <td>{{doc.identifier.name}}</td>
-                            <td>{{doc.message}}</td>
-                            <td>{{doc.durationMs}}</td>
-                            <td>{{doc.createTime}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card" style="min-height: 768px">
+                    <div class="card-header"><span>{{ 'journal.identifier.table.header' | translate | uppercase }}</span></div>
+                    <br>
+                    <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
+                    <div class="card-body">
+                        <table class="table table-hover table-sm table-responsive">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th *ngFor="let hed of tableHeaderSortModels">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
+                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textOrganisation"
+                                           placeholder="Organisation"
+                                           (change)="loadTextOrganisation($event.target.value)"/>
+                                </th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textIdentifier"
+                                           placeholder="Identifier"
+                                           (change)="loadTextIdentifier($event.target.value)"/>
+                                </th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textMessage"
+                                           placeholder="Message"
+                                           (change)="loadTextMessage($event.target.value)"/>
+                                </th>
+                                <th>
+                                    <input class="form-control"
+                                           type="text"
+                                           [(ngModel)]="textDurationMs"
+                                           placeholder="DurationMs"
+                                           (change)="loadTextDurationMs($event.target.value)"/>
+                                </th>
+                                <th>
+                                    <input bsDaterangepicker
+                                           [bsConfig]="{containerClass: 'theme-dark-blue'}"
+                                           class="form-control"
+                                           placeholder="Received Date"
+                                           type="text"
+                                           (bsValueChange)="loadReceivedDate($event)">
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let doc of journalIdentifiers; let i = index" [routerLink]="['/journal-identifiers/', doc.id]">
+                                <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
+                                <td>{{doc.organisation.name}}</td>
+                                <td>{{doc.identifier.name}}</td>
+                                <td>{{doc.message}}</td>
+                                <td>{{doc.durationMs}}</td>
+                                <td>{{doc.createTime}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
                 </div>
-                <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
             </div>
         </div>
     </div>

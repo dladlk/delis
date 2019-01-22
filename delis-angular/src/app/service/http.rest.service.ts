@@ -14,10 +14,14 @@ export class HttpRestService {
         this.headers = new HttpHeaders({
             'Authorization' : token
         });
-        return this.http.get(url, {
-            headers : this.headers,
-            params: params})
-            .pipe(map(HttpRestService.extractData));
+        if (params !== null) {
+            return this.http.get(url, {
+                headers : this.headers,
+                params: params})
+                .pipe(map(HttpRestService.extractData));
+        } else {
+            return this.http.get(url, {headers : this.headers}).pipe(map(HttpRestService.extractData));
+        }
     }
 
     methodOpenGet(url : string) : Observable<any> {
