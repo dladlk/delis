@@ -15,7 +15,6 @@ import { TokenService } from './service/token.service';
 import { AuthorizationService } from './login/authorization.service';
 import { LocaleService } from "./service/locale.service";
 import { RuntimeConfigService } from "./service/runtime.config.service";
-import { AlertComponent } from "./alert/alert.component";
 import { HttpRestService } from "./service/http.rest.service";
 import { ContentSelectInfoService } from "./service/content.select.info.service";
 
@@ -41,7 +40,7 @@ export const createTranslateLoader = (http: HttpClient) => {
         }),
         AppRoutingModule
     ],
-    declarations: [AppComponent, AlertComponent],
+    declarations: [AppComponent],
     providers: [
         AuthGuard,
         TokenService,
