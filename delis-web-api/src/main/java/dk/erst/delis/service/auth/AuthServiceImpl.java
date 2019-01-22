@@ -9,6 +9,7 @@ import dk.erst.delis.rest.data.response.auth.AuthData;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,7 +50,11 @@ public class AuthServiceImpl implements AuthService {
             authTokenData.setToken(token);
             authTokenData.setExpired(new Date());
             AuthTokenMap.putAuthTokenData(user.getId(), authTokenData);
-            return new AuthData(token, user.getUsername());
+            if (StringUtils.isBlank(user.getFullName())) {
+                return new AuthData(token, user.getUsername());
+            } else {
+                return new AuthData(token, user.getFullName());
+            }
         } else {
             log.warn("UNAUTHORIZED user by login: " + data.getLogin() + " and password: " + data.getPassword());
             throw new RestUnauthorizedException(Collections.singletonList(
