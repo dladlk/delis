@@ -3,10 +3,10 @@ package dk.erst.delis.task.identifier.publish;
 import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
-import dk.erst.delis.task.identifier.publish.bdxr.SmpXmlService;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import dk.erst.delis.task.identifier.publish.xml.SmpXmlServiceFactory;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 public class IdentifierPublishService {
 
-	private final SmpXmlService smpXmlService;
+	private final SmpXmlServiceFactory smpXmlServiceFactory;
 	private final SmpIntegrationService smpIntegrationService;
 	private final IdentifierPublishDataService identifierPublishDataService;
 	private final SmpLookupService smpLookupService;
@@ -38,8 +38,8 @@ public class IdentifierPublishService {
 	private JournalIdentifierDaoRepository journalIdentifierDaoRepository;
 
 	@Autowired
-	public IdentifierPublishService(SmpXmlService smpXmlService, SmpIntegrationService smpIntegrationService, IdentifierPublishDataService identifierPublishDataService, SmpLookupService smpLookupService) {
-		this.smpXmlService = smpXmlService;
+	public IdentifierPublishService(SmpXmlServiceFactory smpXmlServiceFactory, SmpIntegrationService smpIntegrationService, IdentifierPublishDataService identifierPublishDataService, SmpLookupService smpLookupService) {
+		this.smpXmlServiceFactory = smpXmlServiceFactory;
 		this.smpIntegrationService = smpIntegrationService;
 		this.identifierPublishDataService = identifierPublishDataService;
 		this.smpLookupService = smpLookupService;
@@ -130,13 +130,13 @@ public class IdentifierPublishService {
 	}
 
 	protected boolean publishServiceGroup(ParticipantIdentifier participantIdentifier, SmpPublishData smpPublishData) {
-		String serviceGroupXml = smpXmlService.createServiceGroupXml(participantIdentifier, smpPublishData);
+		String serviceGroupXml = smpXmlServiceFactory.createInstance().createServiceGroupXml(participantIdentifier);
 		return smpIntegrationService.create(createServiceGroupEndpointPath(participantIdentifier), serviceGroupXml);
 
 	}
 
 	protected boolean publishServiceMetadata(ParticipantIdentifier participantIdentifier, SmpPublishServiceData serviceData) {
-		String serviceMetadataXml = smpXmlService.createServiceMetadataXml(participantIdentifier, serviceData);
+		String serviceMetadataXml = smpXmlServiceFactory.createInstance().createServiceMetadataXml(participantIdentifier, serviceData);
 		return smpIntegrationService.create(createServiceMetadataEndpointPath(participantIdentifier, serviceData), serviceMetadataXml);
 	}
 

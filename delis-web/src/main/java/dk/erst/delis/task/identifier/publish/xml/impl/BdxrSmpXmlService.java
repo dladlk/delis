@@ -1,5 +1,20 @@
-package dk.erst.delis.task.identifier.publish.bdxr;
+package dk.erst.delis.task.identifier.publish.xml.impl;
 
+import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
+import dk.erst.delis.task.identifier.publish.xml.intf.SmpXmlService;
+import no.difi.commons.bdx.jaxb.smp._2016._05.*;
+import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import no.difi.vefa.peppol.common.util.ExceptionUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -7,37 +22,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Service;
-
-import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
-import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
-import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
-import no.difi.commons.bdx.jaxb.smp._2016._05.DocumentIdentifierType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.EndpointType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ObjectFactory;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ParticipantIdentifierType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ProcessIdentifierType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ProcessListType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ProcessType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceEndpointList;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceGroupType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceInformationType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceMetadataReferenceCollectionType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.ServiceMetadataType;
-import no.difi.commons.bdx.jaxb.smp._2016._05.SignedServiceMetadataType;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.common.util.ExceptionUtil;
-
-@Service
-public class SmpXmlService {
+@Service("BdxrSmpXmlService")
+public class BdxrSmpXmlService implements SmpXmlService {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
@@ -45,7 +31,7 @@ public class SmpXmlService {
 	private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class,
 			() -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
 
-	public String createServiceGroupXml(ParticipantIdentifier identifier, SmpPublishData smpPublishData) {
+	public String createServiceGroupXml(ParticipantIdentifier identifier) {
 		ParticipantIdentifierType participantIdentifier = buildParticipantIdentifierType(identifier);
 
 		ServiceGroupType serviceGroup = new ServiceGroupType();
