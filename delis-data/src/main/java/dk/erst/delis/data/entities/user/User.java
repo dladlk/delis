@@ -1,6 +1,7 @@
 package dk.erst.delis.data.entities.user;
 
 import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.listeners.FullNameGenerationListener;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Email;
 @Setter
 @Entity
 @Table(name = "user")
+@EntityListeners({FullNameGenerationListener.class})
 public class User extends AbstractEntity {
 
     @Column(unique = true, nullable = false)
@@ -30,4 +32,7 @@ public class User extends AbstractEntity {
     @Email
     @Column(unique = true)
     private String email;
+
+    @Transient
+    private String fullName;
 }
