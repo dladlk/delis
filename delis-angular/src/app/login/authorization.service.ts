@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { TokenService } from '../service/token.service';
 import { RuntimeConfigService } from "../service/runtime.config.service";
-import { AlertService } from "../alert/alert.service";
 import { LocaleService } from "../service/locale.service";
 import { HttpRestService } from "../service/http.rest.service";
 
@@ -14,7 +13,6 @@ export class AuthorizationService {
     constructor(
         private http: HttpRestService,
         private localeService: LocaleService,
-        private alertService: AlertService,
         private tokenService: TokenService,
         private configService: RuntimeConfigService) {
     }
