@@ -10,6 +10,7 @@ import { ChartDocumentComponent } from './components';
 import { StatModule } from '../../shared';
 import { ErrorsModule } from '../../shared';
 import { ChartDocumentTestGuiStaticService } from "./components/chart-document/services/chart.document.test-gui-static.service";
+import { DashboardService } from "./dashboard.service";
 
 @NgModule({
     imports: [
@@ -25,6 +26,6 @@ import { ChartDocumentTestGuiStaticService } from "./components/chart-document/s
         DashboardComponent,
         ChartDocumentComponent
     ],
-    providers: [ChartDocumentTestGuiStaticService]
+    providers: [ChartDocumentTestGuiStaticService, DashboardService]
 })
 export class DashboardModule {}

@@ -16,6 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +49,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DashboardData generateDashboardData() {
 
         DashboardData data = new DashboardData();
@@ -72,7 +74,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         data.setReceivedDocumentsLastHour(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
 
-        data.setAverageDocumentsLastHour(0);
+        data.setAverageDocumentsLastHour(0); // todo what is Average?
 
         return data;
     }
