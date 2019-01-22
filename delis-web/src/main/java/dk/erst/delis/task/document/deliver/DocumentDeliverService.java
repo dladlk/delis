@@ -89,7 +89,7 @@ public class DocumentDeliverService {
 
 
 		if (log != null) {
-			statData.increment(log.isSuccess() ? "OK" : "ERROR ");
+			statData.increment(log.isSuccess() ? "OK" : "ERROR");
 			List<DocumentProcessStep> stepList = log.getStepList();
 			journalDocumentService.saveDocumentStep(document, stepList);
 		} else {
