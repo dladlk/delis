@@ -23,8 +23,18 @@
         </dependency>
         <dependency>
             <groupId>no.difi.oxalis</groupId>
-            <artifactId>oxalis-outbound</artifactId>
+            <artifactId>oxalis-api</artifactId>
             <version>4.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>no.difi.vefa</groupId>
+            <artifactId>peppol-sbdh</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-jre</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
