@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../service/locale.service";
-import {ListenErrorService} from "../service/listen.error.service";
-import {ErrorModel} from "../models/error.model";
+import { ListenErrorService } from "../service/listen.error.service";
+import { ErrorModel } from "../models/error.model";
 
 @Component({
     selector: 'app-layout',
@@ -11,9 +11,9 @@ import {ErrorModel} from "../models/error.model";
 })
 export class LayoutComponent implements OnInit {
 
-    collapedSideBar: boolean;
+    collapsedSideBar: boolean;
 
-    private error: boolean = false;
+    error: boolean = false;
     private errorMessage: string;
 
     constructor(private translate: TranslateService, private locale: LocaleService, private errorService: ListenErrorService) {
@@ -27,6 +27,6 @@ export class LayoutComponent implements OnInit {
     ngOnInit() {}
 
     receiveCollapsed($event) {
-        this.collapedSideBar = $event;
+        this.collapsedSideBar = $event;
     }
 }
