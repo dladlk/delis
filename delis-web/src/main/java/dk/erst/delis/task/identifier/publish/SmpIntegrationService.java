@@ -50,6 +50,11 @@ public class SmpIntegrationService {
 			}
 
 			log.info(method + " to " + url + " with " + (xml != null ? xml.length() : -1) + " bytes xml");
+			
+			if (log.isDebugEnabled()) {
+				log.debug(xml);
+			}
+			
 			int status = con.getResponseCode();
 			con.disconnect();
 			log.info(method + " result status: " + status);
