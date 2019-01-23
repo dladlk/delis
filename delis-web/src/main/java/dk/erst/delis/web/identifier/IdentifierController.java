@@ -12,11 +12,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Iterator;
+import java.util.List;
 
 @Controller
 public class IdentifierController {
@@ -50,7 +52,23 @@ public class IdentifierController {
 			model.addAttribute("organisation", organisation);
 		}
 		model.addAttribute("identifierList", list);
+		model.addAttribute("selectedIdList", new IdentifierStatusBachUdpateInfo());
+		model.addAttribute("statusList", IdentifierStatus.values());
+		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
 		return "identifier/list";
+	}
+
+	@PostMapping("/identifier/updatestatuses")
+	public String listFilter(@ModelAttribute IdentifierStatusBachUdpateInfo idList, Model model) {
+		List<Long> ids = idList.getIdList();
+		IdentifierStatus status = idList.getStatus();
+		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();
+		if (ids.size() > 0) {
+			List<Identifier> identifierList = identifierDaoRepository.findAllById(idList.getIdList());
+			identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus);});
+			identifierDaoRepository.saveAll(identifierList);
+		}
+		return "redirect:/identifier/list";
 	}
 
 	@PostMapping("/identifier/updatestatus")
@@ -59,7 +77,7 @@ public class IdentifierController {
 		Identifier identifier = identifierDaoRepository.findById(id).get();
 		if (identifier == null) {
 			ra.addFlashAttribute("errorMessage", "Identifier with ID " + id + " is not found");
-			return "redirect:/home";
+			return "redirect:/identifier/list";
 		}
 
 		identifier.setStatus(staleIdentifier.getStatus());
