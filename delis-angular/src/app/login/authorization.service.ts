@@ -25,12 +25,4 @@ export class AuthorizationService {
         };
         return this.http.methodPost(this.url + '/security/signin', body);
     }
-
-    logout() {
-        location.reload();
-        this.tokenService.resetToken();
-        this.configService.resetConfigUrl();
-        this.configService.resetCurrentUser();
-        this.localeService.resetLocale();
-    }
 }

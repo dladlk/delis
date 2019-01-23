@@ -1,9 +1,7 @@
 <div class="login-page" [@routerTransition]>
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <img src="assets/images/delis.png"
-                 width="150px" class="user-avatar"
-                 style="border-radius: 50px 50px 10px 10px; background-color: aliceblue; border-style: solid"/>
+            <img src="assets/images/delis.png" class="user-avatar"/>
             <h1>Delis Authentication</h1>
             <div *ngIf="error">
                 <app-error [message]="'invalid username or password'"></app-error>

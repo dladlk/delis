@@ -4,6 +4,8 @@ import { LocaleService } from "./locale.service";
 import { TokenService } from "./token.service";
 import { RuntimeConfigService } from "./runtime.config.service";
 import { Router } from "@angular/router";
+import { ListenErrorService } from "./listen.error.service";
+import { ErrorModel } from "../models/error.model";
 
 @Injectable()
 export class ErrorService {
@@ -13,6 +15,7 @@ export class ErrorService {
         private localeService: LocaleService,
         private tokenService: TokenService,
         private configService: RuntimeConfigService,
+        private listenErrorService: ListenErrorService,
         private router: Router) {
     }
 
@@ -22,6 +25,16 @@ export class ErrorService {
             case "401" : {
                 this.logout();
             } break;
+            default : {
+                let listenError = new ErrorModel();
+                listenError.status = String(error["status"]);
+                let errorMessage = '';
+                if (error["message"]) {
+                    errorMessage += error["message"];
+                }
+                listenError.message = errorMessage;
+                this.listenErrorService.loadError(listenError);
+            }
         }
     }
 

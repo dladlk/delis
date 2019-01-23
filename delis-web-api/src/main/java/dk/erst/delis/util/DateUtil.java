@@ -31,4 +31,17 @@ public class DateUtil {
         Date start = cal.getTime();
         return new DateRangeModel(start, end);
     }
+
+    public DateRangeModel generateDateRangeByFromAndToLastHour(int minutes, int minuteInterval) {
+        Date start = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(start);
+        cal.add(Calendar.MINUTE, -minutes);
+        start = cal.getTime();
+
+        cal.setTime(start);
+        cal.add(Calendar.MINUTE, minuteInterval);
+        Date end = cal.getTime();
+        return new DateRangeModel(start, end);
+    }
 }

@@ -3,8 +3,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
 import { LocaleService } from "../../../service/locale.service";
-import {RuntimeConfigService} from "../../../service/runtime.config.service";
-import {ErrorService} from "../../../service/error.service";
+import { RuntimeConfigService } from "../../../service/runtime.config.service";
+import { ErrorService } from "../../../service/error.service";
 
 @Component({
   selector: 'app-header',
