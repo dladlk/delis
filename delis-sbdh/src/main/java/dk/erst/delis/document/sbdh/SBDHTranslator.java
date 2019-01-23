@@ -13,7 +13,7 @@ import java.nio.file.Path;
 
 public class SBDHTranslator {
 
-    public void addHeader(Path source, Path target) {
+    public Header addHeader(Path source, Path target) {
         try {
             NoSbdhParser sbdhParser = new NoSbdhParser();
             Header header = sbdhParser.parse(new FileInputStream(source.toString()));
@@ -23,8 +23,10 @@ public class SBDHTranslator {
             } catch (Exception ex) {
                 throw new IllegalStateException("Unable to wrap document inside SBD (SBDH). " + ex.getMessage(), ex);
             }
+            return header;
         } catch (IOException | OxalisContentException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }
