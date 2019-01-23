@@ -18,9 +18,7 @@ export class ErrorService {
 
     errorProcess(error: any) {
 
-        console.log("error code = " + error["code"]);
-
-        switch (String(error["code"])) {
+        switch (String(error["status"])) {
             case "401" : {
                 this.logout();
             } break;

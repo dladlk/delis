@@ -50,7 +50,6 @@ export class LoginComponent implements OnInit {
                     localStorage.setItem('isLoggedin', 'true');
                     this.router.navigate(['/dashboard']);
                 }, error => {
-                    console.log('status = ' + error["status"]);
                     this.error = true;
                     this.errorService.logout();
                 }
