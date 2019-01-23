@@ -38,6 +38,30 @@
 			</table>
 		</div>
 		<div class="card-footer">
+			<form method="post" action="#" th:action="@{/identifier/updatestatus}" th:object="${identifier}">
+
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Status</label>
+					<div class="col-sm-8">
+						<select th:field="*{status}">
+							<option th:each="status : ${identifierStatusList}" th:text="${status}" th:value="${status}"></option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Publishing Status</label>
+					<div class="col-sm-8">
+						<select th:field="*{publishingStatus}">
+							<option th:each="publishingStatus : ${identifierPublishingStatusList}" th:text="${publishingStatus}" th:value="${publishingStatus}"></option>
+						</select>
+					</div>
+				</div>
+
+				<input type="hidden" th:field="*{id}" class="form-control" th:value="${identifier.id}"/>
+				<button type="submit" class="btn btn-primary">Update Statuses</button>
+			</form>
+
 			<a href="#" th:href="@{/identifier/list/__${identifier.organisation.id}__}" class="btn btn-primary">Back to identifier list</a>
 			<a href="#" th:href="@{/identifier/delete/__${identifier.organisation.id}__}" class="btn btn-secondary" th:if="${identifier.status.active}">Delete</a>
 		</div>
