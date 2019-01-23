@@ -47,7 +47,21 @@ public class DocumentController {
 		List<Document> list;
 		list = documentDaoRepository.findAll(PageRequest.of(0, 10, Sort.by("id").descending())).getContent();
 		model.addAttribute("documentList", list);
+		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
+		model.addAttribute("statusList", DocumentStatus.values());
 		return "/document/list";
+	}
+
+	@PostMapping("/document/updatestatuses")
+	public String listFilter(@ModelAttribute DocumentStatusBachUdpateInfo idList, Model model) {
+		List<Long> ids = idList.getIdList();
+		DocumentStatus status = idList.getStatus();
+		if (ids.size() > 0) {
+			Iterable<Document> docsToUpdateStatus = documentDaoRepository.findAllById(ids);
+			docsToUpdateStatus.forEach(document -> document.setDocumentStatus(status));
+			documentDaoRepository.saveAll(docsToUpdateStatus);
+		}
+		return "redirect:/document/list";
 	}
 
 	@PostMapping("/document/updatestatus")
@@ -56,7 +70,7 @@ public class DocumentController {
 		Document document = documentDaoRepository.findById(id).get();
 		if (document == null) {
 			ra.addFlashAttribute("errorMessage", "Document with ID " + id + " is not found");
-			return "redirect:/home";
+			return "redirect:/document/list";
 		}
 
 		document.setDocumentStatus(staleDocument.getDocumentStatus());

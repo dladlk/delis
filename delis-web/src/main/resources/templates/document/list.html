@@ -49,9 +49,11 @@
 				</tr>
 			</table>
 			</form>
-		
+
+			<form action="#" th:action="@{/document/updatestatuses}" th:object="${selectedIdList}" method="post">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
+					<th><input type="checkbox" value=""/></th>
 					<th>Received</th>
 					<th>Organisation</th>
 					<th>Receiver</th>
@@ -61,6 +63,7 @@
 					<th>Sender</th>
 				</tr>
 				<tr th:each="r,iter : ${documentList}">
+					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}"/></td>
 					<td>
 						<a href="#" th:href="@{/document/view/__${r.id}__}" th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
 					</td>
@@ -77,6 +80,16 @@
 					<td th:text="${r.senderName}">Lego Spain</td>
 				</tr>
 			</table>
+			<div class="card-footer">
+				<div class="d-flex justify-content-start">
+					<label class="m-2 col-form-label">Status:</label>
+					<select th:field="*{status}" class="m-2">
+						<option th:each="documentStatus : ${statusList}" th:text="${documentStatus}" th:value="${documentStatus}"></option>
+					</select>
+					<button type="submit" class="m-2 btn btn-primary">Update Statuses</button>
+				</div>
+			</div>
+			</form>
 		</div>
 	</div>
 	
