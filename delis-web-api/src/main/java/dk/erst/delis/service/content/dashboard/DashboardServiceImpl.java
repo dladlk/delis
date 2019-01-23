@@ -79,31 +79,6 @@ public class DashboardServiceImpl implements DashboardService {
 
         data.setAverageDocumentsLastHour(0); // todo what is Average?
 
-        // generate chart data by last hour by interval of 10 minutes
-
-        ChartData chartData = new ChartData();
-        List<LineChartData> lineChartData = new ArrayList<>();
-        List<String> lineChartLabels = new ArrayList<>();
-
-        LineChartData lineChartDataContent = new LineChartData();
-        lineChartDataContent.setLabel("chart data by last hour by interval of 10 minutes");
-        List<String> dataGraf = new ArrayList<>();
-        int[] minutes = {60, 50, 40, 30, 20, 10};
-        for (int minute : minutes) {
-            dateRange = DateUtil.generateDateRangeByFromAndToLastHour(minute, 10);
-            System.out.println("!!!!!!!!!!");
-            System.out.println("start = " + dateRange.getStart());
-            System.out.println("end = " + dateRange.getEnd());
-            lineChartLabels.add(String.valueOf(dateRange.getStart()));
-            dataGraf.add(String.valueOf(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd())));
-        }
-        lineChartDataContent.setData(dataGraf);
-        lineChartData.add(lineChartDataContent);
-
-        chartData.setLineChartData(lineChartData);
-        chartData.setLineChartLabels(lineChartLabels);
-        data.setChartData(chartData);
-
         return data;
     }
 }

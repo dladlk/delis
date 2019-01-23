@@ -13,6 +13,6 @@ import java.util.List;
 @Setter
 public class LineChartData {
 
-    private List<String> data;
+    private List<Long> data;
     private String label;
 }

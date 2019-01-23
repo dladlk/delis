@@ -1,7 +1,5 @@
 package dk.erst.delis.rest.data.response.dashboard;
 
-import dk.erst.delis.rest.data.response.chart.ChartData;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,5 +18,4 @@ public class DashboardData {
     private long journalDocument;
     private long journalIdentifier;
     private long journalOrganisation;
-    private ChartData chartData;
 }

@@ -16,6 +16,7 @@ export class ChartDocumentComponent implements OnInit {
 
     lineChartData: Array<any> = [];
     lineChartLabels: Array<any> = [];
+
     lineChartOptions: any;
     lineChartColors: Array<any>;
     lineChartLegend: boolean;
