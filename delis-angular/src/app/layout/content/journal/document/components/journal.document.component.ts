@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
 import { routerTransition } from "../../../../../router.animations";
 import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { JournalDocumentService } from "../services/journal.document.service";

@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from "@ngx-translate/core";
+
 import { routerTransition } from "../../../../../router.animations";
 import { DocumentsTestGuiStaticService } from "../../services/documents.test-gui-static.service";
 import { environment } from "../../../../../../environments/environment";
 import { DocumentsService } from "../../services/documents.service";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../service/locale.service";
 import { HeaderModel } from "../../../../components/header/header.model";
 import { DocumentModel } from "../../models/document.model";
@@ -19,9 +20,8 @@ import { ErrorService } from "../../../../../service/error.service";
 export class DocumentsOneComponent implements OnInit {
 
     env = environment;
-
     pageHeaders: HeaderModel[] = [];
-    document: any;
+    document: DocumentModel = new DocumentModel();
 
     constructor(
         private translate: TranslateService,

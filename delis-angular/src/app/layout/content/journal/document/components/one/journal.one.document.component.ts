@@ -20,9 +20,8 @@ import { ErrorService } from "../../../../../../service/error.service";
 export class JournalOneDocumentComponent implements OnInit {
 
     env = environment;
-
     pageHeaders: HeaderModel[] = [];
-    journalDocument: any;
+    journalDocument: JournalDocumentModel = new JournalDocumentModel();
 
     constructor(
         private translate: TranslateService,

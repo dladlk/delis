@@ -1,14 +1,15 @@
 import { Component, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { ActivatedRoute } from "@angular/router";
+
 import { routerTransition } from "../../../../../../router.animations";
 import { environment } from "../../../../../../../environments/environment";
 import { HeaderModel } from "../../../../../components/header/header.model";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../../service/locale.service";
-import { ActivatedRoute } from "@angular/router";
 import { JournalOrganisationService } from "../../services/journal.organisation.service";
 import { JournalOrganisationTestGuiStaticService } from "../../services/journal.organisation.test-gui-static.service";
-import { JournalDocumentModel } from "../../../document/models/journal.document.model";
 import { ErrorService } from "../../../../../../service/error.service";
+import { JournalOrganisationModel } from "../../models/journal.organisation.model";
 
 @Component({
     selector: 'app-journal-one-organisation',
@@ -21,7 +22,7 @@ export class JournalOneOrganisationComponent implements OnInit {
     env = environment;
 
     pageHeaders: HeaderModel[] = [];
-    journalOrganisation: any;
+    journalOrganisation: JournalOrganisationModel = new JournalOrganisationModel();
 
     constructor(
         private translate: TranslateService,
@@ -40,7 +41,7 @@ export class JournalOneOrganisationComponent implements OnInit {
     ngOnInit(): void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         if (this.env.production) {
-            this.journalOrganisationService.getOneJournalOrganisationById(id).subscribe((data: JournalDocumentModel) => {
+            this.journalOrganisationService.getOneJournalOrganisationById(id).subscribe((data: JournalOrganisationModel) => {
                 this.journalOrganisation = data;
             }, error => {
                 this.errorService.errorProcess(error);

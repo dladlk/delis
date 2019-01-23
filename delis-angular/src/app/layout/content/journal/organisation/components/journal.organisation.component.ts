@@ -1,17 +1,18 @@
-import {Component, OnInit} from "@angular/core";
-import {routerTransition} from "../../../../../router.animations";
-import {environment} from "../../../../../../environments/environment";
-import {PaginationModel} from "../../../../bs-component/components/pagination/pagination.model";
-import {TableHeaderSortModel} from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
-import {JournalOrganisationFilterProcessResult} from "../models/journal.organisation.filter.process.result";
-import {JournalOrganisationModel} from "../models/journal.organisation.model";
-import {JournalOrganisationService} from "../services/journal.organisation.service";
-import {JournalOrganisationTestGuiStaticService} from "../services/journal.organisation.test-gui-static.service";
-import {TranslateService} from "@ngx-translate/core";
-import {LocaleService} from "../../../../../service/locale.service";
-import {PaginationService} from "../../../../bs-component/components/pagination/pagination.service";
-import {DateRangeModel} from "../../../../../models/date.range.model";
-import {ErrorService} from "../../../../../service/error.service";
+import { Component, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
+import { routerTransition } from "../../../../../router.animations";
+import { environment } from "../../../../../../environments/environment";
+import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
+import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
+import { JournalOrganisationFilterProcessResult } from "../models/journal.organisation.filter.process.result";
+import { JournalOrganisationModel } from "../models/journal.organisation.model";
+import { JournalOrganisationService } from "../services/journal.organisation.service";
+import { JournalOrganisationTestGuiStaticService } from "../services/journal.organisation.test-gui-static.service";
+import { LocaleService } from "../../../../../service/locale.service";
+import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
+import { DateRangeModel } from "../../../../../models/date.range.model";
+import { ErrorService } from "../../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.Organisation';
 const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.Message';

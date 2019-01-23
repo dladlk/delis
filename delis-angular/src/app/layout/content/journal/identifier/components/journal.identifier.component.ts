@@ -1,12 +1,13 @@
 import { Component, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
+
 import { routerTransition } from "../../../../../router.animations";
 import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
-
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { JournalIdentifierFilterProcessResultModel } from "../models/journal.identifier.filter.process.result.model";
 import { JournalIdentifierModel } from "../models/journal.identifier.model";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { JournalIdentifierService } from "../services/journal.identifier.service";
