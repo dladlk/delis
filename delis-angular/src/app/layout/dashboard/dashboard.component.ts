@@ -5,6 +5,7 @@ import { LocaleService } from "../../service/locale.service";
 import { DashboardModel } from "./dashboard.model";
 import { DashboardService } from "./dashboard.service";
 import { environment } from "../../../environments/environment";
+import { ErrorService } from "../../service/error.service";
 
 @Component({
     selector: 'app-dashboard',
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
     constructor(
         private dashboardService: DashboardService,
         private translate: TranslateService,
+        private errorService: ErrorService,
         private locale: LocaleService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
@@ -30,7 +32,7 @@ export class DashboardComponent implements OnInit {
                 (data: {}) => {
                     this.dashboardModel = data["data"];
                 }, error => {
-                    localStorage.removeItem('isLoggedin');
+                    this.errorService.errorProcess(error);
                 }
             );
         } else {

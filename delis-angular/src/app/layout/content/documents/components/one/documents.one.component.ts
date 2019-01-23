@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { routerTransition } from "../../../../../router.animations";
 import { DocumentsTestGuiStaticService } from "../../services/documents.test-gui-static.service";
 import { environment } from "../../../../../../environments/environment";
@@ -8,6 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../service/locale.service";
 import { HeaderModel } from "../../../../components/header/header.model";
 import { DocumentModel } from "../../models/document.model";
+import { ErrorService } from "../../../../../service/error.service";
 
 @Component({
     selector: 'app-documents-one',
@@ -26,7 +27,7 @@ export class DocumentsOneComponent implements OnInit {
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
-        private router: Router,
+        private errorService: ErrorService,
         private documentService: DocumentsService,
         private documentsStaticService: DocumentsTestGuiStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
@@ -41,7 +42,7 @@ export class DocumentsOneComponent implements OnInit {
             this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
                 this.document = data;
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             });
         } else {
             this.document = Object.assign({}, this.documentsStaticService.getOneDocument(id));

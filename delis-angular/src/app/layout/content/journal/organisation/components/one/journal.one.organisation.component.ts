@@ -4,10 +4,11 @@ import { environment } from "../../../../../../../environments/environment";
 import { HeaderModel } from "../../../../../components/header/header.model";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../../service/locale.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { JournalOrganisationService } from "../../services/journal.organisation.service";
 import { JournalOrganisationTestGuiStaticService } from "../../services/journal.organisation.test-gui-static.service";
 import { JournalDocumentModel } from "../../../document/models/journal.document.model";
+import { ErrorService } from "../../../../../../service/error.service";
 
 @Component({
     selector: 'app-journal-one-organisation',
@@ -26,7 +27,7 @@ export class JournalOneOrganisationComponent implements OnInit {
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
-        private router: Router,
+        private errorService: ErrorService,
         private journalOrganisationService: JournalOrganisationService,
         private journalOrganisationTestGuiStaticService: JournalOrganisationTestGuiStaticService
     ) {
@@ -42,7 +43,7 @@ export class JournalOneOrganisationComponent implements OnInit {
             this.journalOrganisationService.getOneJournalOrganisationById(id).subscribe((data: JournalDocumentModel) => {
                 this.journalOrganisation = data;
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             });
         } else {
             this.journalOrganisation = Object.assign({}, this.journalOrganisationTestGuiStaticService.getOneJournalOrganisationById(id));

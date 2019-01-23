@@ -12,6 +12,7 @@ import { PaginationService } from "../../../../bs-component/components/paginatio
 import { JournalIdentifierService } from "../services/journal.identifier.service";
 import { JournalIdentifierTestGuiStaticService } from "../services/journal.identifier.test-gui-static.service";
 import { DateRangeModel } from "../../../../../models/date.range.model";
+import { ErrorService } from "../../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.Organisation';
 const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.Identifier';
@@ -44,6 +45,7 @@ export class JournalIdentifierComponent implements OnInit {
         private journalIdentifierTestGuiStaticService: JournalIdentifierTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -177,7 +179,7 @@ export class JournalIdentifierComponent implements OnInit {
                 this.pagination.pageSize = data["pageSize"];
                 this.journalIdentifiers = data["items"];
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             }
         );
     }

@@ -7,7 +7,8 @@ import { LocaleService } from "../service/locale.service";
 import { environment } from "../../environments/environment";
 import { ContentSelectInfoService } from "../service/content.select.info.service";
 import { TokenService } from "../service/token.service";
-import {LoginData} from "./login.data";
+import { LoginData } from "./login.data";
+import { ErrorService } from "../service/error.service";
 
 @Component({
     selector: 'app-login',
@@ -30,6 +31,7 @@ export class LoginComponent implements OnInit {
         private translate: TranslateService,
         private locale: LocaleService,
         private contentSelectInfoService: ContentSelectInfoService,
+        private errorService: ErrorService,
         public router: Router) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
@@ -49,9 +51,8 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['/dashboard']);
                 }, error => {
                     console.log('status = ' + error["status"]);
-                    localStorage.setItem('isLoggedin', 'false');
                     this.error = true;
-                    this.router.navigate(['/login']);
+                    this.errorService.logout();
                 }
             );
         } else {

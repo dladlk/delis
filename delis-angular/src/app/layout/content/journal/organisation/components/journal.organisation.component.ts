@@ -11,6 +11,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {LocaleService} from "../../../../../service/locale.service";
 import {PaginationService} from "../../../../bs-component/components/pagination/pagination.service";
 import {DateRangeModel} from "../../../../../models/date.range.model";
+import {ErrorService} from "../../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.Organisation';
 const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.Message';
@@ -41,6 +42,7 @@ export class JournalOrganisationComponent implements OnInit {
         private journalOrganisationTestGuiStaticService: JournalOrganisationTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -161,7 +163,7 @@ export class JournalOrganisationComponent implements OnInit {
                 this.pagination.pageSize = data["pageSize"];
                 this.journalOrganisations = data["items"];
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             }
         );
     }
