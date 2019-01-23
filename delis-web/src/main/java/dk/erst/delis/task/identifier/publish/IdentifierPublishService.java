@@ -47,6 +47,11 @@ public class IdentifierPublishService {
 
 	public boolean publishIdentifier(Identifier identifier) {
 		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier);
+		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
+		if(published == null) {
+			log.info(String.format("ServiceGroup by Identifier '%s' is not found", identifier.getValue()));
+			return false;
+		}
 		if (identifier.getStatus().isDeleted()) {
 			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
 			if(isDeleted) {
@@ -62,7 +67,6 @@ public class IdentifierPublishService {
 			addJournalIdentifierRecord(identifier, "Unable to publish service group", journalIdentifierDaoRepository);
 			return false;
 		}
-		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
 		for (SmpPublishServiceData publishedService : published.getServiceList()) {
 			if(!contains(publishedService, forPublish.getServiceList())) {
 				boolean isDeleted = deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
