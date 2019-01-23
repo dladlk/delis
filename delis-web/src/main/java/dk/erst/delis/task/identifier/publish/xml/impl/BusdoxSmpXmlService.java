@@ -103,7 +103,7 @@ public class BusdoxSmpXmlService implements SmpXmlService {
         for (SmpServiceEndpointData endpoint : endpoints) {
             EndpointType resultEndpoint = new EndpointType();
             resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());
-            resultEndpoint.setCertificate(new String(endpoint.getCertificate()));
+            resultEndpoint.setCertificate(endpoint.getCertificateBase64());
             resultEndpoint.setTransportProfile(endpoint.getTransportProfile());
             resultEndpoint.setEndpointReference(createEndpointReference(endpoint));
             resultEndpoint.setServiceDescription(endpoint.getServiceDescription());

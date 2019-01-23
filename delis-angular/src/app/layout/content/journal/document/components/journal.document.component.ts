@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
 import { routerTransition } from "../../../../../router.animations";
 import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { JournalDocumentService } from "../services/journal.document.service";
@@ -12,6 +13,7 @@ import { JournalDocumentModel } from "../models/journal.document.model";
 import { JournalDocumentFilterProcessResult } from "../models/journal.document.filter.process.result";
 import { successList } from "../models/journal.document.view.model";
 import { DateRangeModel } from "../../../../../models/date.range.model";
+import {ErrorService} from "../../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.Organisation';
 const COLUMN_NAME_DOCUMENT = 'journal.documents.table.columnName.Document';
@@ -50,6 +52,7 @@ export class JournalDocumentComponent implements OnInit {
         private journalDocumentTestGuiStaticService: JournalDocumentTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -220,7 +223,7 @@ export class JournalDocumentComponent implements OnInit {
                 this.pagination.pageSize = data["pageSize"];
                 this.journalDocuments = data["items"];
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             }
         );
     }

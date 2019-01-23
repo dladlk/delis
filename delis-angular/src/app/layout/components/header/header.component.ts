@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
 import { LocaleService } from "../../../service/locale.service";
 import {RuntimeConfigService} from "../../../service/runtime.config.service";
+import {ErrorService} from "../../../service/error.service";
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,7 @@ export class HeaderComponent implements OnInit {
     private translate: TranslateService,
     private locale: LocaleService,
     private configService: RuntimeConfigService,
+    private errorService: ErrorService,
     public router: Router) {
 
     this.lang = locale.getlocale();
@@ -53,8 +55,7 @@ export class HeaderComponent implements OnInit {
   }
 
   onLoggedout() {
-    localStorage.removeItem('isLoggedin');
-    this.auth.logout();
+    this.errorService.logout();
   }
 
   changeLang(language: string) {

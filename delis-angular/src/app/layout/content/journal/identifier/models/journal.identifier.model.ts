@@ -6,20 +6,8 @@ export class JournalIdentifierModel {
     id: number;
     createTime: string;
     updateTime: string;
-    organisation: OrganisationModel;
-    identifier: IdentifierModel;
+    organisation: OrganisationModel = new OrganisationModel();
+    identifier: IdentifierModel = new IdentifierModel();
     message: string;
     durationMs: number;
-
-    constructor(model ?: any) {
-        if (model) {
-            this.id = model.id;
-            this.createTime = model.createTime;
-            this.updateTime = model.updateTime;
-            this.organisation = model.organisation;
-            this.identifier = model.identifier;
-            this.message = model.message;
-            this.durationMs = model.durationMs;
-        }
-    }
 }

@@ -1,17 +1,19 @@
 import { Component, OnInit } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+
+
 import { routerTransition } from "../../../../../router.animations";
 import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
-
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { JournalIdentifierFilterProcessResultModel } from "../models/journal.identifier.filter.process.result.model";
 import { JournalIdentifierModel } from "../models/journal.identifier.model";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { JournalIdentifierService } from "../services/journal.identifier.service";
 import { JournalIdentifierTestGuiStaticService } from "../services/journal.identifier.test-gui-static.service";
 import { DateRangeModel } from "../../../../../models/date.range.model";
+import { ErrorService } from "../../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.Organisation';
 const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.Identifier';
@@ -44,6 +46,7 @@ export class JournalIdentifierComponent implements OnInit {
         private journalIdentifierTestGuiStaticService: JournalIdentifierTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -177,7 +180,7 @@ export class JournalIdentifierComponent implements OnInit {
                 this.pagination.pageSize = data["pageSize"];
                 this.journalIdentifiers = data["items"];
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             }
         );
     }

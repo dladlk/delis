@@ -13,6 +13,6 @@ export class IdentifierModel {
     publishingStatus: string;
     name: string;
     lastSyncOrganisationFactId: number;
-    organisation: OrganisationModel;
-    identifierGroup: IdentifierGroupModel;
+    organisation: OrganisationModel = new OrganisationModel();
+    identifierGroup: IdentifierGroupModel = new IdentifierGroupModel();
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit} from "@angular/core";
-import { ActivatedRoute, Router} from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { TranslateService} from "@ngx-translate/core";
 
 import { routerTransition} from "../../../../../../router.animations";
@@ -9,6 +9,7 @@ import { LocaleService} from "../../../../../../service/locale.service";
 import { JournalDocumentService} from "../../services/journal.document.service";
 import { JournalDocumentTestGuiStaticService} from "../../services/journal.document.test-gui-static.service";
 import { JournalDocumentModel } from "../../models/journal.document.model";
+import { ErrorService } from "../../../../../../service/error.service";
 
 @Component({
     selector: 'app-journal-one-documents',
@@ -19,15 +20,14 @@ import { JournalDocumentModel } from "../../models/journal.document.model";
 export class JournalOneDocumentComponent implements OnInit {
 
     env = environment;
-
     pageHeaders: HeaderModel[] = [];
-    journalDocument: any;
+    journalDocument: JournalDocumentModel = new JournalDocumentModel();
 
     constructor(
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
-        private router: Router,
+        private errorService: ErrorService,
         private journalDocumentService: JournalDocumentService,
         private journalDocumentTestGuiStaticService: JournalDocumentTestGuiStaticService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
@@ -41,7 +41,7 @@ export class JournalOneDocumentComponent implements OnInit {
             this.journalDocumentService.getOneJournalDocumentById(id).subscribe((data: JournalDocumentModel) => {
                 this.journalDocument = data;
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             });
         } else {
             this.journalDocument = Object.assign({}, this.journalDocumentTestGuiStaticService.getOneJournalDocumentById(id));

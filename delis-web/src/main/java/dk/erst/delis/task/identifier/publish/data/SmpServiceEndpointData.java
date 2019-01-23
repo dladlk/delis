@@ -1,5 +1,6 @@
 package dk.erst.delis.task.identifier.publish.data;
 
+import java.util.Base64;
 import java.util.Date;
 
 import lombok.Data;
@@ -15,5 +16,16 @@ public class SmpServiceEndpointData {
 	private Date serviceExpirationDate;
 	private boolean requireBusinessLevelSignature;
 	private byte[] certificate;
+	
+	public byte[] getCertificate() {
+		return null;
+	}
+	
+	public String getCertificateBase64() {
+		if (certificate != null) {
+			return Base64.getEncoder().encodeToString(certificate);
+		}
+		return null;
+	}
 
 }
