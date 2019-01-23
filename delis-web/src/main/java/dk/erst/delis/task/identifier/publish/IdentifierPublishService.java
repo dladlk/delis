@@ -92,6 +92,7 @@ public class IdentifierPublishService {
 		journalIdentifier.setIdentifier(identifier);
 		journalIdentifier.setOrganisation(identifier.getOrganisation());
 		journalIdentifier.setMessage(message);
+		this.journalIdentifierDaoRepository.save(journalIdentifier);
 	}
 
 	private boolean isPublishDataValid(SmpPublishData publishData) {
