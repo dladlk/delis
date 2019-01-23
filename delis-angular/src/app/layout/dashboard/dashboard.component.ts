@@ -16,7 +16,7 @@ import { ErrorService } from "../../service/error.service";
 export class DashboardComponent implements OnInit {
 
     env = environment;
-    dashboardModel: DashboardModel;
+    dashboardModel: DashboardModel = new DashboardModel();
 
     constructor(
         private dashboardService: DashboardService,

@@ -7,5 +7,5 @@ export class IdentifierGroupModel {
     updateTime: string;
     name: string;
     code: string;
-    organisation: OrganisationModel;
+    organisation: OrganisationModel = new OrganisationModel();
 }

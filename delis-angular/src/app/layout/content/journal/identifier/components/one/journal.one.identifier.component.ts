@@ -1,10 +1,11 @@
 import { Component } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
+import { ActivatedRoute } from "@angular/router";
+
 import { routerTransition } from "../../../../../../router.animations";
 import { environment } from "../../../../../../../environments/environment";
 import { HeaderModel } from "../../../../../components/header/header.model";
-import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../../service/locale.service";
-import { ActivatedRoute } from "@angular/router";
 import { JournalIdentifierService } from "../../services/journal.identifier.service";
 import { JournalIdentifierTestGuiStaticService } from "../../services/journal.identifier.test-gui-static.service";
 import { JournalIdentifierModel } from "../../models/journal.identifier.model";
@@ -21,7 +22,7 @@ export class JournalOneIdentifierComponent {
     env = environment;
 
     pageHeaders: HeaderModel[] = [];
-    journalIdentifier: any;
+    journalIdentifier: JournalIdentifierModel = new JournalIdentifierModel();
 
     constructor(
         private translate: TranslateService,
