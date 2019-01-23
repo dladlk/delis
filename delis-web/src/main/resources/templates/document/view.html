@@ -90,18 +90,14 @@
 		</div>
 		<div class="card-footer">
 			<form method="post" action="#" th:action="@{/document/updatestatus}" th:object="${document}">
-
-				<div class="form-group row">
-					<label class="col-sm-4 col-form-label">Status</label>
-					<div class="col-sm-8">
-						<select th:field="*{documentStatus}">
-							<option th:each="documentStatus : ${documentStatusList}" th:text="${documentStatus}" th:value="${documentStatus}"></option>
-						</select>
-					</div>
+				<div class="d-flex justify-content-end">
+					<label class="m-2 col-form-label">Status:</label>
+					<select th:field="*{documentStatus}" class="m-2">
+						<option th:each="documentStatus : ${documentStatusList}" th:text="${documentStatus}" th:value="${documentStatus}"></option>
+					</select>
+					<button type="submit" class="m-2 btn btn-primary">Update Status</button>
+					<input type="hidden" th:field="*{id}" class="form-control" th:value="${document.id}"/>
 				</div>
-
-				<input type="hidden" th:field="*{id}" class="form-control" th:value="${document.id}"/>
-				<button type="submit" class="btn btn-primary">Update Status</button>
 			</form>
 			<a href="#" th:href="@{/document/list}" class="btn btn-primary">Back to document list</a>
 		</div>
@@ -109,7 +105,7 @@
 	</div>
 	
 	<div class="card">
-		<div class="card-header bg-primary text-white">
+		<div class="card-header bg-primary text-white">`
 			Journal records
 		</div>
 		<div class="card-body">

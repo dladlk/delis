@@ -17,10 +17,6 @@ public class SmpServiceEndpointData {
 	private boolean requireBusinessLevelSignature;
 	private byte[] certificate;
 	
-	public byte[] getCertificate() {
-		return null;
-	}
-	
 	public String getCertificateBase64() {
 		if (certificate != null) {
 			return Base64.getEncoder().encodeToString(certificate);
