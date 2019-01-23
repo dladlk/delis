@@ -12,6 +12,7 @@ import { TableHeaderSortModel } from "../../../bs-component/components/table-hea
 import { PaginationService } from "../../../bs-component/components/pagination/pagination.service";
 import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
 import { DocumentModel } from "../models/document.model";
+import { ErrorService } from "../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
@@ -56,6 +57,7 @@ export class DocumentsComponent implements OnInit {
         private documentsService: DocumentsService,
         private documentsStaticService: DocumentsTestGuiStaticService,
         private locale: LocaleService,
+        private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -146,7 +148,7 @@ export class DocumentsComponent implements OnInit {
                 this.pagination.pageSize = data["pageSize"];
                 this.documents = data["items"];
             }, error => {
-                localStorage.removeItem('isLoggedin');
+                this.errorService.errorProcess(error);
             }
         );
     }

@@ -4,10 +4,11 @@ import { environment } from "../../../../../../../environments/environment";
 import { HeaderModel } from "../../../../../components/header/header.model";
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../../../service/locale.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { JournalIdentifierService } from "../../services/journal.identifier.service";
 import { JournalIdentifierTestGuiStaticService } from "../../services/journal.identifier.test-gui-static.service";
 import { JournalIdentifierModel } from "../../models/journal.identifier.model";
+import { ErrorService } from "../../../../../../service/error.service";
 
 @Component({
     selector: 'app-journal-one-identifier',
@@ -26,7 +27,7 @@ export class JournalOneIdentifierComponent {
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
-        private router: Router,
+        private errorService: ErrorService,
         private journalIdentifierService: JournalIdentifierService,
         private journalIdentifierTestGuiStaticService: JournalIdentifierTestGuiStaticService
     ) {
@@ -42,7 +43,7 @@ export class JournalOneIdentifierComponent {
             this.journalIdentifierService.getOneJournalIdentifierById(id).subscribe((data: JournalIdentifierModel) => {
                 this.journalIdentifier = data;
             }, error => {
-                localStorage.removeItem('isLoggedin');
+               this.errorService.errorProcess(error);
             });
         } else {
             this.journalIdentifier = Object.assign({}, this.journalIdentifierTestGuiStaticService.getOneJournalIdentifierById(id));

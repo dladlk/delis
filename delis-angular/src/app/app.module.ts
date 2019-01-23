@@ -17,6 +17,7 @@ import { LocaleService } from "./service/locale.service";
 import { RuntimeConfigService } from "./service/runtime.config.service";
 import { HttpRestService } from "./service/http.rest.service";
 import { ContentSelectInfoService } from "./service/content.select.info.service";
+import { ErrorService } from "./service/error.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -48,7 +49,8 @@ export const createTranslateLoader = (http: HttpClient) => {
         AuthorizationService,
         ContentSelectInfoService,
         HttpRestService,
-        LocaleService],
+        LocaleService,
+        ErrorService],
     bootstrap: [AppComponent],
     exports: [BsDatepickerModule]
 })
