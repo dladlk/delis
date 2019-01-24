@@ -4,7 +4,7 @@
             <div class="card-header">
                 {{ 'dashboard.charts.header' | translate | uppercase }}
             </div>
-            <div class="card-body">
+            <div class="card-body" *ngIf="lineChartData.length > 0">
                 <canvas baseChart height="100"
                         [datasets]="lineChartData"
                         [labels]="lineChartLabels"
