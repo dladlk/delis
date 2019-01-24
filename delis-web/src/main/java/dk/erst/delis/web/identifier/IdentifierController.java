@@ -1,14 +1,11 @@
 package dk.erst.delis.web.identifier;
 
-import dk.erst.delis.dao.IdentifierDaoRepository;
-import dk.erst.delis.dao.JournalIdentifierDaoRepository;
-import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+import dk.erst.delis.web.organisation.OrganisationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +21,10 @@ import java.util.List;
 public class IdentifierController {
 
 	@Autowired
-	private IdentifierDaoRepository identifierDaoRepository;
+	private IdentifierService identifierService;
 	@Autowired
-	private JournalIdentifierDaoRepository journalIdentifierDaoRepository;
-	@Autowired
-	private OrganisationDaoRepository organisationDaoRepository;
-	
+	private OrganisationService organisationService;
+
 
 	@GetMapping("/identifier/list")
 	public String listAll(Model model, RedirectAttributes redirectAttributes) {
@@ -40,15 +35,15 @@ public class IdentifierController {
 	public String list(@PathVariable long organisationId, Model model, RedirectAttributes redirectAttributes) {
 		Iterator<Identifier> list;
 		if (organisationId == -1) {
-			list = identifierDaoRepository.findAll(Sort.by("id")).iterator();
+			list = identifierService.findAll();
 		} else {
-			Organisation organisation = organisationDaoRepository.findById(organisationId).get();
+			Organisation organisation = organisationService.findOrganisation(organisationId);
 			if (organisation == null) {
 				redirectAttributes.addFlashAttribute("errorMessage", "Organisation is not found");
 				return "redirect:/home";
 			}
 			
-			list = identifierDaoRepository.findByOrganisation(organisation).iterator();
+			list = identifierService.findByOrganisation(organisation);
 			model.addAttribute("organisation", organisation);
 		}
 		model.addAttribute("identifierList", list);
@@ -63,32 +58,24 @@ public class IdentifierController {
 		List<Long> ids = idList.getIdList();
 		IdentifierStatus status = idList.getStatus();
 		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();
-		if (ids.size() > 0) {
-			List<Identifier> identifierList = identifierDaoRepository.findAllById(idList.getIdList());
-			identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus);});
-			identifierDaoRepository.saveAll(identifierList);
-		}
+		identifierService.updateStatuses(ids, status, publishStatus);
 		return "redirect:/identifier/list";
 	}
 
 	@PostMapping("/identifier/updatestatus")
 	public String updateStatus(Identifier staleIdentifier, RedirectAttributes ra) {
 		Long id = staleIdentifier.getId();
-		Identifier identifier = identifierDaoRepository.findById(id).get();
-		if (identifier == null) {
+		int i = identifierService.updateStatus(id, staleIdentifier.getStatus(), staleIdentifier.getPublishingStatus());
+		if (i == 0) {
 			ra.addFlashAttribute("errorMessage", "Identifier with ID " + id + " is not found");
 			return "redirect:/identifier/list";
 		}
-
-		identifier.setStatus(staleIdentifier.getStatus());
-		identifier.setPublishingStatus(staleIdentifier.getPublishingStatus());
-		identifierDaoRepository.save(identifier);
 		return "redirect:/identifier/view/" + id;
 	}
 
 	@GetMapping("/identifier/view/{id}")
 	public String view(@PathVariable long id, Model model, RedirectAttributes ra) {
-		Identifier identifier = identifierDaoRepository.findById(id).get();
+		Identifier identifier = identifierService.findOne(id);
 		if (identifier == null) {
 			ra.addFlashAttribute("errorMessage", "Identifier is not found");
 			return "redirect:/home";
@@ -97,24 +84,19 @@ public class IdentifierController {
 		model.addAttribute("identifierStatusList", IdentifierStatus.values());
 		model.addAttribute("identifierPublishingStatusList", IdentifierPublishingStatus.values());
 		model.addAttribute("identifier", identifier);
-		model.addAttribute("lastJournalList", journalIdentifierDaoRepository.findTop5ByIdentifierOrderByIdDesc(identifier));
+		model.addAttribute("lastJournalList", identifierService.getJournalRecords(identifier));
 		
 		return "identifier/view";
 	}
 	
 	@GetMapping("/identifier/delete/{id}")
 	public String delete(@PathVariable long id, Model model, RedirectAttributes ra) {
-		Identifier identifier = identifierDaoRepository.findById(id).get();
-		if (identifier == null) {
+		int count = identifierService.markAsDeleted(id);
+		if (count == 0) {
 			ra.addFlashAttribute("errorMessage", "Identifier is not found");
 			return "redirect:/home";
 		}
-		
-		identifier.setStatus(IdentifierStatus.DELETED);
-		identifierDaoRepository.save(identifier);
-		
-		ra.addFlashAttribute("message", String.format("Identifier %s is marked as deleted", identifier.getUniqueValueType()));
-		
+		ra.addFlashAttribute("message", String.format("Identifier %s is marked as deleted", identifierService.findOne(id).getUniqueValueType()));
 		return view(id, model, ra);
 	}
 }
