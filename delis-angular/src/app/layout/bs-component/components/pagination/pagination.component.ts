@@ -43,4 +43,17 @@ export class PaginationComponent {
     clearFilter() {
         this.paginationService.clearFilter(new PaginationModel());
     }
+
+    generateFrom() : number {
+        return this.pagination.pageSize * (this.pagination.currentPage - 1) + 1;
+    }
+
+    generateTo() {
+        let lastSize = this.pagination.pageSize * (this.pagination.currentPage - 1) + this.pagination.pageSize;
+        if (lastSize < this.pagination.collectionSize) {
+            return lastSize;
+        } else {
+            return this.pagination.collectionSize;
+        }
+    }
 }

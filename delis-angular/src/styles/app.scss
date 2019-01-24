@@ -24,6 +24,10 @@ $topnav-background-color: #005b7c;
   color: #ebf5ff;
 }
 
+.btn-sm:hover, .btn-sm:focus, .btn-sm:active {
+  box-shadow: none !important;
+}
+
 button {
   color: #d4d4d4 !important;
   background-color: $topnav-background-color !important;
