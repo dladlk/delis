@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class IdentifierService {
         int count = 0;
         if (idList.size() > 0) {
             List<Identifier> identifierList = identifierDaoRepository.findAllById(idList);
-            identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus);});
+            identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus); noticeInJournal(status, publishStatus, identifier);});
             count = identifierList.size();
             identifierDaoRepository.saveAll(identifierList);
         }
@@ -58,10 +59,19 @@ public class IdentifierService {
             identifier.setStatus(status);
             identifier.setPublishingStatus(publishStatus);
             identifierDaoRepository.save(identifier);
+            noticeInJournal(status, publishStatus, identifier);
             count++;
         }
 
         return count;
+    }
+
+    private void noticeInJournal(IdentifierStatus status, IdentifierPublishingStatus publishStatus, Identifier identifier) {
+        JournalIdentifier updateRecord = new JournalIdentifier();
+        updateRecord.setIdentifier(identifier);
+        updateRecord.setOrganisation(identifier.getOrganisation());
+        updateRecord.setMessage(MessageFormat.format("Updated by user manually. Set status={0} and publishStatus={1}.", status, publishStatus));
+        journalIdentifierDaoRepository.save(updateRecord);
     }
 
     List<JournalIdentifier> getJournalRecords (Identifier identifier) {
