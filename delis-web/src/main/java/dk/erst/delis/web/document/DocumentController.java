@@ -28,14 +28,11 @@ import java.util.List;
 public class DocumentController {
 
 	@Autowired
-	private DocumentDaoRepository documentDaoRepository;
-	@Autowired
-	private JournalDocumentDaoRepository journalDocumentDaoRepository;
-
-	@Autowired
 	private DocumentProcessService documentProcessService;
 	@Autowired
 	private DocumentLoadService documentLoadService;
+	@Autowired
+	private DocumentService documentService;
 
 	@RequestMapping("/document/list")
 	public String list(Model model) {
@@ -44,8 +41,7 @@ public class DocumentController {
 
 	@PostMapping("/document/list/filter")
 	public String listFilter(Model model) {
-		List<Document> list;
-		list = documentDaoRepository.findAll(PageRequest.of(0, 10, Sort.by("id").descending())).getContent();
+		List<Document> list = documentService.documentList(0, 10);
 		model.addAttribute("documentList", list);
 		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", DocumentStatus.values());
@@ -56,31 +52,25 @@ public class DocumentController {
 	public String listFilter(@ModelAttribute DocumentStatusBachUdpateInfo idList, Model model) {
 		List<Long> ids = idList.getIdList();
 		DocumentStatus status = idList.getStatus();
-		if (ids.size() > 0) {
-			Iterable<Document> docsToUpdateStatus = documentDaoRepository.findAllById(ids);
-			docsToUpdateStatus.forEach(document -> document.setDocumentStatus(status));
-			documentDaoRepository.saveAll(docsToUpdateStatus);
-		}
+		documentService.updateStatuses(ids, status);
 		return "redirect:/document/list";
 	}
 
 	@PostMapping("/document/updatestatus")
 	public String updateStatus(Document staleDocument, RedirectAttributes ra) {
 		Long id = staleDocument.getId();
-		Document document = documentDaoRepository.findById(id).get();
-		if (document == null) {
+		DocumentStatus documentStatus = staleDocument.getDocumentStatus();
+		int count = documentService.updateStatus(id, documentStatus);
+		if (count == 0) {
 			ra.addFlashAttribute("errorMessage", "Document with ID " + id + " is not found");
 			return "redirect:/document/list";
 		}
-
-		document.setDocumentStatus(staleDocument.getDocumentStatus());
-		documentDaoRepository.save(document);
 		return "redirect:/document/view/" + id;
 	}
 
 	@GetMapping("/document/view/{id}")
 	public String view(@PathVariable long id, Model model, RedirectAttributes ra) {
-		Document document = documentDaoRepository.findById(id).orElse(null);
+		Document document = documentService.getDocument(id);
 		if (document == null) {
 			ra.addFlashAttribute("errorMessage", "Document is not found");
 			return "redirect:/home";
@@ -88,7 +78,7 @@ public class DocumentController {
 
 		model.addAttribute("document", document);
 		model.addAttribute("documentStatusList", DocumentStatus.values());
-		model.addAttribute("lastJournalList", journalDocumentDaoRepository.findByDocumentOrderByIdAsc(document));
+		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
 
 		return "/document/view";
 	}
