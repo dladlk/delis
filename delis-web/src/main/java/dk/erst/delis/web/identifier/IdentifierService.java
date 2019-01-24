@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -42,14 +43,13 @@ public class IdentifierService {
     }
 
     public int updateStatuses (List<Long> idList, IdentifierStatus status, IdentifierPublishingStatus publishStatus) {
-        int count = 0;
+        AtomicInteger count = new AtomicInteger(0);
         if (idList.size() > 0) {
             List<Identifier> identifierList = identifierDaoRepository.findAllById(idList);
-            identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus); noticeInJournal(status, publishStatus, identifier);});
-            count = identifierList.size();
+            identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus); noticeInJournal(status, publishStatus, identifier);count.getAndIncrement();});
             identifierDaoRepository.saveAll(identifierList);
         }
-        return count;
+        return count.get();
     }
 
     public int updateStatus (Long id, IdentifierStatus status, IdentifierPublishingStatus publishStatus) {
