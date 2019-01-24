@@ -1,7 +1,7 @@
 <div class="d-flex flex-row" style="margin-left: 2%">
     <div class="p-3">
         <span>
-            Showing {{pagination.currentPage}} to {{pagination.pageSize}} of {{pagination.collectionSize}} entries&nbsp;
+            Showing {{generateFrom()}} to {{generateTo()}} of {{pagination.collectionSize}} entries&nbsp;
         </span>
     </div>
     <div class="p-2">
@@ -32,7 +32,7 @@
     </div>
     <div class="p-1">
         &nbsp;&nbsp;
-        <button type="button" class="btn btn-primary" (click)="clearFilter()">&nbsp;{{ 'pagination.clear' | translate }}&nbsp;&nbsp;
+        <button type="button" class="btn" (click)="clearFilter()">&nbsp;{{ 'pagination.clear' | translate }}&nbsp;&nbsp;
             <i class="fa fa-eraser"></i>&nbsp;
         </button>
     </div>

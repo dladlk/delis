@@ -11,73 +11,70 @@
                         <table class="table table-hover table-sm">
                             <thead>
                             <tr>
-                                <th></th>
                                 <th *ngFor="let hed of tableHeaderSortModels">
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-light" (click)="clickFilter(hed.columnName)">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)">
                                             <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
                                         </button>
                                     </div>
                                 </th>
                             </tr>
                             <tr>
-                                <th></th>
-                                <th>
+                                <td>
                                     <input class="form-control"
                                            type="text"
                                            [(ngModel)]="textOrganisation"
                                            placeholder="Organisation"
                                            (change)="loadTextOrganisation($event.target.value)"/>
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     <input class="form-control"
                                            type="text"
                                            [(ngModel)]="textDocument"
                                            placeholder="Document"
                                            (change)="loadTextDocument($event.target.value)"/>
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     <ng-select [items]="typeList"
                                                placeholder="types: "
                                                [(ngModel)]="selectedType"
                                                (change)="loadType()">
                                     </ng-select>
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     <ng-select [items]="successList"
                                                bindLabel="type"
                                                placeholder="Success: "
                                                [(ngModel)]="selectedSuccess"
                                                (change)="loadSuccess()">
                                     </ng-select>
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     <input class="form-control"
                                            type="text"
                                            [(ngModel)]="textMessage"
                                            placeholder="Message"
                                            (change)="loadTextMessage($event.target.value)"/>
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     <input class="form-control"
                                            type="text"
                                            [(ngModel)]="textDurationMs"
                                            placeholder="DurationMs"
                                            (change)="loadTextDurationMs($event.target.value)"/>
-                                </th>
-                                <th>
+                                </td>
+                                <td>
                                     <input bsDaterangepicker
                                            [bsConfig]="{containerClass: 'theme-dark-blue'}"
                                            class="form-control"
                                            placeholder="Received Date"
                                            type="text"
                                            (bsValueChange)="loadReceivedDate($event)">
-                                </th>
+                                </td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of journalDocuments; let i = index" [routerLink]="['/journal-documents/', doc.id]">
-                                <th>{{(i + 1) + ((pagination.currentPage - 1) * pagination.pageSize)}}</th>
                                 <td>{{doc.organisation.name}}</td>
                                 <td>{{doc.document.documentStatus}}</td>
                                 <td>{{doc.type}}</td>
