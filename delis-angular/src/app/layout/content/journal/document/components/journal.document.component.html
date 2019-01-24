@@ -74,7 +74,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr *ngFor="let doc of journalDocuments; let i = index" [routerLink]="['/journal-documents/', doc.id]">
+                            <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
                                 <td>{{doc.organisation.name}}</td>
                                 <td>{{doc.document.documentStatus}}</td>
                                 <td>{{doc.type}}</td>
