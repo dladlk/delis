@@ -15,7 +15,7 @@ public class SBDHTranslator {
 
     public Header addHeader(Path source, Path target) {
         try {
-            NoSbdhParser sbdhParser = new NoSbdhParser();
+            NoSbdhParser sbdhParser = new DelisSbdhParser();
             Header header = sbdhParser.parse(new FileInputStream(source.toString()));
             FileOutputStream resultStream = new FileOutputStream(target.toString());
             try (SbdWriter sbdWriter = SbdWriter.newInstance(resultStream, header)) {

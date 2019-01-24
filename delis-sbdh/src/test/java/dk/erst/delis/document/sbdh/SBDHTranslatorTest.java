@@ -20,10 +20,6 @@ public class SBDHTranslatorTest {
         String suffix = "_sbdh.xml";
 
         for (File sourceFile : resourcesFolder.listFiles()) {
-            if(sourceFile.getName().equalsIgnoreCase("CII_invoice_example.xml")) {
-                //skip CrossIndustryInvoice
-                continue;
-            }
             File targetFile = File.createTempFile(sourceFile.getName(), suffix);
             targetFile.deleteOnExit();
             Header expected = service.addHeader(sourceFile.toPath(), targetFile.toPath());
