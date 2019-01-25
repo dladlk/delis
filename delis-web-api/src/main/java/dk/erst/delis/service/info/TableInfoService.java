@@ -35,11 +35,22 @@ public class TableInfoService {
             }
         });
 
-        return new ListContainer(generateTableInfoDataList(entityClasses).stream().filter(entity -> CollectionUtils.isNotEmpty(entity.getEntityEnumInfo().keySet())).collect(Collectors.toList()));
+        if (CollectionUtils.isNotEmpty(entityClasses)) {
+            return new ListContainer<>(
+                    generateTableInfoDataList(entityClasses)
+                            .stream()
+                            .filter(entity -> CollectionUtils.isNotEmpty(entity.getEntityEnumInfo().keySet()))
+                            .collect(Collectors.toList()));
+        } else {
+            return new ListContainer<>(Collections.emptyList());
+        }
     }
 
-    private List<TableInfoData> generateTableInfoDataList(List<Class> enities) {
-        return enities.stream().map(this::generateTableInfoData).collect(Collectors.toList());
+    private List<TableInfoData> generateTableInfoDataList(List<Class> entities) {
+        return entities
+                .stream()
+                .map(this::generateTableInfoData)
+                .collect(Collectors.toList());
     }
 
     private TableInfoData generateTableInfoData(Class entity) {
@@ -49,7 +60,12 @@ public class TableInfoService {
         for ( Field field : fields ) {
             if (Modifier.isPrivate(field.getModifiers())) {
                 if (Enum.class.isAssignableFrom(field.getType())) {
-                    entityEnumInfo.put(field.getName(), Arrays.stream(((Class<Enum>) field.getType()).getEnumConstants()).map(Enum::name).collect(Collectors.toList()));
+                    entityEnumInfo.put(
+                            field.getName(),
+                            Arrays
+                                    .stream(((Class<Enum>) field.getType()).getEnumConstants())
+                                    .map(Enum::name)
+                                    .collect(Collectors.toList()));
                 }
             }
         }
