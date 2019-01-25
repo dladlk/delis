@@ -24,7 +24,10 @@ public class MetadataSerializerTest {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ms.serialize(um, baos);
 		
-		System.out.println(new String(baos.toByteArray(), StandardCharsets.UTF_8));
+		String result = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+		System.out.println(result);
+		assertNotNull(result);
+		assertTrue(result.contains("text/xml"));
 	}
 
 }
