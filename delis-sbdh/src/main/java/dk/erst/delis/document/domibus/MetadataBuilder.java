@@ -1,20 +1,58 @@
 package dk.erst.delis.document.domibus;
 
-import eu.domibus.plugin.fs.ebms3.MessageProperties;
-import eu.domibus.plugin.fs.ebms3.Property;
-import eu.domibus.plugin.fs.ebms3.UserMessage;
+import eu.domibus.plugin.fs.ebms3.*;
 import no.difi.vefa.peppol.common.model.Header;
+import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+
+import java.util.List;
 
 public class MetadataBuilder {
 
-	public UserMessage buildUserMessage(Header sbdhHeader) {
-		UserMessage um = new UserMessage();
-		MessageProperties messageProperties = new MessageProperties();
+	public UserMessage buildUserMessage(Header sbdhHeader, String partyIdValue) {
+		UserMessage userMessage = new UserMessage();
+		PartyInfo partyInfo = new PartyInfo();
+		From from = new From();
+		PartyId partyId = new PartyId();
+		partyId.setType("urn:fdc:peppol.eu:2017:identifiers:ap");
+		partyId.setValue(partyIdValue);
+		from.setPartyId(partyId);
+		from.setRole("http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator");
+		partyInfo.setFrom(from);
+
+		AgreementRef agreementRef = new AgreementRef();
+		agreementRef.setValue("urn:fdc:peppol.eu:2017:agreements:tia:ap_provider");
+		Service service = new Service();
+		service.setType("urn:fdc:peppol.eu:2017:identifiers:proc-id");
+		service.setValue("urn:www.cenbii.eu:profile:bii05:ver2.0");
+		CollaborationInfo collaborationInfo = new CollaborationInfo();
+		collaborationInfo.setAgreementRef(agreementRef);
+		collaborationInfo.setService(service);
+		collaborationInfo.setAction(sbdhHeader.getDocumentType().toString());
+
+		Property originalSender = new Property();
+		originalSender.setName("originalSender");
+		ParticipantIdentifier sender = sbdhHeader.getSender();
+		ParticipantIdentifier receiver = sbdhHeader.getReceiver();
+		originalSender.setType(sender.getScheme().getIdentifier());
+		originalSender.setValue(sender.getIdentifier());
+
+		Property finalRecipient = new Property();
+		finalRecipient.setName("finalRecipient");
+		finalRecipient.setType(receiver.getScheme().getIdentifier());
+		finalRecipient.setValue(receiver.getIdentifier());
+
 		Property mimeType = new Property();
 		mimeType.setName("mimeType");
 		mimeType.setValue("text/xml");
-		messageProperties.getProperty().add(mimeType);
-		um.setMessageProperties(messageProperties);
-		return um ;
+
+		MessageProperties messageProperties = new MessageProperties();
+		List<Property> propertyList = messageProperties.getProperty();
+		propertyList.add(mimeType);
+		propertyList.add(originalSender);
+		propertyList.add(finalRecipient);
+		userMessage.setPartyInfo(partyInfo);
+		userMessage.setCollaborationInfo(collaborationInfo);
+		userMessage.setMessageProperties(messageProperties);
+		return userMessage ;
 	}
 }
