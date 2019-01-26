@@ -1,10 +1,8 @@
 package dk.erst.delis.service.info;
 
-import dk.erst.delis.data.annotations.WebApiContent;
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.rest.data.response.ListContainer;
 import dk.erst.delis.rest.data.response.info.TableInfoData;
+import dk.erst.delis.util.ClassLoaderUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,15 +24,7 @@ import java.util.stream.Collectors;
 public class TableInfoService {
 
     public ListContainer<TableInfoData> getTableInfoByAllEntities() {
-
-        List<Class> entityClasses = new ArrayList<>();
-
-        Arrays.asList(Document.class, JournalDocument.class).forEach(entityClass -> {
-            if (Objects.nonNull(entityClass.getAnnotation(WebApiContent.class))) {
-                entityClasses.add(entityClass);
-            }
-        });
-
+        List<Class> entityClasses = ClassLoaderUtil.findAllWebApiContentEntityClasses();
         if (CollectionUtils.isNotEmpty(entityClasses)) {
             return new ListContainer<>(
                     generateTableInfoDataList(entityClasses)
@@ -71,7 +61,7 @@ public class TableInfoService {
         }
 
         TableInfoData data = new TableInfoData();
-        data.setEntityName(Arrays.stream(entity.getName().split("\\.")).reduce((first, last) -> last).get());
+        data.setEntityName(ClassLoaderUtil.generateEntityByFullNameClass(entity));
         data.setEntityEnumInfo(entityEnumInfo);
 
         return data;
