@@ -9,9 +9,9 @@ import dk.erst.delis.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.WebRequest;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author funtusthan, created by 23.01.19
@@ -19,6 +19,8 @@ import java.util.List;
 
 @Service
 public class ChartServiceImpl implements ChartService {
+
+    private static final int DEFAULT_INTERVAL = 10;
 
     private final DocumentRepository documentRepository;
 
@@ -29,23 +31,52 @@ public class ChartServiceImpl implements ChartService {
 
     @Override
     @Transactional(readOnly = true)
-    public ChartData generateChartDataByLastHourFromIntervalOfTenMinutes() {
-        // generate chart data by last hour by interval of 10 minutes
+    public ChartData generateChartData(WebRequest request) {
 
+        Date start = null, end = null;
+        int period, interval;
+
+        String endDateParameter = request.getParameter("endDate");
+        if (Objects.nonNull(endDateParameter)) {
+            end = new Date(Long.parseLong(endDateParameter));
+        }
+        String startDateParameter = request.getParameter("startDate");
+        if (Objects.nonNull(startDateParameter)) {
+            start = new Date(Long.parseLong(startDateParameter));
+        }
+
+        String periodParameter = request.getParameter("period");
+        String intervalParameter = request.getParameter("interval");
+        if (Objects.nonNull(periodParameter) && Objects.nonNull(intervalParameter)) {
+            period = Integer.parseInt(periodParameter);
+            interval = Integer.parseInt(intervalParameter);
+        } else {
+            period = Calendar.MINUTE;
+            interval = DEFAULT_INTERVAL;
+        }
+
+        if (Objects.isNull(start) && Objects.isNull(end)) {
+            return generateDefaultChartData(period, interval);
+        }
+
+        return new ChartData();
+    }
+
+    private ChartData generateDefaultChartData(int period, int interval) {
         ChartData chartData = new ChartData();
         List<LineChartData> lineChartData = new ArrayList<>();
         List<String> lineChartLabels = new ArrayList<>();
 
         LineChartData lineChartDataContent = new LineChartData();
         lineChartDataContent.setLabel("chart data by last hour by interval of 10 minutes");
-        List<Long> dataGraf = new ArrayList<>();
+        List<Long> dataGraph = new ArrayList<>();
         int[] minutes = {60, 50, 40, 30, 20, 10};
         for (int minute : minutes) {
-            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(minute, 10);
+            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(period, minute, interval);
             lineChartLabels.add(String.valueOf(dateRange.getStart()));
-            dataGraf.add(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
+            dataGraph.add(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
         }
-        lineChartDataContent.setData(dataGraf);
+        lineChartDataContent.setData(dataGraph);
         lineChartData.add(lineChartDataContent);
 
         chartData.setLineChartData(lineChartData);

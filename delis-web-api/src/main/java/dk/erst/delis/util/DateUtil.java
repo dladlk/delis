@@ -4,6 +4,9 @@ import dk.erst.delis.rest.data.request.param.DateRangeModel;
 
 import lombok.experimental.UtilityClass;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,16 +35,22 @@ public class DateUtil {
         return new DateRangeModel(start, end);
     }
 
-    public DateRangeModel generateDateRangeByFromAndToLastHour(int minutes, int minuteInterval) {
+    public DateRangeModel generateDateRangeByFromAndToLastHour(int timeType, int time, int interval) {
         Date start = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(start);
-        cal.add(Calendar.MINUTE, -minutes);
+        cal.add(timeType, -time);
         start = cal.getTime();
 
         cal.setTime(start);
-        cal.add(Calendar.MINUTE, minuteInterval);
+        cal.add(timeType, interval);
         Date end = cal.getTime();
         return new DateRangeModel(start, end);
+    }
+
+    public Date generateBeginningOfDay() {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.now(), zoneId);
+        return Date.from(zonedDateTime.toLocalDate().atStartOfDay(zoneId).toInstant());
     }
 }

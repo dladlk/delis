@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * @author funtusthan, created by 23.01.19
@@ -26,7 +27,7 @@ public class ChartController {
     }
 
     @GetMapping
-    public ResponseEntity<DataContainer<ChartData>> generateDashboardData() {
-        return ResponseEntity.ok(new DataContainer<>(chartService.generateChartDataByLastHourFromIntervalOfTenMinutes()));
+    public ResponseEntity<DataContainer<ChartData>> generateDashboardData(WebRequest request) {
+        return ResponseEntity.ok(new DataContainer<>(chartService.generateChartData(request)));
     }
 }
