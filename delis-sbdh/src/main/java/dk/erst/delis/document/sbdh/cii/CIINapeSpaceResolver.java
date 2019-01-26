@@ -37,7 +37,7 @@ public class CIINapeSpaceResolver implements NamespaceContext {
     }
 
     @Override
-    public Iterator getPrefixes(String namespaceURI) {
+    public Iterator<String> getPrefixes(String namespaceURI) {
         // Not needed in this context.
         return null;
     }
