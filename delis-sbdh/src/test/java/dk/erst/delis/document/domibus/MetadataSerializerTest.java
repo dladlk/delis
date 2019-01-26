@@ -18,7 +18,7 @@ public class MetadataSerializerTest {
 	public void testSerialize() throws JAXBException {
 		MetadataBuilder b = new MetadataBuilder();
 		Header header = Header.of(null, null, null, null);
-		UserMessage um = b.buildUserMessage(header);
+		UserMessage um = b.buildUserMessage(header, "dynconcepttestparty01gw");
 		
 		MetadataSerializer ms = new MetadataSerializer();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
