@@ -1,14 +1,6 @@
 package dk.erst.delis.document.sbdh;
 
-import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
-import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
-import no.difi.oxalis.api.lang.OxalisContentException;
-import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
-import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
-import no.difi.oxalis.sniffer.document.NoSbdhParser;
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
-import org.w3c.dom.Document;
+import java.io.InputStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -17,82 +9,103 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
-import java.io.InputStream;
 
-public class DelisSbdhParser extends NoSbdhParser {
+import org.w3c.dom.Document;
 
-    private static final DocumentBuilderFactory documentBuilderFactory;
+import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
+import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
+import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
+import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
+import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
+import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
+import no.difi.vefa.peppol.common.model.Header;
 
-    static {
-        documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
+public class DelisSbdhParser {
 
-        try {
-            documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-        } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Unable to configure DOM parser for secure processing.", e);
-        }
-    }
+	private static final DocumentBuilderFactory documentBuilderFactory;
 
-    public PeppolStandardBusinessHeader originalParse(InputStream inputStream) throws OxalisContentException {
-        try {
+	static {
+		documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		documentBuilderFactory.setNamespaceAware(true);
 
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(inputStream);
-            boolean isCII = isCrossIndustryInvoice(document);
-            XPath xPath = XPathFactory.newInstance().newXPath();
-            NamespaceContext nsContext = new HardCodedNamespaceResolver();
-            if(isCII) {
-                nsContext = new CIINapeSpaceResolver();
-            }
-            xPath.setNamespaceContext(nsContext);
+		try {
+			documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		} catch (ParserConfigurationException e) {
+			throw new IllegalStateException("Unable to configure DOM parser for secure processing.", e);
+		}
+	}
 
-            PeppolStandardBusinessHeader sbdh = PeppolStandardBusinessHeader
-                    .createPeppolStandardBusinessHeaderWithNewDate();
+	public DelisSbdhParser() {
+		/*
+		 * Overwrite constructor to surpress NoSbdhParser log warning
+		 */
+	}
 
-            // use the plain UBL header parser to decode format and create correct document parser
-            PlainUBLHeaderParser headerParser = new PlainUBLHeaderParser(document, xPath);
-            if(isCII) {
-                headerParser = new CIIHeaderParser(document, xPath);
-            }
-            // make sure we actually have a UBL type document
-            if (headerParser.canParse()) {
-                sbdh.setDocumentTypeIdentifier(headerParser.fetchDocumentTypeId().toVefa());
-                sbdh.setProfileTypeIdentifier(headerParser.fetchProcessTypeId());
-                // try to use a specialized document parser to fetch more document details
-                PEPPOLDocumentParser documentParser = null;
-                try {
-                    documentParser = headerParser.createDocumentParser();
-                } catch (Exception ex) {
-                    /*
-                        allow this to happen so that "unknown" PEPPOL documents still
-                        can be used by explicitly setting sender and receiver thru API
-                    */
-                }
-                /* However, if we found an eligible parser, we should be able to determine the sender and receiver */
-                if (documentParser != null) {
-                    try {
-                        sbdh.setSenderId(documentParser.getSender());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        sbdh.setRecipientId(documentParser.getReceiver());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+	public Header parse(InputStream inputStream) {
+		return originalParse(inputStream).toVefa();
+	}
 
-            return sbdh;
-        } catch (Exception e) {
-            throw new OxalisContentException("Unable to parseOld document " + e.getMessage(), e);
-        }
-    }
+	public PeppolStandardBusinessHeader originalParse(InputStream inputStream) {
+		try {
 
-    private boolean isCrossIndustryInvoice(Document document) {
-        return "CrossIndustryInvoice".equalsIgnoreCase(document.getDocumentElement().getLocalName());
-    }
+			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			Document document = documentBuilder.parse(inputStream);
+			boolean isCII = isCrossIndustryInvoice(document);
+			XPath xPath = XPathFactory.newInstance().newXPath();
+			NamespaceContext nsContext = new HardCodedNamespaceResolver();
+			if (isCII) {
+				nsContext = new CIINapeSpaceResolver();
+			}
+			xPath.setNamespaceContext(nsContext);
 
+			PeppolStandardBusinessHeader sbdh = PeppolStandardBusinessHeader.createPeppolStandardBusinessHeaderWithNewDate();
+
+			// use the plain UBL header parser to decode format and create correct document
+			// parser
+			PlainUBLHeaderParser headerParser = new PlainUBLHeaderParser(document, xPath);
+			if (isCII) {
+				headerParser = new CIIHeaderParser(document, xPath);
+			}
+			// make sure we actually have a UBL type document
+			if (headerParser.canParse()) {
+				sbdh.setDocumentTypeIdentifier(headerParser.fetchDocumentTypeId().toVefa());
+				sbdh.setProfileTypeIdentifier(headerParser.fetchProcessTypeId());
+				// try to use a specialized document parser to fetch more document details
+				PEPPOLDocumentParser documentParser = null;
+				try {
+					documentParser = headerParser.createDocumentParser();
+				} catch (Exception ex) {
+					/*
+					 * allow this to happen so that "unknown" PEPPOL documents still can be used by
+					 * explicitly setting sender and receiver thru API
+					 */
+				}
+				/*
+				 * However, if we found an eligible parser, we should be able to determine the
+				 * sender and receiver
+				 */
+				if (documentParser != null) {
+					try {
+						sbdh.setSenderId(documentParser.getSender());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					try {
+						sbdh.setRecipientId(documentParser.getReceiver());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			return sbdh;
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to parseOld document " + e.getMessage(), e);
+		}
+	}
+
+	private boolean isCrossIndustryInvoice(Document document) {
+		return "CrossIndustryInvoice".equalsIgnoreCase(document.getDocumentElement().getLocalName());
+	}
 
 }
