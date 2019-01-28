@@ -57,8 +57,8 @@ public class ChartServiceImpl implements ChartService {
         }
 
         if (Objects.isNull(start) && Objects.isNull(end)) {
-            return generateChartDataFromBeginningDayToNow();
-//            return generateDefaultChartData();
+//            return generateChartDataFromBeginningDayToNow();
+            return generateDefaultChartData();
         }
 
         return new ChartData();
