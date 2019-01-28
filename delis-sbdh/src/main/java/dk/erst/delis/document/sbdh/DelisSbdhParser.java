@@ -1,6 +1,13 @@
 package dk.erst.delis.document.sbdh;
 
-import java.io.InputStream;
+import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
+import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
+import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
+import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
+import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
+import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
+import no.difi.vefa.peppol.common.model.Header;
+import org.w3c.dom.Document;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -9,16 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-
-import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
-import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
-import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
-import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
-import no.difi.vefa.peppol.common.model.Header;
+import java.io.InputStream;
 
 public class DelisSbdhParser {
 
@@ -47,9 +45,11 @@ public class DelisSbdhParser {
 
 	public PeppolStandardBusinessHeader originalParse(InputStream inputStream) {
 		try {
-
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(inputStream);
+			if(hasSBDH(document)){
+				throw new RuntimeException("Document already have SBDH.");
+			}
 			boolean isCII = isCrossIndustryInvoice(document);
 			XPath xPath = XPathFactory.newInstance().newXPath();
 			NamespaceContext nsContext = new HardCodedNamespaceResolver();
@@ -100,8 +100,12 @@ public class DelisSbdhParser {
 
 			return sbdh;
 		} catch (Exception e) {
-			throw new RuntimeException("Unable to parseOld document " + e.getMessage(), e);
+			throw new RuntimeException("Unable to parseOld document: " + e.getMessage(), e);
 		}
+	}
+
+	private boolean hasSBDH(Document document) {
+		return document.getElementsByTagName("StandardBusinessDocumentHeader").getLength() > 0;
 	}
 
 	private boolean isCrossIndustryInvoice(Document document) {
