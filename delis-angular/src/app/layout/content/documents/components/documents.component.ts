@@ -263,18 +263,22 @@ export class DocumentsComponent implements OnInit {
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickReceiver = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick;
-        this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
-        this.filter.countClickLastError = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick;
-        this.filter.countClickDocumentType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick;
-        this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
-        this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
-        this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
+        this.clearSort();
     }
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
+        this.clearSort();
+        this.selectedStatus = "ALL";
+        this.selectedDocumentType = "ALL";
+        this.selectedIngoingFormat = "ALL";
+        this.selectedLastError = "ALL";
+        this.textOrganisation = '';
+        this.textReceiver = '';
+        this.textSenderName = '';
+    }
+
+    private clearSort() {
         this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
         this.filter.countClickReceiver = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick;
         this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
@@ -283,9 +287,5 @@ export class DocumentsComponent implements OnInit {
         this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
         this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
         this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
-        this.selectedStatus = "ALL";
-        this.selectedDocumentType = "ALL";
-        this.selectedIngoingFormat = "ALL";
-        this.selectedLastError = "ALL";
     }
 }

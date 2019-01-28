@@ -180,6 +180,9 @@ export class JournalOrganisationComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
+        this.textOrganisation = '';
+        this.textMessage = '';
+        this.textDurationMs = '';
         this.clearCounts();
     }
 

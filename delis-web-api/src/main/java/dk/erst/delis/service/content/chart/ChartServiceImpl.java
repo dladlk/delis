@@ -20,7 +20,8 @@ import java.util.*;
 @Service
 public class ChartServiceImpl implements ChartService {
 
-    private static final int DEFAULT_INTERVAL = 10;
+    private static final int DEFAULT_INTERVAL_OF_MINUTES = 10;
+    private static final int DEFAULT_INTERVAL_OF_HOUR = 1;
 
     private final DocumentRepository documentRepository;
 
@@ -52,17 +53,52 @@ public class ChartServiceImpl implements ChartService {
             interval = Integer.parseInt(intervalParameter);
         } else {
             period = Calendar.MINUTE;
-            interval = DEFAULT_INTERVAL;
+            interval = DEFAULT_INTERVAL_OF_MINUTES;
         }
 
         if (Objects.isNull(start) && Objects.isNull(end)) {
-            return generateDefaultChartData(period, interval);
+            return generateChartDataFromBeginningDayToNow();
+//            return generateDefaultChartData();
         }
 
         return new ChartData();
     }
 
-    private ChartData generateDefaultChartData(int period, int interval) {
+    private ChartData generateChartDataFromBeginningDayToNow() {
+
+
+        ChartData chartData = new ChartData();
+        List<LineChartData> lineChartData = new ArrayList<>();
+        List<String> lineChartLabels = new ArrayList<>();
+
+        LineChartData lineChartDataContent = new LineChartData();
+        lineChartDataContent.setLabel("chart data from beginning day to now by interval of 10 minutes");
+        List<Long> dataGraph = new ArrayList<>();
+
+        Date start = DateUtil.generateBeginningOfDay();
+
+        int hoursRange = (int) DateUtil.rangeHoursDate(start) / 60;
+        int[] hours = new int[hoursRange];
+        for (int h = 24, i = 0 ; i < hoursRange ; h--, i++) {
+            hours[i] = h;
+            System.out.println("#: " + (i + 1) + ", hour = " + h);
+        }
+        for (int hour : hours) {
+            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(Calendar.HOUR, hour, DEFAULT_INTERVAL_OF_HOUR);
+            lineChartLabels.add(String.valueOf(dateRange.getStart()));
+            dataGraph.add(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
+        }
+        lineChartDataContent.setData(dataGraph);
+        lineChartData.add(lineChartDataContent);
+
+        chartData.setLineChartData(lineChartData);
+        chartData.setLineChartLabels(lineChartLabels);
+
+        return chartData;
+    }
+
+    private ChartData generateDefaultChartData() {
+
         ChartData chartData = new ChartData();
         List<LineChartData> lineChartData = new ArrayList<>();
         List<String> lineChartLabels = new ArrayList<>();
@@ -72,7 +108,7 @@ public class ChartServiceImpl implements ChartService {
         List<Long> dataGraph = new ArrayList<>();
         int[] minutes = {60, 50, 40, 30, 20, 10};
         for (int minute : minutes) {
-            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(period, minute, interval);
+            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(Calendar.MINUTE, minute, DEFAULT_INTERVAL_OF_MINUTES);
             lineChartLabels.add(String.valueOf(dateRange.getStart()));
             dataGraph.add(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
         }
