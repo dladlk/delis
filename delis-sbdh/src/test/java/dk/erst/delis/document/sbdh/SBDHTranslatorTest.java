@@ -18,14 +18,19 @@ public class SBDHTranslatorTest {
         SBDHTranslator service = new SBDHTranslator();
         File resourcesFolder = new File("../delis-resources/examples/xml");
         String suffix = "_sbdh.xml";
+        String metadataSuffix = "_metadata.xml";
 
         for (File sourceFile : resourcesFolder.listFiles()) {
             File targetFile = File.createTempFile(sourceFile.getName(), suffix);
+            File metadataFile = File.createTempFile(sourceFile.getName(), metadataSuffix);
             targetFile.deleteOnExit();
+            metadataFile.deleteOnExit();
             Header expected = service.addHeader(sourceFile.toPath(), targetFile.toPath());
+            boolean writeMetadata = service.writeMetadata(expected, "testPartyIdValue", metadataFile.toPath());
             SbdReader reader = SbdReader.newInstance(new FileInputStream(targetFile));
             Header actual = reader.getHeader();
             assertTrue(actual.equals(expected));
+            assertTrue(writeMetadata);
         }
     }
 }
