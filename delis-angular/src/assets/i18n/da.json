@@ -1,7 +1,7 @@
 {
   "sidebar.dashboard": "Oversigt",
   "sidebar.documents": "Dokumenter",
-  "sidebar.publishing": "Publicering",
+  "sidebar.identifier": "Id",
   "sidebar.journal": "Tidsskrift",
   "sidebar.journal.document": "Dokument",
   "sidebar.journal.identifier": "Id",
@@ -19,11 +19,11 @@
 
   "page-header.dashboard" : "Oversigt",
 
-  "dashboard.published" : "Publiceret",
-  "dashboard.documents" : "Modtagne dokumenter sidste time / gennemsnit",
-  "dashboard.errors" : "Fejl sidste time",
+  "dashboard.identifier" : "Id sidste tid",
+  "dashboard.documents" : "Modtagne dokumenter sidste tid / gennemsnit",
+  "dashboard.errors" : "Fejl sidste tid",
   "dashboard.details" : "Se detaljer",
-  "dashboard.charts.header" : "Antal dokumenter lastet i den sidste time",
+  "dashboard.charts.header" : "Antal dokumenter lastet i den sidste tid",
 
   "documents.header" : "Dokumenter",
   "documents.header.details" : "Dokument detaljer",
@@ -38,6 +38,19 @@
   "documents.table.columnName.Issued" : "Udstedt",
   "documents.table.columnName.SenderName" : "Afsender navn",
   "documents.table.columnName.ReceiverName" : "Modtager navn",
+
+  "identifier.header" : "Id",
+  "identifier.header.details" : "Id detaljer",
+  "identifier.table.header" : "Id Oversigt",
+  "identifier.table.columnName.Organisation" : "Organisation",
+  "identifier.table.columnName.IdentifierGroup" : "Identifier Gruppe",
+  "identifier.table.columnName.Value" : "Værdi",
+  "identifier.table.columnName.Type" : "Type",
+  "identifier.table.columnName.UniqueValueType" : "Unik Værdi Type",
+  "identifier.table.columnName.Status" : "Status",
+  "identifier.table.columnName.PublishingStatus" : "Udgivelsesstatus",
+  "identifier.table.columnName.Name" : "Navn",
+  "identifier.table.columnName.CreateTime" : "Opret Tid",
 
   "journal.documents.header" : "Tidsskrift Dokumenter",
   "journal.documents.header.details" : "Journal Document Detaljer",

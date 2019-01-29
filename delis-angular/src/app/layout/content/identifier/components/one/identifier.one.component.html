@@ -1,0 +1,59 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'identifier.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><strong>{{ identifier.name | uppercase }}</strong></div>
+                    <br>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>{{identifier.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>create time</td>
+                                <td>{{identifier.createTime}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation name</td>
+                                <td>{{identifier.organisation.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier group code</td>
+                                <td>{{identifier.identifierGroup.code}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier group name</td>
+                                <td>{{identifier.identifierGroup.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>value</td>
+                                <td>{{identifier.value}}</td>
+                            </tr>
+                            <tr>
+                                <td>name</td>
+                                <td>{{identifier.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>publishing status</td>
+                                <td>{{identifier.publishingStatus}}</td>
+                            </tr>
+                            <tr>
+                                <td>status</td>
+                                <td>{{identifier.status}}</td>
+                            </tr>
+                            <tr>
+                                <td>type</td>
+                                <td>{{identifier.type}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

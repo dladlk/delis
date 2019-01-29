@@ -1,14 +1,13 @@
 package dk.erst.delis.document.domibus;
 
-import java.io.OutputStream;
+import eu.domibus.plugin.fs.ebms3.UserMessage;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
-
-import eu.domibus.plugin.fs.ebms3.UserMessage;
+import java.io.OutputStream;
 
 public class MetadataSerializer {
 
@@ -21,7 +20,6 @@ public class MetadataSerializer {
 
         marshaller.marshal(new JAXBElement<UserMessage>(qName, clazz, null, objectToWrite), outputStream);
     }
-
 
 	public void serialize(UserMessage userMessage, OutputStream out) throws JAXBException {
 		writeXML(out, UserMessage.class, userMessage);

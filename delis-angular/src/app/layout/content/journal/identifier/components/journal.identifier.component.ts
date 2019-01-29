@@ -196,6 +196,10 @@ export class JournalIdentifierComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
+        this.textOrganisation = '';
+        this.textIdentifier = '';
+        this.textMessage = '';
+        this.textDurationMs = '';
         this.clearCounts();
     }
 

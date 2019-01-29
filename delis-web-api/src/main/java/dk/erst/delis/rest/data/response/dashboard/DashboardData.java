@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class DashboardData {
 
-    private long publishedLastHour;
+    private long identifierLastHour;
     private long errorLastHour;
     private long receivedDocumentsLastHour;
     private long averageDocumentsLastHour;

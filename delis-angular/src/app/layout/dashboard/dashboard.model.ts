@@ -1,6 +1,6 @@
 export class DashboardModel {
 
-    publishedLastHour: number;
+    identifierLastHour: number;
     errorLastHour: number;
     receivedDocumentsLastHour: number;
     averageDocumentsLastHour: number;
