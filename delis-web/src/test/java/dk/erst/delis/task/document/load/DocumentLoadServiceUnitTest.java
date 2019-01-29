@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
@@ -27,13 +28,23 @@ import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 @Slf4j
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class DocumentLoadServiceUnitTest {
+	@Autowired
+	private ConfigValueDaoRepository configRepository;
 
 	@Test
 	public void testLoadFile() throws IOException {
-		ConfigBean config = new ConfigBean(new ConfigProperties());
+		ConfigBean config = new ConfigBean(configRepository, new ConfigProperties());
 
 		DocumentDaoRepository documentDaoRepository = mock(DocumentDaoRepository.class);
 		when(documentDaoRepository.save(any(Document.class))).then(d -> {

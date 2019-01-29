@@ -1,8 +1,7 @@
 package dk.erst.delis.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("config")
 @Data

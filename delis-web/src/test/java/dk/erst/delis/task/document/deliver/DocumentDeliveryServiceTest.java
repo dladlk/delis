@@ -3,6 +3,7 @@ package dk.erst.delis.task.document.deliver;
 import com.google.common.io.Files;
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.*;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.identifier.Identifier;
@@ -48,6 +49,11 @@ public class DocumentDeliveryServiceTest {
 	private JournalDocumentDaoRepository journalDocumentDaoRepository;
 
 	@Autowired
+	private ConfigValueDaoRepository configRepository;
+	@Autowired
+	ConfigProperties configProperties;
+
+	@Autowired
 	private JournalDocumentService journalDocumentService;
 	@Autowired
 	private OrganisationSetupService setupService;
@@ -84,7 +90,7 @@ public class DocumentDeliveryServiceTest {
 	}
 
 	private DocumentDeliverService getDocumentDeliverService() {
-		DocumentBytesStorageService storageService = new DocumentBytesStorageService(new ConfigBean(null) {
+		DocumentBytesStorageService storageService = new DocumentBytesStorageService(new ConfigBean(configRepository, configProperties) {
 			@Override
 			public Path getStorageValidPath() {
 				return testFile.getParent();

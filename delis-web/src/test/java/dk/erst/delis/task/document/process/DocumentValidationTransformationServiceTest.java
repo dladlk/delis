@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
 
@@ -37,7 +38,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class DocumentValidationTransformationServiceTest {
 
 	@Autowired
@@ -45,6 +46,9 @@ public class DocumentValidationTransformationServiceTest {
 
 	@Autowired
 	private RuleDocumentValidationDaoRepository vRuleRepository;
+
+	@Autowired
+	private ConfigValueDaoRepository configRepository;
 
 	@Test
 	public void testCII() throws Exception {
@@ -72,7 +76,7 @@ public class DocumentValidationTransformationServiceTest {
 		try {
 			DocumentParseService parseService = new DocumentParseService();
 			ConfigProperties configProperties = new ConfigProperties();
-			ConfigBean configBean = new ConfigBean(configProperties);
+			ConfigBean configBean = new ConfigBean(configRepository, configProperties);
 			TransformationRuleService tRuleService = new TransformationRuleService(tRuleRepository);
 			ValidationRuleService vRuleService = new ValidationRuleService(vRuleRepository);
 			RuleService ruleService = new RuleService(configBean, vRuleService, tRuleService);
