@@ -13,7 +13,7 @@ import { JournalDocumentModel } from "../models/journal.document.model";
 import { JournalDocumentFilterProcessResult } from "../models/journal.document.filter.process.result";
 import { successList } from "../models/journal.document.view.model";
 import { DateRangeModel } from "../../../../../models/date.range.model";
-import {ErrorService} from "../../../../../service/error.service";
+import { ErrorService } from "../../../../../service/error.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.Organisation';
 const COLUMN_NAME_DOCUMENT = 'journal.documents.table.columnName.Document';

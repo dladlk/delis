@@ -1,7 +1,7 @@
 {
     "sidebar.dashboard": "Dashboard",
     "sidebar.documents": "Documents",
-    "sidebar.publishing": "Publishing",
+    "sidebar.identifier": "Identifier",
     "sidebar.journal": "Journal",
     "sidebar.journal.document": "Document",
     "sidebar.journal.identifier": "Identifier",
@@ -19,7 +19,7 @@
 
     "page-header.dashboard" : "Dashboard",
 
-    "dashboard.published" : "Published",
+    "dashboard.identifier" : "Identifiers last hour",
     "dashboard.documents" : "Received documents last hour / average",
     "dashboard.errors" : "Errors last hour",
     "dashboard.details" : "View Details",
@@ -38,6 +38,19 @@
     "documents.table.columnName.Issued" : "Issued",
     "documents.table.columnName.SenderName" : "Sender Name",
     "documents.table.columnName.ReceiverName" : "Receiver Name",
+
+    "identifier.header" : "Identifier",
+    "identifier.header.details" : "Identifier details",
+    "identifier.table.header" : "Identifier Overview",
+    "identifier.table.columnName.Organisation" : "Organisation",
+    "identifier.table.columnName.IdentifierGroup" : "Identifier Group",
+    "identifier.table.columnName.Value" : "Value",
+    "identifier.table.columnName.Type" : "Type",
+    "identifier.table.columnName.UniqueValueType" : "Unique Value Type",
+    "identifier.table.columnName.Status" : "Status",
+    "identifier.table.columnName.PublishingStatus" : "Publishing Status",
+    "identifier.table.columnName.Name" : "Name",
+    "identifier.table.columnName.CreateTime" : "Create Time",
 
     "journal.documents.header" : "Journal Documents",
     "journal.documents.header.details" : "Journal Document details",

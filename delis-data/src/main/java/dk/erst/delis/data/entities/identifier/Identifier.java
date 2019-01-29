@@ -2,6 +2,7 @@ package dk.erst.delis.data.entities.identifier;
 
 import javax.persistence.*;
 
+import dk.erst.delis.data.annotations.WebApiContent;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@WebApiContent
 @Table(indexes = {
 
 		@Index(name="I_ORGANISAION_ID", columnList="ORGANISATION_ID, STATUS, PUBLISHING_STATUS"),
