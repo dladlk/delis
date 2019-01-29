@@ -12,7 +12,6 @@ import { BsComponentModule } from "../../../../bs-component/bs-component.module"
 import { JournalDocumentComponent} from "../components/journal.document.component";
 import { JournalOneDocumentComponent } from "../components/one/journal.one.document.component";
 import { JournalDocumentService } from "../services/journal.document.service";
-import { JournalDocumentTestGuiStaticService } from "../services/journal.document.test-gui-static.service";
 import { JournalDocumentRoutingModule } from "../journal.document-routing.module";
 
 @NgModule({
@@ -28,6 +27,6 @@ import { JournalDocumentRoutingModule } from "../journal.document-routing.module
         HttpClientModule,
         BsComponentModule],
     declarations: [JournalDocumentComponent, JournalOneDocumentComponent],
-    providers: [JournalDocumentService, JournalDocumentTestGuiStaticService]
+    providers: [JournalDocumentService]
 })
 export class JournalDocumentModule {}

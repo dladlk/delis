@@ -9,7 +9,6 @@ import { DashboardComponent } from './dashboard.component';
 import { ChartDocumentComponent } from './components';
 import { StatModule } from '../../shared';
 import { ErrorsModule } from '../../shared';
-import { ChartDocumentTestGuiStaticService } from "./components/chart-document/services/chart.document.test-gui-static.service";
 import { DashboardService } from "./dashboard.service";
 import { ChartDocumentService } from "./components/chart-document/services/chart.document.service";
 
@@ -27,6 +26,6 @@ import { ChartDocumentService } from "./components/chart-document/services/chart
         DashboardComponent,
         ChartDocumentComponent
     ],
-    providers: [ChartDocumentTestGuiStaticService, ChartDocumentService, DashboardService]
+    providers: [ChartDocumentService, DashboardService]
 })
 export class DashboardModule {}

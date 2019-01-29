@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
+
 import { routerTransition } from "../../../../../router.animations";
-import { environment } from "../../../../../../environments/environment";
 import { HeaderModel } from "../../../../components/header/header.model";
 import { IdentifierModel } from "../../models/identifier.model";
 import { LocaleService } from "../../../../../service/locale.service";
@@ -17,7 +17,6 @@ import { IdentifierService } from "../../services/identifier.service";
 })
 export class IdentifierOneComponent {
 
-    env = environment;
     pageHeaders: HeaderModel[] = [];
     identifier: IdentifierModel = new IdentifierModel();
 
@@ -36,12 +35,10 @@ export class IdentifierOneComponent {
 
     ngOnInit(): void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
-        if (this.env.production) {
-            this.identifierService.getOneIdentifierById(id).subscribe((data: IdentifierModel) => {
-                this.identifier = data;
-            }, error => {
-                this.errorService.errorProcess(error);
-            });
-        }
+        this.identifierService.getOneIdentifierById(id).subscribe((data: IdentifierModel) => {
+            this.identifier = data;
+        }, error => {
+            this.errorService.errorProcess(error);
+        });
     }
 }

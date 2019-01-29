@@ -1,9 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
-
 import { routerTransition } from "../../../../../router.animations";
-import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { JournalIdentifierFilterProcessResultModel } from "../models/journal.identifier.filter.process.result.model";
@@ -11,7 +9,6 @@ import { JournalIdentifierModel } from "../models/journal.identifier.model";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { JournalIdentifierService } from "../services/journal.identifier.service";
-import { JournalIdentifierTestGuiStaticService } from "../services/journal.identifier.test-gui-static.service";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 
@@ -29,8 +26,6 @@ const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.CreateTime'
 })
 export class JournalIdentifierComponent implements OnInit {
 
-    env = environment;
-
     pagination: PaginationModel;
     filter: JournalIdentifierFilterProcessResultModel;
     journalIdentifiers: JournalIdentifierModel[];
@@ -43,7 +38,6 @@ export class JournalIdentifierComponent implements OnInit {
 
     constructor(
         private journalIdentifierService: JournalIdentifierService,
-        private journalIdentifierTestGuiStaticService: JournalIdentifierTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
@@ -68,11 +62,7 @@ export class JournalIdentifierComponent implements OnInit {
     private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        if (this.env.production) {
-            this.currentProdJournalIdentifier(1, 10);
-        } else {
-            this.currentDevJournalIdentifier(1, 10);
-        }
+        this.currentProdJournalIdentifier(1, 10);
         this.clearAllFilter();
     }
 
@@ -165,11 +155,7 @@ export class JournalIdentifierComponent implements OnInit {
     }
 
     private loadPage(page: number, pageSize: number) {
-        if (this.env.production) {
-            this.currentProdJournalIdentifier(page, pageSize);
-        } else {
-            this.currentDevJournalIdentifier(page, pageSize);
-        }
+        this.currentProdJournalIdentifier(page, pageSize);
     }
 
     private currentProdJournalIdentifier(currentPage: number, sizeElement: number) {
@@ -183,15 +169,6 @@ export class JournalIdentifierComponent implements OnInit {
                 this.errorService.errorProcess(error);
             }
         );
-    }
-
-    private currentDevJournalIdentifier(currentPage: number, sizeElement: number) {
-        this.journalIdentifiers = this.journalIdentifierTestGuiStaticService.filterProcess({filter: this.filter});
-        this.pagination.collectionSize = this.journalIdentifiers.length;
-        this.pagination.currentPage = currentPage;
-        this.pagination.pageSize = sizeElement;
-        let startElement = (currentPage - 1) * sizeElement;
-        this.journalIdentifiers = this.journalIdentifiers.slice(startElement, startElement + sizeElement);
     }
 
     private clearAllFilter() {

@@ -11,7 +11,6 @@ import { BsComponentModule } from "../../../../bs-component/bs-component.module"
 import { JournalOrganisationComponent } from "../components/journal.organisation.component";
 import { JournalOneOrganisationComponent } from "../components/one/journal.one.organisation.component";
 import { JournalOrganisationService } from "../services/journal.organisation.service";
-import { JournalOrganisationTestGuiStaticService } from "../services/journal.organisation.test-gui-static.service";
 import { JournalOrganisationRoutingModule } from "../journal.organisation-routing.module";
 
 @NgModule({
@@ -27,7 +26,7 @@ import { JournalOrganisationRoutingModule } from "../journal.organisation-routin
         HttpClientModule,
         BsComponentModule],
     declarations: [JournalOrganisationComponent, JournalOneOrganisationComponent],
-    providers: [JournalOrganisationService, JournalOrganisationTestGuiStaticService]
+    providers: [JournalOrganisationService]
 })
 export class JournalOrganisationModule {
 
