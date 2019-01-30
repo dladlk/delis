@@ -44,7 +44,6 @@ export class ErrorService {
         this.tokenService.resetToken();
         this.configService.resetConfigUrl();
         this.configService.resetCurrentUser();
-        this.localeService.resetLocale();
         this.router.navigate(['/login']);
     }
 }

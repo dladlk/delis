@@ -17,8 +17,4 @@ export class LocaleService {
         }
         return locale;
     }
-
-    resetLocale() {
-        localStorage.removeItem(this.LOCALE_LANG);
-    }
 }
