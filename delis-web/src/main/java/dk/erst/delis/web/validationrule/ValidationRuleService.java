@@ -1,21 +1,18 @@
 package dk.erst.delis.web.validationrule;
 
-import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
+import java.util.ArrayList;
+import java.util.List;
 
-import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
-import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
-import dk.erst.delis.data.enums.document.DocumentFormat;
-import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 
 @Service
-@Slf4j
 public class ValidationRuleService {
     private RuleDocumentValidationDaoRepository repository;
 

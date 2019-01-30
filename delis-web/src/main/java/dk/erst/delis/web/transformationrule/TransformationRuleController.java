@@ -2,7 +2,6 @@ package dk.erst.delis.web.transformationrule;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/transformationrule")
-@Slf4j
 public class TransformationRuleController {
 
     private TransformationRuleService service;

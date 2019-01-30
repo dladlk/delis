@@ -4,13 +4,11 @@ import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Slf4j
 @Service
 public class JournalDocumentService {
     private JournalDocumentDaoRepository journalDocumentDaoRepository;

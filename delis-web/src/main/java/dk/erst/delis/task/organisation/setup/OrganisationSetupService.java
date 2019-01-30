@@ -1,5 +1,18 @@
 package dk.erst.delis.task.organisation.setup;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
 import dk.erst.delis.data.entities.organisation.Organisation;
@@ -9,27 +22,17 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRul
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
-import dk.erst.delis.web.accesspoint.AccessPointService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class OrganisationSetupService {
 
 	private OrganisationSetupDaoRepository organisationSetupDaoRepository;
-	private AccessPointService accessPointService;
 
 	@Autowired
-	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository, AccessPointService accessPointService) {
+	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository) {
 		this.organisationSetupDaoRepository = organisationSetupDaoRepository;
-		this.accessPointService = accessPointService;
 	}
 
 	public OrganisationSetupData load(Organisation organisation) {

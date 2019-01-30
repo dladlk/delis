@@ -1,7 +1,9 @@
 package dk.erst.delis.web.accesspoint;
 
-import dk.erst.delis.data.entities.access.AccessPoint;
-import lombok.extern.slf4j.Slf4j;
+import java.security.cert.CertificateException;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,12 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
-import java.security.cert.CertificateException;
+import dk.erst.delis.data.entities.access.AccessPoint;
 
 @Controller
 @RequestMapping("/accesspoint")
-@Slf4j
 public class AccessPointController {
 
     private AccessPointService service;

@@ -1,9 +1,9 @@
 package dk.erst.delis.task.rules;
 
-import dk.erst.delis.web.transformationrule.RuleDocumentTransformationData;
-import dk.erst.delis.web.transformationrule.TransformationRuleService;
-import dk.erst.delis.web.validationrule.RuleDocumentValidationData;
-import dk.erst.delis.web.validationrule.ValidationRuleService;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
+import dk.erst.delis.web.transformationrule.RuleDocumentTransformationData;
+import dk.erst.delis.web.transformationrule.TransformationRuleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

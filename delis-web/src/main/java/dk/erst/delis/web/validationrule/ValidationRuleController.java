@@ -1,9 +1,7 @@
 package dk.erst.delis.web.validationrule;
 
-import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
-import dk.erst.delis.data.enums.document.DocumentFormat;
-import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
-import lombok.extern.slf4j.Slf4j;
+import javax.validation.Valid;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,11 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 
 @Controller
 @RequestMapping("/validationrule")
-@Slf4j
 public class ValidationRuleController {
 
     private ValidationRuleService service;

@@ -1,5 +1,14 @@
 package dk.erst.delis.web.identifier;
 
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.dao.IdentifierDaoRepository;
 import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
@@ -7,18 +16,8 @@ import dk.erst.delis.data.entities.journal.JournalIdentifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
-import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-@Slf4j
 public class IdentifierService {
     private IdentifierDaoRepository identifierDaoRepository;
     private JournalIdentifierDaoRepository journalIdentifierDaoRepository;
