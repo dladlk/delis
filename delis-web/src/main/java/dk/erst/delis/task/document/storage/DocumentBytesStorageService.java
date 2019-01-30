@@ -49,7 +49,7 @@ public class DocumentBytesStorageService {
 		return xmlOutPath;
 	}
 
-	public String moveToLoaded(File file, File metadataFile, Document document) {
+	public String moveToLoaded(File file, File metadataFile, File fileSbd, Document document) {
 		String destSubPath = buildDestSubPath(document);
 
 		Path destRoot = configBean.getStorageLoadedPath();
@@ -69,6 +69,15 @@ public class DocumentBytesStorageService {
 				Files.move(metadataFile.toPath(), metadataDestPath);
 			} catch (IOException e) {
 				log.error("Failed to move metadafile " + file + " after parsing to " + metadataDestPath + ", skip it");
+			}
+		}
+		
+		if (fileSbd != null) {
+			Path sbhDestPath = destPath.resolveSibling(destSubPath + "_sbd.xml");
+			try {
+				Files.move(fileSbd.toPath(), sbhDestPath);
+			} catch (IOException e) {
+				log.error("Failed to move original SBD " + file + " after parsing to " + sbhDestPath + ", skip it");
 			}
 		}
 		return destSubPath;
