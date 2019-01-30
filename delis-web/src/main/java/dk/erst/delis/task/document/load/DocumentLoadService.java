@@ -2,6 +2,7 @@ package dk.erst.delis.task.document.load;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
@@ -14,24 +15,28 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import dk.erst.delis.common.util.StatData;
-import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.document.parse.data.DocumentSBDHeader;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
-
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.peppol.sbdh.SbdReader;
+import no.difi.vefa.peppol.sbdh.SbdReader.Type;
+import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
 
 @Service
 @Slf4j
@@ -46,13 +51,14 @@ public class DocumentLoadService {
 	private JournalDocumentDaoRepository journalDocumentDaoRepository;
 
 	private DocumentParseService documentParseService;
-	
+
 	private DocumentBytesStorageService documentBytesStorageService;
-	
+
 	private IdentifierResolverService identifierResolverService;
 
 	@Autowired
-	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, DocumentParseService documentParseService, DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
+	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, DocumentParseService documentParseService,
+			DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
 		super();
 		this.documentDaoRepository = documentDaoRepository;
 		this.journalDocumentDaoRepository = journalDocumentDaoRepository;
@@ -63,7 +69,7 @@ public class DocumentLoadService {
 
 	public StatData loadFromInput(Path inputFolderPath) {
 		final StatData statData = new StatData();
-		
+
 		try {
 			Files.walkFileTree(inputFolderPath, new SimpleFileVisitor<Path>() {
 				@Override
@@ -81,10 +87,10 @@ public class DocumentLoadService {
 		} catch (IOException e) {
 			log.error("Failed to scan folder " + inputFolderPath, e);
 		}
-		
+
 		return statData;
 	}
-	
+
 	public Document loadFile(Path xmlFilePath) {
 		long start = System.currentTimeMillis();
 		log.info("Loading file " + xmlFilePath);
@@ -101,11 +107,44 @@ public class DocumentLoadService {
 				log.warn("Cannot rename file " + xmlFilePath + " before loading, skip it");
 				return null;
 			} else {
-				log.info("Renamed file "+file+" to .load before processing");
+				log.info("Renamed file " + file + " to .load before processing");
 				file = fileLoad;
 			}
 
+			File fileSbd = null;
+
 			DocumentInfo info = parseDocumentInfo(file);
+			if (info != null && "StandardBusinessDocument".equals(info.getRoot().getRootTag())) {
+				log.info("Root tag is SBD: " + info.getRoot());
+				try (SbdReader sbdReader = SbdReader.newInstance(new FileInputStream(file))) {
+					Type type = sbdReader.getType();
+					log.info("SbdReader defined type as " + type);
+
+					DocumentSBDHeader documentSBDHeader = new DocumentSBDHeader(sbdReader.getHeader());
+					
+					fileSbd = file;
+					file = Paths.get(xmlFilePath.toString() + ".load_sbdh_payload").toFile();
+
+					log.info("Save payload to "+file);
+					try (FileOutputStream fos = new FileOutputStream(file)) {
+						switch (type) {
+						case XML:
+							XMLStreamUtils.copy(sbdReader.xmlReader(), fos);
+							break;
+						case BINARY:
+							StreamUtils.copy(sbdReader.binaryReader(), fos);
+							break;
+						case TEXT:
+							StreamUtils.copy(sbdReader.textReader(), fos);
+							break;
+						}
+					}
+					info = parseDocumentInfo(file);
+					info.setSbdh(documentSBDHeader);
+				} catch (Exception e) {
+					log.error("Failed to read SBDH and extract payload from " + file, e);
+				}
+			}
 
 			File metadataFilePath = findMetadataFile(xmlFileParentPath);
 			String messageId = parseMessageId(xmlFileParentPath, metadataFilePath, info);
@@ -120,31 +159,30 @@ public class DocumentLoadService {
 				document.setReceiverIdentifier(identifier);
 				document.setOrganisation(identifier.getOrganisation());
 			}
-			
+
 			if (document.getReceiverIdentifier() == null) {
 				document.setDocumentStatus(DocumentStatus.UNKNOWN_RECEIVER);
 			}
 
-			
-			String destSubPath = documentBytesStorageService.moveToLoaded(file, metadataFilePath, document);
+			String destSubPath = documentBytesStorageService.moveToLoaded(file, metadataFilePath, fileSbd, document);
 			if (destSubPath == null) {
 				return null;
 			}
-			
+
 			document.setIngoingRelativePath(destSubPath);
 			documentDaoRepository.save(document);
-			
+
 			JournalDocument jd = new JournalDocument();
 			jd.setDocument(document);
 			jd.setOrganisation(document.getOrganisation());
 			jd.setCreateTime(createTime);
 			jd.setDurationMs(System.currentTimeMillis() - start);
 			jd.setType(DocumentProcessStepType.LOAD);
-			jd.setMessage("Load file from "+xmlFilePath);
+			jd.setMessage("Load file from " + xmlFilePath);
 			jd.setSuccess(true);
 
 			journalDocumentDaoRepository.save(jd);
-			
+
 			return document;
 
 		} finally {
@@ -188,7 +226,7 @@ public class DocumentLoadService {
 		try {
 			is = new FileInputStream(file);
 			header = documentParseService.parseDocumentInfo(is);
-			log.info("Parsed "+header);
+			log.info("Parsed " + header);
 		} catch (Exception e) {
 			log.error("Failed to parse document info on file " + file, e);
 		} finally {

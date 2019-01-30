@@ -32,6 +32,13 @@
 			<artifactId>delis-data</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
+		
+		<!-- DELIS-SBDH -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-sbdh</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
 
 		<!-- JAVAX-VALIDATION -->
 		<dependency>
