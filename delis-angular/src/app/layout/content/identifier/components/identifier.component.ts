@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+
 import { routerTransition } from "../../../../router.animations";
-import { environment } from "../../../../../environments/environment";
 import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
 import { IdentifierFilterProcessResult } from "../models/identifier.filter.process.result";
 import { TableHeaderSortModel } from "../../../bs-component/components/table-header-sort/table.header.sort.model";
@@ -29,8 +29,6 @@ const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.CreateTime';
     animations: [routerTransition()]
 })
 export class IdentifierComponent {
-
-    env = environment;
 
     pagination: PaginationModel;
     filter: IdentifierFilterProcessResult;
@@ -75,18 +73,14 @@ export class IdentifierComponent {
     private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        if (this.env.production) {
-            this.currentProdIdentifiers(1, 10);
-        }
+        this.currentProdIdentifiers(1, 10);
         this.clearAllFilter();
     }
 
     initSelected() {
-        if (this.env.production) {
-            let select = JSON.parse(localStorage.getItem("Identifier"));
-            this.statusList = select.status;
-            this.publishingStatusList = select.publishingStatus;
-        }
+        let select = JSON.parse(localStorage.getItem("Identifier"));
+        this.statusList = select.status;
+        this.publishingStatusList = select.publishingStatus;
     }
 
     private initDefaultValues() {
@@ -230,9 +224,7 @@ export class IdentifierComponent {
     }
 
     private loadPage(page: number, pageSize: number) {
-        if (this.env.production) {
-            this.currentProdIdentifiers(page, pageSize);
-        }
+        this.currentProdIdentifiers(page, pageSize);
     }
 
     private currentProdIdentifiers(currentPage: number, sizeElement: number) {

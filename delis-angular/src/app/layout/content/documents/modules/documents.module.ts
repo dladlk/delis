@@ -12,7 +12,6 @@ import { DocumentsComponent } from '../components/documents.component';
 import { PageHeaderModule } from '../../../../shared';
 import { DocumentsService } from '../services/documents.service';
 import { BsComponentModule } from "../../../bs-component/bs-component.module";
-import { DocumentsTestGuiStaticService } from "../services/documents.test-gui-static.service";
 import { DocumentsOneComponent } from "../components/one/documents.one.component";
 
 @NgModule({
@@ -28,6 +27,6 @@ import { DocumentsOneComponent } from "../components/one/documents.one.component
       HttpClientModule,
       BsComponentModule],
   declarations: [DocumentsComponent, DocumentsOneComponent],
-  providers: [DocumentsService, DocumentsTestGuiStaticService]
+  providers: [DocumentsService]
 })
 export class DocumentsModule {}

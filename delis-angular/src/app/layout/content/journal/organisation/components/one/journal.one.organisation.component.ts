@@ -3,11 +3,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { routerTransition } from "../../../../../../router.animations";
-import { environment } from "../../../../../../../environments/environment";
 import { HeaderModel } from "../../../../../components/header/header.model";
 import { LocaleService } from "../../../../../../service/locale.service";
 import { JournalOrganisationService } from "../../services/journal.organisation.service";
-import { JournalOrganisationTestGuiStaticService } from "../../services/journal.organisation.test-gui-static.service";
 import { ErrorService } from "../../../../../../service/error.service";
 import { JournalOrganisationModel } from "../../models/journal.organisation.model";
 
@@ -19,8 +17,6 @@ import { JournalOrganisationModel } from "../../models/journal.organisation.mode
 })
 export class JournalOneOrganisationComponent implements OnInit {
 
-    env = environment;
-
     pageHeaders: HeaderModel[] = [];
     journalOrganisation: JournalOrganisationModel = new JournalOrganisationModel();
 
@@ -29,8 +25,7 @@ export class JournalOneOrganisationComponent implements OnInit {
         private locale: LocaleService,
         private route: ActivatedRoute,
         private errorService: ErrorService,
-        private journalOrganisationService: JournalOrganisationService,
-        private journalOrganisationTestGuiStaticService: JournalOrganisationTestGuiStaticService
+        private journalOrganisationService: JournalOrganisationService
     ) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
@@ -40,14 +35,10 @@ export class JournalOneOrganisationComponent implements OnInit {
 
     ngOnInit(): void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
-        if (this.env.production) {
-            this.journalOrganisationService.getOneJournalOrganisationById(id).subscribe((data: JournalOrganisationModel) => {
-                this.journalOrganisation = data;
-            }, error => {
-                this.errorService.errorProcess(error);
-            });
-        } else {
-            this.journalOrganisation = Object.assign({}, this.journalOrganisationTestGuiStaticService.getOneJournalOrganisationById(id));
-        }
+        this.journalOrganisationService.getOneJournalOrganisationById(id).subscribe((data: JournalOrganisationModel) => {
+            this.journalOrganisation = data;
+        }, error => {
+            this.errorService.errorProcess(error);
+        });
     }
 }

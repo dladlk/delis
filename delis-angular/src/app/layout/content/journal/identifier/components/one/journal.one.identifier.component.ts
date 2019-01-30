@@ -3,11 +3,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { routerTransition } from "../../../../../../router.animations";
-import { environment } from "../../../../../../../environments/environment";
 import { HeaderModel } from "../../../../../components/header/header.model";
 import { LocaleService } from "../../../../../../service/locale.service";
 import { JournalIdentifierService } from "../../services/journal.identifier.service";
-import { JournalIdentifierTestGuiStaticService } from "../../services/journal.identifier.test-gui-static.service";
 import { JournalIdentifierModel } from "../../models/journal.identifier.model";
 import { ErrorService } from "../../../../../../service/error.service";
 
@@ -19,8 +17,6 @@ import { ErrorService } from "../../../../../../service/error.service";
 })
 export class JournalOneIdentifierComponent {
 
-    env = environment;
-
     pageHeaders: HeaderModel[] = [];
     journalIdentifier: JournalIdentifierModel = new JournalIdentifierModel();
 
@@ -29,8 +25,7 @@ export class JournalOneIdentifierComponent {
         private locale: LocaleService,
         private route: ActivatedRoute,
         private errorService: ErrorService,
-        private journalIdentifierService: JournalIdentifierService,
-        private journalIdentifierTestGuiStaticService: JournalIdentifierTestGuiStaticService
+        private journalIdentifierService: JournalIdentifierService
     ) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
@@ -40,14 +35,10 @@ export class JournalOneIdentifierComponent {
 
     ngOnInit(): void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
-        if (this.env.production) {
-            this.journalIdentifierService.getOneJournalIdentifierById(id).subscribe((data: JournalIdentifierModel) => {
-                this.journalIdentifier = data;
-            }, error => {
-               this.errorService.errorProcess(error);
-            });
-        } else {
-            this.journalIdentifier = Object.assign({}, this.journalIdentifierTestGuiStaticService.getOneJournalIdentifierById(id));
-        }
+        this.journalIdentifierService.getOneJournalIdentifierById(id).subscribe((data: JournalIdentifierModel) => {
+            this.journalIdentifier = data;
+        }, error => {
+            this.errorService.errorProcess(error);
+        });
     }
 }

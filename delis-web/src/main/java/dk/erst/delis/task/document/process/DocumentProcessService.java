@@ -3,16 +3,14 @@ package dk.erst.delis.task.document.process;
 import java.nio.file.Path;
 import java.util.List;
 
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.journal.JournalDocument;
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.task.document.JournalDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.dao.JournalDocumentDaoRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;

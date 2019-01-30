@@ -2,12 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from "../../../../../router.animations";
-import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { JournalDocumentService } from "../services/journal.document.service";
-import { JournalDocumentTestGuiStaticService } from "../services/journal.document.test-gui-static.service";
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { JournalDocumentModel } from "../models/journal.document.model";
 import { JournalDocumentFilterProcessResult } from "../models/journal.document.filter.process.result";
@@ -31,8 +29,6 @@ const COLUMN_NAME_CREATE_TIME = 'journal.documents.table.columnName.CreateTime';
 })
 export class JournalDocumentComponent implements OnInit {
 
-    env = environment;
-
     pagination: PaginationModel;
     filter: JournalDocumentFilterProcessResult;
     journalDocuments: JournalDocumentModel[];
@@ -49,7 +45,6 @@ export class JournalDocumentComponent implements OnInit {
 
     constructor(
         private journalDocumentService: JournalDocumentService,
-        private journalDocumentTestGuiStaticService: JournalDocumentTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
@@ -75,22 +70,13 @@ export class JournalDocumentComponent implements OnInit {
     private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        if (this.env.production) {
-            this.currentProdJournalDocuments(1, 10);
-        } else {
-            this.currentDevJournalDocuments(1, 10);
-        }
+        this.currentProdJournalDocuments(1, 10);
         this.clearAllFilter();
     }
 
     initSelected() {
-        if (this.env.production) {
-            let select = JSON.parse(localStorage.getItem("JournalDocument"));
-            this.typeList = select.type;
-        } else {
-            let enumFields = this.journalDocumentTestGuiStaticService.generateEnumFields();
-            this.typeList = enumFields.type;
-        }
+        let select = JSON.parse(localStorage.getItem("JournalDocument"));
+        this.typeList = select.type;
     }
 
     private initDefaultValues() {
@@ -208,11 +194,7 @@ export class JournalDocumentComponent implements OnInit {
     }
 
     private loadPage(page: number, pageSize: number) {
-        if (this.env.production) {
-            this.currentProdJournalDocuments(page, pageSize);
-        } else {
-            this.currentDevJournalDocuments(page, pageSize);
-        }
+        this.currentProdJournalDocuments(page, pageSize);
     }
 
     private currentProdJournalDocuments(currentPage: number, sizeElement: number) {
@@ -226,15 +208,6 @@ export class JournalDocumentComponent implements OnInit {
                 this.errorService.errorProcess(error);
             }
         );
-    }
-
-    private currentDevJournalDocuments(currentPage: number, sizeElement: number) {
-        this.journalDocuments = this.journalDocumentTestGuiStaticService.filterProcess({filter: this.filter});
-        this.pagination.collectionSize = this.journalDocuments.length;
-        this.pagination.currentPage = currentPage;
-        this.pagination.pageSize = sizeElement;
-        let startElement = (currentPage - 1) * sizeElement;
-        this.journalDocuments = this.journalDocuments.slice(startElement, startElement + sizeElement);
     }
 
     private clearAllFilter() {

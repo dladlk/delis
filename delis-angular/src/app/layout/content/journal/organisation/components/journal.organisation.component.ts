@@ -2,13 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from "../../../../../router.animations";
-import { environment } from "../../../../../../environments/environment";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { JournalOrganisationFilterProcessResult } from "../models/journal.organisation.filter.process.result";
 import { JournalOrganisationModel } from "../models/journal.organisation.model";
 import { JournalOrganisationService } from "../services/journal.organisation.service";
-import { JournalOrganisationTestGuiStaticService } from "../services/journal.organisation.test-gui-static.service";
 import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { DateRangeModel } from "../../../../../models/date.range.model";
@@ -27,8 +25,6 @@ const COLUMN_NAME_CREATE_TIME = 'journal.organisations.table.columnName.CreateTi
 })
 export class JournalOrganisationComponent implements OnInit {
 
-    env = environment;
-
     pagination: PaginationModel;
     filter: JournalOrganisationFilterProcessResult;
     journalOrganisations: JournalOrganisationModel[];
@@ -40,7 +36,6 @@ export class JournalOrganisationComponent implements OnInit {
 
     constructor(
         private journalOrganisationService: JournalOrganisationService,
-        private journalOrganisationTestGuiStaticService: JournalOrganisationTestGuiStaticService,
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
@@ -65,11 +60,7 @@ export class JournalOrganisationComponent implements OnInit {
     private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        if (this.env.production) {
-            this.currentProdJournalOrganisation(1, 10);
-        } else {
-            this.currentDevJournalOrganisation(1, 10);
-        }
+        this.currentProdJournalOrganisation(1, 10);
         this.clearAllFilter();
     }
 
@@ -149,11 +140,7 @@ export class JournalOrganisationComponent implements OnInit {
     }
 
     private loadPage(page: number, pageSize: number) {
-        if (this.env.production) {
-            this.currentProdJournalOrganisation(page, pageSize);
-        } else {
-            this.currentDevJournalOrganisation(page, pageSize);
-        }
+        this.currentProdJournalOrganisation(page, pageSize);
     }
 
     private currentProdJournalOrganisation(currentPage: number, sizeElement: number) {
@@ -167,15 +154,6 @@ export class JournalOrganisationComponent implements OnInit {
                 this.errorService.errorProcess(error);
             }
         );
-    }
-
-    private currentDevJournalOrganisation(currentPage: number, sizeElement: number) {
-        this.journalOrganisations = this.journalOrganisationTestGuiStaticService.filterProcess({filter: this.filter});
-        this.pagination.collectionSize = this.journalOrganisations.length;
-        this.pagination.currentPage = currentPage;
-        this.pagination.pageSize = sizeElement;
-        let startElement = (currentPage - 1) * sizeElement;
-        this.journalOrganisations = this.journalOrganisations.slice(startElement, startElement + sizeElement);
     }
 
     private clearAllFilter() {

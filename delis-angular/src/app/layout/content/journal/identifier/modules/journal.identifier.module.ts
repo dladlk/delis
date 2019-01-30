@@ -12,7 +12,6 @@ import { JournalIdentifierRoutingModule } from "../journal.identifier-routing.mo
 import { JournalIdentifierComponent } from "../components/journal.identifier.component";
 import { JournalOneIdentifierComponent } from "../components/one/journal.one.identifier.component";
 import { JournalIdentifierService } from "../services/journal.identifier.service";
-import { JournalIdentifierTestGuiStaticService } from "../services/journal.identifier.test-gui-static.service";
 
 @NgModule({
     imports: [
@@ -27,7 +26,7 @@ import { JournalIdentifierTestGuiStaticService } from "../services/journal.ident
         HttpClientModule,
         BsComponentModule],
     declarations: [JournalIdentifierComponent, JournalOneIdentifierComponent],
-    providers: [JournalIdentifierService, JournalIdentifierTestGuiStaticService]
+    providers: [JournalIdentifierService]
 })
 export class JournalIdentifierModule {
 

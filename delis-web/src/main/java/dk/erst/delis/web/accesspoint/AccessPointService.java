@@ -1,18 +1,6 @@
 package dk.erst.delis.web.accesspoint;
 
-import com.mysql.jdbc.Blob;
-import dk.erst.delis.dao.AccessPointDaoRepository;
-
-import dk.erst.delis.data.entities.access.AccessPoint;
-import dk.erst.delis.data.enums.access.AccessPointType;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -20,6 +8,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import javax.sql.rowset.serial.SerialBlob;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dk.erst.delis.dao.AccessPointDaoRepository;
+import dk.erst.delis.data.entities.access.AccessPoint;
+import dk.erst.delis.data.enums.access.AccessPointType;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j

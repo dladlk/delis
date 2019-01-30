@@ -3,11 +3,9 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from '../../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
-import { DocumentsTestGuiStaticService } from "../services/documents.test-gui-static.service";
 import { FilterProcessResult } from '../models/filter.process.result';
 import { DateRangeModel } from '../../../../models/date.range.model';
 import { LocaleService } from "../../../../service/locale.service";
-import { environment } from "../../../../../environments/environment";
 import { TableHeaderSortModel } from "../../../bs-component/components/table-header-sort/table.header.sort.model";
 import { PaginationService } from "../../../bs-component/components/pagination/pagination.service";
 import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
@@ -31,8 +29,6 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.SenderName';
 })
 export class DocumentsComponent implements OnInit {
 
-    env = environment;
-
     selectedStatus: any;
     selectedLastError: any;
     selectedDocumentType: any;
@@ -55,7 +51,6 @@ export class DocumentsComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         private documentsService: DocumentsService,
-        private documentsStaticService: DocumentsTestGuiStaticService,
         private locale: LocaleService,
         private errorService: ErrorService,
         private paginationService: PaginationService) {
@@ -78,29 +73,17 @@ export class DocumentsComponent implements OnInit {
     }
 
     initSelected() {
-        if (this.env.production) {
-            let select = JSON.parse(localStorage.getItem("Document"));
-            this.statuses = select.documentStatus;
-            this.documentTypes = select.documentType;
-            this.ingoingFormats = select.ingoingDocumentFormat;
-            this.lastErrors = select.lastError;
-        } else {
-            let enumFields = this.documentsStaticService.generateEnumFields();
-            this.statuses = enumFields.documentStatus;
-            this.documentTypes = enumFields.documentType;
-            this.ingoingFormats = enumFields.ingoingDocumentFormat;
-            this.lastErrors = enumFields.lastError;
-        }
+        let select = JSON.parse(localStorage.getItem("Document"));
+        this.statuses = select.documentStatus;
+        this.documentTypes = select.documentType;
+        this.ingoingFormats = select.ingoingDocumentFormat;
+        this.lastErrors = select.lastError;
     }
 
     private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        if (this.env.production) {
-            this.currentProdDocuments(1, 10);
-        } else {
-            this.currentDevDocuments(1, 10);
-        }
+        this.currentProdDocuments(1, 10);
         this.clearAllFilter();
     }
 
@@ -153,21 +136,8 @@ export class DocumentsComponent implements OnInit {
         );
     }
 
-    private currentDevDocuments(currentPage: number, sizeElement: number) {
-        this.documents = this.documentsStaticService.filterProcess({filter: this.filter});
-        this.pagination.collectionSize = this.documents.length;
-        this.pagination.currentPage = currentPage;
-        this.pagination.pageSize = sizeElement;
-        let startElement = (currentPage - 1) * sizeElement;
-        this.documents = this.documents.slice(startElement, startElement + sizeElement);
-    }
-
     private loadPage(page: number, pageSize: number) {
-        if (this.env.production) {
-            this.currentProdDocuments(page, pageSize);
-        } else {
-            this.currentDevDocuments(page, pageSize);
-        }
+        this.currentProdDocuments(page, pageSize);
     }
 
     loadTextOrganisation(text: string) {

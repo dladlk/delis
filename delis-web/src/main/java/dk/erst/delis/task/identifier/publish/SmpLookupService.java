@@ -1,10 +1,30 @@
 package dk.erst.delis.task.identifier.publish;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.task.identifier.publish.data.*;
+import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.lang.PeppolLoadingException;
-import no.difi.vefa.peppol.common.model.*;
+import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
+import no.difi.vefa.peppol.common.model.Endpoint;
+import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import no.difi.vefa.peppol.common.model.ProcessIdentifier;
+import no.difi.vefa.peppol.common.model.ProcessMetadata;
+import no.difi.vefa.peppol.common.model.ServiceMetadata;
+import no.difi.vefa.peppol.common.model.TransportProfile;
 import no.difi.vefa.peppol.lookup.LookupClient;
 import no.difi.vefa.peppol.lookup.LookupClientBuilder;
 import no.difi.vefa.peppol.lookup.api.LookupException;
@@ -12,15 +32,6 @@ import no.difi.vefa.peppol.lookup.api.MetadataLocator;
 import no.difi.vefa.peppol.lookup.provider.DefaultProvider;
 import no.difi.vefa.peppol.security.api.CertificateValidator;
 import no.difi.vefa.peppol.security.lang.PeppolSecurityException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -145,7 +156,8 @@ public class SmpLookupService {
 		for (Endpoint endpoint : endpoints) {
 			URI address = endpoint.getAddress();
 			TransportProfile transportProfile = endpoint.getTransportProfile();
-			Period period = endpoint.getPeriod(); //TODO investigate why period is NULL
+			//TODO investigate why period is NULL
+			//Period period = endpoint.getPeriod(); 
 			X509Certificate certificate = endpoint.getCertificate();
 			SmpServiceEndpointData endpointData = new SmpServiceEndpointData();
 			endpointData.setUrl(address.toString());

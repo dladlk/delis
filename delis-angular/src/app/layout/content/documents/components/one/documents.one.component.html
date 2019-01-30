@@ -27,7 +27,7 @@
                             </tr>
                             <tr>
                                 <td>receiver identifier</td>
-                                <td>{{document.receiverIdentifier.name}}</td>
+                                <td [routerLink]="['/identifiers/', document.receiverIdentifier.id]">{{document.receiverIdentifier.name}}</td>
                             </tr>
                             <tr>
                                 <td>receiver identifier type</td>

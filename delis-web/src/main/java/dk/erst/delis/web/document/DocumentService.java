@@ -1,27 +1,22 @@
 package dk.erst.delis.web.document;
 
-import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.dao.JournalDocumentDaoRepository;
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.entities.journal.JournalDocument;
-import dk.erst.delis.data.entities.journal.JournalIdentifier;
-import dk.erst.delis.data.enums.document.DocumentProcessStepType;
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
-import dk.erst.delis.data.enums.identifier.IdentifierStatus;
-import lombok.extern.slf4j.Slf4j;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.data.enums.document.DocumentStatus;
 
 @Service
-@Slf4j
 public class DocumentService {
     private DocumentDaoRepository documentDaoRepository;
     private JournalDocumentDaoRepository journalDocumentDaoRepository;

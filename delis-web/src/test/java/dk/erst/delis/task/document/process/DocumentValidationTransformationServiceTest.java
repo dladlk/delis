@@ -1,5 +1,19 @@
 package dk.erst.delis.task.document.process;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
@@ -13,19 +27,6 @@ import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

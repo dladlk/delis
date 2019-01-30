@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { routerTransition } from "../../../../router.animations";
 import { TranslateService } from "@ngx-translate/core";
+
+import { routerTransition } from "../../../../router.animations";
 import { LocaleService } from "../../../../service/locale.service";
-import { ChartDocumentTestGuiStaticService } from "./services/chart.document.test-gui-static.service";
-import { environment } from "../../../../../environments/environment";
 import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
 import { ChartDocumentModel } from "./model/chart.document.model";
@@ -16,7 +15,6 @@ import { ChartDocumentModel } from "./model/chart.document.model";
 })
 export class ChartDocumentComponent implements OnInit {
 
-    env = environment;
     private period: number = 0;
 
     lineChartData: Array<any> = [];
@@ -31,8 +29,7 @@ export class ChartDocumentComponent implements OnInit {
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
-        private chartDocumentService: ChartDocumentService,
-        private chartDocumentTestGuiStaticService: ChartDocumentTestGuiStaticService) {
+        private chartDocumentService: ChartDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.updateLineChart();
     }
@@ -84,32 +81,21 @@ export class ChartDocumentComponent implements OnInit {
     loadDate(e: any) {}
 
     private updateLineChart() {
-        if (this.env.production) {
-            this.chartDocumentService.getChartData().subscribe(
-                (data: {}) => {
-                    let chartDocumentModel: ChartDocumentModel = new ChartDocumentModel();
-                    let lineChart = Object.assign({}, data["data"]);
-                    chartDocumentModel.lineChartData = lineChart.lineChartData;
-                    chartDocumentModel.lineChartLabels = lineChart.lineChartLabels;
+        this.chartDocumentService.getChartData().subscribe(
+            (data: {}) => {
+                let chartDocumentModel: ChartDocumentModel = new ChartDocumentModel();
+                let lineChart = Object.assign({}, data["data"]);
+                chartDocumentModel.lineChartData = lineChart.lineChartData;
+                chartDocumentModel.lineChartLabels = lineChart.lineChartLabels;
 
-                    this.lineChartLabels.length = 0;
-                    this.lineChartLabels.push(...chartDocumentModel.lineChartLabels);
-                    this.lineChartData.length = 0;
-                    this.lineChartData.push(...chartDocumentModel.lineChartData);
-
-                }, error => {
-                    this.errorService.errorProcess(error);
-                }
-            );
-        } else {
-            let clone = JSON.parse(JSON.stringify(this.chartDocumentTestGuiStaticService.loadChartDocument(this.period)));
-            this.lineChartData=clone.lineChartData;
-            if (this.lineChartLabels.length !== 0) {
                 this.lineChartLabels.length = 0;
-                this.lineChartLabels.push(...clone.lineChartLabels);
-            } else {
-                this.lineChartLabels=clone.lineChartLabels;
+                this.lineChartLabels.push(...chartDocumentModel.lineChartLabels);
+                this.lineChartData.length = 0;
+                this.lineChartData.push(...chartDocumentModel.lineChartData);
+
+            }, error => {
+                this.errorService.errorProcess(error);
             }
-        }
+        );
     }
 }

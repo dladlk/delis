@@ -16,7 +16,9 @@ import java.util.Collection;
 @Setter
 class CustomUserDetails extends User {
 
-    private Long id;
+	private static final long serialVersionUID = 2301527384837617892L;
+
+	private Long id;
 
     CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities) {
         super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
