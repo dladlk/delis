@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
@@ -68,8 +67,7 @@ public class DocumentValidationTransformationServiceTest {
 		Path testFile = TestDocumentUtil.createTestFile(testDocument);
 		try {
 			DocumentParseService parseService = new DocumentParseService();
-			ConfigProperties configProperties = new ConfigProperties();
-			ConfigBean configBean = new ConfigBean(configRepository, configProperties);
+			ConfigBean configBean = new ConfigBean(configRepository);
 			TransformationRuleService tRuleService = new TransformationRuleService(tRuleRepository);
 			ValidationRuleService vRuleService = new ValidationRuleService(vRuleRepository);
 			RuleService ruleService = new RuleService(configBean, vRuleService, tRuleService);

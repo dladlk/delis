@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
@@ -38,7 +37,7 @@ public class DocumentLoadServiceUnitTest {
 	@Test
 	public void testLoadFile() throws IOException {
 		ConfigValueDaoRepository configRepository = TestUtil.getEmptyConfigValueDaoRepository();
-		ConfigBean config = new ConfigBean(configRepository, new ConfigProperties());
+		ConfigBean config = new ConfigBean(configRepository);
 
 		DocumentDaoRepository documentDaoRepository = mock(DocumentDaoRepository.class);
 		when(documentDaoRepository.save(any(Document.class))).then(d -> {

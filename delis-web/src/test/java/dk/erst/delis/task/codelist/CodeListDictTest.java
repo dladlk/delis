@@ -1,17 +1,16 @@
 package dk.erst.delis.task.codelist;
 
-import static org.junit.Assert.*;
-
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
 import org.junit.Test;
-
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,7 +22,7 @@ public class CodeListDictTest {
 
 	@Test
 	public void testFindParticipantIdentifierValues() {
-		CodeListReaderService clReaderService = new CodeListReaderService(new ConfigBean(configRepository, new ConfigProperties()));
+		CodeListReaderService clReaderService = new CodeListReaderService(new ConfigBean(configRepository));
 		CodeListDict s = new CodeListDict(clReaderService);
 		
 		assertNull(s.getIdentifierTypeSchemeID("blablabla"));
