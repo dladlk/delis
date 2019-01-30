@@ -70,6 +70,11 @@ public class ConfigBean {
 		return Paths.get(path, storageType.getFolderName());
 	}
 
+	public Path getDocumentRootPath() {
+		String path = configValues.get(STORAGE_DOCUMENT_ROOT);
+		return Paths.get(path).toAbsolutePath();
+	}
+
 	public Path getStorageValidationPath() {
 		String path = configValues.get(STORAGE_VALIDATION_ROOT);
 		return Paths.get(path).toAbsolutePath();
