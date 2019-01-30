@@ -1,25 +1,21 @@
 package dk.erst.delis.task.codelist;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import dk.erst.delis.dao.ConfigValueDaoRepository;
-import org.junit.Test;
-
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.config.codelist.DocumentTypeIdentifier;
 import dk.erst.delis.config.codelist.ParticipantIdentifierScheme;
 import dk.erst.delis.config.codelist.ProcessScheme;
 import dk.erst.delis.config.codelist.TransportProfile;
+import dk.erst.delis.dao.ConfigValueDaoRepository;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -31,9 +27,7 @@ public class CodeListReaderServiceTest {
 
 	@Test
 	public void testReadCodeLists() throws Exception {
-		ConfigProperties props = new ConfigProperties();
-		props.setStorageCodeListsRoot("../delis-resources/codelists");
-		ConfigBean configBean = new ConfigBean(configRepository, props);
+		ConfigBean configBean = new ConfigBean(configRepository);
 		CodeListReaderService c = new CodeListReaderService(configBean);
 		
 		List<ParticipantIdentifierScheme> identifierCodeList = c.readParticipantIdentifierSchemeList();

@@ -2,33 +2,38 @@ package dk.erst.delis.data.enums.config;
 
 public enum ConfigValueType {
 
-	STORAGE_INPUT_ROOT("config.storageDocumentInput"),
+	STORAGE_INPUT_ROOT("config.storageDocumentInput","/delis/input"),
 
-	STORAGE_DOCUMENT_ROOT("config.storageDocumentRoot"),
+	STORAGE_DOCUMENT_ROOT("config.storageDocumentRoot","/delis/document"),
 
-	STORAGE_VALIDATION_ROOT("config.storageValidationRoot"),
+	STORAGE_VALIDATION_ROOT("config.storageValidationRoot","../delis-resources/validation"),
 	
-	STORAGE_TRANSFORMATION_ROOT("config.storageTransformationRoot"),
+	STORAGE_TRANSFORMATION_ROOT("config.storageTransformationRoot","../delis-resources/transformation"),
 
-	STORAGE_FAILED_ROOT("config.storageFailedRoot"),
+	CODE_LISTS_PATH("config.storageCodeListsRoot","../delis-resources/codelists"),
 
-	CODE_LISTS_PATH("config.storageCodeListsRoot"),
+	ENDPOINT_URL("config.smp.url","http://localhost:8090/smp-4.1.0"),
 
-	ENDPOINT_URL("config.smp.url"),
+	ENDPOINT_USER_NAME("config.smp.userName", "smp_admin"),
 
-	ENDPOINT_USER_NAME("config.smp.userName"),
+	ENDPOINT_PASSWORD("config.smp.password", "changeit"),
 
-	ENDPOINT_PASSWORD("config.smp.password"),
-
-	ENDPOINT_FORMAT("config.smp.format");
+	ENDPOINT_FORMAT("config.smp.format", "OASIS");
 
 	private final String key;
-	ConfigValueType(String key) {
+	private final String defaultValue;
+
+	ConfigValueType(String key, String defaultValue) {
 		this.key = key;
+		this.defaultValue = defaultValue;
 	}
 
 	public String getKey() {
 		return key;
+	}
+
+	public String getDefaultValue() {
+		return defaultValue;
 	}
 }
 

@@ -1,38 +1,35 @@
 package dk.erst.delis.task.document.load;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.nio.file.Path;
-
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import org.junit.Test;
-
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.dao.JournalDocumentDaoRepository;
-
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -44,7 +41,7 @@ public class DocumentLoadServiceUnitTest {
 
 	@Test
 	public void testLoadFile() throws IOException {
-		ConfigBean config = new ConfigBean(configRepository, new ConfigProperties());
+		ConfigBean config = new ConfigBean(configRepository);
 
 		DocumentDaoRepository documentDaoRepository = mock(DocumentDaoRepository.class);
 		when(documentDaoRepository.save(any(Document.class))).then(d -> {

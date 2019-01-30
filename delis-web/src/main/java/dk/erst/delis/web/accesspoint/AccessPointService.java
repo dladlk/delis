@@ -131,7 +131,7 @@ public class AccessPointService {
 //        return data;
 //    }
 //    public List<AccessPointData> loadAccessPointsByType(AccessPointType type) {
-//        List<AccessPoint> accessPointsList = accessPointRepository.findByType(type);
+//        List<AccessPoint> accessPointsList = accessPointRepository.getConfigValueForType(type);
 //        List<AccessPointData> accessPointDataList = new ArrayList<>();
 //        for (AccessPoint ap : accessPointsList) { // to-do convert later to lambda
 //            AccessPointData accessPointData = new AccessPointData();

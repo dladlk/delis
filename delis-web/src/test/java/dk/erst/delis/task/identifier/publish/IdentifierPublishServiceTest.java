@@ -1,7 +1,6 @@
 package dk.erst.delis.task.identifier.publish;
 
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
@@ -40,7 +39,7 @@ public class IdentifierPublishServiceTest {
 	public void test() {
 		SmpIntegrationService smpIntegrationService;
 		SmpLookupService smpLookupService;
-		ConfigBean configBean = new ConfigBean(configRepository, new ConfigProperties());
+		ConfigBean configBean = new ConfigBean(configRepository);
 		configBean.getSmpEndpointConfig().setUrl("http://localhost:8080/smp-4.1.0");
 		if (mockIntegration) {
 			smpIntegrationService = Mockito.mock(SmpIntegrationService.class);

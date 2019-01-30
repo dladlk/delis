@@ -8,11 +8,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import dk.erst.delis.config.ConfigProperties;
-
 @SpringBootApplication
 @EntityScan("dk.erst.delis.data")
-@EnableConfigurationProperties(ConfigProperties.class)
 @EnableJpaAuditing
 public class DelisWebApplication extends SpringBootServletInitializer {
 

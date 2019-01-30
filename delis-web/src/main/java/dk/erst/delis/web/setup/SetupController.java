@@ -1,11 +1,11 @@
 package dk.erst.delis.web.setup;
 
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.entities.config.ConfigValue;
 import dk.erst.delis.data.enums.config.ConfigValueType;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.dao.ConfigValueDaoRepository;
-
 @Controller
 public class SetupController {
 
@@ -25,33 +21,30 @@ public class SetupController {
 	private ConfigBean configBean;
 	
 	@Autowired
-	private ConfigProperties configProperties;
-	
-	@Autowired
-	private ConfigValueDaoRepository configValueDaoRepository;
+	ValidationRuleService validationRuleService;
 
 	@Autowired
-	ValidationRuleService validationRuleService;
+	SetupService setupService;
 
 	@Autowired
 	TransformationRuleService transformationRuleService;
 
 	@GetMapping("/setup/index")
 	public String index(Model model) {
+		model.addAttribute("configValuesList", setupService.createConfigValuesList(configBean));
 		model.addAttribute("configBean", configBean);
-		model.addAttribute("configProperties", configProperties);
-		model.addAttribute("configList", configValueDaoRepository.findAll(Sort.by("configValueType")));
+		model.addAttribute("configList", setupService.getAllTypesFromDB());
 		model.addAttribute("validationRuleList", validationRuleService.loadRulesList());
 		model.addAttribute("transformationRuleList", transformationRuleService.loadRulesList());
 		return "/setup/index";
 	}
-	
-	@GetMapping("/setup/config/edit/{id}")
-	public String edit(Model model, @PathVariable long id) {
-		model.addAttribute("configValue", configValueDaoRepository.findById(id));
-		model.addAttribute("configValueTypeList", ConfigValueType.values());
-		return "/setup/config_value_edit";
-	}
+
+//	@GetMapping("/setup/config/edit/{id}")
+//	public String edit(Model model, @PathVariable long id) {
+//		model.addAttribute("configValue", setupService.findById(id));
+//		model.addAttribute("configValueTypeList", ConfigValueType.values());
+//		return "/setup/config_value_edit";
+//	}
 	
 	@GetMapping("/setup/config/create")
 	public String create(Model model) {
@@ -66,10 +59,25 @@ public class SetupController {
 			model.addAttribute("errorMessage", "Type and value are mandatory");
 			return "/setup/config_value_edit";
 		}
-		
-		configValueDaoRepository.save(configValue);
-		
+
+		setupService.save(configValue);
+		configBean.refresh();
+
 		return "redirect:/setup/index";
 	}
-	
+
+	@GetMapping("/setup/config/dbupdate")
+	public String dbUpdate(Model model) {
+		configBean.refresh();
+		return "redirect:/setup/index";
+	}
+
+	@GetMapping("/setup/config/edit/{typeName}")
+	public String edit(@PathVariable String typeName, Model model) {
+
+		ConfigValue configValueForType = setupService.getConfigValueForType(typeName);
+		model.addAttribute("configValue", configValueForType);
+
+		return "/setup/config_value_edit";
+	}
 }
