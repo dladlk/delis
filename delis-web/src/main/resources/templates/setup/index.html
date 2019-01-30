@@ -19,8 +19,13 @@
 				<tr th:each="r,iStat : ${configValuesList}">
 					<td th:text="${r.description}"></td>
 					<td th:text="${r.key}"></td>
-					<td th:if="${r.key.contains('password')}"><input th:id="'pass' + ${iStat.index}" type="password" class="form-control" name="password" th:value="${r.value}">
-						<span th:attr="toggle='#pass' + ${iStat.index}" class="fa fa-fw fa-eye field-icon toggle-password"></span></td>
+					<td th:if="${r.key.contains('password')}">
+						<span>
+							<span th:attr="toggle='#pass' + ${iStat.index}" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+							<input th:id="'pass' + ${iStat.index}" type="password" name="password" th:value="${r.value}"
+								   readonly style="border: 0px; background-color: transparent; box-shadow: none;">
+		                </span>
+					</td>
 					<td th:unless="${r.key.contains('password')}" th:text="${r.value}"></td>
 					<td><a th:href="@{|/setup/config/edit/${r.typeName}|}" >Edit</a></td>
 				</tr>
