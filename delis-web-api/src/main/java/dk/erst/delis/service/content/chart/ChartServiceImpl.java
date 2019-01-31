@@ -1,6 +1,6 @@
 package dk.erst.delis.service.content.chart;
 
-import dk.erst.delis.persistence.document.DocumentRepository;
+import dk.erst.delis.persistence.repository.document.DocumentRepository;
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;

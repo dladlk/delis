@@ -12,4 +12,5 @@ import org.springframework.web.context.request.WebRequest;
 public interface AbstractSpecification<E extends AbstractEntity> {
 
     Specification<E> generateCriteriaPredicate(WebRequest request, Class<E> entityClass);
+    Specification<E> generateCriteriaPredicate(WebRequest request);
 }

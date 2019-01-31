@@ -15,9 +15,6 @@ const routes: Routes = [
             { path: 'journal-documents', loadChildren: './content/journal/document/modules/journal.document.module#JournalDocumentModule' },
             { path: 'journal-organisations', loadChildren: './content/journal/organisation/modules/journal.organisation.module#JournalOrganisationModule' },
             { path: 'journal-identifiers', loadChildren: './content/journal/identifier/modules/journal.identifier.module#JournalIdentifierModule' },
-            { path: 'errors-invoices', loadChildren: './content/errors/components/invoices/errors-invoices.module#ErrorsInvoicesModule' },
-            { path: 'errors-bis3-ubl', loadChildren: './content/errors/components/bis3-ubl/errors-bis3-ubl.module#ErrorsBis3UblModule' },
-            { path: 'errors-cii', loadChildren: './content/errors/components/cii/errors-cii.module#ErrorsCiiModule' },
             { path: 'components', loadChildren: './bs-component/bs-component.module#BsComponentModule' }
         ]
     }

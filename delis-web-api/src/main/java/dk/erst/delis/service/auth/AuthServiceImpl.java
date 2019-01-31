@@ -3,7 +3,7 @@ package dk.erst.delis.service.auth;
 import dk.erst.delis.data.entities.user.User;
 import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestUnauthorizedException;
-import dk.erst.delis.persistence.user.UserRepository;
+import dk.erst.delis.persistence.repository.user.UserRepository;
 import dk.erst.delis.rest.data.request.login.LoginData;
 import dk.erst.delis.rest.data.response.auth.AuthData;
 

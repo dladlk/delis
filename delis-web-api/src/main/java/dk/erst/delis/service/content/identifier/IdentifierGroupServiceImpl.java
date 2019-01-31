@@ -1,7 +1,7 @@
 package dk.erst.delis.service.content.identifier;
 
 import dk.erst.delis.data.entities.identifier.IdentifierGroup;
-import dk.erst.delis.persistence.identifier.IdentifierGroupRepository;
+import dk.erst.delis.persistence.repository.identifier.IdentifierGroupRepository;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 

@@ -1,7 +1,7 @@
 package dk.erst.delis.service.content.rule.transformation;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
-import dk.erst.delis.persistence.rule.transformation.RuleDocumentTransformationRepository;
+import dk.erst.delis.persistence.repository.rule.transformation.RuleDocumentTransformationRepository;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 

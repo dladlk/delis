@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ErrorsModel } from '../../../layout/content/errors/models/ErrorsModel';
+import { ErrorsModel } from '../../../models/ErrorsModel';
 
 @Component({
   selector: 'app-errors',

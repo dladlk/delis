@@ -13,6 +13,7 @@ import { PageHeaderModule } from '../../../../shared';
 import { DocumentsService } from '../services/documents.service';
 import { BsComponentModule } from "../../../bs-component/bs-component.module";
 import { DocumentsOneComponent } from "../components/one/documents.one.component";
+import { DocumentsErrorComponent } from "../components/documents.error.component";
 
 @NgModule({
   imports: [
@@ -26,7 +27,10 @@ import { DocumentsOneComponent } from "../components/one/documents.one.component
       BsDatepickerModule,
       HttpClientModule,
       BsComponentModule],
-  declarations: [DocumentsComponent, DocumentsOneComponent],
+  declarations: [
+      DocumentsComponent,
+      DocumentsOneComponent,
+      DocumentsErrorComponent],
   providers: [DocumentsService]
 })
 export class DocumentsModule {}
