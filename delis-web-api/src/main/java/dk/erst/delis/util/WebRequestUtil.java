@@ -25,6 +25,7 @@ public class WebRequestUtil {
     private static final int SIZE_PARAM_VALUE = 10;
     private static final String SORT_PARAM_START_WITH = "countClick";
     private static final String SORT_PARAM_DEFAULT_VALUE = "0";
+    private static final String FLAG_PARAM_START_WITH = "flagParam";
 
     public PageAndSizeModel generatePageAndSizeModel(WebRequest webRequest) {
         int page = webRequest.getParameter(PAGE_PARAM) != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter(PAGE_PARAM))) : PAGE_PARAM_VALUE;
@@ -32,7 +33,7 @@ public class WebRequestUtil {
         return new PageAndSizeModel(page, size);
     }
 
-    public DateRangeModel generateDateRange(String timePattern) {
+    DateRangeModel generateDateRange(String timePattern) {
         String[] times = timePattern.split(":");
         long startDate = Long.parseLong(times[0]);
         long endDate = Long.parseLong(times[1]);
@@ -45,6 +46,15 @@ public class WebRequestUtil {
                 .keySet()
                 .stream()
                 .filter(key -> key.startsWith(SORT_PARAM_START_WITH) && ObjectUtils.notEqual(webRequest.getParameter(key), SORT_PARAM_DEFAULT_VALUE))
+                .findFirst().orElse(null);
+    }
+
+    public String existFlagParameter(WebRequest webRequest) {
+        return webRequest
+                .getParameterMap()
+                .keySet()
+                .stream()
+                .filter(key -> key.startsWith(FLAG_PARAM_START_WITH))
                 .findFirst().orElse(null);
     }
 }

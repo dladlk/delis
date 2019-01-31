@@ -1,7 +1,7 @@
 package dk.erst.delis.service.content.rule.validation;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
-import dk.erst.delis.persistence.rule.validation.RuleDocumentValidationRepository;
+import dk.erst.delis.persistence.repository.rule.validation.RuleDocumentValidationRepository;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 

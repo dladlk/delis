@@ -1,7 +1,7 @@
 package dk.erst.delis.service.content.journal.identifier;
 
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
-import dk.erst.delis.persistence.journal.identifier.JournalIdentifierRepository;
+import dk.erst.delis.persistence.repository.journal.identifier.JournalIdentifierRepository;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 

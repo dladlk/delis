@@ -1,11 +1,11 @@
 package dk.erst.delis.service.content.dashboard;
 
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.persistence.document.DocumentRepository;
-import dk.erst.delis.persistence.identifier.IdentifierRepository;
-import dk.erst.delis.persistence.journal.document.JournalDocumentRepository;
-import dk.erst.delis.persistence.journal.identifier.JournalIdentifierRepository;
-import dk.erst.delis.persistence.journal.organisation.JournalOrganisationRepository;
+import dk.erst.delis.persistence.repository.document.DocumentRepository;
+import dk.erst.delis.persistence.repository.identifier.IdentifierRepository;
+import dk.erst.delis.persistence.repository.journal.document.JournalDocumentRepository;
+import dk.erst.delis.persistence.repository.journal.identifier.JournalIdentifierRepository;
+import dk.erst.delis.persistence.repository.journal.organisation.JournalOrganisationRepository;
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
 import dk.erst.delis.rest.data.response.dashboard.DashboardData;
 import dk.erst.delis.util.DateUtil;

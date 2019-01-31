@@ -4,6 +4,8 @@ import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestNotFoundException;
 import dk.erst.delis.persistence.*;
+import dk.erst.delis.persistence.specification.EntitySpecificationFactory;
+import dk.erst.delis.persistence.specification.EntitySpecification;
 import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.util.WebRequestUtil;
@@ -35,14 +37,20 @@ public class AbstractGenerateDataServiceImpl<
         PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(request);
         long collectionSize = repository.count();
         if (collectionSize == 0) {
-            return getDefaultDataPageContainer(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository);
+            return new PageContainer<>();
         }
-
         String sort = WebRequestUtil.existSortParameter(request);
-        if (StringUtils.isNotBlank(sort)) {
-            return sortProcess(entityClass, sort, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository);
+        String specificFlag = WebRequestUtil.existFlagParameter(request);
+        EntitySpecification entitySpecification;
+        if (StringUtils.isNotBlank(specificFlag)) {
+            entitySpecification = EntitySpecification.valueOf(request.getParameter(specificFlag));
         } else {
-            return getDefaultDataPageContainerWithoutSorting(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository);
+            entitySpecification = EntitySpecification.DEFAULT;
+        }
+        if (StringUtils.isNotBlank(sort)) {
+            return sortProcess(entityClass, sort, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, entitySpecification);
+        } else {
+            return getDefaultDataPageContainerWithoutSorting(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, entitySpecification);
         }
     }
 
@@ -61,7 +69,8 @@ public class AbstractGenerateDataServiceImpl<
             String sort,
             WebRequest request,
             int page, int size, long collectionSize,
-            R repository) {
+            R repository,
+            EntitySpecification entitySpecification) {
         List<Field> fields = new ArrayList<>();
         fields.addAll(Arrays.asList(entityClass.getDeclaredFields()));
         fields.addAll(Arrays.asList(entityClass.getSuperclass().getDeclaredFields()));
@@ -70,40 +79,58 @@ public class AbstractGenerateDataServiceImpl<
                 if (sort.toUpperCase().endsWith(field.getName().toUpperCase())) {
                     int count = Integer.parseInt(Objects.requireNonNull(request.getParameter(sort)));
                     if (count == 1) {
-                        return getDescendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request);
+                        return getDescendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
                     } else if (count == 2) {
-                        return getAscendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request);
+                        return getAscendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
                     }
                 }
             }
         }
-        return getDefaultDataPageContainerWithoutSorting(entityClass, request, page, size, collectionSize, repository);
+        return getDefaultDataPageContainerWithoutSorting(entityClass, request, page, size, collectionSize, repository, entitySpecification);
     }
 
-    private PageContainer<E> getDefaultDataPageContainer(int page, int size, long collectionSize, R repository) {
-        return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(
-                PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
+    private PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize,
+                                                                       R repository, EntitySpecification entitySpecification) {
+        if (Objects.equals(entitySpecification, EntitySpecification.DEFAULT)) {
+            return new PageContainer<E>(page, size, collectionSize, repository
+                    .findAll(
+                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass),
+                            PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
+        } else {
+            return new PageContainer<E>(page, size, collectionSize, repository
+                    .findAll(
+                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request),
+                            PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
+        }
     }
 
-    private PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize, R repository) {
-        return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(
-                new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),
-                PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
+    private PageContainer<E> getDescendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param,
+                                                            R repository, WebRequest request, EntitySpecification entitySpecification) {
+        if (Objects.equals(entitySpecification, EntitySpecification.DEFAULT)) {
+            return new PageContainer<E>(page, size, collectionSize, repository
+                    .findAll(
+                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass),
+                            PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
+        } else {
+            return new PageContainer<E>(page, size, collectionSize, repository
+                    .findAll(
+                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request),
+                            PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
+        }
     }
 
-    private PageContainer<E> getDescendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param, R repository, WebRequest request) {
-        return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(
-                        new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),
-                        PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
-    }
-
-    private PageContainer<E> getAscendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param, R repository, WebRequest request) {
-        return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(
-                        new AbstractSpecificationProcess<E>().generateCriteriaPredicate(request, entityClass),
-                        PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
+    private PageContainer<E> getAscendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param,
+                                                           R repository, WebRequest request, EntitySpecification entitySpecification) {
+        if (Objects.equals(entitySpecification, EntitySpecification.DEFAULT)) {
+            return new PageContainer<E>(page, size, collectionSize, repository
+                    .findAll(
+                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass),
+                            PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
+        } else {
+            return new PageContainer<E>(page, size, collectionSize, repository
+                    .findAll(
+                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request),
+                            PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
+        }
     }
 }

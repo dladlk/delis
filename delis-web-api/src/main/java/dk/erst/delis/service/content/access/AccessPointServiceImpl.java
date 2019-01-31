@@ -1,7 +1,7 @@
 package dk.erst.delis.service.content.access;
 
 import dk.erst.delis.data.entities.access.AccessPoint;
-import dk.erst.delis.persistence.access.AccessPointRepository;
+import dk.erst.delis.persistence.repository.access.AccessPointRepository;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 

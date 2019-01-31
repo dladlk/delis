@@ -49,6 +49,7 @@ export class DocumentsComponent implements OnInit {
 
     pagination: PaginationModel;
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    errorsFlag = false;
 
     constructor(
         private translate: TranslateService,
@@ -82,14 +83,14 @@ export class DocumentsComponent implements OnInit {
         this.lastErrors = select.lastError;
     }
 
-    private initProcess() {
+    protected initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        this.currentProdDocuments(1, 10);
+        this.currentProdDocuments(1, 10, this.errorsFlag);
         this.clearAllFilter();
     }
 
-    private initDefaultValues() {
+    protected initDefaultValues() {
         this.selectedStatus = "ALL";
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";
@@ -125,8 +126,8 @@ export class DocumentsComponent implements OnInit {
         }
     }
 
-    private currentProdDocuments(currentPage: number, sizeElement: number) {
-        this.documentsService.getListDocuments(currentPage, sizeElement, this.filter).subscribe(
+    protected currentProdDocuments(currentPage: number, sizeElement: number, errorsFlag: boolean) {
+        this.documentsService.getListDocuments(currentPage, sizeElement, this.filter, errorsFlag).subscribe(
             (data: {}) => {
                 this.pagination.collectionSize = data["collectionSize"];
                 this.pagination.currentPage = data["currentPage"];
@@ -138,8 +139,8 @@ export class DocumentsComponent implements OnInit {
         );
     }
 
-    private loadPage(page: number, pageSize: number) {
-        this.currentProdDocuments(page, pageSize);
+    protected loadPage(page: number, pageSize: number) {
+        this.currentProdDocuments(page, pageSize, this.errorsFlag);
     }
 
     loadTextOrganisation(text: string) {
@@ -238,7 +239,7 @@ export class DocumentsComponent implements OnInit {
         this.clearSort();
     }
 
-    private clearAllFilter() {
+    protected clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
         this.clearSort();
         this.selectedStatus = "ALL";
