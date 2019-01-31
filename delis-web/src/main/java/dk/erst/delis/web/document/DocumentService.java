@@ -62,7 +62,7 @@ public class DocumentService {
     private void noticeInJournal(DocumentStatus status, Document document) {
         JournalDocument updateRecord = new JournalDocument();
         updateRecord.setDocument(document);
-        updateRecord.setType(DocumentProcessStepType.RESOLVE_TYPE);
+        updateRecord.setType(DocumentProcessStepType.MANUAL);
         updateRecord.setOrganisation(document.getOrganisation());
         updateRecord.setMessage(MessageFormat.format("Updated by user manually. Set status={0}.", status));
         journalDocumentDaoRepository.save(updateRecord);

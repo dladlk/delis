@@ -14,5 +14,7 @@ public enum DocumentProcessStepType {
 	
 	LOAD,
 	
-	DELIVER
+	DELIVER,
+
+	MANUAL
 }
