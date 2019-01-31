@@ -8,6 +8,7 @@ import { LocaleService} from "../../../../../../service/locale.service";
 import { JournalDocumentService} from "../../services/journal.document.service";
 import { JournalDocumentModel } from "../../models/journal.document.model";
 import { ErrorService } from "../../../../../../service/error.service";
+import { SHOW_DATE_FORMAT } from "../../../../../../app.constants";
 
 @Component({
     selector: 'app-journal-one-documents',
@@ -19,6 +20,8 @@ export class JournalOneDocumentComponent implements OnInit {
 
     pageHeaders: HeaderModel[] = [];
     journalDocument: JournalDocumentModel = new JournalDocumentModel();
+
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private translate: TranslateService,

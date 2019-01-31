@@ -8,6 +8,7 @@ import { LocaleService } from "../../../../../service/locale.service";
 import { HeaderModel } from "../../../../components/header/header.model";
 import { DocumentModel } from "../../models/document.model";
 import { ErrorService } from "../../../../../service/error.service";
+import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
 @Component({
     selector: 'app-documents-one',
@@ -19,6 +20,7 @@ export class DocumentsOneComponent implements OnInit {
 
     pageHeaders: HeaderModel[] = [];
     document: DocumentModel = new DocumentModel();
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private translate: TranslateService,

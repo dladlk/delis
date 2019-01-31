@@ -15,11 +15,11 @@
                             </tr>
                             <tr>
                                 <td>create time</td>
-                                <td>{{journalIdentifier.createTime}}</td>
+                                <td>{{journalIdentifier.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>update time</td>
-                                <td>{{journalIdentifier.updateTime}}</td>
+                                <td>{{journalIdentifier.updateTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>message</td>
@@ -31,11 +31,11 @@
                             </tr>
                             <tr>
                                 <td>organisation create time</td>
-                                <td>{{journalIdentifier.organisation.createTime}}</td>
+                                <td>{{journalIdentifier.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>organisation update time</td>
-                                <td>{{journalIdentifier.organisation.updateTime}}</td>
+                                <td>{{journalIdentifier.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>organisation code</td>

@@ -11,6 +11,7 @@ import { PaginationService } from "../../../../bs-component/components/paginatio
 import { JournalIdentifierService } from "../services/journal.identifier.service";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
+import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.Organisation';
 const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.Identifier';
@@ -35,6 +36,8 @@ export class JournalIdentifierComponent implements OnInit {
     textIdentifier: string;
     textMessage: string;
     textDurationMs: string;
+
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private journalIdentifierService: JournalIdentifierService,

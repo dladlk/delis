@@ -11,6 +11,7 @@ import { PaginationService } from "../../../bs-component/components/pagination/p
 import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
 import { DocumentModel } from "../models/document.model";
 import { ErrorService } from "../../../../service/error.service";
+import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
@@ -47,6 +48,7 @@ export class DocumentsComponent implements OnInit {
     filter: FilterProcessResult;
 
     pagination: PaginationModel;
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private translate: TranslateService,

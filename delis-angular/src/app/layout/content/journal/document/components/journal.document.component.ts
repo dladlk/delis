@@ -12,6 +12,7 @@ import { JournalDocumentFilterProcessResult } from "../models/journal.document.f
 import { successList } from "../models/journal.document.view.model";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
+import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.Organisation';
 const COLUMN_NAME_DOCUMENT = 'journal.documents.table.columnName.Document';
@@ -42,6 +43,8 @@ export class JournalDocumentComponent implements OnInit {
     textDurationMs: string;
     selectedType: any;
     selectedSuccess: any;
+
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private journalDocumentService: JournalDocumentService,

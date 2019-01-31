@@ -8,6 +8,7 @@ import { IdentifierModel } from "../../models/identifier.model";
 import { LocaleService } from "../../../../../service/locale.service";
 import { ErrorService } from "../../../../../service/error.service";
 import { IdentifierService } from "../../services/identifier.service";
+import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
 @Component({
     selector: 'app-identifiers-one',
@@ -19,6 +20,8 @@ export class IdentifierOneComponent {
 
     pageHeaders: HeaderModel[] = [];
     identifier: IdentifierModel = new IdentifierModel();
+
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private translate: TranslateService,

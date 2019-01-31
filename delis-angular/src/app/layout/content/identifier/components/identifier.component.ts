@@ -11,6 +11,7 @@ import { ErrorService } from "../../../../service/error.service";
 import { PaginationService } from "../../../bs-component/components/pagination/pagination.service";
 import { IdentifierService } from "../services/identifier.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
+import { SHOW_DATE_FORMAT } from "../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.Organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.IdentifierGroup';
@@ -46,6 +47,8 @@ export class IdentifierComponent {
 
     selectedStatus: any;
     selectedPublishingStatus: any;
+
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(private translate: TranslateService,
                 private locale: LocaleService,

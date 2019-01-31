@@ -11,6 +11,7 @@ import { LocaleService } from "../../../../../service/locale.service";
 import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
+import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.Organisation';
 const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.Message';
@@ -33,6 +34,8 @@ export class JournalOrganisationComponent implements OnInit {
     textOrganisation: string;
     textMessage: string;
     textDurationMs: string;
+
+    SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
         private journalOrganisationService: JournalOrganisationService,

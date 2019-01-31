@@ -15,11 +15,11 @@
                             </tr>
                             <tr>
                                 <td>create time</td>
-                                <td>{{journalDocument.createTime}}</td>
+                                <td>{{journalDocument.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>update time</td>
-                                <td>{{journalDocument.updateTime}}</td>
+                                <td>{{journalDocument.updateTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>success</td>
@@ -39,11 +39,11 @@
                             </tr>
                             <tr>
                                 <td>organisation create time</td>
-                                <td>{{journalDocument.organisation.createTime}}</td>
+                                <td>{{journalDocument.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>organisation update time</td>
-                                <td>{{journalDocument.organisation.updateTime}}</td>
+                                <td>{{journalDocument.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>organisation code</td>
@@ -55,11 +55,11 @@
                             </tr>
                             <tr>
                                 <td>document create time</td>
-                                <td>{{journalDocument.document.createTime}}</td>
+                                <td>{{journalDocument.document.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>document update time</td>
-                                <td>{{journalDocument.document.updateTime}}</td>
+                                <td>{{journalDocument.document.updateTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
                                 <td>document status</td>
