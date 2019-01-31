@@ -21,9 +21,9 @@
 					<td th:text="${r.key}"></td>
 					<td th:if="${r.key.contains('password')}">
 						<span>
-							<span th:attr="toggle='#pass' + ${iStat.index}" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-							<input th:id="'pass' + ${iStat.index}" type="password" name="password" th:value="${r.value}"
-								   readonly style="border: 0px; background-color: transparent; box-shadow: none;">
+							<span th:attr="toggle='#passDiv' + ${iStat.index}, untoggle='#showDiv' + ${iStat.index}" class="fa fa-fw fa-eye field-icon toggle-div-password"></span>
+							<label th:text="'*****'" th:id="'passDiv' + ${iStat.index}" th:attr="hidden=false"/>
+							<label th:text="${r.value}" th:id="'showDiv' + ${iStat.index}" th:attr="hidden=true"/>
 		                </span>
 					</td>
 					<td th:unless="${r.key.contains('password')}" th:text="${r.value}"></td>

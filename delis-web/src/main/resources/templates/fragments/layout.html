@@ -51,6 +51,19 @@
 
 </body>
 <script>
+    $(".toggle-div-password").click(function() {
+        $(this).toggleClass("fa-eye fa-eye-slash");
+        var input1 = $($(this).attr("toggle"));
+        var input2 = $($(this).attr("untoggle"));
+        if (input1.attr("hidden")) {
+            input1.attr("hidden", false);
+            input2.attr("hidden", true);
+        } else {
+            input1.attr("hidden", true);
+            input2.attr("hidden", false);
+        }
+    });
+
     $(".toggle-password").click(function() {
 
         $(this).toggleClass("fa-eye fa-eye-slash");
