@@ -18,8 +18,6 @@ const routes: Routes = [
             { path: 'errors-invoices', loadChildren: './content/errors/components/invoices/errors-invoices.module#ErrorsInvoicesModule' },
             { path: 'errors-bis3-ubl', loadChildren: './content/errors/components/bis3-ubl/errors-bis3-ubl.module#ErrorsBis3UblModule' },
             { path: 'errors-cii', loadChildren: './content/errors/components/cii/errors-cii.module#ErrorsCiiModule' },
-            { path: 'forms', loadChildren: './form/form.module#FormModule' },
-            { path: 'grid', loadChildren: './grid/grid.module#GridModule' },
             { path: 'components', loadChildren: './bs-component/bs-component.module#BsComponentModule' }
         ]
     }
