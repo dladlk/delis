@@ -39,6 +39,12 @@ spec:
           value: '{{.Values.tw.env.keystoresRoot}}'
         - name: config.filesDeploymentLogs
           value: '{{.Values.tw.env.filesDeploymentLogs}}'
+        - name: config.authSsoEnabled
+          value: 'true'
+        - name: github.client.clientId
+          value: ae3d961de8435398f7c6 
+        - name: github.client.clientSecret
+          value: 1dc4341d86ac7524ba4c8044296dd86daab9c84f
         - name: SERVER_SERVLET_CONTEXT-PATH
           value: '/twc'
         - name: SERVER_TOMCAT_ACCESSLOG_ENABLED

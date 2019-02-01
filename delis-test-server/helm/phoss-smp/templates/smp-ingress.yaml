@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: peppol-smp
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-test-peppol-smp
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1M"
+spec:
+  tls:
+  - hosts:
+    - smp.peppol-test.trueservice.dk
+    secretName: tls-secret-peppol-smp-test
+  rules:
+  - host: smp.peppol-test.trueservice.dk
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: smp-peppol
+          servicePort: 8080
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: smp-peppol
+          servicePort: 8080
+    host: "*.iso6523-actorid-upis.acc.edelivery.tech.ec.europa.eu"

@@ -9,5 +9,6 @@ pushd ${CURDIR}/scripts
 ./delis-web-admin.sh
 ./delis-web-api.sh
 ./delis-angular.sh
+./cef-erst-test-web-console.sh
 
 popd
