@@ -55,9 +55,14 @@ public class DashboardServiceImpl implements DashboardService {
         data.setJournalOrganisation(journalOrganisationRepository.count());
         data.setIdentifierLastHour(identifierRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
 
-        long errors = documentRepository.countByLastErrorNotNull();
+        long errors = documentRepository.countByLastErrorNotNullAndCreateTimeBetween(dateRange.getStart(), dateRange.getEnd());
         if (errors == 0) {
-            errors = documentRepository.countByDocumentStatusIn(Arrays.asList(DocumentStatus.LOAD_ERROR, DocumentStatus.VALIDATE_ERROR));
+            errors = documentRepository.countByDocumentStatusInAndCreateTimeBetween(
+                    Arrays.asList(
+                            DocumentStatus.LOAD_ERROR,
+                            DocumentStatus.VALIDATE_ERROR,
+                            DocumentStatus.UNKNOWN_RECEIVER),
+                    dateRange.getStart(), dateRange.getEnd());
         }
         data.setErrorLastHour(errors);
 
