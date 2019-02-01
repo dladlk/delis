@@ -6,7 +6,7 @@ metadata:
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: smp
+  name: '{{.Release.Name}}-smp'
   namespace: '{{.Values.namespace}}'
 spec:
   selector:
@@ -19,6 +19,10 @@ spec:
       labels:
         k8s-app: '{{.Release.Name}}-smp'
     spec:
+      volumes:
+      - name: smp-peppol-setup
+        hostPath:
+          path: /data/phoss-smp-setup
       containers:
       - name: '{{.Release.Name}}-smp'
         image: cef-erst/peppol-smp-tomcat:latest
@@ -29,7 +33,9 @@ spec:
         - containerPort: 80
         env:
         - name: JAVA_OPTS
-          value: '-Xmx384m -XX:MaxMetaspaceSize=128m -Dsmp.server.properties.path=/setup/config/smp-server.properties -Dsmp.webapp.properties.path=/setup/config/webapp.properties -Dpd.client.properties.path=/setup/config/pd-client.properties'
+          value: '{{.Values.smp.env.javaopts}}'
+        - name: CONTEXT_NAME
+          value: {{.Values.smp.contextName}}
         resources:
           requests:
             cpu: "0.3"
@@ -39,13 +45,9 @@ spec:
       dnsPolicy: ClusterFirst
       volumes:
       - name: smp-peppol-setup
-        azureFile:
-          secretName: storage-secret
-          shareName: smp-peppol-setup
-          readOnly: false
+        hostPath:
+          path: /data/phoss-smp-setup
       restartPolicy: Always
-      imagePullSecrets:
-      - name: tlopenpeppol.azurecr.io
   strategy:
     type: Recreate
   revisionHistoryLimit: 2

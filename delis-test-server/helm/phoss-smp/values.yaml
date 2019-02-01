@@ -1,15 +1,8 @@
 namespace: default
 all:
   imagePrefix:
-tw:
-  enabled: true
-  deploymentStrategy: RollingUpdate
+smp:
   serviceType: NodePort
-  image: test-web-console
-  imageTag: latest
-  imagePullPolicy: IfNotPresent
+  contextName: phoss-smp
   env:
-    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dserver.servlet.context-path=/twc -Dserver.tomcat.accesslog.enabled=true
-    filesRoot: /data/fs
-    keystoresRoot: /data/keystores
-    filesDeploymentLogs: /data/deployment_logs
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dsmp.server.properties.path=/setup/config/smp-server.properties -Dsmp.webapp.properties.path=/setup/config/webapp.properties -Dpd.client.properties.path=/setup/config/pd-client.properties

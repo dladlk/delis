@@ -2,10 +2,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: smp-peppol
+  labels:
+    k8s-app: '{{.Release.Name}}-smp'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: '{{.Release.Name}}-smp'
+  namespace: '{{.Values.namespace}}'
 spec:
-  type: ClusterIP
+  type: {{.Values.smp.serviceType}}
   ports:
   - port: 8080
   selector:
-    k8s-app: smp-peppol
+    k8s-app: '{{.Release.Name}}-smp'
