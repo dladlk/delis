@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Phoss SMP in Delis
+name: delis-phoss
+version: 0.1.0

@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: '{{.Release.Name}}-smp'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: smp
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      k8s-app: '{{.Release.Name}}-smp'
+  replicas: 1
+  template:
+    metadata:
+      name: '{{.Release.Name}}-smp'
+      labels:
+        k8s-app: '{{.Release.Name}}-smp'
+    spec:
+      containers:
+      - name: '{{.Release.Name}}-smp'
+        image: cef-erst/peppol-smp-tomcat:latest
+        volumeMounts:
+        - name: smp-peppol-setup
+          mountPath: /setup
+        ports:
+        - containerPort: 80
+        env:
+        - name: JAVA_OPTS
+          value: '-Xmx384m -XX:MaxMetaspaceSize=128m -Dsmp.server.properties.path=/setup/config/smp-server.properties -Dsmp.webapp.properties.path=/setup/config/webapp.properties -Dpd.client.properties.path=/setup/config/pd-client.properties'
+        resources:
+          requests:
+            cpu: "0.3"
+            memory: 512Mi
+        imagePullPolicy: IfNotPresent
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      volumes:
+      - name: smp-peppol-setup
+        azureFile:
+          secretName: storage-secret
+          shareName: smp-peppol-setup
+          readOnly: false
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: tlopenpeppol.azurecr.io
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 2
+  progressDeadlineSeconds: 600

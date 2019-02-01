@@ -15,11 +15,7 @@ spec:
       - host: edelivery-test.trueservice.dk
         http:
           paths:
-          - path: /delis-gui-static
-            backend:
-              serviceName: delis-gui-static
-              servicePort: 80
-          - path: /twchidden_invisible
+          - path: /twc
             backend:
               serviceName: test-web-console
               servicePort: 8080
