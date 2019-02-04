@@ -124,7 +124,15 @@
 						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
 						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
 					</td>
-					<td th:text="${r.message}"></td>
+					<td >
+						<label th:text="${r.message}"/>
+							<div th:each="errorRecord : ${r.errors}">
+								<label th:text="${errorRecord.errorDictionary.flag}"/>
+								<label th:text="${errorRecord.errorDictionary.code}"/>
+								<label th:text="${errorRecord.errorDictionary.message}"/>
+								<label th:text="${errorRecord.location}"/>
+							</div>
+					</td>
 					<td th:text="${r.durationMs}"/>
 				</tr>
 			</table>
