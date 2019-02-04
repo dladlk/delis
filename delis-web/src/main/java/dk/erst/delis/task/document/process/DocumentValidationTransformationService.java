@@ -1,31 +1,31 @@
 package dk.erst.delis.task.document.process;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.List;
-
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXParseException;
-
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.SchemaValidator;
 import dk.erst.delis.task.document.process.validate.SchematronValidator;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
 import dk.erst.delis.task.document.process.validate.result.SchematronResultCollectorFactory;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXParseException;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -153,15 +153,20 @@ public class DocumentValidationTransformationService {
 				SchematronValidator schValidator = new SchematronValidator();
 				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(ruleService.filePath(ruleDocumentValidation).toFile())) {
 					ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
-					List<String> errorList = schValidator.validate(xmlStream, schematronStream, collector);
+					List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector);
 					step.setSuccess(errorList.isEmpty());
+					step.setErrorRecords(errorList);
 					if (!errorList.isEmpty()) {
-						StringBuilder errors = new StringBuilder("Found "+errorList.size()+" errors: ");
-						for (String errorText : errorList) {
-							errors.append(errorText);
-						}
-						step.setMessage(errors.toString());
+						System.out.println("errorList = " + errorList);
 					}
+
+//					if (!errorList.isEmpty()) {
+//						StringBuilder errors = new StringBuilder("Found "+errorList.size()+" errors: ");
+//						for (ErrorRecord errorRecord : errorList) {
+//							errors.append(errorRecord.getCode());
+//						}
+//						step.setMessage(errors.toString());
+//					}
 				} catch (Exception e) {
 					log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
 					step.setMessage(e.getMessage());

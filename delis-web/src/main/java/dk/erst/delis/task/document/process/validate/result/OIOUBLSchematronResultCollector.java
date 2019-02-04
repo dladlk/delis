@@ -1,23 +1,22 @@
 package dk.erst.delis.task.document.process.validate.result;
 
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class OIOUBLSchematronResultCollector implements ISchematronResultCollector {
 
+	public static final String ERROR = "Error";
 	public static boolean DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE = false;
 
 	protected static OIOUBLSchematronResultCollector INSTANCE = new OIOUBLSchematronResultCollector();
@@ -26,9 +25,9 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 	}
 
 	@Override
-	public List<String> collectErrorList(Document result) {
-		List<String> errorList = new ArrayList<>();
-		NodeList errorTagList = result.getElementsByTagName("Error");
+	public List<ErrorRecord> collectErrorList(Document result) {
+		List<ErrorRecord> errorList = new ArrayList<>();
+		NodeList errorTagList = result.getElementsByTagName(ERROR);
 		for (int i = 0; i < errorTagList.getLength(); i++) {
 			Node errorItem = errorTagList.item(i);
 
@@ -39,7 +38,7 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
 				String nodeToString = nodeToString(errorItem);
 				System.out.println(nodeToString);
-				errorList.add(nodeToString);
+				errorList.add(new ErrorRecord(pattern, nodeToString, ERROR, xpath));
 				continue;
 			}
 
@@ -52,7 +51,7 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 				log.debug(String.format("%d) %s\n\tpattern = %s\n\txpath = %s", i, message, pattern, xpath));
 			}
 			
-			errorList.add(sb.toString());
+			errorList.add(new ErrorRecord(pattern, message, ERROR, xpath));
 		}
 		return errorList;
 	}
