@@ -46,7 +46,7 @@ public class SmpLookupService {
 	
 	public SmpPublishData lookup(ParticipantIdentifier identifier) {
 		SmpPublishData smpPublishData = new SmpPublishData();
-		log.info("Performing lookup for published data by ParticipantIdentifier "+identifier);
+		log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SMP "+configBean.getSmpEndpointConfig().getUrl());
 		try {
 			LookupClient client = createLookupClient();
 			List<DocumentTypeIdentifier> documentIdentifiers = client.getDocumentIdentifiers(identifier);
@@ -81,19 +81,22 @@ public class SmpLookupService {
                 URI newUri = null;
                 try {
                     newUri = new URI(location.toString()+ "/"+participant.urlencoded());
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+					log.error("Failed to build URI for location=" + location + ", participant=" + participant);
                 }
+                log.info("Resolved URI to document identifiers: "+newUri);
                 return newUri;
             }
             @Override
             public URI resolveServiceMetadata(URI location, ParticipantIdentifier participantIdentifier, DocumentTypeIdentifier documentTypeIdentifier) {
+            	URI result = location;
                 try {
-                    return new URI(location.toString()+String.format("/%s/services/%s", participantIdentifier.urlencoded(), documentTypeIdentifier.urlencoded()));
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
+                    result = new URI(location.toString()+String.format("/%s/services/%s", participantIdentifier.urlencoded(), documentTypeIdentifier.urlencoded()));
+                } catch (Exception e) {
+					log.error("Failed to build URI for location=" + location + ", participant=" + participantIdentifier + ", documentTypeIdentifier=" + documentTypeIdentifier);
                 }
-                return location;
+				log.info("Resolved URI to service metadata: " + result);
+                return result;
             }
         };
 	}
