@@ -42,8 +42,8 @@ public class IdentifierPublishDataService {
 	private static Map<AccessPointType, String> transportProfilesMap = new HashMap<AccessPointType, String>(){
 		private static final long serialVersionUID = -6392733384544701957L;
 	{
-		put(AccessPointType.AS2, "peppol-transport-as4-v2_0");
-		put(AccessPointType.AS4, "busdox-transport-as2-ver1p0");
+		put(AccessPointType.AS4, "peppol-transport-as4-v2_0");
+		put(AccessPointType.AS2, "busdox-transport-as2-ver1p0");
 	}};
 
 	static {
