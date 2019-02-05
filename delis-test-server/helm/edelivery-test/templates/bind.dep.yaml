@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-bind'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: bind
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-bind'
+  strategy:
+    type: '{{.Values.bind.deploymentStrategy}}'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-bind'
+    spec:
+      containers:
+      - env:
+        - name: ROOT_PASSWORD
+          value: '{{.Values.bind.bind.rootpassword}}'
+        image: '{{.Values.all.imagePrefix}}{{.Values.bind.bind.image}}:{{.Values.bind.bind.imageTag}}'
+        imagePullPolicy: '{{.Values.bind.bind.imagePullPolicy}}'
+        name: bind
+        ports:
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        - containerPort: 10000
+          name: http
+          protocol: TCP
+
+      restartPolicy: '{{.Values.bind.restartPolicy}}'

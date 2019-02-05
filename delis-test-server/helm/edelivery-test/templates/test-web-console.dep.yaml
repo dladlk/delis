@@ -49,6 +49,10 @@ spec:
           value: '/twc'
         - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
           value: 'true'
+        - name: config.smpUsername
+          value: peppol_admin
+        - name: config.smpPassword
+          value: Systest1
         image: '{{.Values.all.imagePrefix}}{{.Values.tw.image}}:{{.Values.tw.imageTag}}'
         imagePullPolicy: '{{.Values.tw.imagePullPolicy}}'
         name: test-web-console

@@ -1,0 +1,27 @@
+namespace: default
+name: domibus
+partyName: blue
+partyIndex: 1
+all:
+  imagePrefix: cef-erst/
+dtx:
+  deploymentStrategy: RollingUpdate
+  image: domibus-tomcat
+  imagePullPolicy: IfNotPresent
+  imageTag: latest
+  restartPolicy: Always
+  serviceType: NodePort
+  env:
+    activemqhost: localhost
+    activemqpassword: changeit
+    activemqusername: domibus
+    databasehost: 172.16.2.4
+    databaseport: "3306"
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dmode.TEST.security.pki=/peppol_pki_local/pki_local.xml
+    keypassword: test123
+    pmodeprovider: DynamicDiscoveryPModeProvider
+    smlzone: smp.cef.contest.my
+    cron: "0/30 * * * * ?"
+    keystorelocation: "/usr/local/tomcat/domibus/keystores/keystore.jks"
+    truststorelocation: "/usr/local/tomcat/domibus/keystores/truststore.jks"
+    domibus_dispatcher_timeout: 30000

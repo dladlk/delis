@@ -13,3 +13,11 @@ tw:
     filesRoot: /data/fs
     keystoresRoot: /data/keystores
     filesDeploymentLogs: /data/deployment_logs
+bind:
+  restartPolicy: Always
+  bind:
+    image: cef-erst/smp-bind
+    imagePullPolicy: IfNotPresent
+    imageTag: 1.0.0
+    rootpassword: b1ndPassRut
+  serviceType: NodePort

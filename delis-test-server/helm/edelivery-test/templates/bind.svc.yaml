@@ -1,18 +1,18 @@
----
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    k8s-app: '{{.Release.Name}}'
+    app: bind
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: '{{.Release.Name}}'
+  name: bind
   namespace: '{{.Values.namespace}}'
 spec:
-  type: {{.Values.smp.serviceType}}
   ports:
-  - port: 80
-    targetPort: 8080
+  - port: 10000
+    protocol: TCP
+    targetPort: 10000
   selector:
-    k8s-app: '{{.Release.Name}}'
+    app: '{{.Release.Name}}-bind'
+  type: '{{.Values.bind.serviceType}}'

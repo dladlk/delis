@@ -2,29 +2,29 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: '{{.Release.Name}}-smp'
+    k8s-app: '{{.Release.Name}}'
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: '{{.Release.Name}}-smp'
+  name: '{{.Release.Name}}'
   namespace: '{{.Values.namespace}}'
 spec:
   selector:
     matchLabels:
-      k8s-app: '{{.Release.Name}}-smp'
+      k8s-app: '{{.Release.Name}}'
   replicas: 1
   template:
     metadata:
-      name: '{{.Release.Name}}-smp'
+      name: '{{.Release.Name}}'
       labels:
-        k8s-app: '{{.Release.Name}}-smp'
+        k8s-app: '{{.Release.Name}}'
     spec:
       volumes:
       - name: smp-peppol-setup
         hostPath:
           path: /data/phoss-smp-setup
       containers:
-      - name: '{{.Release.Name}}-smp'
+      - name: '{{.Release.Name}}'
         image: cef-erst/peppol-smp-tomcat:latest
         volumeMounts:
         - name: smp-peppol-setup
