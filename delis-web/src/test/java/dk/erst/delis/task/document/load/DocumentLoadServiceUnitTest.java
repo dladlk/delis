@@ -2,6 +2,7 @@ package dk.erst.delis.task.document.load;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -10,9 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import dk.erst.delis.TestUtil;
+import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.dao.DocumentDaoRepository;
@@ -34,8 +37,10 @@ import no.difi.vefa.peppol.common.model.Header;
 @Slf4j
 public class DocumentLoadServiceUnitTest {
 
-	@Test
-	public void testLoadFile() throws IOException {
+	private DocumentLoadService service;
+	
+	@Before
+	public void setupService() {
 		ConfigValueDaoRepository configRepository = TestUtil.getEmptyConfigValueDaoRepository();
 		ConfigBean config = new ConfigBean(configRepository);
 
@@ -62,10 +67,25 @@ public class DocumentLoadServiceUnitTest {
 
 		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService(config);
 
-		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
+		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
 
+	}
+
+	@Test
+	public void testLoadFromInput() throws IOException {
 		for (TestDocument testDocument : TestDocument.values()) {
-			runCase(dls, testDocument);
+		}
+		File testFolder = File.createTempFile(this.getClass().getSimpleName(), "document_input");
+		assertTrue(testFolder.mkdirs());
+		Path testInputFolder = testFolder.toPath();
+		StatData statData = service.loadFromInput(testInputFolder);
+		System.out.println(statData);
+	}
+	
+	@Test
+	public void testLoadFile() throws IOException {
+		for (TestDocument testDocument : TestDocument.values()) {
+			runCase(service, testDocument);
 		}
 	}
 
