@@ -22,8 +22,8 @@ public class MetadataBuilder {
 		AgreementRef agreementRef = new AgreementRef();
 		agreementRef.setValue("urn:fdc:peppol.eu:2017:agreements:tia:ap_provider");
 		Service service = new Service();
-		service.setType("urn:fdc:peppol.eu:2017:identifiers:proc-id");
-		service.setValue("urn:www.cenbii.eu:profile:bii05:ver2.0");
+		service.setType(sbdhHeader.getProcess().getScheme().getIdentifier());
+		service.setValue(sbdhHeader.getProcess().getIdentifier());
 		CollaborationInfo collaborationInfo = new CollaborationInfo();
 		collaborationInfo.setAgreementRef(agreementRef);
 		collaborationInfo.setService(service);
