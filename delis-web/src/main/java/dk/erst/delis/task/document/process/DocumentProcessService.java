@@ -73,13 +73,12 @@ public class DocumentProcessService {
 			String outgoingRelativePath = null;
 			if (log.isSuccess()) {
 				outgoingRelativePath = documentBytesStorageService.moveToValid(document, log.getResultPath());
-			} else {
-				outgoingRelativePath = documentBytesStorageService.moveToFailed(document, log.getResultPath());
+				document.setOutgoingRelativePath(outgoingRelativePath);
+				documentDaoRepository.updateOutgoingRelativePath(document);
+//			} else {
+//				outgoingRelativePath = documentBytesStorageService.moveToFailed(document, log.getResultPath());
 			}
-			document.setOutgoingRelativePath(outgoingRelativePath);
-			
-			documentDaoRepository.updateOutgoingRelativePath(document);
-			
+
 			document.setDocumentStatus(log.isSuccess() ? DocumentStatus.VALIDATE_OK : DocumentStatus.VALIDATE_ERROR);
 
 			documentDaoRepository.updateDocumentStatus(document);
