@@ -18,23 +18,12 @@ import javax.persistence.ManyToOne;
 @Entity
 public class JournalDocumentError extends AbstractEntity {
 
-//	@EmbeddedId
-//	private JournalDocumentErrorDictionaryId mappingId;
-
 	@ManyToOne(fetch = FetchType.LAZY)
-//	@MapsId("journalDocumentId")
 	private JournalDocument journalDocument;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-//	@MapsId("errorDictionaryId")
 	private ErrorDictionary errorDictionary;
 
 	@Column
 	private String location;
-
-//	public JournalDocumentError(JournalDocument journalDocument, ErrorDictionary errorDictionary) {
-//		this.journalDocument = journalDocument;
-//		this.errorDictionary = errorDictionary;
-//		this.mappingId = new JournalDocumentErrorDictionaryId(journalDocument.getId(), errorDictionary.getId());
-//	}
 }
