@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -80,6 +81,18 @@ public class DocumentLoadService {
 							Document d = loadFile(file);
 							statData.increment(d == null ? null : d.getDocumentStatus().name());
 						}
+					}
+					return FileVisitResult.CONTINUE;
+				}
+				
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) {
+					if (exc instanceof NoSuchFileException) {
+						/*
+						 * Skip NoSuchFileException - metadata.xml is moved before we scanned it
+						 */
+					} else {
+						log.error("Failed to process file "+file, exc);
 					}
 					return FileVisitResult.CONTINUE;
 				}
