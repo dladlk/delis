@@ -51,8 +51,7 @@ public class IdentifierPublishService {
 		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier);
 		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
 		if (published == null) {
-			log.info(String.format("ServiceGroup by Identifier '%s' is not found", identifier.getValue()));
-			return false;
+			log.info(String.format("ServiceGroup by Identifier '%s' is absent in SMP", identifier.getValue()));
 		}
 		if (identifier.getStatus().isDeleted()) {
 			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
@@ -69,13 +68,16 @@ public class IdentifierPublishService {
 			addJournalIdentifierRecord(identifier, "Unable to publish service group", journalIdentifierDaoRepository);
 			return false;
 		}
-		for (SmpPublishServiceData publishedService : published.getServiceList()) {
-			if (!contains(publishedService, forPublish.getServiceList())) {
-				boolean isDeleted = deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
-				if (isDeleted) {
-					SmpDocumentIdentifier documentIdentifier = publishedService.getDocumentIdentifier();
-					String message = String.format("Service metadata with DocumentIdentifier value '%s' was deleted", documentIdentifier.getDocumentIdentifierValue());
-					addJournalIdentifierRecord(identifier, message, journalIdentifierDaoRepository);
+		
+		if (published != null) {
+			for (SmpPublishServiceData publishedService : published.getServiceList()) {
+				if (!contains(publishedService, forPublish.getServiceList())) {
+					boolean isDeleted = deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
+					if (isDeleted) {
+						SmpDocumentIdentifier documentIdentifier = publishedService.getDocumentIdentifier();
+						String message = String.format("Service metadata with DocumentIdentifier value '%s' was deleted", documentIdentifier.getDocumentIdentifierValue());
+						addJournalIdentifierRecord(identifier, message, journalIdentifierDaoRepository);
+					}
 				}
 			}
 		}
