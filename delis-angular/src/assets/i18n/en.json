@@ -82,6 +82,10 @@
 
     "pagination.page-size": "Page size",
     "pagination.clear": "Clear all filters",
+    "pagination.status.start": "Showing",
+    "pagination.status.to": "to",
+    "pagination.status.of": "of",
+    "pagination.status.end": "entries",
 
     "auth.username": "Username",
     "auth.password": "Password",
