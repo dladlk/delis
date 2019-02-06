@@ -1,21 +1,23 @@
 package dk.erst.delis.task.document.storage;
 
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.enums.document.DocumentProcessStepType;
-import org.springframework.stereotype.Service;
-
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.task.document.process.log.DocumentProcessLog;
-import dk.erst.delis.task.document.process.log.DocumentProcessStep;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -139,5 +141,32 @@ public class DocumentBytesStorageService {
 			return null;
 		}
 		return destPath.toString();
+	}
+
+	public boolean save (DocumentBytes documentBytes, InputStream stream) {
+		boolean result = true;
+		String location = documentBytes.getLocation();
+		Path path = Paths.get(location);
+		try {
+			Files.copy(stream, path);
+		} catch (IOException e) {
+			log.error("Failed to save document bytes to " + path, e);
+			result = false;
+		}
+		return result;
+	}
+
+	public boolean load (DocumentBytes documentBytes, OutputStream stream) {
+		boolean result = true;
+		String location = documentBytes.getLocation();
+		Path path = Paths.get(location);
+		try {
+			byte[] bytes = Files.readAllBytes(path);
+			stream.write(bytes);
+		} catch (IOException e) {
+			log.error("Failed to read document bytes from " + path, e);
+			result = false;
+		}
+		return result;
 	}
 }
