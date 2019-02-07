@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskSchedulerParams {
 
-    @Value("#{${job.documentLoad.interval} eq -1 ? 0x7fffffffffffffffL : ${job.documentLoad.interval}}")
+    @Value("#{${job.documentLoad.interval} <= 0 ? ${job.default.interval}: ${job.documentLoad.interval}}")
     public Long jobDocumentLoadInterval;
 
-    @Value("#{${job.documentValidate.interval} eq -1 ? 0x7fffffffffffffffL : ${job.documentValidate.interval}}")
+    @Value("#{${job.documentValidate.interval} <= 0 ? ${job.default.interval}: ${job.documentValidate.interval}}")
     public Long jobDocumentValidateInterval;
 
-    @Value("#{${job.documentDeliver.interval} eq -1 ? 0x7fffffffffffffffL : ${job.documentDeliver.interval}}")
+    @Value("#{${job.documentDeliver.interval} <= 0 ? ${job.default.interval}: ${job.documentDeliver.interval}}")
     public Long jobDocumentDeliverInterval;
 }
