@@ -27,23 +27,20 @@ public class TaskScheduler {
     private final DocumentLoadService documentLoadService;
     private final DocumentProcessService documentProcessService;
     private final DocumentDeliverService documentDeliverService;
-    private final TaskSchedulerParams taskSchedulerParams;
 
     @Autowired
     public TaskScheduler(
             ConfigBean configBean,
             DocumentLoadService documentLoadService,
             DocumentProcessService documentProcessService,
-            DocumentDeliverService documentDeliverService,
-            TaskSchedulerParams taskSchedulerParams) {
+            DocumentDeliverService documentDeliverService) {
         this.configBean = configBean;
         this.documentLoadService = documentLoadService;
         this.documentProcessService = documentProcessService;
         this.documentDeliverService = documentDeliverService;
-        this.taskSchedulerParams = taskSchedulerParams;
     }
 
-    @Scheduled(fixedRateString = "#{taskSchedulerParams.jobDocumentLoadInterval}")
+    @Scheduled(fixedRateString = "#{${job.documentLoad.interval} <= 0 ? ${job.default.interval} : ${job.documentLoad.interval}}")
     public void documentLoad() {
         log.info("-- START DOCUMENT LOAD CRON --");
         Path inputFolderPath = configBean.getStorageInputPath().toAbsolutePath();
@@ -61,7 +58,7 @@ public class TaskScheduler {
         }
     }
 
-    @Scheduled(fixedDelayString = "#{taskSchedulerParams.jobDocumentValidateInterval}")
+    @Scheduled(fixedDelayString = "#{${job.documentValidate.interval} <= 0 ? ${job.default.interval} : ${job.documentValidate.interval}}")
     public void documentValidate() {
         log.info("-- START DOCUMENT VALIDATE CRON --");
         try {
@@ -73,7 +70,7 @@ public class TaskScheduler {
         }
     }
 
-    @Scheduled(fixedDelayString = "#{taskSchedulerParams.jobDocumentDeliverInterval}")
+    @Scheduled(fixedDelayString = "#{${job.documentDeliver.interval} <= 0 ? ${job.default.interval} : ${job.documentDeliver.interval}}")
     public void documentDeliver() {
         log.info("-- START DOCUMENT DELIVER CRON --");
         try {
