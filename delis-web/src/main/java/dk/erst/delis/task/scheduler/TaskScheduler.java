@@ -27,28 +27,30 @@ public class TaskScheduler {
     private final DocumentLoadService documentLoadService;
     private final DocumentProcessService documentProcessService;
     private final DocumentDeliverService documentDeliverService;
+    private final TaskSchedulerParams taskSchedulerParams;
 
     @Autowired
     public TaskScheduler(
             ConfigBean configBean,
             DocumentLoadService documentLoadService,
             DocumentProcessService documentProcessService,
-            DocumentDeliverService documentDeliverService) {
+            DocumentDeliverService documentDeliverService,
+            TaskSchedulerParams taskSchedulerParams) {
         this.configBean = configBean;
         this.documentLoadService = documentLoadService;
         this.documentProcessService = documentProcessService;
         this.documentDeliverService = documentDeliverService;
+        this.taskSchedulerParams = taskSchedulerParams;
     }
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRateString = "#{taskSchedulerParams.jobDocumentLoadInterval}")
     public void documentLoad() {
+        log.info("-- START DOCUMENT LOAD CRON --");
         Path inputFolderPath = configBean.getStorageInputPath().toAbsolutePath();
-
         File inputFolderFile = inputFolderPath.toFile();
         if (!inputFolderFile.exists() || !inputFolderFile.isDirectory()) {
             log.error("TaskScheduler: documentLoad ==> Document input folder " + inputFolderPath + " does not exist or is not a directory");
         }
-
         try {
             StatData sd = documentLoadService.loadFromInput(inputFolderPath);
             String loadStatStr = sd.toStatString();
@@ -59,8 +61,9 @@ public class TaskScheduler {
         }
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelayString = "#{taskSchedulerParams.jobDocumentValidateInterval}")
     public void documentValidate() {
+        log.info("-- START DOCUMENT VALIDATE CRON --");
         try {
             StatData sd = documentProcessService.processLoaded();
             String message = "Done processing of loaded files in " + sd.toDurationString() + " with result: " + sd.toStatString();
@@ -70,8 +73,9 @@ public class TaskScheduler {
         }
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelayString = "#{taskSchedulerParams.jobDocumentDeliverInterval}")
     public void documentDeliver() {
+        log.info("-- START DOCUMENT DELIVER CRON --");
         try {
             StatData sd = documentDeliverService.processValidated();
             String message = "Done processing of validated files in " + sd.toDurationString() + " with result: " + sd.toStatString();
