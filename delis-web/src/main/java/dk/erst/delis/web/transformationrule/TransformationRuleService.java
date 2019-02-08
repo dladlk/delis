@@ -4,8 +4,11 @@ import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,15 +19,25 @@ import static dk.erst.delis.data.enums.document.DocumentFormatFamily.CII;
 import static dk.erst.delis.data.enums.document.DocumentFormatFamily.OIOUBL;
 
 @Service
+@Slf4j
 public class TransformationRuleService {
+	
     private RuleDocumentTransformationDaoRepository repository;
 
     @Autowired
     public TransformationRuleService(RuleDocumentTransformationDaoRepository repository) {
         this.repository = repository;
+        this.initOnEmpty();
     }
 
-    public Iterable<RuleDocumentTransformation> findAll () {
+    private void initOnEmpty() {
+        if (!this.repository.findAll(PageRequest.of(0, 1)).iterator().hasNext()) {
+        	log.info("No transformation rule is found - initialize with default");
+        	this.recreateDefault();
+        }
+	}
+
+	public Iterable<RuleDocumentTransformation> findAll () {
         return repository.findAll();
     }
 
