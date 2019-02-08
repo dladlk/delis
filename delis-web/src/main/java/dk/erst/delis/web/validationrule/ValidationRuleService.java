@@ -88,13 +88,13 @@ public class ValidationRuleService {
 
         String BIS3_PEPPOL = "sch/bis3/peppol_2019-01-02_1/PEPPOL-EN16931-UBL.xslt";
         String BIS3_CEN = "sch/bis3/cen_2019-01-02_1/CEN-EN16931-UBL.xslt";
-        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 10));
-        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 20));
-        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 10));
-        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 20));
+        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 10));
+        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 20));
+        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 10));
+        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
 
-        result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-01-02_1/PEPPOL-EN16931-CII.xslt", 10));
-        result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-01-02_1/CEN-EN16931-CII.xslt", 20));
+        result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-01-02_1/CEN-EN16931-CII.xslt", 10));
+        result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-01-02_1/PEPPOL-EN16931-CII.xslt", 20));
         return result;
     }
 
