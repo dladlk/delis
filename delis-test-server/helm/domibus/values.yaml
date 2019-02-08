@@ -17,7 +17,7 @@ dtx:
     activemqusername: domibus
     databasehost: 172.16.2.4
     databaseport: "3306"
-    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dmode.TEST.security.pki=/peppol_pki_local/pki_local.xml
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=200m -Dmode.TEST.security.pki=/peppol_pki_local/pki_local.xml
     keypassword: test123
     pmodeprovider: DynamicDiscoveryPModeProvider
     smlzone: smp.cef.contest.my

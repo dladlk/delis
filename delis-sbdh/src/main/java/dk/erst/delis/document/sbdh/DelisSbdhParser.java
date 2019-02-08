@@ -2,6 +2,7 @@ package dk.erst.delis.document.sbdh;
 
 import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
 import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
+import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
 import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
 import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
 import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
@@ -73,7 +74,12 @@ public class DelisSbdhParser {
 				// try to use a specialized document parser to fetch more document details
 				PEPPOLDocumentParser documentParser = null;
 				try {
-					documentParser = headerParser.createDocumentParser();
+					String localName = headerParser.localName();
+					if ("CrossIndustryInvoice".equals(localName)) {
+						documentParser = headerParser.createDocumentParser();
+					} else if ("Invoice".equals(localName) || "CreditNote".equals(localName)) {
+						documentParser = new DelisInvoiceDocumentParser(headerParser);
+					}
 				} catch (Exception ex) {
 					/*
 					 * allow this to happen so that "unknown" PEPPOL documents still can be used by

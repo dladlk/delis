@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +18,7 @@ public class MainTest {
 
 	private static final Logger log = LoggerFactory.getLogger(MainTest.class);
 
-	@Test
+	//@Test
 	public void testMain() throws Exception {
 		File resourcesFolder = new File("../delis-resources/examples/xml");
 		String suffix = "_sbdh.xml";

@@ -40,15 +40,14 @@ public class TaskScheduler {
         this.documentDeliverService = documentDeliverService;
     }
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentLoad() {
+        log.info("-- START DOCUMENT LOAD TASK --");
         Path inputFolderPath = configBean.getStorageInputPath().toAbsolutePath();
-
         File inputFolderFile = inputFolderPath.toFile();
         if (!inputFolderFile.exists() || !inputFolderFile.isDirectory()) {
             log.error("TaskScheduler: documentLoad ==> Document input folder " + inputFolderPath + " does not exist or is not a directory");
         }
-
         try {
             StatData sd = documentLoadService.loadFromInput(inputFolderPath);
             String loadStatStr = sd.toStatString();
@@ -57,10 +56,12 @@ public class TaskScheduler {
         } catch (Exception e) {
             log.error("TaskScheduler: documentLoad ==> Failed to invoke documentLoadService.loadFromInput", e);
         }
+        log.info("-- DONE DOCUMENT LOAD TASK --");
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentValidate() {
+        log.info("-- START DOCUMENT VALIDATE TASK --");
         try {
             StatData sd = documentProcessService.processLoaded();
             String message = "Done processing of loaded files in " + sd.toDurationString() + " with result: " + sd.toStatString();
@@ -68,10 +69,12 @@ public class TaskScheduler {
         } catch (Exception e) {
             log.error("TaskScheduler: documentValidate ==> Failed to invoke documentListProcessService.processLoaded", e);
         }
+        log.info("-- DONE DOCUMENT VALIDATE TASK --");
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentDeliver() {
+        log.info("-- START DOCUMENT DELIVER TASK --");
         try {
             StatData sd = documentDeliverService.processValidated();
             String message = "Done processing of validated files in " + sd.toDurationString() + " with result: " + sd.toStatString();
@@ -79,5 +82,6 @@ public class TaskScheduler {
         } catch (Exception e) {
             log.error("TaskScheduler: documentDeliver ==> Failed to invoke documentDeliveryService.processValidated", e);
         }
+        log.info("-- DONE DOCUMENT DELIVER TASK --");
     }
 }

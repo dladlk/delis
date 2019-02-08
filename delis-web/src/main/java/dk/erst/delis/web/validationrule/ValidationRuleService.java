@@ -5,22 +5,34 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ValidationRuleService {
+	
     private RuleDocumentValidationDaoRepository repository;
 
     @Autowired
     public ValidationRuleService(RuleDocumentValidationDaoRepository repository) {
         this.repository = repository;
+        this.initOnEmpty();
     }
 
+    private void initOnEmpty() {
+        if (!this.repository.findAll(PageRequest.of(0, 1)).iterator().hasNext()) {
+        	log.info("No validation rule is found - initialize with default");
+        	this.recreateDefault();
+        }
+	}
+    
     public Iterable<RuleDocumentValidation> findAll() {
         Iterable<RuleDocumentValidation> all = repository.findAll();
         return all;
@@ -88,13 +100,13 @@ public class ValidationRuleService {
 
         String BIS3_PEPPOL = "sch/bis3/peppol_2019-01-02_1/PEPPOL-EN16931-UBL.xslt";
         String BIS3_CEN = "sch/bis3/cen_2019-01-02_1/CEN-EN16931-UBL.xslt";
-        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 10));
-        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 20));
-        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 10));
-        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 20));
+        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 10));
+        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 20));
+        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 10));
+        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
 
-        result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-01-02_1/PEPPOL-EN16931-CII.xslt", 10));
-        result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-01-02_1/CEN-EN16931-CII.xslt", 20));
+        result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-01-02_1/CEN-EN16931-CII.xslt", 10));
+        result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-01-02_1/PEPPOL-EN16931-CII.xslt", 20));
         return result;
     }
 
