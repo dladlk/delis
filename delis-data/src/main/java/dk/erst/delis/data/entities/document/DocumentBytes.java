@@ -5,6 +5,7 @@ import javax.persistence.*;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /*
  * Each document has a bunch of related file data - initial SBD, payload inside it, initial metadata (for Domibus file system plugin) 
@@ -19,6 +20,7 @@ import lombok.Data;
  */
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = false)
 public class DocumentBytes extends AbstractEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
@@ -29,7 +31,9 @@ public class DocumentBytes extends AbstractEntity {
 	@Column(nullable = false, length = 10)
 	private DocumentBytesType type;
 
+	@Column
 	private String location;
 
+	@Column
 	private String description;
 }
