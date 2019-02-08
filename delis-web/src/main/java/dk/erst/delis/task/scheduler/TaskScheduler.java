@@ -40,9 +40,9 @@ public class TaskScheduler {
         this.documentDeliverService = documentDeliverService;
     }
 
-    @Scheduled(fixedRateString = "#{${job.documentLoad.interval} <= 0 ? ${job.default.interval} : ${job.documentLoad.interval}}")
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentLoad() {
-        log.info("-- START DOCUMENT LOAD CRON --");
+        log.info("-- START DOCUMENT LOAD TASK --");
         Path inputFolderPath = configBean.getStorageInputPath().toAbsolutePath();
         File inputFolderFile = inputFolderPath.toFile();
         if (!inputFolderFile.exists() || !inputFolderFile.isDirectory()) {
@@ -56,11 +56,12 @@ public class TaskScheduler {
         } catch (Exception e) {
             log.error("TaskScheduler: documentLoad ==> Failed to invoke documentLoadService.loadFromInput", e);
         }
+        log.info("-- DONE DOCUMENT LOAD TASK --");
     }
 
-    @Scheduled(fixedDelayString = "#{${job.documentValidate.interval} <= 0 ? ${job.default.interval} : ${job.documentValidate.interval}}")
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentValidate() {
-        log.info("-- START DOCUMENT VALIDATE CRON --");
+        log.info("-- START DOCUMENT VALIDATE TASK --");
         try {
             StatData sd = documentProcessService.processLoaded();
             String message = "Done processing of loaded files in " + sd.toDurationString() + " with result: " + sd.toStatString();
@@ -68,11 +69,12 @@ public class TaskScheduler {
         } catch (Exception e) {
             log.error("TaskScheduler: documentValidate ==> Failed to invoke documentListProcessService.processLoaded", e);
         }
+        log.info("-- DONE DOCUMENT VALIDATE TASK --");
     }
 
-    @Scheduled(fixedDelayString = "#{${job.documentDeliver.interval} <= 0 ? ${job.default.interval} : ${job.documentDeliver.interval}}")
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentDeliver() {
-        log.info("-- START DOCUMENT DELIVER CRON --");
+        log.info("-- START DOCUMENT DELIVER TASK --");
         try {
             StatData sd = documentDeliverService.processValidated();
             String message = "Done processing of validated files in " + sd.toDurationString() + " with result: " + sd.toStatString();
@@ -80,5 +82,6 @@ public class TaskScheduler {
         } catch (Exception e) {
             log.error("TaskScheduler: documentDeliver ==> Failed to invoke documentDeliveryService.processValidated", e);
         }
+        log.info("-- DONE DOCUMENT DELIVER TASK --");
     }
 }
