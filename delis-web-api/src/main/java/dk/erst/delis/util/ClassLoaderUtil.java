@@ -31,7 +31,7 @@ import java.util.*;
 @UtilityClass
 public class ClassLoaderUtil {
 
-    private static final String BASE_ENTITY_PACKAGE = "dk.erst.delis.data.entities";
+    private static final String BASE_ENTITY_PACKAGE = AbstractEntity.class.getPackage().getName();
 
     public List<Class> findAllWebApiContentEntityClasses() {
         ClassLoader loader = AbstractEntity.class.getClassLoader();
