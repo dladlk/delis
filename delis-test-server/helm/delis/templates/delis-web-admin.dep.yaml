@@ -19,13 +19,6 @@ spec:
       labels:
         app: '{{.Release.Name}}-delis-web-admin'
     spec:
-      volumes:
-      - name: delis-resources
-        hostPath:
-          path: /data/delis-resources
-      - name: delis-root
-        hostPath:
-          path: /data/delis-root
       containers:
       - image: delis-web-admin:latest
         imagePullPolicy: IfNotPresent
@@ -40,3 +33,20 @@ spec:
           name: delis-resources
         - mountPath: /delis
           name: delis-root
+        - mountPath: /load/input1
+          name: data-input1
+        - mountPath: /load/input2
+          name: data-input2
+      volumes:
+      - name: delis-resources
+        hostPath:
+          path: /data/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+      - name: data-input1
+        hostPath:
+          path: /data/fs-plugin/dynconcepttestparty01gw/IN
+      - name: data-input2
+        hostPath:
+          path: /data/fs-plugin/dynconcepttestparty02gw/IN
