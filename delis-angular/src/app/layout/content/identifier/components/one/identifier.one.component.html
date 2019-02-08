@@ -10,44 +10,28 @@
                         <table class="table table-striped">
                             <tbody>
                             <tr>
-                                <td>id</td>
-                                <td>{{identifier.id}}</td>
-                            </tr>
-                            <tr>
-                                <td>create time</td>
-                                <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
-                            </tr>
-                            <tr>
-                                <td>organisation name</td>
+                                <td>Organisation</td>
                                 <td>{{identifier.organisation.name}}</td>
                             </tr>
                             <tr>
-                                <td>identifier group code</td>
-                                <td>{{identifier.identifierGroup.code}}</td>
+                                <td>Oprettet</td>
+                                <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             <tr>
-                                <td>identifier group name</td>
-                                <td>{{identifier.identifierGroup.name}}</td>
+                                <td>Nummer</td>
+                                <td>{{identifier.type}} {{identifier.value}}</td>
                             </tr>
                             <tr>
-                                <td>value</td>
-                                <td>{{identifier.value}}</td>
-                            </tr>
-                            <tr>
-                                <td>name</td>
+                                <td>Navn</td>
                                 <td>{{identifier.name}}</td>
                             </tr>
                             <tr>
-                                <td>publishing status</td>
+                                <td>Publicering</td>
                                 <td>{{identifier.publishingStatus}}</td>
                             </tr>
                             <tr>
-                                <td>status</td>
+                                <td>Status</td>
                                 <td>{{identifier.status}}</td>
-                            </tr>
-                            <tr>
-                                <td>type</td>
-                                <td>{{identifier.type}}</td>
                             </tr>
                             </tbody>
                         </table>

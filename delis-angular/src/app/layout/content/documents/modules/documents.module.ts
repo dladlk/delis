@@ -11,6 +11,7 @@ import { DocumentsRoutingModule } from '../documents-routing.module';
 import { DocumentsComponent } from '../components/documents.component';
 import { PageHeaderModule } from '../../../../shared';
 import { DocumentsService } from '../services/documents.service';
+import { JournalDocumentService } from "../../journal/document/services/journal.document.service";
 import { BsComponentModule } from "../../../bs-component/bs-component.module";
 import { DocumentsOneComponent } from "../components/one/documents.one.component";
 import { DocumentsErrorComponent } from "../components/documents.error.component";
@@ -31,6 +32,6 @@ import { DocumentsErrorComponent } from "../components/documents.error.component
       DocumentsComponent,
       DocumentsOneComponent,
       DocumentsErrorComponent],
-  providers: [DocumentsService]
+  providers: [DocumentsService, JournalDocumentService]
 })
 export class DocumentsModule {}

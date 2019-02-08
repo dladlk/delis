@@ -30,11 +30,17 @@ public class JournalDocumentController {
         this.journalDocumentService = journalDocumentService;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity getAll(WebRequest webRequest) {
         return ResponseEntity.ok(journalDocumentService.getAll(webRequest));
     }
 
+    @GetMapping("/one/{documentId}")
+    public ResponseEntity getByDocument(@PathVariable long documentId) {
+        return ResponseEntity.ok(journalDocumentService.getByDocument(documentId));
+    }
+
+    
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(journalDocumentService.getOneById(id));

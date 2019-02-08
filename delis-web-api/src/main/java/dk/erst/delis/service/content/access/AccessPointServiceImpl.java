@@ -18,10 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 public class AccessPointServiceImpl implements AccessPointService {
 
     private final AccessPointRepository accessPointRepository;
-    private final AbstractGenerateDataService abstractGenerateDataService;
+    private final AbstractGenerateDataService<AccessPointRepository, AccessPoint> abstractGenerateDataService;
 
     @Autowired
-    public AccessPointServiceImpl(AccessPointRepository accessPointRepository, AbstractGenerateDataService abstractGenerateDataService) {
+    public AccessPointServiceImpl(AccessPointRepository accessPointRepository, AbstractGenerateDataService<AccessPointRepository, AccessPoint> abstractGenerateDataService) {
         this.accessPointRepository = accessPointRepository;
         this.abstractGenerateDataService = abstractGenerateDataService;
     }

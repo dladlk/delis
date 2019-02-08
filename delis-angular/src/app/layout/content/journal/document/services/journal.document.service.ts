@@ -68,6 +68,10 @@ export class JournalDocumentService {
         return this.http.get(this.url + '/' + id, {headers : this.headers}).pipe(map(JournalDocumentService.extractData));
     }
 
+    getAllByDocumentId(documentId: any) : Observable<any> {
+        return this.http.get(this.url + '/one/' + documentId, {headers : this.headers}).pipe(map(JournalDocumentService.extractData));
+    }
+
     private static extractData(res: Response) {
         return res || { };
     }

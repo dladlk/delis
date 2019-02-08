@@ -4,6 +4,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { routerTransition } from "../../../../../router.animations";
 import { DocumentsService } from "../../services/documents.service";
+import { JournalDocumentService } from "../../../journal/document/services/journal.document.service";
 import { LocaleService } from "../../../../../service/locale.service";
 import { HeaderModel } from "../../../../components/header/header.model";
 import { DocumentModel } from "../../models/document.model";
@@ -20,6 +21,7 @@ export class DocumentsOneComponent implements OnInit {
 
     pageHeaders: HeaderModel[] = [];
     document: DocumentModel = new DocumentModel();
+    journalList: [];
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
@@ -27,7 +29,8 @@ export class DocumentsOneComponent implements OnInit {
         private locale: LocaleService,
         private route: ActivatedRoute,
         private errorService: ErrorService,
-        private documentService: DocumentsService) {
+        private documentService: DocumentsService,
+        private journalDocumentService: JournalDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
             { routerLink : '/documents', heading: 'documents.header', icon: 'fa fa-book'}
@@ -41,5 +44,12 @@ export class DocumentsOneComponent implements OnInit {
         }, error => {
             this.errorService.errorProcess(error);
         });
+        
+        this.journalDocumentService.getAllByDocumentId(id).subscribe((data: []) => {
+            this.journalList = data;
+        }, error => {
+            this.errorService.errorProcess(error);
+        });        
+        
     }
 }

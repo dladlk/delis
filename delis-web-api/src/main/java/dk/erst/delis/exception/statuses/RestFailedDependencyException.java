@@ -16,7 +16,9 @@ import java.util.List;
 @Setter
 public class RestFailedDependencyException extends RestException {
 
-    public RestFailedDependencyException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = 457866365261805775L;
+
+	public RestFailedDependencyException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }

@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
                 <div class="card">
-                    <div class="card-header"><strong>{{ document.receiverName | uppercase }}</strong></div>
+                    <div class="card-header"><strong>{{ document.receiverName }}</strong></div>
                     <br>
                     <div class="card-body">
                         <table class="table table-striped">
@@ -102,6 +102,24 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><strong>{{ journalList.length }}</strong></div>
+                    <br>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>{{journalList.length}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

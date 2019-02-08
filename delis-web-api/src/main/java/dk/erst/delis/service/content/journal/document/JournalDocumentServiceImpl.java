@@ -5,6 +5,8 @@ import dk.erst.delis.persistence.repository.journal.document.JournalDocumentRepo
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,4 +39,9 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
     public JournalDocument getOneById(long id) {
         return (JournalDocument) abstractGenerateDataService.getOneById(id, JournalDocument.class, journalDocumentRepository);
     }
+
+	@Override
+	public List<JournalDocument> getByDocument(long documentId) {;
+		return journalDocumentRepository.findAllByDocumentIdOrderByIdAsc(documentId);
+	}
 }
