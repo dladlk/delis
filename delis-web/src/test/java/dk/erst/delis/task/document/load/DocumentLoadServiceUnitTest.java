@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -71,15 +72,27 @@ public class DocumentLoadServiceUnitTest {
 
 	}
 
+	private boolean fullLoadFromInputImitationDone = false;
+	
 	@Test
 	public void testLoadFromInput() throws IOException {
-		for (TestDocument testDocument : TestDocument.values()) {
+		Path testInputFolder;
+		if (fullLoadFromInputImitationDone) {
+			File testFolder = File.createTempFile(this.getClass().getSimpleName(), "document_input");
+			testFolder.delete();
+			assertTrue("Failed to create folder " + testFolder, testFolder.mkdirs());
+			for (TestDocument testDocument : TestDocument.values()) {
+				// TODO: Generate imitation of all kinds of documents
+				log.info(testDocument.getFilePath());
+			}
+			testInputFolder = testFolder.toPath();
+		} else {
+			testInputFolder = Paths.get("/temp/fs/test");
 		}
-		File testFolder = File.createTempFile(this.getClass().getSimpleName(), "document_input");
-		assertTrue(testFolder.mkdirs());
-		Path testInputFolder = testFolder.toPath();
-		StatData statData = service.loadFromInput(testInputFolder);
-		System.out.println(statData);
+		if (testInputFolder.toFile().exists()) {
+			StatData statData = service.loadFromInput(testInputFolder);
+			System.out.println(statData);
+		}
 	}
 	
 	@Test
