@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import dk.erst.delis.data.entities.document.DocumentBytes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +72,14 @@ public class DocumentValidationTransformationServiceTest {
 			TransformationRuleService tRuleService = new TransformationRuleService(tRuleRepository);
 			ValidationRuleService vRuleService = new ValidationRuleService(vRuleRepository);
 			RuleService ruleService = new RuleService(configBean, vRuleService, tRuleService);
-			DocumentBytesStorageService documentBytesStorage = new DocumentBytesStorageService(configBean);
+			DocumentBytesStorageService documentBytesStorage = new DocumentBytesStorageService();
 			DocumentValidationTransformationService processService = new DocumentValidationTransformationService(ruleService, parseService, documentBytesStorage);
 			
 			Document d = new Document();
 			d.setIngoingDocumentFormat(testDocument.getDocumentFormat());
-			
-			DocumentProcessLog processLog = processService.process(d, testFile);
+			DocumentBytes documentBytes = new DocumentBytes();
+			documentBytes.setLocation(testFile.toAbsolutePath().toString());
+			DocumentProcessLog processLog = processService.process(d, documentBytes);
 			assertNotNull(processLog);
 			
 			List<DocumentProcessStep> stepList = processLog.getStepList();

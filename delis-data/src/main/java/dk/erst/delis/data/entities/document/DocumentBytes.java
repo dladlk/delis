@@ -1,12 +1,8 @@
 package dk.erst.delis.data.entities.document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
+import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import lombok.Data;
 
@@ -22,8 +18,8 @@ import lombok.Data;
  * As the structore of table is not yet defined, it is not marked as Entity yet.
  */
 @Data
-//@Entity
-public class DocumentBytes {
+@Entity
+public class DocumentBytes extends AbstractEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "DOCUMENT_ID", nullable = false)

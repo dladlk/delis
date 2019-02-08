@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import dk.erst.delis.dao.DocumentBytesDaoRepository;
+import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.task.document.DocumentBytesService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -65,9 +68,16 @@ public class DocumentLoadServiceUnitTest {
 			return i;
 		});
 
-		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService(config);
+		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService();
 
-		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
+		DocumentBytesDaoRepository documentBytesDaoRepositiry = mock(DocumentBytesDaoRepository.class);
+		when(documentBytesDaoRepositiry.save(any(DocumentBytes.class))).then(d -> {
+			log.info("Requested to save " + d);
+			return (DocumentBytes) d.getArgument(0);
+		});
+		DocumentBytesService documentBytesService = new DocumentBytesService(documentBytesDaoRepositiry);
+
+		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService, documentBytesService, config);
 
 	}
 
@@ -115,7 +125,6 @@ public class DocumentLoadServiceUnitTest {
 		assertNotNull(document);
 		assertEquals(testDocument.getDocumentFormat(), document.getIngoingDocumentFormat());
 		assertEquals(DocumentStatus.LOAD_OK, document.getDocumentStatus());
-		assertNotNull(document.getIngoingRelativePath());
 	}
 
 }

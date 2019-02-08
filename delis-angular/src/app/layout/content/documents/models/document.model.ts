@@ -6,7 +6,7 @@ export class DocumentModel {
     id: number;
     createTime: string;
     updateTime: string;
-    ingoingRelativePath: string;
+    name: string;
     documentStatus: string;
     documentType: string;
     receiverIdRaw: string;
@@ -19,7 +19,6 @@ export class DocumentModel {
     documentId: string;
     documentDate: string;
     messageId: string;
-    outgoingRelativePath: string;
     lastError: string;
 
     organisation: OrganisationModel = new OrganisationModel();

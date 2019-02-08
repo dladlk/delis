@@ -5,13 +5,16 @@ import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.*;
 import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.identifier.IdentifierGroup;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.organisation.OrganisationSetup;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
+import dk.erst.delis.task.document.DocumentBytesService;
 import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
@@ -46,9 +49,14 @@ public class DocumentDeliveryServiceTest {
 	private OrganisationSetupDaoRepository organisationSetupRepository;
 	@Autowired
 	private JournalDocumentDaoRepository journalDocumentDaoRepository;
+	@Autowired
+	private DocumentBytesService documentBytesService;
 
 	@Autowired
 	private ConfigValueDaoRepository configRepository;
+
+	@Autowired
+	DocumentBytesDaoRepository documentBytesDaoRepository;
 
 	@Autowired
 	private JournalDocumentService journalDocumentService;
@@ -87,13 +95,15 @@ public class DocumentDeliveryServiceTest {
 	}
 
 	private DocumentDeliverService getDocumentDeliverService() {
-		DocumentBytesStorageService storageService = new DocumentBytesStorageService(new ConfigBean(configRepository) {
+		ConfigBean configBean = new ConfigBean(configRepository) {
 			@Override
 			public Path getStorageValidPath() {
 				return testFile.getParent();
 			}
-		});
-		return new DocumentDeliverService(documentRepository, setupService, journalDocumentService, storageService);
+		};
+		DocumentBytesStorageService storageService = new DocumentBytesStorageService();
+		DocumentDeliverService documentDeliverService = new DocumentDeliverService(documentRepository, setupService, journalDocumentService, storageService, documentBytesService);
+		return documentDeliverService;
 	}
 
 	private void setReceiveMethod(String method) {
@@ -138,11 +148,16 @@ public class DocumentDeliveryServiceTest {
 		Document doc = new Document();
 		doc.setOrganisation(org);
 		doc.setDocumentStatus(DocumentStatus.VALIDATE_OK);
-		doc.setOutgoingRelativePath(testFile.toString());
-		doc.setIngoingRelativePath(testFile.toString());
+		doc.setName(testFile.toFile().getName());
 		doc.setReceiverIdentifier(id);
 		doc.setMessageId("message_id");
 		documentRepository.save(doc);
+
+		DocumentBytes documentBytes = new DocumentBytes();
+		documentBytes.setLocation(testFile.toFile().getAbsolutePath());
+		documentBytes.setDocument(doc);
+		documentBytes.setType(DocumentBytesType.READY);
+		documentBytesDaoRepository.save(documentBytes);
 
 
 	}
@@ -150,6 +165,7 @@ public class DocumentDeliveryServiceTest {
 	@After
 	public void finalizeTest () {
 		journalDocumentDaoRepository.deleteAll();
+		documentBytesDaoRepository.deleteAll();
 		documentRepository.deleteAll();
 		identifierRepository.deleteAll();
 		identifierGroupRepository.deleteAll();

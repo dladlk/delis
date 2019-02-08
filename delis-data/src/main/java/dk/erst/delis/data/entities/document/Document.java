@@ -1,7 +1,5 @@
 package dk.erst.delis.data.entities.document;
 
-import javax.persistence.*;
-
 import dk.erst.delis.data.annotations.WebApiContent;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.identifier.Identifier;
@@ -10,11 +8,11 @@ import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.data.enums.document.DocumentType;
-
 import lombok.Getter;
 import lombok.Setter;
-
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -48,7 +46,7 @@ public class Document extends AbstractEntity {
 	private DocumentType documentType;
 
 	@Column(nullable = false)
-	private String ingoingRelativePath;
+	private String name;
 
 	@Column(nullable = true)
 	private String receiverIdRaw;
@@ -76,7 +74,4 @@ public class Document extends AbstractEntity {
 
 	@Column(nullable = false)
 	private String messageId;
-
-	@Column(nullable = true)
-	private String outgoingRelativePath;
 }
