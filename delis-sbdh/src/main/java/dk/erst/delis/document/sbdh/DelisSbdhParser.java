@@ -1,14 +1,6 @@
 package dk.erst.delis.document.sbdh;
 
-import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
-import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
-import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
-import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
-import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
-import no.difi.vefa.peppol.common.model.Header;
-import org.w3c.dom.Document;
+import java.io.InputStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -17,7 +9,19 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
-import java.io.InputStream;
+
+import org.w3c.dom.Document;
+
+import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
+import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
+import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
+import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
+import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
+import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
+import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
+import no.difi.oxalis.sniffer.identifier.PeppolDocumentTypeId;
+import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
+import no.difi.vefa.peppol.common.model.Header;
 
 public class DelisSbdhParser {
 
@@ -69,7 +73,7 @@ public class DelisSbdhParser {
 			}
 			// make sure we actually have a UBL type document
 			if (headerParser.canParse()) {
-				sbdh.setDocumentTypeIdentifier(headerParser.fetchDocumentTypeId().toVefa());
+				sbdh.setDocumentTypeIdentifier(convertToVefa(headerParser.fetchDocumentTypeId()));
 				sbdh.setProfileTypeIdentifier(headerParser.fetchProcessTypeId());
 				// try to use a specialized document parser to fetch more document details
 				PEPPOLDocumentParser documentParser = null;
@@ -108,6 +112,23 @@ public class DelisSbdhParser {
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to parseOld document: " + e.getMessage(), e);
 		}
+	}
+
+	private DocumentTypeIdentifier convertToVefa(PeppolDocumentTypeId fetchDocumentTypeId) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(fetchDocumentTypeId.getRootNameSpace());
+        sb.append("::").append(fetchDocumentTypeId.getLocalName());
+        sb.append("##").append(fetchDocumentTypeId.getCustomizationIdentifier());
+        
+        String version = fetchDocumentTypeId.getVersion();
+        if (version == null || version.length() == 0) {
+        	/*
+        	 * Skip version adding
+        	 */
+        } else {
+        	sb.append("::").append(version);
+        }
+        return DocumentTypeIdentifier.of(sb.toString());
 	}
 
 	private boolean hasSBDH(Document document) {
