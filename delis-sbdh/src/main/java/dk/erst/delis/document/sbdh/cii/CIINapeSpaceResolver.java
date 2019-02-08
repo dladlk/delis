@@ -15,9 +15,6 @@ public class CIINapeSpaceResolver implements NamespaceContext {
             .put("ram", "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100")
             .put("udt", "urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100")
             .put("qdt", "urn:un:unece:uncefact:data:standard:QualifiedDataType:100")
-            .put("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2")
-            .put("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2")
-            .put("ext", "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2")
             .build();
 
     @Override
