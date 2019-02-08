@@ -8,6 +8,6 @@ public interface DocumentDao {
 
 	void updateDocumentStatus(Document document);
 
-	void updateOutgoingRelativePath(Document document);
+//	void updateOutgoingRelativePath(Document document);
 
 }

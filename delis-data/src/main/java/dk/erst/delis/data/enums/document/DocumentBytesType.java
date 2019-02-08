@@ -11,7 +11,9 @@ public enum DocumentBytesType {
 	IN("Ingoing payload"),
 	
 	INTERM("Intermediate format as result of conversion"),
-	
+
+	READY("Validated and converted, ready for deliver"),
+
 	OUT("Outgoing format"),
 	
 	;

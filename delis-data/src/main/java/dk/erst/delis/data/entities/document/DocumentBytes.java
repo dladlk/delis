@@ -1,14 +1,11 @@
 package dk.erst.delis.data.entities.document;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
+import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /*
  * Each document has a bunch of related file data - initial SBD, payload inside it, initial metadata (for Domibus file system plugin) 
@@ -22,8 +19,9 @@ import lombok.Data;
  * As the structore of table is not yet defined, it is not marked as Entity yet.
  */
 @Data
-//@Entity
-public class DocumentBytes {
+@Entity
+@EqualsAndHashCode(callSuper = false)
+public class DocumentBytes extends AbstractEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "DOCUMENT_ID", nullable = false)
@@ -33,7 +31,9 @@ public class DocumentBytes {
 	@Column(nullable = false, length = 10)
 	private DocumentBytesType type;
 
+	@Column
 	private String location;
 
+	@Column
 	private String description;
 }

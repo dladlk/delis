@@ -1,21 +1,12 @@
 package dk.erst.delis.task.document.process;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.List;
-
 import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXParseException;
-
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
@@ -26,30 +17,60 @@ import dk.erst.delis.task.document.process.validate.result.ISchematronResultColl
 import dk.erst.delis.task.document.process.validate.result.SchematronResultCollectorFactory;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXParseException;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 @Service
 @Slf4j
 public class DocumentValidationTransformationService {
 
 	private final RuleService ruleService;
-	private final DocumentBytesStorageService documentBytesStorageService;
 	private final DocumentParseService documentParseService;
+	private final DocumentBytesStorageService documentBytesStorageService;
 
 	@Autowired
-	public DocumentValidationTransformationService(RuleService ruleService, DocumentParseService documentParseService, DocumentBytesStorageService documentBytesStorageService) {
+	public DocumentValidationTransformationService(RuleService ruleService, DocumentParseService documentParseService,
+												   DocumentBytesStorageService documentBytesStorageService) {
 		this.ruleService = ruleService;
 		this.documentParseService = documentParseService;
 		this.documentBytesStorageService = documentBytesStorageService;
 	}
 
-	public DocumentProcessLog process(Document document, Path xmlPath) {
+	public DocumentProcessLog process(Document document, DocumentBytes documentBytesLoaded) {
 		DocumentFormat ingoingDocumentFormat = document.getIngoingDocumentFormat();
 		DocumentProcessLog plog = new DocumentProcessLog();
-		plog.setResultPath(xmlPath);
+
+		Path xmlLoadedPath = null;
+		if (documentBytesLoaded != null) {
+			String prefix = "loaded_" + document.getName() + "_";
+			xmlLoadedPath = createTempFile(plog, xmlLoadedPath, prefix);
+			try {
+				documentBytesStorageService.load(documentBytesLoaded, Files.newOutputStream(xmlLoadedPath));
+			} catch (IOException e) {
+				String description = "Failed to get loaded document for validation " + document + " by path " + documentBytesLoaded.getLocation();
+				log.error(description, e);
+				DocumentProcessStep step = new DocumentProcessStep(description, DocumentProcessStepType.COPY);
+				step.setMessage(e.getMessage());
+				step.setSuccess(false);
+				plog.addStep(step);
+			}
+		}
+
+		plog.setResultPath(xmlLoadedPath);
+
 		try {
-			processAllFormats(plog, xmlPath, ingoingDocumentFormat);
+			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat);
 		} catch (Exception e) {
-			log.error("Failed to process all formats on document " + document + " by path " + xmlPath, e);
+			log.error("Failed to process all formats on document " + document + " by path " + xmlLoadedPath, e);
 		}
 
 		return plog;
@@ -74,7 +95,7 @@ public class DocumentValidationTransformationService {
 		Path xmlOutPath = null;
 		if (transformationRule != null) {
 			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo() + "_";
-			xmlOutPath = documentBytesStorageService.createTempFile(plog, xmlOutPath, prefix);
+			xmlOutPath = createTempFile(plog, xmlOutPath, prefix);
 			if (xmlOutPath == null) {
 				return;
 			}
@@ -175,4 +196,21 @@ public class DocumentValidationTransformationService {
 
 		return step;
 	}
+
+	public Path createTempFile(DocumentProcessLog plog, Path xmlOutPath, String prefix) {
+		DocumentProcessStep step = new DocumentProcessStep("Create temp file with prefix " + prefix, DocumentProcessStepType.COPY);
+		try {
+			xmlOutPath = Files.createTempFile(prefix, ".xml");
+			step.setSuccess(true);
+			step.setResult(xmlOutPath);
+		} catch (Exception e) {
+			log.error("Failed to create temp file", e);
+			return null;
+		} finally {
+			plog.addStep(step);
+			step.done();
+		}
+		return xmlOutPath;
+	}
+
 }

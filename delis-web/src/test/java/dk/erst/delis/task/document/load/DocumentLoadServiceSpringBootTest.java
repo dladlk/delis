@@ -6,8 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.DocumentBytesService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,12 @@ public class DocumentLoadServiceSpringBootTest {
 	@Autowired
 	private DocumentBytesStorageService documentBytesStorageService;
 
+	@Autowired
+	private DocumentBytesService documentBytesService;
+
+	@Autowired
+	private ConfigBean configBean;
+
 	
 	@Test
 	public void testLoadFile() throws IOException {
@@ -63,7 +71,9 @@ public class DocumentLoadServiceSpringBootTest {
 		ilsTest.setIdentifierLoadService(identifierLoadService);
 		ilsTest.loadTestIdentifiers();
 		
-		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
+		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository,
+				new DocumentParseService(), documentBytesStorageService, identifierResolverService,
+				documentBytesService, configBean);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);
@@ -78,7 +88,7 @@ public class DocumentLoadServiceSpringBootTest {
 			assertNotNull(document);
 			assertEquals(testDocument.getDocumentFormat(), document.getIngoingDocumentFormat());
 			assertEquals(DocumentStatus.LOAD_OK, document.getDocumentStatus());
-			assertNotNull(document.getIngoingRelativePath());
+			assertNotNull(document.getName());
 		} finally {
 			TestDocumentUtil.cleanupTestFile(testFile);
 		}
