@@ -35,6 +35,13 @@ public class DateUtil {
         return new DateRangeModel(start, end);
     }
 
+    public Date addHour(Date date, int hour) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);
+        return cal.getTime();
+    }
+
     public DateRangeModel generateDateRangeByFromAndToLastHour(int timeType, int time, int interval) {
         Date start = new Date();
         Calendar cal = Calendar.getInstance();

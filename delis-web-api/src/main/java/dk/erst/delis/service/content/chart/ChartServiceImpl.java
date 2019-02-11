@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -98,19 +99,23 @@ public class ChartServiceImpl implements ChartService {
     }
 
     private ChartData generateDefaultChartData() {
+        Date start = DateUtil.generateBeginningOfDay();
+        Date end = DateUtil.addHour(start, 1);
+        long hours = DateUtil.rangeHoursDate(start) / 60;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
 
         ChartData chartData = new ChartData();
         List<LineChartData> lineChartData = new ArrayList<>();
         List<String> lineChartLabels = new ArrayList<>();
 
         LineChartData lineChartDataContent = new LineChartData();
-        lineChartDataContent.setLabel("chart data by last hour by interval of 10 minutes");
+        lineChartDataContent.setLabel("chart data by today by interval of 1 hour");
         List<Long> dataGraph = new ArrayList<>();
-        int[] minutes = {60, 50, 40, 30, 20, 10};
-        for (int minute : minutes) {
-            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(Calendar.MINUTE, minute, DEFAULT_INTERVAL_OF_MINUTES);
-            lineChartLabels.add(String.valueOf(dateRange.getStart()));
-            dataGraph.add(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
+        for (int h = 0 ; h <= hours ; ++h) {
+            lineChartLabels.add(dateFormat.format(start));
+            dataGraph.add(documentRepository.countByCreateTimeBetween(start, end));
+            start = new Date(end.getTime());
+            end = DateUtil.addHour(start, 1);
         }
         lineChartDataContent.setData(dataGraph);
         lineChartData.add(lineChartDataContent);
