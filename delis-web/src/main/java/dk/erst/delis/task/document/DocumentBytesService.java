@@ -7,6 +7,8 @@ import dk.erst.delis.data.enums.document.DocumentBytesType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DocumentBytesService {
     private DocumentBytesDaoRepository documentBytesDaoRepository;
@@ -67,6 +69,11 @@ public class DocumentBytesService {
     public DocumentBytes findDocumentBytesLoaded (Document document) {
         DocumentBytes documentBytes = documentBytesDaoRepository.findLastByDocumentAndType(document, DocumentBytesType.IN);
         return documentBytes;
+    }
+
+    public List<DocumentBytes> findAllDocumentBytes (Document document) {
+        List<DocumentBytes> byDocument = documentBytesDaoRepository.findByDocument(document);
+        return byDocument;
     }
 }
 

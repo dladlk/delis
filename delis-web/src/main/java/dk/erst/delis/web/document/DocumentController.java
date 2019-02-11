@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import dk.erst.delis.task.document.DocumentBytesService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,8 @@ public class DocumentController {
 	private DocumentLoadService documentLoadService;
 	@Autowired
 	private DocumentService documentService;
+	@Autowired
+	private DocumentBytesService documentBytesService;
 
 	@RequestMapping("/document/list")
 	public String list(Model model) {
@@ -81,6 +84,7 @@ public class DocumentController {
 		model.addAttribute("document", document);
 		model.addAttribute("documentStatusList", DocumentStatus.values());
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
+		model.addAttribute("documentBytes", documentBytesService.findAllDocumentBytes(document));
 
 		return "/document/view";
 	}
