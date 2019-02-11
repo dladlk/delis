@@ -13,14 +13,9 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.data.entities.document.DocumentBytes;
-import dk.erst.delis.task.document.DocumentBytesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
@@ -31,6 +26,7 @@ import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
@@ -43,8 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.sbdh.SbdReader;
 import no.difi.vefa.peppol.sbdh.SbdReader.Type;
 import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
-
-import static org.hibernate.type.descriptor.java.JdbcTimestampTypeDescriptor.TIMESTAMP_FORMAT;
 
 @Service
 @Slf4j
@@ -64,22 +58,16 @@ public class DocumentLoadService {
 
 	private IdentifierResolverService identifierResolverService;
 
-	private DocumentBytesService documentBytesService;
-
-	private ConfigBean configBean;
 
 	@Autowired
 	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, DocumentParseService documentParseService,
-			DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService,
-							   DocumentBytesService documentBytesService, ConfigBean configBean) {
+			DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
 		super();
 		this.documentDaoRepository = documentDaoRepository;
 		this.journalDocumentDaoRepository = journalDocumentDaoRepository;
 		this.documentParseService = documentParseService;
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.identifierResolverService = identifierResolverService;
-		this.documentBytesService = documentBytesService;
-		this.configBean = configBean;
 	}
 
 	public StatData loadFromInput(Path inputFolderPath) {
@@ -124,6 +112,7 @@ public class DocumentLoadService {
 		try {
 			Date createTime = Calendar.getInstance().getTime();
 			File file = xmlFilePath.toFile();
+			String originalFileName = file.getName();
 			Path xmlFileParentPath = xmlFilePath.getParent();
 			if (!file.exists()) {
 				log.error("File " + xmlFilePath + " does not exist");
@@ -191,15 +180,10 @@ public class DocumentLoadService {
 				document.setDocumentStatus(DocumentStatus.UNKNOWN_RECEIVER);
 			}
 
-			List<DocumentBytes> documentBytes = moveToLoaded(file, metadataFilePath, fileSbd, document);
-			if (documentBytes == null) {
-				return null;
-			}
-
-			document.setName(file.getName());
+			document.setName(originalFileName);
 			documentDaoRepository.save(document);
 
-			documentBytes.forEach(bytes -> documentBytesService.saveDocumentBytes(bytes));
+			moveToLoaded(file, metadataFilePath, fileSbd, document);
 
 			JournalDocument jd = new JournalDocument();
 			jd.setDocument(document);
@@ -207,7 +191,7 @@ public class DocumentLoadService {
 			jd.setCreateTime(createTime);
 			jd.setDurationMs(System.currentTimeMillis() - start);
 			jd.setType(DocumentProcessStepType.LOAD);
-			jd.setMessage("Load file from " + xmlFilePath);
+			jd.setMessage("Load from " + xmlFilePath);
 			jd.setSuccess(true);
 
 			journalDocumentDaoRepository.save(jd);
@@ -283,67 +267,38 @@ public class DocumentLoadService {
 		return metadataFile.toFile();
 	}
 
-	private List<DocumentBytes> moveToLoaded(File file, File metadataFile, File fileSbd, Document document) {
-
-		List<DocumentBytes> result = new ArrayList<>();
-
-		String destSubPath = buildDestSubPath(document);
-		Path destPath = getLoadedDestPath(document, destSubPath);
-		String location = destPath.toAbsolutePath().toString();
-		DocumentBytes loadedDocumentBytes = documentBytesService.createLoaded(document, location);
-		try {
-			boolean saved = documentBytesStorageService.save(loadedDocumentBytes, Files.newInputStream(file.toPath()));
+	private void moveToLoaded(File file, File metadataFile, File fileSbd, Document document) {
+		try (InputStream is = Files.newInputStream(file.toPath())) {
+			boolean saved = documentBytesStorageService.save(document, DocumentBytesType.IN, file.length(), is);
 			if (!saved) {
-				return null;
+				return;
 			}
-			result.add(loadedDocumentBytes);
 		} catch (IOException e) {
 			log.error("Failed to save loaded file " + file, e);
-			return null;
+			return;
 		}
+		
+		file.delete();
 
 		if (metadataFile != null) {
-			Path metadataDestPath = destPath.resolveSibling(destSubPath + "_metadata.xml");
-			DocumentBytes loadedMetadata = documentBytesService.createLoadedMetadata(document, metadataDestPath.toAbsolutePath().toString());
-
-			try {
-				documentBytesStorageService.save(loadedMetadata, Files.newInputStream(metadataFile.toPath()));
-				result.add(loadedMetadata);
+			try (InputStream is = Files.newInputStream(metadataFile.toPath())) {
+				documentBytesStorageService.save(document, DocumentBytesType.IN_AS4, metadataFile.length(), is);
 			} catch (IOException e) {
-				log.error("Failed to save metadata file " + loadedMetadata, e);
+				log.error("Failed to save metadata file " + metadataFile, e);
 			}
+			
+			metadataFile.delete();
 		}
 
 		if (fileSbd != null) {
-			Path sbhDestPath = destPath.resolveSibling(destSubPath + "_sbd.xml");
-			DocumentBytes loadedSBD = documentBytesService.createLoadedSBD(document, sbhDestPath.toAbsolutePath().toString());
-			try {
-				documentBytesStorageService.save(loadedSBD, Files.newInputStream(fileSbd.toPath()));
-				result.add(loadedSBD);
+			try (InputStream is = Files.newInputStream(fileSbd.toPath())){
+				documentBytesStorageService.save(document, DocumentBytesType.IN_SBD, fileSbd.length(), is);
 			} catch (IOException e) {
-				log.error("Failed to save SBD file " + loadedSBD, e);
+				log.error("Failed to save SBD file " + fileSbd, e);
 			}
+			
+			fileSbd.delete();
 		}
-		return result;
 	}
 
-	private String buildDestSubPath(Document document) {
-		String timestamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(Calendar.getInstance().getTime());
-		StringBuilder sb = new StringBuilder();
-		sb.append(timestamp);
-		sb.append("_");
-		sb.append(document.getIngoingDocumentFormat());
-		sb.append(".xml");
-		return sb.toString();
-	}
-
-	private Path getLoadedDestPath(Document document, String destSubPath) {
-
-		Path destRoot = configBean.getStorageLoadedPath();
-		if (document.getDocumentStatus().isLoadFailed()) {
-			destRoot = configBean.getStorageFailedPath();
-		}
-
-		return destRoot.resolve(destSubPath);
-	}
 }

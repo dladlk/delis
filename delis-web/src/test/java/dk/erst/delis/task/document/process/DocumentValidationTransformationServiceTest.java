@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import dk.erst.delis.data.entities.document.DocumentBytes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
-import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 
@@ -39,7 +37,7 @@ public class DocumentValidationTransformationServiceTest {
 
 	@Autowired
 	private RuleDocumentValidationDaoRepository vRuleRepository;
-
+	
 	@Autowired
 	private ConfigValueDaoRepository configRepository;
 
@@ -72,14 +70,12 @@ public class DocumentValidationTransformationServiceTest {
 			TransformationRuleService tRuleService = new TransformationRuleService(tRuleRepository);
 			ValidationRuleService vRuleService = new ValidationRuleService(vRuleRepository);
 			RuleService ruleService = new RuleService(configBean, vRuleService, tRuleService);
-			DocumentBytesStorageService documentBytesStorage = new DocumentBytesStorageService();
-			DocumentValidationTransformationService processService = new DocumentValidationTransformationService(ruleService, parseService, documentBytesStorage);
+			DocumentValidationTransformationService processService = new DocumentValidationTransformationService(ruleService, parseService);
 			
 			Document d = new Document();
 			d.setIngoingDocumentFormat(testDocument.getDocumentFormat());
-			DocumentBytes documentBytes = new DocumentBytes();
-			documentBytes.setLocation(testFile.toAbsolutePath().toString());
-			DocumentProcessLog processLog = processService.process(d, documentBytes);
+			
+			DocumentProcessLog processLog = processService.process(d, testFile);
 			assertNotNull(processLog);
 			
 			List<DocumentProcessStep> stepList = processLog.getStepList();

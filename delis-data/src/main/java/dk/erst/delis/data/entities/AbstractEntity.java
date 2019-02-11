@@ -1,11 +1,14 @@
 package dk.erst.delis.data.entities;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.util.Date;
 
 /**
  * @author funtusthan, created by 12.01.19
@@ -23,21 +26,7 @@ public class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "CREATE_TIME", nullable = false, updatable = false)
-    private Date createTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATE_TIME", nullable = false)
-    private Date updateTime;
-
     public AbstractEntity() {
-        this.createTime = new Date();
-        this.updateTime = new Date();
     }
 
-    @PreUpdate
-    public void onPreUpdate() {
-        this.updateTime = new Date();
-    }
 }

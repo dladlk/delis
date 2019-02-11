@@ -1,7 +1,17 @@
 package dk.erst.delis.task.document.process;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXParseException;
+
 import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
@@ -16,19 +26,7 @@ import dk.erst.delis.task.document.process.validate.SchematronValidator;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
 import dk.erst.delis.task.document.process.validate.result.SchematronResultCollectorFactory;
-import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.xml.sax.SAXParseException;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -36,35 +34,16 @@ public class DocumentValidationTransformationService {
 
 	private final RuleService ruleService;
 	private final DocumentParseService documentParseService;
-	private final DocumentBytesStorageService documentBytesStorageService;
 
 	@Autowired
-	public DocumentValidationTransformationService(RuleService ruleService, DocumentParseService documentParseService,
-												   DocumentBytesStorageService documentBytesStorageService) {
+	public DocumentValidationTransformationService(RuleService ruleService, DocumentParseService documentParseService) {
 		this.ruleService = ruleService;
 		this.documentParseService = documentParseService;
-		this.documentBytesStorageService = documentBytesStorageService;
 	}
 
-	public DocumentProcessLog process(Document document, DocumentBytes documentBytesLoaded) {
+	public DocumentProcessLog process(Document document, Path xmlLoadedPath) {
 		DocumentFormat ingoingDocumentFormat = document.getIngoingDocumentFormat();
 		DocumentProcessLog plog = new DocumentProcessLog();
-
-		Path xmlLoadedPath = null;
-		if (documentBytesLoaded != null) {
-			String prefix = "loaded_" + document.getName() + "_";
-			xmlLoadedPath = createTempFile(plog, xmlLoadedPath, prefix);
-			try {
-				documentBytesStorageService.load(documentBytesLoaded, Files.newOutputStream(xmlLoadedPath));
-			} catch (IOException e) {
-				String description = "Failed to get loaded document for validation " + document + " by path " + documentBytesLoaded.getLocation();
-				log.error(description, e);
-				DocumentProcessStep step = new DocumentProcessStep(description, DocumentProcessStepType.COPY);
-				step.setMessage(e.getMessage());
-				step.setSuccess(false);
-				plog.addStep(step);
-			}
-		}
 
 		plog.setResultPath(xmlLoadedPath);
 

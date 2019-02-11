@@ -1,7 +1,7 @@
 package dk.erst.delis.data.entities.journal;
 
 import dk.erst.delis.data.annotations.WebApiContent;
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateEntity;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @Entity
 @WebApiContent
-public class JournalDocument extends AbstractEntity {
+public class JournalDocument extends AbstractCreateEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)

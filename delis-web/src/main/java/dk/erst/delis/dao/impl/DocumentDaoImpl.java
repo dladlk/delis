@@ -15,8 +15,9 @@ public class DocumentDaoImpl implements DocumentDao {
 
 	@Override
 	public void updateDocumentStatus(Document document) {
-		Query q = entityManager.createQuery("update Document set documentStatus = :documentStatus where id = :id");
+		Query q = entityManager.createQuery("update Document set documentStatus = :documentStatus, lastError = :lastError where id = :id");
 		q.setParameter("documentStatus", document.getDocumentStatus());
+		q.setParameter("lastError", document.getLastError());
 		q.setParameter("id", document.getId());
 		q.executeUpdate();
 	}

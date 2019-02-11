@@ -1,36 +1,55 @@
 package dk.erst.delis.data.entities.journal;
 
-import dk.erst.delis.data.annotations.WebApiContent;
-import dk.erst.delis.data.entities.AbstractEntity;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Index;
+import javax.persistence.Table;
+
+import dk.erst.delis.data.annotations.WebApiContent;
+import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @WebApiContent
+@Table(indexes = {
+
+		@Index(name="I_HASH", columnList="HASH")
+})
 public class ErrorDictionary extends AbstractEntity {
 
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@EqualsAndHashCode.Include
+	private DocumentErrorCode errorType;
+	
+	@Column(nullable = false, length = 50)
+	@EqualsAndHashCode.Include
 	private String code;
 	
-	@Column(nullable = true)
+	@Column(nullable = false, length = 1024)
+	@EqualsAndHashCode.Include
 	private String message;
-
-	@Column
+	
+	@Column(length = 20)
+	@EqualsAndHashCode.Include
 	private String flag;
 
-	@OneToMany(
-			mappedBy = "errorDictionary",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true
-	)
-	List<JournalDocumentError> documents = new ArrayList<>();
+	@Column(length = 500)
+	@EqualsAndHashCode.Include
+	private String location;
+	
+	@Column(name="HASH")
+	private int hash;
+
+	public int calculateHash() {
+		return this.hashCode();
+	}
 }

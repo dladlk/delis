@@ -1,26 +1,28 @@
 package dk.erst.delis.task.document.process;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.common.util.StatData;
-import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.task.document.DocumentBytesService;
 import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -34,23 +36,15 @@ public class DocumentProcessService {
 
 	private DocumentBytesStorageService documentBytesStorageService;
 
-	private DocumentBytesService documentBytesService;
-
-	private ConfigBean configBean;
-	
 	@Autowired
 	public DocumentProcessService(DocumentBytesStorageService documentBytesStorageService,
 								  DocumentValidationTransformationService documentValidationTransformationService,
 								  DocumentDaoRepository documentDaoRepository,
-								  JournalDocumentService journalDocumentService,
-								  DocumentBytesService documentBytesService,
-								  ConfigBean configBean) {
+								  JournalDocumentService journalDocumentService) {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.documentValidationTransformationService = documentValidationTransformationService;
 		this.documentDaoRepository = documentDaoRepository;
 		this.journalDocumentService = journalDocumentService;
-		this.documentBytesService = documentBytesService;
-		this.configBean = configBean;
 	}
 
 	public StatData processLoaded() {
@@ -78,21 +72,36 @@ public class DocumentProcessService {
 		document.setDocumentStatus(DocumentStatus.VALIDATE_START);
 		documentDaoRepository.updateDocumentStatus(document);
 
-		DocumentBytes documentBytesLoaded = documentBytesService.findDocumentBytesLoaded(document);
+		DocumentBytes documentBytesLoaded = documentBytesStorageService.find(document, DocumentBytesType.IN);
+		if (documentBytesLoaded == null) {
+			statData.increment("Document xml not found");
+			return;
+		}
 
-		DocumentProcessLog plog = documentValidationTransformationService.process(document, documentBytesLoaded);
+		Path xmlLoadedPath;
+		String prefix = "process_"+document.getId() + "_";
+		try {
+			xmlLoadedPath = Files.createTempFile(prefix, ".xml");
+		} catch (IOException e) {
+			log.error("Failed to create temp file with prefix "+prefix, e);
+			return;
+		}
+		try (OutputStream fos = Files.newOutputStream(xmlLoadedPath)) {
+			documentBytesStorageService.load(documentBytesLoaded, fos);
+		} catch (Exception e) {
+			log.error("Failed to read file from storage by "+documentBytesLoaded, e);
+		}
+
+		
+		DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath);
+		DocumentErrorCode lastError = null;
 		if (plog != null) {
 			statData.increment(plog.isSuccess() ? "OK" : "ERROR");
 
 			if (plog.isSuccess()) {
-				Path destRoot = configBean.getStorageValidPath();
-				Path destSubPath = Paths.get(document.getName()).getFileName();
-				Path path = destRoot.resolve(destSubPath);
-
-				DocumentBytes readyDocumentBytes = documentBytesService.createReadyDocumentBytes(document, path.toAbsolutePath().toString());
+				File file = plog.getResultPath().toFile();
 				try {
-					documentBytesStorageService.save(readyDocumentBytes, Files.newInputStream(plog.getResultPath()));
-					documentBytesService.saveDocumentBytes(readyDocumentBytes);
+					documentBytesStorageService.save(document, DocumentBytesType.READY, file.length(), Files.newInputStream(file.toPath()));
 				} catch (IOException e) {
 					String description = "Can not save validated document " + document.getName();
 					log.error(description, e);
@@ -101,12 +110,20 @@ public class DocumentProcessService {
 					step.setSuccess(false);
 					plog.addStep(step);
 				}
-//			} else {
-//				DocumentBytes readyDocumentBytes = documentBytesService.createReadyDocumentBytes(document);
-//				outgoingRelativePath = documentBytesStorageService.moveToFailed(document, log.getResultPath());
+			} else {
+				DocumentProcessStep lastStep = null;
+				if (plog.getStepList() != null && !plog.getStepList().isEmpty()) {
+					lastStep = plog.getStepList().get(plog.getStepList().size() - 1);
+				}
+				if (lastStep != null) {
+					lastError = lastStep.getErrorCode();
+				} else {
+					lastError = DocumentErrorCode.OTHER;
+				}
 			}
 
 			document.setDocumentStatus(plog.isSuccess() ? DocumentStatus.VALIDATE_OK : DocumentStatus.VALIDATE_ERROR);
+			document.setLastError(lastError);
 
 			documentDaoRepository.updateDocumentStatus(document);
 

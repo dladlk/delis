@@ -12,6 +12,8 @@ public enum DocumentErrorCode {
 	
 	OIOUBL_XSD,
 	
-	OIOUBL_SCH
+	OIOUBL_SCH,
+	
+	OTHER
 	
 }

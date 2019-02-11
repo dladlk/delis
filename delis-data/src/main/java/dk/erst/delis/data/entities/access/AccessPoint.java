@@ -1,6 +1,6 @@
 package dk.erst.delis.data.entities.access;
 
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.enums.access.AccessPointType;
 
 import lombok.Getter;
@@ -16,7 +16,7 @@ import java.sql.Blob;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class AccessPoint extends AbstractEntity {
+public class AccessPoint extends AbstractCreateUpdateEntity {
 
 	@Column(nullable = false)
 	private String url;

@@ -1,7 +1,7 @@
 package dk.erst.delis.data.entities.document;
 
 import dk.erst.delis.data.annotations.WebApiContent;
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
@@ -19,7 +19,7 @@ import javax.persistence.*;
 @Entity
 @WebApiContent
 @EntityListeners(AuditingEntityListener.class)
-public class Document extends AbstractEntity {
+public class Document extends AbstractCreateUpdateEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "ORGANISATION_ID", nullable = true)

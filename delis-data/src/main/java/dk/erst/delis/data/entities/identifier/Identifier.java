@@ -3,7 +3,7 @@ package dk.erst.delis.data.entities.identifier;
 import javax.persistence.*;
 
 import dk.erst.delis.data.annotations.WebApiContent;
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
@@ -24,7 +24,7 @@ import lombok.Setter;
 		@Index(name="UK_UNIQUE_VALUE_TYPE", columnList="UNIQUE_VALUE_TYPE", unique = true),
 
 })
-public class Identifier extends AbstractEntity {
+public class Identifier extends AbstractCreateUpdateEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)

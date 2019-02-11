@@ -14,8 +14,6 @@ public enum DocumentBytesType {
 
 	READY("Validated and converted, ready for deliver"),
 
-	OUT("Outgoing format"),
-	
 	;
 
 	private final String technicalDescription;

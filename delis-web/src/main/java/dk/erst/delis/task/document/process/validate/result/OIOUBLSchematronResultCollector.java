@@ -5,6 +5,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
+
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -38,7 +40,7 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
 				String nodeToString = nodeToString(errorItem);
 				System.out.println(nodeToString);
-				errorList.add(new ErrorRecord(pattern, nodeToString, ERROR, xpath));
+				errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, pattern, nodeToString, ERROR, xpath));
 				continue;
 			}
 
@@ -51,7 +53,7 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 				log.debug(String.format("%d) %s\n\tpattern = %s\n\txpath = %s", i, message, pattern, xpath));
 			}
 			
-			errorList.add(new ErrorRecord(pattern, message, ERROR, xpath));
+			errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, pattern, message, ERROR, xpath));
 		}
 		return errorList;
 	}
