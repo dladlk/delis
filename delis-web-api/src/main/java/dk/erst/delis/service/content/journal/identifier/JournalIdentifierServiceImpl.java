@@ -18,10 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 public class JournalIdentifierServiceImpl implements JournalIdentifierService {
 
     private final JournalIdentifierRepository journalIdentifierRepository;
-    private final AbstractGenerateDataService abstractGenerateDataService;
+    private final AbstractGenerateDataService<JournalIdentifierRepository, JournalIdentifier> abstractGenerateDataService;
 
     @Autowired
-    public JournalIdentifierServiceImpl(JournalIdentifierRepository journalIdentifierRepository, AbstractGenerateDataService abstractGenerateDataService) {
+    public JournalIdentifierServiceImpl(JournalIdentifierRepository journalIdentifierRepository, AbstractGenerateDataService<JournalIdentifierRepository, JournalIdentifier> abstractGenerateDataService) {
         this.journalIdentifierRepository = journalIdentifierRepository;
         this.abstractGenerateDataService = abstractGenerateDataService;
     }

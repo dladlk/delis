@@ -37,7 +37,11 @@ public class WebRequestUtil {
         String[] times = timePattern.split(":");
         long startDate = Long.parseLong(times[0]);
         long endDate = Long.parseLong(times[1]);
-        return new DateRangeModel(new Date(startDate), new Date(endDate));
+        if (startDate == endDate) {
+            return new DateRangeModel(DateUtil.generateBeginningOfDay(new Date(startDate)), new Date(endDate));
+        } else {
+            return new DateRangeModel(new Date(startDate), new Date(endDate));
+        }
     }
 
     public String existSortParameter(WebRequest webRequest) {
