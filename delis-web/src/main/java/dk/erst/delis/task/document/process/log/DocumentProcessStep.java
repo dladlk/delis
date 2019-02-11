@@ -23,9 +23,10 @@ public class DocumentProcessStep {
 
 	private String description;
 	private String message;
-	private DocumentErrorCode errorCode;
 	private Object result;
 	private final DocumentProcessStepType stepType;
+	
+	private DocumentErrorCode errorCode;
 
 	private List<ErrorRecord> errorRecords = new ArrayList<>();
 
@@ -40,6 +41,7 @@ public class DocumentProcessStep {
 
 	public DocumentProcessStep(RuleDocumentValidation rule) {
 		this("Validate with " + rule.getRootPath(), rule.getValidationType().isXSD() ? DocumentProcessStepType.VALIDATE_XSD : DocumentProcessStepType.VALIDATE_SCH);
+		this.errorCode = rule.buildErrorCode();
 	}
 
 	public DocumentProcessStep(RuleDocumentTransformation rule) {

@@ -7,6 +7,7 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalDocumentError;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,24 +45,46 @@ public class JournalDocumentService {
 
                 List<ErrorRecord> errorRecords = step.getErrorRecords();
                 if (errorRecords.size() > 0) {
+                	DocumentErrorCode errorType = document.getLastError();
+                	if (errorType == null) {
+                		errorType = DocumentErrorCode.OTHER;
+                	}
                     for(ErrorRecord errorRecord : errorRecords) {
-                        String code = errorRecord.getCode();
-                        String flag = errorRecord.getFlag();
-                        String location = errorRecord.getLocation();
-                        String message = errorRecord.getMessage();
+                        String code = cutString(errorRecord.getCode(), 50);
+                        String flag = cutString(errorRecord.getFlag(), 20);
+                        String location = cutString(errorRecord.getLocation(), 500);
+                        String message = cutString(errorRecord.getMessage(), 1024);
 
-                        ErrorDictionary errorFromDictionary = errorDictionaryDaoRepository.findFirstByCode(code);
-                        if (errorFromDictionary == null) {
-                            errorFromDictionary = new ErrorDictionary();
-                            errorFromDictionary.setCode(code);
-                            errorFromDictionary.setFlag(flag);
-                            errorFromDictionary.setMessage(cutString255(message));
-                            errorDictionaryDaoRepository.save(errorFromDictionary);
+                        ErrorDictionary errorDictionary = new ErrorDictionary();
+                        errorDictionary.setErrorType(errorType);
+                        errorDictionary.setCode(code);
+                        errorDictionary.setFlag(flag);
+                        errorDictionary.setLocation(location);
+                        errorDictionary.setMessage(message);
+                        
+                        int hash = errorDictionary.calculateHash();
+                        errorDictionary.setHash(hash);
+
+                        ErrorDictionary existingError = null;
+                        List<ErrorDictionary> existingErrorList = errorDictionaryDaoRepository.findAllByHash(hash);
+                        /*
+                         * Hash code can overlap for different values - check that contents actually equal
+                         */
+                        for (ErrorDictionary e : existingErrorList) {
+							if (e.equals(errorDictionary)) {
+								existingError = e;
+								break;
+							}
+						}
+                        
+                        if (existingError == null) {
+                            errorDictionaryDaoRepository.save(errorDictionary);
+                        } else {
+                        	errorDictionary = existingError;
                         }
 
                         JournalDocumentError journalDocumentError = new JournalDocumentError();
-                        journalDocumentError.setLocation(cutString255(location));
-                        journalDocumentError.setErrorDictionary(errorFromDictionary);
+                        journalDocumentError.setErrorDictionary(errorDictionary);
                         journalDocumentError.setJournalDocument(journalDocument);
                         journalDocumentErrorDaoRepository.save(journalDocumentError);
                     }
@@ -79,15 +102,17 @@ public class JournalDocumentService {
                 sb.append(step.getMessage());
             }
             String message = sb.toString();
-            return cutString255(message);
+            return cutString(message, 255);
         }
         return "";
     }
-
-    private String cutString255(String message) {
-        if (message.length() > 255) {
-            return message.substring(0, 250)+"...";
-        }
+    
+    private String cutString(String message, int maxLength) {
+    	if (message != null) {
+	        if (message.length() > maxLength) {
+	            return message.substring(0, maxLength - 5)+"...";
+	        }
+    	}
         return message;
     }
 }

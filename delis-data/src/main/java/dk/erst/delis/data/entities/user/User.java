@@ -1,6 +1,6 @@
 package dk.erst.delis.data.entities.user;
 
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.listeners.FullNameGenerationListener;
 
 import lombok.Getter;
@@ -18,7 +18,7 @@ import javax.validation.constraints.Email;
 @Entity
 @Table(name = "user")
 @EntityListeners({FullNameGenerationListener.class})
-public class User extends AbstractEntity {
+public class User extends AbstractCreateUpdateEntity {
 
     @Column(unique = true, nullable = false)
     private String username;

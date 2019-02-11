@@ -12,9 +12,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import dk.erst.delis.dao.DocumentBytesDaoRepository;
-import dk.erst.delis.data.entities.document.DocumentBytes;
-import dk.erst.delis.task.document.DocumentBytesService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,9 +19,11 @@ import dk.erst.delis.TestUtil;
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.ConfigValueDaoRepository;
+import dk.erst.delis.dao.DocumentBytesDaoRepository;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
@@ -48,10 +47,17 @@ public class DocumentLoadServiceUnitTest {
 		ConfigValueDaoRepository configRepository = TestUtil.getEmptyConfigValueDaoRepository();
 		ConfigBean config = new ConfigBean(configRepository);
 
+		final long[] documentId = new long[] {0L};
+		
+		final String testOrganisationCode = "test"+System.currentTimeMillis();
+		
 		DocumentDaoRepository documentDaoRepository = mock(DocumentDaoRepository.class);
 		when(documentDaoRepository.save(any(Document.class))).then(d -> {
-			log.info("Requested to save " + d);
-			return (Document) d.getArgument(0);
+			Document doc = (Document) d.getArgument(0);
+			documentId[0]++;
+			doc.setId(documentId[0]);
+			log.info("Requested to save " + doc);
+			return doc;
 		});
 
 		JournalDocumentDaoRepository journalDocumentDaoRepository = mock(JournalDocumentDaoRepository.class);
@@ -63,23 +69,27 @@ public class DocumentLoadServiceUnitTest {
 		IdentifierResolverService identifierResolverService = mock(IdentifierResolverService.class);
 		when(identifierResolverService.resolve(any(String.class), any(String.class))).then(a -> {
 			Identifier i = new Identifier();
-			i.setOrganisation(new Organisation());
+			Organisation organisation = new Organisation();
+			organisation.setCode(testOrganisationCode);
+			i.setOrganisation(organisation);
 			i.setType(a.getArgument(0));
 			i.setValue(a.getArgument(1));
 			return i;
 		});
 
-		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService();
+		final long[] documentBytesId = new long[] {0L};
 
 		DocumentBytesDaoRepository documentBytesDaoRepositiry = mock(DocumentBytesDaoRepository.class);
 		when(documentBytesDaoRepositiry.save(any(DocumentBytes.class))).then(d -> {
-			log.info("Requested to save " + d);
-			return (DocumentBytes) d.getArgument(0);
+			DocumentBytes docBytes = (DocumentBytes) d.getArgument(0);
+			documentBytesId[0]++;
+			docBytes.setId(documentBytesId[0]);
+			log.info("Requested to save " + docBytes);
+			return docBytes;
 		});
-		DocumentBytesService documentBytesService = new DocumentBytesService(documentBytesDaoRepositiry);
+		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService(config, documentBytesDaoRepositiry);
 
-		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService, documentBytesService, config);
-
+		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
 	}
 
 	private boolean fullLoadFromInputImitationDone = false;

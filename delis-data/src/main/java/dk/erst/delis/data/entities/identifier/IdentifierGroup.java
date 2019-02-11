@@ -1,6 +1,6 @@
 package dk.erst.delis.data.entities.identifier;
 
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.entities.organisation.Organisation;
 
 import lombok.Getter;
@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 @Getter
 @Setter
 @Entity
-public class IdentifierGroup extends AbstractEntity {
+public class IdentifierGroup extends AbstractCreateUpdateEntity {
 
 	public static final String DEFAULT_CODE = "default";
 

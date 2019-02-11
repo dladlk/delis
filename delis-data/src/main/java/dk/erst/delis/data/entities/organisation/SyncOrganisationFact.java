@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(indexes =  {@Index(name = "SOF_ORGANISATION_ID", columnList = "ORGANISATION_ID")})
-public class SyncOrganisationFact extends AbstractEntity {
+public class SyncOrganisationFact extends AbstractCreateUpdateEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)

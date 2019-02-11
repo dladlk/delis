@@ -2,7 +2,7 @@ package dk.erst.delis.data.entities.document;
 
 import javax.persistence.*;
 
-import dk.erst.delis.data.entities.AbstractEntity;
+import dk.erst.delis.data.entities.AbstractCreateEntity;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = false)
-public class DocumentBytes extends AbstractEntity {
+public class DocumentBytes extends AbstractCreateEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "DOCUMENT_ID", nullable = false)
@@ -31,9 +31,6 @@ public class DocumentBytes extends AbstractEntity {
 	@Column(nullable = false, length = 10)
 	private DocumentBytesType type;
 
-	@Column
-	private String location;
-
-	@Column
-	private String description;
+	@Column(nullable = false)
+	private long size;
 }

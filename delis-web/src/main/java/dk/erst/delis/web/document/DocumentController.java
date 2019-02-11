@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import dk.erst.delis.task.document.DocumentBytesService;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.dao.DocumentBytesDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.load.DocumentLoadService;
@@ -37,7 +37,7 @@ public class DocumentController {
 	@Autowired
 	private DocumentService documentService;
 	@Autowired
-	private DocumentBytesService documentBytesService;
+	private DocumentBytesDaoRepository documentBytesDaoRepository;
 
 	@RequestMapping("/document/list")
 	public String list(Model model) {
@@ -84,7 +84,7 @@ public class DocumentController {
 		model.addAttribute("document", document);
 		model.addAttribute("documentStatusList", DocumentStatus.values());
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
-		model.addAttribute("documentBytes", documentBytesService.findAllDocumentBytes(document));
+		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
 
 		return "/document/view";
 	}

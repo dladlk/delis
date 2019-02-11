@@ -5,6 +5,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
+
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -37,7 +39,7 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
 				String nodeToString = nodeToString(item);
 				System.out.println(nodeToString);
-				errorList.add(new ErrorRecord(id, nodeToString, flag, location));
+				errorList.add(new ErrorRecord(DocumentErrorCode.BIS3_SCH, id, nodeToString, flag, location));
 				continue;
 			}
 
@@ -71,7 +73,7 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 				log.debug(String.format("%d) [%s] %s\n\tlocation = %s", i, flag, message, location));
 			}
 			
-			errorList.add(new ErrorRecord(id, message, flag, location));
+			errorList.add(new ErrorRecord(DocumentErrorCode.BIS3_SCH, id, message, flag, location));
 		}
 		return errorList;
 	}
