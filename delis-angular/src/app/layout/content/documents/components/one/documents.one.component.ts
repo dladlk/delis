@@ -97,12 +97,6 @@ export class DocumentsOneComponent implements OnInit {
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
                 {
-                    columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_DOCUMENT, columnClick: 0
-                },
-                {
                     columnName: COLUMN_NAME_TYPE, columnClick: 0
                 },
                 {
@@ -160,8 +154,6 @@ export class DocumentsOneComponent implements OnInit {
     }
 
     private clearCounts() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickDocument = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT).columnClick;
         this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
         this.filter.countClickDocumentProcessStepType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_TYPE).columnClick;
         this.filter.countClickSuccess = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SUCCESS).columnClick;
