@@ -1,9 +1,10 @@
 package dk.erst.delis.service.content.journal.document;
 
-import java.util.List;
-
 import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractService;
+
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * @author funtusthan, created by 13.01.19
@@ -11,5 +12,5 @@ import dk.erst.delis.service.content.AbstractService;
 
 public interface JournalDocumentService extends AbstractService<JournalDocument> {
 
-	List<JournalDocument> getByDocument(long documentId);
+	PageContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId);
 }

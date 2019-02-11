@@ -38,6 +38,7 @@ export class DocumentsComponent implements OnInit {
     textOrganisation: string;
     textReceiver: string;
     textSenderName: string;
+    textPlaceholderReceivedDate: string;
 
     documents: DocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
@@ -95,6 +96,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";
         this.selectedLastError = "ALL";
+        this.textPlaceholderReceivedDate = "Received Date";
         this.filter = new FilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
@@ -249,6 +251,7 @@ export class DocumentsComponent implements OnInit {
         this.textOrganisation = '';
         this.textReceiver = '';
         this.textSenderName = '';
+        this.textPlaceholderReceivedDate = "Received Date";
     }
 
     private clearSort() {

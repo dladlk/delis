@@ -35,6 +35,13 @@ public class DateUtil {
         return new DateRangeModel(start, end);
     }
 
+    public Date addHour(Date date, int hour) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);
+        return cal.getTime();
+    }
+
     public DateRangeModel generateDateRangeByFromAndToLastHour(int timeType, int time, int interval) {
         Date start = new Date();
         Calendar cal = Calendar.getInstance();
@@ -52,5 +59,15 @@ public class DateUtil {
         ZoneId zoneId = ZoneId.systemDefault();
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.now(), zoneId);
         return Date.from(zonedDateTime.toLocalDate().atStartOfDay(zoneId).toInstant());
+    }
+
+    public Date generateBeginningOfDay(Date day) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
+        cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+        return cal.getTime();
     }
 }

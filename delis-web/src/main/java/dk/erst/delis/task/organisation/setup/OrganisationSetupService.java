@@ -1,38 +1,39 @@
 package dk.erst.delis.task.organisation.setup;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.google.common.collect.Lists;
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
+import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.organisation.OrganisationSetup;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.web.identifier.IdentifierService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class OrganisationSetupService {
 
 	private OrganisationSetupDaoRepository organisationSetupDaoRepository;
+	private IdentifierService identifierService;
 
 	@Autowired
-	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository) {
+	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository, IdentifierService identifierService) {
 		this.organisationSetupDaoRepository = organisationSetupDaoRepository;
+		this.identifierService = identifierService;
 	}
 
 	public OrganisationSetupData load(Organisation organisation) {
@@ -56,7 +57,7 @@ public class OrganisationSetupService {
 			log.debug("Build newDataMap: " + newDataToSetupMap);
 			log.debug("Current detup map: " + currentSetupMap);
 		}
-
+		List<OrganisationSetupKey> changedFields = new ArrayList<>();
 		for (OrganisationSetupKey key : newDataToSetupMap.keySet()) {
 			String newValue = newDataToSetupMap.get(key);
 			if (currentSetupMap.containsKey(key)) {
@@ -65,6 +66,7 @@ public class OrganisationSetupService {
 					os.setValue(newValue);
 					organisationSetupDaoRepository.save(os);
 					sd.increment("updated");
+					changedFields.add(key);
 				} else {
 					sd.increment("unchanged");
 				}
@@ -75,6 +77,7 @@ public class OrganisationSetupService {
 				os.setValue(newValue);
 				organisationSetupDaoRepository.save(os);
 				sd.increment("created");
+				changedFields.add(key);
 			}
 		}
 
@@ -83,10 +86,34 @@ public class OrganisationSetupService {
 				OrganisationSetup os = currentSetupMap.get(key);
 				organisationSetupDaoRepository.delete(os);
 				sd.increment("deleted");
+				changedFields.add(key);
 			}
 		}
-
+		if(isSmpFieldsChanged(changedFields)) {
+			smpOrganisationSetupChanged(data.getOrganisation());
+		}
 		return sd;
+	}
+
+	private boolean isSmpFieldsChanged(List<OrganisationSetupKey> changedFields) {
+		List<OrganisationSetupKey> smpRelatedFields = Lists.newArrayList(
+				OrganisationSetupKey.SUBSCRIBED_SMP_PROFILES,
+				OrganisationSetupKey.ACCESS_POINT_AS2,
+				OrganisationSetupKey.ACCESS_POINT_AS4
+		);
+		return !Collections.disjoint(smpRelatedFields, changedFields);
+	}
+
+	private void smpOrganisationSetupChanged(Organisation organisation) {
+		Iterator<Identifier> identifiers = identifierService.findByOrganisation(organisation);
+		List<Long> idsForUpdate = new ArrayList<>();
+		identifiers.forEachRemaining(identifier -> {
+			if(IdentifierStatus.ACTIVE.equals(identifier.getStatus()) &&
+					IdentifierPublishingStatus.DONE.equals(identifier.getPublishingStatus())) {
+				idsForUpdate.add(identifier.getId());
+			}
+		});
+		identifierService.updateStatuses(idsForUpdate, IdentifierStatus.ACTIVE, IdentifierPublishingStatus.PENDING);
 	}
 
 /*	private Map<OrganisationSetupKey, String> buildDefaultMap() {

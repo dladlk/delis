@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
                 <div class="card" style="min-height: 768px">
-                    <div class="card-header"><span>{{ 'documents.table.header' | translate | uppercase }}</span></div>
+                    <div class="card-header"><span>{{ 'documents.table.header' | translate }}</span></div>
                     <br>
                     <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
                     <div class="card-body table-responsive">
@@ -66,7 +66,7 @@
                                     <input bsDaterangepicker
                                            [bsConfig]="{containerClass: 'theme-dark-blue'}"
                                            class="form-control"
-                                           placeholder="Received Date"
+                                           placeholder="{{textPlaceholderReceivedDate}}"
                                            type="text"
                                            (bsValueChange)="loadReceivedDate($event)">
                                 </td>

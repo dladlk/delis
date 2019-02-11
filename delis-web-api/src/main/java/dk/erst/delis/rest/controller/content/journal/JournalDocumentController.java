@@ -36,8 +36,8 @@ public class JournalDocumentController {
     }
 
     @GetMapping("/one/{documentId}")
-    public ResponseEntity getByDocument(@PathVariable long documentId) {
-        return ResponseEntity.ok(journalDocumentService.getByDocument(documentId));
+    public ResponseEntity getByDocument(@PathVariable long documentId, WebRequest webRequest) {
+        return ResponseEntity.ok(journalDocumentService.getByDocument(webRequest, documentId));
     }
 
     
