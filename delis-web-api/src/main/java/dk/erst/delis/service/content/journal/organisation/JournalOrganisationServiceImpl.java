@@ -18,10 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 public class JournalOrganisationServiceImpl implements JournalOrganisationService {
 
     private final JournalOrganisationRepository journalOrganisationRepository;
-    private final AbstractGenerateDataService abstractGenerateDataService;
+    private final AbstractGenerateDataService<JournalOrganisationRepository, JournalOrganisation> abstractGenerateDataService;
 
     @Autowired
-    public JournalOrganisationServiceImpl(JournalOrganisationRepository journalOrganisationRepository, AbstractGenerateDataService abstractGenerateDataService) {
+    public JournalOrganisationServiceImpl(JournalOrganisationRepository journalOrganisationRepository, AbstractGenerateDataService<JournalOrganisationRepository, JournalOrganisation> abstractGenerateDataService) {
         this.journalOrganisationRepository = journalOrganisationRepository;
         this.abstractGenerateDataService = abstractGenerateDataService;
     }
@@ -35,6 +35,6 @@ public class JournalOrganisationServiceImpl implements JournalOrganisationServic
     @Override
     @Transactional(readOnly = true)
     public JournalOrganisation getOneById(long id) {
-        return (JournalOrganisation) abstractGenerateDataService.getOneById(id, JournalOrganisation.class, journalOrganisationRepository);
+        return abstractGenerateDataService.getOneById(id, JournalOrganisation.class, journalOrganisationRepository);
     }
 }

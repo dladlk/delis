@@ -18,10 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
-    private final AbstractGenerateDataService abstractGenerateDataService;
+    private final AbstractGenerateDataService<DocumentRepository,Document> abstractGenerateDataService;
 
     @Autowired
-    public DocumentServiceImpl(DocumentRepository documentRepository, AbstractGenerateDataService abstractGenerateDataService) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, AbstractGenerateDataService<DocumentRepository,Document> abstractGenerateDataService) {
         this.documentRepository = documentRepository;
         this.abstractGenerateDataService = abstractGenerateDataService;
     }
@@ -35,6 +35,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Transactional(readOnly = true)
     public Document getOneById(long id) {
-        return (Document) abstractGenerateDataService.getOneById(id, Document.class, documentRepository);
+        return abstractGenerateDataService.getOneById(id, Document.class, documentRepository);
     }
 }

@@ -18,10 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 public class IdentifierGroupServiceImpl implements IdentifierGroupService {
 
     private final IdentifierGroupRepository identifierGroupRepository;
-    private final AbstractGenerateDataService abstractGenerateDataService;
+    private final AbstractGenerateDataService<IdentifierGroupRepository, IdentifierGroup> abstractGenerateDataService;
 
     @Autowired
-    public IdentifierGroupServiceImpl(IdentifierGroupRepository identifierGroupRepository, AbstractGenerateDataService abstractGenerateDataService) {
+    public IdentifierGroupServiceImpl(IdentifierGroupRepository identifierGroupRepository, AbstractGenerateDataService<IdentifierGroupRepository, IdentifierGroup> abstractGenerateDataService) {
         this.identifierGroupRepository = identifierGroupRepository;
         this.abstractGenerateDataService = abstractGenerateDataService;
     }
@@ -35,6 +35,6 @@ public class IdentifierGroupServiceImpl implements IdentifierGroupService {
     @Override
     @Transactional(readOnly = true)
     public IdentifierGroup getOneById(long id) {
-        return (IdentifierGroup) abstractGenerateDataService.getOneById(id, IdentifierGroup.class, identifierGroupRepository);
+        return abstractGenerateDataService.getOneById(id, IdentifierGroup.class, identifierGroupRepository);
     }
 }
