@@ -36,6 +36,6 @@ public class CIIHeaderParser extends PlainUBLHeaderParser {
 
     @Override
     public String ublVersion() {
-        return "2.0";
+        return "D16B";
     }
 }
