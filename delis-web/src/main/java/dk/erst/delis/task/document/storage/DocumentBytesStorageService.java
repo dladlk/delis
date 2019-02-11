@@ -93,7 +93,7 @@ public class DocumentBytesStorageService {
 		return result;
 	}
 
-	public DocumentBytes find(Document document, DocumentBytesType in) {
-		return documentBytesDaoRepository.findLastByDocumentAndType(document, DocumentBytesType.IN);
+	public DocumentBytes find(Document document, DocumentBytesType type) {
+		return documentBytesDaoRepository.findLastByDocumentAndType(document, type);
 	}
 }
