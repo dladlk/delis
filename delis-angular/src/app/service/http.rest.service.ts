@@ -24,6 +24,20 @@ export class HttpRestService {
         }
     }
 
+    methodGetOneById(url : string, params: any, token: any, id: number) : Observable<any> {
+        this.headers = new HttpHeaders({
+            'Authorization' : token
+        });
+        if (params !== null) {
+            return this.http.get(url + '/' + id, {
+                headers : this.headers,
+                params: params})
+                .pipe(map(HttpRestService.extractData));
+        } else {
+            return this.http.get(url + '/' + id, {headers : this.headers}).pipe(map(HttpRestService.extractData));
+        }
+    }
+
     methodOpenGet(url : string) : Observable<any> {
         return this.http.get(url).pipe(map(HttpRestService.extractData));
     }
