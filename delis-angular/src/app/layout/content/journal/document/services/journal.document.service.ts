@@ -19,7 +19,7 @@ export class JournalDocumentService {
 
     getListJournalDocuments(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {
 
-        let params = this.generateParams(currentPage, sizeElement, filter);
+        let params = JournalDocumentService.generateParams(currentPage, sizeElement, filter);
 
         if (filter.organisation !== null) {
             params = params.append('organisation', filter.organisation);
@@ -43,7 +43,7 @@ export class JournalDocumentService {
             params = params.append('createTime', String(filter.dateRange.dateStart.getTime()) + ':' + String(filter.dateRange.dateEnd.getTime()));
         }
 
-        return this.httpRestService.methodGet(this.url, {params: params}, this.tokenService.getToken());
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 
     getOneJournalDocumentById(id: any) : Observable<any> {
@@ -51,11 +51,11 @@ export class JournalDocumentService {
     }
 
     getAllByDocumentId(documentId: any, currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {
-        let params = this.generateParams(currentPage, sizeElement, filter);
-        return this.httpRestService.methodGetOneById(this.url + '/one', {params: params}, this.tokenService.getToken(), documentId);
+        let params = JournalDocumentService.generateParams(currentPage, sizeElement, filter);
+        return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 
-    private generateParams(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : HttpParams {
+    private static generateParams(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : HttpParams {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));

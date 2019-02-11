@@ -52,6 +52,7 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
     }
 
 	@Override
+    @Transactional(readOnly = true)
 	public PageContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId) {
         PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(webRequest);
         long collectionSize = journalDocumentRepository.countByDocumentId(documentId);
