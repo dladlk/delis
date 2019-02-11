@@ -13,6 +13,7 @@ import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.SchemaValidator;
 import dk.erst.delis.task.document.process.validate.SchematronValidator;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
 import dk.erst.delis.task.document.process.validate.result.SchematronResultCollectorFactory;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
@@ -135,8 +136,8 @@ public class DocumentValidationTransformationService {
 
 		Path xslFilePath = ruleService.filePath(transformationRule);
 		try (FileInputStream xslStream = new FileInputStream(xslFilePath.toFile());
-				FileInputStream xmlStream = new FileInputStream(xmlPath.toFile());
-				FileOutputStream resultStream = new FileOutputStream(xmlOutPath.toFile())) {
+			FileInputStream xmlStream = new FileInputStream(xmlPath.toFile());
+			FileOutputStream resultStream = new FileOutputStream(xmlOutPath.toFile())) {
 			XSLTUtil.apply(xslStream, xslFilePath, xmlStream, resultStream);
 			step.setSuccess(true);
 			step.setResult(xmlOutPath);
@@ -155,40 +156,37 @@ public class DocumentValidationTransformationService {
 
 		try {
 			switch (ruleDocumentValidation.getValidationType()) {
-			case XSD:
-				SchemaValidator xsdValidator = new SchemaValidator();
-				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
-					xsdValidator.validate(xmlStream, ruleService.filePath(ruleDocumentValidation));
-					step.setSuccess(true);
-				} catch (SAXParseException se) {
-					String location = "line " + se.getLineNumber() + ", column " + se.getColumnNumber();
-					log.error("Failed validation of file " + xmlPath + ", location: " + location + " by rule " + ruleDocumentValidation, se);
-					step.setMessage("At " + location + ": " + se.getMessage());
-				} catch (Exception e) {
-					log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
-					step.setMessage(e.getMessage());
-				}
-
-				break;
-			case SCHEMATRON:
-				SchematronValidator schValidator = new SchematronValidator();
-				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(ruleService.filePath(ruleDocumentValidation).toFile())) {
-					ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
-					List<String> errorList = schValidator.validate(xmlStream, schematronStream, collector);
-					step.setSuccess(errorList.isEmpty());
-					if (!errorList.isEmpty()) {
-						StringBuilder errors = new StringBuilder("Found "+errorList.size()+" errors: ");
-						for (String errorText : errorList) {
-							errors.append(errorText);
-						}
-						step.setMessage(errors.toString());
+				case XSD:
+					SchemaValidator xsdValidator = new SchemaValidator();
+					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
+						xsdValidator.validate(xmlStream, ruleService.filePath(ruleDocumentValidation));
+						step.setSuccess(true);
+					} catch (SAXParseException se) {
+						String location = "line " + se.getLineNumber() + ", column " + se.getColumnNumber();
+						log.error("Failed validation of file " + xmlPath + ", location: " + location + " by rule " + ruleDocumentValidation, se);
+						step.setMessage("At " + location + ": " + se.getMessage());
+					} catch (Exception e) {
+						log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
+						step.setMessage(e.getMessage());
 					}
-				} catch (Exception e) {
-					log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
-					step.setMessage(e.getMessage());
-				}
 
-				break;
+					break;
+				case SCHEMATRON:
+					SchematronValidator schValidator = new SchematronValidator();
+					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(ruleService.filePath(ruleDocumentValidation).toFile())) {
+						ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
+						List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector);
+						step.setSuccess(errorList.isEmpty());
+						step.setErrorRecords(errorList);
+						if (!errorList.isEmpty()) {
+							System.out.println("errorList = " + errorList);
+						}
+					} catch (Exception e) {
+						log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
+						step.setMessage(e.getMessage());
+					}
+
+					break;
 			}
 		} finally {
 			step.done();

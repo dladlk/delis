@@ -1,12 +1,15 @@
 package dk.erst.delis.task.document.process.log;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +26,9 @@ public class DocumentProcessStep {
 	private DocumentErrorCode errorCode;
 	private Object result;
 	private final DocumentProcessStepType stepType;
+
+	private List<ErrorRecord> errorRecords = new ArrayList<>();
+
 
 	public DocumentProcessStep(String description, DocumentProcessStepType stepType) {
 		this.description = description;
@@ -54,5 +60,13 @@ public class DocumentProcessStep {
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.start);
 		return c.getTime();
+	}
+
+	public List<ErrorRecord> getErrorRecords() {
+		return errorRecords;
+	}
+
+	public void addError (ErrorRecord error) {
+		errorRecords.add(error);
 	}
 }
