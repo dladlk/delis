@@ -1,20 +1,19 @@
 package dk.erst.delis.document.sbdh;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dk.erst.delis.document.domibus.MetadataBuilder;
 import dk.erst.delis.document.domibus.MetadataSerializer;
 import eu.domibus.plugin.fs.ebms3.UserMessage;
 import no.difi.vefa.peppol.common.model.Header;
 import no.difi.vefa.peppol.sbdh.SbdWriter;
 import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.JAXBException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
 
 public class SBDHTranslator {
 
@@ -38,14 +37,13 @@ public class SBDHTranslator {
     }
 
     public boolean writeMetadata(Header header, String partyId, Path target) {
-        try {
+        try (OutputStream fileOutputStream = new FileOutputStream(target.toString())) {
             MetadataBuilder metadataBuilder = new MetadataBuilder();
             UserMessage userMessage = metadataBuilder.buildUserMessage(header, partyId);
             MetadataSerializer metadataSerializer = new MetadataSerializer();
-            OutputStream fileOutputStream = new FileOutputStream(target.toString());
             metadataSerializer.serialize(userMessage, fileOutputStream);
             return true;
-        } catch (FileNotFoundException | JAXBException e) {
+        } catch (Exception e) {
             log.error("Failed to write metadata: "+e.getMessage(), e);
             return false;
         }
