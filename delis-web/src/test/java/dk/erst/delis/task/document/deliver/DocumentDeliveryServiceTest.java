@@ -1,6 +1,10 @@
 package dk.erst.delis.task.document.deliver;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,7 +48,6 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@Ignore
 public class DocumentDeliveryServiceTest {
 
 	@Autowired
@@ -72,6 +75,7 @@ public class DocumentDeliveryServiceTest {
 	private OrganisationSetupService setupService;
 
 	private Organisation org;
+	private File rootFolder;
 	private Path testFile;
 
 	@Test
@@ -105,8 +109,8 @@ public class DocumentDeliveryServiceTest {
 	private DocumentDeliverService getDocumentDeliverService() {
 		ConfigBean configBean = new ConfigBean(configRepository) {
 			@Override
-			public Path getStorageValidPath() {
-				return testFile.getParent();
+			public Path getStorageLoadedPath() {
+				return rootFolder.toPath();
 			}
 		};
 		DocumentBytesStorageService storageService = new DocumentBytesStorageService(configBean, documentBytesDaoRepository);
@@ -151,23 +155,40 @@ public class DocumentDeliveryServiceTest {
 		setup.setValue(Files.createTempDir().getAbsolutePath());
 		organisationSetupRepository.save(setup);
 
-		testFile = TestDocumentUtil.createTestFile(TestDocument.CII);
+		rootFolder = Files.createTempDir();
+
 
 		Document doc = new Document();
 		doc.setOrganisation(org);
 		doc.setDocumentStatus(DocumentStatus.VALIDATE_OK);
-		doc.setName(testFile.toFile().getName());
+		doc.setName("test");
 		doc.setReceiverIdentifier(id);
 		doc.setMessageId("message_id");
 		documentRepository.save(doc);
 
 		DocumentBytes documentBytes = new DocumentBytes();
-		documentBytes.setSize(testFile.toFile().length());
 		documentBytes.setDocument(doc);
 		documentBytes.setType(DocumentBytesType.READY);
 		documentBytesDaoRepository.save(documentBytes);
 
+		testFile = createTestFile(documentBytes, rootFolder);
+		documentBytes.setSize(testFile.toFile().length());
+		documentBytesDaoRepository.save(documentBytes);
 
+	}
+
+	private Path createTestFile(DocumentBytes documentBytes, File parentFolder) throws IOException {
+		Document document = documentBytes.getDocument();
+		Organisation organisation = document.getOrganisation();
+
+		String fileName ="00" + documentBytes.getId() + "-READY.xml"; // there will be less than 10 in this test for sure (in observable future)
+		String subfolderName = organisation.getCode() + "/0000" + document.getId();
+		Path filePath = Paths.get(parentFolder.toString(), subfolderName);
+		File testFile = new File(filePath.toAbsolutePath().toString(), fileName);
+		filePath.toFile().mkdirs();
+		testFile.createNewFile();
+		Files.write("<xml></xml>".getBytes(), testFile);
+		return filePath;
 	}
 
 	@After
