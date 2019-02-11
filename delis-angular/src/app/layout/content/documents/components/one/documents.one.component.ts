@@ -69,7 +69,6 @@ export class DocumentsOneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.pagination = new PaginationModel();
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
             this.document = data;

@@ -70,11 +70,11 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
                         int count = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(sort)));
                         if (count == 1) {
                             return new PageContainer<>(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, journalDocumentRepository
-                                    .findAllByDocumentIdOrderByIdAsc(documentId,
+                                    .findAllByDocumentId(documentId,
                                             PageRequest.of(pageAndSizeModel.getPage() - 1, pageAndSizeModel.getSize(), Sort.by(field.getName()).descending())).getContent());
                         } else if (count == 2) {
                             return new PageContainer<>(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, journalDocumentRepository
-                                    .findAllByDocumentIdOrderByIdAsc(documentId,
+                                    .findAllByDocumentId(documentId,
                                             PageRequest.of(pageAndSizeModel.getPage() - 1, pageAndSizeModel.getSize(), Sort.by(field.getName()).ascending())).getContent());
                         }
                     }
@@ -82,7 +82,7 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
             }
         }
         return new PageContainer<>(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, journalDocumentRepository
-                .findAllByDocumentIdOrderByIdAsc(documentId,
+                .findAllByDocumentId(documentId,
                         PageRequest.of(pageAndSizeModel.getPage() - 1, pageAndSizeModel.getSize(), Sort.by("id").ascending())).getContent());
 	}
 }

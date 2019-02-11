@@ -14,7 +14,7 @@ import dk.erst.delis.persistence.AbstractRepository;
 @Repository
 public interface JournalDocumentRepository extends AbstractRepository<JournalDocument> {
 
-	Page<JournalDocument> findAllByDocumentIdOrderByIdAsc(long documentId, Pageable pageable);
+	Page<JournalDocument> findAllByDocumentId(long documentId, Pageable pageable);
 
 	Long countByDocumentId(long documentId);
 }
