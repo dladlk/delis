@@ -119,7 +119,8 @@
                             <tbody>
                             <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
                                 <td>{{doc.type}}</td>
-                                <td>{{doc.success}}</td>
+                                <td *ngIf="doc.success"><img src="assets/images/success.png" /></td>
+                                <td *ngIf="!doc.success"><img src="assets/images/error.png" /></td>
                                 <td>{{doc.message}}</td>
                                 <td>{{doc.durationMs}}</td>
                                 <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
