@@ -40,6 +40,10 @@ public class JournalDocumentController {
         return ResponseEntity.ok(journalDocumentService.getByDocument(webRequest, documentId));
     }
 
+    @GetMapping("/one/error/{documentId}")
+    public ResponseEntity getByJournalDocumentDocumentId(@PathVariable long documentId) {
+        return ResponseEntity.ok(journalDocumentService.getByJournalDocumentDocumentId(documentId));
+    }
     
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {

@@ -58,6 +58,10 @@ export class JournalDocumentService {
         return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 
+    getByJournalDocumentDocumentId(documentId: any) : Observable<any> {
+        return this.httpRestService.methodGetOneById(this.url + '/one/error', null, this.tokenService.getToken(), documentId);
+    }
+
     private static generateParams(filter: JournalDocumentFilterProcessResult) : HttpParams {
         let params = new HttpParams();
         params = params.append('countClickOrganisation', String(filter.countClickOrganisation));

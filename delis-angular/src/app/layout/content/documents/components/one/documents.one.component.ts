@@ -13,6 +13,7 @@ import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 import { JournalDocumentFilterProcessResult } from "../../../journal/document/models/journal.document.filter.process.result";
 import { JournalDocumentModel } from "../../../journal/document/models/journal.document.model";
 import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
+import { ErrorDictionaryModel } from "../../../journal/document/models/error.dictionary.model";
 
 const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.Success';
 const COLUMN_NAME_TYPE = 'journal.documents.table.columnName.Type';
@@ -36,6 +37,7 @@ export class DocumentsOneComponent implements OnInit {
 
     filter: JournalDocumentFilterProcessResult;
     journalDocuments: JournalDocumentModel[];
+    journalDocumentErrors: ErrorDictionaryModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
 
     constructor(
@@ -69,6 +71,7 @@ export class DocumentsOneComponent implements OnInit {
     private initProcess(id: number) {
         this.initDefaultValues();
         this.currentProdJournalDocuments(id);
+        this.currentProdJournalDocumentDocumentId(id);
         this.clearAllFilter();
     }
 
@@ -111,6 +114,16 @@ export class DocumentsOneComponent implements OnInit {
         this.journalDocumentService.getAllByDocumentId(id, this.filter).subscribe(
             (data: {}) => {
                 this.journalDocuments = data["items"];
+            }, error => {
+                this.errorService.errorProcess(error);
+            }
+        );
+    }
+
+    private currentProdJournalDocumentDocumentId(id: number) {
+        this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe(
+            (data: {}) => {
+                this.journalDocumentErrors = data["items"];
             }, error => {
                 this.errorService.errorProcess(error);
             }
