@@ -2,7 +2,7 @@
     <div class="col col-sm-12">
         <div class="card mb-3">
             <div class="card-header">
-                {{ 'dashboard.charts.header' | translate | uppercase }}
+                {{ 'dashboard.charts.header' | translate }} {{': ' + lineChartLabels[0] + ' - ' + lineChartLabels[lineChartLabels.length - 1]}}
             </div>
             <div class="card-body" *ngIf="lineChartData.length > 0">
                 <canvas baseChart height="100"

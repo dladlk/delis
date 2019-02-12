@@ -23,7 +23,7 @@
   "dashboard.documents" : "Modtaget dokumenter den sidste time / gennemsnit",
   "dashboard.errors" : "Fejl sidste tid",
   "dashboard.details" : "Se detaljer",
-  "dashboard.charts.header" : "Antal dokumenter den sidste time",
+  "dashboard.charts.header" : "Antallet af indlæste dokumenter",
 
   "documents.header" : "Dokumenter",
   "documents.header.details" : "Dokument detaljer",
