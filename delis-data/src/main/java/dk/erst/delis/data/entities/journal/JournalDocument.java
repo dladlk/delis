@@ -1,5 +1,13 @@
 package dk.erst.delis.data.entities.journal;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import dk.erst.delis.data.annotations.WebApiContent;
 import dk.erst.delis.data.entities.AbstractCreateEntity;
 import dk.erst.delis.data.entities.document.Document;
@@ -7,10 +15,6 @@ import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -39,10 +43,4 @@ public class JournalDocument extends AbstractCreateEntity {
 	@Column(nullable = true)
 	private Long durationMs;
 
-	@OneToMany(
-			mappedBy = "journalDocument",
-			cascade = CascadeType.ALL,
-			orphanRemoval = true
-	)
-	List<JournalDocumentError> errors = new ArrayList<>();
 }
