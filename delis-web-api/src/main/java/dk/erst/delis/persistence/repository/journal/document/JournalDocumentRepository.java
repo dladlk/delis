@@ -1,11 +1,12 @@
 package dk.erst.delis.persistence.repository.journal.document;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.persistence.AbstractRepository;
+
+import java.util.List;
 
 /**
  * @author funtusthan, created by 13.01.19
@@ -14,7 +15,7 @@ import dk.erst.delis.persistence.AbstractRepository;
 @Repository
 public interface JournalDocumentRepository extends AbstractRepository<JournalDocument> {
 
-	Page<JournalDocument> findAllByDocumentId(long documentId, Pageable pageable);
+	List<JournalDocument> findAllByDocumentId(long documentId, Sort sort);
 
 	Long countByDocumentId(long documentId);
 }
