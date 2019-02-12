@@ -12,6 +12,7 @@ import { IdentifierOneComponent } from "../components/one/identifier.one.compone
 import { IdentifierService } from "../services/identifier.service";
 import { IdentifierComponent } from "../components/identifier.component";
 import { IdentifierRoutingModule } from "../identifier-routing.module";
+import { JournalIdentifierService } from "../../journal/identifier/services/journal.identifier.service";
 
 @NgModule({
     imports: [
@@ -26,6 +27,6 @@ import { IdentifierRoutingModule } from "../identifier-routing.module";
         HttpClientModule,
         BsComponentModule],
     declarations: [IdentifierComponent, IdentifierOneComponent],
-    providers: [IdentifierService]
+    providers: [IdentifierService, JournalIdentifierService]
  })
 export class IdentifierModule { }

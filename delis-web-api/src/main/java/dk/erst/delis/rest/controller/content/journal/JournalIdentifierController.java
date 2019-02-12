@@ -35,6 +35,11 @@ public class JournalIdentifierController {
         return ResponseEntity.ok(journalIdentifierService.getAll(webRequest));
     }
 
+    @GetMapping("/one/{identifierId}")
+    public ResponseEntity getByIdentifier(@PathVariable long identifierId, WebRequest webRequest) {
+        return ResponseEntity.ok(journalIdentifierService.getByIdentifier(webRequest, identifierId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(journalIdentifierService.getOneById(id));

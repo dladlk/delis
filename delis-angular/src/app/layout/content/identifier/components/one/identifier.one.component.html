@@ -38,6 +38,38 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><span>{{ 'journal.identifier.table.header' | translate }}</span></div>
+                    <br>
+                    <div class="card-body table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                            <tr>
+                                <th *ngFor="let hed of tableHeaderSortModels">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)">
+                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let doc of journalIdentifiers" [routerLink]="['/journal-identifiers/', doc.id]">
+                                <td>{{doc.organisation.name}}</td>
+                                <td>{{doc.identifier.name}}</td>
+                                <td>{{doc.message}}</td>
+                                <td>{{doc.durationMs}}</td>
+                                <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

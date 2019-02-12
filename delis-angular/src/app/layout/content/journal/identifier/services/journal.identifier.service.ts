@@ -1,41 +1,28 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
-import { environment } from "../../../../../../environments/environment";
-import { TokenService } from "../../../../../service/token.service";
+import { HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+
+import { TokenService } from "../../../../../service/token.service";
 import { JournalIdentifierFilterProcessResultModel } from "../models/journal.identifier.filter.process.result.model";
+import { RuntimeConfigService } from "../../../../../service/runtime.config.service";
+import { HttpRestService } from "../../../../../service/http.rest.service";
 
 @Injectable()
 export class JournalIdentifierService {
 
-    private headers: HttpHeaders;
-    private env = environment;
-    private url = this.env.api_url + '/journal/identifier';
-    private config: string;
+    private url : string;
 
-    constructor(private http: HttpClient, private tokenService: TokenService) {
-        this.headers = new HttpHeaders({
-            'Authorization' : tokenService.getToken()
-        });
-        this.config = localStorage.getItem('url');
-        if (this.config !== '${API_URL}') {
-            this.url = this.config + '/journal/identifier';
-        }
+    constructor(private configService: RuntimeConfigService,
+                private httpRestService: HttpRestService, private tokenService: TokenService) {
+        this.url = this.configService.getConfigUrl();
+        this.url = this.url + '/journal/identifier';
     }
 
     getListJournalIdentifiers(currentPage: number, sizeElement: number, filter: JournalIdentifierFilterProcessResultModel) : Observable<any> {
 
-        let params = new HttpParams();
-
+        let params = JournalIdentifierService.generateParams(filter);
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
-
-        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
-        params = params.append('countClickIdentifier', String(filter.countClickIdentifier));
-        params = params.append('countClickCreateTime', String(filter.countClickCreateTime));
-        params = params.append('countClickMessage', String(filter.countClickMessage));
-        params = params.append('countClickDurationMs', String(filter.countClickDurationMs));
 
         if (filter.organisation !== null) {
             params = params.append('organisation', filter.organisation);
@@ -53,14 +40,25 @@ export class JournalIdentifierService {
             params = params.append('createTime', String(filter.dateRange.dateStart.getTime()) + ':' + String(filter.dateRange.dateEnd.getTime()));
         }
 
-        return this.http.get(this.url + '', {headers : this.headers, params: params}).pipe(map(JournalIdentifierService.extractData));
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 
     getOneJournalIdentifierById(id: any) : Observable<any> {
-        return this.http.get(this.url + '/' + id, {headers : this.headers}).pipe(map(JournalIdentifierService.extractData));
+        return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 
-    private static extractData(res: Response) {
-        return res || { };
+    getAllByIdentifierId(identifierId: any, filter: JournalIdentifierFilterProcessResultModel) : Observable<any> {
+        let params = JournalIdentifierService.generateParams(filter);
+        return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), identifierId);
+    }
+
+    private static generateParams(filter: JournalIdentifierFilterProcessResultModel) : HttpParams {
+        let params = new HttpParams();
+        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
+        params = params.append('countClickIdentifier', String(filter.countClickIdentifier));
+        params = params.append('countClickCreateTime', String(filter.countClickCreateTime));
+        params = params.append('countClickMessage', String(filter.countClickMessage));
+        params = params.append('countClickDurationMs', String(filter.countClickDurationMs));
+        return params;
     }
 }
