@@ -19,7 +19,10 @@ export class JournalDocumentService {
 
     getListJournalDocuments(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {
 
-        let params = JournalDocumentService.generateParams(currentPage, sizeElement, filter);
+        let params = JournalDocumentService.generateParams(filter);
+
+        params = params.append('page', String(currentPage));
+        params = params.append('size', String(sizeElement));
 
         if (filter.organisation !== null) {
             params = params.append('organisation', filter.organisation);
@@ -50,15 +53,13 @@ export class JournalDocumentService {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 
-    getAllByDocumentId(documentId: any, currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {
-        let params = JournalDocumentService.generateParams(currentPage, sizeElement, filter);
+    getAllByDocumentId(documentId: any, filter: JournalDocumentFilterProcessResult) : Observable<any> {
+        let params = JournalDocumentService.generateParams(filter);
         return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 
-    private static generateParams(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : HttpParams {
+    private static generateParams(filter: JournalDocumentFilterProcessResult) : HttpParams {
         let params = new HttpParams();
-        params = params.append('page', String(currentPage));
-        params = params.append('size', String(sizeElement));
         params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
         params = params.append('countClickDocument', String(filter.countClickDocument));
         params = params.append('countClickCreateTime', String(filter.countClickCreateTime));

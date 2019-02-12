@@ -3,6 +3,7 @@ package dk.erst.delis.service.content.journal.document;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.persistence.repository.journal.document.JournalDocumentRepository;
 import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
+import dk.erst.delis.rest.data.response.ListContainer;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 import dk.erst.delis.util.WebRequestUtil;
@@ -18,10 +19,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author funtusthan, created by 13.01.19
@@ -53,11 +51,10 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
 
 	@Override
     @Transactional(readOnly = true)
-	public PageContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId) {
-        PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(webRequest);
+	public ListContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId) {
         long collectionSize = journalDocumentRepository.countByDocumentId(documentId);
         if (collectionSize == 0) {
-            return new PageContainer<>();
+            return new ListContainer<>(Collections.emptyList());
         }
         String sort = WebRequestUtil.existSortParameter(webRequest);
         if (StringUtils.isNotBlank(sort)) {
@@ -69,20 +66,14 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
                     if (sort.toUpperCase().endsWith(field.getName().toUpperCase())) {
                         int count = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(sort)));
                         if (count == 1) {
-                            return new PageContainer<>(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, journalDocumentRepository
-                                    .findAllByDocumentId(documentId,
-                                            PageRequest.of(pageAndSizeModel.getPage() - 1, pageAndSizeModel.getSize(), Sort.by(field.getName()).descending())).getContent());
+                            return new ListContainer<>(journalDocumentRepository.findAllByDocumentId(documentId, Sort.by(field.getName()).descending()));
                         } else if (count == 2) {
-                            return new PageContainer<>(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, journalDocumentRepository
-                                    .findAllByDocumentId(documentId,
-                                            PageRequest.of(pageAndSizeModel.getPage() - 1, pageAndSizeModel.getSize(), Sort.by(field.getName()).ascending())).getContent());
+                            return new ListContainer<>(journalDocumentRepository.findAllByDocumentId(documentId, Sort.by(field.getName()).ascending()));
                         }
                     }
                 }
             }
         }
-        return new PageContainer<>(pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, journalDocumentRepository
-                .findAllByDocumentId(documentId,
-                        PageRequest.of(pageAndSizeModel.getPage() - 1, pageAndSizeModel.getSize(), Sort.by("id").ascending())).getContent());
+        return  new ListContainer<>(journalDocumentRepository.findAllByDocumentId(documentId, Sort.by("id").ascending()));
 	}
 }
