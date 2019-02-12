@@ -1,7 +1,10 @@
 package dk.erst.delis.web.document;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +14,11 @@ import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.data.entities.journal.JournalDocumentError;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 
@@ -20,11 +26,13 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 public class DocumentService {
     private DocumentDaoRepository documentDaoRepository;
     private JournalDocumentDaoRepository journalDocumentDaoRepository;
+    private JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository;
 
     @Autowired
-    public DocumentService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository) {
+    public DocumentService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository) {
         this.documentDaoRepository = documentDaoRepository;
         this.journalDocumentDaoRepository = journalDocumentDaoRepository;
+        this.journalDocumentErrorDaoRepository = journalDocumentErrorDaoRepository;
     }
 
     public List<Document> documentList (int start, int pageSize) {
@@ -71,4 +79,22 @@ public class DocumentService {
     public List<JournalDocument> getDocumentRecords (Document document) {
         return journalDocumentDaoRepository.findByDocumentOrderByIdAsc(document);
     }
+
+	public Map<Long, List<ErrorDictionary>> getErrorListByJournalDocumentIdMap(Document document) {
+		List<JournalDocumentError> errorList = journalDocumentErrorDaoRepository.findAllByJournalDocumentDocumentOrderById(document);
+		Map<Long, List<ErrorDictionary>> res = new HashMap<>();
+		if (errorList != null) {
+			for (JournalDocumentError journalDocumentError : errorList) {
+				Long jdId = journalDocumentError.getJournalDocument().getId();
+				ErrorDictionary error = journalDocumentError.getErrorDictionary();
+				List<ErrorDictionary> list = res.get(jdId);
+				if (list == null) {
+					list = new ArrayList<>();
+					res.put(jdId, list);
+				}
+				list.add(error);
+			}
+		}
+		return res;
+	}
 }

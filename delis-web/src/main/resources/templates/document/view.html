@@ -124,7 +124,7 @@
 					<td th:text="${r.message}"/>
 					<td th:text="${r.durationMs}"/>
 				</tr>
-				<tr th:if="${r.errors.size()} > 0">
+				<tr th:if="${errorListByJournalDocumentIdMap.get(r.id)}">
 					<td colspan="5">
 						<table class="table table-striped table-sm">
 							<tr>
@@ -133,11 +133,11 @@
 								<th>Message</th>
 								<th>Location</th>
 							</tr>
-							<tr th:each="errorRecord : ${r.errors}">
-								<td th:text="${errorRecord.errorDictionary.flag}"></td>
-								<td th:text="${errorRecord.errorDictionary.code}"></td>
-								<td th:text="${errorRecord.errorDictionary.message}"></td>
-								<td th:text="${#strings.abbreviate(errorRecord.errorDictionary.location, 100)}"></td>
+							<tr th:each="errorDictionary : ${errorListByJournalDocumentIdMap.get(r.id)}">
+								<td th:text="${errorDictionary.flag}"></td>
+								<td th:text="${errorDictionary.code}"></td>
+								<td th:text="${errorDictionary.message}"></td>
+								<td th:text="${#strings.abbreviate(errorDictionary.location, 100)}"></td>
 							</tr>
 						</table>
 					</td>

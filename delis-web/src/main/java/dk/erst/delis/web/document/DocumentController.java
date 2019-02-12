@@ -84,6 +84,7 @@ public class DocumentController {
 		model.addAttribute("document", document);
 		model.addAttribute("documentStatusList", DocumentStatus.values());
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
+		model.addAttribute("errorListByJournalDocumentIdMap", documentService.getErrorListByJournalDocumentIdMap(document));
 		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
 
 		return "/document/view";
