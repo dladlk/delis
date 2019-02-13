@@ -32,7 +32,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private static Set<String> getIgnorePaths() {
         Set<String> ignorePaths = new HashSet<>();
         ignorePaths.add("/rest/security/signin");
-        ignorePaths.add("/rest/table-info");
+        ignorePaths.add("/rest/table-info/enums");
+        ignorePaths.add("/rest/table-info/organizations");
         return ignorePaths;
     }
 

@@ -23,8 +23,13 @@ public class TableInfoController {
         this.tableInfoService = tableInfoService;
     }
 
-    @GetMapping
+    @GetMapping("/enums")
     public ResponseEntity getTableInfoByAllEntities() {
         return ResponseEntity.ok(tableInfoService.getTableInfoByAllEntities());
+    }
+
+    @GetMapping("/organizations")
+    public ResponseEntity getUniqueOrganizationNameData() {
+        return ResponseEntity.ok(tableInfoService.getUniqueOrganizationNameData());
     }
 }

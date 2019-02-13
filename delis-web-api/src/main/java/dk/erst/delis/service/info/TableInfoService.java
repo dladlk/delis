@@ -1,13 +1,17 @@
 package dk.erst.delis.service.info;
 
+import dk.erst.delis.persistence.repository.organization.OrganizationRepository;
+import dk.erst.delis.rest.data.response.DataContainer;
 import dk.erst.delis.rest.data.response.ListContainer;
 import dk.erst.delis.rest.data.response.info.TableInfoData;
+import dk.erst.delis.rest.data.response.info.UniqueOrganizationNameData;
 import dk.erst.delis.util.ClassLoaderUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.collections.CollectionUtils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -23,6 +27,13 @@ import java.util.stream.Collectors;
 @Service
 public class TableInfoService {
 
+    private final OrganizationRepository organizationRepository;
+
+    @Autowired
+    public TableInfoService(OrganizationRepository organizationRepository) {
+        this.organizationRepository = organizationRepository;
+    }
+
     public ListContainer<TableInfoData> getTableInfoByAllEntities() {
         List<Class> entityClasses = ClassLoaderUtil.findAllWebApiContentEntityClasses();
         if (CollectionUtils.isNotEmpty(entityClasses)) {
@@ -33,6 +44,15 @@ public class TableInfoService {
                             .collect(Collectors.toList()));
         } else {
             return new ListContainer<>(Collections.emptyList());
+        }
+    }
+
+    public DataContainer<UniqueOrganizationNameData> getUniqueOrganizationNameData() {
+        List<String> organisations = organizationRepository.findDistinctName();
+        if (CollectionUtils.isNotEmpty(organisations)) {
+            return new DataContainer<>(new UniqueOrganizationNameData(organisations));
+        } else {
+            return new DataContainer<>(new UniqueOrganizationNameData(Collections.emptyList()));
         }
     }
 

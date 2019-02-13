@@ -26,7 +26,7 @@ export class FilterProcessResult {
         this.status = 'ALL';
         this.lastError = 'ALL';
         this.ingoingFormat = 'ALL';
-        this.organisation = null;
+        this.organisation = 'ALL';
         this.receiver = null;
         this.documentType = 'ALL';
         this.senderName = null;

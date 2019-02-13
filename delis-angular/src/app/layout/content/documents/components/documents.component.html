@@ -21,11 +21,11 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input class="form-control"
-                                           type="text"
-                                           [(ngModel)]="textOrganisation"
-                                           placeholder="Organisation"
-                                           (change)="loadTextOrganisation($event.target.value)"/>
+                                    <ng-select [items]="organizations"
+                                               placeholder="organizations: "
+                                               [(ngModel)]="selectedOrganization"
+                                               (change)="loadOrganisations()">
+                                    </ng-select>
                                 </td>
                                 <td>
                                     <input class="form-control"

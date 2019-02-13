@@ -34,8 +34,8 @@ export class DocumentsComponent implements OnInit {
     selectedLastError: any;
     selectedDocumentType: any;
     selectedIngoingFormat: any;
+    selectedOrganization: any;
 
-    textOrganisation: string;
     textReceiver: string;
     textSenderName: string;
     textPlaceholderReceivedDate: string;
@@ -46,6 +46,7 @@ export class DocumentsComponent implements OnInit {
     documentTypes: [];
     ingoingFormats: [];
     lastErrors: [];
+    organizations: [];
     filter: FilterProcessResult;
 
     pagination: PaginationModel;
@@ -82,6 +83,8 @@ export class DocumentsComponent implements OnInit {
         this.documentTypes = select.documentType;
         this.ingoingFormats = select.ingoingDocumentFormat;
         this.lastErrors = select.lastError;
+        select = JSON.parse(localStorage.getItem("organizations"));
+        this.organizations = select;
     }
 
     protected initProcess() {
@@ -96,6 +99,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";
         this.selectedLastError = "ALL";
+        this.selectedOrganization = "ALL";
         this.textPlaceholderReceivedDate = "Received Date";
         this.filter = new FilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
@@ -145,12 +149,11 @@ export class DocumentsComponent implements OnInit {
         this.currentProdDocuments(page, pageSize, this.errorsFlag);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -248,7 +251,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";
         this.selectedLastError = "ALL";
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textReceiver = '';
         this.textSenderName = '';
         this.textPlaceholderReceivedDate = "Received Date";

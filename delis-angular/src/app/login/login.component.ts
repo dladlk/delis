@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
                 this.tokenService.setToken(loginData.token);
                 localStorage.setItem('username', loginData.username);
                 this.contentSelectInfoService.generateAllContentSelectInfo();
+                this.contentSelectInfoService.generateUniqueOrganizationNameInfo();
                 localStorage.setItem('isLoggedin', 'true');
                 this.router.navigate(['/dashboard']);
             }, error => {
