@@ -5,7 +5,6 @@ import { routerTransition } from "../../../../router.animations";
 import { LocaleService } from "../../../../service/locale.service";
 import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
-import { ChartDocumentModel } from "./model/chart.document.model";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -25,13 +24,15 @@ export class ChartDocumentComponent implements OnInit {
     lineChartLegend: boolean;
     lineChartType: string;
 
+    customDate: Date[];
+
     constructor(
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
         private chartDocumentService: ChartDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
-        this.updateLineChart();
+        this.updateLineChart(false);
     }
 
     ngOnInit() {
@@ -67,7 +68,7 @@ export class ChartDocumentComponent implements OnInit {
         if (this.period > 2) {
             this.period = 2;
         }
-        this.updateLineChart();
+        this.updateLineChart(false);
     }
 
     previousPeriod() {
@@ -75,27 +76,42 @@ export class ChartDocumentComponent implements OnInit {
         if (this.period < 0) {
             this.period = 0;
         }
-        this.updateLineChart();
+        this.updateLineChart(false);
     }
 
-    loadDate(e: any) {}
+    loadDate(date: Date[]) {
+        this.customDate = date;
+        this.updateLineChart(true);
+    }
 
-    private updateLineChart() {
-        this.chartDocumentService.getChartData().subscribe(
-            (data: {}) => {
-                let chartDocumentModel: ChartDocumentModel = new ChartDocumentModel();
-                let lineChart = Object.assign({}, data["data"]);
-                chartDocumentModel.lineChartData = lineChart.lineChartData;
-                chartDocumentModel.lineChartLabels = lineChart.lineChartLabels;
+    private updateLineChart(custom: boolean) {
+        if (custom) {
+            this.chartDocumentService.getChartCustomData(this.customDate).subscribe(
+                (data: {}) => {
+                    this.generateLineChart(data);
+                }, error => {
+                    this.errorService.errorProcess(error);
+                }
+            );
+        } else {
+            this.chartDocumentService.getChartData().subscribe(
+                (data: {}) => {
+                    this.generateLineChart(data);
+                }, error => {
+                    this.errorService.errorProcess(error);
+                }
+            );
+        }
+    }
 
-                this.lineChartLabels.length = 0;
-                this.lineChartLabels.push(...chartDocumentModel.lineChartLabels);
-                this.lineChartData.length = 0;
-                this.lineChartData.push(...chartDocumentModel.lineChartData);
-
-            }, error => {
-                this.errorService.errorProcess(error);
-            }
-        );
+    generateLineChart(data: {}) {
+        let lineChart = Object.assign({}, data["data"]);
+        this.lineChartData=lineChart.lineChartData;
+        if (this.lineChartLabels.length !== 0) {
+            this.lineChartLabels.length = 0;
+            this.lineChartLabels.push(... lineChart.lineChartLabels);
+        } else {
+            this.lineChartLabels=lineChart.lineChartLabels;
+        }
     }
 }

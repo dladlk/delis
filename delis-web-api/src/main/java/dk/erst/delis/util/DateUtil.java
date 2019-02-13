@@ -17,13 +17,13 @@ import java.util.Date;
 @UtilityClass
 public class DateUtil {
 
-    public long rangeHoursDate(Date date) {
+    public long rangeHoursDate(Date start, Date end) {
         Calendar between = Calendar.getInstance();
-        between.setTime(date);
+        between.setTime(start);
         Calendar today = Calendar.getInstance();
-        today.setTime(new Date());
+        today.setTime(end);
         long difference = today.getTimeInMillis() - between.getTimeInMillis();
-        return (int) difference / 1000 / 60;
+        return difference / 1000 / 60;
     }
 
     public DateRangeModel generateDateRangeByLastHour() {
@@ -39,6 +39,13 @@ public class DateUtil {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.add(Calendar.HOUR, hour);
+        return cal.getTime();
+    }
+
+    public Date addDay(Date date, int day) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, day);
         return cal.getTime();
     }
 
@@ -68,6 +75,16 @@ public class DateUtil {
         cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
         cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
         cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
+        return cal.getTime();
+    }
+
+    public Date generateEndOfDay(Date day) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(day);
+        cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE, cal.getMaximum(Calendar.MINUTE));
+        cal.set(Calendar.SECOND, cal.getMaximum(Calendar.SECOND));
+        cal.set(Calendar.MILLISECOND, cal.getMaximum(Calendar.MILLISECOND));
         return cal.getTime();
     }
 }
