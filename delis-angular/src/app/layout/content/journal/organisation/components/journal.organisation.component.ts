@@ -31,9 +31,11 @@ export class JournalOrganisationComponent implements OnInit {
     journalOrganisations: JournalOrganisationModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
 
-    textOrganisation: string;
     textMessage: string;
     textDurationMs: string;
+
+    organizations: [];
+    selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
@@ -58,6 +60,7 @@ export class JournalOrganisationComponent implements OnInit {
 
     ngOnInit(): void {
         this.initProcess();
+        this.initSelected();
     }
 
     private initProcess() {
@@ -67,7 +70,12 @@ export class JournalOrganisationComponent implements OnInit {
         this.clearAllFilter();
     }
 
+    initSelected() {
+        this.organizations = JSON.parse(localStorage.getItem("organizations"));
+    }
+
     private initDefaultValues() {
+        this.selectedOrganization = "ALL";
         this.filter = new JournalOrganisationFilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
@@ -93,12 +101,11 @@ export class JournalOrganisationComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -161,7 +168,7 @@ export class JournalOrganisationComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textMessage = '';
         this.textDurationMs = '';
         this.clearCounts();

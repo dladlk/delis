@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -19,9 +18,6 @@ import java.util.*;
 
 @Service
 public class ChartServiceImpl implements ChartService {
-
-    private SimpleDateFormat dateFormatByDay = new SimpleDateFormat("HH:mm");
-    private SimpleDateFormat dateFormatByCutomPeriod = new SimpleDateFormat("MM.dd");
 
     private final DocumentRepository documentRepository;
 
@@ -42,7 +38,6 @@ public class ChartServiceImpl implements ChartService {
         if (Objects.nonNull(startDateParameter)) {
             start = DateUtil.generateBeginningOfDay(new Date(Long.parseLong(startDateParameter)));
         }
-
         if (Objects.isNull(start) && Objects.isNull(end)) {
             return generateDefaultChartData(new Date());
         } else {
@@ -62,7 +57,7 @@ public class ChartServiceImpl implements ChartService {
             List<Long> dataGraph = new ArrayList<>();
             end = DateUtil.addDay(start, 1);
             for (int d = 0 ; d <= days ; ++d) {
-                lineChartLabels.add(dateFormatByCutomPeriod.format(start));
+                lineChartLabels.add(DateUtil.DATE_FORMAT_BY_CUSTOM_PERIOD.format(start));
                 dataGraph.add(documentRepository.countByCreateTimeBetween(start, end));
                 start = new Date(end.getTime());
                 end = DateUtil.addDay(start, 1);
@@ -88,7 +83,7 @@ public class ChartServiceImpl implements ChartService {
         lineChartDataContent.setLabel("chart data default");
         List<Long> dataGraph = new ArrayList<>();
         for (int h = 0 ; h <= hours ; ++h) {
-            lineChartLabels.add(dateFormatByDay.format(start));
+            lineChartLabels.add(DateUtil.DATE_FORMAT_BY_DAY.format(start));
             dataGraph.add(documentRepository.countByCreateTimeBetween(start, end));
             start = new Date(end.getTime());
             end = DateUtil.addHour(start, 1);

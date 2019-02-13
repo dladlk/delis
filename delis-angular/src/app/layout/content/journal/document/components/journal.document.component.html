@@ -21,18 +21,11 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <input class="form-control"
-                                           type="text"
-                                           [(ngModel)]="textOrganisation"
-                                           placeholder="Organisation"
-                                           (change)="loadTextOrganisation($event.target.value)"/>
-                                </td>
-                                <td>
-                                    <input class="form-control"
-                                           type="text"
-                                           [(ngModel)]="textDocument"
-                                           placeholder="Document"
-                                           (change)="loadTextDocument($event.target.value)"/>
+                                    <ng-select [items]="organizations"
+                                               placeholder="organizations: "
+                                               [(ngModel)]="selectedOrganization"
+                                               (change)="loadOrganisations()">
+                                    </ng-select>
                                 </td>
                                 <td>
                                     <ng-select [items]="typeList"
@@ -76,9 +69,9 @@
                             <tbody>
                             <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
                                 <td>{{doc.organisation.name}}</td>
-                                <td>{{doc.document.documentStatus}}</td>
                                 <td>{{doc.type}}</td>
-                                <td>{{doc.success}}</td>
+                                <td *ngIf="doc.success"><img src="assets/images/success.png" /></td>
+                                <td *ngIf="!doc.success"><img src="assets/images/error.png" /></td>
                                 <td>{{doc.message}}</td>
                                 <td>{{doc.durationMs}}</td>
                                 <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>

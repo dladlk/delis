@@ -15,7 +15,6 @@ import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.Organisation';
-const COLUMN_NAME_DOCUMENT = 'journal.documents.table.columnName.Document';
 const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.Success';
 const COLUMN_NAME_TYPE = 'journal.documents.table.columnName.Type';
 const COLUMN_NAME_MESSAGE = 'journal.documents.table.columnName.Message';
@@ -35,14 +34,15 @@ export class JournalDocumentComponent implements OnInit {
     journalDocuments: JournalDocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
     typeList: [];
+    organizations: [];
     successList = successList;
 
-    textOrganisation: string;
     textDocument: string;
     textMessage: string;
     textDurationMs: string;
     selectedType: any;
     selectedSuccess: any;
+    selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
@@ -80,19 +80,19 @@ export class JournalDocumentComponent implements OnInit {
     initSelected() {
         let select = JSON.parse(localStorage.getItem("JournalDocument"));
         this.typeList = select.type;
+        select = JSON.parse(localStorage.getItem("organizations"));
+        this.organizations = select;
     }
 
     private initDefaultValues() {
         this.selectedType = "ALL";
+        this.selectedOrganization = "ALL";
         this.selectedSuccess = {type: 'ALL', selected: true};
         this.filter = new JournalDocumentFilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
                 {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_DOCUMENT, columnClick: 0
                 },
                 {
                     columnName: COLUMN_NAME_TYPE, columnClick: 0
@@ -119,22 +119,11 @@ export class JournalDocumentComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
-        this.pagination.currentPage = 1;
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
-    loadTextDocument(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.document = null;
-        } else {
-            this.filter.document = text;
-        }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -216,7 +205,7 @@ export class JournalDocumentComponent implements OnInit {
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
         this.selectedType = "ALL";
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textDocument = '';
         this.textMessage = '';
         this.textDurationMs = '';
@@ -230,7 +219,6 @@ export class JournalDocumentComponent implements OnInit {
 
     private clearCounts() {
         this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickDocument = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT).columnClick;
         this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
         this.filter.countClickDocumentProcessStepType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_TYPE).columnClick;
         this.filter.countClickSuccess = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SUCCESS).columnClick;

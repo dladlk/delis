@@ -4,6 +4,7 @@ import dk.erst.delis.rest.data.request.param.DateRangeModel;
 
 import lombok.experimental.UtilityClass;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -16,6 +17,9 @@ import java.util.Date;
 
 @UtilityClass
 public class DateUtil {
+
+    public final SimpleDateFormat DATE_FORMAT_BY_DAY = new SimpleDateFormat("HH:mm");
+    public final SimpleDateFormat DATE_FORMAT_BY_CUSTOM_PERIOD = new SimpleDateFormat("MM.dd");
 
     public long rangeHoursDate(Date start, Date end) {
         Calendar between = Calendar.getInstance();
