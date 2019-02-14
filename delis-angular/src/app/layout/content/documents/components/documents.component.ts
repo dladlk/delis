@@ -30,6 +30,8 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.SenderName';
 })
 export class DocumentsComponent implements OnInit {
 
+    startDate: Date;
+
     selectedStatus: any;
     selectedLastError: any;
     selectedDocumentType: any;
@@ -95,6 +97,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     protected initDefaultValues() {
+        this.startDate = new Date();
         this.selectedStatus = "ALL";
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";

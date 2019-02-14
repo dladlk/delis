@@ -26,6 +26,8 @@ export class ChartDocumentComponent implements OnInit {
 
     customDate: Date[];
 
+    startDate: Date;
+
     constructor(
         private translate: TranslateService,
         private locale: LocaleService,
@@ -36,6 +38,7 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.startDate = new Date();
         this.lineChartLegend = false;
         this.lineChartOptions = {
             responsive: true
