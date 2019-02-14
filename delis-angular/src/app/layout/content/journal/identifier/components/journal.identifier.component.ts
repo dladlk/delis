@@ -40,7 +40,6 @@ export class JournalIdentifierComponent implements OnInit {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
-    startDate: Date;
 
     constructor(
         private journalIdentifierService: JournalIdentifierService,
@@ -78,7 +77,6 @@ export class JournalIdentifierComponent implements OnInit {
     }
 
     private initDefaultValues() {
-        this.startDate = new Date();
         this.selectedOrganization = "ALL";
         this.filter = new JournalIdentifierFilterProcessResultModel();
         if (this.tableHeaderSortModels.length == 0) {

@@ -45,7 +45,6 @@ export class JournalDocumentComponent implements OnInit {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
-    startDate: Date;
 
     constructor(
         private journalDocumentService: JournalDocumentService,
@@ -86,7 +85,6 @@ export class JournalDocumentComponent implements OnInit {
     }
 
     private initDefaultValues() {
-        this.startDate = new Date();
         this.selectedType = "ALL";
         this.selectedOrganization = "ALL";
         this.selectedSuccess = {type: 'ALL', selected: true};

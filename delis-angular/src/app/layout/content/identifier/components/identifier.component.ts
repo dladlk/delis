@@ -51,8 +51,6 @@ export class IdentifierComponent {
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
-    startDate: Date;
-
     constructor(private translate: TranslateService,
                 private locale: LocaleService,
                 private errorService: ErrorService,
@@ -92,7 +90,6 @@ export class IdentifierComponent {
     }
 
     private initDefaultValues() {
-        this.startDate = new Date();
         this.selectedStatus = "ALL";
         this.selectedOrganization = "ALL";
         this.selectedPublishingStatus = {type: 'ALL', selected: true};
