@@ -2,10 +2,9 @@ package dk.erst.delis.rest.controller.content.journal;
 
 import dk.erst.delis.service.content.journal.identifier.JournalIdentifierService;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import javax.validation.constraints.Min;
  * @author funtusthan, created by 14.01.19
  */
 
-@Slf4j
+@Validated
 @RestController
 @RequestMapping("/rest/journal/identifier")
 public class JournalIdentifierController {
@@ -36,7 +35,7 @@ public class JournalIdentifierController {
     }
 
     @GetMapping("/one/{identifierId}")
-    public ResponseEntity getByIdentifier(@PathVariable long identifierId, WebRequest webRequest) {
+    public ResponseEntity getByIdentifier(@PathVariable @Min(1) long identifierId, WebRequest webRequest) {
         return ResponseEntity.ok(journalIdentifierService.getByIdentifier(webRequest, identifierId));
     }
 
