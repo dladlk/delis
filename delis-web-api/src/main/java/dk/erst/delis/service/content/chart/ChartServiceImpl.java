@@ -1,7 +1,6 @@
 package dk.erst.delis.service.content.chart;
 
 import dk.erst.delis.persistence.repository.document.DocumentRepository;
-import dk.erst.delis.rest.data.request.param.DateRangeModel;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;
 import dk.erst.delis.util.DateUtil;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -20,9 +18,6 @@ import java.util.*;
 
 @Service
 public class ChartServiceImpl implements ChartService {
-
-    private static final int DEFAULT_INTERVAL_OF_MINUTES = 10;
-    private static final int DEFAULT_INTERVAL_OF_HOUR = 1;
 
     private final DocumentRepository documentRepository;
 
@@ -34,95 +29,69 @@ public class ChartServiceImpl implements ChartService {
     @Override
     @Transactional(readOnly = true)
     public ChartData generateChartData(WebRequest request) {
-
         Date start = null, end = null;
-        int period, interval;
-
         String endDateParameter = request.getParameter("endDate");
         if (Objects.nonNull(endDateParameter)) {
-            end = new Date(Long.parseLong(endDateParameter));
+            end = DateUtil.generateEndOfDay(new Date(Long.parseLong(endDateParameter)));
         }
         String startDateParameter = request.getParameter("startDate");
         if (Objects.nonNull(startDateParameter)) {
-            start = new Date(Long.parseLong(startDateParameter));
+            start = DateUtil.generateBeginningOfDay(new Date(Long.parseLong(startDateParameter)));
         }
-
-        String periodParameter = request.getParameter("period");
-        String intervalParameter = request.getParameter("interval");
-        if (Objects.nonNull(periodParameter) && Objects.nonNull(intervalParameter)) {
-            period = Integer.parseInt(periodParameter);
-            interval = Integer.parseInt(intervalParameter);
-        } else {
-            period = Calendar.MINUTE;
-            interval = DEFAULT_INTERVAL_OF_MINUTES;
-        }
-
         if (Objects.isNull(start) && Objects.isNull(end)) {
-//            return generateChartDataFromBeginningDayToNow();
-            return generateDefaultChartData();
+            return generateDefaultChartData(new Date());
+        } else {
+            return generateCustomChartData(start, end);
         }
-
-        return new ChartData();
     }
 
-    private ChartData generateChartDataFromBeginningDayToNow() {
-
-
+    private ChartData generateCustomChartData(Date start, Date end) {
         ChartData chartData = new ChartData();
         List<LineChartData> lineChartData = new ArrayList<>();
         List<String> lineChartLabels = new ArrayList<>();
-
         LineChartData lineChartDataContent = new LineChartData();
-        lineChartDataContent.setLabel("chart data from beginning day to now by interval of 10 minutes");
-        List<Long> dataGraph = new ArrayList<>();
-
-        Date start = DateUtil.generateBeginningOfDay();
-
-        int hoursRange = (int) DateUtil.rangeHoursDate(start) / 60;
-        int[] hours = new int[hoursRange];
-        for (int h = 24, i = 0 ; i < hoursRange ; h--, i++) {
-            hours[i] = h;
-            System.out.println("#: " + (i + 1) + ", hour = " + h);
+        long days = DateUtil.rangeHoursDate(start, end) / 60;
+        if (days > 24) {
+            days /= 24;
+            lineChartDataContent.setLabel("chart data custom");
+            List<Long> dataGraph = new ArrayList<>();
+            end = DateUtil.addDay(start, 1);
+            for (int d = 0 ; d <= days ; ++d) {
+                lineChartLabels.add(DateUtil.DATE_FORMAT_BY_CUSTOM_PERIOD.format(start));
+                dataGraph.add(documentRepository.countByCreateTimeBetween(start, end));
+                start = new Date(end.getTime());
+                end = DateUtil.addDay(start, 1);
+            }
+            lineChartDataContent.setData(dataGraph);
+            lineChartData.add(lineChartDataContent);
+            chartData.setLineChartData(lineChartData);
+            chartData.setLineChartLabels(lineChartLabels);
+            return chartData;
+        } else {
+            return generateDefaultChartData(start);
         }
-        for (int hour : hours) {
-            DateRangeModel dateRange = DateUtil.generateDateRangeByFromAndToLastHour(Calendar.HOUR, hour, DEFAULT_INTERVAL_OF_HOUR);
-            lineChartLabels.add(String.valueOf(dateRange.getStart()));
-            dataGraph.add(documentRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
-        }
-        lineChartDataContent.setData(dataGraph);
-        lineChartData.add(lineChartDataContent);
-
-        chartData.setLineChartData(lineChartData);
-        chartData.setLineChartLabels(lineChartLabels);
-
-        return chartData;
     }
 
-    private ChartData generateDefaultChartData() {
-        Date start = DateUtil.generateBeginningOfDay();
+    private ChartData generateDefaultChartData(Date date) {
+        ChartData chartData = new ChartData();
+        List<LineChartData> lineChartData = new ArrayList<>();
+        List<String> lineChartLabels = new ArrayList<>();
+        LineChartData lineChartDataContent = new LineChartData();
+        Date start = DateUtil.generateBeginningOfDay(date);
         Date end = DateUtil.addHour(start, 1);
-        long hours = DateUtil.rangeHoursDate(start) / 60;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-
-        ChartData chartData = new ChartData();
-        List<LineChartData> lineChartData = new ArrayList<>();
-        List<String> lineChartLabels = new ArrayList<>();
-
-        LineChartData lineChartDataContent = new LineChartData();
-        lineChartDataContent.setLabel("chart data by today by interval of 1 hour");
+        long hours = DateUtil.rangeHoursDate(start, new Date()) / 60;
+        lineChartDataContent.setLabel("chart data default");
         List<Long> dataGraph = new ArrayList<>();
         for (int h = 0 ; h <= hours ; ++h) {
-            lineChartLabels.add(dateFormat.format(start));
+            lineChartLabels.add(DateUtil.DATE_FORMAT_BY_DAY.format(start));
             dataGraph.add(documentRepository.countByCreateTimeBetween(start, end));
             start = new Date(end.getTime());
             end = DateUtil.addHour(start, 1);
         }
         lineChartDataContent.setData(dataGraph);
         lineChartData.add(lineChartDataContent);
-
         chartData.setLineChartData(lineChartData);
         chartData.setLineChartLabels(lineChartLabels);
-
         return chartData;
     }
 }

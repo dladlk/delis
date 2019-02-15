@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -32,7 +33,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private static Set<String> getIgnorePaths() {
         Set<String> ignorePaths = new HashSet<>();
         ignorePaths.add("/rest/security/signin");
-        ignorePaths.add("/rest/table-info");
+        ignorePaths.add("/rest/table-info/enums");
+        ignorePaths.add("/rest/table-info/organizations");
         return ignorePaths;
     }
 
@@ -67,7 +69,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     "invalid authentication token");
             return;
         }
-        if (DateUtil.rangeHoursDate(data.getExpired()) > ONE_HOURS) {
+        if (DateUtil.rangeHoursDate(data.getExpired(), new Date()) > ONE_HOURS) {
             log.warn("Authorization token is expired. path " + path + " token: " + token);
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Authorization token is expired");

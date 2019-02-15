@@ -37,8 +37,8 @@ export class IdentifierComponent {
     tableHeaderSortModels: TableHeaderSortModel[] = [];
     statusList: [];
     publishingStatusList: [];
+    organizations: [];
 
-    textOrganisation: string;
     textIdentifierGroup: string;
     textType: string;
     textValue: string;
@@ -47,6 +47,7 @@ export class IdentifierComponent {
 
     selectedStatus: any;
     selectedPublishingStatus: any;
+    selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
@@ -84,10 +85,13 @@ export class IdentifierComponent {
         let select = JSON.parse(localStorage.getItem("Identifier"));
         this.statusList = select.status;
         this.publishingStatusList = select.publishingStatus;
+        select = JSON.parse(localStorage.getItem("organizations"));
+        this.organizations = select;
     }
 
     private initDefaultValues() {
         this.selectedStatus = "ALL";
+        this.selectedOrganization = "ALL";
         this.selectedPublishingStatus = {type: 'ALL', selected: true};
         this.filter = new IdentifierFilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
@@ -147,12 +151,11 @@ export class IdentifierComponent {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -247,7 +250,7 @@ export class IdentifierComponent {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
         this.selectedStatus = "ALL";
         this.selectedPublishingStatus = "ALL";
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textIdentifierGroup = '';
         this.textType = '';
         this.textValue = '';
