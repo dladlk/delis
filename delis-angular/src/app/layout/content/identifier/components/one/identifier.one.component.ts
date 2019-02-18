@@ -14,11 +14,11 @@ import { TableHeaderSortModel } from "../../../../bs-component/components/table-
 import { JournalIdentifierFilterProcessResultModel } from "../../../journal/identifier/models/journal.identifier.filter.process.result.model";
 import { JournalIdentifierModel } from "../../../journal/identifier/models/journal.identifier.model";
 
-const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.Organisation';
-const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.Identifier';
-const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.Message';
-const COLUMN_NAME_DURATIOM_MS = 'journal.identifier.table.columnName.DurationMs';
-const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.CreateTime';
+const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.organisation';
+const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.identifier';
+const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.message';
+const COLUMN_NAME_DURATIOM_MS = 'journal.identifier.table.columnName.durationMs';
+const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime';
 
 @Component({
     selector: 'app-identifiers-one',
@@ -97,11 +97,19 @@ export class IdentifierOneComponent {
         }
     }
 
-    private clickProcess(columnName: string) {
+    clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
+        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        if (countClick === 1) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
+        }
+        if (countClick === 2) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Desc';
+        }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+            this.filter.sortBy = 'orderBy_Id_Asc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -121,19 +129,9 @@ export class IdentifierOneComponent {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.clearCounts();
     }
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.clearCounts();
-    }
-
-    private clearCounts() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickIdentifier = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_IDENTIFIER).columnClick;
-        this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
-        this.filter.countClickMessage = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_MESSAGE).columnClick;
-        this.filter.countClickDurationMs = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DURATIOM_MS).columnClick;
     }
 }

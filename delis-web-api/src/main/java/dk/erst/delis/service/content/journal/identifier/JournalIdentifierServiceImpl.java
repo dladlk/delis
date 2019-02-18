@@ -5,9 +5,7 @@ import dk.erst.delis.persistence.repository.journal.identifier.JournalIdentifier
 import dk.erst.delis.rest.data.response.ListContainer;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
-import dk.erst.delis.util.WebRequestUtil;
-
-import org.apache.commons.lang3.StringUtils;
+import dk.erst.delis.util.ClassLoaderUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -56,20 +54,14 @@ public class JournalIdentifierServiceImpl implements JournalIdentifierService {
         if (collectionSize == 0) {
             return new ListContainer<>(Collections.emptyList());
         }
-        String sort = WebRequestUtil.existSortParameter(webRequest);
-        if (StringUtils.isNotBlank(sort)) {
-            List<Field> fields = new ArrayList<>();
-            fields.addAll(Arrays.asList(JournalIdentifier.class.getDeclaredFields()));
-            fields.addAll(Arrays.asList(JournalIdentifier.class.getSuperclass().getDeclaredFields()));
-            for ( Field field : fields ) {
-                if (Modifier.isPrivate(field.getModifiers())) {
-                    if (sort.toUpperCase().endsWith(field.getName().toUpperCase())) {
-                        int count = Integer.parseInt(Objects.requireNonNull(webRequest.getParameter(sort)));
-                        if (count == 1) {
-                            return new ListContainer<>(journalIdentifierRepository.findAllByIdentifierId(identifierId, Sort.by(field.getName()).descending()));
-                        } else if (count == 2) {
-                            return new ListContainer<>(journalIdentifierRepository.findAllByIdentifierId(identifierId, Sort.by(field.getName()).ascending()));
-                        }
+        String[] strings = Objects.requireNonNull(webRequest.getParameter("sort")).split("_");
+        for ( Field field : ClassLoaderUtil.getAllFieldsByEntity(JournalIdentifier.class) ) {
+            if (Modifier.isPrivate(field.getModifiers())) {
+                if (Objects.equals(strings[1].toUpperCase(), field.getName().toUpperCase())) {
+                    if (Objects.equals(strings[2], "Asc")) {
+                        return new ListContainer<>(journalIdentifierRepository.findAllByIdentifierId(identifierId, Sort.by(field.getName()).ascending()));
+                    } else {
+                        return new ListContainer<>(journalIdentifierRepository.findAllByIdentifierId(identifierId, Sort.by(field.getName()).descending()));
                     }
                 }
             }

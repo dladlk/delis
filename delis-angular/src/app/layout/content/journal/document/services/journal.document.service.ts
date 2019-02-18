@@ -19,10 +19,11 @@ export class JournalDocumentService {
 
     getListJournalDocuments(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {
 
-        let params = JournalDocumentService.generateParams(filter);
+        let params = new HttpParams();
 
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
+        params = params.append('sort', filter.sortBy);
 
         if (filter.organisation !== null) {
             params = params.append('organisation', filter.organisation);
@@ -54,23 +55,12 @@ export class JournalDocumentService {
     }
 
     getAllByDocumentId(documentId: any, filter: JournalDocumentFilterProcessResult) : Observable<any> {
-        let params = JournalDocumentService.generateParams(filter);
+        let params = new HttpParams();
+        params = params.append('sort', filter.sortBy);
         return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 
     getByJournalDocumentDocumentId(documentId: any) : Observable<any> {
         return this.httpRestService.methodGetOneById(this.url + '/one/error', null, this.tokenService.getToken(), documentId);
-    }
-
-    private static generateParams(filter: JournalDocumentFilterProcessResult) : HttpParams {
-        let params = new HttpParams();
-        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
-        params = params.append('countClickDocument', String(filter.countClickDocument));
-        params = params.append('countClickCreateTime', String(filter.countClickCreateTime));
-        params = params.append('countClickType', String(filter.countClickDocumentProcessStepType));
-        params = params.append('countClickSuccess', String(filter.countClickSuccess));
-        params = params.append('countClickMessage', String(filter.countClickMessage));
-        params = params.append('countClickDurationMs', String(filter.countClickDurationMs));
-        return params;
     }
 }

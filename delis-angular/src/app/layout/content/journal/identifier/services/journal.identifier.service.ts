@@ -20,9 +20,10 @@ export class JournalIdentifierService {
 
     getListJournalIdentifiers(currentPage: number, sizeElement: number, filter: JournalIdentifierFilterProcessResultModel) : Observable<any> {
 
-        let params = JournalIdentifierService.generateParams(filter);
+        let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
+        params = params.append('sort', filter.sortBy);
 
         if (filter.organisation !== null) {
             params = params.append('organisation', filter.organisation);
@@ -48,17 +49,8 @@ export class JournalIdentifierService {
     }
 
     getAllByIdentifierId(identifierId: any, filter: JournalIdentifierFilterProcessResultModel) : Observable<any> {
-        let params = JournalIdentifierService.generateParams(filter);
-        return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), identifierId);
-    }
-
-    private static generateParams(filter: JournalIdentifierFilterProcessResultModel) : HttpParams {
         let params = new HttpParams();
-        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
-        params = params.append('countClickIdentifier', String(filter.countClickIdentifier));
-        params = params.append('countClickCreateTime', String(filter.countClickCreateTime));
-        params = params.append('countClickMessage', String(filter.countClickMessage));
-        params = params.append('countClickDurationMs', String(filter.countClickDurationMs));
-        return params;
+        params = params.append('sort', filter.sortBy);
+        return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), identifierId);
     }
 }

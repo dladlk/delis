@@ -14,12 +14,12 @@ import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
-const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.Organisation';
-const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.Success';
-const COLUMN_NAME_TYPE = 'journal.documents.table.columnName.Type';
-const COLUMN_NAME_MESSAGE = 'journal.documents.table.columnName.Message';
-const COLUMN_NAME_DURATIOM_MS = 'journal.documents.table.columnName.DurationMs';
-const COLUMN_NAME_CREATE_TIME = 'journal.documents.table.columnName.CreateTime';
+const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.organisation';
+const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.success';
+const COLUMN_NAME_TYPE = 'journal.documents.table.columnName.type';
+const COLUMN_NAME_MESSAGE = 'journal.documents.table.columnName.message';
+const COLUMN_NAME_DURATIOM_MS = 'journal.documents.table.columnName.durationMs';
+const COLUMN_NAME_CREATE_TIME = 'journal.documents.table.columnName.createTime';
 
 @Component({
     selector: 'app-journal-documents',
@@ -174,11 +174,19 @@ export class JournalDocumentComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    private clickProcess(columnName: string) {
+    clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
+        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        if (countClick === 1) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
+        }
+        if (countClick === 2) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Desc';
+        }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+            this.filter.sortBy = 'orderBy_Id_Asc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -209,20 +217,9 @@ export class JournalDocumentComponent implements OnInit {
         this.textDocument = '';
         this.textMessage = '';
         this.textDurationMs = '';
-        this.clearCounts();
     }
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.clearCounts();
-    }
-
-    private clearCounts() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
-        this.filter.countClickDocumentProcessStepType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_TYPE).columnClick;
-        this.filter.countClickSuccess = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SUCCESS).columnClick;
-        this.filter.countClickMessage = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_MESSAGE).columnClick;
-        this.filter.countClickDurationMs = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DURATIOM_MS).columnClick;
     }
 }

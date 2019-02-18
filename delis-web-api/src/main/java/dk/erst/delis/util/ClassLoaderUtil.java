@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -54,6 +55,14 @@ public class ClassLoaderUtil {
 
     public String generateEntityByFullNameClass(Class entityName) {
         return Arrays.stream(entityName.getName().split("\\.")).reduce((first, last) -> last).orElse(null);
+    }
+
+    public List<Field> getAllFieldsByEntity(Class entityClass) {
+        List<Field> fields = new ArrayList<>();
+        fields.addAll(Arrays.asList(entityClass.getDeclaredFields()));
+        fields.addAll(Arrays.asList(entityClass.getSuperclass().getDeclaredFields()));
+        fields.addAll(Arrays.asList(entityClass.getSuperclass().getSuperclass().getDeclaredFields()));
+        return fields;
     }
 
     public Class findRepositoryByEntityMapper(String entityClass, ListableBeanFactory listableBeanFactory) {

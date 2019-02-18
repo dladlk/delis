@@ -10,17 +10,7 @@ export class FilterProcessResult {
     documentType: string;
     senderName: string;
     dateReceived: DateRangeModel;
-
-    countClickOrganisation: number;
-    countClickReceiver: number;
-    countClickStatus: number;
-    countClickLastError: number;
-    countClickDocumentType: number;
-    countClickIngoingFormat: number;
-    countClickReceived: number;
-    countClickIssued: number;
-    countClickSenderName: number;
-    countClickReceiverName: number;
+    sortBy: string;
 
     constructor() {
         this.status = 'ALL';
@@ -31,15 +21,6 @@ export class FilterProcessResult {
         this.documentType = 'ALL';
         this.senderName = null;
         this.dateReceived = null;
-        this.countClickOrganisation = 0;
-        this.countClickReceiver = 0;
-        this.countClickStatus = 0;
-        this.countClickLastError = 0;
-        this.countClickDocumentType = 0;
-        this.countClickIngoingFormat = 0;
-        this.countClickReceived = 0;
-        this.countClickIssued = 0;
-        this.countClickSenderName = 0;
-        this.countClickReceiverName = 0
+        this.sortBy = 'orderBy_Id_Asc';
     }
 }
