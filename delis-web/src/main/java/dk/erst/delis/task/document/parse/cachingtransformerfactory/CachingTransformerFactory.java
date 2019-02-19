@@ -7,6 +7,7 @@ import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
 
 import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 public class CachingTransformerFactory extends TransformerFactory {
@@ -17,11 +18,11 @@ public class CachingTransformerFactory extends TransformerFactory {
 
     private final TransformerFactory delegate;
 
-    private final LoadingCache<StreamSourceWrapper, Templates> templateCache;
+    private final LoadingCache<SourceWrapper, Templates> templateCache;
 
-    private final CacheLoader<StreamSourceWrapper, Templates> cacheLoader = new CacheLoader<StreamSourceWrapper, Templates>() {
+    private final CacheLoader<SourceWrapper, Templates> cacheLoader = new CacheLoader<SourceWrapper, Templates>() {
         @Override
-        public Templates load(StreamSourceWrapper streamSource) throws Exception {
+        public Templates load(SourceWrapper streamSource) throws Exception {
             return delegate.newTemplates(streamSource.getDelegate());
         }
     };
@@ -72,11 +73,11 @@ public class CachingTransformerFactory extends TransformerFactory {
 
     @Override
     public Templates newTemplates(Source source) throws TransformerConfigurationException {
-        if (source instanceof StreamSource) {
-            StreamSourceWrapper streamSourceWrapper = new StreamSourceWrapper((StreamSource) source);
+        if (source instanceof StreamSource || source instanceof DOMSource) {
+            SourceWrapper sourceWrapper = new SourceWrapper(source);
 
-            if (streamSourceWrapper.isCacheable()) {
-                return templateCache.getUnchecked(streamSourceWrapper);
+            if (sourceWrapper.isCacheable()) {
+                return templateCache.getUnchecked(sourceWrapper);
             }
         }
         return delegate.newTemplates(source);

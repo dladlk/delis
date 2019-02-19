@@ -90,6 +90,12 @@
 		    <scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>failureaccess</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
 		
 		<!-- Adds namespace xmlns:sec="http://www.thymeleaf.org/extras/spring-security" -->
 		<dependency>

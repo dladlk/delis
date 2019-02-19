@@ -152,9 +152,10 @@ public class DocumentValidationTransformationService {
 					break;
 				case SCHEMATRON:
 					SchematronValidator schValidator = new SchematronValidator();
-					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(ruleService.filePath(ruleDocumentValidation).toFile())) {
+					Path xslFilePath = ruleService.filePath(ruleDocumentValidation);
+					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(xslFilePath.toFile())) {
 						ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
-						List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector);
+						List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector, xslFilePath);
 						step.setSuccess(errorList.isEmpty());
 						step.setErrorRecords(errorList);
 						if (!errorList.isEmpty()) {

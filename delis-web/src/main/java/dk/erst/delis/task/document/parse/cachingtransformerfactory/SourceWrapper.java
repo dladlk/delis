@@ -2,13 +2,13 @@ package dk.erst.delis.task.document.parse.cachingtransformerfactory;
 
 import com.google.common.base.Strings;
 
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
 
-class StreamSourceWrapper {
+class SourceWrapper {
 
-    private final StreamSource delegate;
+    private final Source delegate;
 
-    StreamSourceWrapper(StreamSource delegate) {
+    SourceWrapper(Source delegate) {
         this.delegate = delegate;
     }
 
@@ -27,11 +27,11 @@ class StreamSourceWrapper {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof StreamSourceWrapper)) {
+        if (!(other instanceof SourceWrapper)) {
             return false;
         }
 
-        StreamSourceWrapper otherWrapper = (StreamSourceWrapper) other;
+        SourceWrapper otherWrapper = (SourceWrapper) other;
         if (isCacheable() && otherWrapper.isCacheable()) {
             return getDelegate().getSystemId().equals(otherWrapper.getDelegate().getSystemId());
         } else {
@@ -39,7 +39,7 @@ class StreamSourceWrapper {
         }
     }
 
-    public StreamSource getDelegate() {
+    public Source getDelegate() {
         return delegate;
     }
 }
