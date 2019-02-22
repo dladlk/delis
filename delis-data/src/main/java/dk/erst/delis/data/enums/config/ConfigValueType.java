@@ -18,6 +18,8 @@ public enum ConfigValueType {
 
 	ENDPOINT_PASSWORD("config.smp.password", "changeit"),
 
+	XSLT_CACHE_ENABLED("config.xslt.cache.enabled", "true"),
+
 	ENDPOINT_FORMAT("config.smp.format", "OASIS");
 
 	private final String key;

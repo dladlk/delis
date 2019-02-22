@@ -1,6 +1,6 @@
 package dk.erst.delis.task.document.parse;
 
-import dk.erst.delis.task.document.parse.cachingtransformerfactory.SingletonCachingTransformerFactory;
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.DelisTransformerFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.StandardErrorListener;
@@ -27,7 +27,7 @@ public class XSLTUtil {
 		transformer.transform(new StreamSource(xmlStream), streamResult);
 	}
 
-	private static Transformer getTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
+	public static Transformer getTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
 		return buildTransformer(xslStream, xslFilePath);
 	}
 	
@@ -42,7 +42,7 @@ public class XSLTUtil {
 		StandardErrorListener listener = new StandardErrorListener();
 		listener.setRecoveryPolicy(Configuration.RECOVER_SILENTLY);
 
-		TransformerFactory transFact = SingletonCachingTransformerFactory.getInstance();
+		TransformerFactory transFact = DelisTransformerFactory.getInstance();
 		transFact.setErrorListener(listener);
 		DOMSource source = new DOMSource(xsltDocument);
 		

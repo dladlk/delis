@@ -1,12 +1,31 @@
 package dk.erst.delis.task.document.parse.cachingtransformerfactory;
 
+import dk.erst.delis.config.ConfigBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import javax.xml.transform.*;
 
-public final class SingletonCachingTransformerFactory extends TransformerFactory {
+@Component
+public final class DelisTransformerFactory extends TransformerFactory {
 
-    public static final CachingTransformerFactory INSTANCE = new CachingTransformerFactory();
+    private static ConfigBean configBean;
 
-    public static CachingTransformerFactory getInstance() {
+    private static TransformerFactory INSTANCE;
+
+    @Autowired
+    public DelisTransformerFactory(ConfigBean configBean) {
+        DelisTransformerFactory.configBean = configBean;
+    }
+
+    public static TransformerFactory getInstance() {
+        if(INSTANCE == null) {
+             if(configBean.getXsltCacheEnabled()) {
+                 INSTANCE = new CachingTransformerFactory();
+             } else {
+                 INSTANCE = TransformerFactory.newInstance();
+             }
+        }
         return INSTANCE;
     }
 
