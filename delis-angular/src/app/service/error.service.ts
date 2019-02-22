@@ -39,8 +39,6 @@ export class ErrorService {
     }
 
     logout() {
-        location.reload();
-        localStorage.removeItem('isLoggedin');
         this.tokenService.resetToken();
         this.configService.resetConfigUrl();
         this.configService.resetCurrentUser();
