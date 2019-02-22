@@ -1,6 +1,5 @@
 package dk.erst.delis.task.document.parse.cachingtransformerfactory;
 
-import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
@@ -12,9 +11,9 @@ import javax.xml.transform.stream.StreamSource;
 
 public class CachingTransformerFactory extends TransformerFactory {
 
-    private static final String DELEGATE_CLAZZ_PROPERTY = CachingTransformerFactory.class.getName() + ".delegate";
-    private static final String CACHE_SPEC_PROPERTY = CachingTransformerFactory.class.getName() + ".cache";
-    private static final String CACHE_STATS_PROPERTY = CachingTransformerFactory.class.getName() + ".stats";
+    private static final String delegateClassName = "net.sf.saxon.TransformerFactoryImpl";
+    private static final String cacheSpec = "initialCapacity=50,maximumSize=100";
+    private static final boolean cacheStats = true;
 
     private final TransformerFactory delegate;
 
@@ -29,29 +28,14 @@ public class CachingTransformerFactory extends TransformerFactory {
 
     public CachingTransformerFactory() {
         try {
-            String delegateClazz = System.getProperty(DELEGATE_CLAZZ_PROPERTY);
-            String cacheSpec = Strings.nullToEmpty(System.getProperty(CACHE_SPEC_PROPERTY));
-            boolean cacheStats = Boolean.parseBoolean(System.getProperty(CACHE_STATS_PROPERTY));
-
-            if (Strings.isNullOrEmpty(delegateClazz)) {
-                throw new IllegalArgumentException("System property is not set: " + DELEGATE_CLAZZ_PROPERTY);
-            }
-
-            TransformerFactory delegate = (TransformerFactory) Class.forName(delegateClazz).newInstance();
-
+            TransformerFactory delegate = (TransformerFactory) Class.forName(delegateClassName).newInstance();
             CacheBuilder cacheBuilder = CacheBuilder.from(cacheSpec);
-
             if(cacheStats) {
                 cacheBuilder.recordStats();
             }
-
             this.delegate = delegate;
             this.templateCache = cacheBuilder.build(cacheLoader);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException | ClassNotFoundException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

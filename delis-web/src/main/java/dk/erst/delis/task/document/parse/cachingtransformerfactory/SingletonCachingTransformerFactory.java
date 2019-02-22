@@ -12,7 +12,7 @@ public final class SingletonCachingTransformerFactory extends TransformerFactory
 
     @Override
     public Transformer newTransformer(Source source) throws TransformerConfigurationException {
-        return getInstance().newTransformer();
+        return getInstance().newTransformer(source);
     }
 
     @Override

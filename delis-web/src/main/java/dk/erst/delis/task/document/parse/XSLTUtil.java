@@ -1,8 +1,10 @@
 package dk.erst.delis.task.document.parse;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.SingletonCachingTransformerFactory;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.Configuration;
+import net.sf.saxon.lib.StandardErrorListener;
+import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,12 +13,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.w3c.dom.Document;
-
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.Configuration;
-import net.sf.saxon.lib.StandardErrorListener;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
 
 @Slf4j
 public class XSLTUtil {
@@ -43,7 +42,7 @@ public class XSLTUtil {
 		StandardErrorListener listener = new StandardErrorListener();
 		listener.setRecoveryPolicy(Configuration.RECOVER_SILENTLY);
 
-		TransformerFactory transFact = TransformerFactory.newInstance();
+		TransformerFactory transFact = SingletonCachingTransformerFactory.getInstance();
 		transFact.setErrorListener(listener);
 		DOMSource source = new DOMSource(xsltDocument);
 		
