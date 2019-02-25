@@ -54,9 +54,9 @@ export class JournalDocumentService {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 
-    getAllByDocumentId(documentId: any, filter: JournalDocumentFilterProcessResult) : Observable<any> {
+    getAllByDocumentId(documentId: any) : Observable<any> {
         let params = new HttpParams();
-        params = params.append('sort', filter.sortBy);
+        params = params.append('sort', 'orderBy_Id_Asc');
         return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 

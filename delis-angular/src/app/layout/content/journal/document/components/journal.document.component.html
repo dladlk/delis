@@ -70,8 +70,8 @@
                             <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
                                 <td>{{doc.organisation.name}}</td>
                                 <td>{{doc.type}}</td>
-                                <td *ngIf="doc.success"><img src="assets/images/success.png" /></td>
-                                <td *ngIf="!doc.success"><img src="assets/images/error.png" /></td>
+                                <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
+                                <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>
                                 <td>{{doc.message}}</td>
                                 <td>{{doc.durationMs}}</td>
                                 <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>

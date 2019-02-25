@@ -63,4 +63,8 @@ export class DocumentsService {
     getOneDocumentById(id: any) : Observable<any> {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
+
+    getListDocumentBytesByDocumentId(id: any) : Observable<any> {
+        return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
+    }
 }
