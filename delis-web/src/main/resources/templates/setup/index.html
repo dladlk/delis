@@ -8,21 +8,115 @@
 			Setup
 		</div>
 		<div class="card-body">
+
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
-					<th>Type</th>
+					<th>Configuration value</th>
+					<th>Property</th>
 					<th>Value</th>
-					<th>Created</th>
+					<th>Overwrite</th>
 				</tr>
-				<tr th:each="r,iter : ${configValueList}">
-					<td><a href="#" th:href="@{/setup/configvalue_edit/__${r.id}__}" th:text="${r.configValueType}"></a></td>
-					<td th:text="${r.value}"></td>
-					<td th:text="${r.createDate}"/>
+				<tr th:each="r,iStat : ${configValuesList}">
+					<td th:text="${r.description}"></td>
+					<td th:text="${r.key}"></td>
+					<td th:if="${r.key.contains('password')}">
+						<span>
+							<span th:attr="toggle='#passDiv' + ${iStat.index}, untoggle='#showDiv' + ${iStat.index}" class="fa fa-fw fa-eye field-icon toggle-div-password"></span>
+							<label th:text="'*****'" th:id="'passDiv' + ${iStat.index}" th:attr="hidden=false"/>
+							<label th:text="${r.value}" th:id="'showDiv' + ${iStat.index}" th:attr="hidden=true"/>
+		                </span>
+					</td>
+					<td th:unless="${r.key.contains('password')}" th:text="${r.value}"></td>
+					<td><a th:href="@{|/setup/config/edit/${r.typeName}|}" >Edit</a></td>
+				</tr>
+			</table>
+
+
+			<!--<table class="table table-striped table-bordered table-sm" th:if="${configValueList}">-->
+				<!--<tr>-->
+					<!--<th>Type</th>-->
+					<!--<th>Value</th>-->
+					<!--<th>Created</th>-->
+				<!--</tr>-->
+				<!--<tr th:each="r,iter : ${configValueList}">-->
+					<!--<td><a href="#" th:href="@{/setup/configvalue_edit/__${r.id}__}" th:text="${r.configValueType}"></a></td>-->
+					<!--<td th:text="${r.value}"></td>-->
+					<!--<td th:text="${r.createDate}"/>-->
+				<!--</tr>-->
+			<!--</table>-->
+		</div>
+		<div class="card-footer">
+			<a href="#" th:href="@{/setup/config/dbupdate}" class="btn btn-primary">Update from DB</a>
+		</div>
+	</div>
+	<div class="row">&nbsp;</div>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Validation Rules
+		</div>
+		<div class="card-body table-responsive">
+			<table class="table table-striped table-bordered table-sm">
+				<tr>
+					<th>id</th>
+					<th>active</th>
+					<th>priority</th>
+					<th>document format</th>
+					<th>validation type</th>
+					<th>path</th>
+					<th>config</th>
+					<th>update</th>
+					<th>delete</th>
+				</tr>
+				<tr th:each="validationRule,iter : ${validationRuleList}">
+					<td th:text="${validationRule.id}"></td>
+					<td th:text="${validationRule.active}"></td>
+					<td th:text="${validationRule.priority}"></td>
+					<td th:text="${validationRule.documentFormat}"></td>
+					<td th:text="${validationRule.validationType}"></td>
+					<td th:text="${validationRule.rootPath}"></td>
+					<td th:text="${validationRule.config}"></td>
+					<td><a href="#" th:href="@{|/validationrule/update/${validationRule.id}|}" th:text="update"></a></td>
+					<td><a href="#" th:href="@{|/validationrule/delete/${validationRule.id}|}" th:text="delete"></a></td>
 				</tr>
 			</table>
 		</div>
 		<div class="card-footer">
-			<a href="#" th:href="@{/setup/config/create}" class="btn btn-primary">Create new</a>
+			<a href="#" th:href="@{|/validationrule/create/0|}" class="btn btn-primary">Add</a>
+			<a href="#" th:href="@{|/validationrule/createdefault|}" class="btn btn-secondary">Reset to defaults</a>
+		</div>
+	</div>
+	<div class="row">&nbsp;</div>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Transformation Rules
+		</div>
+		<div class="card-body table-responsive">
+			<table class="table table-striped table-bordered table-sm">
+				<tr>
+					<th>id</th>
+					<th>active</th>
+					<th>format from</th>
+					<th>format to</th>
+					<th>path</th>
+					<th>config</th>
+					<th>update</th>
+					<th>delete</th>
+				</tr>
+				<tr th:each="transformationRule,iter : ${transformationRuleList}">
+					<td th:text="${transformationRule.id}"></td>
+					<td th:text="${transformationRule.active}"></td>
+					<td th:text="${transformationRule.documentFormatFamilyFrom}"></td>
+					<td th:text="${transformationRule.documentFormatFamilyTo}"></td>
+					<td th:text="${transformationRule.rootPath}"></td>
+					<td th:text="${transformationRule.config}"></td>
+					<td><a href="#" th:href="@{|/transformationrule/update/${transformationRule.id}|}" th:text="update"></a></td>
+					<td><a href="#" th:href="@{|/transformationrule/delete/${transformationRule.id}|}" th:text="delete"></a></td>
+				</tr>
+			</table>
+		</div>
+		<div class="card-footer">
+			<a href="#" th:href="@{|/transformationrule/create/0|}" class="btn btn-primary">Add</a>
+			<a href="#" th:href="@{|/transformationrule/createdefault|}" class="btn btn-secondary">Reset to defaults</a>
 		</div>
 	</div>
 </body>

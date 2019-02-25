@@ -16,7 +16,7 @@
     <artifactId>delis-web</artifactId>
     <version>1.0.0</version>
     
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 	
 	<name>Delis :: Web</name>
 
@@ -25,13 +25,27 @@
 	</properties>
 
     <dependencies>
-    	<!-- 
-        <dependency>
-            <groupId>dk.erst.delis</groupId>
-            <artifactId>delis-data</artifactId>
-            <version>${delis.version}</version>
-        </dependency>   
-    	 -->
+
+		<!-- DELIS-DATA -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-data</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
+		
+		<!-- DELIS-SBDH -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-sbdh</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
+
+		<!-- JAVAX-VALIDATION -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
      
 		<!-- Lombok -->
 		<dependency>
@@ -76,6 +90,12 @@
 		    <scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>failureaccess</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
 		
 		<!-- Adds namespace xmlns:sec="http://www.thymeleaf.org/extras/spring-security" -->
 		<dependency>
@@ -103,7 +123,37 @@
 	      <artifactId>Saxon-HE</artifactId>
 	      <version>9.9.0-2</version>
 	    </dependency>
-        
+
+		<dependency>
+			<groupId>no.difi.commons</groupId>
+			<artifactId>commons-bdx</artifactId>
+			<version>0.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>no.difi.commons</groupId>
+			<artifactId>commons-busdox</artifactId>
+			<version>0.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>no.difi.vefa</groupId>
+			<artifactId>peppol-common</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>no.difi.vefa</groupId>
+			<artifactId>peppol-lookup</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		</dependency>
+
     </dependencies>
     
     <build>

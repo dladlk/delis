@@ -2,27 +2,43 @@ package dk.erst.delis.task.document.load;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.dao.DocumentRepository;
-import dk.erst.delis.data.Document;
-import dk.erst.delis.data.DocumentStatus;
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.document.parse.data.DocumentSBDHeader;
+import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
+import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.peppol.sbdh.SbdReader;
+import no.difi.vefa.peppol.sbdh.SbdReader.Type;
+import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
 
 @Service
 @Slf4j
@@ -32,32 +48,53 @@ public class DocumentLoadService {
 
 	private static final String METADATA_XML = "metadata.xml";
 
-	private DocumentRepository documentRepository;
+	private DocumentDaoRepository documentDaoRepository;
+
+	private JournalDocumentDaoRepository journalDocumentDaoRepository;
 
 	private DocumentParseService documentParseService;
 
-	private ConfigBean config;
+	private DocumentBytesStorageService documentBytesStorageService;
+
+	private IdentifierResolverService identifierResolverService;
+
 
 	@Autowired
-	public DocumentLoadService(DocumentRepository documentRepository, DocumentParseService documentParseService, ConfigBean config) {
+	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, DocumentParseService documentParseService,
+			DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
 		super();
-		this.documentRepository = documentRepository;
+		this.documentDaoRepository = documentDaoRepository;
+		this.journalDocumentDaoRepository = journalDocumentDaoRepository;
 		this.documentParseService = documentParseService;
-		this.config = config;
+		this.documentBytesStorageService = documentBytesStorageService;
+		this.identifierResolverService = identifierResolverService;
 	}
 
-	public void loadFromInput() {
-		final Path inputFolderPath = config.getStorageInputPath();
+	public StatData loadFromInput(Path inputFolderPath) {
+		final StatData statData = new StatData();
 
 		try {
 			Files.walkFileTree(inputFolderPath, new SimpleFileVisitor<Path>() {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					if (attrs.isRegularFile()) {
-						Path fileName = file.getFileName();
+						String fileName = file.getFileName().toString();
 						if (fileName.endsWith(".xml") && !fileName.startsWith(METADATA_XML)) {
-							loadFile(file);
+							Document d = loadFile(file);
+							statData.increment(d == null ? null : d.getDocumentStatus().name());
 						}
+					}
+					return FileVisitResult.CONTINUE;
+				}
+				
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) {
+					if (exc instanceof NoSuchFileException) {
+						/*
+						 * Skip NoSuchFileException - metadata.xml is moved before we scanned it
+						 */
+					} else {
+						log.error("Failed to process file "+file, exc);
 					}
 					return FileVisitResult.CONTINUE;
 				}
@@ -65,13 +102,17 @@ public class DocumentLoadService {
 		} catch (IOException e) {
 			log.error("Failed to scan folder " + inputFolderPath, e);
 		}
+
+		return statData;
 	}
 
-	protected Document loadFile(Path xmlFilePath) {
+	public Document loadFile(Path xmlFilePath) {
 		long start = System.currentTimeMillis();
 		log.info("Loading file " + xmlFilePath);
 		try {
+			Date createTime = Calendar.getInstance().getTime();
 			File file = xmlFilePath.toFile();
+			String originalFileName = file.getName();
 			Path xmlFileParentPath = xmlFilePath.getParent();
 			if (!file.exists()) {
 				log.error("File " + xmlFilePath + " does not exist");
@@ -82,24 +123,78 @@ public class DocumentLoadService {
 				log.warn("Cannot rename file " + xmlFilePath + " before loading, skip it");
 				return null;
 			} else {
-				log.info("Renamed file "+file+" to .load before processing");
+				log.info("Renamed file " + file + " to .load before processing");
 				file = fileLoad;
 			}
 
+			File fileSbd = null;
+
 			DocumentInfo info = parseDocumentInfo(file);
+			if (info != null && "StandardBusinessDocument".equals(info.getRoot().getRootTag())) {
+				log.info("Root tag is SBD: " + info.getRoot());
+				try (SbdReader sbdReader = SbdReader.newInstance(new FileInputStream(file))) {
+					Type type = sbdReader.getType();
+					log.info("SbdReader defined type as " + type);
+
+					DocumentSBDHeader documentSBDHeader = new DocumentSBDHeader(sbdReader.getHeader());
+					
+					fileSbd = file;
+					file = Paths.get(xmlFilePath.toString() + ".load_sbdh_payload").toFile();
+
+					log.info("Save payload to "+file);
+					try (FileOutputStream fos = new FileOutputStream(file)) {
+						switch (type) {
+						case XML:
+							XMLStreamUtils.copy(sbdReader.xmlReader(), fos);
+							break;
+						case BINARY:
+							StreamUtils.copy(sbdReader.binaryReader(), fos);
+							break;
+						case TEXT:
+							StreamUtils.copy(sbdReader.textReader(), fos);
+							break;
+						}
+					}
+					info = parseDocumentInfo(file);
+					info.setSbdh(documentSBDHeader);
+				} catch (Exception e) {
+					log.error("Failed to read SBDH and extract payload from " + file, e);
+				}
+			}
 
 			File metadataFilePath = findMetadataFile(xmlFileParentPath);
 			String messageId = parseMessageId(xmlFileParentPath, metadataFilePath, info);
 
 			Document document = buildDocument(info, messageId);
 
-			String destSubPath = moveToLoaded(file, metadataFilePath, document);
-			if (destSubPath == null) {
-				return null;
+			Identifier identifier = null;
+			if (info.getReceiver() != null) {
+				identifier = identifierResolverService.resolve(info.getReceiver().getSchemeId(), info.getReceiver().getId());
 			}
-			
-			document.setIngoingRelativePath(destSubPath);
-			documentRepository.save(document);
+			if (identifier != null) {
+				document.setReceiverIdentifier(identifier);
+				document.setOrganisation(identifier.getOrganisation());
+			}
+
+			if (document.getReceiverIdentifier() == null) {
+				document.setDocumentStatus(DocumentStatus.UNKNOWN_RECEIVER);
+			}
+
+			document.setName(originalFileName);
+			documentDaoRepository.save(document);
+
+			moveToLoaded(file, metadataFilePath, fileSbd, document);
+
+			JournalDocument jd = new JournalDocument();
+			jd.setDocument(document);
+			jd.setOrganisation(document.getOrganisation());
+			jd.setCreateTime(createTime);
+			jd.setDurationMs(System.currentTimeMillis() - start);
+			jd.setType(DocumentProcessStepType.LOAD);
+			jd.setMessage("Load from " + xmlFilePath);
+			jd.setSuccess(true);
+
+			journalDocumentDaoRepository.save(jd);
 
 			return document;
 
@@ -108,56 +203,8 @@ public class DocumentLoadService {
 		}
 	}
 
-	private String moveToLoaded(File file, File metadataFile, Document document) {
-		String destSubPath = buildDestSubPath(document);
-
-		Path destRoot = config.getStorageLoadedPath();
-		if (document.getDocumentStatus().isLoadFailed()) {
-			destRoot = config.getStorageFailedPath();
-		}
-
-		Path destPath = destRoot.resolve(destSubPath);
-
-		File destParentFolder = destPath.getParent().toFile();
-		if (!destParentFolder.exists()) {
-			if (!destParentFolder.mkdirs()) {
-				log.error("Cannot create parent folders for "+destParentFolder);
-				return null;
-			}
-		}
-		try {
-			Files.move(file.toPath(), destPath);
-		} catch (IOException e) {
-			log.error("Failed to move file " + file + " after parsing to " + destPath + ", skip it");
-			return null;
-		}
-
-		if (metadataFile != null) {
-			Path metadataDestPath = destPath.resolveSibling(destSubPath + "_metadata.xml");
-			try {
-				Files.move(metadataFile.toPath(), metadataDestPath);
-			} catch (IOException e) {
-				log.error("Failed to move metadafile " + file + " after parsing to " + metadataDestPath + ", skip it");
-			}
-		}
-		return destSubPath;
-	}
-
-	private String buildDestSubPath(Document document) {
-		String timestamp = new SimpleDateFormat(TIMESTAMP_FORMAT).format(Calendar.getInstance().getTime());
-		StringBuilder sb = new StringBuilder();
-		sb.append(timestamp);
-		sb.append("_");
-		sb.append(document.getIngoingDocumentFormat());
-		sb.append(".xml");
-		return sb.toString();
-	}
-
 	private Document buildDocument(DocumentInfo info, String messageId) {
 		Document document = new Document();
-
-		document.setOrganisation(null);
-		document.setReceiverIdentifier(null);
 
 		if (info != null) {
 			document.setDocumentDate(info.getDate());
@@ -172,7 +219,9 @@ public class DocumentLoadService {
 				document.setSenderCountry(info.getSender().getCountry());
 				document.setSenderName(info.getSender().getName());
 			}
-			document.setIngoingDocumentFormat(documentParseService.defineDocumentFormat(info));
+			DocumentFormat documentFormat = documentParseService.defineDocumentFormat(info);
+			document.setIngoingDocumentFormat(documentFormat);
+			document.setDocumentType(documentFormat.getDocumentType());
 
 			if (!document.getIngoingDocumentFormat().isUnsupported()) {
 				document.setDocumentStatus(DocumentStatus.LOAD_OK);
@@ -190,7 +239,7 @@ public class DocumentLoadService {
 		try {
 			is = new FileInputStream(file);
 			header = documentParseService.parseDocumentInfo(is);
-			log.info("Parsed "+header);
+			log.info("Parsed " + header);
 		} catch (Exception e) {
 			log.error("Failed to parse document info on file " + file, e);
 		} finally {
@@ -216,6 +265,40 @@ public class DocumentLoadService {
 			return null;
 		}
 		return metadataFile.toFile();
+	}
+
+	private void moveToLoaded(File file, File metadataFile, File fileSbd, Document document) {
+		try (InputStream is = Files.newInputStream(file.toPath())) {
+			boolean saved = documentBytesStorageService.save(document, DocumentBytesType.IN, file.length(), is);
+			if (!saved) {
+				return;
+			}
+		} catch (IOException e) {
+			log.error("Failed to save loaded file " + file, e);
+			return;
+		}
+		
+		file.delete();
+
+		if (metadataFile != null) {
+			try (InputStream is = Files.newInputStream(metadataFile.toPath())) {
+				documentBytesStorageService.save(document, DocumentBytesType.IN_AS4, metadataFile.length(), is);
+			} catch (IOException e) {
+				log.error("Failed to save metadata file " + metadataFile, e);
+			}
+			
+			metadataFile.delete();
+		}
+
+		if (fileSbd != null) {
+			try (InputStream is = Files.newInputStream(fileSbd.toPath())){
+				documentBytesStorageService.save(document, DocumentBytesType.IN_SBD, fileSbd.length(), is);
+			} catch (IOException e) {
+				log.error("Failed to save SBD file " + fileSbd, e);
+			}
+			
+			fileSbd.delete();
+		}
 	}
 
 }

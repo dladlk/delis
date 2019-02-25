@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-delis-web-api'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: delis-web-api
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-delis-web-api'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-delis-web-api'
+    spec:
+      volumes:
+      - name: delis-resources
+        hostPath:
+          path: /data/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+      containers:
+      - image: delis-web-api:latest
+        imagePullPolicy: IfNotPresent
+        name: delis-web-api
+        env:
+          - name: SERVER_SERVLET_CONTEXT-PATH
+            value: /delis-web-api
+          - name: SERVER_PORT
+            value: "8080"
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
+        volumeMounts:
+        - mountPath: /delis-resources
+          name: delis-resources
+        - mountPath: /delis
+          name: delis-root

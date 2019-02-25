@@ -1,7 +1,7 @@
 package dk.erst.delis.task.document.parse;
 
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.DocumentFormatConst;
+import dk.erst.delis.data.constants.DocumentFormatConst;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import lombok.extern.slf4j.Slf4j;
 

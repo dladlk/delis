@@ -1,11 +1,11 @@
 package dk.erst.delis.task.document.process.validate.result;
 
-import java.util.List;
-
 import org.w3c.dom.Document;
+
+import java.util.List;
 
 public interface ISchematronResultCollector {
 
-	List<String> collectErrorList(Document result);
+	List<ErrorRecord> collectErrorList(Document result);
 
 }

@@ -5,12 +5,10 @@ export class TokenService {
 
   private TOKEN_KEY = 'token';
 
-  static token() {
-    return localStorage.getItem('token');
-  }
+  constructor() {}
 
   setToken(token: string) {
-    localStorage.setItem(this.TOKEN_KEY, `${token}`);
+    localStorage.setItem(this.TOKEN_KEY, token);
   }
 
   getToken(): string {
@@ -19,5 +17,9 @@ export class TokenService {
 
   resetToken() {
     localStorage.removeItem(this.TOKEN_KEY);
+  }
+
+  isAuthenticated() : boolean {
+    return !!this.getToken();
   }
 }

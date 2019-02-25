@@ -1,0 +1,44 @@
+<div class="row">
+    <div class="col col-sm-12">
+        <div class="card mb-3">
+            <div class="card-header">
+                {{ 'dashboard.charts.header' | translate }} {{': ' + lineChartLabels[0] + ' - ' + lineChartLabels[lineChartLabels.length - 1]}}
+            </div>
+            <div class="card-body" *ngIf="lineChartData.length > 0">
+                <canvas baseChart height="100"
+                        [datasets]="lineChartData"
+                        [labels]="lineChartLabels"
+                        [options]="lineChartOptions"
+                        [colors]="lineChartColors"
+                        [legend]="lineChartLegend"
+                        [chartType]="lineChartType"
+                        (chartHover)="chartHovered($event)"
+                        (chartClick)="chartClicked($event)">
+                </canvas>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <div class="p-2">
+                        <button type="button" class="btn btn-large float-left" (click)="previousPeriod()">
+                            <i class="fa fa-reply"></i>
+                        </button>
+                    </div>
+                    <div class="p-2 bg-sm">
+                        <input bsDaterangepicker
+                               [bsConfig]="{containerClass: 'theme-dark-blue'}"
+                               [placement]="'top'"
+                               class="form-control"
+                               placeholder="Load custom period"
+                               type="text"
+                               (bsValueChange)="loadDate($event)">
+                    </div>
+                    <div class="p-2">
+                        <button type="button" class="btn btn-large float-right" (click)="nextPeriod()">
+                            <i class="fa fa-share"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

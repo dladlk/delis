@@ -1,28 +1,39 @@
 package dk.erst.delis.task.document.process.validate;
 
+import dk.erst.delis.task.document.parse.XSLTUtil;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
+import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
+import lombok.extern.slf4j.Slf4j;
+import org.w3c.dom.Document;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-
-import dk.erst.delis.task.document.parse.XSLTUtil;
-import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
-
+@Slf4j
 public class SchematronValidator {
+	
+	private static final boolean DUMP_RAW_RESULT = false;
 
-	public List<String> validate(InputStream xmlStream, InputStream schematronStream, ISchematronResultCollector collector) throws Exception {
+	public List<ErrorRecord> validate(InputStream xmlStream, InputStream schematronStream, ISchematronResultCollector collector, Path xslPath) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		XSLTUtil.apply(schematronStream, null, xmlStream, baos);
+		XSLTUtil.apply(schematronStream, xslPath, xmlStream, baos);
 
 		DocumentBuilderFactory factoryNoNS = DocumentBuilderFactory.newInstance();
 		factoryNoNS.setNamespaceAware(true);
-		Document result = factoryNoNS.newDocumentBuilder().parse(new ByteArrayInputStream(baos.toByteArray()));
+		byte[] byteArray = baos.toByteArray();
+		
+		if (DUMP_RAW_RESULT) {
+			log.debug(new String(byteArray, StandardCharsets.UTF_8));
+		}
+		
+		Document result = factoryNoNS.newDocumentBuilder().parse(new ByteArrayInputStream(byteArray));
 
-		List<String> errorList = collector.collectErrorList(result);
+		List<ErrorRecord> errorList = collector.collectErrorList(result);
 		return errorList;
 	}
 

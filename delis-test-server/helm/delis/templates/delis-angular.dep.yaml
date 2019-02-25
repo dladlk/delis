@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-delis-angular'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: delis-angular
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-delis-angular'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-delis-angular'
+    spec:
+      containers:
+      - image: delis-angular:latest
+        imagePullPolicy: IfNotPresent
+        name: delis-angular
+        env:
+          - name: CONTEXT_NAME
+            value: delis
+          - name: API_URL
+            value: https://edelivery-test.trueservice.dk/delis-web-api/rest
+          - name: BASE_URL
+            value: https://edelivery-test.trueservice.dk/delis
+          - name: SERVER_PORT
+            value: "8080"

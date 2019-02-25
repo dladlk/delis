@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { routerTransition } from '../../router.animations';
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../service/locale.service";
+import { DashboardModel } from "./dashboard.model";
+import { DashboardService } from "./dashboard.service";
+import { ErrorService } from "../../service/error.service";
 
 @Component({
     selector: 'app-dashboard',
@@ -11,9 +14,23 @@ import { LocaleService } from "../../service/locale.service";
 })
 export class DashboardComponent implements OnInit {
 
-    constructor(private translate: TranslateService, private locale: LocaleService) {
+    dashboardModel: DashboardModel = new DashboardModel();
+
+    constructor(
+        private dashboardService: DashboardService,
+        private translate: TranslateService,
+        private errorService: ErrorService,
+        private locale: LocaleService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.dashboardService.getDashboardModel().subscribe(
+            (data: {}) => {
+                this.dashboardModel = data["data"];
+            }, error => {
+                this.errorService.errorProcess(error);
+            }
+        );
+    }
 }

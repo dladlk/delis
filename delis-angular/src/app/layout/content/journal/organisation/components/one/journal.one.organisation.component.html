@@ -1,0 +1,51 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'journal.organisations.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><strong>{{ journalOrganisation.organisation.name | uppercase }}</strong></div>
+                    <br>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>{{journalOrganisation.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>create time</td>
+                                <td>{{journalOrganisation.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>update time</td>
+                                <td>{{journalOrganisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>{{journalOrganisation.message}}</td>
+                            </tr>
+                            <tr>
+                                <td>duration ms</td>
+                                <td>{{journalOrganisation.durationMs}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation create time</td>
+                                <td>{{journalOrganisation.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation update time</td>
+                                <td>{{journalOrganisation.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation code</td>
+                                <td>{{journalOrganisation.organisation.code}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

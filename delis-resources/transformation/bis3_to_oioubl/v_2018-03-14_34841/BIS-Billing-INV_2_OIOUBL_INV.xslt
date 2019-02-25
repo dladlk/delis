@@ -269,13 +269,13 @@
 				<xsl:when test="cbc:ID/@schemeID">
 					<cbc:DocumentTypeCode><xsl:value-of select="cbc:ID/@schemeID"/></cbc:DocumentTypeCode>
 				</xsl:when>
-				<xsl:when test="$DocumentTypeCode != '' and $DocumentType = ''">
+				<xsl:when test="concat($DocumentTypeCode, '') != '' and concat($DocumentType, '') = ''">
 					<cbc:DocumentTypeCode><xsl:value-of select="$DocumentTypeCode"/></cbc:DocumentTypeCode>
 				</xsl:when>
 			</xsl:choose>
 			
 			<xsl:choose>
-				<xsl:when test="$DocumentType">
+				<xsl:when test="concat($DocumentType, '') != ''">
 					<cbc:DocumentType><xsl:value-of select="$DocumentType"/></cbc:DocumentType>
 				</xsl:when>
 			</xsl:choose>
@@ -1404,7 +1404,7 @@
 				<xsl:when test="$t1 = '0009'">FR:SIRET</xsl:when>
 				<xsl:when test="$t1 = '0037'">FI:OVT</xsl:when>
 				<xsl:when test="$t1 = '0060'">DUNS</xsl:when>
-				<xsl:when test="$t1 = '0088'">GLN</xsl:when>
+				<xsl:when test="$t1 = '0088'">ZZZ</xsl:when>
 				<xsl:when test="$t1 = '0096'">DK:P</xsl:when>
 				<xsl:when test="$t1 = '0097'">IT:FTI</xsl:when>
 				<xsl:when test="$t1 = '0106'">NL:KVK</xsl:when>

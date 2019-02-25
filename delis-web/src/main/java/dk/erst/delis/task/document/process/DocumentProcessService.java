@@ -1,193 +1,136 @@
 package dk.erst.delis.task.document.process;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXParseException;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.data.Document;
-import dk.erst.delis.data.DocumentFormat;
-import dk.erst.delis.data.DocumentFormatFamily;
-import dk.erst.delis.data.RuleDocumentTransformation;
-import dk.erst.delis.data.RuleDocumentValidation;
-import dk.erst.delis.task.document.parse.DocumentParseService;
-import dk.erst.delis.task.document.parse.XSLTUtil;
-import dk.erst.delis.task.document.process.validate.SchemaValidator;
-import dk.erst.delis.task.document.process.validate.SchematronValidator;
-import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
-import dk.erst.delis.task.document.process.validate.result.SchematronResultCollectorFactory;
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.JournalDocumentService;
+import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
+@Service
 public class DocumentProcessService {
 
-	private final RuleService ruleService;
-	private final ConfigBean config;
-	private DocumentParseService documentParseService;
+	private DocumentValidationTransformationService documentValidationTransformationService;
+
+	private DocumentDaoRepository documentDaoRepository;
+
+	private JournalDocumentService journalDocumentService;
+
+	private DocumentBytesStorageService documentBytesStorageService;
 
 	@Autowired
-	public DocumentProcessService(RuleService ruleService, DocumentParseService documentParseService, ConfigBean config) {
-		this.ruleService = ruleService;
-		this.documentParseService = documentParseService;
-		this.config = config;
+	public DocumentProcessService(DocumentBytesStorageService documentBytesStorageService,
+								  DocumentValidationTransformationService documentValidationTransformationService,
+								  DocumentDaoRepository documentDaoRepository,
+								  JournalDocumentService journalDocumentService) {
+		this.documentBytesStorageService = documentBytesStorageService;
+		this.documentValidationTransformationService = documentValidationTransformationService;
+		this.documentDaoRepository = documentDaoRepository;
+		this.journalDocumentService = journalDocumentService;
 	}
 
-	public DocumentProcessLog process(Document document, Path xmlPath) {
-		DocumentFormat ingoingDocumentFormat = document.getIngoingDocumentFormat();
-		DocumentProcessLog plog = new DocumentProcessLog();
+	public StatData processLoaded() {
+		boolean presentLoaded = false;
+
+		StatData statData = new StatData();
 		try {
-			processAllFormats(plog, xmlPath, ingoingDocumentFormat);
-		} catch (Exception e) {
-			log.error("Failed to process all formats on document " + document + " by path " + xmlPath, e);
-		}
+			do {
+				List<Document> list = documentDaoRepository.findTop5ByDocumentStatusOrderByIdAsc(DocumentStatus.LOAD_OK);
+				presentLoaded = !list.isEmpty();
 
-		return plog;
-	}
-
-	private Path processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat) {
-		List<RuleDocumentValidation> ruleByFormat = ruleService.getValidationRuleListByFormat(documentFormat);
-		for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
-			DocumentProcessStep step = validateByRule(xmlPath, ruleDocumentValidation);
-			plog.addStep(step);
-			if (!step.isSuccess()) {
-				return null;
-			}
-		}
-
-		if (documentFormat.getDocumentFormatFamily().isLast()) {
-			return xmlPath;
-		}
-
-		DocumentFormatFamily formatFamily = documentFormat.getDocumentFormatFamily();
-		RuleDocumentTransformation transformationRule = ruleService.getTransformation(formatFamily);
-		Path xmlOutPath = null;
-		if (transformationRule != null) {
-			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo() + "_";
-			xmlOutPath = createTempFile(plog, xmlOutPath, prefix);
-			if (xmlOutPath == null) {
-				return null;
-			}
-			DocumentProcessStep step = transformByRule(xmlPath, xmlOutPath, transformationRule);
-			plog.addStep(step);
-			if (!step.isSuccess()) {
-				return null;
-			}
-		}
-
-		DocumentFormat resultFormat = identifyResultFormat(plog, xmlOutPath);
-
-		return processAllFormats(plog, xmlOutPath, resultFormat);
-	}
-
-	private Path createTempFile(DocumentProcessLog plog, Path xmlOutPath, String prefix) {
-		DocumentProcessStep step = new DocumentProcessStep("Create temp file with prefix " + prefix);
-		try {
-			xmlOutPath = Files.createTempFile(prefix, ".xml");
-			step.setSuccess(true);
-		} catch (Exception e) {
-			log.error("Failed to create temp file", e);
-			plog.addStep(step);
-			return null;
-		} finally {
-			step.done();
-		}
-		return xmlOutPath;
-	}
-
-	protected DocumentFormat identifyResultFormat(DocumentProcessLog plog, Path xmlPath) {
-		DocumentProcessStep step = new DocumentProcessStep("Define format of " + xmlPath);
-		DocumentFormat format = DocumentFormat.UNSUPPORTED;
-		try {
-			format = documentParseService.defineDocumentFormat(new FileInputStream(xmlPath.toFile()));
-			step.setResult(format);
-			if (!format.isUnsupported()) {
-				step.setSuccess(true);
-			}
-		} catch (Exception e) {
-			log.error("Failed to define document format of " + xmlPath, e);
-		} finally {
-			step.done();
-			plog.addStep(step);
-		}
-		return format;
-	}
-
-	protected DocumentProcessStep transformByRule(Path xmlPath, Path xmlOutPath, RuleDocumentTransformation transformationRule) {
-		DocumentProcessStep step = new DocumentProcessStep(transformationRule);
-
-		Path xslFilePath = filePath(transformationRule);
-		try (FileInputStream xslStream = new FileInputStream(xslFilePath.toFile());
-				FileInputStream xmlStream = new FileInputStream(xmlPath.toFile());
-				FileOutputStream resultStream = new FileOutputStream(xmlOutPath.toFile())) {
-			XSLTUtil.apply(xslStream, xslFilePath, xmlStream, resultStream);
-			step.setSuccess(true);
-		} catch (Exception e) {
-			log.error("Failed to transform " + xmlPath + " with " + transformationRule, e);
-			step.setMessage(e.getMessage());
-		} finally {
-			step.done();
-		}
-
-		return step;
-	}
-
-	protected Path filePath(RuleDocumentValidation r) {
-		Path path = config.getStorageValidationPath().resolve(r.getRootPath());
-		log.debug("Built validation path " + path);
-		return path;
-	}
-
-	protected Path filePath(RuleDocumentTransformation r) {
-		Path path = config.getStorageTransformationPath().resolve(r.getRootPath());
-		log.debug("Built transformation path " + path);
-		return path;
-	}
-
-	protected DocumentProcessStep validateByRule(Path xmlPath, RuleDocumentValidation ruleDocumentValidation) {
-		DocumentProcessStep step = new DocumentProcessStep(ruleDocumentValidation);
-
-		try {
-			switch (ruleDocumentValidation.getValidationType()) {
-			case XSD:
-				SchemaValidator xsdValidator = new SchemaValidator();
-				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
-					xsdValidator.validate(xmlStream, filePath(ruleDocumentValidation));
-					step.setSuccess(true);
-				} catch (SAXParseException se) {
-					String location = "line " + se.getLineNumber() + ", column " + se.getColumnNumber();
-					log.error("Failed validation of file " + xmlPath + ", location: " + location + " by rule " + ruleDocumentValidation, se);
-					step.setMessage("At " + location + ": " + se.getMessage());
-				} catch (Exception e) {
-					log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
-					step.setMessage(e.getMessage());
+				for (Document document : list) {
+					processDocument(statData, document);
 				}
 
-				break;
-			case SCHEMATRON:
-				SchematronValidator schValidator = new SchematronValidator();
-				try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(filePath(ruleDocumentValidation).toFile())) {
-					ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
-					schValidator.validate(xmlStream, schematronStream, collector);
-					step.setSuccess(true);
-				} catch (Exception e) {
-					log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
-					step.setMessage(e.getMessage());
-				}
-
-				break;
-			}
+			} while (presentLoaded);
 		} finally {
-			step.done();
+			log.info("Done processing of loaded documents in " + (System.currentTimeMillis() - statData.getStartMs()) + " ms");
 		}
 
-		return step;
+		return statData;
+	}
+
+	public void processDocument(StatData statData, Document document) {
+		document.setDocumentStatus(DocumentStatus.VALIDATE_START);
+		documentDaoRepository.updateDocumentStatus(document);
+
+		DocumentBytes documentBytesLoaded = documentBytesStorageService.find(document, DocumentBytesType.IN);
+		if (documentBytesLoaded == null) {
+			statData.increment("Document xml not found");
+			return;
+		}
+
+		Path xmlLoadedPath;
+		String prefix = "process_"+document.getId() + "_";
+		try {
+			xmlLoadedPath = Files.createTempFile(prefix, ".xml");
+		} catch (IOException e) {
+			log.error("Failed to create temp file with prefix "+prefix, e);
+			return;
+		}
+		try (OutputStream fos = Files.newOutputStream(xmlLoadedPath)) {
+			documentBytesStorageService.load(documentBytesLoaded, fos);
+		} catch (Exception e) {
+			log.error("Failed to read file from storage by "+documentBytesLoaded, e);
+		}
+
+		
+		DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath);
+		DocumentErrorCode lastError = null;
+		if (plog != null) {
+			statData.increment(plog.isSuccess() ? "OK" : "ERROR");
+
+			if (plog.isSuccess()) {
+				File file = plog.getResultPath().toFile();
+				try {
+					documentBytesStorageService.save(document, DocumentBytesType.READY, file.length(), Files.newInputStream(file.toPath()));
+				} catch (IOException e) {
+					String description = "Can not save validated document " + document.getName();
+					log.error(description, e);
+					DocumentProcessStep step = new DocumentProcessStep(description, DocumentProcessStepType.COPY);
+					step.setMessage(e.getMessage());
+					step.setSuccess(false);
+					plog.addStep(step);
+				}
+			} else {
+				DocumentProcessStep lastStep = null;
+				if (plog.getStepList() != null && !plog.getStepList().isEmpty()) {
+					lastStep = plog.getStepList().get(plog.getStepList().size() - 1);
+				}
+				if (lastStep != null) {
+					lastError = lastStep.getErrorCode();
+				} else {
+					lastError = DocumentErrorCode.OTHER;
+				}
+			}
+
+			document.setDocumentStatus(plog.isSuccess() ? DocumentStatus.VALIDATE_OK : DocumentStatus.VALIDATE_ERROR);
+			document.setLastError(lastError);
+
+			documentDaoRepository.updateDocumentStatus(document);
+
+			List<DocumentProcessStep> stepList = plog.getStepList();
+			journalDocumentService.saveDocumentStep(document, stepList);
+		} else {
+			statData.increment("UNDEFINED");
+		}
 	}
 }

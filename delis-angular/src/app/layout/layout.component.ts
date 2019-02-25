@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../service/locale.service";
+import { ListenErrorService } from "../service/listen.error.service";
+import { ErrorModel } from "../models/error.model";
 
 @Component({
     selector: 'app-layout',
@@ -9,15 +11,22 @@ import { LocaleService } from "../service/locale.service";
 })
 export class LayoutComponent implements OnInit {
 
-    collapedSideBar: boolean;
+    collapsedSideBar: boolean;
 
-    constructor(private translate: TranslateService, private locale: LocaleService) {
+    error: boolean = false;
+    private errorMessage: string;
+
+    constructor(private translate: TranslateService, private locale: LocaleService, private errorService: ListenErrorService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.errorService.listen().subscribe((listenError: ErrorModel) => {
+            this.error = true;
+            this.errorMessage = 'status is: ' + listenError.status + ' : ' + ' message is: ' + listenError.message;
+        });
     }
 
     ngOnInit() {}
 
     receiveCollapsed($event) {
-        this.collapedSideBar = $event;
+        this.collapsedSideBar = $event;
     }
 }

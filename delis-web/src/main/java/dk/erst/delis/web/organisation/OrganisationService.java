@@ -1,35 +1,35 @@
 package dk.erst.delis.web.organisation;
 
+import dk.erst.delis.data.entities.organisation.Organisation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import dk.erst.delis.dao.OrganisationRepository;
-import dk.erst.delis.data.Organisation;
+import dk.erst.delis.dao.OrganisationDaoRepository;
 
 @Service
 public class OrganisationService {
 
-	private OrganisationRepository organisationRepository;
+	private OrganisationDaoRepository organisationDaoRepository;
 
 	@Autowired
-	public OrganisationService(OrganisationRepository organisationRepository) {
-		this.organisationRepository = organisationRepository;
+	public OrganisationService(OrganisationDaoRepository organisationDaoRepository) {
+		this.organisationDaoRepository = organisationDaoRepository;
 	}
 
 	public Iterable<Organisation> getOrganisations() {
-		return organisationRepository.findAll(Sort.by("name"));
+		return organisationDaoRepository.findAll(Sort.by("name"));
 	}
 
 	public void saveOrganisation(Organisation organisation) {
-		this.organisationRepository.save(organisation);
+		this.organisationDaoRepository.save(organisation);
 	}
 
 	public Organisation findOrganisation(long id) {
-		return this.organisationRepository.findById(id).get();
+		return this.organisationDaoRepository.findById(id).get();
 	}
 
 	public Organisation findOrganisationByCode(String code) {
-		return this.organisationRepository.findByCode(code);
+		return this.organisationDaoRepository.findByCode(code);
 	}
 }

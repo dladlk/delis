@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { LocaleService } from "../../../../service/locale.service";
 
 @Component({
-    selector: 'table-header-sort',
+    selector: 'app-table-header-sort',
     templateUrl: './table-header-sort.component.html',
     styleUrls: ['./table-header-sort.component.scss']
 })

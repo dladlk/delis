@@ -1,27 +1,58 @@
 package dk.erst.delis.config;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import dk.erst.delis.dao.ConfigValueDaoRepository;
+import dk.erst.delis.data.entities.config.ConfigValue;
+import dk.erst.delis.data.enums.config.ConfigValueType;
+import dk.erst.delis.task.document.storage.DocumentStorageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import dk.erst.delis.task.document.storage.DocumentStorageType;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+
+import static dk.erst.delis.data.enums.config.ConfigValueType.*;
 
 @Component
 public class ConfigBean {
 
-	private ConfigProperties configProperties;
+	private ConfigValueDaoRepository configRepository;
+
+
+	private HashMap <ConfigValueType, String> configValues = new HashMap<>();
 
 	@Autowired
-	public ConfigBean(ConfigProperties configProperties) {
-		this.configProperties = configProperties;
+	public ConfigBean(ConfigValueDaoRepository configRepository) {
+		this.configRepository = configRepository;
+
+		init();
 	}
-	
+
+	private void init () {
+		ConfigValueType[] valueTypes = ConfigValueType.values();
+		for (ConfigValueType valueType : valueTypes) {
+			ConfigValue dbValue = configRepository.findByConfigValueType(valueType);
+			String value;
+			if (dbValue != null) {
+				value = dbValue.getValue();
+			} else if (System.getenv(valueType.getKey()) != null) {
+				value = System.getenv(valueType.getKey());
+			} else {
+				value = valueType.getDefaultValue();
+			}
+			configValues.put(valueType, value);
+		}
+	}
+
+	public void refresh () {
+		init();
+	}
+
 	public Path getStorageInputPath() {
-		return buildStoragePath(DocumentStorageType.INPUT);
+		String path = configValues.get(STORAGE_INPUT_ROOT);
+		return Paths.get(path);
 	}
-	
+
 	public Path getStorageLoadedPath() {
 		return buildStoragePath(DocumentStorageType.LOADED);
 	}
@@ -29,21 +60,42 @@ public class ConfigBean {
 	public Path getStorageFailedPath() {
 		return buildStoragePath(DocumentStorageType.FAILED);
 	}
-	
+
+	public Path getStorageValidPath() {
+		return buildStoragePath(DocumentStorageType.VALID);
+	}
+
 	private Path buildStoragePath(DocumentStorageType storageType) {
-		String storageRoot = this.configProperties.getStorageDocumentRoot();
-		return Paths.get(storageRoot, storageType.getFolderName());
+		String path = configValues.get(STORAGE_DOCUMENT_ROOT);
+		return Paths.get(path, storageType.getFolderName());
+	}
+
+	public Path getDocumentRootPath() {
+		String path = configValues.get(STORAGE_DOCUMENT_ROOT);
+		return Paths.get(path).toAbsolutePath();
 	}
 
 	public Path getStorageValidationPath() {
-		return Paths.get(this.configProperties.getStorageValidationRoot());
+		String path = configValues.get(STORAGE_VALIDATION_ROOT);
+		return Paths.get(path).toAbsolutePath();
 	}
 
 	public Path getStorageTransformationPath() {
-		return Paths.get(this.configProperties.getStorageTransformationRoot());
+		String path = configValues.get(STORAGE_TRANSFORMATION_ROOT);
+		return Paths.get(path).toAbsolutePath();
 	}
-	
+
 	public Path getStorageCodeListPath() {
-		return Paths.get(this.configProperties.getStorageCodeListsRoot());
+		String path = configValues.get(CODE_LISTS_PATH);
+		return Paths.get(path).toAbsolutePath();
+	}
+
+	public boolean getXsltCacheEnabled() {
+		String stringValue = configValues.get(XSLT_CACHE_ENABLED);
+		return Boolean.parseBoolean(stringValue);
+	}
+
+	public SmpEndpointConfig getSmpEndpointConfig() {
+		return new SmpEndpointConfig(configValues.get(ENDPOINT_URL), configValues.get(ENDPOINT_USER_NAME), configValues.get(ENDPOINT_PASSWORD), configValues.get(ENDPOINT_FORMAT));
 	}
 }

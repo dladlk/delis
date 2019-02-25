@@ -1,0 +1,87 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'journal.documents.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><strong>{{ journalDocument.organisation.name | uppercase }}</strong></div>
+                    <br>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>{{journalDocument.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>create time</td>
+                                <td>{{journalDocument.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>success</td>
+                                <td>{{journalDocument.success}}</td>
+                            </tr>
+                            <tr>
+                                <td>type</td>
+                                <td>{{journalDocument.type}}</td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>{{journalDocument.message}}</td>
+                            </tr>
+                            <tr>
+                                <td>duration ms</td>
+                                <td>{{journalDocument.durationMs}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation create time</td>
+                                <td>{{journalDocument.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation update time</td>
+                                <td>{{journalDocument.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation code</td>
+                                <td>{{journalDocument.organisation.code}}</td>
+                            </tr>
+                            <tr>
+                                <td>document id</td>
+                                <td>{{journalDocument.document.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>document create time</td>
+                                <td>{{journalDocument.document.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>document update time</td>
+                                <td>{{journalDocument.document.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>document status</td>
+                                <td>{{journalDocument.document.documentStatus}}</td>
+                            </tr>
+                            <tr>
+                                <td>document type</td>
+                                <td>{{journalDocument.document.documentType}}</td>
+                            </tr>
+                            <tr>
+                                <td>document format</td>
+                                <td>{{journalDocument.document.ingoingDocumentFormat}}</td>
+                            </tr>
+                            <tr>
+                                <td>document receiver name</td>
+                                <td>{{journalDocument.document.receiverName}}</td>
+                            </tr>
+                            <tr>
+                                <td>document sender name</td>
+                                <td>{{journalDocument.document.senderName}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,68 +1,28 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from "rxjs";
 import { TokenService } from '../service/token.service';
-import { environment } from '../../environments/environment';
-import { IUser, ROLES } from '../models/user.model';
-import { base_url } from '../app.constants';
-import {IResult} from "../models/result.model";
+import { RuntimeConfigService } from "../service/runtime.config.service";
+import { LocaleService } from "../service/locale.service";
+import { HttpRestService } from "../service/http.rest.service";
 
 @Injectable()
 export class AuthorizationService {
 
-  private headers: HttpHeaders;
-  private user: IUser;
-  private ROLES = ROLES;
+    private url: string;
 
-  constructor(
-    private client: HttpClient,
-    private tokenService: TokenService) {
-    this.headers = new HttpHeaders({
-      'Authorization' : `Basic ${btoa(environment.credentials)}`
-    });
-  }
-
-  setLogin(res: any): IResult<any> {
-    console.log('res = ' + res.toString());
-    this.tokenService.setToken(res.access_token);
-    return res;
-  }
-
-  login(email: string, password: string): Observable<IResult<any>> {
-    console.log('email = ' + email);
-    console.log('password = ' + password);
-    return this.client
-      .post(`${base_url}/oauth/token`, {}, {
-        headers : this.headers,
-        params : {email, password, grant_type : 'password'}
-      })
-      .pipe(
-        map((res: any) => this.setLogin(res))
-      );
-  }
-
-  logout() {
-    location.reload();
-    this.tokenService.resetToken();
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.tokenService.getToken();
-  }
-
-  hasPermissions(roles: string[] = [], onlyThis: boolean = false) {
-    if (!this.user) {
-      return false;
+    constructor(
+        private http: HttpRestService,
+        private localeService: LocaleService,
+        private tokenService: TokenService,
+        private configService: RuntimeConfigService) {
     }
-    if (roles.indexOf('*') >= 0) {
-      return true;
+
+    login(login: string, password: string) : Observable<any> {
+        this.url = this.configService.getConfigUrl();
+        let body  =  {
+            'login' : login,
+            'password' : password,
+        };
+        return this.http.methodPost(this.url + '/security/signin', body);
     }
-    if (this.user.role === this.ROLES.ADMIN && !onlyThis) {
-      return true;
-    }
-    if (roles.indexOf(this.user.role) >= 0) {
-      return true;
-    }
-  }
 }

@@ -3,111 +3,167 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
-			Document details
-		</div>
-		<div class="card-body">
-			<table class="table table-striped table-bordered table-sm">
+
+	<h3 class="m-2 text-secondary"><a href="#" th:href="@{/document/list}" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i></a> Document details</h3>
+
+	<div class="">
+
+	<div class="card border-secondary m-1">
+		<div class="card-body pb-0">
+			<table class="table table-sm table-borderless">
 				<tr>
-					<td>Organisation</td>
-					<td th:text="${document.organisation?.name}">Region Nord</td>
+					<th>Organisation</th>
+					<th>Identifier</th>
+					<th>Received</th>
+					<th>Status</th>
 				</tr>
 				<tr>
-					<td>Identifier</td>
-					<td th:text="${document.receiverIdentifier?.value}">EAN:5234234234</td>
+					<td><a th:if="${document.organisation}" href="#" th:href="@{/organisation/view/__${document.organisation.id}__}" th:text="${document.organisation.name}">Region Nord</a></td>
+					<td><a th:if="${document.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${document.receiverIdentifier.id}__}" th:text="${document.receiverIdentifier.name}">Receiver name</a></td>
+					<td th:text="${#dates.format(document.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+					<td>
+						<span th:text="${document.documentStatus}">LOADED</span>
+						<th:block th:if="${document.lastError}">
+							last error: 
+							<span th:text="${document.lastError}" class="text-muted">OIOUBL_XSD</span>
+						</th:block>
+					</td>					
 				</tr>
 				<tr>
-					<td>Receive time</td>
-					<td th:text="${document.createTime}">2018-12-01 12:32:12</td>
+					<th>Document type</th>
+					<th>Ingoing format</th>
+					<th>Document Id</th>
+					<th>Document date</th>
 				</tr>
 				<tr>
-					<td>Path</td>
-					<td th:text="${document.ingoingRelativePath}">XXX</td>
-				</tr>
-				<tr>
-					<td>Status</td>
-					<td th:text="${document.documentStatus}">LOADED</td>
-				</tr>
-				<tr>
-					<td>Receiver id</td>
-					<td th:text="${document.receiverIdRaw}">0088::2342342342</td>
-				</tr>
-				<tr>
-					<td>Receiver name</td>
-					<td th:text="${document.receiverName}">Region</td>
-				</tr>
-				<tr>
-					<td>Receiver country</td>
-					<td th:text="${document.receiverCountry}">DK</td>
-				</tr>
-				<tr>
-					<td>Sender id</td>
-					<td th:text="${document.senderIdRaw}">0088::2342342342</td>
-				</tr>
-				<tr>
-					<td>Sender name</td>
-					<td th:text="${document.senderName}">Region</td>
-				</tr>
-				<tr>
-					<td>Sender country</td>
-					<td th:text="${document.senderCountry}">DK</td>
-				</tr>
-				<tr>
-					<td>Ingoing format</td>
-					<td th:text="${document.ingoingDocumentFormat}">CII</td>
-				</tr>
-				<tr>
-					<td>Ingoing type</td>
 					<td th:text="${document.ingoingDocumentFormat?.documentType}">INVOICE</td>
-				</tr>
-				<tr>
-					<td>Document ID</td>
+					<td th:text="${document.ingoingDocumentFormat}">CII</td>
 					<td th:text="${document.documentId}">F-2345RWELF2</td>
-				</tr>
-				<tr>
-					<td>Document date</td>
 					<td th:text="${document.documentDate}">2018-13-23</td>
 				</tr>
 				<tr>
-					<td>Message ID</td>
-					<td th:text="${document.messageId}">BSD-332-32D2-2342-ABD3-353F</td>
+					<th colspan="2">File name</th>
+					<th colspan="2">Message ID</th>
 				</tr>
 				<tr>
-					<td>Outgoing path</td>
-					<td th:text="${document.outgoingRelativePath}">/BSD-332-32D2-2342-ABD3-353F.xml</td>
-				</tr>
-				<tr>
-					<td>Last validation error</td>
-					<td th:text="${document.lastError}">OIOUBL_XSD</td>
+					<td colspan="2" th:text="${document.name}">XXX</td>
+					<td colspan="2" th:text="${document.messageId}">BSD-332-32D2-2342-ABD3-353F</td>
 				</tr>
 			</table>
-		</div>
-		<div class="card-footer">
-			<a href="#" th:href="@{/document/list}" class="btn btn-primary">Back to document list</a>
-		</div>
-		
+		</div>		
+	</div>	
+
+	<div class="card border-secondary m-1">
+		<div class="card-body pb-0">
+			<table class="table table-sm table-borderless">
+				<tr>
+					<th></th>
+					<th>Number</th>
+					<th>Name</th>
+					<th>Country</th>
+				</tr>
+				<tr>
+					<th>Sender</th>
+					<td th:text="${document.senderIdRaw}">0088::2342342342</td>					
+					<td th:text="${document.senderName}">Region</td>					
+					<td th:text="${document.senderCountry}">DK</td>
+				</tr>
+				<tr>
+					<th>Receiver</th>
+					<td th:text="${document.receiverIdRaw}">0088::2342342342</td>					
+					<td th:text="${document.receiverName}">Region</td>					
+					<td th:text="${document.receiverCountry}">DK</td>
+				</tr>
+			</table>
+		</div>		
 	</div>
 	
-	<div class="card">
-		<div class="card-header bg-primary text-white">
-			Journal records
-		</div>
-		<div class="card-body">
-			<table class="table table-striped table-bordered table-sm">
+	</div>
+
+	<div class="card border-secondary m-1">
+		<div class="card-body pb-0">
+			<div class="card-title">
+				Journal records
+			</div>
+			<table class="table table-borderless table-sm">
 				<tr>
 					<th>Date</th>
+					<th>Type</th>
+					<th>Status</th>
 					<th>Message</th>
 					<th>Duration, ms</th>
 				</tr>
-				<tr th:each="r,iter : ${lastJournalList}">
-					<td th:text="${r.createTime}"></td>
-					<td th:text="${r.message}"></td>
+				<th:block th:each="r,iter : ${lastJournalList}">
+				<tr>
+					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}" class="text-nowrap"></td>
+					<td th:text="${r.type}"></td>
+					<td>
+						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
+						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
+					</td>
+					<td th:text="${r.message}"/>
 					<td th:text="${r.durationMs}"/>
+				</tr>
+				<tr th:if="${errorListByJournalDocumentIdMap.get(r.id)}">
+					<td colspan="5">
+						<table class="table table-sm">
+							<tr>
+								<th>Flag</th>
+								<th>Code</th>
+								<th>Message</th>
+								<th>Location</th>
+							</tr>
+							<tr th:each="errorDictionary : ${errorListByJournalDocumentIdMap.get(r.id)}">
+								<td th:text="${errorDictionary.flag}"></td>
+								<td th:text="${errorDictionary.code}"></td>
+								<td th:text="${errorDictionary.message}"></td>
+								<td th:text="${#strings.abbreviate(errorDictionary.location, 100)}"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				</th:block>
+			</table>
+		</div>
+	</div>
+
+	<div class="row m-1">
+
+	<div class="col card border-secondary w-50 m-1">
+		<div class="card-body pb-0">
+			<div class="card-title">
+				Document Bytes
+			</div>
+			<table class="table table-borderless table-sm">
+				<tr>
+					<th>Id</th>
+					<th>Type</th>
+					<th>Size, bytes</th>
+				</tr>
+				<tr th:each="r,iter : ${documentBytes}">
+					<td th:text="${r.id}"></td>
+					<td th:text="${r.type}"></td>
+					<td th:text="${r.size}"></td>
 				</tr>
 			</table>
 		</div>
 	</div>
 	
+	<div class="col card border-secondary w-50 m-1 mb-3">
+		<div class="card-body pb-1">
+			<form method="post" action="#" th:action="@{/document/updatestatus}" th:object="${document}">
+				<div class="d-flex justify-content-end">
+					<label class="m-2 col-form-label font-weight-bold">Status change:</label>
+					<select th:field="*{documentStatus}" class="m-2">
+						<option th:each="documentStatus : ${documentStatusList}" th:text="${documentStatus}" th:value="${documentStatus}"></option>
+					</select>
+					<button type="submit" class="m-2 btn btn-primary btn-sm">Update Status</button>
+					<input type="hidden" th:field="*{id}" class="form-control" th:value="${document.id}"/>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	</div>
 </body>
 </html>

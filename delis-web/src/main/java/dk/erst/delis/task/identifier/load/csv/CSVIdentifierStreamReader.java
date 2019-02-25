@@ -8,7 +8,7 @@ import java.util.Iterator;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import dk.erst.delis.data.Identifier;
+import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.task.identifier.load.AbstractIdentifierStreamReader;
 
 public class CSVIdentifierStreamReader extends AbstractIdentifierStreamReader {

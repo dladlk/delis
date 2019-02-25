@@ -6,16 +6,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { BsDatepickerModule } from 'ngx-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
 import { TokenService } from './service/token.service';
 import { AuthorizationService } from './login/authorization.service';
-import { HttpService } from './service/http.service';
-import { HttpErrorService } from './service/http.error.service';
-import { BsDatepickerModule } from 'ngx-bootstrap';
 import { LocaleService } from "./service/locale.service";
+import { RuntimeConfigService } from "./service/runtime.config.service";
+import { HttpRestService } from "./service/http.rest.service";
+import { ContentSelectInfoService } from "./service/content.select.info.service";
+import { ErrorService } from "./service/error.service";
+import { ListenErrorService } from "./service/listen.error.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -41,13 +44,17 @@ export const createTranslateLoader = (http: HttpClient) => {
     ],
     declarations: [AppComponent],
     providers: [
-      AuthGuard,
-      TokenService,
-      AuthorizationService,
-      HttpService,
-      HttpErrorService,
-        LocaleService],
+        AuthGuard,
+        TokenService,
+        RuntimeConfigService,
+        AuthorizationService,
+        ContentSelectInfoService,
+        HttpRestService,
+        LocaleService,
+        ErrorService,
+        ListenErrorService],
     bootstrap: [AppComponent],
     exports: [BsDatepickerModule]
 })
-export class AppModule {}
+export class AppModule {
+}

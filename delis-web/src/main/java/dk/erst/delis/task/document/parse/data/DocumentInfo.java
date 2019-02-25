@@ -14,7 +14,7 @@ public class DocumentInfo {
 
 	@XmlElement(name = "DocumentRoot")
 	private DocumentInfoRootTag root;
-
+	
 	@XmlElement(name = "ID")
 	private String id;
 
@@ -35,5 +35,7 @@ public class DocumentInfo {
 	
 	@XmlElement(name = "AmountNegative")
 	private boolean amountNegative;
+
+	private DocumentSBDHeader sbdh;
 
 }

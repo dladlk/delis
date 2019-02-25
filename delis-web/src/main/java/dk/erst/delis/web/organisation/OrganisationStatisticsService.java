@@ -4,27 +4,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dk.erst.delis.dao.IdentifierRepository;
-import dk.erst.delis.data.IdentifierPublishingStatus;
-import dk.erst.delis.data.IdentifierStatus;
+import dk.erst.delis.dao.IdentifierDaoRepository;
+
 import lombok.Getter;
 
 @Service
 public class OrganisationStatisticsService {
 
 	@Autowired
-	private IdentifierRepository identifierRepository;
+	private IdentifierDaoRepository identifierDaoRepository;
 
 	public Map<Long, OrganisationIdentifierStatData> loadOrganisationIdentifierStatMap() {
-		List<Map<String, Object>> rawList = this.identifierRepository.loadIndetifierStat();
+		List<Map<String, Object>> rawList = this.identifierDaoRepository.loadIndetifierStat();
 		return processStatListMap(rawList);
 	}
 
 	public OrganisationIdentifierStatData loadOrganisationIdentifierStatMap(long organisationId) {
-		List<Map<String, Object>> rawList = this.identifierRepository.loadIndetifierStatByOrganisation(organisationId);
+		List<Map<String, Object>> rawList = this.identifierDaoRepository.loadIndetifierStatByOrganisation(organisationId);
 		return processStatListMap(rawList).get(organisationId);
 	}
 

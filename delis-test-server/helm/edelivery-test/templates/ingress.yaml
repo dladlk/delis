@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-test-util
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - edelivery-test.trueservice.dk
+    secretName: tls-secret
+  rules:
+      - host: edelivery-test.trueservice.dk
+        http:
+          paths:
+          - path: /twc
+            backend:
+              serviceName: test-web-console
+              servicePort: 8080

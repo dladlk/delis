@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+echo Pulling cef-erst...
+git -C /wsh/cef-erst pull
+echo Pulling delis...
+git -C /wsh/delis pull
