@@ -22,12 +22,9 @@ import { DocumentBytesModel } from "../../models/document.bytes.model";
 })
 export class DocumentsOneComponent implements OnInit {
 
-    id: number;
-
     pageHeaders: HeaderModel[] = [];
     document: DocumentModel = new DocumentModel();
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
-
     journalDocuments: JournalDocumentModel[];
     journalDocumentErrors: ErrorDictionaryModel[] = [];
     documentBytesModels: DocumentBytesModel[] = [];
@@ -41,32 +38,22 @@ export class DocumentsOneComponent implements OnInit {
         private journalDocumentService: JournalDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
-            { routerLink : '/documents', heading: 'documents.header', icon: 'fa fa-book'}
+            { routerLink : '/documents', heading : 'documents.header', icon : 'fa fa-book'}
         );
     }
 
-    ngOnInit(): void {
+    ngOnInit() : void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
             this.document = data;
         }, error => {
             this.errorService.errorProcess(error);
         });
-        this.documentService.getListDocumentBytesByDocumentId(id).subscribe((data: []) => {
+        this.documentService.getListDocumentBytesByDocumentId(id).subscribe((data: {}) => {
             this.documentBytesModels = data["items"];
         }, error => {
             this.errorService.errorProcess(error);
         });
-        this.id = id;
-        this.initProcess(id);
-    }
-
-    private initProcess(id: number) {
-        this.currentProdJournalDocuments(id);
-        this.currentProdJournalDocumentDocumentId(id);
-    }
-
-    private currentProdJournalDocuments(id: number) {
         this.journalDocumentService.getAllByDocumentId(id).subscribe(
             (data: {}) => {
                 this.journalDocuments = data["items"];
@@ -74,9 +61,6 @@ export class DocumentsOneComponent implements OnInit {
                 this.errorService.errorProcess(error);
             }
         );
-    }
-
-    private currentProdJournalDocumentDocumentId(id: number) {
         this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe(
             (data: {}) => {
                 this.journalDocumentErrors = data["items"];
