@@ -59,9 +59,13 @@ public class ClassLoaderUtil {
 
     public List<Field> getAllFieldsByEntity(Class entityClass) {
         List<Field> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(entityClass.getDeclaredFields()));
-        fields.addAll(Arrays.asList(entityClass.getSuperclass().getDeclaredFields()));
-        fields.addAll(Arrays.asList(entityClass.getSuperclass().getSuperclass().getDeclaredFields()));
+        Class nextClass = entityClass;
+        do {
+            Field[] innerFields = nextClass.getDeclaredFields();
+            fields.addAll(Arrays.asList(innerFields));
+            nextClass = nextClass.getSuperclass();
+        } while (Objects.nonNull(nextClass));
+
         return fields;
     }
 
