@@ -27,11 +27,11 @@ public class XSLTUtil {
 		transformer.transform(new StreamSource(xmlStream), streamResult);
 	}
 
-	public static Transformer getTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
-		return buildTransformer(xslStream, xslFilePath);
+	private static Transformer getTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
+		return buildTransformer(xslStream, xslFilePath, DelisTransformerFactory.getInstance());
 	}
 	
-	private static Transformer buildTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
+	protected static Transformer buildTransformer(InputStream xslStream, Path xslFilePath, TransformerFactory transFactory) throws Exception {
 		long start = System.currentTimeMillis();
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -42,8 +42,7 @@ public class XSLTUtil {
 		StandardErrorListener listener = new StandardErrorListener();
 		listener.setRecoveryPolicy(Configuration.RECOVER_SILENTLY);
 
-		TransformerFactory transFact = DelisTransformerFactory.getInstance();
-		transFact.setErrorListener(listener);
+		transFactory.setErrorListener(listener);
 		DOMSource source = new DOMSource(xsltDocument);
 		
 		if (xslFilePath != null) {
@@ -53,7 +52,7 @@ public class XSLTUtil {
 			 */
 			source.setSystemId(xslFilePath.toString());
 		}
-		Transformer transformer = transFact.newTransformer(source);
+		Transformer transformer = transFactory.newTransformer(source);
 		
 		log.info("Built transformer by " + xslFilePath + " in " + (System.currentTimeMillis() - start) + " ms");
 	
