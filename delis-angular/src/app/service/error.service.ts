@@ -40,7 +40,6 @@ export class ErrorService {
 
     logout() {
         this.tokenService.resetToken();
-        this.configService.resetConfigUrl();
         this.configService.resetCurrentUser();
         this.router.navigate(['/login']);
     }
