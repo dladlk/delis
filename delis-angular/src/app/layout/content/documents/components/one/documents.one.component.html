@@ -78,7 +78,8 @@
                     <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
                     <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
                 </tr>
-                <tr *ngFor="let doc of journalDocuments">
+                <tbody *ngFor="let doc of journalDocuments">
+                <tr >
                     <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
                     <td>{{doc.type}}</td>
                     <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
@@ -86,28 +87,21 @@
                     <td>{{doc.message}}</td>
                     <td>{{doc.durationMs}}</td>
                 </tr>
-            </table>
-        </div>
-    </div>
-
-    <div *ngIf="journalDocumentErrors.length != 0" class="card border-secondary m-1">
-        <div class="card-body pb-0">
-            <div class="card-title">
-                {{ 'documents.table.one.columnName.journalDocumentErrors' | translate }}
-            </div>
-            <table class="table table-sm">
-                <tr>
-                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.flag' | translate }}</th>
-                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
-                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
-                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
-                </tr>
-                <tr *ngFor="let doc of journalDocumentErrors">
-                    <td>{{doc.flag}}</td>
-                    <td>{{doc.code}}</td>
-                    <td>{{doc.message}}</td>
-                    <td>{{doc.location}}</td>
-                </tr>
+                <ng-container *ngIf="getErrorDictionaryModel(doc.id).length !== 0" class="card border-secondary m-1">
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.journalDocumentErrors.flag' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
+                    </tr>
+                    <tr *ngFor="let err of getErrorDictionaryModel(doc.id)">
+                        <td>{{err.flag}}</td>
+                        <td>{{err.code}}</td>
+                        <td>{{err.message}}</td>
+                        <td>{{err.location}}</td>
+                    </tr>
+                </ng-container>
+                </tbody>
             </table>
         </div>
     </div>

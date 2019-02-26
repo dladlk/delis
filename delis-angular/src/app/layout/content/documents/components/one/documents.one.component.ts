@@ -13,6 +13,7 @@ import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 import { JournalDocumentModel } from "../../../journal/document/models/journal.document.model";
 import { ErrorDictionaryModel } from "../../../journal/document/models/error.dictionary.model";
 import { DocumentBytesModel } from "../../models/document.bytes.model";
+import { JournalDocumentErrorModel } from "../../../journal/document/models/journal.document.error.model";
 
 @Component({
     selector: 'app-documents-one',
@@ -26,7 +27,7 @@ export class DocumentsOneComponent implements OnInit {
     document: DocumentModel = new DocumentModel();
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
     journalDocuments: JournalDocumentModel[];
-    journalDocumentErrors: ErrorDictionaryModel[] = [];
+    journalDocumentErrors: JournalDocumentErrorModel[] = [];
     documentBytesModels: DocumentBytesModel[] = [];
 
     constructor(
@@ -68,5 +69,14 @@ export class DocumentsOneComponent implements OnInit {
                 this.errorService.errorProcess(error);
             }
         );
+    }
+
+    getErrorDictionaryModel(id : number) : ErrorDictionaryModel[] {
+        let err = this.journalDocumentErrors.filter(value => value.journalDocument.id === id);
+        if (err === null) {
+            return [];
+        } else {
+            return err.map(value => value.errorDictionary);
+        }
     }
 }
