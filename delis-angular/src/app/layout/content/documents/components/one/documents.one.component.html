@@ -5,10 +5,10 @@
         <div class="card-body pb-0">
             <table class="table table-sm table-borderless">
                 <tr>
-                    <th>Organisation</th>
-                    <th>Identifier</th>
-                    <th>Received</th>
-                    <th>Status</th>
+                    <th>{{ 'documents.table.one.columnName.organisation' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.identifier' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.createTime' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.status' | translate }}</th>
                 </tr>
                 <tr>
                     <td>{{document.organisation.name}}</td>
@@ -17,10 +17,10 @@
                     <td>{{document.documentStatus}}</td>
                 </tr>
                 <tr>
-                    <th>Document type</th>
-                    <th>Ingoing format</th>
-                    <th>Document Id</th>
-                    <th>Document date</th>
+                    <th>{{ 'documents.table.one.columnName.documentType' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.ingoingDocumentFormat' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.documentId' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
                 </tr>
                 <tr>
                     <td>{{document.documentType}}</td>
@@ -29,8 +29,8 @@
                     <td>{{document.documentDate}}</td>
                 </tr>
                 <tr>
-                    <th colspan="2">File name</th>
-                    <th colspan="2">Message ID</th>
+                    <th colspan="2">{{ 'documents.table.one.columnName.name' | translate }}</th>
+                    <th colspan="2">{{ 'documents.table.one.columnName.messageId' | translate }}</th>
                 </tr>
                 <tr>
                     <td colspan="2">{{document.name}}</td>
@@ -45,21 +45,21 @@
             <table class="table table-sm table-borderless">
                 <tr>
                     <th></th>
-                    <th>Number</th>
-                    <th>Name</th>
-                    <th>Country</th>
+                    <th>{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.senderName' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
                 </tr>
                 <tr>
-                    <th>Sender</th>
+                    <th>{{ 'documents.table.one.columnName.sender' | translate }}</th>
                     <td>{{document.senderIdRaw}}</td>
                     <td>{{document.senderName}}</td>
                     <td>{{document.senderCountry}}</td>
                 </tr>
                 <tr>
-                    <th>Receiver</th>
+                    <th>{{ 'documents.table.one.columnName.receiver' | translate }}</th>
                     <td>{{document.receiverIdRaw}}</td>
-                    <td>{{document.senderName}}</td>
-                    <td>{{document.senderCountry}}</td>
+                    <td>{{document.receiverName}}</td>
+                    <td>{{document.receiverCountry}}</td>
                 </tr>
             </table>
         </div>
@@ -68,15 +68,15 @@
     <div class="card border-secondary m-1">
         <div class="card-body pb-0">
             <div class="card-title">
-                Journal records
+                {{ 'documents.table.one.columnName.journalRecords' | translate }}
             </div>
             <table class="table table-borderless table-sm">
                 <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Message</th>
-                    <th>Duration, ms</th>
+                    <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
                 </tr>
                 <tr *ngFor="let doc of journalDocuments">
                     <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
@@ -93,14 +93,14 @@
     <div *ngIf="journalDocumentErrors.length != 0" class="card border-secondary m-1">
         <div class="card-body pb-0">
             <div class="card-title">
-                Document errors
+                {{ 'documents.table.one.columnName.journalDocumentErrors' | translate }}
             </div>
             <table class="table table-sm">
                 <tr>
-                    <th>Flag</th>
-                    <th>Code</th>
-                    <th>Message</th>
-                    <th>Location</th>
+                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.flag' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
                 </tr>
                 <tr *ngFor="let doc of journalDocumentErrors">
                     <td>{{doc.flag}}</td>
@@ -115,13 +115,13 @@
     <div class="card border-secondary m-1">
         <div class="card-body pb-0">
             <div class="card-title">
-                Document Bytes
+                {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
             </div>
             <table class="table table-borderless table-sm">
                 <tr>
-                    <th>Id</th>
-                    <th>Type</th>
-                    <th>Size, bytes</th>
+                    <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+                    <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
                 </tr>
                 <tr *ngFor="let doc of documentBytesModels">
                     <td>{{doc.id}}</td>
