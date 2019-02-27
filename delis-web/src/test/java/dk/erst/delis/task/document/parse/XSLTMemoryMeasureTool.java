@@ -1,17 +1,5 @@
 package dk.erst.delis.task.document.parse;
 
-import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.rule.DefaultRuleBuilder;
@@ -22,6 +10,15 @@ import dk.erst.delis.task.document.parse.cachingtransformerfactory.DelisTransfor
 import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.StandardErrorListener;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class XSLTMemoryMeasureTool {
@@ -35,27 +32,25 @@ public class XSLTMemoryMeasureTool {
 		ConfigBean configBean = new ConfigBean(TestUtil.getEmptyConfigValueDaoRepository());
 
 		List<Path> xsltPathList = new ArrayList<>();
-		for (RuleDocumentTransformation r : DefaultRuleBuilder.buildDefaultTransformationRuleList()) {
-			Path path = configBean.getStorageTransformationPath().resolve(r.getRootPath());
+		for (RuleDocumentTransformation rdf : DefaultRuleBuilder.buildDefaultTransformationRuleList()) {
+			Path path = configBean.getStorageTransformationPath().resolve(rdf.getRootPath());
 			xsltPathList.add(path);
 		}
-		for (RuleDocumentValidation r : DefaultRuleBuilder.buildDefaultValidationRuleList()) {
-			if (r.getValidationType() == RuleDocumentValidationType.SCHEMATRON) {
-				Path path = configBean.getStorageValidationPath().resolve(r.getRootPath());
+		for (RuleDocumentValidation rdv : DefaultRuleBuilder.buildDefaultValidationRuleList()) {
+			if (rdv.getValidationType() == RuleDocumentValidationType.SCHEMATRON) {
+				Path path = configBean.getStorageValidationPath().resolve(rdv.getRootPath());
 				xsltPathList.add(path);
 			}
 		}
 
 		int creationTimes = 10;
 
-		TransformerFactory factory = (TransformerFactory) Class.forName("net.sf.saxon.TransformerFactoryImpl").newInstance();
+		TransformerFactory factory = TransformerFactory.newInstance();
 		StandardErrorListener listener = new StandardErrorListener();
 		listener.setRecoveryPolicy(Configuration.RECOVER_SILENTLY);
 		factory.setErrorListener(listener);
 
-		
-		
-		for (Path p : xsltPathList) {
+		for (Path xsltPath : xsltPathList) {
 			List<Templates> templateList = new ArrayList<>();
 
 			byte[] b = new byte[150 * 1024 * 1024];
@@ -64,43 +59,34 @@ public class XSLTMemoryMeasureTool {
 			}
 			b = null;
 
-			long usedMemory = getUsedMemory();
-			log.info(formatMemory(usedMemory) + " " + p);
+			long usedMemoryBefore = getUsedMemory();
+			log.info("Testing "+ xsltPath.getFileName()+"; file size = "+xsltPath.toFile().length());
+			log.info("usedMemoryBefore = "+formatMemory(usedMemoryBefore));
 			for (int i = 0; i < creationTimes; i++) {
-				String systemId = p.toFile().toString();
-				templateList.add(factory.newTemplates(new StreamSource(new FileInputStream(p.toFile()), systemId)));
+				String systemId = xsltPath.toFile().toString();
+				FileInputStream fileInputStream = new FileInputStream(xsltPath.toString());
+				templateList.add(factory.newTemplates(new StreamSource(fileInputStream, systemId)));
+				log.info((i + 1) + " Templates objects created, usedMemory = " + formatMemory(getUsedMemory()));
 			}
-
-			log.info(p.toFile().getName() + "=" + (formatMemory(getUsedMemory() - usedMemory)) + " " + p.toFile().length() + " = " + templateList.size());
+			long usedMemoryAfter = getUsedMemory();
+			log.info("usedMemoryAfter = "+formatMemory(usedMemoryAfter));
+			long memorySpent = usedMemoryAfter - usedMemoryBefore;
+			log.info("Memory spent for "+templateList.size()+" Templates objects: "+formatMemory(memorySpent)+"; avg "+formatMemory((memorySpent /templateList.size()))+" per object");
+			log.info("=============================================");
 			templateList.clear();
 			templateList = null;
-		}
-
-		if (true) {
-			return;
-		}
-
-		for (Path p : xsltPathList) {
-			testTransformerCreation(p, creationTimes);
-		}
-
-		if (false) {
-			Path baseDir = Paths.get("../delis-resources");
-			Files.walk(baseDir).filter(p -> p.toString().endsWith(".xslt")).forEach(path -> {
-				testTransformerCreation(path.toAbsolutePath(), creationTimes);
-			});
 		}
 	}
 
 	private void testTransformerCreation(Path xslFilePath, int creationTimes) {
-		boolean withCache = true;
+		boolean cacheEnabled = true;
 		System.gc();
 		long usedMemoryBefore = getUsedMemory();
-		log.info("Run with cache = " + withCache + " on " + xslFilePath);
+		log.info("Run with cache = " + cacheEnabled + " on " + xslFilePath);
 		log.info("Used Memory before: " + formatMemory(usedMemoryBefore));
 
 		try {
-			TransformerFactory transformerFactory = DelisTransformerFactory.newInstance(withCache);
+			TransformerFactory transformerFactory = DelisTransformerFactory.newInstance(cacheEnabled);
 			long start = System.currentTimeMillis();
 			for (int i = 0; i < creationTimes; i++) {
 				long startCase = System.currentTimeMillis();

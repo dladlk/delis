@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -32,7 +33,7 @@ public class DocumentParseService {
 		long start = System.currentTimeMillis();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), null, is, baos);
+			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), Paths.get(DOCUMENT_INFO_XSLT_PATH), is, baos);
 		} catch (Exception e) {
 			log.error("Failed to extract document header", e);
 			return null;
