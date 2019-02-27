@@ -3,15 +3,15 @@
 
     <div class="card">
         <div class="card border-secondary m-1">
-            <div class="card-body">
-                <table class="table table-sm table-borderless table-responsive">
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-borderless">
                     <tr>
                         <th>{{ 'documents.table.one.columnName.organisation' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.identifier' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.createTime' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.status' | translate }}</th>
                     </tr>
-                    <tr class="card-text">
+                    <tr >
                         <td>{{document.organisation.name}}</td>
                         <td class="btn-link" style="cursor: pointer" [routerLink]="['/identifiers/', document.receiverIdentifier.id]">{{document.receiverIdentifier.name}}</td>
                         <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
@@ -23,7 +23,7 @@
                         <th>{{ 'documents.table.one.columnName.documentId' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
                     </tr>
-                    <tr class="card-text">
+                    <tr >
                         <td>{{document.documentType}}</td>
                         <td>{{document.ingoingDocumentFormat}}</td>
                         <td>{{document.documentId}}</td>
@@ -33,7 +33,7 @@
                         <th colspan="2">{{ 'documents.table.one.columnName.name' | translate }}</th>
                         <th colspan="2">{{ 'documents.table.one.columnName.messageId' | translate }}</th>
                     </tr>
-                    <tr class="card-text">
+                    <tr >
                         <td colspan="2">{{document.name}}</td>
                         <td colspan="2">{{document.messageId}}</td>
                     </tr>
@@ -42,21 +42,21 @@
         </div>
 
         <div class="card border-secondary m-1">
-            <div class="card-body">
-                <table class="table table-sm table-borderless table-responsive">
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-borderless">
                     <tr>
                         <th></th>
                         <th>{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.senderName' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
                     </tr>
-                    <tr class="card-text">
+                    <tr >
                         <th>{{ 'documents.table.one.columnName.sender' | translate }}</th>
                         <td>{{document.senderIdRaw}}</td>
                         <td>{{document.senderName}}</td>
                         <td>{{document.senderCountry}}</td>
                     </tr>
-                    <tr class="card-text">
+                    <tr >
                         <th>{{ 'documents.table.one.columnName.receiver' | translate }}</th>
                         <td>{{document.receiverIdRaw}}</td>
                         <td>{{document.receiverName}}</td>
@@ -67,11 +67,11 @@
         </div>
 
         <div class="card border-secondary m-1">
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <div class="card-title">
                     {{ 'documents.table.one.columnName.journalRecords' | translate }}
                 </div>
-                <table class="table table-borderless table-sm table-responsive">
+                <table class="table table-borderless table-sm">
                     <tr>
                         <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
@@ -80,7 +80,7 @@
                         <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
                     </tr>
                     <tbody *ngFor="let doc of journalDocuments">
-                    <tr class="card-text">
+                    <tr >
                         <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
                         <td>{{doc.type}}</td>
                         <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
@@ -95,7 +95,7 @@
                             <th>{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
                             <th>{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
                         </tr>
-                        <tr *ngFor="let err of getErrorDictionaryModel(doc.id)" class="card-text">
+                        <tr *ngFor="let err of getErrorDictionaryModel(doc.id)" >
                             <td>{{err.flag}}</td>
                             <td>{{err.code}}</td>
                             <td>{{err.message}}</td>
@@ -108,17 +108,17 @@
         </div>
 
         <div class="card border-secondary m-1">
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <div class="card-title">
                     {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
                 </div>
-                <table class="table table-borderless table-sm table-responsive">
+                <table class="table table-borderless table-sm">
                     <tr>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
                     </tr>
-                    <tr *ngFor="let doc of documentBytesModels" class="card-text">
+                    <tr *ngFor="let doc of documentBytesModels" >
                         <td>{{doc.id}}</td>
                         <td>{{doc.type}}</td>
                         <td>{{doc.size}}</td>
