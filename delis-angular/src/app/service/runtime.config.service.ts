@@ -35,10 +35,6 @@ export class RuntimeConfigService {
          return localStorage.getItem(this.LOCALE_USERNAME);
     }
 
-    resetConfigUrl() {
-        localStorage.removeItem(this.LOCALE_URL);
-    }
-
     resetCurrentUser() {
         localStorage.removeItem(this.LOCALE_USERNAME);
     }
