@@ -2,6 +2,11 @@ span {
   color: #005b7c !important;
 }
 
-div {
-  margin-top: 1%;
+table td {
+  vertical-align: middle !important;
+}
+
+ngb-pagination /deep/ .page-item  {
+  vertical-align: middle !important;
+  margin-top: 10% !important;
 }
