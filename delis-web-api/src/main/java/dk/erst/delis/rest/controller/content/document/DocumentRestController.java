@@ -2,10 +2,9 @@ package dk.erst.delis.rest.controller.content.document;
 
 import dk.erst.delis.service.content.document.DocumentService;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import javax.validation.constraints.Min;
  * @author Iehor Funtusov, created by 21.12.18
  */
 
-@Slf4j
+@Validated
 @RestController
 @RequestMapping("/rest/document")
 public class DocumentRestController {
@@ -38,5 +37,10 @@ public class DocumentRestController {
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(documentService.getOneById(id));
+    }
+
+    @GetMapping("/{id}/bytes")
+    public ResponseEntity findListDocumentBytesByDocumentId(@PathVariable @Min(1) long id) {
+        return ResponseEntity.ok(documentService.findListDocumentBytesByDocumentId(id));
     }
 }

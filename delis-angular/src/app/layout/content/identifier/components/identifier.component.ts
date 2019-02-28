@@ -13,15 +13,15 @@ import { IdentifierService } from "../services/identifier.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { SHOW_DATE_FORMAT } from "../../../../app.constants";
 
-const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.Organisation';
-const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.IdentifierGroup';
-const COLUMN_NAME_VALUE = 'identifier.table.columnName.Value';
-const COLUMN_NAME_TYPE = 'identifier.table.columnName.Type';
-const COLUMN_NAME_UNIQUE_VALUE_TYPE = 'identifier.table.columnName.UniqueValueType';
-const COLUMN_NAME_STATUS = 'identifier.table.columnName.Status';
-const COLUMN_NAME_PUBLISHING_STATUS = 'identifier.table.columnName.PublishingStatus';
-const COLUMN_NAME_NAME = 'identifier.table.columnName.Name';
-const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.CreateTime';
+const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
+const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
+const COLUMN_NAME_VALUE = 'identifier.table.columnName.value';
+const COLUMN_NAME_TYPE = 'identifier.table.columnName.type';
+const COLUMN_NAME_UNIQUE_VALUE_TYPE = 'identifier.table.columnName.uniqueValueType';
+const COLUMN_NAME_STATUS = 'identifier.table.columnName.status';
+const COLUMN_NAME_PUBLISHING_STATUS = 'identifier.table.columnName.publishingStatus';
+const COLUMN_NAME_NAME = 'identifier.table.columnName.name';
+const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.createTime';
 
 @Component({
     selector: 'app-identifiers',
@@ -37,8 +37,8 @@ export class IdentifierComponent {
     tableHeaderSortModels: TableHeaderSortModel[] = [];
     statusList: [];
     publishingStatusList: [];
+    organizations: [];
 
-    textOrganisation: string;
     textIdentifierGroup: string;
     textType: string;
     textValue: string;
@@ -47,6 +47,7 @@ export class IdentifierComponent {
 
     selectedStatus: any;
     selectedPublishingStatus: any;
+    selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
@@ -84,10 +85,13 @@ export class IdentifierComponent {
         let select = JSON.parse(localStorage.getItem("Identifier"));
         this.statusList = select.status;
         this.publishingStatusList = select.publishingStatus;
+        select = JSON.parse(localStorage.getItem("organizations"));
+        this.organizations = select;
     }
 
     private initDefaultValues() {
         this.selectedStatus = "ALL";
+        this.selectedOrganization = "ALL";
         this.selectedPublishingStatus = {type: 'ALL', selected: true};
         this.filter = new IdentifierFilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
@@ -147,12 +151,11 @@ export class IdentifierComponent {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -215,11 +218,19 @@ export class IdentifierComponent {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    private clickProcess(columnName: string) {
+    clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
+        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        if (countClick === 1) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
+        }
+        if (countClick === 2) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Desc';
+        }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+            this.filter.sortBy = 'orderBy_Id_Asc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -247,29 +258,15 @@ export class IdentifierComponent {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
         this.selectedStatus = "ALL";
         this.selectedPublishingStatus = "ALL";
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textIdentifierGroup = '';
         this.textType = '';
         this.textValue = '';
         this.textUniqueValueType = '';
         this.textName = '';
-        this.clearCounts();
     }
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.clearCounts();
-    }
-
-    private clearCounts() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickIdentifierGroup = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_IDENTIFIER_GROUP).columnClick;
-        this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
-        this.filter.countClickType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_TYPE).columnClick;
-        this.filter.countClickUniqueValueType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_UNIQUE_VALUE_TYPE).columnClick;
-        this.filter.countClickValue = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_VALUE).columnClick;
-        this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
-        this.filter.countClickPublishingStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_PUBLISHING_STATUS).columnClick;
-        this.filter.countClickName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_NAME).columnClick;
     }
 }

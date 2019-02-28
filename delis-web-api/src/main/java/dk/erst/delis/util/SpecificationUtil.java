@@ -1,5 +1,7 @@
 package dk.erst.delis.util;
 
+import dk.erst.delis.data.entities.AbstractCreateEntity;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
 
@@ -30,11 +32,7 @@ public class SpecificationUtil {
             Root<? extends AbstractEntity> root,
             CriteriaBuilder criteriaBuilder) {
         String containsLikePattern;
-        List<Field> fieldsFromEntityModel = new ArrayList<>();
-        fieldsFromEntityModel.addAll(Arrays.asList(entityClass.getDeclaredFields()));
-        fieldsFromEntityModel.addAll(Arrays.asList(entityClass.getSuperclass().getDeclaredFields()));
-
-        for ( Field field : fieldsFromEntityModel ) {
+        for (Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass)) {
             if (Modifier.isPrivate(field.getModifiers())) {
                 String parameter = request.getParameter(field.getName());
                 if (Objects.nonNull(parameter)) {
@@ -50,10 +48,11 @@ public class SpecificationUtil {
                         if (Enum.class.isAssignableFrom(field.getType())) {
                             predicates.add(criteriaBuilder.equal(root.get(field.getName()), Enum.valueOf((Class<Enum>) field.getType(), parameter)));
                         }
-                        if (field.getType().getSuperclass().isAssignableFrom(AbstractEntity.class)) {
+                        if (field.getType().getSuperclass().isAssignableFrom(AbstractEntity.class)
+                                || field.getType().getSuperclass().isAssignableFrom(AbstractCreateUpdateEntity.class)
+                                || field.getType().getSuperclass().isAssignableFrom(AbstractCreateEntity.class)) {
                             List<Predicate> innerEntitiesPredicates = new ArrayList<>();
-                            List<Field> innerEntitiesFields = new ArrayList<>(Arrays.asList(field.getType().getDeclaredFields()));
-                            for (Field innerField : innerEntitiesFields) {
+                            for (Field innerField : ClassLoaderUtil.getAllFieldsByEntity(field.getType())) {
                                 if (Modifier.isPrivate(innerField.getModifiers())) {
                                     if (innerField.getType().isAssignableFrom(String.class)) {
                                         containsLikePattern = StringPatternUtil.getContainsLikePattern(parameter);
@@ -66,8 +65,10 @@ public class SpecificationUtil {
                             }
                         }
                         if (field.getType().isAssignableFrom(Date.class)) {
-                            DateRangeModel range = WebRequestUtil.generateDateRange(parameter);
-                            predicates.add(criteriaBuilder.between(root.get(field.getName()), range.getStart(), range.getEnd()));
+                            if (StringPatternUtil.dateRegExPattern(parameter)) {
+                                DateRangeModel range = WebRequestUtil.generateDateRange(parameter);
+                                predicates.add(criteriaBuilder.between(root.get(field.getName()), range.getStart(), range.getEnd()));
+                            }
                         }
                         if (Number.class.isAssignableFrom(field.getType())) {
                             predicates.add(criteriaBuilder.equal(root.get(field.getName()), parameter));

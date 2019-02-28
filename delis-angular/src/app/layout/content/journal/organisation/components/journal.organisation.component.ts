@@ -13,10 +13,10 @@ import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
-const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.Organisation';
-const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.Message';
-const COLUMN_NAME_DURATIOM_MS = 'journal.organisations.table.columnName.DurationMs';
-const COLUMN_NAME_CREATE_TIME = 'journal.organisations.table.columnName.CreateTime';
+const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.organisation';
+const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.message';
+const COLUMN_NAME_DURATIOM_MS = 'journal.organisations.table.columnName.durationMs';
+const COLUMN_NAME_CREATE_TIME = 'journal.organisations.table.columnName.createTime';
 
 @Component({
     selector: 'app-journal-organisation',
@@ -31,9 +31,11 @@ export class JournalOrganisationComponent implements OnInit {
     journalOrganisations: JournalOrganisationModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
 
-    textOrganisation: string;
     textMessage: string;
     textDurationMs: string;
+
+    organizations: [];
+    selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
@@ -58,6 +60,7 @@ export class JournalOrganisationComponent implements OnInit {
 
     ngOnInit(): void {
         this.initProcess();
+        this.initSelected();
     }
 
     private initProcess() {
@@ -67,7 +70,12 @@ export class JournalOrganisationComponent implements OnInit {
         this.clearAllFilter();
     }
 
+    initSelected() {
+        this.organizations = JSON.parse(localStorage.getItem("organizations"));
+    }
+
     private initDefaultValues() {
+        this.selectedOrganization = "ALL";
         this.filter = new JournalOrganisationFilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
@@ -93,12 +101,11 @@ export class JournalOrganisationComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -131,11 +138,19 @@ export class JournalOrganisationComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    private clickProcess(columnName: string) {
+    clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
+        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        if (countClick === 1) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
+        }
+        if (countClick === 2) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Desc';
+        }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+            this.filter.sortBy = 'orderBy_Id_Asc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -161,21 +176,12 @@ export class JournalOrganisationComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textMessage = '';
         this.textDurationMs = '';
-        this.clearCounts();
     }
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.clearCounts();
-    }
-
-    private clearCounts() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
-        this.filter.countClickMessage = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_MESSAGE).columnClick;
-        this.filter.countClickDurationMs = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DURATIOM_MS).columnClick;
     }
 }

@@ -13,11 +13,11 @@ import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 
-const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.Organisation';
-const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.Identifier';
-const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.Message';
-const COLUMN_NAME_DURATIOM_MS = 'journal.identifier.table.columnName.DurationMs';
-const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.CreateTime';
+const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.organisation';
+const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.identifier';
+const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.message';
+const COLUMN_NAME_DURATIOM_MS = 'journal.identifier.table.columnName.durationMs';
+const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime';
 
 @Component({
     selector: 'app-journal-identifier',
@@ -32,10 +32,12 @@ export class JournalIdentifierComponent implements OnInit {
     journalIdentifiers: JournalIdentifierModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
 
-    textOrganisation: string;
     textIdentifier: string;
     textMessage: string;
     textDurationMs: string;
+
+    organizations: [];
+    selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
@@ -60,6 +62,7 @@ export class JournalIdentifierComponent implements OnInit {
 
     ngOnInit(): void {
         this.initProcess();
+        this.initSelected();
     }
 
     private initProcess() {
@@ -69,7 +72,12 @@ export class JournalIdentifierComponent implements OnInit {
         this.clearAllFilter();
     }
 
+    initSelected() {
+        this.organizations = JSON.parse(localStorage.getItem("organizations"));
+    }
+
     private initDefaultValues() {
+        this.selectedOrganization = "ALL";
         this.filter = new JournalIdentifierFilterProcessResultModel();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
@@ -98,12 +106,11 @@ export class JournalIdentifierComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -146,11 +153,19 @@ export class JournalIdentifierComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    private clickProcess(columnName: string) {
+    clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
+        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        if (countClick === 1) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
+        }
+        if (countClick === 2) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Desc';
+        }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+            this.filter.sortBy = 'orderBy_Id_Asc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -176,23 +191,13 @@ export class JournalIdentifierComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textIdentifier = '';
         this.textMessage = '';
         this.textDurationMs = '';
-        this.clearCounts();
     }
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.clearCounts();
-    }
-
-    private clearCounts() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickIdentifier = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_IDENTIFIER).columnClick;
-        this.filter.countClickCreateTime = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_CREATE_TIME).columnClick;
-        this.filter.countClickMessage = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_MESSAGE).columnClick;
-        this.filter.countClickDurationMs = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DURATIOM_MS).columnClick;
     }
 }

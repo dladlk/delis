@@ -3,6 +3,7 @@ import { TokenService } from "../../../../../service/token.service";
 import { RuntimeConfigService } from "../../../../../service/runtime.config.service";
 import { HttpRestService } from "../../../../../service/http.rest.service";
 import { Observable } from "rxjs";
+import { HttpParams } from "@angular/common/http";
 
 @Injectable()
 export class ChartDocumentService {
@@ -19,5 +20,12 @@ export class ChartDocumentService {
 
     getChartData() : Observable<any> {
         return this.httpRestService.methodGet(this.url, null, this.tokenService.getToken());
+    }
+
+    getChartCustomData(date: Date[]) : Observable<any> {
+        let params = new HttpParams();
+        params = params.append('startDate', String(date[0].getTime()));
+        params = params.append('endDate', String(date[1].getTime()));
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 }

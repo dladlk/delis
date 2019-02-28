@@ -23,16 +23,8 @@ export class DocumentsService {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
-        params = params.append('countClickReceiverIdentifier', String(filter.countClickReceiver));
-        params = params.append('countClickDocumentStatus', String(filter.countClickStatus));
-        params = params.append('countClickLastError', String(filter.countClickLastError));
-        params = params.append('countClickDocumentType', String(filter.countClickDocumentType));
-        params = params.append('countClickIngoingDocumentFormat', String(filter.countClickIngoingFormat));
-        params = params.append('countClickCreateTime', String(filter.countClickReceived));
-        params = params.append('countClickIssued', String(filter.countClickIssued));
-        params = params.append('countClickSenderName', String(filter.countClickSenderName));
-        params = params.append('countClickReceiverName', String(filter.countClickReceiverName));
-        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
+        params = params.append('sort', filter.sortBy);
+
         if (errors) {
             let end = new Date();
             let start = new Date();
@@ -52,7 +44,7 @@ export class DocumentsService {
         if (filter.documentType !== 'ALL') {
             params = params.append('documentType', filter.documentType);
         }
-        if (filter.organisation !== null) {
+        if (filter.organisation !== 'ALL') {
             params = params.append('organisation', filter.organisation);
         }
         if (filter.receiver !== null) {
@@ -70,5 +62,9 @@ export class DocumentsService {
 
     getOneDocumentById(id: any) : Observable<any> {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
+    }
+
+    getListDocumentBytesByDocumentId(id: any) : Observable<any> {
+        return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
     }
 }

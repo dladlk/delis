@@ -11,16 +11,7 @@ export class IdentifierFilterProcessResult {
     name: string;
     publishingStatus: string;
     dateRange: DateRangeModel;
-
-    countClickOrganisation: number;
-    countClickIdentifierGroup: number;
-    countClickCreateTime: number;
-    countClickType: number;
-    countClickValue: number;
-    countClickUniqueValueType: number;
-    countClickStatus: number;
-    countClickPublishingStatus: number;
-    countClickName: number;
+    sortBy: string;
 
     constructor() {
         this.type = null;
@@ -32,14 +23,6 @@ export class IdentifierFilterProcessResult {
         this.status = 'ALL';
         this.publishingStatus = 'ALL';
         this.dateRange = null;
-        this.countClickOrganisation = 0;
-        this.countClickIdentifierGroup = 0;
-        this.countClickCreateTime = 0;
-        this.countClickType = 0;
-        this.countClickValue = 0;
-        this.countClickUniqueValueType = 0;
-        this.countClickStatus = 0;
-        this.countClickPublishingStatus = 0;
-        this.countClickName = 0;
+        this.sortBy = 'orderBy_Id_Asc';
     }
 }

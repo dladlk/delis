@@ -90,6 +90,11 @@ public class ConfigBean {
 		return Paths.get(path).toAbsolutePath();
 	}
 
+	public boolean getXsltCacheEnabled() {
+		String stringValue = configValues.get(XSLT_CACHE_ENABLED);
+		return Boolean.parseBoolean(stringValue);
+	}
+
 	public SmpEndpointConfig getSmpEndpointConfig() {
 		return new SmpEndpointConfig(configValues.get(ENDPOINT_URL), configValues.get(ENDPOINT_USER_NAME), configValues.get(ENDPOINT_PASSWORD), configValues.get(ENDPOINT_FORMAT));
 	}

@@ -9,14 +9,7 @@ export class JournalDocumentFilterProcessResult {
     message: string;
     durationMs: number;
     dateRange: DateRangeModel;
-
-    countClickOrganisation: number;
-    countClickDocument: number;
-    countClickCreateTime: number;
-    countClickDocumentProcessStepType: number;
-    countClickSuccess: number;
-    countClickMessage: number;
-    countClickDurationMs: number;
+    sortBy: string;
 
     constructor() {
         this.type = 'ALL';
@@ -26,12 +19,6 @@ export class JournalDocumentFilterProcessResult {
         this.message = null;
         this.durationMs = null;
         this.dateRange = null;
-        this.countClickOrganisation = 0;
-        this.countClickDocument = 0;
-        this.countClickCreateTime = 0;
-        this.countClickDocumentProcessStepType = 0;
-        this.countClickSuccess = 0;
-        this.countClickMessage = 0;
-        this.countClickDurationMs = 0;
+        this.sortBy = 'orderBy_Id_Asc';
     }
 }

@@ -30,11 +30,8 @@ export class JournalOrganisationService {
 
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
+        params = params.append('sort', filter.sortBy);
 
-        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
-        params = params.append('countClickCreateTime', String(filter.countClickCreateTime));
-        params = params.append('countClickMessage', String(filter.countClickMessage));
-        params = params.append('countClickDurationMs', String(filter.countClickDurationMs));
 
         if (filter.organisation !== null) {
             params = params.append('organisation', filter.organisation);

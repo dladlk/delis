@@ -13,14 +13,14 @@ import { DocumentModel } from "../models/document.model";
 import { ErrorService } from "../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
 
-const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.Organisation';
-const COLUMN_NAME_RECEIVER = 'documents.table.columnName.Receiver';
-const COLUMN_NAME_STATUS = 'documents.table.columnName.Status';
-const COLUMN_NAME_LAST_ERROR = 'documents.table.columnName.LastError';
-const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.columnName.DocumentType';
-const COLUMN_NAME_INGOING_FORMAT = 'documents.table.columnName.IngoingFormat';
-const COLUMN_NAME_RECEIVED = 'documents.table.columnName.Received';
-const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.SenderName';
+const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
+const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
+const COLUMN_NAME_STATUS = 'documents.table.columnName.documentStatus';
+const COLUMN_NAME_LAST_ERROR = 'documents.table.columnName.lastError';
+const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.columnName.documentType';
+const COLUMN_NAME_INGOING_FORMAT = 'documents.table.columnName.ingoingDocumentFormat';
+const COLUMN_NAME_RECEIVED = 'documents.table.columnName.createTime';
+const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
 
 @Component({
     selector: 'app-documents',
@@ -34,8 +34,8 @@ export class DocumentsComponent implements OnInit {
     selectedLastError: any;
     selectedDocumentType: any;
     selectedIngoingFormat: any;
+    selectedOrganization: any;
 
-    textOrganisation: string;
     textReceiver: string;
     textSenderName: string;
     textPlaceholderReceivedDate: string;
@@ -46,6 +46,7 @@ export class DocumentsComponent implements OnInit {
     documentTypes: [];
     ingoingFormats: [];
     lastErrors: [];
+    organizations: [];
     filter: FilterProcessResult;
 
     pagination: PaginationModel;
@@ -82,6 +83,8 @@ export class DocumentsComponent implements OnInit {
         this.documentTypes = select.documentType;
         this.ingoingFormats = select.ingoingDocumentFormat;
         this.lastErrors = select.lastError;
+        select = JSON.parse(localStorage.getItem("organizations"));
+        this.organizations = select;
     }
 
     protected initProcess() {
@@ -96,6 +99,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";
         this.selectedLastError = "ALL";
+        this.selectedOrganization = "ALL";
         this.textPlaceholderReceivedDate = "Received Date";
         this.filter = new FilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
@@ -145,12 +149,11 @@ export class DocumentsComponent implements OnInit {
         this.currentProdDocuments(page, pageSize, this.errorsFlag);
     }
 
-    loadTextOrganisation(text: string) {
-        if (text.length === 0 || text == null) {
-            this.filter.organisation = null;
-        } else {
-            this.filter.organisation = text;
+    loadOrganisations() {
+        if (this.selectedOrganization === null) {
+            this.selectedOrganization = 'ALL';
         }
+        this.filter.organisation = this.selectedOrganization;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -228,8 +231,16 @@ export class DocumentsComponent implements OnInit {
     clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
+        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        if (countClick === 1) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
+        }
+        if (countClick === 2) {
+            this.filter.sortBy = 'orderBy_' + columnEntity + '_Desc';
+        }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
+            this.filter.sortBy = 'orderBy_Id_Asc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -238,30 +249,18 @@ export class DocumentsComponent implements OnInit {
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
-        this.clearSort();
     }
 
     protected clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.clearSort();
         this.selectedStatus = "ALL";
         this.selectedDocumentType = "ALL";
         this.selectedIngoingFormat = "ALL";
         this.selectedLastError = "ALL";
-        this.textOrganisation = '';
+        this.selectedOrganization = 'ALL';
         this.textReceiver = '';
         this.textSenderName = '';
         this.textPlaceholderReceivedDate = "Received Date";
-    }
-
-    private clearSort() {
-        this.filter.countClickOrganisation = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_ORGANIZATION).columnClick;
-        this.filter.countClickReceiver = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVER).columnClick;
-        this.filter.countClickStatus = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_STATUS).columnClick;
-        this.filter.countClickLastError = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_LAST_ERROR).columnClick;
-        this.filter.countClickDocumentType = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_DOCUMENT_TYPE).columnClick;
-        this.filter.countClickIngoingFormat = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_INGOING_FORMAT).columnClick;
-        this.filter.countClickReceived = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_RECEIVED).columnClick;
-        this.filter.countClickSenderName = this.tableHeaderSortModels.find(k => k.columnName === COLUMN_NAME_SENDER_NAME).columnClick;
+        this.filter.sortBy = 'orderBy_Id_Asc';
     }
 }

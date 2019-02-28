@@ -25,15 +25,7 @@ export class IdentifierService {
 
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
-        params = params.append('countClickOrganisation', String(filter.countClickOrganisation));
-        params = params.append('countClickIdentifierGroup', String(filter.countClickIdentifierGroup));
-        params = params.append('countClickCreateTime', String(filter.countClickCreateTime));
-        params = params.append('countClickType', String(filter.countClickType));
-        params = params.append('countClickUniqueValueType', String(filter.countClickUniqueValueType));
-        params = params.append('countClickValue', String(filter.countClickValue));
-        params = params.append('countClickStatus', String(filter.countClickStatus));
-        params = params.append('countClickPublishingStatus', String(filter.countClickPublishingStatus));
-        params = params.append('countClickName', String(filter.countClickName));
+        params = params.append('sort', filter.sortBy);
         if (filter.status !== 'ALL') {
             params = params.append('status', filter.status);
         }

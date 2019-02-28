@@ -5,7 +5,6 @@ export class JournalDocumentModel {
 
     id: number;
     createTime: string;
-    updateTime: string;
     organisation: OrganisationModel = new OrganisationModel();
     document: DocumentModel = new DocumentModel();
     success: boolean;

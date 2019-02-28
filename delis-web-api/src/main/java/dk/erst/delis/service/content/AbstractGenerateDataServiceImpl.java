@@ -8,6 +8,7 @@ import dk.erst.delis.persistence.specification.EntitySpecificationFactory;
 import dk.erst.delis.persistence.specification.EntitySpecification;
 import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 import dk.erst.delis.rest.data.response.PageContainer;
+import dk.erst.delis.util.ClassLoaderUtil;
 import dk.erst.delis.util.WebRequestUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +40,6 @@ public class AbstractGenerateDataServiceImpl<
         if (collectionSize == 0) {
             return new PageContainer<>();
         }
-        String sort = WebRequestUtil.existSortParameter(request);
         String specificFlag = WebRequestUtil.existFlagParameter(request);
         EntitySpecification entitySpecification;
         if (StringUtils.isNotBlank(specificFlag)) {
@@ -47,11 +47,8 @@ public class AbstractGenerateDataServiceImpl<
         } else {
             entitySpecification = EntitySpecification.DEFAULT;
         }
-        if (StringUtils.isNotBlank(sort)) {
-            return sortProcess(entityClass, sort, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, entitySpecification);
-        } else {
-            return getDefaultDataPageContainerWithoutSorting(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, entitySpecification);
-        }
+
+        return sortProcess(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, entitySpecification);
     }
 
     @Override
@@ -66,22 +63,18 @@ public class AbstractGenerateDataServiceImpl<
 
     private PageContainer<E> sortProcess(
             Class<E> entityClass,
-            String sort,
             WebRequest request,
             int page, int size, long collectionSize,
             R repository,
             EntitySpecification entitySpecification) {
-        List<Field> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(entityClass.getDeclaredFields()));
-        fields.addAll(Arrays.asList(entityClass.getSuperclass().getDeclaredFields()));
-        for ( Field field : fields ) {
+        String[] strings = Objects.requireNonNull(request.getParameter("sort")).split("_");
+        for ( Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass) ) {
             if (Modifier.isPrivate(field.getModifiers())) {
-                if (sort.toUpperCase().endsWith(field.getName().toUpperCase())) {
-                    int count = Integer.parseInt(Objects.requireNonNull(request.getParameter(sort)));
-                    if (count == 1) {
-                        return getDescendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
-                    } else if (count == 2) {
+                if (Objects.equals(strings[1].toUpperCase(), field.getName().toUpperCase())) {
+                    if (Objects.equals(strings[2], "Asc")) {
                         return getAscendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
+                    } else {
+                        return getDescendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
                     }
                 }
             }
