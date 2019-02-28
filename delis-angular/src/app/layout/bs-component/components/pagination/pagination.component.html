@@ -6,8 +6,9 @@
                  {{ 'pagination.status.of' | translate }} {{pagination.collectionSize}} {{ 'pagination.status.end' | translate }}
                 </span>
         </div>
-        <div class="col-sm-4">
-            <ngb-pagination [collectionSize]="pagination.collectionSize"
+        <div class="col-sm-4" *ngIf="pagination.collectionSize > pagination.pageSize">
+            <ngb-pagination
+                            [collectionSize]="pagination.collectionSize"
                             [pageSize]="pagination.pageSize"
                             [(page)]="pagination.currentPage"
                             [maxSize]="4"
@@ -18,7 +19,7 @@
             </ngb-pagination>
         </div>
         <div class="col-sm-1">
-            <span>&nbsp;&nbsp;
+            <span>
                 {{ 'pagination.page-size' | translate }}:
                 </span>
         </div>
