@@ -1,43 +1,42 @@
 <div class="container-fluid">
-    <table class="table-responsive">
-        <tr>
-            <td>
-                <span>&nbsp;&nbsp;
-                    {{ 'pagination.status.start' | translate }} {{generateFrom()}} {{ 'pagination.status.to' | translate }} {{generateTo()}}
-                    {{ 'pagination.status.of' | translate }} {{pagination.collectionSize}} {{ 'pagination.status.end' | translate }}
-                </span>&nbsp;&nbsp;
-            </td>
-            <td>
-                <ngb-pagination [collectionSize]="pagination.collectionSize"
-                                [pageSize]="pagination.pageSize"
-                                [(page)]="pagination.currentPage"
-                                [maxSize]="5"
-                                [rotate]="true"
-                                [boundaryLinks]="true"
-                                (pageChange)="loadPage($event)">
-                </ngb-pagination>
-            </td>
-            <td>
-                <span>&nbsp;&nbsp;
-                    {{ 'pagination.page-size' | translate }}:
-                </span>&nbsp;&nbsp;
-            </td>
-            <td>
-                <ng-select [items]="pageSizes"
-                           bindLabel="pageSize"
-                           placeholder="&#8721;"
-                           [(ngModel)]="pagination.selectedPageSize"
-                           [searchable]="false"
-                           [clearable]="false"
-                           [dropdownPosition]="dropdownPosition"
-                           (change)="loadPageSize()">
-                </ng-select>
-            </td>
-            <td>&nbsp;
-                <button type="button" class="btn" (click)="clearFilter()">&nbsp;{{ 'pagination.clear' | translate }}&nbsp;&nbsp;
-                    <i class="fa fa-eraser"></i>&nbsp;
-                </button>
-            </td>
-        </tr>
-    </table>
+    <div class="row justify-content-start " style="align-items: center !important; margin: 1% !important;">
+        <div class="col-sm-3">
+             <span>&nbsp;&nbsp;
+                 {{ 'pagination.status.start' | translate }} {{generateFrom()}} {{ 'pagination.status.to' | translate }} {{generateTo()}}
+                 {{ 'pagination.status.of' | translate }} {{pagination.collectionSize}} {{ 'pagination.status.end' | translate }}
+                </span>
+        </div>
+        <div class="col-sm-4">
+            <ngb-pagination [collectionSize]="pagination.collectionSize"
+                            [pageSize]="pagination.pageSize"
+                            [(page)]="pagination.currentPage"
+                            [maxSize]="4"
+                            [ellipses]="false"
+                            [rotate]="true"
+                            [boundaryLinks]="true"
+                            (pageChange)="loadPage($event)">
+            </ngb-pagination>
+        </div>
+        <div class="col-sm-1">
+            <span>&nbsp;&nbsp;
+                {{ 'pagination.page-size' | translate }}:
+                </span>
+        </div>
+        <div class="col-sm-1">
+            <ng-select [items]="pageSizes"
+                       bindLabel="pageSize"
+                       placeholder="&#8721;"
+                       [(ngModel)]="pagination.selectedPageSize"
+                       [searchable]="false"
+                       [clearable]="false"
+                       [dropdownPosition]="dropdownPosition"
+                       (change)="loadPageSize()">
+            </ng-select>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn" (click)="clearFilter()">&nbsp;{{ 'pagination.clear' | translate }}&nbsp;&nbsp;
+                <i class="fa fa-eraser"></i>&nbsp;
+            </button>
+        </div>
+    </div>
 </div>
