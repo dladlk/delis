@@ -153,8 +153,14 @@
 		    <artifactId>h2</artifactId>
 		    <scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>no.difi.vefa</groupId>
+			<artifactId>peppol-sbdh</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
     
     <build>
 		<plugins>
