@@ -41,7 +41,8 @@ export class PaginationComponent {
     }
 
     clearFilter() {
-        this.paginationService.clearFilter(new PaginationModel());
+        location.reload();
+        // this.paginationService.clearFilter(new PaginationModel());
     }
 
     generateFrom() : number {

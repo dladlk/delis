@@ -54,6 +54,8 @@ export class DocumentsService {
             params = params.append('senderName', filter.senderName);
         }
         if (filter.dateReceived !== null) {
+            filter.dateReceived.dateStart.setHours(0,0,0,0);
+            filter.dateReceived.dateEnd.setHours(23,59,59,999);
             params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
         }
 
