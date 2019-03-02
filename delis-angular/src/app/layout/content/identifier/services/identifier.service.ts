@@ -51,6 +51,8 @@ export class IdentifierService {
             params = params.append('name', filter.name);
         }
         if (filter.dateRange !== null) {
+            filter.dateRange.dateStart.setHours(0,0,0,0);
+            filter.dateRange.dateEnd.setHours(23,59,59,999);
             params = params.append('createTime', String(filter.dateRange.dateStart.getTime()) + ':' + String(filter.dateRange.dateEnd.getTime()));
         }
 

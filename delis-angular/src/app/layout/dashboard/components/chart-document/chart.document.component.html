@@ -17,12 +17,12 @@
                 </canvas>
             </div>
             <div class="card-footer">
-                <div class="d-flex justify-content-between">
-                    <div class="p-2">
-                        <button type="button" class="btn btn-large float-left" (click)="previousPeriod()">
-                            <i class="fa fa-reply"></i>
-                        </button>
-                    </div>
+                <div class="d-flex justify-content-center">
+                    <!--<div class="p-2">-->
+                        <!--<button type="button" class="btn btn-large float-left" (click)="previousPeriod()">-->
+                            <!--<i class="fa fa-reply"></i>-->
+                        <!--</button>-->
+                    <!--</div>-->
                     <div class="p-2 bg-sm">
                         <input bsDaterangepicker
                                [bsConfig]="{containerClass: 'theme-dark-blue'}"
@@ -32,11 +32,11 @@
                                type="text"
                                (bsValueChange)="loadDate($event)">
                     </div>
-                    <div class="p-2">
-                        <button type="button" class="btn btn-large float-right" (click)="nextPeriod()">
-                            <i class="fa fa-share"></i>
-                        </button>
-                    </div>
+                    <!--<div class="p-2">-->
+                        <!--<button type="button" class="btn btn-large float-right" (click)="nextPeriod()">-->
+                            <!--<i class="fa fa-share"></i>-->
+                        <!--</button>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>

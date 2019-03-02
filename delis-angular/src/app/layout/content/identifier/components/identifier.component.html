@@ -7,13 +7,12 @@
                     <div class="card-header"><span>{{ 'identifier.table.header' | translate }}</span></div>
                     <div class="card-body table-responsive">
                         <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
-                        <hr>
                         <table class="table table-hover table-sm">
                             <thead>
                             <tr>
                                 <th *ngFor="let hed of tableHeaderSortModels">
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
                                             <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
                                         </button>
                                     </div>

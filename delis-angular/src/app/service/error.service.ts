@@ -1,12 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpRestService } from "./http.rest.service";
 import { LocaleService } from "./locale.service";
-import { TokenService } from "./token.service";
-import { RuntimeConfigService } from "./runtime.config.service";
-import { Router } from "@angular/router";
 import { ListenErrorService } from "./listen.error.service";
 import { ErrorModel } from "../models/error.model";
-import {LogoutService} from "../logout/logout.service";
+import { LogoutService } from "../logout/logout.service";
 
 @Injectable()
 export class ErrorService {

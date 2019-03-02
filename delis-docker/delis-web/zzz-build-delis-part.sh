@@ -15,6 +15,7 @@ echo Building ${DELIS_PART}
 
 CURDIR="$(dirname $(readlink -f $0))"
 
+DELIS_SBDH_PATH=../../delis-sbdh
 DELIS_DATA_PATH=../../delis-data
 DELIS_PART_PATH=../../${DELIS_PART}
 
@@ -31,6 +32,7 @@ then
 
 echo "Building ${DELIS_PART_VERSION}"
 
+mvn install -DskipTests=true -f ${DELIS_SBDH_PATH}/pom.xml
 mvn install -DskipTests=true -f ${DELIS_DATA_PATH}/pom.xml
 mvn install -DskipTests=true -f ${DELIS_PART_PATH}/pom.xml
 
