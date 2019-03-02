@@ -1,5 +1,8 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <changeSet author="Andriy Palval (generated)" id="1551363198554-1">
         <createTable tableName="access_point">
             <column autoIncrement="true" name="id_pk" type="BIGINT">
@@ -407,7 +410,8 @@
         </createTable>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-18">
-        <addUniqueConstraint columnNames="organisation_id, setup_key" constraintName="I_ORGANISAION_ID" tableName="organisation_setup"/>
+        <addUniqueConstraint columnNames="organisation_id, setup_key" constraintName="I_ORGANISAION_ID"
+                             tableName="organisation_setup"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-19">
         <createIndex indexName="FK7a7401wwj0r9n186m38nomthc" tableName="identifier">
@@ -488,48 +492,93 @@
         </createIndex>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-34">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="organisation_setup" constraintName="FK4l0n6nkqcwculdm6i1g5a3epu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="organisation_setup"
+                                 constraintName="FK4l0n6nkqcwculdm6i1g5a3epu" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-35">
-        <addForeignKeyConstraint baseColumnNames="identifier_group_id" baseTableName="identifier" constraintName="FK7a7401wwj0r9n186m38nomthc" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="identifier_group" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="identifier_group_id" baseTableName="identifier"
+                                 constraintName="FK7a7401wwj0r9n186m38nomthc" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="identifier_group" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-36">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_document" constraintName="FKc7ff7vnu2ivgyg9lw355tqrsb" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_document"
+                                 constraintName="FKc7ff7vnu2ivgyg9lw355tqrsb" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-37">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_identifier" constraintName="FKcm4degsxui5lkugb5e2akkb8v" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_identifier"
+                                 constraintName="FKcm4degsxui5lkugb5e2akkb8v" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-38">
-        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="journal_document" constraintName="FKcvsg7pw5wb0a67vwo11o4iivb" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="journal_document"
+                                 constraintName="FKcvsg7pw5wb0a67vwo11o4iivb" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="document" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-39">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="document" constraintName="FKdicmkdbspj7lwxc9grnhtocv8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="document"
+                                 constraintName="FKdicmkdbspj7lwxc9grnhtocv8" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-40">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_organisation" constraintName="FKiljkbjp43ynfux6xmp1yj6691" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_organisation"
+                                 constraintName="FKiljkbjp43ynfux6xmp1yj6691" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-41">
-        <addForeignKeyConstraint baseColumnNames="journal_document_id_pk" baseTableName="journal_document_error" constraintName="FKlyo9ykj0fv5fmr8ey5wsg8wl5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="journal_document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="journal_document_id_pk" baseTableName="journal_document_error"
+                                 constraintName="FKlyo9ykj0fv5fmr8ey5wsg8wl5" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="journal_document" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-42">
-        <addForeignKeyConstraint baseColumnNames="error_dictionary_id_pk" baseTableName="journal_document_error" constraintName="FKm5lbexhtk0brtsix91sgy4s24" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="error_dictionary" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="error_dictionary_id_pk" baseTableName="journal_document_error"
+                                 constraintName="FKm5lbexhtk0brtsix91sgy4s24" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="error_dictionary" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-43">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="identifier_group" constraintName="FKn2f67b9j4476745o2bb3w6wkg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="identifier_group"
+                                 constraintName="FKn2f67b9j4476745o2bb3w6wkg" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-44">
-        <addForeignKeyConstraint baseColumnNames="identifier_id" baseTableName="journal_identifier" constraintName="FKn7mdc8btftsrt7s8uu3iiqrna" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="identifier" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="identifier_id" baseTableName="journal_identifier"
+                                 constraintName="FKn7mdc8btftsrt7s8uu3iiqrna" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="identifier" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-45">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="identifier" constraintName="FKnewdfff3ood1kdsvycis651y3" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="identifier"
+                                 constraintName="FKnewdfff3ood1kdsvycis651y3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-46">
-        <addForeignKeyConstraint baseColumnNames="receiver_identifier_id" baseTableName="document" constraintName="FKnprb2503t5bm3rsark8jrs06k" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="identifier" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="receiver_identifier_id" baseTableName="document"
+                                 constraintName="FKnprb2503t5bm3rsark8jrs06k" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="identifier" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-47">
-        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="document_bytes" constraintName="FKs1cdacsr7adhocd341885jf2d" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="document_bytes"
+                                 constraintName="FKs1cdacsr7adhocd341885jf2d" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="document" validate="true"/>
     </changeSet>
     <changeSet author="Andriy Palval (generated)" id="1551363198554-48">
-        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="sync_organisation_fact" constraintName="FKsd60cv3qveqn2fe8dqv1datq7" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="sync_organisation_fact"
+                                 constraintName="FKsd60cv3qveqn2fe8dqv1datq7" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
     </changeSet>
 </databaseChangeLog>
