@@ -1,0 +1,10 @@
+delisAdmin:
+    env:
+        - name: config.storageDocumentInput
+          value: "/load"
+        - name: job.interval.sec.documentLoad
+          value: "10"
+        - name: job.interval.sec.documentValidate
+          value: "20"
+        - name: job.interval.sec.documentDeliver
+          value: "30" 

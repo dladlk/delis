@@ -1,34 +1,40 @@
+{{- if .Values.delisAngular.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: '{{.Release.Name}}-delis-angular'
+    app: '{{.Release.Name}}-angular'
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: delis-angular
+  name: {{.Release.Name}}-angular
   namespace: '{{.Values.namespace}}'
 spec:
   selector:
     matchLabels:
-      app: '{{.Release.Name}}-delis-angular'
+      app: '{{.Release.Name}}-angular'
   strategy:
     type: 'RollingUpdate'
   template:
     metadata:
       labels:
-        app: '{{.Release.Name}}-delis-angular'
+        app: '{{.Release.Name}}-angular'
     spec:
       containers:
-      - image: delis-angular:latest
+      - image: {{.Values.delisAngular.image}}
         imagePullPolicy: IfNotPresent
-        name: delis-angular
+        name: {{.Release.Name}}-angular
         env:
           - name: CONTEXT_NAME
-            value: delis
+            value: {{.Values.delisAngular.contextName}}
           - name: API_URL
-            value: https://edelivery-test.trueservice.dk/delis-web-api/rest
+            value: {{.Values.delisAngular.apiUrl}}
           - name: BASE_URL
-            value: https://edelivery-test.trueservice.dk/delis
+            value: {{.Values.delisAngular.baseUrl}}
           - name: SERVER_PORT
             value: "8080"
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}

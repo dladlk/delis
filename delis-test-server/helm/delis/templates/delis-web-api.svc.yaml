@@ -1,12 +1,13 @@
+{{- if .Values.delisApi.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: delis-web-api
+    app: {{.Release.Name}}-api
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: delis-web-api
+  name: {{.Release.Name}}-api
   namespace: '{{.Values.namespace}}'
 spec:
   ports:
@@ -14,5 +15,6 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    app: '{{.Release.Name}}-delis-web-api'
+    app: '{{.Release.Name}}-api'
   type: 'NodePort'
+{{- end }}

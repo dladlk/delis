@@ -1,54 +1,51 @@
+{{- if .Values.delisAdmin.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: '{{.Release.Name}}-delis-web-admin'
+    app: '{{.Release.Name}}-admin'
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: delis-web-admin
+  name: {{.Release.Name}}-admin
   namespace: '{{.Values.namespace}}'
 spec:
   selector:
     matchLabels:
-      app: '{{.Release.Name}}-delis-web-admin'
+      app: '{{.Release.Name}}-admin'
   strategy:
     type: 'RollingUpdate'
   template:
     metadata:
       labels:
-        app: '{{.Release.Name}}-delis-web-admin'
+        app: '{{.Release.Name}}-admin'
     spec:
       containers:
-      - image: delis-web-admin:latest
+      - image: {{.Values.delisAdmin.image}}
         imagePullPolicy: IfNotPresent
-        name: delis-web-admin
+        name: {{.Release.Name}}-admin
         env:
           - name: SERVER_SERVLET_CONTEXT-PATH
-            value: /delis-web-admin
+            value: {{.Values.delisAdmin.contextPath}}
           - name: SPRING_DATASOURCE_URL
-            value: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
-          - name: config.storageDocumentInput
-            value: /load
+            value: {{.Values.delisDb.url}}
+          - name: SPRING_DATASOURCE_USERNAME
+            value: {{.Values.delisDb.user}}
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: {{.Values.delisDb.password}}
+          {{- with .Values.delisAdmin.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        {{- with .Values.delisAdmin.volumeMounts }}
         volumeMounts:
-        - mountPath: /delis-resources
-          name: delis-resources
-        - mountPath: /delis
-          name: delis-root
-        - mountPath: /load/input1
-          name: data-input1
-        - mountPath: /load/input2
-          name: data-input2
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.delisAdmin.volumes }}
       volumes:
-      - name: delis-resources
-        hostPath:
-          path: /data/delis-resources
-      - name: delis-root
-        hostPath:
-          path: /data/delis-root
-      - name: data-input1
-        hostPath:
-          path: /data/fs-plugin/dynconcepttestparty01gw/IN
-      - name: data-input2
-        hostPath:
-          path: /data/fs-plugin/dynconcepttestparty02gw/IN
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}

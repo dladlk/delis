@@ -1,12 +1,13 @@
+{{- if .Values.delisAdmin.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: delis-web-admin
+    app: {{.Release.Name}}-admin
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
-  name: delis-web-admin
+  name: {{.Release.Name}}-admin
   namespace: '{{.Values.namespace}}'
 spec:
   ports:
@@ -14,5 +15,6 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    app: '{{.Release.Name}}-delis-web-admin'
+    app: '{{.Release.Name}}-admin'
   type: 'NodePort'
+{{- end }}

@@ -1,3 +1,3 @@
 #!/bin/bash -ex
 CURDIR=`dirname $0`
-helm upgrade delis --install --force ${CURDIR}/delis/
+helm upgrade delis --install --force ${CURDIR}/delis/ --values ${CURDIR}/install-delis-values.yaml
