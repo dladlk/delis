@@ -7,4 +7,4 @@ delisAdmin:
         - name: job.interval.sec.documentValidate
           value: "20"
         - name: job.interval.sec.documentDeliver
-          value: "30" 
+          value: "60"
