@@ -1,1 +1,66 @@
 namespace: default
+
+delisAngular:
+    enabled: true
+    image: delis-angular:latest
+    contextName: delis
+    apiUrl: https://edelivery-test.trueservice.dk/delis-web-api/rest
+    baseUrl: https://edelivery-test.trueservice.dk/delis
+    
+delisApi:
+    enabled: true
+    image: delis-web-api:latest
+    contextPath: /delis-web-api
+    env: []
+    volumeMounts: 
+      - mountPath: /delis-resources
+        name: delis-resources
+      - mountPath: /delis
+        name: delis-root
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /data/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+    
+delisAdmin:
+    enabled: true
+    image: delis-web-admin:latest
+    contextPath: /delis-web-admin
+    env: []
+    volumeMounts: 
+      - mountPath: /delis-resources
+        name: delis-resources
+      - mountPath: /delis
+        name: delis-root
+      - mountPath: /load/input1
+        name: data-input1
+      - mountPath: /load/input2
+        name: data-input2
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /data/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+      - name: data-input1
+        hostPath:
+          path: /data/fs-plugin/dynconcepttestparty01gw/IN
+      - name: data-input2
+        hostPath:
+          path: /data/fs-plugin/dynconcepttestparty02gw/IN
+
+delisIngress:
+    enabled: true
+    clusterIssuer: letsencrypt-prod
+    secretName: tls-secret
+    host: edelivery-test.trueservice.dk
+
+delisDb:
+    url: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
+    user: delis
+    password: delis
+

@@ -1,0 +1,584 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-1">
+        <createTable tableName="access_point">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="certificate" type="LONGBLOB"/>
+            <column name="certificatecn" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-2">
+        <createTable tableName="config_value">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="config_value_type" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-3">
+        <createTable tableName="document">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_date" type="VARCHAR(255)"/>
+            <column name="document_id" type="VARCHAR(255)"/>
+            <column name="document_status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_type" type="VARCHAR(255)"/>
+            <column name="ingoing_document_format" type="VARCHAR(255)"/>
+            <column name="last_error" type="VARCHAR(255)"/>
+            <column name="message_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="receiver_country" type="VARCHAR(255)"/>
+            <column name="receiver_id_raw" type="VARCHAR(255)"/>
+            <column name="receiver_name" type="VARCHAR(255)"/>
+            <column name="sender_country" type="VARCHAR(255)"/>
+            <column name="sender_id_raw" type="VARCHAR(255)"/>
+            <column name="sender_name" type="VARCHAR(255)"/>
+            <column name="organisation_id" type="BIGINT"/>
+            <column name="receiver_identifier_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-4">
+        <createTable tableName="document_bytes">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-5">
+        <createTable tableName="error_dictionary">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="code" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flag" type="VARCHAR(20)"/>
+            <column name="hash" type="INT"/>
+            <column name="location" type="VARCHAR(500)"/>
+            <column name="message" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-6">
+        <createTable tableName="identifier">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_sync_organisation_fact_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publishing_status" type="VARCHAR(10)"/>
+            <column name="status" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unique_value_type" type="VARCHAR(40)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="value" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identifier_group_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-7">
+        <createTable tableName="identifier_group">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-8">
+        <createTable tableName="journal_document">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_ms" type="BIGINT"/>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="success" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-9">
+        <createTable tableName="journal_document_error">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_dictionary_id_pk" type="BIGINT"/>
+            <column name="journal_document_id_pk" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-10">
+        <createTable tableName="journal_identifier">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_ms" type="BIGINT"/>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="identifier_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-11">
+        <createTable tableName="journal_organisation">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_ms" type="BIGINT"/>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-12">
+        <createTable tableName="organisation">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-13">
+        <createTable tableName="organisation_setup">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="setup_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="setup_value" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-14">
+        <createTable tableName="rule_document_transformation">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="config" type="VARCHAR(255)"/>
+            <column name="document_format_family_from" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_format_family_to" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="root_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-15">
+        <createTable tableName="rule_document_validation">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="config" type="VARCHAR(255)"/>
+            <column name="document_format" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="root_path" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="validation_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-16">
+        <createTable tableName="sync_organisation_fact">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cnt_add" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cnt_delete" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_ms" type="BIGINT"/>
+            <column name="cnt_equal" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cnt_failed" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cnt_update" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-17">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-18">
+        <addUniqueConstraint columnNames="organisation_id, setup_key" constraintName="I_ORGANISAION_ID"
+                             tableName="organisation_setup"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-19">
+        <createIndex indexName="FK7a7401wwj0r9n186m38nomthc" tableName="identifier">
+            <column name="identifier_group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-20">
+        <createIndex indexName="FKc7ff7vnu2ivgyg9lw355tqrsb" tableName="journal_document">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-21">
+        <createIndex indexName="FKcm4degsxui5lkugb5e2akkb8v" tableName="journal_identifier">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-22">
+        <createIndex indexName="FKcvsg7pw5wb0a67vwo11o4iivb" tableName="journal_document">
+            <column name="document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-23">
+        <createIndex indexName="FKdicmkdbspj7lwxc9grnhtocv8" tableName="document">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-24">
+        <createIndex indexName="FKiljkbjp43ynfux6xmp1yj6691" tableName="journal_organisation">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-25">
+        <createIndex indexName="FKlyo9ykj0fv5fmr8ey5wsg8wl5" tableName="journal_document_error">
+            <column name="journal_document_id_pk"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-26">
+        <createIndex indexName="FKm5lbexhtk0brtsix91sgy4s24" tableName="journal_document_error">
+            <column name="error_dictionary_id_pk"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-27">
+        <createIndex indexName="FKn2f67b9j4476745o2bb3w6wkg" tableName="identifier_group">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-28">
+        <createIndex indexName="FKn7mdc8btftsrt7s8uu3iiqrna" tableName="journal_identifier">
+            <column name="identifier_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-29">
+        <createIndex indexName="FKnprb2503t5bm3rsark8jrs06k" tableName="document">
+            <column name="receiver_identifier_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-30">
+        <createIndex indexName="FKs1cdacsr7adhocd341885jf2d" tableName="document_bytes">
+            <column name="document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-31">
+        <createIndex indexName="I_HASH" tableName="error_dictionary">
+            <column name="hash"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-32">
+        <createIndex indexName="I_ORGANISAION_ID" tableName="identifier">
+            <column name="organisation_id"/>
+            <column name="status"/>
+            <column name="publishing_status"/>
+            <column name="last_sync_organisation_fact_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-33">
+        <createIndex indexName="SOF_ORGANISATION_ID" tableName="sync_organisation_fact">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-34">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="organisation_setup"
+                                 constraintName="FK4l0n6nkqcwculdm6i1g5a3epu" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-35">
+        <addForeignKeyConstraint baseColumnNames="identifier_group_id" baseTableName="identifier"
+                                 constraintName="FK7a7401wwj0r9n186m38nomthc" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="identifier_group" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-36">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_document"
+                                 constraintName="FKc7ff7vnu2ivgyg9lw355tqrsb" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-37">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_identifier"
+                                 constraintName="FKcm4degsxui5lkugb5e2akkb8v" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-38">
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="journal_document"
+                                 constraintName="FKcvsg7pw5wb0a67vwo11o4iivb" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="document" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-39">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="document"
+                                 constraintName="FKdicmkdbspj7lwxc9grnhtocv8" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-40">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_organisation"
+                                 constraintName="FKiljkbjp43ynfux6xmp1yj6691" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-41">
+        <addForeignKeyConstraint baseColumnNames="journal_document_id_pk" baseTableName="journal_document_error"
+                                 constraintName="FKlyo9ykj0fv5fmr8ey5wsg8wl5" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="journal_document" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-42">
+        <addForeignKeyConstraint baseColumnNames="error_dictionary_id_pk" baseTableName="journal_document_error"
+                                 constraintName="FKm5lbexhtk0brtsix91sgy4s24" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="error_dictionary" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-43">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="identifier_group"
+                                 constraintName="FKn2f67b9j4476745o2bb3w6wkg" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-44">
+        <addForeignKeyConstraint baseColumnNames="identifier_id" baseTableName="journal_identifier"
+                                 constraintName="FKn7mdc8btftsrt7s8uu3iiqrna" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="identifier" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-45">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="identifier"
+                                 constraintName="FKnewdfff3ood1kdsvycis651y3" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-46">
+        <addForeignKeyConstraint baseColumnNames="receiver_identifier_id" baseTableName="document"
+                                 constraintName="FKnprb2503t5bm3rsark8jrs06k" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="identifier" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-47">
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="document_bytes"
+                                 constraintName="FKs1cdacsr7adhocd341885jf2d" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="document" validate="true"/>
+    </changeSet>
+    <changeSet author="Andriy Palval (generated)" id="1551363198554-48">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="sync_organisation_fact"
+                                 constraintName="FKsd60cv3qveqn2fe8dqv1datq7" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

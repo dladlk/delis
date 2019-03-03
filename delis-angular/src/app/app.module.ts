@@ -19,6 +19,7 @@ import { HttpRestService } from "./service/http.rest.service";
 import { ContentSelectInfoService } from "./service/content.select.info.service";
 import { ErrorService } from "./service/error.service";
 import { ListenErrorService } from "./service/listen.error.service";
+import { LogoutService } from "./logout/logout.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -52,7 +53,8 @@ export const createTranslateLoader = (http: HttpClient) => {
         HttpRestService,
         LocaleService,
         ErrorService,
-        ListenErrorService],
+        ListenErrorService,
+        LogoutService],
     bootstrap: [AppComponent],
     exports: [BsDatepickerModule]
 })

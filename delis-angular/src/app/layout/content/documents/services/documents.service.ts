@@ -54,6 +54,8 @@ export class DocumentsService {
             params = params.append('senderName', filter.senderName);
         }
         if (filter.dateReceived !== null) {
+            filter.dateReceived.dateStart.setHours(0,0,0,0);
+            filter.dateReceived.dateEnd.setHours(23,59,59,999);
             params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
         }
 
@@ -62,5 +64,9 @@ export class DocumentsService {
 
     getOneDocumentById(id: any) : Observable<any> {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
+    }
+
+    getListDocumentBytesByDocumentId(id: any) : Observable<any> {
+        return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
     }
 }

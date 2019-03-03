@@ -1,163 +1,131 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'documents.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 col-md-offset-0">
-                <div class="card">
-                    <div class="card-header"><strong>{{ document.receiverName }}</strong></div>
-                    <br>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr>
-                                <td>id</td>
-                                <td>{{document.id}}</td>
-                            </tr>
-                            <tr>
-                                <td>createTime</td>
-                                <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
-                            </tr>
-                            <tr>
-                                <td>organisation name</td>
-                                <td>{{document.organisation.name}}</td>
-                            </tr>
-                            <tr>
-                                <td>organisation code</td>
-                                <td>{{document.organisation.code}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiver identifier</td>
-                                <td class="btn-link" style="cursor: pointer" [routerLink]="['/identifiers/', document.receiverIdentifier.id]">{{document.receiverIdentifier.name}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiver identifier type</td>
-                                <td>{{document.receiverIdentifier.uniqueValueType}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiver identifier status</td>
-                                <td>{{document.receiverIdentifier.status}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiver identifier publishing status</td>
-                                <td>{{document.receiverIdentifier.publishingStatus}}</td>
-                            </tr>
-                            <tr>
-                                <td>name</td>
-                                <td>{{document.name}}</td>
-                            </tr>
-                            <tr>
-                                <td>documentStatus</td>
-                                <td>{{document.documentStatus}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiverIdRaw</td>
-                                <td>{{document.receiverIdRaw}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiverName</td>
-                                <td>{{document.receiverName}}</td>
-                            </tr>
-                            <tr>
-                                <td>receiverCountry</td>
-                                <td>{{document.receiverCountry}}</td>
-                            </tr>
-                            <tr>
-                                <td>senderIdRaw</td>
-                                <td>{{document.senderIdRaw}}</td>
-                            </tr>
-                            <tr>
-                                <td>senderName</td>
-                                <td>{{document.senderName}}</td>
-                            </tr>
-                            <tr>
-                                <td>senderCountry</td>
-                                <td>{{document.senderCountry}}</td>
-                            </tr>
-                            <tr>
-                                <td>ingoingDocumentFormat</td>
-                                <td>{{document.ingoingDocumentFormat}}</td>
-                            </tr>
-                            <tr>
-                                <td>documentId</td>
-                                <td>{{document.documentId}}</td>
-                            </tr>
-                            <tr>
-                                <td>documentDate</td>
-                                <td>{{document.documentDate}}</td>
-                            </tr>
-                            <tr>
-                                <td>messageId</td>
-                                <td>{{document.messageId}}</td>
-                            </tr>
-                            <tr>
-                                <td>lastError</td>
-                                <td>{{document.lastError}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-md-12 col-md-offset-0">
-                <div class="card">
-                    <div class="card-header"><span>{{ 'journal.documents.table.header' | translate }}</span></div>
-                    <br>
-                    <div class="card-body table-responsive">
-                        <table class="table table-hover table-sm">
-                            <thead>
-                            <tr>
-                                <th *ngFor="let hed of tableHeaderSortModels">
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)">
-                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
-                                        </button>
-                                    </div>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
-                                <td>{{doc.type}}</td>
-                                <td *ngIf="doc.success"><img src="assets/images/success.png" /></td>
-                                <td *ngIf="!doc.success"><img src="assets/images/error.png" /></td>
-                                <td>{{doc.message}}</td>
-                                <td>{{doc.durationMs}}</td>
-                                <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="card">
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.organisation' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.identifier' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.createTime' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.status' | translate }}</th>
+                    </tr>
+                    <tr >
+                        <td>{{document.organisation.name}}</td>
+                        <td class="btn-link" style="cursor: pointer" [routerLink]="['/identifiers/', document.receiverIdentifier.id]">{{document.receiverIdentifier.name}}</td>
+                        <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{document.documentStatus}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.documentType' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.ingoingDocumentFormat' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentId' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
+                    </tr>
+                    <tr >
+                        <td>{{document.documentType}}</td>
+                        <td>{{document.ingoingDocumentFormat}}</td>
+                        <td>{{document.documentId}}</td>
+                        <td>{{document.documentDate}}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">{{ 'documents.table.one.columnName.name' | translate }}</th>
+                        <th colspan="2">{{ 'documents.table.one.columnName.messageId' | translate }}</th>
+                    </tr>
+                    <tr >
+                        <td colspan="2">{{document.name}}</td>
+                        <td colspan="2">{{document.messageId}}</td>
+                    </tr>
+                </table>
             </div>
+        </div>
 
-            <div *ngIf="journalDocumentErrors.length != 0" class="col-md-12 col-md-offset-0">
-                <div class="card">
-                    <div class="card-header"><span>errors</span></div>
-                    <br>
-                    <div class="card-body table-responsive">
-                        <table class="table table-hover table-sm">
-                            <thead>
-                            <tr>
-                                <th>Flag</th>
-                                <th>Code</th>
-                                <th>Message</th>
-                                <th>Location</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let doc of journalDocumentErrors">
-                                <td>{{doc.flag}}</td>
-                                <td>{{doc.code}}</td>
-                                <td>{{doc.message}}</td>
-                                <td>{{doc.location}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <th></th>
+                        <th>{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.senderName' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
+                    </tr>
+                    <tr >
+                        <th>{{ 'documents.table.one.columnName.sender' | translate }}</th>
+                        <td>{{document.senderIdRaw}}</td>
+                        <td>{{document.senderName}}</td>
+                        <td>{{document.senderCountry}}</td>
+                    </tr>
+                    <tr >
+                        <th>{{ 'documents.table.one.columnName.receiver' | translate }}</th>
+                        <td>{{document.receiverIdRaw}}</td>
+                        <td>{{document.receiverName}}</td>
+                        <td>{{document.receiverCountry}}</td>
+                    </tr>
+                </table>
             </div>
+        </div>
 
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <div class="card-title">
+                    {{ 'documents.table.one.columnName.journalRecords' | translate }}
+                </div>
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
+                    </tr>
+                    <tbody *ngFor="let doc of journalDocuments">
+                    <tr >
+                        <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{doc.type}}</td>
+                        <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
+                        <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>
+                        <td>{{doc.message}}</td>
+                        <td>{{doc.durationMs}}</td>
+                    </tr>
+                    <ng-container *ngIf="getErrorDictionaryModel(doc.id).length !== 0" class="card border-secondary m-1">
+                        <tr>
+                            <th>{{ 'documents.table.one.columnName.journalDocumentErrors.flag' | translate }}</th>
+                            <th>{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
+                            <th>{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
+                            <th>{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
+                        </tr>
+                        <tr *ngFor="let err of getErrorDictionaryModel(doc.id)" >
+                            <td>{{err.flag}}</td>
+                            <td>{{err.code}}</td>
+                            <td>{{err.message}}</td>
+                            <td>{{err.location}}</td>
+                        </tr>
+                    </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <div class="card-title">
+                    {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
+                </div>
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+                    </tr>
+                    <tr *ngFor="let doc of documentBytesModels" >
+                        <td>{{doc.id}}</td>
+                        <td>{{doc.type}}</td>
+                        <td>{{doc.size}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
+
 </div>

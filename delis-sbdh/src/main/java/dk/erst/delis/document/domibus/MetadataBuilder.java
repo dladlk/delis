@@ -8,6 +8,8 @@ import java.util.List;
 
 public class MetadataBuilder {
 
+	public static String DEFAULT_PROCESS_SCHEME_ID = "cenbii-procid-ubl";
+
 	public UserMessage buildUserMessage(Header sbdhHeader, String partyIdValue) {
 		UserMessage userMessage = new UserMessage();
 		PartyInfo partyInfo = new PartyInfo();
@@ -23,7 +25,8 @@ public class MetadataBuilder {
 		agreementRef.setValue("urn:fdc:peppol.eu:2017:agreements:tia:ap_provider");
 		Service service = new Service();
 //		service.setType(sbdhHeader.getProcess().getScheme().getIdentifier());
-		service.setType("urn:fdc:peppol.eu:2017:identifiers:proc-id");
+//		service.setType("urn:fdc:peppol.eu:2017:identifiers:proc-id");
+		service.setType(DEFAULT_PROCESS_SCHEME_ID);
 		service.setValue(sbdhHeader.getProcess().getIdentifier());
 		CollaborationInfo collaborationInfo = new CollaborationInfo();
 		collaborationInfo.setAgreementRef(agreementRef);

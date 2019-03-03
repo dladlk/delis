@@ -62,6 +62,15 @@ export class HttpRestService {
         }).pipe(map(HttpRestService.extractData));
     }
 
+    methodDelete(url: string, token: any) : Observable<any> {
+        this.headers = new HttpHeaders({
+            'Authorization' : token
+        });
+        return this.http.delete(url, {
+            headers : this.headers
+        }).pipe(map(HttpRestService.extractData));
+    }
+
     private static extractData(res: Response) {
         return res || { };
     }

@@ -38,4 +38,9 @@ public class DocumentRestController {
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
         return ResponseEntity.ok(documentService.getOneById(id));
     }
+
+    @GetMapping("/{id}/bytes")
+    public ResponseEntity findListDocumentBytesByDocumentId(@PathVariable @Min(1) long id) {
+        return ResponseEntity.ok(documentService.findListDocumentBytesByDocumentId(id));
+    }
 }

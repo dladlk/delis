@@ -1,29 +1,31 @@
+{{- if .Values.delisIngress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ingress-delis
+  name: {{.Release.Name}}-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    certmanager.k8s.io/cluster-issuer: {{.Values.delisIngress.clusterIssuer}}
 spec:
   tls:
   - hosts:
-    - edelivery-test.trueservice.dk
-    secretName: tls-secret
+    - {{.Values.delisIngress.host}}
+    secretName: {{.Values.delisIngress.secretName}}
   rules:
-      - host: edelivery-test.trueservice.dk
+      - host: {{.Values.delisIngress.host}}
         http:
           paths:
-          - path: /delis
+          - path: /{{.Values.delisAngular.contextName}}
             backend:
-              serviceName: delis-angular
+              serviceName: {{.Release.Name}}-angular
               servicePort: 8080
-          - path: /delis-web-api
+          - path: {{.Values.delisApi.contextPath}}
             backend:
-              serviceName: delis-web-api
+              serviceName: {{.Release.Name}}-api
               servicePort: 8080
-          - path: /delis-web-admin
+          - path: {{.Values.delisAdmin.contextPath}}
             backend:
-              serviceName: delis-web-admin
+              serviceName: {{.Release.Name}}-admin
               servicePort: 8080
+{{- end }}

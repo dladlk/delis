@@ -1,14 +1,26 @@
 package dk.erst.delis.task.document.parse;
 
+import dk.erst.delis.TestUtil;
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.config.rule.DefaultRuleBuilder;
+import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.DelisTransformerFactory;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.Configuration;
+import net.sf.saxon.lib.StandardErrorListener;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.xml.transform.TransformerFactory;
-
-import dk.erst.delis.task.document.parse.XSLTUtil;
-import dk.erst.delis.task.document.parse.cachingtransformerfactory.DelisTransformerFactory;
-
+@Slf4j
 public class XSLTMemoryMeasureTool {
 
 	public static void main(String[] args) throws Exception {
@@ -17,32 +29,79 @@ public class XSLTMemoryMeasureTool {
 	}
 
 	public void test() throws Exception {
-		Path path1 = Paths.get("../delis-resources/transformation/bis3_to_oioubl/v_2018-03-14_34841/BIS-Billing-INV_2_OIOUBL_INV.xslt");
-		Path path2 = Paths.get("../delis-resources/validation/sch/bis3/cen_2018-03-15_1/CEN-EN16931-UBL.xslt");
-//        testTransformerCreation(path1, 10);
-		testTransformerCreation(path2, 10);
+		ConfigBean configBean = new ConfigBean(TestUtil.getEmptyConfigValueDaoRepository());
 
+		List<Path> xsltPathList = new ArrayList<>();
+		for (RuleDocumentTransformation rdf : DefaultRuleBuilder.buildDefaultTransformationRuleList()) {
+			Path path = configBean.getStorageTransformationPath().resolve(rdf.getRootPath());
+			xsltPathList.add(path);
+		}
+		for (RuleDocumentValidation rdv : DefaultRuleBuilder.buildDefaultValidationRuleList()) {
+			if (rdv.getValidationType() == RuleDocumentValidationType.SCHEMATRON) {
+				Path path = configBean.getStorageValidationPath().resolve(rdv.getRootPath());
+				xsltPathList.add(path);
+			}
+		}
+
+		int creationTimes = 10;
+
+		TransformerFactory factory = TransformerFactory.newInstance();
+		StandardErrorListener listener = new StandardErrorListener();
+		listener.setRecoveryPolicy(Configuration.RECOVER_SILENTLY);
+		factory.setErrorListener(listener);
+
+		for (Path xsltPath : xsltPathList) {
+			List<Templates> templateList = new ArrayList<>();
+
+			byte[] b = new byte[150 * 1024 * 1024];
+			for (int i = 0; i < b.length; i += 1024) {
+				b[i] = 1;
+			}
+			b = null;
+
+			long usedMemoryBefore = getUsedMemory();
+			log.info("Testing "+ xsltPath.getFileName()+"; file size = "+xsltPath.toFile().length());
+			log.info("usedMemoryBefore = "+formatMemory(usedMemoryBefore));
+			for (int i = 0; i < creationTimes; i++) {
+				String systemId = xsltPath.toFile().toString();
+				FileInputStream fileInputStream = new FileInputStream(xsltPath.toString());
+				templateList.add(factory.newTemplates(new StreamSource(fileInputStream, systemId)));
+				log.info((i + 1) + " Templates objects created, usedMemory = " + formatMemory(getUsedMemory()));
+			}
+			long usedMemoryAfter = getUsedMemory();
+			log.info("usedMemoryAfter = "+formatMemory(usedMemoryAfter));
+			long memorySpent = usedMemoryAfter - usedMemoryBefore;
+			log.info("Memory spent for "+templateList.size()+" Templates objects: "+formatMemory(memorySpent)+"; avg "+formatMemory((memorySpent /templateList.size()))+" per object");
+			log.info("=============================================");
+			templateList.clear();
+			templateList = null;
+		}
 	}
 
-	private void testTransformerCreation(Path xslFilePath, int creationTimes) throws Exception {
-		boolean withCache = true;
+	private void testTransformerCreation(Path xslFilePath, int creationTimes) {
+		boolean cacheEnabled = true;
+		System.gc();
 		long usedMemoryBefore = getUsedMemory();
+		log.info("Run with cache = " + cacheEnabled + " on " + xslFilePath);
+		log.info("Used Memory before: " + formatMemory(usedMemoryBefore));
 
-		System.out.println("Run with cache = " + withCache + " on " + xslFilePath);
-		System.out.println("Used Memory before: " + formatMemory(usedMemoryBefore));
-
-		TransformerFactory transformerFactory = DelisTransformerFactory.newInstance(withCache);
-
-		long start = System.currentTimeMillis();
-		for (int i = 0; i < creationTimes; i++) {
-			long startCase = System.currentTimeMillis();
-			XSLTUtil.buildTransformer(new FileInputStream(xslFilePath.toFile()), xslFilePath.toAbsolutePath(), transformerFactory);
-			System.out.println("Case " + i + " " + (System.currentTimeMillis() - startCase) + " ms, " + formatMemory(getUsedMemory()));
+		try {
+			TransformerFactory transformerFactory = DelisTransformerFactory.newInstance(cacheEnabled);
+			long start = System.currentTimeMillis();
+			for (int i = 0; i < creationTimes; i++) {
+				long startCase = System.currentTimeMillis();
+				Transformer transformer = XSLTUtil.buildTransformer(new FileInputStream(xslFilePath.toFile()), xslFilePath.toAbsolutePath(), transformerFactory);
+				log.info("Case " + i + " " + (System.currentTimeMillis() - startCase) + " ms, " + formatMemory(getUsedMemory()));
+			}
+			long finish = System.currentTimeMillis();
+			long usedMemoryAfter = getUsedMemory();
+			log.info(xslFilePath.getFileName().toString());
+			log.info("Time spent: " + (finish - start));
+			log.info("Memory used: " + formatMemory(usedMemoryAfter - usedMemoryBefore));
+			log.info("===================================");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		long finish = System.currentTimeMillis();
-		long usedMemoryAfter = getUsedMemory();
-		System.out.println("Memory increased: " + formatMemory(usedMemoryAfter - usedMemoryBefore));
-		System.out.println("Time spent: " + (finish - start));
 	}
 
 	private String formatMemory(long s) {

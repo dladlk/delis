@@ -5,15 +5,14 @@
             <div class="col-md-12 col-md-offset-0">
                 <div class="card" style="min-height: 768px">
                     <div class="card-header"><span>{{ 'journal.documents.table.header' | translate }}</span></div>
-                    <br>
-                    <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
                     <div class="card-body table-responsive">
+                        <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
                         <table class="table table-hover table-sm">
                             <thead>
                             <tr>
                                 <th *ngFor="let hed of tableHeaderSortModels">
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
                                             <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
                                         </button>
                                     </div>
@@ -70,16 +69,17 @@
                             <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
                                 <td>{{doc.organisation.name}}</td>
                                 <td>{{doc.type}}</td>
-                                <td *ngIf="doc.success"><img src="assets/images/success.png" /></td>
-                                <td *ngIf="!doc.success"><img src="assets/images/error.png" /></td>
+                                <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
+                                <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>
                                 <td>{{doc.message}}</td>
                                 <td>{{doc.durationMs}}</td>
                                 <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
                             </tr>
                             </tbody>
                         </table>
+                        <hr>
+                        <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
                     </div>
-                    <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
                 </div>
             </div>
         </div>

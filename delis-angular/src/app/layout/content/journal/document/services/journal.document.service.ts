@@ -44,6 +44,8 @@ export class JournalDocumentService {
             params = params.append('durationMs', String(filter.durationMs));
         }
         if (filter.dateRange !== null) {
+            filter.dateRange.dateStart.setHours(0,0,0,0);
+            filter.dateRange.dateEnd.setHours(23,59,59,999);
             params = params.append('createTime', String(filter.dateRange.dateStart.getTime()) + ':' + String(filter.dateRange.dateEnd.getTime()));
         }
 
@@ -54,9 +56,9 @@ export class JournalDocumentService {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 
-    getAllByDocumentId(documentId: any, filter: JournalDocumentFilterProcessResult) : Observable<any> {
+    getAllByDocumentId(documentId: any) : Observable<any> {
         let params = new HttpParams();
-        params = params.append('sort', filter.sortBy);
+        params = params.append('sort', 'orderBy_Id_Asc');
         return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 
