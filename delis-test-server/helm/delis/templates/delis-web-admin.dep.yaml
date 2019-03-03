@@ -28,6 +28,8 @@ spec:
             value: /delis-web-admin
           - name: SPRING_DATASOURCE_URL
             value: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
+          - name: config.storageDocumentInput
+            value: /load
         volumeMounts:
         - mountPath: /delis-resources
           name: delis-resources
