@@ -13,6 +13,7 @@ import { successList } from "../models/journal.document.view.model";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
+import { DATE_FORMAT } from "../../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.organisation';
 const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.success';
@@ -45,6 +46,7 @@ export class JournalDocumentComponent implements OnInit {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    DATE_FORMAT = DATE_FORMAT;
 
     constructor(
         private journalDocumentService: JournalDocumentService,

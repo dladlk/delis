@@ -12,6 +12,7 @@ import { PaginationService } from "../../../../bs-component/components/paginatio
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
+import { DATE_FORMAT } from "../../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.organisation';
 const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.message';
@@ -38,6 +39,7 @@ export class JournalOrganisationComponent implements OnInit {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    DATE_FORMAT = DATE_FORMAT;
 
     constructor(
         private journalOrganisationService: JournalOrganisationService,

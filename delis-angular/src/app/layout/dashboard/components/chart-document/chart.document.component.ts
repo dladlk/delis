@@ -5,6 +5,7 @@ import { routerTransition } from "../../../../router.animations";
 import { LocaleService } from "../../../../service/locale.service";
 import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
+import { DATE_FORMAT } from "../../../../app.constants";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -27,6 +28,8 @@ export class ChartDocumentComponent implements OnInit {
     customDate: Date[];
 
     startDate: Date;
+
+    DATE_FORMAT = DATE_FORMAT;
 
     constructor(
         private translate: TranslateService,

@@ -12,6 +12,7 @@ import { PaginationModel } from "../../../bs-component/components/pagination/pag
 import { DocumentModel } from "../models/document.model";
 import { ErrorService } from "../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
+import { DATE_FORMAT } from 'src/app/app.constants';
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -51,6 +52,7 @@ export class DocumentsComponent implements OnInit {
 
     pagination: PaginationModel;
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    DATE_FORMAT = DATE_FORMAT;
     errorsFlag = false;
 
     constructor(

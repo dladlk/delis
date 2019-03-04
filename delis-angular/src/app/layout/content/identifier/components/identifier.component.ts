@@ -12,6 +12,7 @@ import { PaginationService } from "../../../bs-component/components/pagination/p
 import { IdentifierService } from "../services/identifier.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { SHOW_DATE_FORMAT } from "../../../../app.constants";
+import { DATE_FORMAT } from "../../../../app.constants";
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
@@ -50,6 +51,7 @@ export class IdentifierComponent {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    DATE_FORMAT = DATE_FORMAT;
 
     constructor(private translate: TranslateService,
                 private locale: LocaleService,
