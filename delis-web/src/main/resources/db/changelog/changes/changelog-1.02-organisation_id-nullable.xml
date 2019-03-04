@@ -7,7 +7,6 @@
         <dropNotNullConstraint
                 columnDataType="BIGINT"
                 columnName="organisation_id"
-                schemaName="delis"
                 tableName="journal_document"/>
     </changeSet>
 </databaseChangeLog>
