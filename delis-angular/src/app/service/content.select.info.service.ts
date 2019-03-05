@@ -25,6 +25,17 @@ export class ContentSelectInfoService {
         )
     }
 
+    generateDateRangeInfo() {
+        this.http.methodInnerGet('assets/config/date_range.json').subscribe(
+            (data: {}) => {
+                let dateRanges = data["range"];
+                localStorage.setItem("dateRanges", JSON.stringify(dateRanges))
+            }
+        );
+
+    }
+
+
     setContent(infoContent: TableInfoModel[]) {
         infoContent.forEach(info => localStorage.setItem(info.entityName, JSON.stringify(info.entityEnumInfo)));
     }
