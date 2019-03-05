@@ -32,6 +32,8 @@ const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.createTime';
 })
 export class IdentifierComponent {
 
+    clearableSelect = false;
+
     pagination: PaginationModel;
     filter: IdentifierFilterProcessResult;
     identifiers: IdentifierModel[];

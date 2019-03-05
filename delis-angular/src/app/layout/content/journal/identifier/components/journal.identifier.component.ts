@@ -28,6 +28,8 @@ const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime'
 })
 export class JournalIdentifierComponent implements OnInit {
 
+    clearableSelect = false;
+
     pagination: PaginationModel;
     filter: JournalIdentifierFilterProcessResultModel;
     journalIdentifiers: JournalIdentifierModel[];

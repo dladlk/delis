@@ -21,6 +21,7 @@
                             <tr>
                                 <td>
                                     <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
                                                placeholder="organizations: "
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
@@ -28,24 +29,24 @@
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextMessage($event)"
                                            [(ngModel)]="textMessage"
-                                           placeholder="Message"
-                                           (change)="loadTextMessage($event.target.value)"/>
+                                           placeholder="Message"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextDurationMs($event)"
                                            [(ngModel)]="textDurationMs"
-                                           placeholder="DurationMs"
-                                           (change)="loadTextDurationMs($event.target.value)"/>
+                                           placeholder="DurationMs"/>
                                 </td>
                                 <td>
                                     <input bsDaterangepicker
                                            [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
                                            class="form-control"
                                            placeholder="Received Date"
-                                           type="text"
+                                           type="search"
                                            (bsValueChange)="loadReceivedDate($event)">
                                 </td>
                             </tr>

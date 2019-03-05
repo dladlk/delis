@@ -27,6 +27,8 @@ const COLUMN_NAME_CREATE_TIME = 'journal.organisations.table.columnName.createTi
 })
 export class JournalOrganisationComponent implements OnInit {
 
+    clearableSelect = false;
+
     pagination: PaginationModel;
     filter: JournalOrganisationFilterProcessResult;
     journalOrganisations: JournalOrganisationModel[];

@@ -21,6 +21,7 @@
                             <tr>
                                 <td>
                                     <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
                                                placeholder="organizations: "
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
@@ -28,13 +29,14 @@
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextReceiver($event)"
                                            [(ngModel)]="textReceiver"
-                                           placeholder="Receiver"
-                                           (change)="loadTextReceiver($event.target.value)"/>
+                                           placeholder="Receiver"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statuses"
+                                               [clearable]="clearableSelect"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
@@ -42,6 +44,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="lastErrors"
+                                               [clearable]="clearableSelect"
                                                placeholder="lastErrors: "
                                                [(ngModel)]="selectedLastError"
                                                (change)="loadLastErrors()">
@@ -49,6 +52,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="documentTypes"
+                                               [clearable]="clearableSelect"
                                                placeholder="documentTypes: "
                                                [(ngModel)]="selectedDocumentType"
                                                (change)="loadDocumentType()">
@@ -56,6 +60,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="ingoingFormats"
+                                               [clearable]="clearableSelect"
                                                placeholder="ingoingFormats: "
                                                [(ngModel)]="selectedIngoingFormat"
                                                (change)="loadIngoingFormat()">
@@ -66,15 +71,15 @@
                                            [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
                                            class="form-control"
                                            placeholder="{{textPlaceholderReceivedDate}}"
-                                           type="text"
+                                           type="search"
                                            (bsValueChange)="loadReceivedDate($event)">
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
                                            [(ngModel)]="textSenderName"
-                                           placeholder="Sender"
-                                           (change)="loadTextSenderName($event.target.value)"/>
+                                           (ngModelChange)="loadTextSenderName($event)"
+                                           placeholder="Sender"/>
                                 </td>
                             </tr>
                             </thead>

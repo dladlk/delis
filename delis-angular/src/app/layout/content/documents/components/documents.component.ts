@@ -31,6 +31,8 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
 })
 export class DocumentsComponent implements OnInit {
 
+    clearableSelect = false;
+
     selectedStatus: any;
     selectedLastError: any;
     selectedDocumentType: any;

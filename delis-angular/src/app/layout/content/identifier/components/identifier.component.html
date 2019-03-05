@@ -21,6 +21,7 @@
                             <tr>
                                 <td>
                                     <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
                                                placeholder="organizations: "
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
@@ -28,34 +29,35 @@
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextIdentifierGroup($event)"
                                            [(ngModel)]="textIdentifierGroup"
-                                           placeholder="IdentifierGroup"
-                                           (change)="loadTextIdentifierGroup($event.target.value)"/>
+                                           placeholder="IdentifierGroup"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextType($event)"
                                            [(ngModel)]="textType"
-                                           placeholder="Type"
-                                           (change)="loadTextType($event.target.value)"/>
+                                           placeholder="Type"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextValue($event)"
                                            [(ngModel)]="textValue"
-                                           placeholder="Value"
-                                           (change)="loadTextValue($event.target.value)"/>
+                                           placeholder="Value"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextUniqueValueType($event)"
                                            [(ngModel)]="textUniqueValueType"
-                                           placeholder="UniqueValueType"
-                                           (change)="loadTextUniqueValueType($event.target.value)"/>
+                                           placeholder="UniqueValueType"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statusList"
+                                               [clearable]="clearableSelect"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
@@ -63,6 +65,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="publishingStatusList"
+                                               [clearable]="clearableSelect"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedPublishingStatus"
                                                (change)="loadPublishingStatus()">
@@ -70,17 +73,17 @@
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextName($event)"
                                            [(ngModel)]="textName"
-                                           placeholder="Name"
-                                           (change)="loadTextName($event.target.value)"/>
+                                           placeholder="Name"/>
                                 </td>
                                 <td>
                                     <input bsDaterangepicker
                                            [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
                                            class="form-control"
                                            placeholder="Received Date"
-                                           type="text"
+                                           type="search"
                                            (bsValueChange)="loadReceivedDate($event)">
                                 </td>
                             </tr>
