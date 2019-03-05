@@ -109,7 +109,7 @@ export class IdentifierOneComponent {
         }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
-            this.filter.sortBy = 'orderBy_Id_Asc';
+            this.filter.sortBy = 'orderBy_Id_Desc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }

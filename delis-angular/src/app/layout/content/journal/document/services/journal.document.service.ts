@@ -58,7 +58,7 @@ export class JournalDocumentService {
 
     getAllByDocumentId(documentId: any) : Observable<any> {
         let params = new HttpParams();
-        params = params.append('sort', 'orderBy_Id_Asc');
+        params = params.append('sort', 'orderBy_Id_Desc');
         return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
     }
 

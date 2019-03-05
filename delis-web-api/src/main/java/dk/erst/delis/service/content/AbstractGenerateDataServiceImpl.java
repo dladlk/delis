@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
@@ -36,19 +37,21 @@ public class AbstractGenerateDataServiceImpl<
     @Override
     public PageContainer<E> generateDataPageContainer(Class<E> entityClass, WebRequest request, R repository) {
         PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(request);
-        long collectionSize = repository.count();
+        String specificFlag = WebRequestUtil.existFlagParameter(request);
+        EntitySpecification entitySpecification;
+        Specification<E> specification;
+        if (StringUtils.isNotBlank(specificFlag)) {
+            entitySpecification = EntitySpecification.valueOf(request.getParameter(specificFlag));
+            specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request);
+        } else {
+            entitySpecification = EntitySpecification.DEFAULT;
+            specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass);
+        }
+        long collectionSize = repository.count(specification);
         if (collectionSize == 0) {
             return new PageContainer<>();
         }
-        String specificFlag = WebRequestUtil.existFlagParameter(request);
-        EntitySpecification entitySpecification;
-        if (StringUtils.isNotBlank(specificFlag)) {
-            entitySpecification = EntitySpecification.valueOf(request.getParameter(specificFlag));
-        } else {
-            entitySpecification = EntitySpecification.DEFAULT;
-        }
-
-        return sortProcess(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, entitySpecification);
+        return sortProcess(entityClass, request, pageAndSizeModel.getPage(), pageAndSizeModel.getSize(), collectionSize, repository, specification);
     }
 
     @Override
@@ -66,64 +69,34 @@ public class AbstractGenerateDataServiceImpl<
             WebRequest request,
             int page, int size, long collectionSize,
             R repository,
-            EntitySpecification entitySpecification) {
+            Specification<E> specification) {
         String[] strings = Objects.requireNonNull(request.getParameter("sort")).split("_");
         for ( Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass) ) {
             if (Modifier.isPrivate(field.getModifiers())) {
                 if (Objects.equals(strings[1].toUpperCase(), field.getName().toUpperCase())) {
                     if (Objects.equals(strings[2], "Asc")) {
-                        return getAscendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
+                        return getAscendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);
                     } else {
-                        return getDescendingDataPageContainer(entityClass, page, size, collectionSize, field.getName(), repository, request, entitySpecification);
+                        return getDescendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);
                     }
                 }
             }
         }
-        return getDefaultDataPageContainerWithoutSorting(entityClass, request, page, size, collectionSize, repository, entitySpecification);
+        return getDefaultDataPageContainerWithoutSorting(page, size, collectionSize, repository, specification);
     }
 
-    private PageContainer<E> getDefaultDataPageContainerWithoutSorting(Class<E> entityClass, WebRequest request, int page, int size, long collectionSize,
-                                                                       R repository, EntitySpecification entitySpecification) {
-        if (Objects.equals(entitySpecification, EntitySpecification.DEFAULT)) {
-            return new PageContainer<E>(page, size, collectionSize, repository
-                    .findAll(
-                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass),
-                            PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
-        } else {
-            return new PageContainer<E>(page, size, collectionSize, repository
-                    .findAll(
-                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request),
-                            PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
-        }
+    private PageContainer<E> getDefaultDataPageContainerWithoutSorting(int page, int size, long collectionSize, R repository, Specification<E> specification) {
+        return new PageContainer<E>(page, size, collectionSize, repository
+                .findAll(specification, PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
     }
 
-    private PageContainer<E> getDescendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param,
-                                                            R repository, WebRequest request, EntitySpecification entitySpecification) {
-        if (Objects.equals(entitySpecification, EntitySpecification.DEFAULT)) {
-            return new PageContainer<E>(page, size, collectionSize, repository
-                    .findAll(
-                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass),
-                            PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
-        } else {
-            return new PageContainer<E>(page, size, collectionSize, repository
-                    .findAll(
-                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request),
-                            PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
-        }
+    private PageContainer<E> getDescendingDataPageContainer(int page, int size, long collectionSize, String param, R repository, Specification<E> specification) {
+        return new PageContainer<E>(page, size, collectionSize, repository
+                .findAll(specification, PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
     }
 
-    private PageContainer<E> getAscendingDataPageContainer(Class<E> entityClass, int page, int size, long collectionSize, String param,
-                                                           R repository, WebRequest request, EntitySpecification entitySpecification) {
-        if (Objects.equals(entitySpecification, EntitySpecification.DEFAULT)) {
-            return new PageContainer<E>(page, size, collectionSize, repository
-                    .findAll(
-                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass),
-                            PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
-        } else {
-            return new PageContainer<E>(page, size, collectionSize, repository
-                    .findAll(
-                            new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request),
-                            PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
-        }
+    private PageContainer<E> getAscendingDataPageContainer(int page, int size, long collectionSize, String param, R repository, Specification<E> specification) {
+        return new PageContainer<E>(page, size, collectionSize, repository
+                .findAll(specification, PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
     }
 }
