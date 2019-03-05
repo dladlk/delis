@@ -86,8 +86,12 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     loadDate(date: Date[]) {
-        this.customDate = date;
-        this.updateLineChart(true);
+        if (date !== null) {
+            this.customDate = date;
+            this.updateLineChart(true);
+        } else {
+            this.updateLineChart(false);
+        }
     }
 
     private updateLineChart(custom: boolean) {

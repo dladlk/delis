@@ -14,6 +14,9 @@ import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 import { DATE_FORMAT } from "../../../../../app.constants";
+import { BsLocaleService, daLocale } from "ngx-bootstrap";
+import { defineLocale } from 'ngx-bootstrap/chronos';
+defineLocale('da', daLocale);
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.organisation';
 const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.success';
@@ -54,9 +57,11 @@ export class JournalDocumentComponent implements OnInit {
         private journalDocumentService: JournalDocumentService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private localeService: BsLocaleService,
         private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.localeService.use('da');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
                 this.loadPage(pag.currentPage, pag.pageSize);
@@ -171,10 +176,14 @@ export class JournalDocumentComponent implements OnInit {
     }
 
     loadReceivedDate(date: Date[]) {
+        if (date !== null) {
+            this.filter.dateRange = new DateRangeModel();
+            this.filter.dateRange.dateStart = date[0];
+            this.filter.dateRange.dateEnd = date[1];
+        } else {
+            this.filter.dateRange = null;
+        }
         this.pagination.currentPage = 1;
-        this.filter.dateRange = new DateRangeModel();
-        this.filter.dateRange.dateStart = date[0];
-        this.filter.dateRange.dateEnd = date[1];
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 

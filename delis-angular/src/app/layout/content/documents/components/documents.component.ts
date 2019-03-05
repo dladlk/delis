@@ -13,6 +13,9 @@ import { DocumentModel } from "../models/document.model";
 import { ErrorService } from "../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
 import { DATE_FORMAT } from 'src/app/app.constants';
+import { BsLocaleService, daLocale } from "ngx-bootstrap";
+import { defineLocale } from 'ngx-bootstrap/chronos';
+defineLocale('da', daLocale);
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -62,8 +65,10 @@ export class DocumentsComponent implements OnInit {
         private documentsService: DocumentsService,
         private locale: LocaleService,
         private errorService: ErrorService,
+        private localeService: BsLocaleService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.localeService.use('da');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
                 this.loadPage(pag.currentPage, pag.pageSize);
@@ -219,10 +224,14 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadReceivedDate(date: Date[]) {
+        if (date !== null) {
+            this.filter.dateReceived = new DateRangeModel();
+            this.filter.dateReceived.dateStart = date[0];
+            this.filter.dateReceived.dateEnd = date[1];
+        } else {
+            this.filter.dateReceived = null;
+        }
         this.pagination.currentPage = 1;
-        this.filter.dateReceived = new DateRangeModel();
-        this.filter.dateReceived.dateStart = date[0];
-        this.filter.dateReceived.dateEnd = date[1];
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
