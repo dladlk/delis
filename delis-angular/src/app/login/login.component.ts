@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
                 localStorage.setItem('username', loginData.username);
                 this.contentSelectInfoService.generateAllContentSelectInfo();
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo();
+                this.contentSelectInfoService.generateDateRangeInfo();
                 this.router.navigate(['/dashboard']);
             }, error => {
                 this.error = true;

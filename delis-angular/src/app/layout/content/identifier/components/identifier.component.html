@@ -79,12 +79,7 @@
                                            placeholder="Name"/>
                                 </td>
                                 <td>
-                                    <input bsDaterangepicker
-                                           [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
-                                           class="form-control"
-                                           placeholder="Received Date"
-                                           type="search"
-                                           (bsValueChange)="loadReceivedDate($event)">
+                                    <app-daterange></app-daterange>
                                 </td>
                             </tr>
                             </thead>
