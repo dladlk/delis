@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.Header;
 
 @Slf4j
-public class DocumentLoadServiceUnitTest {
+public class DocumentLoadServiceTestIT {
 
 	private DocumentLoadService service;
 	

@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Ignore
-public class IdentifierPublishServiceTest {
+public class IdentifierPublishServiceTestIT {
 
 	private boolean mockIntegration = false;
 

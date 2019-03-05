@@ -32,7 +32,7 @@ import dk.erst.delis.web.organisation.OrganisationService;
 @AutoConfigureTestDatabase(replace=Replace.ANY)
 @Transactional
 @Rollback
-public class IdentifierLoadServiceTest {
+public class IdentifierLoadServiceTestIT {
 
 	@Autowired
 	private IdentifierLoadService identifierLoadService;

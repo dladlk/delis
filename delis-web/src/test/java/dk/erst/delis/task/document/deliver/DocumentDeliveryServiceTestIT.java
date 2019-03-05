@@ -48,7 +48,7 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-public class DocumentDeliveryServiceTest {
+public class DocumentDeliveryServiceTestIT {
 
 	@Autowired
 	private DocumentDaoRepository documentRepository;

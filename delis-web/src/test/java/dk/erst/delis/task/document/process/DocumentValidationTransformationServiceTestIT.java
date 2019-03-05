@@ -30,7 +30,7 @@ import dk.erst.delis.web.validationrule.ValidationRuleService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-public class DocumentValidationTransformationServiceTest {
+public class DocumentValidationTransformationServiceTestIT {
 
 	@Autowired
 	private RuleDocumentTransformationDaoRepository tRuleRepository;

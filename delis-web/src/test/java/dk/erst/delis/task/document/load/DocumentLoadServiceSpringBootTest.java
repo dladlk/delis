@@ -23,7 +23,7 @@ import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
-import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTest;
+import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTestIT;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import dk.erst.delis.web.organisation.OrganisationService;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +57,7 @@ public class DocumentLoadServiceSpringBootTest {
 		/*
 		 * Execute IdentifierLoadServiceTest to have default values for identifiers in db
 		 */
-		IdentifierLoadServiceTest ilsTest = new IdentifierLoadServiceTest();
+		IdentifierLoadServiceTestIT ilsTest = new IdentifierLoadServiceTestIT();
 		ilsTest.setOrganisationService(organisationService);
 		ilsTest.setIdentifierLoadService(identifierLoadService);
 		ilsTest.loadTestIdentifiers();

@@ -36,3 +36,8 @@ grant all on delis.* to delis@localhost;
 
 ## Run
 
+## Test
+There are two test classes. Separated by naming convention.
+1. Unit tests ends with *Test - run every time on build (by surefire plugin)
+2. Integration tests ends with *IT - run with goal 'mvg failsafe:integration-test' and 'mvn failsafe:verify'
+
