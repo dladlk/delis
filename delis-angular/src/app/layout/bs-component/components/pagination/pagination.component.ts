@@ -41,6 +41,7 @@ export class PaginationComponent {
     }
 
     clearFilter() {
+        this.pagination.selectedPageSize = {pageSize: 10};
         this.paginationService.clearFilter();
     }
 
