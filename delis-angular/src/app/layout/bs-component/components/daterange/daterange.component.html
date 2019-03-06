@@ -2,38 +2,41 @@
     {{buttonName}}
 </button>
 
-<div class="card w-100" *ngIf="show" style="overflow: visible !important;">
-<!--<div class="card w-50" *ngIf="show" style="min-width: 200%; position: center !important; ">-->
-    <div class="card-body">
-        <div style="margin: 0 auto; text-align: left;">
-            <table class="table table-sm">
-                <tr>
-                    <td>
-                        proposed option
-                    </td>
-                    <td>
-                        <ng-select [items]="rangeDates"
-                                   [clearable]="clearableSelect"
-                                   placeholder="range dates: "
-                                   [(ngModel)]="selectedDate"
-                                   (change)="loadRangeDate()">
-                        </ng-select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        custom option
-                    </td>
-                    <td>
-                        <input bsDaterangepicker
-                               [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
-                               class="form-control"
-                               placeholder="Received date"
-                               type="search"
-                               (bsValueChange)="loadReceivedDate($event)">
-                    </td>
-                </tr>
-            </table>
+<div class="card" *ngIf="show" style="min-width: 10%; position: fixed !important; right: 5% !important; z-index: 1 !important;">
+    <div class="card border-secondary m-1">
+        <div class="card-body">
+            <div style="margin: 0 auto; text-align: left;">
+                <table class="table table-sm">
+                    <tr>
+                        <td>
+                            proposed option
+                        </td>
+                        <td>
+                            <ng-select [items]="rangeDates"
+                                       [clearable]="clearableSelect"
+                                       placeholder="range dates: "
+                                       [(ngModel)]="selectedDate"
+                                       (change)="loadRangeDate()">
+                            </ng-select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            custom option
+                        </td>
+                        <td>
+                            <div class="card border-secondary m-1">
+                                <input bsDaterangepicker
+                                       [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
+                                       class="form-control"
+                                       placeholder="Received date"
+                                       type="search"
+                                       (bsValueChange)="loadReceivedDate($event)">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>
