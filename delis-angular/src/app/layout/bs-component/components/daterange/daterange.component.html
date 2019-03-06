@@ -9,7 +9,7 @@
                 <table class="table table-sm">
                     <tr>
                         <td>
-                            proposed option
+                            proposed period
                         </td>
                         <td>
                             <ng-select [items]="rangeDates"
@@ -22,17 +22,15 @@
                     </tr>
                     <tr>
                         <td>
-                            custom option
+                            custom period
                         </td>
                         <td>
-                            <div class="card border-secondary m-1">
-                                <input bsDaterangepicker
-                                       [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
-                                       class="form-control"
-                                       placeholder="Received date"
-                                       type="search"
-                                       (bsValueChange)="loadReceivedDate($event)">
-                            </div>
+                            <input bsDaterangepicker
+                                   [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT, showWeekNumbers: false}"
+                                   class="form-control"
+                                   placeholder="Received date"
+                                   type="search"
+                                   (bsValueChange)="loadReceivedDate($event)">
                         </td>
                     </tr>
                 </table>

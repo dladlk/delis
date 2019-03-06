@@ -41,12 +41,11 @@ export class PaginationComponent {
     }
 
     clearFilter() {
-        this.pagination = new PaginationModel();
         this.paginationService.clearFilter();
     }
 
     generateFrom() : number {
-        if (this.pagination.collectionSize == 0) {
+        if (this.pagination.collectionSize === 0) {
             return 0;
         } else {
             return this.pagination.pageSize * (this.pagination.currentPage - 1) + 1;
