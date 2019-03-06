@@ -2,20 +2,23 @@
     {{buttonName}}
 </button>
 
-<ng-container *ngIf="show">
-    <hr>
-    <div style="margin: 0 auto; text-align: left;">
-        <ng-select [items]="rangeDates"
-                   [clearable]="clearableSelect"
-                   placeholder="range dates: "
-                   [(ngModel)]="selectedDate"
-                   (change)="loadRangeDate()">
-        </ng-select>
-        <input bsDaterangepicker
-               [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
-               class="form-control"
-               placeholder="Received date"
-               type="search"
-               (bsValueChange)="loadReceivedDate($event)">
+<div class="card" *ngIf="show" style="min-width: 100%">
+    <div class="card-body">
+        <ng-container>
+            <div style="margin: 0 auto; text-align: left;">
+                <ng-select [items]="rangeDates"
+                           [clearable]="clearableSelect"
+                           placeholder="range dates: "
+                           [(ngModel)]="selectedDate"
+                           (change)="loadRangeDate()">
+                </ng-select>
+                <input bsDaterangepicker
+                       [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
+                       class="form-control"
+                       placeholder="Received date"
+                       type="search"
+                       (bsValueChange)="loadReceivedDate($event)">
+            </div>
+        </ng-container>
     </div>
-</ng-container>
+</div>

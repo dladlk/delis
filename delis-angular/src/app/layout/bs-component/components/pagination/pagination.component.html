@@ -23,7 +23,7 @@
                 {{ 'pagination.page-size' | translate }}:
             </span>
         </div>
-        <div class="col-sm-1">
+        <div class="col-sm-2">
             <ng-select [items]="pageSizes"
                        bindLabel="pageSize"
                        placeholder="&#8721;"
@@ -34,7 +34,7 @@
                        (change)="loadPageSize()">
             </ng-select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             <button type="button" class="btn" (click)="clearFilter()" style="background-color: white">&nbsp;{{ 'pagination.clear' | translate }}&nbsp;&nbsp;
                 <i class="fa fa-eraser"></i>&nbsp;
             </button>

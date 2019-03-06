@@ -13,6 +13,7 @@ import { IdentifierService } from "../services/identifier.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { SHOW_DATE_FORMAT } from "../../../../app.constants";
 import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
@@ -57,9 +58,9 @@ export class IdentifierComponent {
     constructor(private translate: TranslateService,
                 private locale: LocaleService,
                 private errorService: ErrorService,
-
                 private paginationService: PaginationService,
-                private identifierService: IdentifierService, private dtService: DaterangeService) {
+                private identifierService: IdentifierService,
+                private dtService: DaterangeService, private dtShowService: DaterangeShowService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
@@ -270,6 +271,7 @@ export class IdentifierComponent {
         this.textUniqueValueType = '';
         this.textName = '';
         this.filter.dateRange = null;
+        this.dtShowService.hide(false);
     }
 
     private clearFilter(columnName: string) {
