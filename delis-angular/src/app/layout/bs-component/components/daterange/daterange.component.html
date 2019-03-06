@@ -1,24 +1,39 @@
-<button class="btn-sm" style="background-color: white;" (click)="toggle()" id="bt">
+<button class="btn-sm" style="background-color: white; min-width: 100% !important;" (click)="toggle()" id="bt">
     {{buttonName}}
 </button>
 
-<div class="card" *ngIf="show" style="min-width: 100%">
+<div class="card w-100" *ngIf="show" style="overflow: visible !important;">
+<!--<div class="card w-50" *ngIf="show" style="min-width: 200%; position: center !important; ">-->
     <div class="card-body">
-        <ng-container>
-            <div style="margin: 0 auto; text-align: left;">
-                <ng-select [items]="rangeDates"
-                           [clearable]="clearableSelect"
-                           placeholder="range dates: "
-                           [(ngModel)]="selectedDate"
-                           (change)="loadRangeDate()">
-                </ng-select>
-                <input bsDaterangepicker
-                       [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
-                       class="form-control"
-                       placeholder="Received date"
-                       type="search"
-                       (bsValueChange)="loadReceivedDate($event)">
-            </div>
-        </ng-container>
+        <div style="margin: 0 auto; text-align: left;">
+            <table class="table table-sm">
+                <tr>
+                    <td>
+                        proposed option
+                    </td>
+                    <td>
+                        <ng-select [items]="rangeDates"
+                                   [clearable]="clearableSelect"
+                                   placeholder="range dates: "
+                                   [(ngModel)]="selectedDate"
+                                   (change)="loadRangeDate()">
+                        </ng-select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        custom option
+                    </td>
+                    <td>
+                        <input bsDaterangepicker
+                               [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
+                               class="form-control"
+                               placeholder="Received date"
+                               type="search"
+                               (bsValueChange)="loadReceivedDate($event)">
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
