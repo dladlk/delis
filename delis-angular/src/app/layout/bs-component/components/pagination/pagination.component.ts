@@ -46,7 +46,11 @@ export class PaginationComponent {
     }
 
     generateFrom() : number {
-        return this.pagination.pageSize * (this.pagination.currentPage - 1) + 1;
+        if (this.pagination.collectionSize == 0) {
+            return 0;
+        } else {
+            return this.pagination.pageSize * (this.pagination.currentPage - 1) + 1;
+        }
     }
 
     generateTo() {
