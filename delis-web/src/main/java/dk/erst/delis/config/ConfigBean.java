@@ -53,6 +53,11 @@ public class ConfigBean {
 		return Paths.get(path);
 	}
 
+	public Path getIdentifierInputPath() {
+		String path = configValues.get(IDENTIFIER_INPUT_ROOT);
+		return Paths.get(path);
+	}
+
 	public Path getStorageLoadedPath() {
 		return buildStoragePath(DocumentStorageType.LOADED);
 	}
