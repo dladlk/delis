@@ -5,15 +5,16 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
-
+import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
+import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author funtusthan, created by 05.02.19
@@ -27,17 +28,20 @@ public class TaskScheduler {
     private final DocumentLoadService documentLoadService;
     private final DocumentProcessService documentProcessService;
     private final DocumentDeliverService documentDeliverService;
+    private final IdentifierBatchLoadService identifierBatchLoadService;
 
     @Autowired
     public TaskScheduler(
             ConfigBean configBean,
             DocumentLoadService documentLoadService,
             DocumentProcessService documentProcessService,
-            DocumentDeliverService documentDeliverService) {
+            DocumentDeliverService documentDeliverService,
+            IdentifierBatchLoadService identifierBatchLoadService) {
         this.configBean = configBean;
         this.documentLoadService = documentLoadService;
         this.documentProcessService = documentProcessService;
         this.documentDeliverService = documentDeliverService;
+        this.identifierBatchLoadService = identifierBatchLoadService;
     }
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
@@ -83,5 +87,16 @@ public class TaskScheduler {
             log.error("TaskScheduler: documentDeliver ==> Failed to invoke documentDeliveryService.processValidated", e);
         }
         log.info("-- DONE DOCUMENT DELIVER TASK --");
+    }
+
+    @Scheduled(fixedDelay = 5000L)
+    public void identifierLoad() {
+        log.info("-- START IDENTIFIERS LOAD TASK --");
+        try {
+            List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
+        } catch (Exception e) {
+            log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
+        }
+        log.info("-- DONE IDENTIFIERS LOAD TASK --");
     }
 }

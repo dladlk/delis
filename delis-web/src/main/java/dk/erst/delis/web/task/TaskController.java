@@ -5,6 +5,8 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
+import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class TaskController {
 	@Autowired
 	private IdentifierBatchPublishingService identifierBatchPublishingService;
 
+	@Autowired
+	private IdentifierBatchLoadService identifierBatchLoadService;
+
 
 	@GetMapping("/task/index")
 	public String index() {
@@ -43,7 +48,20 @@ public class TaskController {
 
 	@GetMapping("/task/identifierLoad")
 	public String identifierLoad(Model model) {
-		return unimplemented(model);
+		try {
+			List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
+			String message = createReportMessage(loadReports);
+			model.addAttribute("message", message);
+			log.info(message);
+		} catch (Throwable e) {
+			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
+			log.error(e.getMessage(), e);
+		}
+		return "/task/index";
+	}
+
+	private String createReportMessage(List<OrganizationIdentifierLoadReport> loadReports) {
+		return "Load reports message goes here...";//TODO implement
 	}
 
 	@GetMapping("/task/identifierPublish")

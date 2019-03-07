@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = Replace.ANY)
-public class DocumentLoadServiceSpringBootTest {
+public class DocumentLoadServiceSpringBootTestIT {
 	
 	@Autowired
 	private DocumentDaoRepository documentDaoRepository;
