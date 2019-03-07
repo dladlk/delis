@@ -85,6 +85,10 @@ export class DocumentsComponent implements OnInit {
             this.pagination.currentPage = 1;
             this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
         });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.filter.dateReceived = null;
+            this.loadPage(1, this.pagination.pageSize);
+        });
     }
 
     ngOnInit() {
@@ -269,6 +273,5 @@ export class DocumentsComponent implements OnInit {
         this.textSenderName = '';
         this.filter.dateReceived = null;
         this.filter.sortBy = 'orderBy_Id_Desc';
-        this.dtShowService.hide(false);
     }
 }

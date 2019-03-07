@@ -78,6 +78,10 @@ export class JournalDocumentComponent implements OnInit {
             this.pagination.currentPage = 1;
             this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
         });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.filter.dateRange = null;
+            this.loadPage(1, this.pagination.pageSize);
+        });
     }
 
     ngOnInit(): void {
@@ -225,7 +229,6 @@ export class JournalDocumentComponent implements OnInit {
         this.textMessage = '';
         this.textDurationMs = '';
         this.filter.dateRange = null;
-        this.dtShowService.hide(false);
     }
 
     private clearFilter(columnName: string) {

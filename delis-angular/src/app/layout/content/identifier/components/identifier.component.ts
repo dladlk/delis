@@ -81,6 +81,10 @@ export class IdentifierComponent {
             this.pagination.currentPage = 1;
             this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
         });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.filter.dateRange = null;
+            this.loadPage(1, this.pagination.pageSize);
+        });
     }
 
     ngOnInit(): void {
@@ -271,7 +275,6 @@ export class IdentifierComponent {
         this.textUniqueValueType = '';
         this.textName = '';
         this.filter.dateRange = null;
-        this.dtShowService.hide(false);
     }
 
     private clearFilter(columnName: string) {

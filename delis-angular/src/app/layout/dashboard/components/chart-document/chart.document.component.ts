@@ -5,7 +5,9 @@ import { routerTransition } from "../../../../router.animations";
 import { LocaleService } from "../../../../service/locale.service";
 import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
-import { DATE_FORMAT } from "../../../../app.constants";
+import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
+import { DateRangeModel } from "../../../../models/date.range.model";
+import {DaterangeShowService} from "../../../bs-component/components/daterange/daterange.show.service";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -15,8 +17,6 @@ import { DATE_FORMAT } from "../../../../app.constants";
 })
 export class ChartDocumentComponent implements OnInit {
 
-    private period: number = 0;
-
     lineChartData: Array<any> = [];
     lineChartLabels: Array<any> = [];
 
@@ -25,19 +25,30 @@ export class ChartDocumentComponent implements OnInit {
     lineChartLegend: boolean;
     lineChartType: string;
 
-    customDate: Date[];
-
     startDate: Date;
 
-    DATE_FORMAT = DATE_FORMAT;
+    drm: DateRangeModel = new DateRangeModel();
 
     constructor(
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
+        private dtService: DaterangeService,
+        private dtShowService: DaterangeShowService,
         private chartDocumentService: ChartDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.updateLineChart(false);
+        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
+            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+                this.drm = dtRange;
+                this.updateLineChart(true);
+            } else {
+                this.updateLineChart(false);
+            }
+        });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.updateLineChart(false);
+        });
     }
 
     ngOnInit() {
@@ -69,34 +80,9 @@ export class ChartDocumentComponent implements OnInit {
 
     public chartHovered(e: any): void {}
 
-    nextPeriod() {
-        this.period++;
-        if (this.period > 2) {
-            this.period = 2;
-        }
-        this.updateLineChart(false);
-    }
-
-    previousPeriod() {
-        this.period--;
-        if (this.period < 0) {
-            this.period = 0;
-        }
-        this.updateLineChart(false);
-    }
-
-    loadDate(date: Date[]) {
-        if (date !== null) {
-            this.customDate = date;
-            this.updateLineChart(true);
-        } else {
-            this.updateLineChart(false);
-        }
-    }
-
     private updateLineChart(custom: boolean) {
         if (custom) {
-            this.chartDocumentService.getChartCustomData(this.customDate).subscribe(
+            this.chartDocumentService.getChartCustomData(this.drm).subscribe(
                 (data: {}) => {
                     this.generateLineChart(data);
                 }, error => {

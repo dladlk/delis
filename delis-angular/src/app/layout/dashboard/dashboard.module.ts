@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from "@ngx-translate/core";
-import { BsDatepickerModule } from "ngx-bootstrap";
 import { ChartsModule } from "ng2-charts";
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
@@ -11,21 +10,24 @@ import { StatModule } from '../../shared';
 import { ErrorsModule } from '../../shared';
 import { DashboardService } from "./dashboard.service";
 import { ChartDocumentService } from "./components/chart-document/services/chart.document.service";
+import { BsComponentModule } from "../bs-component/bs-component.module";
+import { DaterangeService } from "../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../bs-component/components/daterange/daterange.show.service";
 
 @NgModule({
     imports: [
         CommonModule,
         ChartsModule,
-        BsDatepickerModule,
         DashboardRoutingModule,
         TranslateModule,
         StatModule,
-        ErrorsModule
+        ErrorsModule,
+        BsComponentModule
     ],
     declarations: [
         DashboardComponent,
         ChartDocumentComponent
     ],
-    providers: [ChartDocumentService, DashboardService]
+    providers: [ChartDocumentService, DashboardService, DaterangeService, DaterangeShowService]
 })
 export class DashboardModule {}

@@ -5,7 +5,6 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { PageHeaderModule } from "../../../../shared/modules";
-import { BsDatepickerModule } from "ngx-bootstrap";
 import { HttpClientModule } from "@angular/common/http";
 import { BsComponentModule } from "../../../bs-component/bs-component.module";
 import { IdentifierOneComponent } from "../components/one/identifier.one.component";
@@ -23,7 +22,6 @@ import { JournalIdentifierService } from "../../journal/identifier/services/jour
         NgSelectModule,
         IdentifierRoutingModule,
         PageHeaderModule,
-        BsDatepickerModule,
         HttpClientModule,
         BsComponentModule],
     declarations: [IdentifierComponent, IdentifierOneComponent],

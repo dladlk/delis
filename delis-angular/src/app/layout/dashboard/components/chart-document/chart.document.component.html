@@ -18,25 +18,9 @@
             </div>
             <div class="card-footer">
                 <div class="d-flex justify-content-center">
-                    <!--<div class="p-2">-->
-                        <!--<button type="button" class="btn btn-large float-left" (click)="previousPeriod()">-->
-                            <!--<i class="fa fa-reply"></i>-->
-                        <!--</button>-->
-                    <!--</div>-->
                     <div class="p-2 bg-sm">
-                        <input bsDaterangepicker
-                               [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT}"
-                               [placement]="'top'"
-                               class="form-control"
-                               placeholder="Load custom period"
-                               type="search"
-                               (bsValueChange)="loadDate($event)">
+                        <app-daterange drops="up" opens="center"></app-daterange>
                     </div>
-                    <!--<div class="p-2">-->
-                        <!--<button type="button" class="btn btn-large float-right" (click)="nextPeriod()">-->
-                            <!--<i class="fa fa-share"></i>-->
-                        <!--</button>-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>

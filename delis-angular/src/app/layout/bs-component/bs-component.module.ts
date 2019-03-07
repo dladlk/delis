@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BsDatepickerModule } from "ngx-bootstrap";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 import { BsComponentRoutingModule } from './bs-component-routing.module';
 import { BsComponentComponent } from './bs-component.component';
@@ -21,8 +21,8 @@ import { DaterangeShowService } from "./components/daterange/daterange.show.serv
         BsComponentRoutingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgbModule, NgSelectModule, BsDatepickerModule,
-        PageHeaderModule, TranslateModule
+        NgbModule, NgSelectModule,
+        PageHeaderModule, TranslateModule, NgxDaterangepickerMd.forRoot()
     ],
     declarations: [
         BsComponentComponent,

@@ -54,10 +54,10 @@ a {
   background-color: $topnav-background-color;
 }
 
-.table-hover tbody tr:hover {
-  background-color: $topnav-background-color;
-  color: #ebf5ff;
-}
+//.table-hover tbody tr:hover {
+//  background-color: $topnav-background-color;
+//  color: #ebf5ff;
+//}
 
 .dropdown-menu {
   border: 1px solid $topnav-background-color !important;
@@ -70,8 +70,4 @@ a {
 
 .dropdown-item {
   color: darken($topnav-background-color, 15%) !important;
-}
-
-bs-daterangepicker-container {
-  left: 50% !important;
 }
