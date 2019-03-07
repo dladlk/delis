@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import moment from 'moment';
 
 import { routerTransition } from "../../../../router.animations";
@@ -7,6 +7,8 @@ import { DATE_FORMAT } from "../../../../app.constants";
 import { DaterangeService } from "./daterange.service";
 import { DaterangeShowService } from "./daterange.show.service";
 import { DateRangePicker } from "./date.range.picker";
+import { PaginationService } from "../pagination/pagination.service";
+import { PaginationModel } from "../pagination/pagination.model";
 
 @Component({
     selector: 'app-daterange',
@@ -14,14 +16,14 @@ import { DateRangePicker } from "./date.range.picker";
     styleUrls: ['./daterange.component.scss'],
     animations: [routerTransition()]
 })
-export class DaterangeComponent {
+export class DaterangeComponent implements OnInit {
 
     @Input() drops: string;
     @Input() opens: string;
 
     DATE_FORMAT = DATE_FORMAT;
     dateRangeModel: DateRangeModel = new DateRangeModel();
-
+    dateRange: DateRangePicker;
     alwaysShowCalendars: boolean;
     ranges: any = {
         'Today': [moment(), moment()],
@@ -32,8 +34,13 @@ export class DaterangeComponent {
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
     };
 
-    constructor(private dtService: DaterangeService, private dtShowService: DaterangeShowService) {
+    constructor(private dtService: DaterangeService, private dtShowService: DaterangeShowService, private paginationService: PaginationService) {
         this.alwaysShowCalendars = true;
+        this.paginationService.listen().subscribe((pag: PaginationModel) => {
+            if (pag.collectionSize === 0) {
+                this.dateRange = null;
+            }
+        });
     }
 
     change(dateRange: DateRangePicker) {
@@ -46,5 +53,8 @@ export class DaterangeComponent {
                 this.dtShowService.hide(true);
             }
         }
+    }
+
+    ngOnInit(): void {
     }
 }
