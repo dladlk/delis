@@ -13,6 +13,7 @@ import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 import { DaterangeService } from "../../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.organisations.table.columnName.organisation';
 const COLUMN_NAME_MESSAGE = 'journal.organisations.table.columnName.message';
@@ -47,6 +48,7 @@ export class JournalOrganisationComponent implements OnInit {
         private translate: TranslateService,
         private locale: LocaleService,
         private dtService: DaterangeService,
+        private dtShowService: DaterangeShowService,
         private errorService: ErrorService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
@@ -185,6 +187,7 @@ export class JournalOrganisationComponent implements OnInit {
         this.textMessage = '';
         this.textDurationMs = '';
         this.filter.dateRange = null;
+        this.dtShowService.hide(false);
     }
 
     private clearFilter(columnName: string) {

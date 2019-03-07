@@ -13,6 +13,7 @@ import { DocumentModel } from "../models/document.model";
 import { ErrorService } from "../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
 import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -61,7 +62,9 @@ export class DocumentsComponent implements OnInit {
         private documentsService: DocumentsService,
         private locale: LocaleService,
         private errorService: ErrorService,
-        private paginationService: PaginationService, private dtService: DaterangeService) {
+        private paginationService: PaginationService,
+        private dtService: DaterangeService,
+        private dtShowService: DaterangeShowService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
@@ -266,5 +269,6 @@ export class DocumentsComponent implements OnInit {
         this.textSenderName = '';
         this.filter.dateReceived = null;
         this.filter.sortBy = 'orderBy_Id_Desc';
+        this.dtShowService.hide(false);
     }
 }

@@ -14,6 +14,7 @@ import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
 import { DaterangeService } from "../../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.organisation';
 const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.success';
@@ -55,7 +56,8 @@ export class JournalDocumentComponent implements OnInit {
         private locale: LocaleService,
         private dtService: DaterangeService,
         private errorService: ErrorService,
-        private paginationService: PaginationService) {
+        private paginationService: PaginationService,
+        private dtShowService: DaterangeShowService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
@@ -223,6 +225,7 @@ export class JournalDocumentComponent implements OnInit {
         this.textMessage = '';
         this.textDurationMs = '';
         this.filter.dateRange = null;
+        this.dtShowService.hide(false);
     }
 
     private clearFilter(columnName: string) {

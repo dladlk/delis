@@ -41,11 +41,16 @@ export class PaginationComponent {
     }
 
     clearFilter() {
+        this.pagination.selectedPageSize = {pageSize: 10};
         this.paginationService.clearFilter();
     }
 
     generateFrom() : number {
-        return this.pagination.pageSize * (this.pagination.currentPage - 1) + 1;
+        if (this.pagination.collectionSize === 0) {
+            return 0;
+        } else {
+            return this.pagination.pageSize * (this.pagination.currentPage - 1) + 1;
+        }
     }
 
     generateTo() {

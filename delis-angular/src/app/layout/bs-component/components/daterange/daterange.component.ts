@@ -7,6 +7,7 @@ import { routerTransition } from "../../../../router.animations";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
 import { DaterangeService } from "./daterange.service";
+import {DaterangeShowService} from "./daterange.show.service";
 
 @Component({
     selector: 'app-daterange',
@@ -20,23 +21,22 @@ export class DaterangeComponent {
     show: boolean = false;
     clearableSelect = false;
     rangeDates: [];
-    selectedDate: any;
+    selectedDate: string = 'ALL';
     date: Date[];
     DATE_FORMAT = DATE_FORMAT;
     dateRangeModel: DateRangeModel = new DateRangeModel();
 
-    constructor(private dtService: DaterangeService, private localeService: BsLocaleService,) {
+    constructor(private dtService: DaterangeService, private dtShowService: DaterangeShowService, private localeService: BsLocaleService) {
         this.localeService.use('da');
         this.rangeDates = JSON.parse(localStorage.getItem("dateRanges"));
-        this.selectedDate = "ALL";
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.show = show;
+            this.selectedDate = "ALL";
+        });
     }
 
     toggle() {
         this.show = !this.show;
-        if(this.show)
-            this.buttonName = "Hide";
-        else
-            this.buttonName = "Date period";
     }
 
     loadRangeDate() {
@@ -78,10 +78,8 @@ export class DaterangeComponent {
             date[1].setHours(23,59,59,999);
             this.dateRangeModel.dateStart = date[0];
             this.dateRangeModel.dateEnd = date[1];
-        } else {
-            this.dateRangeModel = new DateRangeModel();
+            this.dtService.loadDate(this.dateRangeModel);
         }
-        this.dtService.loadDate(this.dateRangeModel);
     }
 
     private getMonday(date: Date) : Date {

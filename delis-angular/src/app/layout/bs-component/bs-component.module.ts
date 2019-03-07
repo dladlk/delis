@@ -13,6 +13,7 @@ import { PageHeaderModule } from '../../shared';
 import { PaginationService } from "./components/pagination/pagination.service";
 import { DaterangeComponent } from "./components/daterange/daterange.component";
 import { DaterangeService } from "./components/daterange/daterange.service";
+import { DaterangeShowService } from "./components/daterange/daterange.show.service";
 
 @NgModule({
     imports: [
@@ -37,7 +38,7 @@ import { DaterangeService } from "./components/daterange/daterange.service";
         ErrorComponent
     ],
     providers: [
-        PaginationService, DaterangeService
+        PaginationService, DaterangeService, DaterangeShowService
     ]
 })
 export class BsComponentModule {}
