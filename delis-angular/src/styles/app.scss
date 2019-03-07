@@ -88,5 +88,17 @@ div.md-drppicker.drops-undefined-undefined.ltr.shown.double.show-ranges {
 }
 
 .md-drppicker td.active, .md-drppicker td.active:hover {
-  background-color: $topnav-background-color !important;
+  background-color: #868e96 !important;
+}
+
+.md-drppicker td.weekend.available.ng-star-inserted {
+  color: red !important;
+}
+
+.md-drppicker td.off.available.ng-star-inserted {
+  color: #868e96 !important;
+}
+
+.md-drppicker td.available.ng-star-inserted {
+  color: black !important;
 }
