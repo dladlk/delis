@@ -5,7 +5,7 @@
 @import "rtl";
 @import "responsive";
 @import "~@ng-select/ng-select/themes/default.theme.css";
-@import "~ngx-bootstrap/datepicker/bs-datepicker.css";
+//@import "~ngx-bootstrap/datepicker/bs-datepicker.css";
 
 @media print {
   .breadcrumb {
@@ -50,9 +50,9 @@ a {
   color: $topnav-background-color;
 }
 
-.theme-dark-blue .bs-datepicker-head {
-  background-color: $topnav-background-color;
-}
+//.theme-dark-blue .bs-datepicker-head {
+//  background-color: $topnav-background-color;
+//}
 
 //.table-hover tbody tr:hover {
 //  background-color: $topnav-background-color;
@@ -70,4 +70,23 @@ a {
 
 .dropdown-item {
   color: darken($topnav-background-color, 15%) !important;
+}
+
+div.md-drppicker.drops-undefined-undefined.ltr.shown.double.show-ranges {
+  right: 5% !important;
+  left: auto !important;
+  top: 32% !important;
+}
+
+.md-drppicker .ranges ul li button.active {
+  background-color: $topnav-background-color !important;
+  color: #fff;
+}
+
+.md-drppicker .btn {
+  background-color: $topnav-background-color !important;
+}
+
+.md-drppicker td.active, .md-drppicker td.active:hover {
+  background-color: $topnav-background-color !important;
 }
