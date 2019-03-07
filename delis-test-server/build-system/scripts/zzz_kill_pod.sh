@@ -7,6 +7,13 @@ if [ -z $PROJECT_CODE ]; then
    exit
 fi
 
+if [ "$PROJECT_CODE" == "delis-web-admin" ]; then
+   PROJECT_CODE=delis-admin
+fi
+if [ "$PROJECT_CODE" == "delis-web-api" ]; then
+   PROJECT_CODE=delis-api
+fi
+
 echo Searching for docker POD for project code ${PROJECT_CODE}
 DOCKER_POD_ID=`docker ps | grep "POD_${PROJECT_CODE}" | cut -d ' ' -f 1`;
 echo Found docker POD to kill: ${DOCKER_POD_ID}
