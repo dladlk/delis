@@ -9,15 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("check")
 public class IdendifierCheckRestController {
 
     @Autowired
     private IdentifierResolverService identifierResolverService;
 
-    @RequestMapping(value = "/testReciever", method = RequestMethod.GET)
+    @RequestMapping(value = "/receiver/{identifier}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity checkIdentifier (@PathVariable("identifier") String compoundIdentifier) {
-        System.out.println("compoundIdentifier = " + compoundIdentifier);
 
         String[] split = compoundIdentifier.split(":");
         String type = split[0];
