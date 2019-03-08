@@ -41,6 +41,7 @@ export class LoginComponent implements OnInit {
                 let loginData: LoginData = data["data"];
                 this.tokenService.setToken(loginData.token);
                 localStorage.setItem('username', loginData.username);
+                localStorage.setItem('ngxDaterangepickerMdInit', 'true');
                 this.contentSelectInfoService.generateAllContentSelectInfo();
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo();
                 this.contentSelectInfoService.generateDateRangeInfo();

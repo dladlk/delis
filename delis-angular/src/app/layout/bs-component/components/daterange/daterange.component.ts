@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { LocaleConfig } from "ngx-daterangepicker-material";
 import moment from 'moment';
 
 import { routerTransition } from "../../../../router.animations";
@@ -24,9 +25,7 @@ export class DaterangeComponent implements OnInit {
     @Input() drops: string;
     @Input() opens: string;
 
-    DATE_FORMAT = DATE_FORMAT;
-    FIRST_DAY = FIRST_DAY;
-
+    localeConfig: LocaleConfig;
     dateRangeModel: DateRangeModel = new DateRangeModel();
     dateRange: DateRangePicker;
     alwaysShowCalendars: boolean;
@@ -68,6 +67,17 @@ export class DaterangeComponent implements OnInit {
                 this.dateRange = null;
             }
         });
+        this.init();
+    }
+
+    init() {
+        let ngxDaterangepickerMdInit = localStorage.getItem('ngxDaterangepickerMdInit');
+        if (ngxDaterangepickerMdInit !== null) {
+            this.localeConfig = {format: DATE_FORMAT, firstDay: FIRST_DAY};
+            localStorage.removeItem('ngxDaterangepickerMdInit');
+        } else {
+            this.localeConfig = null;
+        }
     }
 
     getRange(lang: string) {
