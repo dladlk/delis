@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("check")
-public class IdendifierCheckRestController {
+public class IdentifierCheckRestController {
 
     @Autowired
     private IdentifierResolverService identifierResolverService;
