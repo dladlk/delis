@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
-import { BsDatepickerModule } from "ngx-bootstrap";
 import { HttpClientModule } from "@angular/common/http";
 
 import { PageHeaderModule } from "../../../../../shared/modules";
@@ -23,7 +22,6 @@ import { JournalDocumentRoutingModule } from "../journal.document-routing.module
         NgSelectModule,
         JournalDocumentRoutingModule,
         PageHeaderModule,
-        BsDatepickerModule,
         HttpClientModule,
         BsComponentModule],
     declarations: [JournalDocumentComponent, JournalOneDocumentComponent],

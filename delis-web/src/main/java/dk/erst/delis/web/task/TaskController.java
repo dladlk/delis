@@ -9,6 +9,7 @@ import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -61,7 +64,10 @@ public class TaskController {
 	}
 
 	private String createReportMessage(List<OrganizationIdentifierLoadReport> loadReports) {
-		return "Load reports message goes here...";//TODO implement
+		List<String> messages = loadReports.stream()
+				.map(object -> Objects.toString(object, null))
+				.collect(Collectors.toList());
+		return StringUtils.join(messages, "\n");
 	}
 
 	@GetMapping("/task/identifierPublish")

@@ -1,40 +1,16 @@
-<button class="btn-sm" style="background-color: white; min-width: 100% !important;" (click)="toggle()" id="bt">
-    {{buttonName}}
-</button>
+<input
+        class="form-control"
+        type="text"
+        ngxDaterangepickerMd
+        [locale]="{format: DATE_FORMAT, firstDay: FIRST_DAY}"
+        [drops]="drops"
+        [opens]="opens"
+        [showCustomRangeLabel]="true"
+        [alwaysShowCalendars]="true"
+        [ranges]="ranges"
+        [linkedCalendars]="true"
+        [showClearButton]="true"
+        (change)="change($event)"
+        [(ngModel)]="dateRange"
+        placeholder="Received date">
 
-<div class="card" *ngIf="show" style="min-width: 10%; position: fixed !important; right: 5% !important; z-index: 1 !important;">
-    <div class="card border-secondary m-1">
-        <div class="card-body">
-            <div style="margin: 0 auto; text-align: left;">
-                <table class="table table-sm">
-                    <tr>
-                        <td>
-                            proposed period
-                        </td>
-                        <td>
-                            <ng-select [items]="rangeDates"
-                                       [clearable]="clearableSelect"
-                                       placeholder="range dates: "
-                                       [(ngModel)]="selectedDate"
-                                       (change)="loadRangeDate()">
-                            </ng-select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            custom period
-                        </td>
-                        <td>
-                            <input bsDaterangepicker
-                                   [bsConfig]="{containerClass: 'theme-dark-blue', rangeInputFormat: DATE_FORMAT, showWeekNumbers: false}"
-                                   class="form-control"
-                                   placeholder="Received date"
-                                   type="search"
-                                   (bsValueChange)="loadReceivedDate($event)">
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>

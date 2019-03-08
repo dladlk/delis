@@ -11,6 +11,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,14 +42,13 @@ public class IdentifierBatchLoadService {
             }
             for (File organizationFolder : identifierInputDir.listFiles()) {
                 String organizationCode = organizationFolder.getName();
-                System.out.println("organizationCode = " + organizationCode);
                 OrganizationIdentifierLoadReport loadReport = loadOrganizationIdentifiers(organizationFolder.toPath(), organizationCode);
                 if (loadReport != null) {
                     result.add(loadReport);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to load identifiers", e);
         }
         return result;
     }
@@ -56,28 +59,51 @@ public class IdentifierBatchLoadService {
                 .collect(Collectors.toList());
         List<SyncOrganisationFact> organisationFacts = new ArrayList<>();
         for (Path identifiersFilePath : filePathList) {
-            try {
-                FileInputStream fileInputStream = new FileInputStream(identifiersFilePath.toFile());
+            try (FileInputStream fileInputStream = new FileInputStream(identifiersFilePath.toFile())) {
                 SyncOrganisationFact syncOrganisationFact =
                         identifierLoadService.loadCSV(organizationCode, fileInputStream, identifiersFilePath.toString());
-                System.out.println("syncOrganisationFact = " + syncOrganisationFact);
                 organisationFacts.add(syncOrganisationFact);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("An error occurred during processing file " + identifiersFilePath, e);
+            } finally {
+                moveToProcessedFolder(identifiersFilePath);
             }
+        }
+        if (organisationFacts.isEmpty()) {
+            return null;
         }
         OrganizationIdentifierLoadReport loadReport = createLoadReport(organisationFacts);
         loadReport.setOrganizationCode(organizationCode);
         return loadReport;
     }
 
+    private void moveToProcessedFolder(Path sourceFilePath) {
+        File targetFolder = new File(sourceFilePath.getParent().toString(), "PROCESSED");
+        if (!targetFolder.exists() && targetFolder.mkdirs()) {
+            throw new RuntimeException("Target folder for processed files not exists and unable to create!");
+        }
+        try {
+            DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+            String targetFileNamePrefix = timeStampPattern.format(LocalDateTime.now());
+            String targetFileName = targetFileNamePrefix + "_" + sourceFilePath.getFileName().toString();
+            Path targetFilePath = Paths.get(targetFolder.toString(), targetFileName);
+            Path moved = Files.move(sourceFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+            log.info(String.format("Processed file '%s' moved to '%s'", sourceFilePath, moved));
+        } catch (IOException e) {
+            log.error("Failed to move processed file " + sourceFilePath, e);
+        }
+    }
+
     private OrganizationIdentifierLoadReport createLoadReport(List<SyncOrganisationFact> organisationFacts) {
         OrganizationIdentifierLoadReport loadReport = new OrganizationIdentifierLoadReport();
         for (SyncOrganisationFact organisationFact : organisationFacts) {
-            //TODO populate load report
+            loadReport.setAdd(loadReport.getAdd() + organisationFact.getAdd());
+            loadReport.setUpdate(loadReport.getUpdate() + organisationFact.getUpdate());
+            loadReport.setDelete(loadReport.getDelete() + organisationFact.getDelete());
+            loadReport.setEqual(loadReport.getEqual() + organisationFact.getEqual());
+            loadReport.setFailed(loadReport.getFailed() + organisationFact.getFailed());
         }
         return loadReport;
     }
-
 
 }

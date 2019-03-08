@@ -5,7 +5,7 @@
 @import "rtl";
 @import "responsive";
 @import "~@ng-select/ng-select/themes/default.theme.css";
-@import "~ngx-bootstrap/datepicker/bs-datepicker.css";
+//@import "~ngx-bootstrap/datepicker/bs-datepicker.css";
 
 @media print {
   .breadcrumb {
@@ -50,14 +50,14 @@ a {
   color: $topnav-background-color;
 }
 
-.theme-dark-blue .bs-datepicker-head {
-  background-color: $topnav-background-color;
-}
+//.theme-dark-blue .bs-datepicker-head {
+//  background-color: $topnav-background-color;
+//}
 
-.table-hover tbody tr:hover {
-  background-color: $topnav-background-color;
-  color: #ebf5ff;
-}
+//.table-hover tbody tr:hover {
+//  background-color: $topnav-background-color;
+//  color: #ebf5ff;
+//}
 
 .dropdown-menu {
   border: 1px solid $topnav-background-color !important;
@@ -72,6 +72,37 @@ a {
   color: darken($topnav-background-color, 15%) !important;
 }
 
-bs-daterangepicker-container {
-  left: 50% !important;
+div.md-drppicker.drops-undefined-undefined.ltr.shown.double.show-ranges {
+  right: 5% !important;
+  left: auto !important;
+  top: 32% !important;
+}
+
+.md-drppicker .ranges ul li button.active {
+  background-color: $topnav-background-color !important;
+  color: #fff;
+}
+
+.md-drppicker .btn {
+  background-color: $topnav-background-color !important;
+}
+
+.md-drppicker td.active, .md-drppicker td.active:hover {
+  background-color: #868e96 !important;
+}
+
+.md-drppicker td.weekend.available.ng-star-inserted {
+  color: red !important;
+}
+
+.md-drppicker td.off.available.ng-star-inserted {
+  color: #868e96 !important;
+}
+
+.md-drppicker td.available.ng-star-inserted {
+  color: black !important;
+}
+
+.clear svg {
+  color: black !important;
 }

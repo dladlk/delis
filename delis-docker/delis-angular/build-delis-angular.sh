@@ -13,6 +13,8 @@ echo "Building ${PROJECT_PATH}"
 
 pushd ${PROJECT_PATH}
 
+npm install
+
 ng build --prod --configuration=production --base-href=/delis-gui-context-name/
 
 popd

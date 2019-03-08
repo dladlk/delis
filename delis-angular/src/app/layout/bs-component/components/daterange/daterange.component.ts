@@ -1,13 +1,15 @@
-import { Component } from "@angular/core";
-import { BsLocaleService, daLocale } from "ngx-bootstrap";
-import { defineLocale } from 'ngx-bootstrap/chronos';
-defineLocale('da', daLocale);
+import { Component, Input, OnInit } from "@angular/core";
+import moment from 'moment';
 
 import { routerTransition } from "../../../../router.animations";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
+import { FIRST_DAY } from "../../../../app.constants";
 import { DaterangeService } from "./daterange.service";
-import {DaterangeShowService} from "./daterange.show.service";
+import { DaterangeShowService } from "./daterange.show.service";
+import { DateRangePicker } from "./date.range.picker";
+import { PaginationService } from "../pagination/pagination.service";
+import { PaginationModel } from "../pagination/pagination.model";
 
 @Component({
     selector: 'app-daterange',
@@ -15,81 +17,48 @@ import {DaterangeShowService} from "./daterange.show.service";
     styleUrls: ['./daterange.component.scss'],
     animations: [routerTransition()]
 })
-export class DaterangeComponent {
+export class DaterangeComponent implements OnInit {
 
-    buttonName: any = 'Date period';
-    show: boolean = false;
-    clearableSelect = false;
-    rangeDates: [];
-    selectedDate: string = 'ALL';
-    date: Date[];
+    @Input() drops: string;
+    @Input() opens: string;
+
     DATE_FORMAT = DATE_FORMAT;
-    dateRangeModel: DateRangeModel = new DateRangeModel();
+    FIRST_DAY = FIRST_DAY;
 
-    constructor(private dtService: DaterangeService, private dtShowService: DaterangeShowService, private localeService: BsLocaleService) {
-        this.localeService.use('da');
-        this.rangeDates = JSON.parse(localStorage.getItem("dateRanges"));
-        this.dtShowService.listen().subscribe((show: boolean) => {
-            this.show = show;
-            this.selectedDate = "ALL";
+    dateRangeModel: DateRangeModel = new DateRangeModel();
+    dateRange: DateRangePicker;
+    alwaysShowCalendars: boolean;
+
+    ranges: any = {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    };
+
+    constructor(private dtService: DaterangeService, private dtShowService: DaterangeShowService, private paginationService: PaginationService) {
+        this.alwaysShowCalendars = true;
+        this.paginationService.listen().subscribe((pag: PaginationModel) => {
+            if (pag.collectionSize === 0) {
+                this.dateRange = null;
+            }
         });
     }
 
-    toggle() {
-        this.show = !this.show;
-    }
-
-    loadRangeDate() {
-        this.dateRangeModel = new DateRangeModel();
-        if (this.selectedDate === 'Today') {
-            this.dateRangeModel.dateStart = new Date();
-            this.dateRangeModel.dateEnd = new Date();
-            this.dateRangeModel.dateStart.setHours(0,0,0,0);
-            this.dateRangeModel.dateEnd.setHours(23,59,59,999);
-        }
-        if (this.selectedDate === 'Yesterday') {
-            this.dateRangeModel.dateStart = new Date();
-            this.dateRangeModel.dateEnd = new Date();
-            this.dateRangeModel.dateStart.setHours(0,0,0,0);
-            this.dateRangeModel.dateEnd.setHours(23,59,59,999);
-            this.dateRangeModel.dateStart.setDate(this.dateRangeModel.dateStart.getDate() - 1);
-            this.dateRangeModel.dateEnd.setDate(this.dateRangeModel.dateEnd.getDate() - 1);
-        }
-        if (this.selectedDate === 'Last week') {
-            this.dateRangeModel.dateStart = new Date();
-            this.dateRangeModel.dateEnd = new Date();
-            this.dateRangeModel.dateEnd.setHours(23,59,59,999);
-            this.dateRangeModel.dateStart.setDate(this.getMonday(this.dateRangeModel.dateStart).getDate());
-            this.dateRangeModel.dateStart.setHours(0,0,0,0);
-        }
-        if (this.selectedDate === 'Last month') {
-            this.dateRangeModel.dateStart = new Date();
-            this.dateRangeModel.dateEnd = new Date();
-            this.dateRangeModel.dateEnd.setHours(23,59,59,999);
-            this.dateRangeModel.dateStart.setDate(this.getFirstDayOfMonth(this.dateRangeModel.dateStart).getDate());
-            this.dateRangeModel.dateStart.setHours(0,0,0,0);
-        }
-        this.dtService.loadDate(this.dateRangeModel);
-    }
-
-    loadReceivedDate(date: Date[]) {
-        if (date !== null) {
-            date[0].setHours(0,0,0,0);
-            date[1].setHours(23,59,59,999);
-            this.dateRangeModel.dateStart = date[0];
-            this.dateRangeModel.dateEnd = date[1];
-            this.dtService.loadDate(this.dateRangeModel);
+    change(dateRange: DateRangePicker) {
+        if (dateRange !== null) {
+            if ((dateRange.startDate !== null && dateRange.endDate !== null)) {
+                this.dateRangeModel.dateStart = new Date(dateRange.startDate);
+                this.dateRangeModel.dateEnd = new Date(dateRange.endDate);
+                this.dtService.loadDate(this.dateRangeModel);
+            } else {
+                this.dtShowService.hide(true);
+            }
         }
     }
 
-    private getMonday(date: Date) : Date {
-        let day = date.getDay() || 7;
-        if( day !== 1 )
-            date.setHours(-24 * (day - 1));
-        return date;
-    }
-
-    private getFirstDayOfMonth(date: Date) : Date {
-        return new Date(date.getFullYear(), date.getMonth(), 1);
+    ngOnInit(): void {
     }
 }
