@@ -10,6 +10,8 @@ import { DaterangeShowService } from "./daterange.show.service";
 import { DateRangePicker } from "./date.range.picker";
 import { PaginationService } from "../pagination/pagination.service";
 import { PaginationModel } from "../pagination/pagination.model";
+import { ForwardingLanguageService } from "../../../../service/forwarding.language.service";
+import { LocaleService } from "../../../../service/locale.service";
 
 @Component({
     selector: 'app-daterange',
@@ -29,7 +31,9 @@ export class DaterangeComponent implements OnInit {
     dateRange: DateRangePicker;
     alwaysShowCalendars: boolean;
 
-    ranges: any = {
+    ranges: any = {};
+
+    rangesEN: any = {
         'Today': [moment(), moment()],
         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
@@ -38,13 +42,40 @@ export class DaterangeComponent implements OnInit {
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
     };
 
-    constructor(private dtService: DaterangeService, private dtShowService: DaterangeShowService, private paginationService: PaginationService) {
+    rangesDA: any = {
+        'I dag': [moment(), moment()],
+        'I går': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Sidste 7 dage': [moment().subtract(6, 'days'), moment()],
+        'Sidste 30 dage': [moment().subtract(29, 'days'), moment()],
+        'Denne måned': [moment().startOf('month'), moment().endOf('month')],
+        'Sidste måned': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    };
+
+    constructor(
+        private localeService: LocaleService,
+        private forwardingLanguageService: ForwardingLanguageService,
+        private dtService: DaterangeService,
+        private dtShowService: DaterangeShowService,
+        private paginationService: PaginationService) {
+        let lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
+        this.getRange(lang);
+        this.forwardingLanguageService.listen().subscribe((lang: string) => {
+           this.getRange(lang);
+        });
         this.alwaysShowCalendars = true;
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize === 0) {
                 this.dateRange = null;
             }
         });
+    }
+
+    getRange(lang: string) {
+        if ('da' === lang) {
+            this.ranges = this.rangesDA;
+        } else {
+            this.ranges = this.rangesEN;
+        }
     }
 
     change(dateRange: DateRangePicker) {

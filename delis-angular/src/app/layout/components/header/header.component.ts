@@ -5,6 +5,7 @@ import { AuthorizationService } from '../../../login/authorization.service';
 import { LocaleService } from "../../../service/locale.service";
 import { RuntimeConfigService } from "../../../service/runtime.config.service";
 import { LogoutService } from "../../../logout/logout.service";
+import {ForwardingLanguageService} from "../../../service/forwarding.language.service";
 
 @Component({
   selector: 'app-header',
@@ -23,6 +24,7 @@ export class HeaderComponent implements OnInit {
     private locale: LocaleService,
     private configService: RuntimeConfigService,
     private logout: LogoutService,
+    private forwardingLanguageService: ForwardingLanguageService,
     public router: Router) {
 
     this.lang = locale.getlocale();
@@ -63,5 +65,6 @@ export class HeaderComponent implements OnInit {
     this.translate.setDefaultLang(language);
     this.locale.setLocale(language);
     this.lang = language;
+    this.forwardingLanguageService.forwardLanguage(this.lang);
   }
 }
