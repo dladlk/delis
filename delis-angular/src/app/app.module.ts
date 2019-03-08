@@ -19,6 +19,7 @@ import { ContentSelectInfoService } from "./service/content.select.info.service"
 import { ErrorService } from "./service/error.service";
 import { ListenErrorService } from "./service/listen.error.service";
 import { LogoutService } from "./logout/logout.service";
+import { ForwardingLanguageService } from "./service/forwarding.language.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -52,7 +53,8 @@ export const createTranslateLoader = (http: HttpClient) => {
         LocaleService,
         ErrorService,
         ListenErrorService,
-        LogoutService],
+        LogoutService,
+        ForwardingLanguageService],
     bootstrap: [AppComponent]
 })
 export class AppModule {
