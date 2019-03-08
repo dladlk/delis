@@ -1,9 +1,10 @@
-import {Component, Input, OnInit} from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import moment from 'moment';
 
 import { routerTransition } from "../../../../router.animations";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
+import { FIRST_DAY } from "../../../../app.constants";
 import { DaterangeService } from "./daterange.service";
 import { DaterangeShowService } from "./daterange.show.service";
 import { DateRangePicker } from "./date.range.picker";
@@ -22,9 +23,12 @@ export class DaterangeComponent implements OnInit {
     @Input() opens: string;
 
     DATE_FORMAT = DATE_FORMAT;
+    FIRST_DAY = FIRST_DAY;
+
     dateRangeModel: DateRangeModel = new DateRangeModel();
     dateRange: DateRangePicker;
     alwaysShowCalendars: boolean;
+
     ranges: any = {
         'Today': [moment(), moment()],
         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],

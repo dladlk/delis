@@ -2,7 +2,7 @@
         class="form-control"
         type="text"
         ngxDaterangepickerMd
-        [locale]="{format: DATE_FORMAT, firstDay: 1}"
+        [locale]="{format: DATE_FORMAT, firstDay: FIRST_DAY}"
         [drops]="drops"
         [opens]="opens"
         [showCustomRangeLabel]="true"
@@ -12,5 +12,5 @@
         [showClearButton]="true"
         (change)="change($event)"
         [(ngModel)]="dateRange"
-        placeholder="Select please... ">
+        placeholder="Received date">
 

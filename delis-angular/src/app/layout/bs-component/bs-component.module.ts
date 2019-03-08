@@ -22,7 +22,8 @@ import { DaterangeShowService } from "./components/daterange/daterange.show.serv
         FormsModule,
         ReactiveFormsModule,
         NgbModule, NgSelectModule,
-        PageHeaderModule, TranslateModule, NgxDaterangepickerMd.forRoot()
+        PageHeaderModule, TranslateModule,
+        NgxDaterangepickerMd.forRoot(),
     ],
     declarations: [
         BsComponentComponent,
