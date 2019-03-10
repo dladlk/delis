@@ -15,6 +15,10 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(ref => {
   }
   window['ngRef'] = ref;
 
+  let ngxDaterangepickerMdInit = localStorage.getItem('ngxDaterangepickerMdInit');
+  if (ngxDaterangepickerMdInit === null) {
+    localStorage.setItem('ngxDaterangepickerMdInit', 'true');
+  }
   // Otherise, log the boot error
 })
   .catch(err => console.error(err));
