@@ -9,7 +9,6 @@ import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -53,7 +50,7 @@ public class TaskController {
 	public String identifierLoad(Model model) {
 		try {
 			List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
-			String message = createReportMessage(loadReports);
+			String message = identifierBatchLoadService.createReportMessage(loadReports);
 			model.addAttribute("message", message);
 			log.info(message);
 		} catch (Throwable e) {
@@ -61,13 +58,6 @@ public class TaskController {
 			log.error(e.getMessage(), e);
 		}
 		return "/task/index";
-	}
-
-	private String createReportMessage(List<OrganizationIdentifierLoadReport> loadReports) {
-		List<String> messages = loadReports.stream()
-				.map(object -> Objects.toString(object, null))
-				.collect(Collectors.toList());
-		return StringUtils.join(messages, "\n");
 	}
 
 	@GetMapping("/task/identifierPublish")

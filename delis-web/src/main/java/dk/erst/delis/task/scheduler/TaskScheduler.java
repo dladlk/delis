@@ -94,6 +94,8 @@ public class TaskScheduler {
         log.info("-- START IDENTIFIERS LOAD TASK --");
         try {
             List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
+            String reportMessage = identifierBatchLoadService.createReportMessage(loadReports);
+            log.info(reportMessage);
         } catch (Exception e) {
             log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
         }

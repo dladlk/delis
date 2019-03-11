@@ -3,6 +3,7 @@ package dk.erst.delis.task.identifier.load;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -104,6 +106,13 @@ public class IdentifierBatchLoadService {
             loadReport.setFailed(loadReport.getFailed() + organisationFact.getFailed());
         }
         return loadReport;
+    }
+
+    public String createReportMessage(List<OrganizationIdentifierLoadReport> loadReports) {
+        List<String> messages = loadReports.stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
+        return StringUtils.join(messages, "\n");
     }
 
 }
