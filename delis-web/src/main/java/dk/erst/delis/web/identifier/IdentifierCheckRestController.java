@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("check")
+@RequestMapping("rest")
 public class IdentifierCheckRestController {
 
     @Autowired
     private IdentifierResolverService identifierResolverService;
 
-    @RequestMapping(value = "/receiver/{identifier}", method = RequestMethod.GET)
+    @RequestMapping(value = "/receivercheck/{identifier}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity checkIdentifier (@PathVariable("identifier") String compoundIdentifier) {
 
