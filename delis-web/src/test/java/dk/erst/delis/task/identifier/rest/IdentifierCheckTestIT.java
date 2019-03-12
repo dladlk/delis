@@ -2,7 +2,7 @@ package dk.erst.delis.task.identifier.rest;
 
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTestIT;
-import dk.erst.delis.web.identifier.IdentifierCheckRestController;
+import dk.erst.delis.rest.IdentifierCheckRestController;
 import dk.erst.delis.web.organisation.OrganisationService;
 import org.junit.Before;
 import org.junit.Test;
