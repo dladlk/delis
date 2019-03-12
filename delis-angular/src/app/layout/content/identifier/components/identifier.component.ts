@@ -33,7 +33,7 @@ const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.createTime';
 })
 export class IdentifierComponent {
 
-    clearableSelect = false;
+    clearableSelect = true;
 
     pagination: PaginationModel;
     filter: IdentifierFilterProcessResult;
@@ -64,13 +64,17 @@ export class IdentifierComponent {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
-                this.loadPage(pag.currentPage, pag.pageSize);
-                this.pagination = pag;
+                if (pag.collectionSize <= pag.pageSize) {
+                    this.loadPage(1, this.pagination.pageSize);
+                } else {
+                    this.loadPage(pag.currentPage, pag.pageSize);
+                }
             } else {
                 this.initDefaultValues();
                 this.clearAllFilter();
                 this.loadPage(pag.currentPage, pag.pageSize);
             }
+            this.pagination = pag;
         });
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
             if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {

@@ -32,7 +32,7 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
 })
 export class DocumentsComponent implements OnInit {
 
-    clearableSelect = false;
+    clearableSelect = true;
 
     selectedStatus: any;
     selectedLastError: any;
@@ -68,13 +68,17 @@ export class DocumentsComponent implements OnInit {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
-                this.loadPage(pag.currentPage, pag.pageSize);
-                this.pagination = pag;
+                if (pag.collectionSize <= pag.pageSize) {
+                    this.loadPage(1, this.pagination.pageSize);
+                } else {
+                    this.loadPage(pag.currentPage, pag.pageSize);
+                }
             } else {
                 this.initDefaultValues();
                 this.clearAllFilter();
                 this.loadPage(pag.currentPage, pag.pageSize);
             }
+            this.pagination = pag;
         });
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
             if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {

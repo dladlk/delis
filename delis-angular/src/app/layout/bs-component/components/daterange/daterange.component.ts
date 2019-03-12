@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { LocaleConfig } from "ngx-daterangepicker-material";
+import { LocaleConfig} from "ngx-daterangepicker-material";
 import moment from 'moment';
+moment.locale('da');
 
 import { routerTransition } from "../../../../router.animations";
 import { DateRangeModel } from "../../../../models/date.range.model";
@@ -29,6 +30,7 @@ export class DaterangeComponent implements OnInit {
     dateRangeModel: DateRangeModel = new DateRangeModel();
     dateRange: DateRangePicker;
     alwaysShowCalendars: boolean;
+    lang: string;
 
     ranges: any = {};
 
@@ -56,10 +58,10 @@ export class DaterangeComponent implements OnInit {
         private dtService: DaterangeService,
         private dtShowService: DaterangeShowService,
         private paginationService: PaginationService) {
-        let lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
-        this.getRange(lang);
+
         this.forwardingLanguageService.listen().subscribe((lang: string) => {
-           this.getRange(lang);
+            this.lang = lang;
+           this.initLocale(this.lang);
         });
         this.alwaysShowCalendars = true;
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -67,25 +69,27 @@ export class DaterangeComponent implements OnInit {
                 this.dateRange = null;
             }
         });
-        this.init();
+
+        this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
+        this.initLocaleConfig();
+        this.initLocale(this.lang);
     }
 
-    init() {
-        let ngxDaterangepickerMdInit = localStorage.getItem('ngxDaterangepickerMdInit');
-        if (ngxDaterangepickerMdInit !== null) {
-            this.localeConfig = {format: DATE_FORMAT, firstDay: FIRST_DAY};
-            localStorage.removeItem('ngxDaterangepickerMdInit');
-        } else {
-            this.localeConfig = null;
-        }
-    }
-
-    getRange(lang: string) {
+    initLocale(lang: string) {
         if ('da' === lang) {
             this.ranges = this.rangesDA;
         } else {
             this.ranges = this.rangesEN;
         }
+    }
+
+    initLocaleConfig() {
+        this.localeConfig = {
+            format: DATE_FORMAT,
+            daysOfWeek: moment.weekdaysMin(),
+            monthNames: moment.monthsShort(),
+            firstDay: FIRST_DAY
+        };
     }
 
     change(dateRange: DateRangePicker) {
