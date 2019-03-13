@@ -44,7 +44,7 @@ public class MultiHttpSecurityConfig {
                     .antMatchers("/image/**")
                     .antMatchers("/css/**")
                     .antMatchers("/js/**")
-                    .antMatchers("/delis/rest/**");
+                    .antMatchers("/rest/**");
         }
 
         @Override
