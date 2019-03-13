@@ -34,6 +34,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 	@Value("${job.interval.sec.identifierLoad}")
 	private long identifierLoad;
 
+	@Value("${job.interval.sec.identifierPublish}")
+	private long identifierPublish;
+
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
 		List<IntervalTask> taskList = scheduledTaskRegistrar.getFixedDelayTaskList();
@@ -71,6 +74,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		}
 		if (t.endsWith("identifierLoad")) {
 			return this.identifierLoad * 1000;
+		}
+		if (t.endsWith("identifierPublish")) {
+			return this.identifierPublish * 1000;
 		}
 		return Long.MAX_VALUE;
 	}

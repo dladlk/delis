@@ -7,7 +7,9 @@ import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
+import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class TaskScheduler {
     private final DocumentProcessService documentProcessService;
     private final DocumentDeliverService documentDeliverService;
     private final IdentifierBatchLoadService identifierBatchLoadService;
+    private final IdentifierBatchPublishingService identifierBatchPublishingService;
 
     @Autowired
     public TaskScheduler(
@@ -36,12 +39,14 @@ public class TaskScheduler {
             DocumentLoadService documentLoadService,
             DocumentProcessService documentProcessService,
             DocumentDeliverService documentDeliverService,
-            IdentifierBatchLoadService identifierBatchLoadService) {
+            IdentifierBatchLoadService identifierBatchLoadService,
+            IdentifierBatchPublishingService identifierBatchPublishingService) {
         this.configBean = configBean;
         this.documentLoadService = documentLoadService;
         this.documentProcessService = documentProcessService;
         this.documentDeliverService = documentDeliverService;
         this.identifierBatchLoadService = identifierBatchLoadService;
+        this.identifierBatchPublishingService = identifierBatchPublishingService;
     }
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
@@ -100,5 +105,18 @@ public class TaskScheduler {
             log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
         }
         log.info("-- DONE IDENTIFIERS LOAD TASK --");
+    }
+
+
+    @Scheduled(fixedDelay = 5000L)
+    public void identifierPublish() {
+        log.info("-- START IDENTIFIERS PUBLISH TASK --");
+        try {
+            List<Long> publishedIds = identifierBatchPublishingService.publishPending();
+            log.info("Published ids: " + StringUtils.join(publishedIds, ","));
+        } catch (Exception e) {
+            log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
+        }
+        log.info("-- DONE IDENTIFIERS PUBLISH TASK --");
     }
 }
