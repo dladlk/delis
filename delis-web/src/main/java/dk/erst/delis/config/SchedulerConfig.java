@@ -1,8 +1,6 @@
 package dk.erst.delis.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -11,7 +9,8 @@ import org.springframework.scheduling.config.FixedDelayTask;
 import org.springframework.scheduling.config.IntervalTask;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author funtusthan, created by 08.02.19
@@ -21,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SchedulerConfig implements SchedulingConfigurer {
 
-	private static final int POOL_SIZE = 3;
+	private static final int POOL_SIZE = 4;
 
 	@Value("${job.interval.sec.documentLoad}")
 	private long documentLoad;
@@ -31,6 +30,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
 	@Value("${job.interval.sec.documentDeliver}")
 	private long documentDeliver;
+
+	@Value("${job.interval.sec.identifierLoad}")
+	private long identifierLoad;
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
@@ -66,6 +68,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		}
 		if (t.endsWith("documentValidate")) {
 			return this.documentValidate * 1000;
+		}
+		if (t.endsWith("identifierLoad")) {
+			return this.identifierLoad * 1000;
 		}
 		return Long.MAX_VALUE;
 	}
