@@ -1,24 +1,30 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
+
 import { HttpRestService } from "./http.rest.service";
-import { LocaleService } from "./locale.service";
 import { ListenErrorService } from "./listen.error.service";
 import { ErrorModel } from "../models/error.model";
-import { LogoutService } from "../logout/logout.service";
+import { TokenService } from "./token.service";
+import { RuntimeConfigService } from "./runtime.config.service";
 
 @Injectable()
 export class ErrorService {
 
     constructor(
+        private tokenService: TokenService,
+        private router: Router,
+        private configService: RuntimeConfigService,
         private http: HttpRestService,
-        private localeService: LocaleService,
-        private listenErrorService: ListenErrorService, private logout: LogoutService) {
+        private listenErrorService: ListenErrorService) {
     }
 
     errorProcess(error: any) {
 
         switch (String(error["status"])) {
             case "401" : {
-                this.logout.logout();
+                this.tokenService.resetToken();
+                this.configService.resetCurrentUser();
+                this.router.navigate(['/login']);
             } break;
             default : {
                 let listenError = new ErrorModel();
