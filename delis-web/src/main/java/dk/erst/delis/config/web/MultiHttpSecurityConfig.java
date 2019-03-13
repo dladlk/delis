@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -75,6 +77,13 @@ public class MultiHttpSecurityConfig {
         @Bean
         public PersistentTokenRepository persistentTokenRepository() {
             return new InMemoryTokenRepositoryImpl();
+        }
+
+        @Bean
+        public HttpFirewall allowUrlEncodedPercentHttpFirewall() {
+            StrictHttpFirewall firewall = new StrictHttpFirewall();
+            firewall.setAllowUrlEncodedPercent(true);
+            return firewall;
         }
     }
 }

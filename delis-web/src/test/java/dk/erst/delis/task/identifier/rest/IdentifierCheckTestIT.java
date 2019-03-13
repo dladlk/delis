@@ -46,7 +46,7 @@ public class IdentifierCheckTestIT {
 	@Test
 	public void testOK() {
 
-		ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057");
+		ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057", "", "");
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
@@ -54,7 +54,7 @@ public class IdentifierCheckTestIT {
 	@Test
 	public void test204() {
 
-		ResponseEntity responseEntity = idController.checkIdentifier("something:wrong");
+		ResponseEntity responseEntity = idController.checkIdentifier("something:wrong", "", "");
 
 		assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
 	}
