@@ -3,11 +3,13 @@ package dk.erst.delis.rest;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Api
 @RestController
 @RequestMapping("rest")
 public class IdentifierCheckRestController {

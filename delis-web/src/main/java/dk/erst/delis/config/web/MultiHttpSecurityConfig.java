@@ -44,6 +44,11 @@ public class MultiHttpSecurityConfig {
                     .antMatchers("/image/**")
                     .antMatchers("/css/**")
                     .antMatchers("/js/**")
+                    .antMatchers("/v2/api-docs")
+                    .antMatchers("/swagger-resources/**")
+                    .antMatchers("/configuration/**")
+                    .antMatchers("/swagger*/**")
+                    .antMatchers("/webjars/**")
                     .antMatchers("/rest/**");
         }
 
@@ -51,7 +56,7 @@ public class MultiHttpSecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
             http.csrf().disable();
-            http.authorizeRequests().antMatchers("/login", "/logout", "/default/user").permitAll();
+            http.authorizeRequests().antMatchers("/login", "/logout", "/default/user", "/swagger*", "/configuration/**", "/swagger-resources/**", "/v2/api-docs").permitAll();
             http.authorizeRequests().anyRequest().authenticated();
             http.authorizeRequests().and().formLogin()
                     .loginProcessingUrl("/j_spring_security_check")
