@@ -14,7 +14,7 @@ export class LayoutComponent implements OnInit {
     collapsedSideBar: boolean;
 
     error: boolean = false;
-    private errorMessage: string;
+    errorMessage: string;
 
     constructor(private translate: TranslateService, private locale: LocaleService, private errorService: ListenErrorService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');

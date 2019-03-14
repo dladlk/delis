@@ -22,9 +22,6 @@ export class DashboardComponent implements OnInit {
         private errorService: ErrorService,
         private locale: LocaleService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
-    }
-
-    ngOnInit() {
         this.dashboardService.getDashboardModel().subscribe(
             (data: {}) => {
                 this.dashboardModel = data["data"];
@@ -33,4 +30,6 @@ export class DashboardComponent implements OnInit {
             }
         );
     }
+
+    ngOnInit() {}
 }
