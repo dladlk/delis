@@ -60,7 +60,9 @@ public class IdentifierCheckRestController {
 
         status = checkIdentifier(identifier, status);
 
-        status = checkServiceAction(identifier, service, action, status);
+        if (identifier != null) {
+            status = checkServiceAction(identifier, service, action, status);
+        }
 
         long stopTime = new Date().getTime();
         log.info("Stop checkIdentifier. Execution time: " + (stopTime - startTime) * 1000 + " seconds.");
@@ -105,7 +107,7 @@ public class IdentifierCheckRestController {
                 log.info("Service found");
                 String[] documentIdentifiers = profileGroup.getDocumentIdentifiers();
                 for (String documentId : documentIdentifiers) {
-                    if (documentId.endsWith(action)) {
+                    if (action.endsWith(documentId)) {
                         log.info("Action found");
                         found = true;
                         break;
