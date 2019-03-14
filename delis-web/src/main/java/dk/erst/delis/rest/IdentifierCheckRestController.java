@@ -115,7 +115,7 @@ public class IdentifierCheckRestController {
         for(OrganisationSubscriptionProfileGroup profileGrout : profileSet) {
             String[] documentIdentifiers = profileGrout.getDocumentIdentifiers();
             for (String documentId : documentIdentifiers) {
-                if (documentId.equalsIgnoreCase(action)) {
+                if (documentId.endsWith(action)) {
                     found = true;
                     break;
                 }
