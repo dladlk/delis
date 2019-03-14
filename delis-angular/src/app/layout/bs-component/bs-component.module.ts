@@ -6,8 +6,6 @@ import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
-import { BsComponentRoutingModule } from './bs-component-routing.module';
-import { BsComponentComponent } from './bs-component.component';
 import { PaginationComponent, TableHeaderSortComponent, ErrorComponent } from './components';
 import { PageHeaderModule } from '../../shared';
 import { PaginationService } from "./components/pagination/pagination.service";
@@ -18,7 +16,6 @@ import { DaterangeShowService } from "./components/daterange/daterange.show.serv
 @NgModule({
     imports: [
         CommonModule,
-        BsComponentRoutingModule,
         FormsModule,
         ReactiveFormsModule,
         NgbModule, NgSelectModule,
@@ -26,7 +23,6 @@ import { DaterangeShowService } from "./components/daterange/daterange.show.serv
         NgxDaterangepickerMd.forRoot(),
     ],
     declarations: [
-        BsComponentComponent,
         TableHeaderSortComponent,
         PaginationComponent,
         DaterangeComponent,

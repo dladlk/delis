@@ -93,12 +93,12 @@ export class DaterangeComponent implements OnInit {
     }
 
     change(dateRange: DateRangePicker) {
-        if (dateRange !== null) {
-            if ((dateRange.startDate !== null && dateRange.endDate !== null)) {
-                this.dateRangeModel.dateStart = new Date(dateRange.startDate);
-                this.dateRangeModel.dateEnd = new Date(dateRange.endDate);
-                this.dtService.loadDate(this.dateRangeModel);
-            } else {
+        if (dateRange.startDate !== null && dateRange.endDate !== null) {
+            this.dateRangeModel.dateStart = new Date(dateRange.startDate);
+            this.dateRangeModel.dateEnd = new Date(dateRange.endDate);
+            this.dtService.loadDate(this.dateRangeModel);
+        } else {
+            if (this.dateRange !== null && this.dateRangeModel.dateStart !== undefined && this.dateRangeModel.dateEnd !== undefined) {
                 this.dtShowService.hide(true);
             }
         }

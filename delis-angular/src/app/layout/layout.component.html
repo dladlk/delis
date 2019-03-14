@@ -1,8 +1,5 @@
 <app-header></app-header>
 <app-sidebar (collapsedEvent)="receiveCollapsed($event)"></app-sidebar>
 <section class="main-container" [ngClass]="{collapsed: collapsedSideBar}">
-    <div *ngIf="error">
-        <app-error [message]="errorMessage"></app-error>
-    </div>
     <router-outlet></router-outlet>
 </section>
