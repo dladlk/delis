@@ -3,7 +3,6 @@ package dk.erst.delis.rest;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
-import dk.erst.delis.document.sbdh.Main;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -77,7 +76,10 @@ public class IdentifierCheckRestController {
         String type = compoundIdentifier.substring(0, index);
         String id = compoundIdentifier.substring(index+1);
 
+        log.info("Identifier type: " + type + " Identifier id: " + id);
         identifier = identifierResolverService.resolve(type, id);
+        String idName = identifier == null ? "null" : identifier.getName();
+        log.info("Found identifier: " + idName);
         return identifier;
     }
 
