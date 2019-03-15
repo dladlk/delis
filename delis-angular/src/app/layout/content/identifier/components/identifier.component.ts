@@ -268,12 +268,12 @@ export class IdentifierComponent {
                 this.identifiers = data["items"];
                 setTimeout(() => {
                     this.spinner.hide();
-                }, 500);
+                }, 2000);
             }, error => {
                 this.errorService.errorProcess(error);
                 setTimeout(() => {
                     this.spinner.hide();
-                }, 500);
+                }, 2000);
             }
         );
     }
