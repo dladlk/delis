@@ -5,6 +5,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from "@ngx-translate/core";
 import { HttpClientModule } from "@angular/common/http";
+import { NgxSpinnerModule } from "ngx-spinner";
 
 import { DocumentsRoutingModule } from '../documents-routing.module';
 import { DocumentsComponent } from '../components/documents.component';
@@ -20,6 +21,7 @@ import { DocumentsErrorComponent } from "../components/documents.error.component
       CommonModule,
       FormsModule,
       NgbModule,
+      NgxSpinnerModule,
       TranslateModule,
       NgSelectModule,
       DocumentsRoutingModule,

@@ -1,11 +1,13 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { NgxSpinnerModule } from "ngx-spinner";
+
 import { PageHeaderModule } from "../../../../shared/modules";
-import { HttpClientModule } from "@angular/common/http";
 import { BsComponentModule } from "../../../bs-component/bs-component.module";
 import { IdentifierOneComponent } from "../components/one/identifier.one.component";
 import { IdentifierService } from "../services/identifier.service";
@@ -18,6 +20,7 @@ import { JournalIdentifierService } from "../../journal/identifier/services/jour
         CommonModule,
         FormsModule,
         NgbModule,
+        NgxSpinnerModule,
         TranslateModule,
         NgSelectModule,
         IdentifierRoutingModule,

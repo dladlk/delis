@@ -5,6 +5,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { HttpClientModule } from "@angular/common/http";
+import { NgxSpinnerModule } from "ngx-spinner";
 
 import { PageHeaderModule } from "../../../../../shared/modules";
 import { BsComponentModule } from "../../../../bs-component/bs-component.module";
@@ -18,6 +19,7 @@ import { JournalDocumentRoutingModule } from "../journal.document-routing.module
         CommonModule,
         FormsModule,
         NgbModule,
+        NgxSpinnerModule,
         TranslateModule,
         NgSelectModule,
         JournalDocumentRoutingModule,

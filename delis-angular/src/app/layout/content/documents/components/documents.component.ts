@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
+import { NgxSpinnerService } from "ngx-spinner";
 
 import { routerTransition } from '../../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
@@ -58,6 +59,7 @@ export class DocumentsComponent implements OnInit {
     errorsFlag = false;
 
     constructor(
+        private spinner: NgxSpinnerService,
         private translate: TranslateService,
         private documentsService: DocumentsService,
         private locale: LocaleService,
@@ -66,6 +68,7 @@ export class DocumentsComponent implements OnInit {
         private dtService: DaterangeService,
         private dtShowService: DaterangeShowService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.spinner.show();
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
                 if (pag.collectionSize <= pag.pageSize) {
@@ -162,8 +165,14 @@ export class DocumentsComponent implements OnInit {
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.documents = data["items"];
+                setTimeout(() => {
+                    this.spinner.hide();
+                }, 500);
             }, error => {
                 this.errorService.errorProcess(error);
+                setTimeout(() => {
+                    this.spinner.hide();
+                }, 500);
             }
         );
     }

@@ -4,8 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
-import { PageHeaderModule } from "../../../../../shared/modules";
 import { HttpClientModule } from "@angular/common/http";
+import { NgxSpinnerModule } from "ngx-spinner";
+
+import { PageHeaderModule } from "../../../../../shared/modules";
 import { BsComponentModule } from "../../../../bs-component/bs-component.module";
 import { JournalIdentifierRoutingModule } from "../journal.identifier-routing.module";
 import { JournalIdentifierComponent } from "../components/journal.identifier.component";
@@ -17,6 +19,7 @@ import { JournalIdentifierService } from "../services/journal.identifier.service
         CommonModule,
         FormsModule,
         NgbModule,
+        NgxSpinnerModule,
         TranslateModule,
         NgSelectModule,
         JournalIdentifierRoutingModule,

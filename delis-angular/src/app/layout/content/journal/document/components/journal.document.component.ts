@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { NgxSpinnerService } from "ngx-spinner";
 
 import { routerTransition } from "../../../../../router.animations";
 import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
@@ -51,6 +52,7 @@ export class JournalDocumentComponent implements OnInit {
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
     constructor(
+        private spinner: NgxSpinnerService,
         private journalDocumentService: JournalDocumentService,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -59,6 +61,7 @@ export class JournalDocumentComponent implements OnInit {
         private paginationService: PaginationService,
         private dtShowService: DaterangeShowService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+        this.spinner.show();
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
                 if (pag.collectionSize <= pag.pageSize) {
@@ -219,8 +222,14 @@ export class JournalDocumentComponent implements OnInit {
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.journalDocuments = data["items"];
+                setTimeout(() => {
+                    this.spinner.hide();
+                }, 500);
             }, error => {
                 this.errorService.errorProcess(error);
+                setTimeout(() => {
+                    this.spinner.hide();
+                }, 500);
             }
         );
     }
