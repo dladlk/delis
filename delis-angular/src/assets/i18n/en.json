@@ -28,6 +28,7 @@
     "documents.header" : "Documents",
     "documents.header.details" : "Document details",
     "documents.table.header" : "Documents Overview",
+    "documents.table.error.header" : "Documents Error Overview",
     "documents.table.columnName.organisation" : "Organisation",
     "documents.table.columnName.receiverIdentifier" : "Receiver",
     "documents.table.columnName.documentStatus" : "Status",

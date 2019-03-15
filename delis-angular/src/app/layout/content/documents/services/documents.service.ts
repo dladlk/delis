@@ -19,19 +19,50 @@ export class DocumentsService {
         this.url = this.url + '/document';
     }
 
-    getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult, errors: boolean) : Observable<any> {
+    getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
+        let params = this.generateParams(currentPage, sizeElement, filter);
+        if (filter.dateReceived !== null) {
+            filter.dateReceived.dateStart.setHours(0,0,0,0);
+            filter.dateReceived.dateEnd.setHours(23,59,59,999);
+            params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
+        }
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
+    }
+
+    getErrorListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult, errors: boolean) : Observable<any> {
+        let params = this.generateParams(currentPage, sizeElement, filter);
+        params = params.append('flagParamErrorsDocument', 'FLAG_ERRORS_DOCUMENT');
+        if (!errors) {
+            let end = new Date();
+            let start = new Date();
+            start.setHours(end.getHours() - 1);
+            params = params.append('createTime', String(start.getTime()) + ':' + String(end.getTime()));
+
+        } else {
+            if (filter.dateReceived !== null) {
+                filter.dateReceived.dateStart.setHours(0,0,0,0);
+                filter.dateReceived.dateEnd.setHours(23,59,59,999);
+                params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
+            }
+        }
+
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
+    }
+
+    getOneDocumentById(id: any) : Observable<any> {
+        return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
+    }
+
+    getListDocumentBytesByDocumentId(id: any) : Observable<any> {
+        return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
+    }
+
+    private generateParams(currentPage: number, sizeElement: number, filter: FilterProcessResult) : HttpParams {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));
         params = params.append('sort', filter.sortBy);
 
-        if (errors) {
-            let end = new Date();
-            let start = new Date();
-            start.setHours(end.getHours() - 1);
-            params = params.append('createTime', String(start.getTime()) + ':' + String(end.getTime()));
-            params = params.append('flagParamErrorsDocument', 'FLAG_ERRORS_DOCUMENT');
-        }
         if (filter.status !== 'ALL') {
             params = params.append('documentStatus', filter.status);
         }
@@ -53,20 +84,7 @@ export class DocumentsService {
         if (filter.senderName !== null) {
             params = params.append('senderName', filter.senderName);
         }
-        if (filter.dateReceived !== null) {
-            filter.dateReceived.dateStart.setHours(0,0,0,0);
-            filter.dateReceived.dateEnd.setHours(23,59,59,999);
-            params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
-        }
 
-        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
-    }
-
-    getOneDocumentById(id: any) : Observable<any> {
-        return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
-    }
-
-    getListDocumentBytesByDocumentId(id: any) : Observable<any> {
-        return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
+        return params;
     }
 }

@@ -28,6 +28,7 @@
   "documents.header" : "Dokumenter",
   "documents.header.details" : "Dokument detaljer",
   "documents.table.header" : "Dokumenter Oversigt",
+  "documents.table.error.header" : "Dokumenter Fejl Oversigt",
   "documents.table.columnName.organisation" : "Organisation",
   "documents.table.columnName.receiverIdentifier" : "Modtager",
   "documents.table.columnName.documentStatus" : "Status",

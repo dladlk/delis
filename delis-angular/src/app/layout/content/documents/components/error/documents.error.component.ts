@@ -2,19 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
 import { NgxSpinnerService } from "ngx-spinner";
 
-import { routerTransition } from '../../../../router.animations';
-import { DocumentsService } from '../services/documents.service';
-import { FilterProcessResult } from '../models/filter.process.result';
-import { DateRangeModel } from '../../../../models/date.range.model';
-import { LocaleService } from "../../../../service/locale.service";
-import { TableHeaderSortModel } from "../../../bs-component/components/table-header-sort/table.header.sort.model";
-import { PaginationService } from "../../../bs-component/components/pagination/pagination.service";
-import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
-import { DocumentModel } from "../models/document.model";
-import { ErrorService } from "../../../../service/error.service";
+import { routerTransition } from '../../../../../router.animations';
+import { DocumentsService } from '../../services/documents.service';
+import { FilterProcessResult } from '../../models/filter.process.result';
+import { DateRangeModel } from '../../../../../models/date.range.model';
+import { LocaleService } from "../../../../../service/locale.service";
+import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
+import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
+import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
+import { DocumentModel } from "../../models/document.model";
+import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
-import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
-import { DaterangeShowService } from "../../../bs-component/components/daterange/daterange.show.service";
+import { DaterangeService } from "../../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -27,11 +27,11 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
 
 @Component({
     selector: 'app-documents',
-    templateUrl: './documents.component.html',
-    styleUrls: ['./documents.component.scss'],
+    templateUrl: './documents.error.component.html',
+    styleUrls: ['./documents.error.component.scss'],
     animations: [routerTransition()]
 })
-export class DocumentsComponent implements OnInit {
+export class DocumentsErrorComponent implements OnInit {
 
     clearableSelect = true;
 
@@ -56,6 +56,7 @@ export class DocumentsComponent implements OnInit {
 
     pagination: PaginationModel;
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    errorsFlag = false;
 
     constructor(
         private spinner: NgxSpinnerService,
@@ -76,6 +77,7 @@ export class DocumentsComponent implements OnInit {
                     this.loadPage(pag.currentPage, pag.pageSize);
                 }
             } else {
+                this.errorsFlag = false;
                 this.initDefaultValues();
                 this.clearAllFilter();
                 this.loadPage(pag.currentPage, pag.pageSize);
@@ -85,14 +87,17 @@ export class DocumentsComponent implements OnInit {
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
             if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
                 this.filter.dateReceived = dtRange;
+                this.errorsFlag = true;
             } else {
                 this.filter.dateReceived = null;
+                this.errorsFlag = false;
             }
             this.pagination.currentPage = 1;
             this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
         });
         this.dtShowService.listen().subscribe((show: boolean) => {
             this.filter.dateReceived = null;
+            this.errorsFlag = false;
             this.loadPage(1, this.pagination.pageSize);
         });
     }
@@ -104,7 +109,11 @@ export class DocumentsComponent implements OnInit {
 
     initSelected() {
         let select = JSON.parse(localStorage.getItem("Document"));
-        this.statuses = select.documentStatus;
+        this.statuses = select.documentStatus.filter(err => {
+            if (err.includes('ERROR')) {
+                return err;
+            }
+        });
         this.documentTypes = select.documentType;
         this.ingoingFormats = select.ingoingDocumentFormat;
         this.lastErrors = select.lastError;
@@ -115,7 +124,7 @@ export class DocumentsComponent implements OnInit {
     protected initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        this.currentProdDocuments(1, 10);
+        this.currentProdDocuments(1, 10, this.errorsFlag);
         this.clearAllFilter();
     }
 
@@ -157,8 +166,8 @@ export class DocumentsComponent implements OnInit {
         }
     }
 
-    protected currentProdDocuments(currentPage: number, sizeElement: number) {
-        this.documentsService.getListDocuments(currentPage, sizeElement, this.filter).subscribe(
+    protected currentProdDocuments(currentPage: number, sizeElement: number, errorsFlag: boolean) {
+        this.documentsService.getErrorListDocuments(currentPage, sizeElement, this.filter, errorsFlag).subscribe(
             (data: {}) => {
                 this.pagination.collectionSize = data["collectionSize"];
                 this.pagination.currentPage = data["currentPage"];
@@ -177,7 +186,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     protected loadPage(page: number, pageSize: number) {
-        this.currentProdDocuments(page, pageSize);
+        this.currentProdDocuments(page, pageSize, this.errorsFlag);
     }
 
     loadOrganisations() {

@@ -1,0 +1,102 @@
+<ngx-spinner></ngx-spinner>
+<div [@routerTransition]>
+    <app-page-header [heading]="'documents.header'" [icon]="'fa-book'"></app-page-header>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card" style="min-height: 768px">
+                    <div class="card-header"><span>{{ 'documents.table.error.header' | translate }}</span></div>
+                    <div class="card-body table-responsive">
+                        <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
+                        <table class="table table-hover table-sm">
+                            <thead>
+                            <tr>
+                                <th *ngFor="let hed of tableHeaderSortModels">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
+                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
+                                               placeholder="organizations: "
+                                               [(ngModel)]="selectedOrganization"
+                                               (change)="loadOrganisations()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           (ngModelChange)="loadTextReceiver($event)"
+                                           [(ngModel)]="textReceiver"
+                                           placeholder="Receiver"/>
+                                </td>
+                                <td>
+                                    <ng-select [items]="statuses"
+                                               [clearable]="clearableSelect"
+                                               placeholder="statuses: "
+                                               [(ngModel)]="selectedStatus"
+                                               (change)="loadStatus()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <ng-select [items]="lastErrors"
+                                               [clearable]="clearableSelect"
+                                               placeholder="lastErrors: "
+                                               [(ngModel)]="selectedLastError"
+                                               (change)="loadLastErrors()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <ng-select [items]="documentTypes"
+                                               [clearable]="clearableSelect"
+                                               placeholder="documentTypes: "
+                                               [(ngModel)]="selectedDocumentType"
+                                               (change)="loadDocumentType()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <ng-select [items]="ingoingFormats"
+                                               [clearable]="clearableSelect"
+                                               placeholder="ingoingFormats: "
+                                               [(ngModel)]="selectedIngoingFormat"
+                                               (change)="loadIngoingFormat()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <app-daterange></app-daterange>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           [(ngModel)]="textSenderName"
+                                           (ngModelChange)="loadTextSenderName($event)"
+                                           placeholder="Sender"/>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let doc of documents" [routerLink]="['/documents/details/', doc.id]">
+                                <td>{{doc.organisation.name}}</td>
+                                <td>{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                                <td>{{doc.documentStatus}}</td>
+                                <td>{{doc.lastError}}</td>
+                                <td>{{doc.documentType}}</td>
+                                <td>{{doc.ingoingDocumentFormat}}</td>
+                                <td>{{doc.createTime | date : SHOW_DATE_FORMAT}}</td>
+                                <td>{{doc.senderName}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                        <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

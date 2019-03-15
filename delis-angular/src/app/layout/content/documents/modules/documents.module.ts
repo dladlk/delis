@@ -14,7 +14,7 @@ import { DocumentsService } from '../services/documents.service';
 import { JournalDocumentService } from "../../journal/document/services/journal.document.service";
 import { BsComponentModule } from "../../../bs-component/bs-component.module";
 import { DocumentsOneComponent } from "../components/one/documents.one.component";
-import { DocumentsErrorComponent } from "../components/documents.error.component";
+import { DocumentsErrorComponent } from "../components/error/documents.error.component";
 
 @NgModule({
   imports: [

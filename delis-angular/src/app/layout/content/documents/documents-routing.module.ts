@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DocumentsComponent } from './components/documents.component';
 import { DocumentsOneComponent } from "./components/one/documents.one.component";
-import { DocumentsErrorComponent } from "./components/documents.error.component";
+import { DocumentsErrorComponent } from "./components/error/documents.error.component";
 
 const routes: Routes = [
   {
