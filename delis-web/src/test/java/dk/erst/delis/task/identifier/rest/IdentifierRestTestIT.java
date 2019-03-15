@@ -36,12 +36,12 @@ public class IdentifierRestTestIT {
 	@Test
 	public void test204() throws Exception {
 
-		String uri = "/check/receiver/wrong:id";
+		String uri = "/rest/receivercheck/wrong:id/a/b";
 		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
 				.accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
 
-		assertEquals(HttpStatus.NO_CONTENT, status);
+		assertEquals(HttpStatus.NO_CONTENT.value(), status);
 	}
 }
