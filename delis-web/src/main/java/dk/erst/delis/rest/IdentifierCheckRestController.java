@@ -60,9 +60,9 @@ public class IdentifierCheckRestController {
 
         status = checkIdentifier(identifier, status);
 
-        status = checkService(identifier, service, status);
-
-        status = checkAction(identifier, action, status);
+        if (identifier != null) {
+            status = checkServiceAction(identifier, service, action, status);
+        }
 
         long stopTime = new Date().getTime();
         log.info("Stop checkIdentifier. Execution time: " + (stopTime - startTime) * 1000 + " seconds.");
@@ -70,7 +70,7 @@ public class IdentifierCheckRestController {
         return new ResponseEntity(status);
     }
 
-    private Identifier getIdentifier(@PathVariable("identifier") String compoundIdentifier) {
+    private Identifier getIdentifier(String compoundIdentifier) {
         Identifier identifier = null;
 
         int index = compoundIdentifier.lastIndexOf(":");
@@ -94,30 +94,24 @@ public class IdentifierCheckRestController {
         return status;
     }
 
-    private HttpStatus setFailedStatus() {
-        return HttpStatus.NO_CONTENT;
-    }
-
-    private HttpStatus checkService(Identifier identifier, String service, HttpStatus status) {
-        log.info("Check service");
-        //todo
-        log.info("Service ok");
-        return status;
-    }
-
-    private HttpStatus checkAction(Identifier identifier, String action, HttpStatus status) {
+    private HttpStatus checkServiceAction(Identifier identifier, String service, String action, HttpStatus status) {
         log.info("Check action: " + action);
         Organisation organisation = identifier.getOrganisation();
         OrganisationSetupData setupData = organisationSetupService.load(organisation);
         Set<OrganisationSubscriptionProfileGroup> profileSet = setupData.getSubscribeProfileSet();
 
         boolean found = false;
-        for(OrganisationSubscriptionProfileGroup profileGrout : profileSet) {
-            String[] documentIdentifiers = profileGrout.getDocumentIdentifiers();
-            for (String documentId : documentIdentifiers) {
-                if (documentId.equalsIgnoreCase(action)) {
-                    found = true;
-                    break;
+        for(OrganisationSubscriptionProfileGroup profileGroup : profileSet) {
+            String processId = profileGroup.getProcessId();
+            if (processId.equalsIgnoreCase(service)) {
+                log.info("Service found");
+                String[] documentIdentifiers = profileGroup.getDocumentIdentifiers();
+                for (String documentId : documentIdentifiers) {
+                    if (action.endsWith(documentId)) {
+                        log.info("Action found");
+                        found = true;
+                        break;
+                    }
                 }
             }
             if (found) {
@@ -126,11 +120,15 @@ public class IdentifierCheckRestController {
         }
 
         if (!found) {
-            log.info("Action '" + action + "' not found");
+            log.info("Service/Action '" + service + " / " + action + "' not found");
             status = setFailedStatus();
         }
 
         log.info("Action check done");
         return status;
+    }
+
+    private HttpStatus setFailedStatus() {
+        return HttpStatus.NO_CONTENT;
     }
 }
