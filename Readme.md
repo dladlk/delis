@@ -41,6 +41,11 @@ There are two test classes. Separated by naming convention.
 1. Unit tests ends with *Test - run every time on build (by surefire plugin)
 2. Integration tests ends with *IT - run with goal 'mvg failsafe:integration-test' and 'mvn failsafe:verify'
 
+## Test Coverage Check
+1. Copy settings.xml file from project root to your ./m2 folder
+2. mvn clean clover:setup test failsafe:integration-test clover:aggregate clover:clover
+3. Open /delis/target/site/clover/index.html
+
 ## Liquibase
 No DB update with spring.jpa.hibernate.ddl-auto from now. Update and versioning with Liquibase only.
 1. If you commit requires changes of DB, you 'must' to add changelog script as well. 
