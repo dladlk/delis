@@ -49,7 +49,7 @@
                             <tr>
                                 <th *ngFor="let hed of tableHeaderSortModels">
                                     <div class="text-center">
-                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
                                             <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
                                         </button>
                                     </div>
