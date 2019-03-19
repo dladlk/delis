@@ -1,7 +1,10 @@
 package dk.erst.delis.rest.controller
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
+import dk.erst.delis.data.entities.journal.JournalIdentifier
 import dk.erst.delis.rest.data.response.PageContainer
-import dk.erst.delis.data.entities.document.Document
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,62 +18,44 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-
 import kotlin.test.assertEquals
 
 /**
- * @author funtusthan, created by 18.03.19
+ * @author funtusthan, created by 19.03.19
  */
 
 @RunWith(SpringRunner::class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class DocumentRestControllerTest {
+class JournalIdentifierControllerTest {
 
     @Autowired
     private lateinit var mvc: MockMvc
 
     @Test
-    fun selectDocuments() {
-        var mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/document?page=1&size=10&sort=orderBy_Id_Desc"))
+    fun selectJournalIdentifiers() {
+        var mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/identifier?page=1&size=10&sort=orderBy_Id_Desc"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in selectDocuments: res = " + mvcResult.response.contentAsString)
+        println("in selectJournalIdentifiers: res = " + mvcResult.response.contentAsString)
 
-        val doc: PageContainer<Document> = Gson().fromJson(mvcResult.response.contentAsString,
-                object : TypeToken<PageContainer<Document>>() {}.type)
+        val doc: PageContainer<JournalIdentifier> = Gson().fromJson(mvcResult.response.contentAsString,
+                object : TypeToken<PageContainer<JournalIdentifier>>() {}.type)
 
         if (!doc.items.isEmpty()) {
             var id = doc.items.first().id
-            mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/document/$id"))
+            mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/identifier/$id"))
                     .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-            println("in selectDocuments: res one document = " + mvcResult.response.contentAsString)
+            println("in selectJournalIdentifiers: res one JournalIdentifier = " + mvcResult.response.contentAsString)
 
             val sort = doc.items.sortedWith(compareBy({it.id}))
 
             id = sort.last().id
             ++id
-            mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/document/$id"))
+            mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/identifier/$id"))
                     .andExpect(MockMvcResultMatchers.status().is4xxClientError).andReturn()
 
             assertEquals(404, mvcResult.response.status)
         }
-    }
-
-    @Test
-    fun selectDocumentsError() {
-
-        val mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders
-                .get("/rest/document")
-                .param("page", "1")
-                .param("size", "10")
-                .param("sort", "orderBy_Id_Desc")
-                .param("flagParamErrorsDocument", "FLAG_ERRORS_DOCUMENT")
-                .param("createTime", "1552981734073:1552985334073")
-        )
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in selectDocuments error: res = " + mvcResult.response.contentAsString)
     }
 
     inline fun <reified T> Gson.fromJson(json: String) = this.fromJson<T>(json, object: TypeToken<T>() {}.type)
