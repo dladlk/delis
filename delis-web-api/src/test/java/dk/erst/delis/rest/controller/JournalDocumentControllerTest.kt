@@ -36,16 +36,16 @@ class JournalDocumentControllerTest {
     fun selectJournalDocuments() {
         var mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/document?page=1&size=10&sort=orderBy_Id_Desc"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in selectJournalDocuments: res = " + mvcResult.response.contentAsString)
+        assertEquals(200, mvcResult.response.status)
 
         val doc: PageContainer<JournalDocument> = Gson().fromJson(mvcResult.response.contentAsString,
                 object : TypeToken<PageContainer<JournalDocument>>() {}.type)
 
-        if (!doc.items.isEmpty()) {
+        if (doc.items.isNotEmpty()) {
             var id = doc.items.first().id
             mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/document/$id"))
                     .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-            println("in selectJournalDocuments: res one JournalDocument = " + mvcResult.response.contentAsString)
+            assertEquals(200, mvcResult.response.status)
 
             val sort = doc.items.sortedWith(compareBy({it.id}))
 

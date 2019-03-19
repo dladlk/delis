@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
+import kotlin.test.assertEquals
+
 /**
  * @author funtusthan, created by 18.03.19
  */
@@ -28,13 +30,13 @@ class DashboardControllerTest {
     fun generateDashboardDataTest() {
         val mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/dashboard"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in generateDashboardDataTest: res = " + mvcResult.response.contentAsString)
+        assertEquals(200, mvcResult.response.status)
     }
 
     @Test
     fun generateDashboardChartData() {
         val mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/chart"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in generateDashboardChartData: res = " + mvcResult.response.contentAsString)
+        assertEquals(200, mvcResult.response.status)
     }
 }

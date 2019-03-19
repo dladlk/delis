@@ -13,8 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+
+import kotlin.test.assertEquals
 
 /**
  * @author funtusthan, created by 18.03.19
@@ -37,9 +40,11 @@ class SecurityRestControllerTest {
         val gson = Gson()
         val body = gson.toJson(loginData)
 
-        mvc.perform(MockMvcRequestBuilders.post("/rest/security/signin")
+        val mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.post("/rest/security/signin")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
+
+        assertEquals(200, mvcResult.response.status)
     }
 }

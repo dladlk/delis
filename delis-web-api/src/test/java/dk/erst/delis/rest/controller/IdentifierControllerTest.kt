@@ -36,16 +36,16 @@ class IdentifierControllerTest {
     fun selectIdentifiers() {
         var mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/identifier?page=1&size=10&sort=orderBy_Id_Desc"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in selectIdentifiers: res = " + mvcResult.response.contentAsString)
+        assertEquals(200, mvcResult.response.status)
 
         val doc: PageContainer<Identifier> = Gson().fromJson(mvcResult.response.contentAsString,
                 object : TypeToken<PageContainer<Identifier>>() {}.type)
 
-        if (!doc.items.isEmpty()) {
+        if (doc.items.isNotEmpty()) {
             var id = doc.items.first().id
             mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/identifier/$id"))
                     .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-            println("in selectIdentifiers: res one identifier = " + mvcResult.response.contentAsString)
+            assertEquals(200, mvcResult.response.status)
 
             val sort = doc.items.sortedWith(compareBy({it.id}))
 

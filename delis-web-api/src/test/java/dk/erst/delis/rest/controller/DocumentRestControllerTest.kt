@@ -36,16 +36,16 @@ class DocumentRestControllerTest {
     fun selectDocuments() {
         var mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/document?page=1&size=10&sort=orderBy_Id_Desc"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in selectDocuments: res = " + mvcResult.response.contentAsString)
+        assertEquals(200, mvcResult.response.status)
 
         val doc: PageContainer<Document> = Gson().fromJson(mvcResult.response.contentAsString,
                 object : TypeToken<PageContainer<Document>>() {}.type)
 
-        if (!doc.items.isEmpty()) {
+        if (doc.items.isNotEmpty()) {
             var id = doc.items.first().id
             mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/document/$id"))
                     .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-            println("in selectDocuments: res one document = " + mvcResult.response.contentAsString)
+            assertEquals(200, mvcResult.response.status)
 
             val sort = doc.items.sortedWith(compareBy({it.id}))
 
@@ -70,7 +70,7 @@ class DocumentRestControllerTest {
                 .param("createTime", "1552981734073:1552985334073")
         )
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-        println("in selectDocuments error: res = " + mvcResult.response.contentAsString)
+        assertEquals(200, mvcResult.response.status)
     }
 
     inline fun <reified T> Gson.fromJson(json: String) = this.fromJson<T>(json, object: TypeToken<T>() {}.type)
