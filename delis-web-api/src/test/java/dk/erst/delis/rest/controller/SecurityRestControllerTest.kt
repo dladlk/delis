@@ -19,8 +19,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.mockito.MockitoAnnotations
-
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -66,7 +64,6 @@ open class SecurityRestControllerTest {
 
     @Before
     fun init() {
-        MockitoAnnotations.initMocks(this)
         this.src = SecurityRestController(authService, authUserProviderService)
         this.mvc = MockMvcBuilders.standaloneSetup(this.src).setControllerAdvice(RestExceptionHandler()).build()
     }
