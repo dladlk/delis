@@ -4,13 +4,15 @@ import dk.erst.delis.persistence.repository.document.DocumentRepository;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;
 import dk.erst.delis.util.DateUtil;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author funtusthan, created by 23.01.19
@@ -50,7 +52,7 @@ public class ChartServiceImpl implements ChartService {
         List<LineChartData> lineChartData = new ArrayList<>();
         List<String> lineChartLabels = new ArrayList<>();
         LineChartData lineChartDataContent = new LineChartData();
-        long days = DateUtil.rangeHoursDate(start, end) / 60;
+        long days = DateUtil.getMinutesBetween(start, end) / 60;
         if (days > 24) {
             days /= 24;
             lineChartDataContent.setLabel("chart data custom");
@@ -79,7 +81,7 @@ public class ChartServiceImpl implements ChartService {
         LineChartData lineChartDataContent = new LineChartData();
         Date start = DateUtil.generateBeginningOfDay(date);
         Date end = DateUtil.addHour(start, 1);
-        long hours = DateUtil.rangeHoursDate(start, new Date()) / 60;
+        long hours = DateUtil.getMinutesBetween(start, new Date()) / 60;
         lineChartDataContent.setLabel("chart data default");
         List<Long> dataGraph = new ArrayList<>();
         for (int h = 0 ; h <= hours ; ++h) {
