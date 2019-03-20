@@ -13,6 +13,7 @@ import dk.erst.delis.rest.data.request.login.LoginData
 import dk.erst.delis.rest.data.response.DataContainer
 import dk.erst.delis.rest.data.response.auth.AuthData
 import dk.erst.delis.service.auth.AuthService
+import dk.erst.delis.service.auth.AuthTokenFilter
 import dk.erst.delis.service.auth.AuthUserProviderService
 
 import org.junit.Before
@@ -38,6 +39,7 @@ import kotlin.test.assertTrue
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 
 /**
  * @author funtusthan, created by 19.03.19
@@ -51,21 +53,34 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 @AutoConfigureMockMvc
 open class SecurityRestControllerTest {
 
-    private val baseUrl = "/rest/security/signin"
+    private val loginUrl = "/rest/security/signin"
+    private val logoutUrl = "/rest/security/logout"
     private val username = "admin"
     private val password = "admin"
 
     private lateinit var mvc: MockMvc
     private lateinit var src: SecurityRestController
+    private lateinit var authTokenFilter: AuthTokenFilter
+    private lateinit var restExceptionHandler: RestExceptionHandler
 
-    @Autowired private lateinit var em: TestEntityManager
-    @Autowired private lateinit var authService: AuthService
-    @Autowired private lateinit var authUserProviderService: AuthUserProviderService
+    @Autowired
+    private lateinit var em: TestEntityManager
+    @Autowired
+    private lateinit var authService: AuthService
+    @Autowired
+    private lateinit var authUserProviderService: AuthUserProviderService
+
 
     @Before
     fun init() {
         this.src = SecurityRestController(authService, authUserProviderService)
-        this.mvc = MockMvcBuilders.standaloneSetup(this.src).setControllerAdvice(RestExceptionHandler()).build()
+        this.authTokenFilter = AuthTokenFilter()
+        this.restExceptionHandler = RestExceptionHandler()
+        this.mvc = MockMvcBuilders
+                .standaloneSetup(this.src)
+                .setControllerAdvice(this.restExceptionHandler)
+                .addFilters<StandaloneMockMvcBuilder>(this.authTokenFilter)
+                .build()
     }
 
     @Before
@@ -85,7 +100,7 @@ open class SecurityRestControllerTest {
         loginData.login = username
         loginData.password = password
 
-        val mvcResult: MvcResult = this.mvc.perform(MockMvcRequestBuilders.post(baseUrl)
+        var mvcResult: MvcResult = this.mvc.perform(MockMvcRequestBuilders.post(loginUrl)
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(ObjectMapper().writeValueAsString(loginData)))
@@ -104,5 +119,17 @@ open class SecurityRestControllerTest {
         val regex = """\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b""".toRegex() // UUIDs regex
 
         assertTrue(regex.containsMatchIn(authData.token))
+
+        mvcResult = this.mvc.perform(
+                MockMvcRequestBuilders
+                        .delete(logoutUrl)
+                        .header("Authorization", authData.token))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
+
+        val dataLogout: DataContainer<Boolean> = Gson().fromJson(mvcResult.response.contentAsString,
+        object : TypeToken<DataContainer<Boolean>>() {}.type)
+
+        assertEquals(true, dataLogout.data)
     }
 }
