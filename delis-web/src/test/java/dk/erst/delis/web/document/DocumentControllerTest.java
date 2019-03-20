@@ -1,14 +1,9 @@
 package dk.erst.delis.web.document;
 
-import dk.erst.delis.dao.AccessPointDaoRepository;
 import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.data.entities.access.AccessPoint;
 import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.enums.access.AccessPointType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.web.accesspoint.AccessPointService;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,12 +15,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.sql.rowset.serial.SerialBlob;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
