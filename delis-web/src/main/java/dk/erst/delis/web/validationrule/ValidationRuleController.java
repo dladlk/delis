@@ -54,7 +54,7 @@ public class ValidationRuleController {
     }
 
     @GetMapping("update/{id}")
-    public String updateAccessPoint(@PathVariable long id, Model model) {
+    public String updateRule(@PathVariable long id, Model model) {
         RuleDocumentValidation validationRule = service.findById(id);
         RuleDocumentValidationData validationRuleData = new RuleDocumentValidationData();
         BeanUtils.copyProperties(validationRule, validationRuleData);
