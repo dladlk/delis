@@ -3,8 +3,8 @@
         <div class="col-md-4">
             <img src="assets/images/delis.png" class="user-avatar"/>
             <h1>Delis Authentication</h1>
-            <div *ngIf="error">
-                <app-error [message]="'invalid username or password'"></app-error>
+            <div *ngIf="errorStatus">
+                <app-error [message]="message"></app-error>
             </div>
             <form role="form" method="post" (ngSubmit)="onLoggedin()">
                 <div class="form-content">
