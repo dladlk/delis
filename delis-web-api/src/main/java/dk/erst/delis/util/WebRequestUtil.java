@@ -5,8 +5,6 @@ import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
 
 import lombok.experimental.UtilityClass;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
@@ -23,8 +21,6 @@ public class WebRequestUtil {
     private static final String SIZE_PARAM = "size";
     private static final int PAGE_PARAM_VALUE = 1;
     private static final int SIZE_PARAM_VALUE = 10;
-    private static final String SORT_PARAM_START_WITH = "countClick";
-    private static final String SORT_PARAM_DEFAULT_VALUE = "0";
     private static final String FLAG_PARAM_START_WITH = "flagParam";
 
     public PageAndSizeModel generatePageAndSizeModel(WebRequest webRequest) {
@@ -42,15 +38,6 @@ public class WebRequestUtil {
         } else {
             return new DateRangeModel(new Date(startDate), new Date(endDate));
         }
-    }
-
-    public String existSortParameter(WebRequest webRequest) {
-        return webRequest
-                .getParameterMap()
-                .keySet()
-                .stream()
-                .filter(key -> key.startsWith(SORT_PARAM_START_WITH) && ObjectUtils.notEqual(webRequest.getParameter(key), SORT_PARAM_DEFAULT_VALUE))
-                .findFirst().orElse(null);
     }
 
     public String existFlagParameter(WebRequest webRequest) {
