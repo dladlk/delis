@@ -39,17 +39,17 @@ export class LoginComponent implements OnInit {
 
     onLoggedin() {
         if (this.login === undefined && this.password === undefined) {
-            this.message = "login and password can not be empty";
+            this.message = "login.error.username-or-password";
             this.errorStatus = true;
             return;
         }
         if (this.login === undefined) {
-            this.message = "login can not be empty";
+            this.message = "login.error.username";
             this.errorStatus = true;
             return;
         }
         if (this.password === undefined) {
-            this.message = "password can not be empty";
+            this.message = "login.error.password";
             this.errorStatus = true;
             return;
         }
@@ -64,13 +64,12 @@ export class LoginComponent implements OnInit {
                 this.errorStatus = false;
                 this.router.navigate(['/dashboard']);
             }, error => {
-                console.log('error : ' + error.status);
                 this.errorStatus = true;
                 if (error.status === 0) {
-                    this.message = "server disconnect";
+                    this.message = "login.error.disconnect";
                 }
                 if (error.status === 401) {
-                    this.message = "invalid username or password";
+                    this.message = "login.error.unauthorized";
                 }
                 this.router.navigate(['/login']);
             }

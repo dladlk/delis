@@ -1,4 +1,10 @@
 {
+    "login.error.username-or-password": "login and password can not be empty",
+    "login.error.username": "login can not be empty",
+    "login.error.password": "password can not be empty",
+    "login.error.unauthorized": "invalid username or password",
+    "login.error.disconnect": "server disconnect",
+
     "sidebar.dashboard": "Dashboard",
     "sidebar.documents": "Documents",
     "sidebar.identifier": "Identifier",

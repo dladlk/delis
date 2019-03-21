@@ -4,7 +4,7 @@
             <img src="assets/images/delis.png" class="user-avatar"/>
             <h1>Delis Authentication</h1>
             <div *ngIf="errorStatus">
-                <app-error [message]="message"></app-error>
+                <app-error [message]="message | translate"></app-error>
             </div>
             <form role="form" method="post" (ngSubmit)="onLoggedin()">
                 <div class="form-content">
