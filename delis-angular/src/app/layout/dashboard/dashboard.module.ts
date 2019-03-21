@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from "@ngx-translate/core";
 import { ChartsModule } from "ng2-charts";
-import { NgxSpinnerModule } from "ngx-spinner";
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
@@ -18,7 +17,6 @@ import { DaterangeShowService } from "../bs-component/components/daterange/dater
 @NgModule({
     imports: [
         CommonModule,
-        NgxSpinnerModule,
         ChartsModule,
         DashboardRoutingModule,
         TranslateModule,
