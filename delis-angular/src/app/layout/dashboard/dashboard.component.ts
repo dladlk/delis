@@ -23,6 +23,7 @@ export class DashboardComponent implements OnInit {
         private translate: TranslateService,
         private errorService: ErrorService,
         private locale: LocaleService) {
+        this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.dashboardService.getDashboardModel().subscribe(
             (data: {}) => {
