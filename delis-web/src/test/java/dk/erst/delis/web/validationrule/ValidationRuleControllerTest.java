@@ -1,7 +1,6 @@
 package dk.erst.delis.web.validationrule;
 
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
-import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
