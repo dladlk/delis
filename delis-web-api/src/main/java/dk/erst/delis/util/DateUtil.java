@@ -1,13 +1,13 @@
 package dk.erst.delis.util;
 
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
-
 import lombok.experimental.UtilityClass;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,13 +21,8 @@ public class DateUtil {
     public final SimpleDateFormat DATE_FORMAT_BY_DAY = new SimpleDateFormat("HH:mm");
     public final SimpleDateFormat DATE_FORMAT_BY_CUSTOM_PERIOD = new SimpleDateFormat("MM.dd");
 
-    public long rangeHoursDate(Date start, Date end) {
-        Calendar between = Calendar.getInstance();
-        between.setTime(start);
-        Calendar today = Calendar.getInstance();
-        today.setTime(end);
-        long difference = today.getTimeInMillis() - between.getTimeInMillis();
-        return difference / 1000 / 60;
+    public long getMinutesBetween(Date start, Date end) {
+        return ChronoUnit.MINUTES.between(start.toInstant(), end.toInstant());
     }
 
     public DateRangeModel generateDateRangeByLastHour() {

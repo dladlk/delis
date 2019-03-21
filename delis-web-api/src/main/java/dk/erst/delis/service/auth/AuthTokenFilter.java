@@ -1,11 +1,8 @@
 package dk.erst.delis.service.auth;
 
 import dk.erst.delis.util.DateUtil;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -13,7 +10,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
@@ -69,7 +65,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                     "invalid authentication token");
             return;
         }
-        if (DateUtil.rangeHoursDate(data.getExpired(), new Date()) > ONE_HOURS) {
+        if (DateUtil.getMinutesBetween(data.getExpired(), new Date()) > ONE_HOURS) {
             log.warn("Authorization token is expired. path " + path + " token: " + token);
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                     "Authorization token is expired");
