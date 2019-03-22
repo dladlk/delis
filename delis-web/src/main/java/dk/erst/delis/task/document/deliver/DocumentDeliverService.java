@@ -1,13 +1,5 @@
 package dk.erst.delis.task.document.deliver;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
@@ -24,6 +16,13 @@ import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -124,6 +123,9 @@ public class DocumentDeliverService {
 				case AZURE_STORAGE_ACCOUNT:
 					moveToAzure(documentBytes, processLog);
 					break;
+				case VFS:
+					moveToVFS(documentBytes, receivingMethodSetup, processLog);
+					break;
 				default:
 					DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " +
 							receivingMethod, DocumentProcessStepType.DELIVER);
@@ -134,6 +136,10 @@ public class DocumentDeliverService {
 		}
 
 		return processLog;
+	}
+
+	private void moveToVFS(DocumentBytes documentBytes, String url, DocumentProcessLog processLog) {
+		//TODO implement
 	}
 
 	private String buildOutputFileName(Document document) {
