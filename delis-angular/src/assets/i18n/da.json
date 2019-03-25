@@ -1,4 +1,10 @@
 {
+  "login.error.username-or-password": "login og adgangskode kan ikke være tomme",
+  "login.error.username": "login kan ikke være tomt",
+  "login.error.password": "adgangskoden kan ikke være tom",
+  "login.error.unauthorized": "ugyldigt brugernavn eller kodeord",
+  "login.error.disconnect": "server frakobles",
+
   "sidebar.dashboard": "Oversigt",
   "sidebar.documents": "Dokumenter",
   "sidebar.identifier": "Modtagere",
