@@ -26,11 +26,11 @@ public class SFTPService {
      *                       Directory and Filename with / as separator
      */
     public void upload(String hostName, String username, String password, String localFilePath, String remoteFilePath) {
-        String connectionString = createConnectionString(hostName, username, password, remoteFilePath);
-        upload(connectionString, localFilePath);
+        String uri = createURIString(hostName, username, password, remoteFilePath);
+        upload(uri, localFilePath);
     }
 
-    public void upload(String connectionString, String localFilePath) {
+    public void upload(String uri, String localFilePath) {
 
         File file = new File(localFilePath);
         if (!file.exists())
@@ -44,7 +44,7 @@ public class SFTPService {
 
             // Create remote file object
 
-            FileObject remoteFile = manager.resolveFile(connectionString, createDefaultOptions());
+            FileObject remoteFile = manager.resolveFile(uri, createDefaultOptions());
             /*
              * use createDefaultOptions() in place of fsOptions for all default
              * options - Ashok.
@@ -65,8 +65,8 @@ public class SFTPService {
             manager.init();
 
             // Create remote object
-            FileObject remoteFile = manager.resolveFile(createConnectionString(hostName, username, password, remoteSrcFilePath), createDefaultOptions());
-            FileObject remoteDestFile = manager.resolveFile(createConnectionString(hostName, username, password, remoteDestFilePath), createDefaultOptions());
+            FileObject remoteFile = manager.resolveFile(createURIString(hostName, username, password, remoteSrcFilePath), createDefaultOptions());
+            FileObject remoteDestFile = manager.resolveFile(createURIString(hostName, username, password, remoteDestFilePath), createDefaultOptions());
 
             if (remoteFile.exists()) {
                 remoteFile.moveTo(remoteDestFile);
@@ -105,12 +105,23 @@ public class SFTPService {
             FileObject localFile = manager.resolveFile(localFilePath);
 
             // Create remote file object
-            FileObject remoteFile = manager.resolveFile(createConnectionString(hostName, username, password, remoteFilePath), createDefaultOptions());
+            FileObject remoteFile = manager.resolveFile(createURIString(hostName, username, password, remoteFilePath), createDefaultOptions());
 
             // Copy local file to sftp server
             localFile.copyFrom(remoteFile, Selectors.SELECT_SELF);
 
             System.out.println("File download success");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean delete(String uri) {
+        try (StandardFileSystemManager manager = createFileSystemManager()) {
+            manager.init();
+            // Create remote object
+            FileObject remoteFile = manager.resolveFile(uri, createDefaultOptions());
+            return remoteFile.exists() && remoteFile.delete();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -122,23 +133,21 @@ public class SFTPService {
      * @param hostName       HostName of the server
      * @param username       UserName to login
      * @param password       Password to login
-     * @param localFilePath  LocalFilePath. Should contain the entire local file path -
-     *                       Directory and Filename with \\ as separator
      * @param remoteFilePath remoteFilePath. Should contain the entire remote file path -
      *                       Directory and Filename with / as separator
      */
     public void delete(String hostName, String username, String password, String remoteFilePath) {
+        String uri = createURIString(hostName, username, password, remoteFilePath);
+        delete(uri);
+    }
 
+    public boolean exist(String uri) {
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
-
             // Create remote object
-            FileObject remoteFile = manager.resolveFile(createConnectionString(hostName, username, password, remoteFilePath), createDefaultOptions());
-
-            if (remoteFile.exists()) {
-                remoteFile.delete();
-                System.out.println("Delete remote file success");
-            }
+            FileObject remoteFile = manager.resolveFile(uri, createDefaultOptions());
+            System.out.println("File exist: " + remoteFile.exists());
+            return remoteFile.exists();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -157,24 +166,14 @@ public class SFTPService {
      *                       Directory and Filename with / as separator
      * @return Returns if the file exists in the specified remote location
      */
+
     public boolean exist(String hostName, String username, String password, String remoteFilePath) {
-
-        try (StandardFileSystemManager manager = createFileSystemManager()) {
-            manager.init();
-
-            // Create remote object
-            FileObject remoteFile = manager.resolveFile(createConnectionString(hostName, username, password, remoteFilePath), createDefaultOptions());
-
-            System.out.println("File exist: " + remoteFile.exists());
-
-            return remoteFile.exists();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String uri = createURIString(hostName, username, password, remoteFilePath);
+        return exist(uri);
     }
 
     /**
-     * Generates SFTP URL connection String
+     * Generates SFTP URI
      *
      * @param hostName       HostName of the server
      * @param username       UserName to login
@@ -183,7 +182,7 @@ public class SFTPService {
      *                       Directory and Filename with / as separator
      * @return concatenated SFTP URL string
      */
-    public String createConnectionString(String hostName, String username, String password, String remoteFilePath) {
+    public String createURIString(String hostName, String username, String password, String remoteFilePath) {
         return "sftp://" + username + ":" + password + "@" + hostName + "/" + remoteFilePath;
     }
 
