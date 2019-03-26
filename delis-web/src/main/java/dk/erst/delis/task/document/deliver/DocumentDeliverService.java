@@ -15,12 +15,17 @@ import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
+import dk.erst.delis.vfs.sftp.service.SFTPService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -32,14 +37,16 @@ public class DocumentDeliverService {
 	private OrganisationSetupService organisationSetupService;
 	private JournalDocumentService journalDocumentService;
 	private DocumentBytesStorageService documentBytesStorageService;
+	private SFTPService sftpService;
 
 	@Autowired
 	public DocumentDeliverService(DocumentDaoRepository documentDaoRepository, OrganisationSetupService organisationSetupService,
-								  JournalDocumentService journalDocumentService, DocumentBytesStorageService documentBytesStorageService) {
+								  JournalDocumentService journalDocumentService, DocumentBytesStorageService documentBytesStorageService, SFTPService sftpService) {
 		this.documentDaoRepository = documentDaoRepository;
 		this.organisationSetupService = organisationSetupService;
 		this.journalDocumentService = journalDocumentService;
 		this.documentBytesStorageService = documentBytesStorageService;
+		this.sftpService = sftpService;
 	}
 
 	public StatData processValidated() {
@@ -124,7 +131,7 @@ public class DocumentDeliverService {
 					moveToAzure(documentBytes, processLog);
 					break;
 				case VFS:
-					moveToVFS(documentBytes, receivingMethodSetup, processLog);
+					moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
 					break;
 				default:
 					DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " +
@@ -138,8 +145,27 @@ public class DocumentDeliverService {
 		return processLog;
 	}
 
-	private void moveToVFS(DocumentBytes documentBytes, String url, DocumentProcessLog processLog) {
-		//TODO implement
+	private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String url, DocumentProcessLog processLog) {
+		DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
+		boolean uploaded = false;
+		if (StringUtils.startsWithIgnoreCase(url, "sftp")) {
+			try {
+				Path tempFilePath = Files.createTempFile("delis", "tmp");
+				FileOutputStream fos = new FileOutputStream(tempFilePath.toString());
+				boolean loaded = documentBytesStorageService.load(documentBytes, fos);
+				if (loaded) {
+					sftpService.upload(url, tempFilePath.toString());
+					uploaded = true;
+				}
+			} catch (IOException e) {
+				log.error(String.format("Failed to upload file using '%s'", url), e);
+			}
+		} else {
+			log.warn("Protocol not supported, or invalid connection string");
+		}
+		step.setSuccess(uploaded);
+		step.done();
+		processLog.addStep(step);
 	}
 
 	private String buildOutputFileName(Document document) {
@@ -162,9 +188,8 @@ public class DocumentDeliverService {
 		s = s.replaceAll(":", "");
 		s = s.replaceAll(";", "");
 		s = s.replaceAll(" ", "_");
-		
-		
-		
+
+
 		return s;
 	}
 

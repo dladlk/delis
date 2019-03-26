@@ -41,6 +41,13 @@
 			<version>${delis.version}</version>
 		</dependency>
 
+		<!-- DELIS-VFS -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-vfs</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
+
 		<!-- JAVAX-VALIDATION -->
 		<dependency>
 			<groupId>javax.validation</groupId>
