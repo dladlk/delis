@@ -154,11 +154,12 @@ public class DocumentDeliverService {
                 FileOutputStream fos = new FileOutputStream(tempFilePath.toString());
                 boolean loaded = documentBytesStorageService.load(documentBytes, fos);
                 if (loaded) {
-                    sftpService.upload(connectionString, tempFilePath.toString());
+                    String uri = connectionString + "/" + outputFileName;
+                    sftpService.upload(uri, tempFilePath.toString());
                     uploaded = true;
                 }
             } catch (IOException e) {
-                log.error(String.format("Failed to upload file using '%s'", connectionString), e);
+                log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, connectionString), e);
             }
         } else {
             log.warn("Protocol not supported, or invalid connection string");
