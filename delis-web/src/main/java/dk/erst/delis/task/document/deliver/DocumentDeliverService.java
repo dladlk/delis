@@ -24,8 +24,6 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -149,20 +147,28 @@ public class DocumentDeliverService {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
         boolean uploaded = false;
         if (StringUtils.startsWithIgnoreCase(connectionString, "sftp")) {
+            File tempFile = null;
             try {
-                Path tempFilePath = Files.createTempFile("delis", "tmp");
-                FileOutputStream fos = new FileOutputStream(tempFilePath.toString());
-                boolean loaded = documentBytesStorageService.load(documentBytes, fos);
+                tempFile = File.createTempFile("delis", "tmp");
+            } catch (IOException e) {
+                log.error("Unable to create temp file", e);
+            }
+            try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+                boolean loaded = documentBytesStorageService.load(documentBytes, fileOutputStream);
                 if (loaded) {
                     String uri = connectionString + "/" + outputFileName;
-                    sftpService.upload(uri, tempFilePath.toString());
+                    sftpService.upload(uri, tempFile.getAbsolutePath());
                     uploaded = true;
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, connectionString), e);
+            } finally {
+                if (tempFile != null && !tempFile.delete()) {
+                    log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));
+                }
             }
         } else {
-            log.warn("Protocol not supported, or invalid connection string");
+            log.warn("Protocol not supported, or invalid connection string: " + connectionString);
         }
         step.setSuccess(uploaded);
         step.done();
