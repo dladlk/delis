@@ -1,10 +1,10 @@
 package dk.erst.delis.config.web;
 
 import dk.erst.delis.config.web.security.CustomUserDetailsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -19,6 +19,27 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class MultiHttpSecurityConfig {
+
+        @Configuration
+        @Order (1)
+        public static class RestSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+
+            private final CustomUserDetailsService customUserDetailsService;
+
+            @Autowired
+            public RestSecurityConfigurerAdapter(CustomUserDetailsService customUserDetailsService) {
+                this.customUserDetailsService = customUserDetailsService;
+            }
+
+            @Override
+            protected void configure(HttpSecurity http) throws Exception {
+
+                http.antMatcher("/rest/**").authorizeRequests()
+                        .anyRequest().authenticated()
+                        .and()
+                        .httpBasic();
+            }
+        }
 
     @Configuration
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
@@ -50,8 +71,7 @@ public class MultiHttpSecurityConfig {
                     .antMatchers("/swagger-resources/**")
                     .antMatchers("/configuration/**")
                     .antMatchers("/swagger*/**")
-                    .antMatchers("/webjars/**")
-                    .antMatchers("/rest/**");
+                    .antMatchers("/webjars/**");
         }
 
         @Override
@@ -59,10 +79,9 @@ public class MultiHttpSecurityConfig {
 
             http.csrf().disable();
             http.authorizeRequests().antMatchers("/login", "/logout", "/default/user", "/swagger*", "/configuration/**", "/swagger-resources/**", "/v2/api-docs").permitAll();
-            http.authorizeRequests().anyRequest().authenticated();
-            http.authorizeRequests().and().formLogin()
+            http.authorizeRequests().anyRequest().authenticated().and().formLogin()
                     .loginProcessingUrl("/j_spring_security_check")
-                    .loginPage("/login")
+                    .loginPage("/login").permitAll()
                     .defaultSuccessUrl("/home")
                     .failureUrl("/login?error=true")
                     .usernameParameter("username")
