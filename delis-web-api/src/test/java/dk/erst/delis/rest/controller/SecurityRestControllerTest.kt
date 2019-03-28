@@ -85,11 +85,13 @@ open class SecurityRestControllerTest {
 
     @Before
     fun testUser() {
-        var user = User()
-        user.username = username
-        user.password = BCryptPasswordEncoder().encode(password)
-        em.persist(user)
-        user = em.find(User::class.java, 1L)
+        var user = em.find(User::class.java, 1L)
+        if (user == null) {
+            user = User()
+            user.username = username
+            user.password = BCryptPasswordEncoder().encode(password)
+            em.persist(user)
+        }
         assertEquals(user.username, username)
     }
 

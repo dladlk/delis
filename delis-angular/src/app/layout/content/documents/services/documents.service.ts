@@ -16,7 +16,7 @@ export class DocumentsService {
         private configService: RuntimeConfigService,
         private httpRestService: HttpRestService) {
         this.url = this.configService.getConfigUrl();
-        this.url = this.url + '/document';
+        this.url = this.url + '/rest/document';
     }
 
     getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {

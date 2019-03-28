@@ -14,7 +14,7 @@ export class JournalDocumentService {
     constructor(private configService: RuntimeConfigService,
                 private httpRestService: HttpRestService, private tokenService: TokenService) {
         this.url = this.configService.getConfigUrl();
-        this.url = this.url + '/journal/document';
+        this.url = this.url + '/rest/journal/document';
     }
 
     getListJournalDocuments(currentPage: number, sizeElement: number, filter: JournalDocumentFilterProcessResult) : Observable<any> {

@@ -80,8 +80,10 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of documents" [routerLink]="['/documents/details/', doc.id]">
-                                <td>{{doc.organisation.name}}</td>
-                                <td>{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
+                                <td *ngIf="doc.receiverIdentifier !== null">{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                                <td *ngIf="doc.receiverIdentifier === null"></td>
                                 <td>{{doc.documentStatus}}</td>
                                 <td>{{doc.lastError}}</td>
                                 <td>{{doc.documentType}}</td>
