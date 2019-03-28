@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>delis-vfs</artifactId>
+    <name>Delis :: VFS</name>
 
     <dependencies>
 
