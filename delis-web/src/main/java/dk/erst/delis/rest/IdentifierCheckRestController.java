@@ -22,7 +22,7 @@ import java.util.Set;
 
 @Api
 @RestController
-@RequestMapping("rest")
+@RequestMapping("/openrest")
 public class IdentifierCheckRestController {
 
     private static final Logger log = LoggerFactory.getLogger(IdentifierResolverService.class);
