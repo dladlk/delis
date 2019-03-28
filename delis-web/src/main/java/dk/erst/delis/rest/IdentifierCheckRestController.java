@@ -73,6 +73,12 @@ public class IdentifierCheckRestController {
         Identifier identifier = null;
 
         int index = compoundIdentifier.lastIndexOf(":");
+
+        if (index == -1) {
+            index = 0;
+            log.warn("Passed identifier value does not contain 'type' value - there is no ':' separator found in '" + compoundIdentifier + "'");
+        }
+
         String type = compoundIdentifier.substring(0, index);
         String id = compoundIdentifier.substring(index+1);
 
