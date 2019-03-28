@@ -71,7 +71,7 @@ public class MultiHttpSecurityConfig {
                     .antMatchers("/swagger-resources/**")
                     .antMatchers("/configuration/**")
                     .antMatchers("/swagger*/**")
-                    .antMatchers("/openrest/**")
+                    .antMatchers("/rest/open/**")
                     .antMatchers("/webjars/**");
         }
 
