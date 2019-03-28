@@ -40,21 +40,5 @@ class JournalDocumentControllerTest {
 
         val doc: PageContainer<JournalDocument> = Gson().fromJson(mvcResult.response.contentAsString,
                 object : TypeToken<PageContainer<JournalDocument>>() {}.type)
-
-        if (doc.items.isNotEmpty()) {
-            var id = doc.items.first().id
-            mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/document/$id"))
-                    .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
-            assertEquals(200, mvcResult.response.status)
-
-            val sort = doc.items.sortedWith(compareBy({it.id}))
-
-            id = sort.last().id
-            ++id
-            mvcResult = mvc.perform(MockMvcRequestBuilders.get("/rest/journal/document/$id"))
-                    .andExpect(MockMvcResultMatchers.status().is4xxClientError).andReturn()
-
-            assertEquals(404, mvcResult.response.status)
-        }
     }
 }

@@ -55,8 +55,10 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of journalIdentifiers" [routerLink]="['/journal-identifiers/', doc.id]">
-                                <td>{{doc.organisation.name}}</td>
-                                <td>{{doc.identifier.name}}</td>
+                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
+                                <td *ngIf="doc.identifier !== null">{{doc.identifier.name}}</td>
+                                <td *ngIf="doc.identifier === null"></td>
                                 <td>{{doc.message}}</td>
                                 <td>{{doc.durationMs}}</td>
                                 <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>

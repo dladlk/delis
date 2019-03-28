@@ -65,7 +65,8 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
-                                <td>{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
                                 <td>{{doc.type}}</td>
                                 <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
                                 <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>
