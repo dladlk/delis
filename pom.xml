@@ -18,7 +18,7 @@
         <module>delis-sbdh</module>
         <module>delis-vfs</module>
     </modules>
-    
+
     <properties>
 		<delis.version>1.0.0</delis.version>
 		<lombok.version>1.18.4</lombok.version>
@@ -47,6 +47,7 @@
         <dozer.version>5.5.1</dozer.version>
         <jackson.version>2.9.5</jackson.version>
         <commons-test.version>4.2</commons-test.version>
+        <mysql.version>8.0.15</mysql.version>
     </properties>
 
     <!-- Where to deploy the binaries -->
