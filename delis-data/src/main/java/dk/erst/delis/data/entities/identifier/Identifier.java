@@ -10,11 +10,13 @@ import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
 @WebApiContent
+@ToString
 @Table(indexes = {
 
 		@Index(name="I_ORGANISAION_ID", columnList="ORGANISATION_ID, STATUS, PUBLISHING_STATUS"),

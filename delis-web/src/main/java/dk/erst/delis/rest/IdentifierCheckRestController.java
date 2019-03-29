@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Set;
 
 @Api
@@ -27,6 +28,8 @@ public class IdentifierCheckRestController {
 
     private static final Logger log = LoggerFactory.getLogger(IdentifierResolverService.class);
     public static final String UTF_8 = "utf-8";
+    public static final String OK = "ok";
+    public static final String REASON_HEADER = "reason";
 
     @Autowired
     private IdentifierResolverService identifierResolverService;
@@ -35,7 +38,6 @@ public class IdentifierCheckRestController {
     private OrganisationSetupService organisationSetupService;
 
     @RequestMapping(value = "/receivercheck/{identifier}/{service}/{action}", method = RequestMethod.GET)
-    @ResponseBody
     public ResponseEntity checkIdentifier(@PathVariable("identifier") String compoundIdentifier,
                                           @PathVariable("service") String service,
                                           @PathVariable("action") String action) {
@@ -57,16 +59,22 @@ public class IdentifierCheckRestController {
 
         HttpStatus status = HttpStatus.OK;
 
-        status = checkIdentifier(identifier, status);
+        Result result = checkIdentifier(identifier, status);
 
-        if (identifier != null) {
-            status = checkServiceAction(identifier, service, action, status);
+        if (result.status == HttpStatus.OK && identifier != null) {
+            result = checkServiceAction(identifier, service, action, status);
         }
 
         long stopTime = new Date().getTime();
-        log.info("Stop checkIdentifier. Execution time: " + (stopTime - startTime) * 1000 + " seconds.");
+        log.info("Stop checkIdentifier. Execution time: " + (stopTime - startTime) + " ms.");
 
-        return new ResponseEntity(status);
+        ResponseEntity response;
+        if (result.status == HttpStatus.OK) {
+            response = ResponseEntity.ok().build();
+        } else {
+            response = ResponseEntity.noContent().header(REASON_HEADER, result.description).build();
+        }
+        return response;
     }
 
     private Identifier getIdentifier(String compoundIdentifier) {
@@ -89,20 +97,24 @@ public class IdentifierCheckRestController {
         return identifier;
     }
 
-    private HttpStatus checkIdentifier(Identifier identifier, HttpStatus status) {
+    private Result checkIdentifier(Identifier identifier, HttpStatus status) {
+        String description = OK;
         log.info("Check identifier");
         if (identifier == null) {
-            log.info("Identifier does not exists");
+            description = "Identifier does not exists";
+            log.info(description);
             status = setFailedStatus();
         } else if (identifier.getStatus() == IdentifierStatus.DELETED) {
-            log.info("Identifier marked as deleted");
+            description = "Identifier " + identifier + " marked as deleted";
+            log.info(description);
             status = setFailedStatus();
         }
-        log.info("Identifier ok");
-        return status;
+        log.info("Identifier ok. " + identifier);
+        return new Result(status, description);
     }
 
-    private HttpStatus checkServiceAction(Identifier identifier, String service, String action, HttpStatus status) {
+    private Result checkServiceAction(Identifier identifier, String service, String action, HttpStatus status) {
+        String description = OK;
         log.info("Check action: " + action);
         Organisation organisation = identifier.getOrganisation();
         OrganisationSetupData setupData = organisationSetupService.load(organisation);
@@ -128,15 +140,26 @@ public class IdentifierCheckRestController {
         }
 
         if (!found) {
-            log.info("Service/Action '" + service + " / " + action + "' not found");
+            description = "Service/Action '" + service + " / " + action + "' not found for identifier " + identifier.getValue();
+            log.info(description);
             status = setFailedStatus();
         }
 
         log.info("Action check done");
-        return status;
+        return new Result(status, description);
     }
 
     private HttpStatus setFailedStatus() {
         return HttpStatus.NO_CONTENT;
+    }
+
+    private class Result {
+        final HttpStatus status;
+        final String description;
+
+        public Result(HttpStatus status, String description) {
+            this.status = status;
+            this.description = description;
+        }
     }
 }
