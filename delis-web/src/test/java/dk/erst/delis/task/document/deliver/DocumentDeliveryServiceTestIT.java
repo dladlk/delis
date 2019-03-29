@@ -18,7 +18,7 @@ import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
-import dk.erst.delis.vfs.sftp.service.SFTPService;
+import dk.erst.delis.vfs.sftp.service.VFSService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class DocumentDeliveryServiceTestIT {
 	private OrganisationSetupService setupService;
 
 	@Autowired
-	private SFTPService sftpService;
+	private VFSService vfsService;
 
 	private Organisation org;
 	private File rootFolder;
@@ -105,7 +105,7 @@ public class DocumentDeliveryServiceTestIT {
 			}
 		};
 		DocumentBytesStorageService storageService = new DocumentBytesStorageService(configBean, documentBytesDaoRepository);
-		DocumentDeliverService documentDeliverService = new DocumentDeliverService(documentRepository, setupService, journalDocumentService, storageService, sftpService);
+		DocumentDeliverService documentDeliverService = new DocumentDeliverService(documentRepository, setupService, journalDocumentService, storageService, vfsService);
 		return documentDeliverService;
 	}
 
