@@ -15,7 +15,7 @@ import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
-import dk.erst.delis.vfs.sftp.service.SFTPService;
+import dk.erst.delis.vfs.sftp.service.VFSService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +35,16 @@ public class DocumentDeliverService {
     private OrganisationSetupService organisationSetupService;
     private JournalDocumentService journalDocumentService;
     private DocumentBytesStorageService documentBytesStorageService;
-    private SFTPService sftpService;
+    private VFSService vfsService;
 
     @Autowired
     public DocumentDeliverService(DocumentDaoRepository documentDaoRepository, OrganisationSetupService organisationSetupService,
-                                  JournalDocumentService journalDocumentService, DocumentBytesStorageService documentBytesStorageService, SFTPService sftpService) {
+                                  JournalDocumentService journalDocumentService, DocumentBytesStorageService documentBytesStorageService, VFSService vfsService) {
         this.documentDaoRepository = documentDaoRepository;
         this.organisationSetupService = organisationSetupService;
         this.journalDocumentService = journalDocumentService;
         this.documentBytesStorageService = documentBytesStorageService;
-        this.sftpService = sftpService;
+        this.vfsService = vfsService;
     }
 
     public StatData processValidated() {
@@ -143,10 +143,10 @@ public class DocumentDeliverService {
         return processLog;
     }
 
-    private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String connectionString, DocumentProcessLog processLog) {
+    private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String url, DocumentProcessLog processLog) {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
         boolean uploaded = false;
-        if (StringUtils.startsWithIgnoreCase(connectionString, "sftp")) {
+        if (StringUtils.startsWithIgnoreCase(url, "sftp")) {
             File tempFile = null;
             try {
                 tempFile = File.createTempFile("delis", "tmp");
@@ -156,23 +156,30 @@ public class DocumentDeliverService {
             try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
                 boolean loaded = documentBytesStorageService.load(documentBytes, fileOutputStream);
                 if (loaded) {
-                    String uri = connectionString + "/" + outputFileName;
-                    sftpService.upload(uri, tempFile.getAbsolutePath());
+                    String connectionURL = url.split("\\?")[0];
+                    String username = getParamValue(url, "username");
+                    String password = getParamValue(url, "password");
+                    vfsService.upload(connectionURL, username, password, tempFile.getAbsolutePath(), "/" + outputFileName);
                     uploaded = true;
                 }
             } catch (Exception e) {
-                log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, connectionString), e);
+                log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, url), e);
             } finally {
                 if (tempFile != null && !tempFile.delete()) {
                     log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));
                 }
             }
         } else {
-            log.warn("Protocol not supported, or invalid connection string: " + connectionString);
+            log.warn("Protocol not supported, or invalid connection string: " + url);
         }
         step.setSuccess(uploaded);
         step.done();
         processLog.addStep(step);
+    }
+
+    private String getParamValue(String url, String paramName) {
+        String paramValuePart = StringUtils.substringAfter(url, paramName + "=");
+        return paramValuePart.split("&")[0];
     }
 
     private String buildOutputFileName(Document document) {
