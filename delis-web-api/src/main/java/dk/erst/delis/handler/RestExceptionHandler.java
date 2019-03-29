@@ -1,4 +1,4 @@
-package dk.erst.delis.exception.handler;
+package dk.erst.delis.handler;
 
 import dk.erst.delis.exception.model.ErrorResponseModel;
 import dk.erst.delis.exception.model.FieldErrorModel;
@@ -48,6 +48,11 @@ public class RestExceptionHandler {
     @ExceptionHandler(value = RestFailedDependencyException.class)
     public ResponseEntity<Object> handleFailedDependency(RestFailedDependencyException error){
         return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(new ErrorResponseModel(error));
+    }
+
+    @ExceptionHandler(value = RestInternalServerErrorException.class)
+    public ResponseEntity<Object> handleInternalServerError(RestInternalServerErrorException error){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponseModel(error));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

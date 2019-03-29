@@ -4,7 +4,7 @@ import { RuntimeConfigService } from "../../../../../service/runtime.config.serv
 import { HttpRestService } from "../../../../../service/http.rest.service";
 import { Observable } from "rxjs";
 import { HttpParams } from "@angular/common/http";
-import {DateRangeModel} from "../../../../../models/date.range.model";
+import { DateRangeModel } from "../../../../../models/date.range.model";
 
 @Injectable()
 export class ChartDocumentService {
@@ -16,7 +16,7 @@ export class ChartDocumentService {
         private configService: RuntimeConfigService,
         private httpRestService: HttpRestService) {
         this.url = this.configService.getConfigUrl();
-        this.url = this.url + '/chart';
+        this.url = this.url + '/rest/chart';
     }
 
     getChartData() : Observable<any> {

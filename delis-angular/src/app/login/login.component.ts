@@ -56,8 +56,9 @@ export class LoginComponent implements OnInit {
         this.auth.login(this.login, this.password).subscribe(
             (data: {}) => {
                 let loginData: LoginData = data["data"];
-                this.tokenService.setToken(loginData.token);
+                this.tokenService.setToken(loginData.accessToken);
                 localStorage.setItem('username', loginData.username);
+                localStorage.setItem('refreshToken', loginData.refreshToken);
                 this.contentSelectInfoService.generateAllContentSelectInfo();
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo();
                 this.contentSelectInfoService.generateDateRangeInfo();

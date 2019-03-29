@@ -6,6 +6,7 @@ import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.content.AbstractGenerateDataService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
@@ -27,12 +28,14 @@ public class IdentifierServiceImpl implements IdentifierService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public PageContainer<Identifier> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(Identifier.class, webRequest, identifierRepository);
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public Identifier getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, Identifier.class, identifierRepository);

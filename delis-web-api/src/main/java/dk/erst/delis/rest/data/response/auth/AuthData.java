@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AuthData {
 
-    private String token;
     private String username;
+    private String accessToken;
+    private String refreshToken;
 }

@@ -9,7 +9,7 @@ export class ContentSelectInfoService {
     constructor(private http: HttpRestService, private configService: RuntimeConfigService) {}
 
     generateAllContentSelectInfo() {
-        this.http.methodOpenGet(this.configService.getConfigUrl() + '/table-info/enums').subscribe(
+        this.http.methodOpenGet(this.configService.getConfigUrl() + '/rest/open/table-info/enums').subscribe(
             (items: {}) => {
                 this.setContent(items["items"]);
             }
@@ -17,7 +17,7 @@ export class ContentSelectInfoService {
     }
 
     generateUniqueOrganizationNameInfo() {
-        this.http.methodOpenGet(this.configService.getConfigUrl() + '/table-info/organizations').subscribe(
+        this.http.methodOpenGet(this.configService.getConfigUrl() + '/rest/open/table-info/organizations').subscribe(
             (data: {}) => {
                 let organizations = data["data"];
                 localStorage.setItem("organizations", JSON.stringify(organizations.uniqueOrganizationNames))

@@ -9,6 +9,7 @@ import dk.erst.delis.util.ClassLoaderUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
@@ -36,18 +37,21 @@ public class JournalIdentifierServiceImpl implements JournalIdentifierService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public PageContainer<JournalIdentifier> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(JournalIdentifier.class, webRequest, journalIdentifierRepository);
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public JournalIdentifier getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, JournalIdentifier.class, journalIdentifierRepository);
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public ListContainer<JournalIdentifier> getByIdentifier(WebRequest webRequest, long identifierId) {
         long collectionSize = journalIdentifierRepository.countByIdentifierId(identifierId);

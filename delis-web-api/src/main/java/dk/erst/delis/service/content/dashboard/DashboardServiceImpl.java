@@ -11,6 +11,7 @@ import dk.erst.delis.rest.data.response.dashboard.DashboardData;
 import dk.erst.delis.util.DateUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public DashboardData generateDashboardData() {
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -21,6 +21,8 @@ import { ErrorService } from "./service/error.service";
 import { ListenErrorService } from "./service/listen.error.service";
 import { LogoutService } from "./logout/logout.service";
 import { ForwardingLanguageService } from "./service/forwarding.language.service";
+import { HttpEventInterceptor } from "./service/http.event.interceptor";
+import { RefreshTokenService } from "./service/refresh.token.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -46,6 +48,11 @@ export const createTranslateLoader = (http: HttpClient) => {
     ],
     declarations: [AppComponent],
     providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: HttpEventInterceptor,
+            multi: true
+        },
         AuthGuard,
         TokenService,
         RuntimeConfigService,
@@ -56,7 +63,8 @@ export const createTranslateLoader = (http: HttpClient) => {
         ErrorService,
         ListenErrorService,
         LogoutService,
-        ForwardingLanguageService],
+        ForwardingLanguageService,
+        RefreshTokenService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

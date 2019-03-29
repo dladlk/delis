@@ -12,7 +12,7 @@ export class HttpRestService {
 
     methodGet(url : string, params: any, token: any) : Observable<any> {
         this.headers = new HttpHeaders({
-            'Authorization' : token
+            'Authorization' : 'Bearer ' + token
         });
         if (params !== null) {
             return this.http.get(url, {
@@ -26,7 +26,7 @@ export class HttpRestService {
 
     methodGetOneById(url : string, params: any, token: any, id: number) : Observable<any> {
         this.headers = new HttpHeaders({
-            'Authorization' : token
+            'Authorization' : 'Bearer ' + token
         });
         if (params !== null) {
             return this.http.get(url + '/' + id, {
@@ -44,7 +44,7 @@ export class HttpRestService {
 
     methodGetOne(url : string, id: any, token: any) : Observable<any> {
         this.headers = new HttpHeaders({
-            'Authorization' : token
+            'Authorization' : 'Bearer ' + token
         });
         return this.http.get(url + '/' + id, {headers : this.headers}).pipe(map(HttpRestService.extractData));
     }
@@ -53,18 +53,19 @@ export class HttpRestService {
         return this.http.get(url).pipe(map(HttpRestService.extractData));
     }
 
-    methodPost(url: string, body: any) : Observable<any> {
+    methodPost(url: string) : Observable<any> {
         this.headers = new HttpHeaders({
-            'Content-Type' : `application/json`
+            'Content-Type' : `application/json`,
+            'Authorization' : `Basic dGVzdDp0ZXN0`
         });
-        return this.http.post(url, body, {
+        return this.http.post(url, null, {
             headers : this.headers
         }).pipe(map(HttpRestService.extractData));
     }
 
     methodDelete(url: string, token: any) : Observable<any> {
         this.headers = new HttpHeaders({
-            'Authorization' : token
+            'Authorization' : 'Bearer ' + token
         });
         return this.http.delete(url, {
             headers : this.headers

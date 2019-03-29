@@ -19,10 +19,6 @@ export class AuthorizationService {
 
     login(login: string, password: string) : Observable<any> {
         this.url = this.configService.getConfigUrl();
-        let body  =  {
-            'login' : login,
-            'password' : password,
-        };
-        return this.http.methodPost(this.url + '/security/signin', body);
+        return this.http.methodPost(this.url + '/oauth/token?grant_type=password&username=' + login + '&password=' + password);
     }
 }

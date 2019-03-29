@@ -16,6 +16,7 @@ import dk.erst.delis.util.ClassLoaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
@@ -49,18 +50,21 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public PageContainer<JournalDocument> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(JournalDocument.class, webRequest, journalDocumentRepository);
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public JournalDocument getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, JournalDocument.class, journalDocumentRepository);
     }
 
 	@Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
 	public ListContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId) {
         long collectionSize = journalDocumentRepository.countByDocumentId(documentId);
@@ -83,6 +87,7 @@ public class JournalDocumentServiceImpl implements JournalDocumentService {
 	}
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public ListContainer<JournalDocumentError> getByJournalDocumentDocumentId(long documentId) {
         Document document = documentRepository.findById(documentId).orElse(null);
