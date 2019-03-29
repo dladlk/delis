@@ -67,5 +67,6 @@ liquibase.sh --driver=com.mysql.jdbc.Driver \
 -----------------------------------------------------------------------------------------------------
 2. There are 2 ways to create-update tables (precondition: you have empty delis scheme or partially updated with older changelogs):
  - run delis-web application - it creates-updates all automatically
- - run maven goal in delis-web folder 'mvn liquibase:update'  
+ - run maven goal in delis-web folder 'mvn liquibase:update'
+ Note: run maven goal in delis-data module  
  Note: if you got error "Validation Failed: 1 change sets check sum", run maven 'mvn liquibase:clearCheckSums' and try update again
