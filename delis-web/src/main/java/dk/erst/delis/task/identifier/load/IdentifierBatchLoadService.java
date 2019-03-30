@@ -82,7 +82,7 @@ public class IdentifierBatchLoadService {
     private void moveToProcessedFolder(Path sourceFilePath) {
         File targetFolder = new File(sourceFilePath.getParent().toString(), "PROCESSED");
         if (!targetFolder.exists() && targetFolder.mkdirs()) {
-            throw new RuntimeException("Target folder for processed files not exists and unable to create!");
+            throw new RuntimeException("Target folder "+targetFolder+" for processed identifier files not exists and unable to create");
         }
         try {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
