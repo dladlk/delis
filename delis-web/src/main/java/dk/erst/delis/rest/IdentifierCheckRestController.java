@@ -59,12 +59,10 @@ public class IdentifierCheckRestController {
 
         Identifier identifier = getIdentifier(compoundIdentifier);
 
-        HttpStatus status = HttpStatus.OK;
-
-        Result result = checkIdentifier(identifier, status);
+        Result result = checkIdentifier(identifier, compoundIdentifier);
 
         if (result.status == HttpStatus.OK && identifier != null) {
-            result = checkServiceAction(identifier, service, action, status);
+            result = checkServiceAction(identifier, service, action);
         }
 
         long stopTime = new Date().getTime();
@@ -99,23 +97,25 @@ public class IdentifierCheckRestController {
         return identifier;
     }
 
-    private Result checkIdentifier(Identifier identifier, HttpStatus status) {
+    private Result checkIdentifier(Identifier identifier, String compoundIdentifier) {
+        HttpStatus status = HttpStatus.OK;
         String description = OK;
         log.info("Check identifier");
         if (identifier == null) {
-            description = "Identifier does not exists";
+            description = "Identifier '"+compoundIdentifier+"' does not exist";
             log.info(description);
-            status = setFailedStatus();
+            status = getFailedStatus();
         } else if (identifier.getStatus() == IdentifierStatus.DELETED) {
-            description = "Identifier " + identifier + " marked as deleted";
+            description = "Identifier " + compoundIdentifier + " marked as deleted";
             log.info(description);
-            status = setFailedStatus();
+            status = getFailedStatus();
         }
-        log.info("Identifier ok. " + identifier);
+        log.info("Identifier '"+compoundIdentifier+"' check performed. " + description);
         return new Result(status, description);
     }
 
-    private Result checkServiceAction(Identifier identifier, String service, String action, HttpStatus status) {
+    private Result checkServiceAction(Identifier identifier, String service, String action) {
+        HttpStatus status = HttpStatus.OK;
         String description = OK;
         log.info("Check action: " + action);
         Organisation organisation = identifier.getOrganisation();
@@ -144,14 +144,14 @@ public class IdentifierCheckRestController {
         if (!found) {
             description = "Service/Action '" + service + " / " + action + "' not found for identifier " + identifier.getValue();
             log.info(description);
-            status = setFailedStatus();
+            status = getFailedStatus();
         }
 
         log.info("Action check done");
         return new Result(status, description);
     }
 
-    private HttpStatus setFailedStatus() {
+    private HttpStatus getFailedStatus() {
         return HttpStatus.NO_CONTENT;
     }
 
