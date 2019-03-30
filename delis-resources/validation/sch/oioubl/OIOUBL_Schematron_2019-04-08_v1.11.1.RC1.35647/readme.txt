@@ -1,0 +1,1 @@
+Copied from https://www.digitaliser.dk/resource/4455683
