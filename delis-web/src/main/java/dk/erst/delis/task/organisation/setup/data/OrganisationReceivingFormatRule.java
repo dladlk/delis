@@ -1,10 +1,12 @@
 package dk.erst.delis.task.organisation.setup.data;
 
+import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+
 public enum OrganisationReceivingFormatRule {
 
 	OIOUBL("OIOUBL - convert everything to OIOUBL"),
 	
-	BIS3("BIS3 - CII to BIS3, keep BIS3 and OIOUBL"),
+	BIS3("Prefer BIS3 - convert CII to BIS3, but keep BIS3 and OIOUBL"),
 	
 	BIS3_POSITIVE("BIS3 positive - like BIS3 but keep BIS3 only if it is positive amount, otherwise convert to proper BIS3"),
 	
@@ -24,5 +26,28 @@ public enum OrganisationReceivingFormatRule {
 
 	public String getTitle() {
 		return title;
+	}
+
+	public static OrganisationReceivingFormatRule getDefault() {
+		return OrganisationReceivingFormatRule.OIOUBL;
+	}
+
+	public boolean isLast(DocumentFormatFamily documentFormatFamily) {
+		if (documentFormatFamily == null || documentFormatFamily == DocumentFormatFamily.UNSUPPORTED) {
+			return true;
+		}
+		switch (this) {
+		case KEEP_ORIGINAL:
+			return true;
+		case BIS3:
+		case BIS3_POSITIVE:
+			return documentFormatFamily == DocumentFormatFamily.BIS3 || documentFormatFamily == DocumentFormatFamily.OIOUBL;
+		case OIOUBL:
+			if (documentFormatFamily == DocumentFormatFamily.OIOUBL) {
+				return true;
+			}
+			break;
+		}
+		return false;
 	}
 }

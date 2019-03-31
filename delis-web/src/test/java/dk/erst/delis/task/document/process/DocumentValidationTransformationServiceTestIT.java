@@ -24,6 +24,7 @@ import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 
@@ -75,7 +76,7 @@ public class DocumentValidationTransformationServiceTestIT {
 			Document d = new Document();
 			d.setIngoingDocumentFormat(testDocument.getDocumentFormat());
 			
-			DocumentProcessLog processLog = processService.process(d, testFile);
+			DocumentProcessLog processLog = processService.process(d, testFile, OrganisationReceivingFormatRule.OIOUBL);
 			assertNotNull(processLog);
 			
 			List<DocumentProcessStep> stepList = processLog.getStepList();

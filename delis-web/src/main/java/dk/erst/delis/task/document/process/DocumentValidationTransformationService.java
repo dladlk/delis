@@ -26,6 +26,7 @@ import dk.erst.delis.task.document.process.validate.SchematronValidator;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
 import dk.erst.delis.task.document.process.validate.result.SchematronResultCollectorFactory;
+import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -41,14 +42,14 @@ public class DocumentValidationTransformationService {
 		this.documentParseService = documentParseService;
 	}
 
-	public DocumentProcessLog process(Document document, Path xmlLoadedPath) {
+	public DocumentProcessLog process(Document document, Path xmlLoadedPath, OrganisationReceivingFormatRule receivingFormatRule) {
 		DocumentFormat ingoingDocumentFormat = document.getIngoingDocumentFormat();
 		DocumentProcessLog plog = new DocumentProcessLog();
 
 		plog.setResultPath(xmlLoadedPath);
 
 		try {
-			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat);
+			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat, receivingFormatRule);
 		} catch (Exception e) {
 			log.error("Failed to process all formats on document " + document + " by path " + xmlLoadedPath, e);
 		}
@@ -56,7 +57,7 @@ public class DocumentValidationTransformationService {
 		return plog;
 	}
 
-	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat) {
+	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule) {
 		List<RuleDocumentValidation> ruleByFormat = ruleService.getValidationRuleListByFormat(documentFormat);
 		for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
 			DocumentProcessStep step = validateByRule(xmlPath, ruleDocumentValidation);
@@ -66,7 +67,7 @@ public class DocumentValidationTransformationService {
 			}
 		}
 
-		if (documentFormat.getDocumentFormatFamily().isLast()) {
+		if (receivingFormatRule.isLast(documentFormat.getDocumentFormatFamily())) {
 			return;
 		}
 
@@ -74,7 +75,7 @@ public class DocumentValidationTransformationService {
 		RuleDocumentTransformation transformationRule = ruleService.getTransformation(formatFamily);
 		Path xmlOutPath = null;
 		if (transformationRule != null) {
-			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo() + "_";
+			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo();
 			xmlOutPath = createTempFile(plog, xmlOutPath, prefix);
 			if (xmlOutPath == null) {
 				return;
@@ -89,7 +90,7 @@ public class DocumentValidationTransformationService {
 
 		DocumentFormat resultFormat = identifyResultFormat(plog, xmlOutPath);
 
-		processAllFormats(plog, xmlOutPath, resultFormat);
+		processAllFormats(plog, xmlOutPath, resultFormat, receivingFormatRule);
 	}
 
 	protected DocumentFormat identifyResultFormat(DocumentProcessLog plog, Path xmlPath) {
@@ -178,7 +179,7 @@ public class DocumentValidationTransformationService {
 	public Path createTempFile(DocumentProcessLog plog, Path xmlOutPath, String prefix) {
 		DocumentProcessStep step = new DocumentProcessStep("Create temp file with prefix " + prefix, DocumentProcessStepType.COPY);
 		try {
-			xmlOutPath = Files.createTempFile(prefix, ".xml");
+			xmlOutPath = Files.createTempFile(prefix+"_", ".xml");
 			step.setSuccess(true);
 			step.setResult(xmlOutPath);
 		} catch (Exception e) {

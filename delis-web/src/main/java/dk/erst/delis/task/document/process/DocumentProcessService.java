@@ -14,6 +14,7 @@ import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
@@ -22,6 +23,9 @@ import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
+import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,16 +39,20 @@ public class DocumentProcessService {
 	private JournalDocumentService journalDocumentService;
 
 	private DocumentBytesStorageService documentBytesStorageService;
+	
+	private OrganisationSetupService organisationSetupService;
 
 	@Autowired
 	public DocumentProcessService(DocumentBytesStorageService documentBytesStorageService,
 								  DocumentValidationTransformationService documentValidationTransformationService,
 								  DocumentDaoRepository documentDaoRepository,
-								  JournalDocumentService journalDocumentService) {
+								  JournalDocumentService journalDocumentService,
+								  OrganisationSetupService organisationSetupService) {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.documentValidationTransformationService = documentValidationTransformationService;
 		this.documentDaoRepository = documentDaoRepository;
 		this.journalDocumentService = journalDocumentService;
+		this.organisationSetupService = organisationSetupService;
 	}
 
 	public StatData processLoaded() {
@@ -69,6 +77,21 @@ public class DocumentProcessService {
 	}
 
 	public void processDocument(StatData statData, Document document) {
+		Organisation organisation = document.getOrganisation();
+		if (organisation == null) {
+			log.warn("Document has no assigned organisation, skip it: "+document);
+			statData.increment("UNDEFINED");
+			return;
+		}
+		OrganisationReceivingFormatRule receivingFormatRule = OrganisationReceivingFormatRule.getDefault();
+		OrganisationSetupData setupData = organisationSetupService.load(organisation);
+		if (setupData == null || setupData.getReceivingFormatRule() == null) {
+			log.warn("Organisation "+organisation+" has no setup - use default value for receving format "+receivingFormatRule);
+		} else {
+			receivingFormatRule = setupData.getReceivingFormatRule();
+			log.info("Receiving format rule for "+organisation+" is set to "+receivingFormatRule);
+		}
+		
 		document.setDocumentStatus(DocumentStatus.VALIDATE_START);
 		documentDaoRepository.updateDocumentStatus(document);
 
@@ -93,7 +116,7 @@ public class DocumentProcessService {
 		}
 
 		
-		DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath);
+		DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule);
 		DocumentErrorCode lastError = null;
 		if (plog != null) {
 			statData.increment(plog.isSuccess() ? "OK" : "ERROR");
