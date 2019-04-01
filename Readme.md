@@ -70,3 +70,8 @@ liquibase.sh --driver=com.mysql.jdbc.Driver \
  - run maven goal in delis-web folder 'mvn liquibase:update'
  Note: run maven goal in delis-data module  
  Note: if you got error "Validation Failed: 1 change sets check sum", run maven 'mvn liquibase:clearCheckSums' and try update again
+ 
+ ## Identifier Validation Skip Values
+ You can set env variable "identifier.check.step.skip" to skip Service or Action checks
+ Values:
+  Any letters combinations that contains (or not) "SERVICE" and-or "ACTION"
