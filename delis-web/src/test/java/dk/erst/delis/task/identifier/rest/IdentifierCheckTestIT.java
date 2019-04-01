@@ -24,62 +24,85 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
+import static dk.erst.delis.rest.IdentifierCheckRestController.IDENTIFIER_CHECK_STEP_SKIP;
 import static dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureTestDatabase(replace=Replace.ANY)
+@AutoConfigureTestDatabase(replace = Replace.ANY)
 @Transactional
 @Rollback
 public class IdentifierCheckTestIT {
 
-	@Autowired
-	private IdentifierLoadService identifierLoadService;
+    @Autowired
+    private IdentifierLoadService identifierLoadService;
 
-	@Autowired
-	private OrganisationService organisationService;
+    @Autowired
+    private OrganisationService organisationService;
 
-	@Autowired
-	private IdentifierCheckRestController idController;
+    @Autowired
+    private IdentifierCheckRestController idController;
 
-	@Autowired
-	private OrganisationSetupService organisationSetupService;
+    @Autowired
+    private OrganisationSetupService organisationSetupService;
 
-	@Before
-	public void init() throws Exception{
-		IdentifierLoadServiceTestIT ilsTest = new IdentifierLoadServiceTestIT();
-		ilsTest.setOrganisationService(organisationService);
-		ilsTest.setIdentifierLoadService(identifierLoadService);
-		ilsTest.loadTestIdentifiers();
-		Iterable<Organisation> organisations = organisationService.getOrganisations();
-		for (Organisation org : organisations) {
-			OrganisationSetupData setupData = organisationSetupService.load(org);
-			Set<OrganisationSubscriptionProfileGroup> profileSet = new HashSet<>();
-			profileSet.add(CII);
-			profileSet.add(BIS3);
-			profileSet.add(OIOUBL);
-			setupData.setSubscribeProfileSet(profileSet);
+    @Before
+    public void init() throws Exception {
+        IdentifierLoadServiceTestIT ilsTest = new IdentifierLoadServiceTestIT();
+        ilsTest.setOrganisationService(organisationService);
+        ilsTest.setIdentifierLoadService(identifierLoadService);
+        ilsTest.loadTestIdentifiers();
+        Iterable<Organisation> organisations = organisationService.getOrganisations();
+        for (Organisation org : organisations) {
+            OrganisationSetupData setupData = organisationSetupService.load(org);
+            Set<OrganisationSubscriptionProfileGroup> profileSet = new HashSet<>();
+            profileSet.add(CII);
+            profileSet.add(BIS3);
+            profileSet.add(OIOUBL);
+            setupData.setSubscribeProfileSet(profileSet);
 
-			organisationSetupService.update(setupData);
-		}
-	}
+            organisationSetupService.update(setupData);
+        }
+    }
 
-	@Test
-	public void testOK() {
+    @Test
+    public void testOK() {
 
-		ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
-				"urn:www.nesubl.eu:profiles:profile5:ver2.0",
-				"busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0");
+        ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
+                "urn:www.nesubl.eu:profiles:profile5:ver2.0",
+                "busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0");
 
-		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-	}
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
 
-	@Test
-	public void test204() {
+    @Test
+    public void testOKActionSkip() {
 
-		ResponseEntity responseEntity = idController.checkIdentifier("something:wrong", "", "");
+        System.setProperty(IDENTIFIER_CHECK_STEP_SKIP, "sometext_ACTiOn_some text");
+        ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
+                "urn:www.nesubl.eu:profiles:profile5:ver2.0",
+                "wrong");
 
-		assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
-	}
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testOKServiceSkip() {
+
+        System.setProperty(IDENTIFIER_CHECK_STEP_SKIP, "sometext_SERVICE_some text");
+        ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
+                "wrong",
+                "busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0");
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void test204() {
+
+        ResponseEntity responseEntity = idController.checkIdentifier("something:wrong", "", "");
+
+        assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
+    }
 }

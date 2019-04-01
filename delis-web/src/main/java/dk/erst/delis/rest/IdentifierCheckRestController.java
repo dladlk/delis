@@ -37,8 +37,8 @@ public class IdentifierCheckRestController {
     public static final String REASON_HEADER = "reason";
     public static final String IDENTIFIER_CHECK_STEP_SKIP = "identifier.check.step.skip";
 
-    private final boolean skipServiceStep = skipStep(IdentifierCheckStep.SERVICE);
-    private final boolean skipActionStep = skipStep(IdentifierCheckStep.ACTION);
+    private boolean skipServiceStep;
+    private boolean skipActionStep;
 
     @Autowired
     private IdentifierResolverService identifierResolverService;
@@ -53,6 +53,9 @@ public class IdentifierCheckRestController {
 
         long startTime = new Date().getTime();
         log.info("Start checkIdentifier.");
+
+        skipServiceStep = skipStep(IdentifierCheckStep.SERVICE);
+        skipActionStep = skipStep(IdentifierCheckStep.ACTION);
 
         try {
             compoundIdentifier = URLDecoder.decode(compoundIdentifier, UTF_8);
@@ -159,24 +162,37 @@ public class IdentifierCheckRestController {
     }
 
     private Set<String> getAvailableActions(Set<OrganisationSubscriptionProfileGroup> services, String action) {
-        final Set<String> result = new HashSet<>();
-        if (skipActionStep) {
-            log.info("Check action skip... Return all available actions for all available services");
-            services.stream().map(s -> s.getDocumentIdentifiers()).forEach(strings -> result.addAll(Arrays.asList(strings)));
-        } else {
-            log.info("Looking for action " + action);
-            Set<String> collect = result.stream().filter(s -> action.endsWith(s)).collect(Collectors.toSet());
-            result.clear();
-            result.addAll(collect);
-            log.info("Found " + result.size());
+        Set<String> all = new HashSet<>();
+        Set<String> result = new HashSet<>();
+        for (OrganisationSubscriptionProfileGroup group : services) {
+            String[] documentIdentifiers = group.getDocumentIdentifiers();
+            all.addAll(Arrays.asList(documentIdentifiers));
         }
 
+        if (skipActionStep) {
+            log.info("Check action skip... Return all available actions for all available services");
+            result = all;
+            return result;
+        } else {
+            log.info("Looking for action " + action);
+            for (String availableAction : all) {
+                if (action.endsWith(availableAction)) {
+                    result.add(availableAction);
+                }
+            }
+            log.info("Found " + result.size());
+        }
         return result;
     }
 
     private boolean skipStep(IdentifierCheckStep step) {
         boolean skip = false;
         String skipEnvVariable = System.getenv(IDENTIFIER_CHECK_STEP_SKIP);
+
+        if (skipEnvVariable == null || skipEnvVariable.length() == 0) {
+            skipEnvVariable = System.getProperty(IDENTIFIER_CHECK_STEP_SKIP);
+        }
+
         if (skipEnvVariable != null) {
             skip = skipEnvVariable.toLowerCase().contains(step.name().toLowerCase());
         }
