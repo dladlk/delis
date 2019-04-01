@@ -2,11 +2,11 @@ package dk.erst.delis.data.enums.config;
 
 public enum ConfigValueType {
 
-	IDENTIFIER_INPUT_ROOT("config.storageIdentifiersInput", "../delis/identifier/input"),
+	IDENTIFIER_INPUT_ROOT("config.storageIdentifiersInput", "/delis/identifier/input"),
 
-	STORAGE_INPUT_ROOT("config.storageDocumentInput","../delis/input"),
+	STORAGE_INPUT_ROOT("config.storageDocumentInput","/delis/input"),
 
-	STORAGE_DOCUMENT_ROOT("config.storageDocumentRoot","../delis/document"),
+	STORAGE_DOCUMENT_ROOT("config.storageDocumentRoot","/delis/document"),
 
 	STORAGE_VALIDATION_ROOT("config.storageValidationRoot","../delis-resources/validation"),
 	
