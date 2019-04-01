@@ -7,7 +7,7 @@ import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
 import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
-import { DaterangeShowService } from "../../../bs-component/components/daterange/daterange.show.service";
+import {DaterangeShowService} from "../../../bs-component/components/daterange/daterange.show.service";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -90,11 +90,7 @@ export class ChartDocumentComponent implements OnInit {
                 }
             );
         } else {
-            this.drm = new DateRangeModel();
-            this.drm.dateStart = new Date();
-            this.drm.dateStart.setHours(0,0,0,0);
-            this.drm.dateEnd = new Date();
-            this.chartDocumentService.getChartCustomData(this.drm).subscribe(
+            this.chartDocumentService.getChartData().subscribe(
                 (data: {}) => {
                     this.generateLineChart(data);
                 }, error => {
