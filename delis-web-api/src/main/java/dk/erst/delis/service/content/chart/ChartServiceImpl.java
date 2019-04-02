@@ -58,7 +58,7 @@ public class ChartServiceImpl implements ChartService {
         }
 
         if (defaultChart) {
-            return generateDefaultChartData(start, DateUtil.convertClientTimeToServerTime(timeZone), end);
+            return generateDefaultChartData(start, DateUtil.convertClientTimeToServerTime(timeZone, null, true), end);
         } else {
             return generateCustomChartData(start, end, timeZone);
         }
@@ -66,8 +66,8 @@ public class ChartServiceImpl implements ChartService {
 
     private ChartData generateCustomChartData(Date start, Date end, String timeZone) {
 
-        Date startSearchDate = DateUtil.convertClientTimeToServerTimeFromBeginningOfDay(timeZone, start);
-        Date endSearchDate = DateUtil.convertClientTimeToServerTimeFromEndOfDay(timeZone, end);
+        Date startSearchDate = DateUtil.convertClientTimeToServerTime(timeZone, start, true);
+        Date endSearchDate = DateUtil.convertClientTimeToServerTime(timeZone, end, false);
 
         ChartData chartData = new ChartData();
         List<LineChartData> lineChartData = new ArrayList<>();
@@ -82,6 +82,7 @@ public class ChartServiceImpl implements ChartService {
             for (int d = 0 ; d <= days ; ++d) {
                 lineChartLabels.add(DateUtil.DATE_FORMAT_BY_CUSTOM_PERIOD.format(start));
                 dataGraph.add(documentRepository.countByCreateTimeBetween(startSearchDate, endSearchDate));
+                start = DateUtil.addDay(start, 1);
                 startSearchDate = new Date(endSearchDate.getTime());
                 endSearchDate = DateUtil.addDay(startSearchDate, 1);
             }

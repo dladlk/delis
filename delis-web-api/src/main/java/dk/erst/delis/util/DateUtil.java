@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -64,7 +65,7 @@ public class DateUtil {
         return cal.getTime();
     }
 
-    public Date generateEndOfDay(Date day) {
+    private Date generateEndOfDay(Date day) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(day);
         cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
@@ -74,68 +75,39 @@ public class DateUtil {
         return cal.getTime();
     }
 
-    public Date convertClientTimeToServerTime(String timeZone) {
+    public Date convertClientTimeToServerTime(String timeZone, Date date, boolean beginning) {
 
+        // generate server time
         Calendar serverCalendar = Calendar.getInstance();
-        TimeZone timeZoneServer = serverCalendar.getTimeZone();
-        long serverTime = serverCalendar.getTime().getTime();
-        Date serverTimeDate = new Date(serverTime);
-
-        Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
-        TimeZone timeZoneClient = clientCalendar.getTimeZone();
-
-        if (compareTimeZones(timeZoneServer, timeZoneClient)) {
-            long clientTime = serverTime + timeZoneClient.getRawOffset();
-            Date clientTimeDate = new Date(clientTime);
-            int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
-            return addHour(generateBeginningOfDay(serverTimeDate), hoursBetween);
-        } else {
-            return generateBeginningOfDay(serverTimeDate);
+        if (Objects.nonNull(date)) {
+            serverCalendar.setTime(date);
         }
-    }
-
-    public Date convertClientTimeToServerTimeFromBeginningOfDay(String timeZone, Date date) {
-
-        Calendar serverCalendar = Calendar.getInstance();
         TimeZone timeZoneServer = serverCalendar.getTimeZone();
-        serverCalendar.setTime(date);
-
         long serverTime = serverCalendar.getTime().getTime();
         Date serverTimeDate = new Date(serverTime);
 
+        // generate client time
         Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
-        TimeZone timeZoneClient = clientCalendar.getTimeZone();
-        clientCalendar.setTime(date);
-
-        if (compareTimeZones(timeZoneServer, timeZoneClient)) {
-            long clientTime = serverTime + timeZoneClient.getRawOffset();
-            Date clientTimeDate = new Date(clientTime);
-            int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
-            return addHour(generateBeginningOfDay(serverTimeDate), hoursBetween);
-        } else {
-            return generateBeginningOfDay(serverTimeDate);
+        if (Objects.nonNull(date)) {
+            clientCalendar.setTime(date);
         }
-    }
-
-    public Date convertClientTimeToServerTimeFromEndOfDay(String timeZone, Date date) {
-
-        Calendar serverCalendar = Calendar.getInstance();
-        TimeZone timeZoneServer = serverCalendar.getTimeZone();
-        serverCalendar.setTime(date);
-        long serverTime = serverCalendar.getTime().getTime();
-        Date serverTimeDate = new Date(serverTime);
-
-        Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
-        clientCalendar.setTime(date);
         TimeZone timeZoneClient = clientCalendar.getTimeZone();
 
         if (compareTimeZones(timeZoneServer, timeZoneClient)) {
             long clientTime = serverTime + timeZoneClient.getRawOffset();
             Date clientTimeDate = new Date(clientTime);
             int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
-            return addHour(generateEndOfDay(serverTimeDate), hoursBetween);
+            if (beginning) {
+                return addHour(generateBeginningOfDay(serverTimeDate), hoursBetween);
+            } else {
+                return addHour(generateEndOfDay(serverTimeDate), hoursBetween);
+            }
         } else {
-            return generateEndOfDay(serverTimeDate);
+            if (beginning) {
+                return generateBeginningOfDay(serverTimeDate);
+            } else {
+                return generateEndOfDay(serverTimeDate);
+            }
         }
     }
 
