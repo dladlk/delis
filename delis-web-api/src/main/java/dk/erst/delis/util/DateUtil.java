@@ -1,15 +1,16 @@
 package dk.erst.delis.util;
 
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
+
 import lombok.experimental.UtilityClass;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author funtusthan, created by 12.01.19
@@ -19,10 +20,15 @@ import java.util.Date;
 public class DateUtil {
 
     public final SimpleDateFormat DATE_FORMAT_BY_DAY = new SimpleDateFormat("HH:mm");
-    public final SimpleDateFormat DATE_FORMAT_BY_CUSTOM_PERIOD = new SimpleDateFormat("MM.dd");
+    public final SimpleDateFormat DATE_FORMAT_BY_CUSTOM_PERIOD = new SimpleDateFormat("dd.MM");
+    public static final String DEFAULT_TIME_ZONE = "Europe/Copenhagen";
 
     public long getMinutesBetween(Date start, Date end) {
         return ChronoUnit.MINUTES.between(start.toInstant(), end.toInstant());
+    }
+
+    public int getHoursBetween(Date start, Date end) {
+        return (int) ChronoUnit.HOURS.between(end.toInstant(), start.toInstant());
     }
 
     public DateRangeModel generateDateRangeByLastHour() {
@@ -48,25 +54,6 @@ public class DateUtil {
         return cal.getTime();
     }
 
-    public DateRangeModel generateDateRangeByFromAndToLastHour(int timeType, int time, int interval) {
-        Date start = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(start);
-        cal.add(timeType, -time);
-        start = cal.getTime();
-
-        cal.setTime(start);
-        cal.add(timeType, interval);
-        Date end = cal.getTime();
-        return new DateRangeModel(start, end);
-    }
-
-    public Date generateBeginningOfDay() {
-        ZoneId zoneId = ZoneId.systemDefault();
-        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(Instant.now(), zoneId);
-        return Date.from(zonedDateTime.toLocalDate().atStartOfDay(zoneId).toInstant());
-    }
-
     public Date generateBeginningOfDay(Date day) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(day);
@@ -85,5 +72,74 @@ public class DateUtil {
         cal.set(Calendar.SECOND, cal.getMaximum(Calendar.SECOND));
         cal.set(Calendar.MILLISECOND, cal.getMaximum(Calendar.MILLISECOND));
         return cal.getTime();
+    }
+
+    public Date convertClientTimeToServerTime(String timeZone) {
+
+        Calendar serverCalendar = Calendar.getInstance();
+        TimeZone timeZoneServer = serverCalendar.getTimeZone();
+        long serverTime = serverCalendar.getTime().getTime();
+        Date serverTimeDate = new Date(serverTime);
+
+        Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        TimeZone timeZoneClient = clientCalendar.getTimeZone();
+
+        if (compareTimeZones(timeZoneServer, timeZoneClient)) {
+            long clientTime = serverTime + timeZoneClient.getRawOffset();
+            Date clientTimeDate = new Date(clientTime);
+            int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
+            return addHour(generateBeginningOfDay(serverTimeDate), hoursBetween);
+        } else {
+            return generateBeginningOfDay(serverTimeDate);
+        }
+    }
+
+    public Date convertClientTimeToServerTimeFromBeginningOfDay(String timeZone, Date date) {
+
+        Calendar serverCalendar = Calendar.getInstance();
+        TimeZone timeZoneServer = serverCalendar.getTimeZone();
+        serverCalendar.setTime(date);
+
+        long serverTime = serverCalendar.getTime().getTime();
+        Date serverTimeDate = new Date(serverTime);
+
+        Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        TimeZone timeZoneClient = clientCalendar.getTimeZone();
+        clientCalendar.setTime(date);
+
+        if (compareTimeZones(timeZoneServer, timeZoneClient)) {
+            long clientTime = serverTime + timeZoneClient.getRawOffset();
+            Date clientTimeDate = new Date(clientTime);
+            int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
+            return addHour(generateBeginningOfDay(serverTimeDate), hoursBetween);
+        } else {
+            return generateBeginningOfDay(serverTimeDate);
+        }
+    }
+
+    public Date convertClientTimeToServerTimeFromEndOfDay(String timeZone, Date date) {
+
+        Calendar serverCalendar = Calendar.getInstance();
+        TimeZone timeZoneServer = serverCalendar.getTimeZone();
+        serverCalendar.setTime(date);
+        long serverTime = serverCalendar.getTime().getTime();
+        Date serverTimeDate = new Date(serverTime);
+
+        Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+        clientCalendar.setTime(date);
+        TimeZone timeZoneClient = clientCalendar.getTimeZone();
+
+        if (compareTimeZones(timeZoneServer, timeZoneClient)) {
+            long clientTime = serverTime + timeZoneClient.getRawOffset();
+            Date clientTimeDate = new Date(clientTime);
+            int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
+            return addHour(generateEndOfDay(serverTimeDate), hoursBetween);
+        } else {
+            return generateEndOfDay(serverTimeDate);
+        }
+    }
+
+    private boolean compareTimeZones(TimeZone timeZoneServer, TimeZone timeZoneClient) {
+        return ObjectUtils.notEqual(timeZoneServer.getID(), timeZoneClient.getID());
     }
 }

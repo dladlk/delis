@@ -82,7 +82,7 @@ export class ChartDocumentComponent implements OnInit {
 
     private updateLineChart(custom: boolean) {
         if (custom) {
-            this.chartDocumentService.getChartCustomData(this.drm).subscribe(
+            this.chartDocumentService.getChartCustomData(this.drm, false).subscribe(
                 (data: {}) => {
                     this.generateLineChart(data);
                 }, error => {
@@ -90,7 +90,11 @@ export class ChartDocumentComponent implements OnInit {
                 }
             );
         } else {
-            this.chartDocumentService.getChartData().subscribe(
+            this.drm = new DateRangeModel();
+            this.drm.dateStart = new Date();
+            this.drm.dateStart.setHours(0,0,0,0);
+            this.drm.dateEnd = new Date();
+            this.chartDocumentService.getChartCustomData(this.drm, true).subscribe(
                 (data: {}) => {
                     this.generateLineChart(data);
                 }, error => {
