@@ -39,6 +39,10 @@ class AllRestControllerTest : InitTokenTest() {
         val mvcResult: MvcResult = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/rest/chart")
+                        .param("timeZone", "Europe/Copenhagen")
+                        .param("startDate", "1554152400000")
+                        .param("endDate", "1554204260630")
+                        .param("defaultChart", "true")
                         .header("Authorization", "Bearer " + auth.accessToken))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
         assertEquals(200, mvcResult.response.status)
