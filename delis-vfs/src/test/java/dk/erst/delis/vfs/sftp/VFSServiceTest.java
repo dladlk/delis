@@ -13,29 +13,26 @@ public class VFSServiceTest {
     @Test
     public void test() throws IOException {
         VFSService vfsService = new VFSService();
-        testSFTP(vfsService);
-        testFTP(vfsService);
+        String configPath = getClass().getClassLoader().getResource("config.xml").getPath();
+        testSFTP(vfsService, configPath);
+//        testFTP(vfsService, configPath);
     }
 
-    private void testFTP(VFSService vfsService) throws IOException {
+    private void testFTP(VFSService vfsService, String configPath) throws IOException {
         String url = "ftp://speedtest.tele2.net/";
         String remoteFilePath = "512KB.zip";
         File tempFile = File.createTempFile("vfs-test", ".zip");
         tempFile.deleteOnExit();
-        vfsService.download(url, null, null, tempFile.toString(), remoteFilePath);
+        vfsService.download(configPath, tempFile.toString(), remoteFilePath);
     }
 
-    private void testSFTP(VFSService vfsService) {
-        String username = "tester";
-        String password = "password";
-        String host = "localhost";
+    private void testSFTP(VFSService vfsService, String configPath) {
         String remoteFilePath = "/testFile.txt";
-        String url = "sftp://" + host;
         URL resource = getClass().getClassLoader().getResource("testFile.txt");
-        vfsService.upload(url, username, password, resource.getPath(), remoteFilePath);
-        boolean exist = vfsService.exist(url, username, password, remoteFilePath);
+        vfsService.upload(configPath, resource.getPath(), remoteFilePath);
+        boolean exist = vfsService.exist(configPath, remoteFilePath);
         Assert.assertTrue(exist);
-        boolean deleted = vfsService.delete(url, username, password, remoteFilePath);
+        boolean deleted = vfsService.delete(configPath, remoteFilePath);
         Assert.assertTrue(deleted);
     }
 }
