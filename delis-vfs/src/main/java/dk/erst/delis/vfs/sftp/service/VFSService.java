@@ -7,13 +7,26 @@ import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
-import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 @Service
 public class VFSService {
+
+    private FileSystemOptions options;
 
     /**
      * Method to upload a file in Remote server
@@ -27,8 +40,6 @@ public class VFSService {
      *                       Directory and Filename with / as separator
      */
     public void upload(String url, String username, String password, String localFilePath, String remoteFilePath) {
-        System.out.println("VFSService.upload");
-        System.out.println("url = [" + url + "], username = [" + username + "], password = [" + password + "], localFilePath = [" + localFilePath + "], remoteFilePath = [" + remoteFilePath + "]");
         File file = new File(localFilePath);
         if (!file.exists())
             throw new RuntimeException("Error. Local file not found");
@@ -41,7 +52,7 @@ public class VFSService {
 
             // Create remote file object
 
-            FileSystemOptions fsOptions = createDefaultOptions();
+            FileSystemOptions fsOptions = getOptions();
             setAuthenticator(url, username, password, fsOptions);
             FileObject remoteFile = manager.resolveFile(url + remoteFilePath, fsOptions);
             /*
@@ -78,7 +89,7 @@ public class VFSService {
             // Create local file object. Change location if necessary for new downloadFilePath
             FileObject localFile = manager.resolveFile(localFilePath);
 
-            FileSystemOptions fsOptions = createDefaultOptions();
+            FileSystemOptions fsOptions = getOptions();
             setAuthenticator(url, username, password, fsOptions);
             // Create remote file object
             FileObject remoteFile = manager.resolveFile(url + remoteFilePath, fsOptions);
@@ -103,7 +114,7 @@ public class VFSService {
     public boolean delete(String url, String username, String password, String remoteFilePath) {
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
-            FileSystemOptions fsOptions = createDefaultOptions();
+            FileSystemOptions fsOptions = getOptions();
             setAuthenticator(url, username, password, fsOptions);
             // Create remote object
             FileObject remoteFile = manager.resolveFile(url + remoteFilePath, fsOptions);
@@ -130,7 +141,7 @@ public class VFSService {
     public boolean exist(String url, String username, String password, String remoteFilePath) {
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
-            FileSystemOptions fsOptions = createDefaultOptions();
+            FileSystemOptions fsOptions = getOptions();
             setAuthenticator(url, username, password, fsOptions);
             // Create remote object
             FileObject remoteFile = manager.resolveFile(url + remoteFilePath, fsOptions);
@@ -155,24 +166,60 @@ public class VFSService {
      * configuration options
      * @throws FileSystemException
      */
-    public FileSystemOptions createDefaultOptions() throws FileSystemException {
-        // Create SFTP options
-        FileSystemOptions opts = new FileSystemOptions();
+    public FileSystemOptions getOptions() throws FileSystemException {
+        if (options == null) {
+            options = loadOptions();
+        }
+        return options;
+    }
 
-        // SSH Key checking
-        SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(opts, "no");
+    private FileSystemOptions loadOptions() {
+        FileSystemOptions options = new FileSystemOptions();
+        try {
+            Method setOptionMethod = options.getClass().getDeclaredMethod("setOption", Class.class, String.class, Object.class);
+            setOptionMethod.setAccessible(true);
+            NodeList optionsList = getOptionsNodeList();
+            for (int i = 0; i < optionsList.getLength(); i++) {
+                Node option = optionsList.item(i);
+                Object[] args = prepareArguments(option);
+                setOptionMethod.invoke(options, args);
+            }
+        } catch (NoSuchMethodException |
+                InstantiationException |
+                InvocationTargetException |
+                IllegalAccessException |
+                SAXException |
+                IOException |
+                ParserConfigurationException |
+                ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return options;
+    }
 
-        /*
-         * Using the following line will cause VFS to choose File System's Root
-         * as VFS's root. If I wanted to use User's home as VFS's root then set
-         * 2nd method parameter to "true"
-         */
-        // Root directory set to user home
-        SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(opts, false);
+    private Object[] prepareArguments(Node option) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        NamedNodeMap attributes = option.getAttributes();
+        String name = attributes.getNamedItem("name").getNodeValue();
+        String type = attributes.getNamedItem("type").getNodeValue();
+        String fileSystemClassName = attributes.getNamedItem("fileSystemClassName").getNodeValue();
+        String optionStringValue = option.getTextContent().trim();
+        Class<?> typeClass = Class.forName(type);
+        Class<?> fileSystemClass = Class.forName(fileSystemClassName);
+        Object value = createTypedValue(optionStringValue, typeClass);
+        return new Object[]{fileSystemClass, name, value};
+    }
 
-        // Timeout is count by Milliseconds
-        SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
-        return opts;
+    private NodeList getOptionsNodeList() throws ParserConfigurationException, SAXException, IOException {
+        InputStream in = getClass().getClassLoader().getResourceAsStream("config.xml");
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        Document doc = docBuilder.parse(in);
+        doc.getDocumentElement().normalize();
+        return doc.getDocumentElement().getElementsByTagName("option");
+    }
+
+    private Object createTypedValue(String stringValue, Class<?> typeClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return typeClass.getConstructor(String.class).newInstance(stringValue);
     }
 
     private StandardFileSystemManager createFileSystemManager() {

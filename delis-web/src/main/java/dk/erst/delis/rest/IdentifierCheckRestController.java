@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Api
 @RestController
@@ -32,6 +35,10 @@ public class IdentifierCheckRestController {
     public static final String UTF_8 = "utf-8";
     public static final String OK = "ok";
     public static final String REASON_HEADER = "reason";
+    public static final String IDENTIFIER_CHECK_STEP_SKIP = "identifier.check.step.skip";
+
+    private boolean skipServiceStep;
+    private boolean skipActionStep;
 
     @Autowired
     private IdentifierResolverService identifierResolverService;
@@ -47,6 +54,9 @@ public class IdentifierCheckRestController {
         long startTime = new Date().getTime();
         log.info("Start checkIdentifier.");
 
+        skipServiceStep = skipStep(IdentifierCheckStep.SERVICE);
+        skipActionStep = skipStep(IdentifierCheckStep.ACTION);
+
         try {
             compoundIdentifier = URLDecoder.decode(compoundIdentifier, UTF_8);
             service = URLDecoder.decode(service, UTF_8);
@@ -56,13 +66,30 @@ public class IdentifierCheckRestController {
             throw new RuntimeException(e);
         }
         log.info("Start checkIdentifier. CompoundIdentifier=" + compoundIdentifier + " Service=" + service + " Action=" + action);
+        log.info("Skip steps variable status (" + IDENTIFIER_CHECK_STEP_SKIP + ")");
+        log.info("Skip Service validation = " + skipServiceStep);
+        log.info("Skip Action validation = " + skipActionStep);
 
         Identifier identifier = getIdentifier(compoundIdentifier);
 
         Result result = checkIdentifier(identifier, compoundIdentifier);
 
         if (result.status == HttpStatus.OK && identifier != null) {
-            result = checkServiceAction(identifier, service, action);
+            if (skipServiceStep && skipActionStep) {
+                log.info("Identifier found. Service and Action validation skipped.");
+            } else {
+                Set<OrganisationSubscriptionProfileGroup> availableServices = getAvailableServices(identifier, service);
+                if (availableServices.size() == 0) {
+                    log.info("No Service found for related organisation");
+                    result = new Result(HttpStatus.NO_CONTENT, "No Service found for related organisation");
+                } else {
+                    Set<String> availableActions = getAvailableActions(availableServices, action);
+                    if (availableActions.size() == 0) {
+                        log.info("No Action found for related organisation");
+                        result = new Result(HttpStatus.NO_CONTENT, "No Action found for related organisation");
+                    }
+                }
+            }
         }
 
         long stopTime = new Date().getTime();
@@ -88,7 +115,7 @@ public class IdentifierCheckRestController {
         }
 
         String type = compoundIdentifier.substring(0, index);
-        String id = compoundIdentifier.substring(index+1);
+        String id = compoundIdentifier.substring(index + 1);
 
         log.info("Identifier type: " + type + " Identifier id: " + id);
         identifier = identifierResolverService.resolve(type, id);
@@ -97,58 +124,79 @@ public class IdentifierCheckRestController {
         return identifier;
     }
 
-    private Result checkIdentifier(Identifier identifier, String compoundIdentifier) {
+    private Result checkIdentifier(Identifier identifier, String originalIdString) {
         HttpStatus status = HttpStatus.OK;
         String description = OK;
         log.info("Check identifier");
         if (identifier == null) {
-            description = "Identifier '"+compoundIdentifier+"' does not exist";
+            description = "Identifier '" + originalIdString + "' does not exist";
             log.info(description);
             status = getFailedStatus();
         } else if (identifier.getStatus() == IdentifierStatus.DELETED) {
-            description = "Identifier " + compoundIdentifier + " marked as deleted";
+            description = "Identifier " + originalIdString + " marked as deleted";
             log.info(description);
             status = getFailedStatus();
         }
-        log.info("Identifier '"+compoundIdentifier+"' check performed. " + description);
+        log.info("Identifier '" + originalIdString + "' check performed. " + description);
         return new Result(status, description);
     }
 
-    private Result checkServiceAction(Identifier identifier, String service, String action) {
-        HttpStatus status = HttpStatus.OK;
-        String description = OK;
-        log.info("Check action: " + action);
+    private Set<OrganisationSubscriptionProfileGroup> getAvailableServices(Identifier identifier, String service) {
+        Set<OrganisationSubscriptionProfileGroup> resultSet = new HashSet<>();
+
         Organisation organisation = identifier.getOrganisation();
         OrganisationSetupData setupData = organisationSetupService.load(organisation);
-        Set<OrganisationSubscriptionProfileGroup> profileSet = setupData.getSubscribeProfileSet();
+        Set<OrganisationSubscriptionProfileGroup> orgSubscribedProfiles = setupData.getSubscribeProfileSet();
 
-        boolean found = false;
-        for(OrganisationSubscriptionProfileGroup profileGroup : profileSet) {
-            String processId = profileGroup.getProcessId();
-            if (processId.equalsIgnoreCase(service)) {
-                log.info("Service found");
-                String[] documentIdentifiers = profileGroup.getDocumentIdentifiers();
-                for (String documentId : documentIdentifiers) {
-                    if (action.endsWith(documentId)) {
-                        log.info("Action found");
-                        found = true;
-                        break;
-                    }
+        if (skipServiceStep) {
+            String allServices = orgSubscribedProfiles.stream().map(OrganisationSubscriptionProfileGroup::getCode).collect(Collectors.joining(","));
+            log.info("Check service skip... Return all available services: " + allServices);
+            resultSet.addAll(orgSubscribedProfiles);
+        } else {
+            log.info("Check service");
+            resultSet = orgSubscribedProfiles.stream().filter(s -> s.getProcessId().equalsIgnoreCase(service)).collect(Collectors.toSet());
+            log.info("Found " + service);
+
+        }
+        return resultSet;
+    }
+
+    private Set<String> getAvailableActions(Set<OrganisationSubscriptionProfileGroup> services, String action) {
+        Set<String> all = new HashSet<>();
+        Set<String> result = new HashSet<>();
+        for (OrganisationSubscriptionProfileGroup group : services) {
+            String[] documentIdentifiers = group.getDocumentIdentifiers();
+            all.addAll(Arrays.asList(documentIdentifiers));
+        }
+
+        if (skipActionStep) {
+            log.info("Check action skip... Return all available actions for all available services");
+            result = all;
+            return result;
+        } else {
+            log.info("Looking for action " + action);
+            for (String availableAction : all) {
+                if (action.endsWith(availableAction)) {
+                    result.add(availableAction);
                 }
             }
-            if (found) {
-                break;
-            }
+            log.info("Found " + result.size());
+        }
+        return result;
+    }
+
+    private boolean skipStep(IdentifierCheckStep step) {
+        boolean skip = false;
+        String skipEnvVariable = System.getenv(IDENTIFIER_CHECK_STEP_SKIP);
+
+        if (skipEnvVariable == null || skipEnvVariable.length() == 0) {
+            skipEnvVariable = System.getProperty(IDENTIFIER_CHECK_STEP_SKIP);
         }
 
-        if (!found) {
-            description = "Service/Action '" + service + " / " + action + "' not found for identifier " + identifier.getValue();
-            log.info(description);
-            status = getFailedStatus();
+        if (skipEnvVariable != null) {
+            skip = skipEnvVariable.toLowerCase().contains(step.name().toLowerCase());
         }
-
-        log.info("Action check done");
-        return new Result(status, description);
+        return skip;
     }
 
     private HttpStatus getFailedStatus() {
