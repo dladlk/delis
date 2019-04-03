@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FileSystemOptions>
+    <option name="org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder.STRICT_HOST_KEY_CHECKING"
+            type="java.lang.String" fileSystemClassName="org.apache.commons.vfs2.provider.sftp.SftpFileSystem">no
+    </option>
+    <option name="org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder.USER_DIR_IS_ROOT"
+            type="java.lang.Boolean" fileSystemClassName="org.apache.commons.vfs2.provider.sftp.SftpFileSystem">false
+    </option>
+    <option name="org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder.TIMEOUT" type="java.lang.Integer"
+            fileSystemClassName="org.apache.commons.vfs2.provider.sftp.SftpFileSystem">10000
+    </option>
+</FileSystemOptions>
