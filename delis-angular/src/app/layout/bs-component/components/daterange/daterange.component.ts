@@ -4,7 +4,7 @@ import moment from 'moment';
 
 moment.locale('da');
 
-import {routerTransition } from "../../../../router.animations";
+import { routerTransition } from "../../../../router.animations";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
 import { FIRST_DAY } from "../../../../app.constants";
@@ -15,7 +15,6 @@ import { PaginationService } from "../pagination/pagination.service";
 import { PaginationModel } from "../pagination/pagination.model";
 import { ForwardingLanguageService } from "../../../../service/forwarding.language.service";
 import { LocaleService } from "../../../../service/locale.service";
-import { TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-daterange',
@@ -63,7 +62,6 @@ export class DaterangeComponent implements OnInit {
     };
 
     constructor(
-        private translate: TranslateService,
         private localeService: LocaleService,
         private forwardingLanguageService: ForwardingLanguageService,
         private dtService: DaterangeService,
@@ -71,7 +69,6 @@ export class DaterangeComponent implements OnInit {
         private paginationService: PaginationService) {
 
         this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
-        this.translate.use(this.lang);
 
         this.forwardingLanguageService.listen().subscribe((lang: string) => {
             this.lang = lang;
@@ -107,6 +104,7 @@ export class DaterangeComponent implements OnInit {
             monthNames: moment.monthsShort(),
             firstDay: FIRST_DAY,
             applyLabel: this.applyButton,
+            customRangeLabel: "Defineret"
         };
     }
 
