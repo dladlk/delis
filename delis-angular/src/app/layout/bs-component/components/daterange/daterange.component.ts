@@ -14,6 +14,7 @@ import { PaginationService } from "../pagination/pagination.service";
 import { PaginationModel } from "../pagination/pagination.model";
 import { ForwardingLanguageService } from "../../../../service/forwarding.language.service";
 import { LocaleService } from "../../../../service/locale.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-daterange',
@@ -53,11 +54,15 @@ export class DaterangeComponent implements OnInit {
     };
 
     constructor(
+        private translate: TranslateService,
         private localeService: LocaleService,
         private forwardingLanguageService: ForwardingLanguageService,
         private dtService: DaterangeService,
         private dtShowService: DaterangeShowService,
         private paginationService: PaginationService) {
+
+        this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
+        this.translate.use(this.lang);
 
         this.forwardingLanguageService.listen().subscribe((lang: string) => {
             this.lang = lang;
@@ -70,7 +75,7 @@ export class DaterangeComponent implements OnInit {
             }
         });
 
-        this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
+
         this.initLocaleConfig();
         this.initLocale(this.lang);
     }

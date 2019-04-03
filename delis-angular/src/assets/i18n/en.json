@@ -134,5 +134,7 @@
     "signup.password": "Password",
     "signup.password.repeat": "Repeat Password",
     "signup.register": "Register",
-    "signup.login": "Log in"
+    "signup.login": "Log in",
+
+    "received.date": "Received date"
 }

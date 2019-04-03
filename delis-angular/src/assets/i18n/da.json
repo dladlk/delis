@@ -133,5 +133,7 @@
   "signup.password": "Adgangskode",
   "signup.password.repeat": "Gentag adgangskode",
   "signup.register": "Registrer",
-  "signup.login": "Log ind"
+  "signup.login": "Log ind",
+
+  "received.date": "Modtaget dato"
 }
