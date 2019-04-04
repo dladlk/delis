@@ -49,14 +49,14 @@
                                            type="search"
                                            (ngModelChange)="loadTextMessage($event)"
                                            [(ngModel)]="textMessage"
-                                           placeholder="Message"/>
+                                           placeholder="{{'placeholder.message' | translate}}"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
                                            type="search"
                                            (ngModelChange)="loadTextDurationMs($event)"
                                            [(ngModel)]="textDurationMs"
-                                           placeholder="DurationMs"/>
+                                           placeholder="{{'placeholder.durationMs' | translate}}"/>
                                 </td>
                                 <td>
                                     <app-daterange></app-daterange>

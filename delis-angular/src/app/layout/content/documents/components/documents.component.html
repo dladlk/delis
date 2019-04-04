@@ -32,7 +32,7 @@
                                            type="search"
                                            (ngModelChange)="loadTextReceiver($event)"
                                            [(ngModel)]="textReceiver"
-                                           placeholder="Receiver"/>
+                                           placeholder="{{'placeholder.receiver' | translate}}"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statuses"
@@ -74,7 +74,7 @@
                                            type="search"
                                            [(ngModel)]="textSenderName"
                                            (ngModelChange)="loadTextSenderName($event)"
-                                           placeholder="Sender"/>
+                                           placeholder="{{'placeholder.sender' | translate}}"/>
                                 </td>
                             </tr>
                             </thead>

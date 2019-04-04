@@ -136,5 +136,16 @@
     "signup.register": "Register",
     "signup.login": "Log in",
 
-    "received.date": "Received date"
+    "received.date": "Received date",
+
+    "placeholder.receiver": "Receiver",
+    "placeholder.sender": "Sender",
+    "placeholder.identifierGroup": "Identifier Group",
+    "placeholder.type": "Type",
+    "placeholder.value": "Value",
+    "placeholder.uniqueValueType": "Unique Value Type",
+    "placeholder.name": "Name",
+    "placeholder.message": "Message",
+    "placeholder.durationMs": "Duration, ms",
+    "placeholder.identifier": "Identifier"
 }

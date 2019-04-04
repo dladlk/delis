@@ -135,5 +135,16 @@
   "signup.register": "Registrer",
   "signup.login": "Log ind",
 
-  "received.date": "Modtaget dato"
+  "received.date": "Modtaget dato",
+
+  "placeholder.receiver": "Modtager",
+  "placeholder.sender": "Afsender",
+  "placeholder.identifierGroup": "Nummer gruppe",
+  "placeholder.type": "Type",
+  "placeholder.value": "Værdi",
+  "placeholder.uniqueValueType": "Unik værdi type",
+  "placeholder.name": "Navn",
+  "placeholder.message": "Tekst",
+  "placeholder.durationMs": "Varighed, ms",
+  "placeholder.identifier": "Identifier"
 }
