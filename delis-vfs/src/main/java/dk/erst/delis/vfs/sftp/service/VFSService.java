@@ -12,7 +12,10 @@ import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -30,7 +33,7 @@ import java.util.Map;
 public class VFSService {
 
     private static final Logger log = LoggerFactory.getLogger(VFSService.class);
-    private Map<String, VFSConfig> configMap = new HashMap<>();
+    private Map<File, VFSConfig> configMap = new HashMap<>();
 
     /**
      * Method to upload a file in Remote server
@@ -137,28 +140,28 @@ public class VFSService {
         }
     }
 
-    private VFSConfig getConfig(String configFilePath) throws FileSystemException {
-//        String normalizedPath = FilenameUtils.normalize(configFilePath);
-        VFSConfig config = configMap.get(configFilePath);
+    private VFSConfig getConfig(String configFilePath) throws IOException {
+        File configFile = new File(configFilePath);
+        VFSConfig config = configMap.get(configFile);
         if (config == null) {
-            config = loadConfig(configFilePath);
-            configMap.put(configFilePath, config);
+            config = loadConfig(configFile);
+            configMap.put(configFile, config);
         }
         return config;
     }
 
-    private VFSConfig loadConfig(String configFilePath) {
+    private VFSConfig loadConfig(File configFile) {
+        String configFilePath = configFile.getAbsolutePath();
         try {
             log.info(String.format("Loading service config from file '%s' ...", configFilePath));
             FileSystemOptions options = new FileSystemOptions();
-            Document document = createDocument(configFilePath);
+            Document document = createDocument(configFile);
             NodeList fsOptionsList = document.getDocumentElement().getElementsByTagName("FileSystemOptions");
             for (int i = 0; i < fsOptionsList.getLength(); i++) {
                 Node fsOption = fsOptionsList.item(i);
                 String builderClassName = fsOption.getAttributes().getNamedItem("builder").getTextContent();
                 Class<?> builderClass = Class.forName(builderClassName);
                 setOptions(builderClass, options, ((Element) fsOption).getElementsByTagName("option"));
-
             }
             Element urlElement = (Element) document.getElementsByTagName("url").item(0);
             String url = urlElement.getTextContent();
@@ -186,7 +189,6 @@ public class VFSService {
             Object args[] = {options, optionValueObject};
             Object builderInstance = builderClass.getMethod("getInstance").invoke(null);
             optionSetter.invoke(builderInstance, args);
-
         }
     }
 
@@ -199,28 +201,12 @@ public class VFSService {
         return null;
     }
 
-    private Document createDocument(String configFilePath) throws ParserConfigurationException, SAXException, IOException {
+    private Document createDocument(File configFile) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-        Document document = docBuilder.parse(new FileInputStream(configFilePath));
+        Document document = docBuilder.parse(new FileInputStream(configFile));
         document.getDocumentElement().normalize();
         return document;
-    }
-
-    private Object[] prepareArguments(Node option) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        NamedNodeMap attributes = option.getAttributes();
-        String name = attributes.getNamedItem("name").getNodeValue();
-        String type = attributes.getNamedItem("type").getNodeValue();
-        String fileSystemClassName = attributes.getNamedItem("fileSystemClassName").getNodeValue();
-        String optionStringValue = option.getTextContent().trim();
-        Class<?> typeClass = Class.forName(type);
-        Class<?> fileSystemClass = Class.forName(fileSystemClassName);
-        Object value = createTypedValue(optionStringValue, typeClass);
-        return new Object[]{fileSystemClass, name, value};
-    }
-
-    private Object createTypedValue(String stringValue, Class<?> typeClass) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        return typeClass.getConstructor(String.class).newInstance(stringValue);
     }
 
     private StandardFileSystemManager createFileSystemManager() {
