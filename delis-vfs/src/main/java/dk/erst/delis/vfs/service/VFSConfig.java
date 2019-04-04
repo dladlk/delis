@@ -1,4 +1,4 @@
-package dk.erst.delis.vfs.sftp.service;
+package dk.erst.delis.vfs.service;
 
 import org.apache.commons.vfs2.FileSystemOptions;
 

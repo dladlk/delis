@@ -1,6 +1,6 @@
-package dk.erst.delis.vfs.sftp;
+package dk.erst.delis.vfs;
 
-import dk.erst.delis.vfs.sftp.service.VFSService;
+import dk.erst.delis.vfs.service.VFSService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,14 +13,14 @@ public class VFSServiceTest {
     @Test
     public void test() throws IOException {
         VFSService vfsService = new VFSService();
-        String configPath = getClass().getClassLoader().getResource("config.xml").getPath();
-        testSFTP(vfsService, configPath);
-//        testFTP(vfsService, configPath);
+        String configSftpPath = getClass().getClassLoader().getResource("config-sftp.xml").getPath();
+        String configFtpPath = getClass().getClassLoader().getResource("config-ftp.xml").getPath();
+        testSFTP(vfsService, configSftpPath);
+        testFTP(vfsService, configFtpPath);
     }
 
     private void testFTP(VFSService vfsService, String configPath) throws IOException {
-        String url = "ftp://speedtest.tele2.net/";
-        String remoteFilePath = "512KB.zip";
+        String remoteFilePath = "/512KB.zip";
         File tempFile = File.createTempFile("vfs-test", ".zip");
         tempFile.deleteOnExit();
         vfsService.download(configPath, tempFile.toString(), remoteFilePath);

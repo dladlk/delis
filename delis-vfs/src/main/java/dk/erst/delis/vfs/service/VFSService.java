@@ -1,4 +1,4 @@
-package dk.erst.delis.vfs.sftp.service;
+package dk.erst.delis.vfs.service;
 
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -72,7 +72,6 @@ public class VFSService {
      *                       Directory and Filename with / as separator
      */
     public void download(String config, String localFilePath, String remoteFilePath) {
-
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
             // Create local file object. Change location if necessary for new downloadFilePath
