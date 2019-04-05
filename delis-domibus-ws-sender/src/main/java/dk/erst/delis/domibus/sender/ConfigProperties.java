@@ -25,4 +25,7 @@ public class ConfigProperties {
 	private int resultMaxWaitMs = 10000;
 	private int resultCheckIntervalMs = 500;
 
+	private String authUser;
+	private String authPassword;
+	
 }
