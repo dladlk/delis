@@ -9,6 +9,8 @@ import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.auth.StaticUserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
+import org.apache.commons.vfs2.provider.sftp.IdentityInfo;
+import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -16,15 +18,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +54,7 @@ public class VFSService {
             String baseUrl = vfsConfig.getUrl();
             FileObject remoteFile = manager.resolveFile(baseUrl + remoteFilePath, fsOptions);
             remoteFile.copyFrom(localFile, Selectors.SELECT_SELF);
-            log.info(String.format("File '%s' successfully uploaded to '%s'", file.getPath(), remoteFile.getName().getPath()));
+            log.info(String.format("File '%s' successfully uploaded to '%s'", file.getPath(), remoteFile.getPublicURIString()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -139,7 +137,7 @@ public class VFSService {
         }
     }
 
-    private VFSConfig getConfig(String configFilePath) throws IOException {
+    private VFSConfig getConfig(String configFilePath) {
         File configFile = new File(configFilePath);
         VFSConfig config = configMap.get(configFile);
         if (config == null) {
@@ -165,6 +163,7 @@ public class VFSService {
             Element urlElement = (Element) document.getElementsByTagName("url").item(0);
             String url = urlElement.getTextContent();
             setAuthenticator(urlElement, options);
+            setIdentityInfo(document, options);
             log.info(String.format("Service config successfully loaded from file '%s'", configFilePath));
             return new VFSConfig(options, url);
         } catch (Exception e) {
@@ -173,7 +172,29 @@ public class VFSService {
         return null;
     }
 
-    private void setOptions(Class<?> builderClass, FileSystemOptions options, NodeList optionNodes) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private void setIdentityInfo(Document document, FileSystemOptions options) throws FileSystemException {
+        NodeList identityInfoNodes = document.getElementsByTagName("IdentityInfo");
+        if (identityInfoNodes.getLength() < 1) {
+            return;
+        }
+        Element identityInfoNode = (Element) identityInfoNodes.item(0);
+        NodeList privateKeyNodes = identityInfoNode.getElementsByTagName("privateKey");
+        NodeList publicKeyNodes = identityInfoNode.getElementsByTagName("publicKey");
+        NodeList passPhraseNodes = identityInfoNode.getElementsByTagName("passPhrase");
+        String privateKeyPath = privateKeyNodes.item(0).getTextContent();
+        String publicKeyPath = publicKeyNodes.getLength() > 0 ? publicKeyNodes.item(0).getTextContent() : null;
+        String passPhrase = passPhraseNodes.getLength() > 0 ? passPhraseNodes.item(0).getTextContent() : null;
+        byte[] passPhraseBytes = passPhrase != null ? passPhrase.getBytes() : null;
+        IdentityInfo identityInfo;
+        if (StringUtils.isNotBlank(publicKeyPath)) {
+            identityInfo = new IdentityInfo(new File(privateKeyPath), new File(publicKeyPath), passPhraseBytes);
+        } else {
+            identityInfo = new IdentityInfo(new File(privateKeyPath), passPhraseBytes);
+        }
+        SftpFileSystemConfigBuilder.getInstance().setIdentityInfo(options, identityInfo);
+    }
+
+    private void setOptions(Class<?> builderClass, FileSystemOptions options, NodeList optionNodes) throws Exception {
         final String methodNamePrefix = "set";
         for (int i = 0; i < optionNodes.getLength(); i++) {
             Element optionNode = (Element) optionNodes.item(i);
@@ -200,7 +221,7 @@ public class VFSService {
         return null;
     }
 
-    private Document createDocument(File configFile) throws ParserConfigurationException, SAXException, IOException {
+    private Document createDocument(File configFile) throws Exception {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         Document document = docBuilder.parse(new FileInputStream(configFile));
