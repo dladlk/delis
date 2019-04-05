@@ -4,7 +4,7 @@ delisAngular:
     enabled: true
     image: delis-angular:latest
     contextName: delis
-    apiUrl: https://edelivery-test.trueservice.dk/delis-web-api/rest
+    apiUrl: https://edelivery-test.trueservice.dk/delis-web-api
     baseUrl: https://edelivery-test.trueservice.dk/delis
     
 delisApi:

@@ -22,6 +22,9 @@ spec:
       restartPolicy: '{{.Values.dtx.restartPolicy}}'
       containers:
       - env:
+        - name: DOMIBUS_HOME_OVERWRITE
+          value: '/home/overwrite/*'
+
         - name: MERGE_DOMIBUS_PROPERTIES_ENV_PREFIX
           value: 'DOMIBUS_PROPERTY_'
 
@@ -98,12 +101,19 @@ spec:
         - name: DOMIBUS_PROPERTY_domibus_attachment_storage_location
           value: /domibus/attachment
 
+        - name: DOMIBUS_PROPERTY_domibus_auth_unsecureLoginAllowed
+          value: "{{.Values.dtx.env.unsecureLoginAllowed}}"
+          
+        - name: DOMIBUS_PROPERTY_domibus_auth_fsPluginAuthOn
+          value: "{{.Values.dtx.env.fsplugin_auth_fix}}"
+
+        - name: DOMIBUS_PROPERTY_fsplugin_validation_endpoint
+          value: "{{.Values.dtx.env.fsplugin_validation_endpoint}}"
+          
+          
           
         - name: CONTEXT_NAME
           value: domibus{{.Values.partyIndex}}
-        #- name: mode.TEST.security.pki
-        #  value: /peppol_pki_local/pki_local.xml
-
 
         image: '{{.Values.all.imagePrefix}}{{.Values.dtx.image}}:{{.Values.dtx.imageTag}}'
         imagePullPolicy: '{{.Values.dtx.imagePullPolicy}}'
@@ -124,6 +134,10 @@ spec:
           subPath: dynconcepttestparty0{{.Values.partyIndex}}gw
         - mountPath: /app/domibus-webapp/WEB-INF/classes/peppol_pki_local
           name: pki-local
+        - mountPath: /home/overwrite
+          name: overwrite-home
+      imagePullSecrets:
+      - name: {{ .Values.dtx.imagePullSecret }}    
       volumes:
       - name: domibus-ks
         hostPath:
@@ -137,3 +151,6 @@ spec:
       - name: pki-local
         hostPath:
           path: /data/keystores/peppol_pki_local
+      - name: overwrite-home
+        hostPath:
+          path: /data/domibus-overwrite/domibus{{.Values.partyIndex}}
