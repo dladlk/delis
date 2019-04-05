@@ -39,7 +39,7 @@ public class ErrorDictionaryService {
     public Iterable<ErrorDictionary> errorDictionaryList () {
         Iterable<ErrorDictionary> dictionaryList = errorDictionaryDaoRepository.findAll();
         for (ErrorDictionary errorDictionary : dictionaryList) {
-            errorDictionary.setLocation(cleanupLocation(errorDictionary.getLocation()));
+            errorDictionary.setLocation(errorDictionary.getLocation());
         }
         return dictionaryList;
     }
@@ -49,8 +49,7 @@ public class ErrorDictionaryService {
         ErrorDictionaryData errorDate = new ErrorDictionaryData();
         BeanUtils.copyProperties(errorDictionary, errorDate);
 
-        errorDate.setLocation(cleanupLocation(errorDictionary.getLocation()));
-
+        errorDate.setLocation(errorDictionary.getLocation());
 
         Integer documentCountByErrorId = journalDocumentErrorDaoRepository.getDocumentCountByErrorId(id);
         errorDate.setCount(documentCountByErrorId);
@@ -78,8 +77,4 @@ public class ErrorDictionaryService {
         private Date endDate;
     }
 
-    private String cleanupLocation (String location) {
-        String s = location.replaceAll("\\[(.*?)\\]", "").replaceAll("\\/\\*\\:", "/");
-        return s;
-    }
 }
