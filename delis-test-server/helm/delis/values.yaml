@@ -53,6 +53,14 @@ delisAdmin:
         hostPath:
           path: /data/fs-plugin/dynconcepttestparty02gw/IN
 
+delisDomibusWsSender:
+    enabled: true
+    image: delis-domibus-ws-sender:latest
+    contextPath: /delis-domibus-ws-sender
+    env: []
+    volumeMounts: []
+    volumes: []
+
 delisIngress:
     enabled: true
     clusterIssuer: letsencrypt-prod
