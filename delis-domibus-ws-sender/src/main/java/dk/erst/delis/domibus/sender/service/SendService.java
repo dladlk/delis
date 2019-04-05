@@ -50,9 +50,14 @@ public class SendService {
 
 	public SendService(ConfigProperties configProperties) {
 		config = configProperties;
+
+		if (config.isWsDumpHttp()) {
+			System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+		}
 	}
 
 	public SendWSResponse send(File file) throws Exception {
+		
 		SendWSResponse r = new SendWSResponse();
 
 		Path sbdFile;
@@ -97,18 +102,26 @@ public class SendService {
 			String base64Creds = new String(base64CredsBytes);
 			binding.getRequestContext().put("Authorization", "Basic " + base64Creds);
 			
-			
-			Object object = binding.getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY);
-			log.info("Present ENDPOINT_ADDRESS_PROPERTY="+ object);
-			binding.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, "https://edelivery-test.trueservice.dk/domibus1/services/backend");
+			if (config.isWsForceHttps()) {
+				log.info("Try to force HTTPS for endpoint address");
+				String endpointAddressCurrent = (String) binding.getRequestContext().get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY);
+				log.info("Current ENDPOINT_ADDRESS_PROPERTY="+ endpointAddressCurrent);
+				if (endpointAddressCurrent != null) {
+					if (endpointAddressCurrent.startsWith("https:")) {
+						log.info("Endpoint address already uses https, do nothing");
+					} else {
+						String endpointAddressNew = endpointAddressCurrent.replace("http:", "https:");
+						log.info("Replaced endpoint address with "+endpointAddressNew);
+						binding.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddressNew);
+					}
+				}
+			}
 		}
-		
-		
 
 		SubmitResponse response = backendport.submitMessage(submitRequest, ebMSHeaderInfo);
 
 		List<String> messageID = response.getMessageID();
-		log.info("Submitted message with messageId list (" + messageID.size() + " values) : " + messageID);
+		log.info("Submitted message with messageId list (" + messageID.size() + " ) : " + messageID);
 
 		StatusRequest statusRequest = new StatusRequest();
 		String messageId = messageID.get(0);
@@ -126,10 +139,10 @@ public class SendService {
 			statusChanged = status != MessageStatus.SEND_ENQUEUED || status != MessageStatus.SEND_ATTEMPT_FAILED || status != MessageStatus.SEND_FAILURE;
 
 			if (statusChanged) {
-				log.info("Message " + messageId + "status changed");
+				log.info("Message " + messageId + " status changed");
 				break;
 			} else {
-				log.info("Wait before next change for message " + messageId + "status change");
+				log.info("Wait before next change for message " + messageId + " status change");
 				Thread.sleep(config.getResultCheckIntervalMs());
 			}
 		}

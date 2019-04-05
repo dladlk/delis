@@ -18,7 +18,7 @@ import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
-import dk.erst.delis.vfs.sftp.service.VFSService;
+import dk.erst.delis.vfs.service.VFSService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

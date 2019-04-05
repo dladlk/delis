@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vfsConfig>
+    <url username="tester" password="password">sftp://localhost/test</url>
+    <options>
+        <FileSystemOptions builder="org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder">
+            <option name="StrictHostKeyChecking">no</option>
+            <option name="UserDirIsRoot">false</option>
+            <option name="SessionTimeoutMillis">10000</option>
+        </FileSystemOptions>
+    </options>
+</vfsConfig>

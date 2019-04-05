@@ -15,7 +15,7 @@ import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
-import dk.erst.delis.vfs.sftp.service.VFSService;
+import dk.erst.delis.vfs.service.VFSService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,35 +143,29 @@ public class DocumentDeliverService {
         return processLog;
     }
 
-    private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String url, DocumentProcessLog processLog) {
+    private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
         boolean uploaded = false;
-        if (StringUtils.startsWithIgnoreCase(url, "sftp")) {
-            File tempFile = null;
-            try {
-                tempFile = File.createTempFile("delis", "tmp");
-            } catch (IOException e) {
-                log.error("Unable to create temp file", e);
-            }
-            try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
-                boolean loaded = documentBytesStorageService.load(documentBytes, fileOutputStream);
-                if (loaded) {
-                    String connectionURL = url.split("\\?")[0];
-                    String username = getParamValue(url, "username");
-                    String password = getParamValue(url, "password");
-                    vfsService.upload(connectionURL, username, password, tempFile.getAbsolutePath(), "/" + outputFileName);
-                    uploaded = true;
-                }
-            } catch (Exception e) {
-                log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, url), e);
-            } finally {
-                if (tempFile != null && !tempFile.delete()) {
-                    log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));
-                }
-            }
-        } else {
-            log.warn("Protocol not supported, or invalid connection string: " + url);
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("delis", "tmp");
+        } catch (IOException e) {
+            log.error("Unable to create temp file", e);
         }
+        try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+            boolean loaded = documentBytesStorageService.load(documentBytes, fileOutputStream);
+            if (loaded) {
+                vfsService.upload(configPath, tempFile.getAbsolutePath(), "/" + outputFileName);
+                uploaded = true;
+            }
+        } catch (Exception e) {
+            log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, configPath), e);
+        } finally {
+            if (tempFile != null && !tempFile.delete()) {
+                log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));
+            }
+        }
+
         step.setSuccess(uploaded);
         step.done();
         processLog.addStep(step);

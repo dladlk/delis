@@ -4,7 +4,7 @@ delisAngular:
     enabled: true
     image: delis-angular:latest
     contextName: delis
-    apiUrl: https://edelivery-test.trueservice.dk/delis-web-api/rest
+    apiUrl: https://edelivery-test.trueservice.dk/delis-web-api
     baseUrl: https://edelivery-test.trueservice.dk/delis
     
 delisApi:
@@ -52,6 +52,14 @@ delisAdmin:
       - name: data-input2
         hostPath:
           path: /data/fs-plugin/dynconcepttestparty02gw/IN
+
+delisDomibusWsSender:
+    enabled: true
+    image: delis-domibus-ws-sender:latest
+    contextPath: /delis-domibus-ws-sender
+    env: []
+    volumeMounts: []
+    volumes: []
 
 delisIngress:
     enabled: true

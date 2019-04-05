@@ -1,0 +1,20 @@
+{{- if .Values.delisDomibusWsSender.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{.Release.Name}}-domibus-ws-sender
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-domibus-ws-sender
+  namespace: '{{.Values.namespace}}'
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: '{{.Release.Name}}-domibus-ws-sender'
+  type: 'NodePort'
+{{- end }}
