@@ -102,4 +102,18 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>cefdigital-releases</id>
+			<url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 </project>
