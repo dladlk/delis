@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXParseException;
@@ -139,12 +140,9 @@ public class DocumentValidationTransformationService {
 				case XSD:
 					SchemaValidator xsdValidator = new SchemaValidator();
 					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
-						xsdValidator.validate(xmlStream, ruleService.filePath(ruleDocumentValidation));
-						step.setSuccess(true);
-					} catch (SAXParseException se) {
-						String location = "line " + se.getLineNumber() + ", column " + se.getColumnNumber();
-						log.error("Failed validation of file " + xmlPath + ", location: " + location + " by rule " + ruleDocumentValidation, se);
-						step.setMessage("At " + location + ": " + se.getMessage());
+						List<ErrorRecord> errorList = xsdValidator.validate(xmlStream, ruleService.filePath(ruleDocumentValidation), ruleDocumentValidation);
+						step.setSuccess(errorList.isEmpty());
+						step.setErrorRecords(errorList);
 					} catch (Exception e) {
 						log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
 						step.setMessage(e.getMessage());
@@ -159,9 +157,9 @@ public class DocumentValidationTransformationService {
 						List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector, xslFilePath);
 						step.setSuccess(errorList.isEmpty());
 						step.setErrorRecords(errorList);
-						if (!errorList.isEmpty()) {
-							System.out.println("errorList = " + errorList);
-						}
+//						if (!errorList.isEmpty()) {
+//							System.out.println("errorList = " + errorList);
+//						}
 					} catch (Exception e) {
 						log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
 						step.setMessage(e.getMessage());

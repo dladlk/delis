@@ -52,7 +52,7 @@ public class JournalDocumentService {
                     for(ErrorRecord errorRecord : errorRecords) {
                         String code = cutString(errorRecord.getCode(), 50);
                         String flag = cutString(errorRecord.getFlag(), 20);
-                        String location = cutString(errorRecord.getLocation(), 500);
+                        String location = cutString(cleanupLocation(errorRecord.getLocation()), 500);
                         String message = cutString(errorRecord.getMessage(), 1024);
 
                         ErrorDictionary errorDictionary = new ErrorDictionary();
@@ -114,5 +114,10 @@ public class JournalDocumentService {
 	        }
     	}
         return message;
+    }
+
+    private String cleanupLocation (String location) {
+        String s = location.replaceAll("\\[(.*?)\\]", "").replaceAll("\\/\\*\\:", "/");
+        return s;
     }
 }

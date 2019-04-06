@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vfsConfig>
+    <url username="sftptest3" password="">sftp://sftp.truelink.dk</url>
+    <IdentityInfo>
+        <privateKey>D:\test\sftptest3.ppk</privateKey>
+        <!--<publicKey></publicKey>-->
+        <!--<passPhrase></passPhrase>-->
+    </IdentityInfo>
+    <options>
+        <FileSystemOptions builder="org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder">
+            <option name="StrictHostKeyChecking">no</option>
+            <option name="UserDirIsRoot">false</option>
+            <option name="SessionTimeoutMillis">10000</option>
+        </FileSystemOptions>
+    </options>
+</vfsConfig>

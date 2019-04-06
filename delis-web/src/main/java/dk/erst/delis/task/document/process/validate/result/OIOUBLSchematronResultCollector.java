@@ -35,12 +35,22 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 
 			String pattern = findNestedTagValue(errorItem, "Pattern");
 			String xpath = findNestedTagValue(errorItem, "Xpath");
-			String message = findNestedTagValue(errorItem, "Description");
+			String message = findNestedTagValue(errorItem, "Description").trim();
+
+			String code = "";
+			if (message.startsWith("[")) {
+				int index = message.indexOf("]");
+				if (index > 0) {
+					String tmp = message;
+					message = tmp.substring(index + 1);
+					code = tmp.substring(1, index);
+				}
+			}
 
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
 				String nodeToString = nodeToString(errorItem);
 				System.out.println(nodeToString);
-				errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, pattern, nodeToString, ERROR, xpath));
+				errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, code, nodeToString, ERROR, xpath));
 				continue;
 			}
 
@@ -53,7 +63,7 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 				log.debug(String.format("%d) %s\n\tpattern = %s\n\txpath = %s", i, message, pattern, xpath));
 			}
 			
-			errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, pattern, message, ERROR, xpath));
+			errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, code, message, ERROR, xpath));
 		}
 		return errorList;
 	}
