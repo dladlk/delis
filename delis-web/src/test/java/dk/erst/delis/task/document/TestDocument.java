@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public enum TestDocument {
+		public enum TestDocument {
 
 	CII("CII_invoice_example.xml", DocumentFormat.CII),
 
@@ -17,6 +17,12 @@ public enum TestDocument {
 	OIOUBL_INVOICE("OIOUBL_Invoice_v2p2.xml", DocumentFormat.OIOUBL_INVOICE),
 
 	OIOUBL_CREDITNOTE("OIOUBL_CreditNote_v2p2.xml", DocumentFormat.OIOUBL_CREDITNOTE),
+
+	ERROR_XSD_BIS3_INVOICE("error/BIS3_Invoice_XSD.xml ", DocumentFormat.BIS3_INVOICE),
+
+	ERROR_SCH_BIS3_INVOICE("error/BIS3_Invoice_SCH.xml ", DocumentFormat.BIS3_INVOICE),
+
+	ERROR_SCH_OIOUBL_INVOICE("error/OIOUBL_Invoice_SCH.xml ", DocumentFormat.OIOUBL_INVOICE),
 
 	;
 
