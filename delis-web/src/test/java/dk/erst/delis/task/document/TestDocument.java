@@ -22,9 +22,15 @@ import java.io.InputStream;
 
 	ERROR_SCH_BIS3_INVOICE("error/BIS3_Invoice_SCH.xml ", DocumentFormat.BIS3_INVOICE),
 
+	ERROR_XSD_OIOUBL_INVOICE("error/OIOUBL_Invoice_XSD.xml ", DocumentFormat.OIOUBL_INVOICE),
+
 	ERROR_SCH_OIOUBL_INVOICE("error/OIOUBL_Invoice_SCH.xml ", DocumentFormat.OIOUBL_INVOICE),
 
-	;
+	ERROR_XSD_CII_INVOICE("error/CII_Invoice_XSD.xml ", DocumentFormat.CII),
+
+	ERROR_SCH_CII_INVOICE("error/CII_Invoice_SCH.xml ", DocumentFormat.CII),
+
+			;
 
 	private static String TEST_EXAMPLE_ROOT_PATH = "../delis-resources/examples/xml/";
 

@@ -111,7 +111,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<ram:LineTotalAmount>1000</ram:LineTotalAmount>
 				</ram:SpecifiedTradeSettlementLineMonetarySummation>
 				<ram:AdditionalReferencedDocument>
-					<ram:IssuerAssignedID>Object2</ram:IssuerAssignedID>
+					<ram:IssuerAssignedID></ram:IssuerAssignedID>
 					<ram:TypeCode>130</ram:TypeCode>
 					<ram:ReferenceTypeCode>AAU</ram:ReferenceTypeCode>
 				</ram:AdditionalReferencedDocument>

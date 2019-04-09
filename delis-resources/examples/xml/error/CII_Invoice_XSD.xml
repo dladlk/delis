@@ -321,8 +321,8 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 		</ram:ApplicableHeaderTradeAgreement>
 		<ram:ApplicableHeaderTradeDelivery>
 			<ram:ShipToTradeParty>
-				<ram:ID>789463213</ram:ID>
 				<ram:GlobalID schemeID="0088">5790000436068</ram:GlobalID>
+				<ram:ID>789463213</ram:ID>
 				<ram:Name>Logistic service Ltd</ram:Name>
 				<ram:PostalTradeAddress>
 					<ram:PostcodeCode>9000</ram:PostcodeCode>
