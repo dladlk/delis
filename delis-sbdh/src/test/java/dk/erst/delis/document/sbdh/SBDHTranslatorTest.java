@@ -3,6 +3,7 @@ package dk.erst.delis.document.sbdh;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ public class SBDHTranslatorTest {
         String suffix = "_sbdh.xml";
         String metadataSuffix = "_metadata.xml";
 
-        for (File sourceFile : resourcesFolder.listFiles()) {
+        for (File sourceFile : resourcesFolder.listFiles(pathname -> pathname.isFile())) {
         	log.info("Testing "+sourceFile);
         	
             File targetFile = File.createTempFile(sourceFile.getName(), suffix);
