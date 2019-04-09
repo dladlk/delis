@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <databaseChangeLog
         logicalFilePath="true"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <include file="changes/changelog-1.0-init.xml" relativeToChangelogFile="true"/>
-    <include file="changes/changelog-1.01-default_user.xml" relativeToChangelogFile="true"/>
-    <include file="changes/changelog-1.02-organisation_id-nullable.xml" relativeToChangelogFile="true"/>
-    <include file="changes/changelog-1.03-add_access_tables.xml" relativeToChangelogFile="true"/>
-    <include file="changes/changelog-1.04-add_detailed_location_field.xml" relativeToChangelogFile="true"/>
+    <changeSet author="apal" id="add_location_to_journal_document_error">
+        <addColumn tableName="journal_document_error">
+            <column name="detailed_location" type="VARCHAR(500)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -36,7 +36,7 @@ public class ErrorDictionaryController {
 
     @RequestMapping("view/{id}")
     public String list(@PathVariable Long id, Model model) {
-        ErrorDictionaryService.ErrorDictionaryData errorDictionaryWithStats = service.getErrorDictionaryWithStats(id);
+        ErrorDictionaryData errorDictionaryWithStats = service.getErrorDictionaryWithStats(id);
         model.addAttribute("header", "Back to list");
         model.addAttribute("errorDictionary", errorDictionaryWithStats);
         return "/error/view";

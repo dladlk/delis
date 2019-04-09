@@ -4,11 +4,6 @@ import dk.erst.delis.dao.ErrorDictionaryDaoRepository;
 import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
-import dk.erst.delis.data.enums.document.DocumentErrorCode;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,35 +41,18 @@ public class ErrorDictionaryService {
 
     public ErrorDictionaryData getErrorDictionaryWithStats (long id) {
         ErrorDictionary errorDictionary = errorDictionaryDaoRepository.findById(id).get();
-        ErrorDictionaryData errorDate = new ErrorDictionaryData();
-        BeanUtils.copyProperties(errorDictionary, errorDate);
+        ErrorDictionaryData errorData = new ErrorDictionaryData();
+        BeanUtils.copyProperties(errorDictionary, errorData);
 
-        errorDate.setLocation(errorDictionary.getLocation());
+        errorData.setLocation(errorDictionary.getLocation());
 
         Integer documentCountByErrorId = journalDocumentErrorDaoRepository.getDocumentCountByErrorId(id);
-        errorDate.setCount(documentCountByErrorId);
+        errorData.setCount(documentCountByErrorId);
         Date documentMinDate = journalDocumentErrorDaoRepository.getDocumentMinDate(id);
-        errorDate.setStartDate(documentMinDate);
+        errorData.setStartDate(documentMinDate);
         Date documentMaxDate = journalDocumentErrorDaoRepository.getDocumentMaxDate(id);
-        errorDate.setEndDate(documentMaxDate);
+        errorData.setEndDate(documentMaxDate);
 
-        return errorDate;
+        return errorData;
     }
-
-    @Getter
-    @Setter
-    @EqualsAndHashCode
-    @NoArgsConstructor
-    public class ErrorDictionaryData {
-        private Long id;
-        private DocumentErrorCode errorType;
-        private String code;
-        private String message;
-        private String flag;
-        private String location;
-        private Integer count;
-        private Date startDate;
-        private Date endDate;
-    }
-
 }
