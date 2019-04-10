@@ -91,7 +91,7 @@ public class IdentifierPublishDataService {
             SmpPublishServiceData serviceData = new SmpPublishServiceData();
             serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(documentIdentifier));
             SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
-            smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessScheme());
+            smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessSchemeSMP());
             smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
             serviceData.setProcessIdentifier(smpProcessIdentifier);
             serviceData.setEndpoints(endpointList);

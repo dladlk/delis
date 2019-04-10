@@ -12,6 +12,10 @@
 		<div class="card-body">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
+					<td>Organisation</td>
+					<td><a href="#" th:href="@{/organisation/view/__${identifier.organisation.id}__}" th:text="${identifier.organisation.name}"></a></td>
+				</tr>
+				<tr>
 					<td>Type</td>
 					<td th:text="${identifier.type}">EAN</td>
 				</tr>

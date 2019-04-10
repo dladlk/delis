@@ -57,6 +57,10 @@ public enum OrganisationSubscriptionProfileGroup {
 		return MetadataBuilder.DEFAULT_PROCESS_SCHEME_ID;
 	}
 	
+	public String getProcessSchemeSMP() {
+		return "cenbii-procid-ubl";
+	}
+	
 	public String getProcessId() {
 		return this.processId;
 	}
