@@ -1,11 +1,7 @@
 package dk.erst.delis.web.accesspoint;
 
 import dk.erst.delis.data.enums.access.AccessPointType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
@@ -17,5 +13,7 @@ public class AccessPointData {
 
     private String url;
     private AccessPointType type;
+    private String serviceDescription;
+    private String technicalContactUrl;
     private String certificate;
 }

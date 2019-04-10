@@ -130,8 +130,8 @@ public class IdentifierPublishDataService {
 		String transportProfile = transportProfilesMap.get(accessPoint.getType());
 		endpointData.setTransportProfile(transportProfile);
 		endpointData.setUrl(accessPoint.getUrl());
-		endpointData.setServiceDescription("change_it");
-		endpointData.setTechnicalContactUrl("http://change.it");
+		endpointData.setServiceDescription(accessPoint.getServiceDescription());
+		endpointData.setTechnicalContactUrl(accessPoint.getTechnicalContactUrl());
 		endpointData.setServiceActivationDate(serviceActivationDate);
 		endpointData.setServiceExpirationDate(serviceExpirationDate);
 		endpointData.setRequireBusinessLevelSignature(true);

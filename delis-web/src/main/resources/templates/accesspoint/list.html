@@ -14,6 +14,8 @@
 					<th>url</th>
 					<th>type</th>
 					<th>certificate</th>
+					<th>service description</th>
+					<th>technical contact url</th>
 					<th>update</th>
 					<th>delete</th>
 				</tr>
@@ -22,6 +24,8 @@
 					<td th:text="${accessPoint.url}"></td>
 					<td th:text="${accessPoint.type}"></td>
 					<td th:text="${accessPoint.certificate}"></td>
+					<td th:text="${accessPoint.serviceDescription}"></td>
+					<td th:text="${accessPoint.technicalContactUrl}"></td>
 					<td><a href="#" th:href="@{|/accesspoint/update/${accessPoint.id}|}" th:text="update"></a></td>
 					<td><a href="#" th:href="@{|/accesspoint/delete/${accessPoint.id}|}" th:text="delete"></a></td>
 				</tr>

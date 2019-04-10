@@ -29,5 +29,11 @@ public class AccessPoint extends AbstractCreateUpdateEntity {
 	private String certificateCN;
 
 	@Column
+	private String serviceDescription;
+
+	@Column
+	private String technicalContactUrl;
+
+	@Column
 	private Blob certificate;
 }

@@ -15,14 +15,14 @@
 					<label class="col-sm-4 col-form-label">URL</label>
 					<div class="col-sm-8">
 						<input type="text" th:field="*{url}" placeholder="Url"
-							   class="form-control" />
+							   class="form-control" required="true"/>
 					</div>
 				</div>
 
 				<div class="form-group row">
 					<label class="col-sm-4 col-form-label">Type</label>
 					<div class="col-sm-8">
-						<select placeholder="Type" th:field="*{type}">
+						<select placeholder="Type" th:field="*{type}" required="true">
 							<option value="AS2">AS2</option>
 							<option value="AS4">AS4</option>
 						</select>
@@ -34,7 +34,23 @@
 					<label class="col-sm-4 col-form-label">Certificate</label>
 					<div class="col-sm-8">
 						<textarea class="form-control" th:field="*{certificate}"
-								  placeholder="Certificate" rows="6"></textarea>
+								  placeholder="Certificate" rows="6" required="true"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Service Description</label>
+					<div class="col-sm-8">
+						<input type="text" th:field="*{serviceDescription}" placeholder="serviceDescription"
+							   class="form-control" required="true"/>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label">Technical Contact Url</label>
+					<div class="col-sm-8">
+						<input type="text" th:field="*{technicalContactUrl}" placeholder="technicalContactUrl"
+							   class="form-control" required="true"/>
 					</div>
 				</div>
 

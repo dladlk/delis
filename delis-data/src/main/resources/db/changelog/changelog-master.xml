@@ -11,4 +11,5 @@
     <include file="changes/changelog-1.02-organisation_id-nullable.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.03-add_access_tables.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.04-add_detailed_location_field.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.05-add_columns_for_access_point.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

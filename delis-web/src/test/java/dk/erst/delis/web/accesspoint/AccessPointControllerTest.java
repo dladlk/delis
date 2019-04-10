@@ -48,6 +48,8 @@ public class AccessPointControllerTest {
         point.setCertificate(new SerialBlob("test".getBytes()));
         point.setType(AccessPointType.AS4);
         point.setUrl("aaa/aaa/aaa");
+        point.setServiceDescription("s_d");
+        point.setTechnicalContactUrl("ttt/ttt/ttt");
         accessPointDaoRepository.save(point);
     }
 
@@ -61,7 +63,9 @@ public class AccessPointControllerTest {
     public void testList() throws Exception {
         this.mockMvc.perform(get("/accesspoint/list")).andDo(print())
                 .andExpect(view().name("accesspoint/list"))
-                .andExpect(content().string(containsString("aaa/aaa/aaa")));
+                .andExpect(content().string(containsString("aaa/aaa/aaa")))
+                .andExpect(content().string(containsString("s_d")))
+                .andExpect(content().string(containsString("ttt/ttt/ttt")));
     }
 
     @Test
@@ -70,6 +74,8 @@ public class AccessPointControllerTest {
         this.mockMvc.perform(post("/accesspoint/save")
                 .param("type", "AS2")
                 .param("url", "url")
+                .param("serviceDescription", "serviceDescription")
+                .param("technicalContactUrl", "technicalContactUrl")
                 .param("certificate", "certificate"))
                 .andDo(print())
                 .andExpect(view().name("accesspoint/edit"))
@@ -95,6 +101,8 @@ public class AccessPointControllerTest {
         point.setCertificate(new SerialBlob("test1".getBytes()));
         point.setType(AccessPointType.AS4);
         point.setUrl("initial_value");
+        point.setServiceDescription("s_d");
+        point.setTechnicalContactUrl("ttt/ttt/ttt");
         accessPointDaoRepository.save(point);
 
         Iterable<AccessPoint> all = accessPointDaoRepository.findAll();
@@ -107,6 +115,8 @@ public class AccessPointControllerTest {
         }
 
         Assert.assertNotNull(created);
+        Assert.assertEquals(created.getServiceDescription(), "s_d");
+        Assert.assertEquals(created.getTechnicalContactUrl(), "ttt/ttt/ttt");
 
         this.mockMvc.perform(get("/accesspoint/update/" + created.getId()))
                 .andDo(print())
