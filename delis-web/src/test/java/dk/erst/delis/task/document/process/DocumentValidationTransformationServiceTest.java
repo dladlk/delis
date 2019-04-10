@@ -42,9 +42,6 @@ public class DocumentValidationTransformationServiceTest {
     @Autowired
     private ConfigValueDaoRepository configRepository;
 
-    @Autowired
-    private DocumentValidationTransformationService validationService;
-
     @Test
     public void testXsdErrorBIS3_Invoice() throws Exception {
         runCase(TestDocument.ERROR_XSD_BIS3_INVOICE, new ResultChecker() {
@@ -77,6 +74,7 @@ public class DocumentValidationTransformationServiceTest {
                 assertEquals(errorRecord.getErrorType(), DocumentErrorCode.BIS3_SCH);
                 assertEquals(errorRecord.getCode(), "PEPPOL-EN16931-R020");
                 assertEquals(errorRecord.getLocation(), "/Invoice/AccountingSupplierParty/Party");
+                assertEquals(errorRecord.getDetailedLocation(), "/Invoice[1]/AccountingSupplierParty[1]/Party[1]");
                 return true;
             }
         });
@@ -117,6 +115,7 @@ public class DocumentValidationTransformationServiceTest {
                 ErrorRecord errorRecord = errorRecords.get(0);
                 assertEquals(errorRecord.getCode(), "F-INV340");
                 assertEquals(errorRecord.getLocation(), "/Invoice/cac:InvoiceLine");
+                assertEquals(errorRecord.getDetailedLocation(), "/Invoice[1]/cac:InvoiceLine[2]");
                 return true;
             }
         });
@@ -157,6 +156,7 @@ public class DocumentValidationTransformationServiceTest {
                 ErrorRecord errorRecord = errorRecords.get(0);
                 assertEquals(errorRecord.getCode(), "BR-52");
                 assertEquals(errorRecord.getLocation(), "/CrossIndustryInvoice/SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem/SpecifiedLineTradeSettlement/AdditionalReferencedDocument");
+                assertEquals(errorRecord.getDetailedLocation(), "/CrossIndustryInvoice[1]/SupplyChainTradeTransaction[1]/IncludedSupplyChainTradeLineItem[1]/SpecifiedLineTradeSettlement[1]/AdditionalReferencedDocument[1]");
                 return true;
             }
         });
