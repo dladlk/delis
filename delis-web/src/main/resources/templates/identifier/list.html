@@ -23,7 +23,7 @@
 				</tr>
 				<tr th:each="r,iter : ${identifierList}">
 					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
-					<td th:text="${r.organisation.name}"></td>
+					<td><a href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}"></a></td>
 					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" th:text="${r.value}"></a></td>
 					<td th:text="${r.type}"></td>
 					<td th:text="${r.name}"/>
