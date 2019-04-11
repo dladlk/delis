@@ -105,6 +105,8 @@ public class DelisSbdhParser {
 			}
 
 			return sbdh;
+		} catch (AlreadySBDHException en) {
+			throw en;
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to parseOld document: " + e.getMessage(), e);
 		}
