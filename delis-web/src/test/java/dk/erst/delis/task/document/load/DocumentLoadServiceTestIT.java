@@ -1,20 +1,5 @@
 package dk.erst.delis.task.document.load;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
@@ -32,10 +17,23 @@ import dk.erst.delis.document.sbdh.SBDHTranslator;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.DelisTransformerFactory;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.Header;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 public class DocumentLoadServiceTestIT {
@@ -46,6 +44,8 @@ public class DocumentLoadServiceTestIT {
 	public void setupService() {
 		ConfigValueDaoRepository configRepository = TestUtil.getEmptyConfigValueDaoRepository();
 		ConfigBean config = new ConfigBean(configRepository);
+
+		new DelisTransformerFactory(config); //TODO find better solution for set config
 
 		final long[] documentId = new long[] {0L};
 		
