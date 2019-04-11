@@ -66,6 +66,13 @@ public class SendController {
 			r.addError("Failed to send: " + e.getMessage());
 
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(r);
+		} finally {
+			if (tempFile.exists()) {
+				if (!tempFile.delete()) {
+					log.warn("Cannot delete temp file " + tempFile + ", delete on exit");
+					tempFile.deleteOnExit();
+				}
+			}
 		}
 		return ResponseEntity.ok(r);
 	}
