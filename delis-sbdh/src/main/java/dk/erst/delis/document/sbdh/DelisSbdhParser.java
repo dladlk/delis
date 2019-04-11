@@ -113,7 +113,7 @@ public class DelisSbdhParser {
 	}
 
 	private boolean hasSBDH(Document document) {
-		return document.getElementsByTagName("StandardBusinessDocumentHeader").getLength() > 0;
+		return "StandardBusinessDocument".equalsIgnoreCase(document.getDocumentElement().getLocalName());
 	}
 
 	private boolean isCrossIndustryInvoice(Document document) {
