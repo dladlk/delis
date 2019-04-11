@@ -29,6 +29,8 @@ public class SBDHTranslator {
                 throw new IllegalStateException("Unable to wrap document inside SBD (SBDH): " + ex.getMessage(), ex);
             }
             return header;
+        } catch (AlreadySBDHException ae) {
+        	throw ae;
         } catch (Exception e) {
             log.error("Failed to generate SBDH for " + source, e);
         }

@@ -49,7 +49,7 @@ public class DelisSbdhParser {
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(inputStream);
 			if(hasSBDH(document)){
-				throw new RuntimeException("Document already have SBDH.");
+				throw new AlreadySBDHException("Document already have SBDH.");
 			}
 			boolean isCII = isCrossIndustryInvoice(document);
 			XPath xPath = XPathFactory.newInstance().newXPath();
