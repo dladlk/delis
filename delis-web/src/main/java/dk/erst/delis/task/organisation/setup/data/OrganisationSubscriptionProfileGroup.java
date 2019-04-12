@@ -35,7 +35,23 @@ public enum OrganisationSubscriptionProfileGroup {
 			
 			"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2::CreditNote##OIOUBL-2.02::2.0"
 			
-			});
+			}),
+	
+	/*
+	 * BIS Invoice Response 3.0
+	 * 
+	 * http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/
+	 */
+	
+	BisInvoiceResponse30("urn:fdc:peppol.eu:poacc:bis:invoice_response:3", 
+			
+			new String[] {
+					
+			"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2##urn:fdc:peppol.eu:poacc:trns:invoice_response:3::2.1"
+					
+			}),	
+	
+	;
 	
 	private final String processId;
 	private final String[] documentIdentifiers;
