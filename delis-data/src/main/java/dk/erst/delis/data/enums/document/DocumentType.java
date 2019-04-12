@@ -6,6 +6,8 @@ public enum DocumentType {
 	
 	INVOICE,
 	
-	CREDITNOTE
+	CREDITNOTE,
+	
+	INVOICE_RESPONSE
 	
 }

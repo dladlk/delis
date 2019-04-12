@@ -14,6 +14,8 @@ import dk.erst.delis.data.enums.document.DocumentFormat;
 
 	BIS3_CREDITNOTE("BIS3_CreditNote_Example_DK_Supplier_NoErrors.xml", DocumentFormat.BIS3_CREDITNOTE),
 
+	BIS3_INVOICE_RESPONSE("BIS3_InvoiceResponse_Example.xml", DocumentFormat.BIS3_INVOICE_RESPONSE),
+
 	OIOUBL_INVOICE("OIOUBL_Invoice_v2p2.xml", DocumentFormat.OIOUBL_INVOICE),
 
 	OIOUBL_CREDITNOTE("OIOUBL_CreditNote_v2p2.xml", DocumentFormat.OIOUBL_CREDITNOTE),
