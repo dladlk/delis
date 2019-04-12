@@ -95,9 +95,15 @@ public class ConfigBean {
 		return Paths.get(path).toAbsolutePath();
 	}
 
+	/**
+	 * @return by default - true
+	 */
 	public boolean getXsltCacheEnabled() {
 		String stringValue = configValues.get(XSLT_CACHE_ENABLED);
-		return Boolean.parseBoolean(stringValue);
+		if (stringValue != null) {
+			return Boolean.parseBoolean(stringValue);
+		}
+		return true;
 	}
 
 	public SmpEndpointConfig getSmpEndpointConfig() {
