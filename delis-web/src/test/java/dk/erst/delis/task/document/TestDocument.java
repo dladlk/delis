@@ -1,10 +1,10 @@
 package dk.erst.delis.task.document;
 
-import dk.erst.delis.data.enums.document.DocumentFormat;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+
+import dk.erst.delis.data.enums.document.DocumentFormat;
 
 		public enum TestDocument {
 
@@ -38,7 +38,7 @@ import java.io.InputStream;
 	private final DocumentFormat documentFormat;
 
 	private TestDocument(String filename, DocumentFormat documentFormat) {
-		this.filename = filename;
+		this.filename = filename.trim();
 		this.documentFormat = documentFormat;
 	}
 
