@@ -2,6 +2,7 @@ package dk.erst.delis.vfs;
 
 import dk.erst.delis.vfs.service.VFSService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,6 +16,7 @@ public class VFSServiceTest {
     //Test local SFTP server available here https://labs.rebex.net/tiny-sftp-server
 
     @Test
+    @Ignore
     public void testSFTPByKey() throws IOException {
         if (new File("D:\\test\\sftptest3.ppk").exists()) {
             testSFTPUpload(loadResourcePath("config-sftp-ppk.xml"));
@@ -22,12 +24,14 @@ public class VFSServiceTest {
     }
 
     //todo add checking on sftp local server available
-//    @Test
+    @Test
+    @Ignore
     public void testSFTPUpload() {
         testSFTPUpload(loadResourcePath("config-sftp.xml"));
     }
 
     @Test
+    @Ignore
     public void testFTP() throws IOException {
         testFTPDownload(loadResourcePath("config-ftp.xml"));
     }
