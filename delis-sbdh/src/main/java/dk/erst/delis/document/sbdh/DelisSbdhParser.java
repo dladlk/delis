@@ -1,15 +1,6 @@
 package dk.erst.delis.document.sbdh;
 
-import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
-import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
-import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
-import dk.erst.delis.document.sbdh.ubl.DelisUBLHeaderParser;
-import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
-import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
-import no.difi.vefa.peppol.common.model.Header;
-import org.w3c.dom.Document;
+import java.io.InputStream;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -18,7 +9,19 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
-import java.io.InputStream;
+
+import org.w3c.dom.Document;
+
+import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
+import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
+import dk.erst.delis.document.sbdh.ubl.DelisApplicationResponseDocumentParser;
+import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
+import dk.erst.delis.document.sbdh.ubl.DelisUBLHeaderParser;
+import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
+import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
+import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
+import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
+import no.difi.vefa.peppol.common.model.Header;
 
 public class DelisSbdhParser {
 
@@ -80,6 +83,9 @@ public class DelisSbdhParser {
                         documentParser = headerParser.createDocumentParser();
                     } else if ("Invoice".equals(localName) || "CreditNote".equals(localName)) {
                         documentParser = new DelisInvoiceDocumentParser(headerParser);
+                    } else if ("ApplicationResponse".equals(localName)) {
+                    	documentParser = new DelisApplicationResponseDocumentParser(headerParser);
+                    	
                     }
                 } catch (Exception ex) {
                     /*
