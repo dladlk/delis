@@ -121,6 +121,11 @@ public class DocumentLoadServiceTestIT {
 			runCase(service, testDocument);
 		}
 	}
+	
+	@Test
+	public void testLoadInvoiceResponse() throws IOException {
+		runCase(service, TestDocument.BIS3_INVOICE_RESPONSE);
+	}
 
 	private void runCase(DocumentLoadService dls, TestDocument testDocument) throws IOException {
 		log.info("Run DocumentLoadService unit test for document " + testDocument);

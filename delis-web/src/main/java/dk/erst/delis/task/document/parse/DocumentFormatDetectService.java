@@ -13,13 +13,13 @@ public class DocumentFormatDetectService {
 			log.warn("defineDocumentFormat: null info or null root passed, return UNSUPPORTED format: "+info);
 			return DocumentFormat.UNSUPPORTED;
 		}
-		
+
+		String rootTag = info.getRoot().getRootTag();
+		String namespace = info.getRoot().getNamespace();
+
 		DocumentFormat[] values = DocumentFormat.values();
 		for (DocumentFormat f : values) {
 			if (!f.isUnsupported()) {
-				String rootTag = info.getRoot().getRootTag();
-				String namespace = info.getRoot().getNamespace();
-				
 				if (f.getRootTag().equals(rootTag) && f.getNamespace().equals(namespace)) {
 					if (f.isOIOUBL()) {
 						if (DocumentFormatConst.CUSTOMIZATION_OIOUBL.equals(info.getCustomizationID())) {
@@ -33,6 +33,10 @@ public class DocumentFormatDetectService {
 						}
 					} else if (f.isCII()) {
 						return f;
+					} else if (f.isBIS3IR()) {
+						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_BIS3_IR_STARTS_WITH)) {
+							return f;
+						}
 					}
 				}
 			}

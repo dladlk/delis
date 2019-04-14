@@ -61,6 +61,10 @@ public enum DocumentFormat {
 	public boolean isBIS3() {
 		return this == BIS3_INVOICE || this == BIS3_CREDITNOTE;
 	}
+	
+	public boolean isBIS3IR() {
+		return this == BIS3_INVOICE_RESPONSE;
+	}
 
 	public DocumentType getDocumentType() {
 		return documentType;
