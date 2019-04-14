@@ -52,8 +52,8 @@ public class DefaultRuleBuilder {
          * Schematron
          */
 
-        result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.RC1.35647/OIOUBL_Invoice_Schematron.xsl", 10));
-        result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.RC1.35647/OIOUBL_CreditNote_Schematron.xsl", 10));
+        result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_Invoice_Schematron.xsl", 10));
+        result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_CreditNote_Schematron.xsl", 10));
 
         String BIS3_PEPPOL = "sch/bis3/peppol_2019-03-15_1/PEPPOL-EN16931-UBL.xslt";
         String BIS3_CEN = "sch/bis3/cen_2019-03-15_1/CEN-EN16931-UBL.xslt";
