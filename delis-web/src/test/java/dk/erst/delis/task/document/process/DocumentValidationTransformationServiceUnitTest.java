@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.rule.DefaultRuleBuilder;
-import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
 import dk.erst.delis.data.entities.document.Document;

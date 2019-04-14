@@ -36,6 +36,9 @@ public enum OrganisationReceivingFormatRule {
 		if (documentFormatFamily == null || documentFormatFamily == DocumentFormatFamily.UNSUPPORTED) {
 			return true;
 		}
+		if (documentFormatFamily == DocumentFormatFamily.BIS3_IR) {
+			return true;
+		}
 		switch (this) {
 		case KEEP_ORIGINAL:
 			return true;

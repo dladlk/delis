@@ -7,10 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXParseException;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;

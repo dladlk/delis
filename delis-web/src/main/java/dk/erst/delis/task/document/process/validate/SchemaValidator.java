@@ -14,7 +14,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
-import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.xml.sax.SAXException;
