@@ -47,7 +47,7 @@ public enum OrganisationSubscriptionProfileGroup {
 			
 			new String[] {
 					
-			"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2##urn:fdc:peppol.eu:poacc:trns:invoice_response:3::2.1"
+			"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:invoice_response:3::2.1"
 					
 			}),	
 	
