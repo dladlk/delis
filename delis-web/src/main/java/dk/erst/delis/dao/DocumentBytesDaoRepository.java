@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DocumentBytesDaoRepository extends PagingAndSortingRepository<DocumentBytes, Long>, DocumentDao {
 
-	DocumentBytes findLastByDocumentAndType(Document document, DocumentBytesType type);
+	DocumentBytes findTop1ByDocumentAndTypeOrderByIdDesc(Document document, DocumentBytesType type);
 
 	List<DocumentBytes> findByDocument(Document document);
 }

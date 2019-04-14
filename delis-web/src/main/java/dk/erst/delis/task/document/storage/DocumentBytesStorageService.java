@@ -94,6 +94,6 @@ public class DocumentBytesStorageService {
 	}
 
 	public DocumentBytes find(Document document, DocumentBytesType type) {
-		return documentBytesDaoRepository.findLastByDocumentAndType(document, type);
+		return documentBytesDaoRepository.findTop1ByDocumentAndTypeOrderByIdDesc(document, type);
 	}
 }
