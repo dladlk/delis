@@ -1,5 +1,18 @@
 package dk.erst.delis.task.document.parse;
 
+import java.io.FileInputStream;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.config.rule.DefaultRuleBuilder;
@@ -11,23 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.saxon.Configuration;
 import net.sf.saxon.lib.StandardErrorListener;
 
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
 @Slf4j
 public class XSLTMemoryMeasureTool {
 
-	public static void main(String[] args) throws Exception {
-		XSLTMemoryMeasureTool t = new XSLTMemoryMeasureTool();
-		t.test();
-	}
-
+	@Test
+	@Ignore
 	public void test() throws Exception {
 		ConfigBean configBean = new ConfigBean(TestUtil.getEmptyConfigValueDaoRepository());
 
@@ -78,7 +79,9 @@ public class XSLTMemoryMeasureTool {
 		}
 	}
 
-	private void testTransformerCreation(Path xslFilePath, int creationTimes) {
+	@Ignore
+	@Test
+	public void testTransformerCreation(Path xslFilePath, int creationTimes) {
 		boolean cacheEnabled = true;
 		System.gc();
 		long usedMemoryBefore = getUsedMemory();
@@ -91,7 +94,7 @@ public class XSLTMemoryMeasureTool {
 			for (int i = 0; i < creationTimes; i++) {
 				long startCase = System.currentTimeMillis();
 				Transformer transformer = XSLTUtil.buildTransformer(new FileInputStream(xslFilePath.toFile()), xslFilePath.toAbsolutePath(), transformerFactory);
-				log.info("Case " + i + " " + (System.currentTimeMillis() - startCase) + " ms, " + formatMemory(getUsedMemory()));
+				log.info("Case " + i + " " + (System.currentTimeMillis() - startCase) + " ms, " + formatMemory(getUsedMemory())+", transformer: "+transformer);
 			}
 			long finish = System.currentTimeMillis();
 			long usedMemoryAfter = getUsedMemory();
