@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { HttpParams } from "@angular/common/http";
+
 import { TokenService } from "../../../../../service/token.service";
 import { RuntimeConfigService } from "../../../../../service/runtime.config.service";
 import { HttpRestService } from "../../../../../service/http.rest.service";
-import { Observable } from "rxjs";
-import { HttpParams } from "@angular/common/http";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 
 @Injectable()
@@ -19,14 +20,12 @@ export class ChartDocumentService {
         this.url = this.url + '/rest/chart';
     }
 
-    getChartData() : Observable<any> {
-        return this.httpRestService.methodGet(this.url, null, this.tokenService.getToken());
-    }
-
-    getChartCustomData(drm: DateRangeModel) : Observable<any> {
+    getChartCustomData(drm: DateRangeModel, defaultChart: boolean) : Observable<any> {
         let params = new HttpParams();
         params = params.append('startDate', String(drm.dateStart.getTime()));
         params = params.append('endDate', String(drm.dateEnd.getTime()));
+        params = params.append('timeZone', Intl.DateTimeFormat().resolvedOptions().timeZone);
+        params = params.append('defaultChart', String(defaultChart));
         return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 }

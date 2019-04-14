@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { LocaleConfig} from "ngx-daterangepicker-material";
+import { LocaleConfig } from "ngx-daterangepicker-material";
 import moment from 'moment';
+
 moment.locale('da');
 
 import { routerTransition } from "../../../../router.animations";
 import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
 import { FIRST_DAY } from "../../../../app.constants";
-import { DaterangeService } from "./daterange.service";
+import { DaterangeService} from "./daterange.service";
 import { DaterangeShowService } from "./daterange.show.service";
 import { DateRangePicker } from "./date.range.picker";
 import { PaginationService } from "../pagination/pagination.service";
@@ -34,6 +35,14 @@ export class DaterangeComponent implements OnInit {
 
     ranges: any = {};
 
+    applyButtonEN = "APPLAY";
+    applyButtonDA = "ANSØGE";
+    applyButton: string;
+
+    customRange: string;
+    customRangeDA = "Defineret";
+    customRangeEN = "Custom Range";
+
     rangesEN: any = {
         'Today': [moment(), moment()],
         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -59,9 +68,12 @@ export class DaterangeComponent implements OnInit {
         private dtShowService: DaterangeShowService,
         private paginationService: PaginationService) {
 
+        this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
+
         this.forwardingLanguageService.listen().subscribe((lang: string) => {
             this.lang = lang;
-           this.initLocale(this.lang);
+            this.initLocale(this.lang);
+            this.initLocaleConfig();
         });
         this.alwaysShowCalendars = true;
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
@@ -69,17 +81,19 @@ export class DaterangeComponent implements OnInit {
                 this.dateRange = null;
             }
         });
-
-        this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
-        this.initLocaleConfig();
         this.initLocale(this.lang);
+        this.initLocaleConfig();
     }
 
     initLocale(lang: string) {
         if ('da' === lang) {
             this.ranges = this.rangesDA;
+            this.applyButton = this.applyButtonDA;
+            this.customRange = this.customRangeDA;
         } else {
             this.ranges = this.rangesEN;
+            this.applyButton = this.applyButtonEN;
+            this.customRange = this.customRangeEN;
         }
     }
 
@@ -88,7 +102,9 @@ export class DaterangeComponent implements OnInit {
             format: DATE_FORMAT,
             daysOfWeek: moment.weekdaysMin(),
             monthNames: moment.monthsShort(),
-            firstDay: FIRST_DAY
+            firstDay: FIRST_DAY,
+            applyLabel: this.applyButton,
+            customRangeLabel: "Defineret"
         };
     }
 
