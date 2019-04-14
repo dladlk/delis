@@ -8,3 +8,5 @@ delisAdmin:
           value: "20"
         - name: job.interval.sec.documentDeliver
           value: "60"
+        - name: spring.jpa.show-sql
+          value: "false"

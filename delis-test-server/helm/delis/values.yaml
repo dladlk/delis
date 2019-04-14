@@ -20,7 +20,7 @@ delisApi:
     volumes:
       - name: delis-resources
         hostPath:
-          path: /data/delis-resources
+          path: /wsh/delis/delis-resources
       - name: delis-root
         hostPath:
           path: /data/delis-root
@@ -42,7 +42,7 @@ delisAdmin:
     volumes:
       - name: delis-resources
         hostPath:
-          path: /data/delis-resources
+          path: /wsh/delis/delis-resources
       - name: delis-root
         hostPath:
           path: /data/delis-root
