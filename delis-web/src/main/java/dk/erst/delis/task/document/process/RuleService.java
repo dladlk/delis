@@ -1,15 +1,5 @@
 package dk.erst.delis.task.document.process;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
@@ -18,6 +8,15 @@ import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -58,6 +57,14 @@ public class RuleService {
 
 	public List<RuleDocumentValidation> getValidationList() {
 		return this.validationList;
+	}
+
+	public void refreshValidationList () {
+		validationList = buildValidationRuleList();
+	}
+
+	public void refreshTransformationList () {
+		transformationList = buildTransformationRuleList();
 	}
 
 	public List<RuleDocumentValidation> getValidationRuleListByFormat(DocumentFormat format) {

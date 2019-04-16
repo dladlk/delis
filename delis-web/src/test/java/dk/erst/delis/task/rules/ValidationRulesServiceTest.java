@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -27,6 +28,6 @@ public class ValidationRulesServiceTest {
 		service.recreateDefault();
 		List<RuleDocumentValidationData> ruleDocumentValidationData = service.loadRulesList();
 
-		assertTrue(ruleDocumentValidationData.size() == 13);
+		assertEquals(15, ruleDocumentValidationData.size());
 	}
 }

@@ -47,7 +47,7 @@ public class TransformationRuleService {
         return dtoList;
     }
 
-    void saveRule(RuleDocumentTransformationData ruleData) {
+    public void saveRule(RuleDocumentTransformationData ruleData) {
         RuleDocumentTransformation rule;
         if (ruleData.getId() == null) {
             rule = new RuleDocumentTransformation();

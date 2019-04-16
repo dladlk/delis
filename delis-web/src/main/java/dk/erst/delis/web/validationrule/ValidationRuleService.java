@@ -48,7 +48,7 @@ public class ValidationRuleService {
         return dtoList;
     }
 
-    void saveRule(RuleDocumentValidationData ruleData) {
+    public void saveRule(RuleDocumentValidationData ruleData) {
         RuleDocumentValidation rule;
         if (ruleData.getId() == null) {
             rule = new RuleDocumentValidation();

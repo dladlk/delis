@@ -2,6 +2,7 @@ package dk.erst.delis.web.transformationrule;
 
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.task.document.process.RuleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,12 @@ import javax.validation.Valid;
 public class TransformationRuleController {
 
     private TransformationRuleService service;
+    private RuleService ruleService;
 
     @Autowired
-    public TransformationRuleController(TransformationRuleService service) {
+    public TransformationRuleController(TransformationRuleService service, RuleService ruleService) {
         this.service = service;
+        this.ruleService = ruleService;
     }
 
     @GetMapping("list")
@@ -69,6 +72,12 @@ public class TransformationRuleController {
     @GetMapping("delete/{id}")
     public String deleteUser(@PathVariable long id, Model model) {
         service.deleteRule(id);
+        return "redirect:/setup/index";
+    }
+
+    @GetMapping("flushcache")
+    public String flushCache(Model model) {
+        ruleService.refreshTransformationList();
         return "redirect:/setup/index";
     }
 }
