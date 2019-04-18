@@ -35,9 +35,6 @@ public class RestDocumentControllerTest {
     @Autowired
     private ConfigBean configBean;
 
-    @Autowired
-    private RestDocumentController controller;
-
     @Before
     public void setUp() throws Exception {
     }
@@ -45,8 +42,6 @@ public class RestDocumentControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testUploadWrongFile() throws Exception {
-
-        String s = controller.toString();
         Path storageLoadedPath = configBean.getStorageLoadedPath();
         System.out.println("storageLoadedPath = " + storageLoadedPath);
         MockMultipartFile secondFile = new MockMultipartFile("file", "test2121.xml", "text/xml", "<xml>test</xml>".getBytes());

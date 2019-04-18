@@ -89,7 +89,7 @@ public class TransformationRuleControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testCreateDefault() throws Exception {
-        RuleDocumentTransformation rule = createRule();
+        createRule();
 
         this.mockMvc.perform(get("/transformationrule/createdefault"))
                 .andDo(print())
