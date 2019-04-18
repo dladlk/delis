@@ -34,6 +34,13 @@
 			<version>${delis.version}</version>
 		</dependency>
 		
+		<!-- DELIS-XSLT-UTIL -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-xslt-util</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
+		
 		<!-- DELIS-SBDH -->
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
@@ -128,13 +135,6 @@
 		    <artifactId>opencsv</artifactId>
 		    <version>4.4</version>
 		</dependency>
-		
-		<!-- Saxon is required for CII/BIS3 schematron - they do not work with integrated JAXP nor with Xalan 2.7.1! -->
-	    <dependency>
-	      <groupId>net.sf.saxon</groupId>
-	      <artifactId>Saxon-HE</artifactId>
-	      <version>9.9.0-2</version>
-	    </dependency>
 
 		<dependency>
 			<groupId>no.difi.commons</groupId>

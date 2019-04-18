@@ -13,10 +13,13 @@
     
     <modules>
         <module>delis-data</module>
+        <module>delis-xslt-util</module>
         <module>delis-web</module>
         <module>delis-web-api</module>
         <module>delis-sbdh</module>
         <module>delis-vfs</module>
+        <module>delis-xml-ubl21</module>
+        <module>delis-xml-builder</module>
     </modules>
 
     <properties>

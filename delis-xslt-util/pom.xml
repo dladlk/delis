@@ -11,10 +11,10 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<artifactId>delis-xml-builder</artifactId>
+	<artifactId>delis-xslt-util</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Delis :: XML Builder</name>
+	<name>Delis :: XSLT Util</name>
 
 	<dependencies>
 		<!-- Lombok -->
@@ -25,14 +25,52 @@
 		</dependency>
 
 		<dependency>
-			<groupId>dk.erst.delis</groupId>
-			<artifactId>delis-web</artifactId>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-jre</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.google.guava</groupId>
+            		<artifactId>failureaccess</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.guava</groupId>
+            		<artifactId>listenablefuture</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.code.findbugs</groupId>
+            		<artifactId>jsr305</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.checkerframework</groupId>
+            		<artifactId>checker-qual</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.errorprone</groupId>
+            		<artifactId>error_prone_annotations</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.j2objc</groupId>
+            		<artifactId>j2objc-annotations</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.codehaus.mojo</groupId>
+            		<artifactId>animal-sniffer-annotations</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
 
-		<!-- For hashCode/toString generation in JAXB-->
+		<!-- Saxon is required for CII/BIS3 schematron - they do not work with 
+			integrated JAXP nor with Xalan 2.7.1! -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.9.0-2</version>
 		</dependency>
 
 		<!-- Test dependencies -->
@@ -51,35 +89,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>xjc</id>
-						<goals>
-							<goal>xjc</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-                	<encoding>UTF-8</encoding>
-					<sources>
-						<source>../delis-resources/validation/xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd</source>
-					</sources>
-					<arguments>
-						<argument>-Xcommons-lang</argument>
-					</arguments>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.jvnet.jaxb2_commons</groupId>
-						<artifactId>jaxb2-commons-lang</artifactId>
-						<version>2.4</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
