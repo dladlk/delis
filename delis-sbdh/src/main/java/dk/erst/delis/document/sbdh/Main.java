@@ -11,7 +11,12 @@ public class Main {
 
 	private static final Logger log = LoggerFactory.getLogger(Main.class);
 	
-	public static void main(String[] args) {
+//	public static void main(String[] args) {
+//		Main main = new Main();
+//		main.entryPoint(args);
+//	}
+	
+	public void entryPoint(String[] args) {
 		if (args.length < 2) {
 			System.err.println("Usage: <PATH_TO_SOURCE_FILE> <PARTY_ID>");
 			System.exit(-1);
