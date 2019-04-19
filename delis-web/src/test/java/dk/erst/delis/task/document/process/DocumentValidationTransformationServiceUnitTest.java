@@ -34,6 +34,13 @@ public class DocumentValidationTransformationServiceUnitTest {
 
 	private static DocumentValidationTransformationService processService;
 
+	public static DocumentValidationTransformationService getTestInstance() {
+		if (processService == null) {
+			init();
+		}
+		return processService;
+	}
+	
 	@BeforeClass
 	public static void init() {
 		RuleDocumentTransformationDaoRepository ruleDocumentTransformationDaoRepository = mock(RuleDocumentTransformationDaoRepository.class);
@@ -57,7 +64,6 @@ public class DocumentValidationTransformationServiceUnitTest {
 		RuleService ruleService = new RuleService(configBean, vRuleService, tRuleService);
 		DocumentParseService parseService = new DocumentParseService();
 		processService = new DocumentValidationTransformationService(ruleService, parseService);
-
 	}
 	
 	@Test
@@ -109,5 +115,9 @@ public class DocumentValidationTransformationServiceUnitTest {
 		} finally {
 			//TestDocumentUtil.cleanupTestFile(testFile);
 		}
+	}
+
+	public static DocumentValidationTransformationService getProcessService() {
+		return processService;
 	}
 }

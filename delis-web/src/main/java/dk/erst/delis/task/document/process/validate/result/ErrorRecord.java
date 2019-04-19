@@ -3,9 +3,11 @@ package dk.erst.delis.task.document.process.validate.result;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ErrorRecord {
 	
 	private DocumentErrorCode errorType;

@@ -3,10 +3,18 @@ package dk.erst.delis.web.document;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +32,11 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.document.response.InvoiceResponseService;
+import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationData;
+import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationException;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -38,6 +51,11 @@ public class DocumentController {
 	private DocumentService documentService;
 	@Autowired
 	private DocumentBytesDaoRepository documentBytesDaoRepository;
+	@Autowired
+	private InvoiceResponseService invoiceResponseService;
+	
+    @Value("#{servletContext.contextPath}")
+    private String servletContextPath;
 
 	@RequestMapping("/document/list")
 	public String list(Model model) {
@@ -86,19 +104,59 @@ public class DocumentController {
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
 		model.addAttribute("errorListByJournalDocumentIdMap", documentService.getErrorListByJournalDocumentIdMap(document));
 		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
+		InvoiceResponseForm irForm = new InvoiceResponseForm();
+		irForm.setDocumentId(document.getId());
+		model.addAttribute("irForm", irForm);
 
 		return "/document/view";
 	}
+	
+	private ResponseEntity<Object> redirectEntity(String url) {
+	    HttpHeaders httpHeaders = new HttpHeaders();
+	    try {
+			httpHeaders.setLocation(new URI(this.servletContextPath + url));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+	    return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+	}
 
 	@PostMapping("/document/generate/invoiceResponse")
-	public String generateInvoiceResponse(long id, String invoiceResponseStatusCode, RedirectAttributes ra) {
-		log.info("Generating InvoiceResponse for " + id + " with code " + invoiceResponseStatusCode);
+	public ResponseEntity<Object> generateInvoiceResponse(InvoiceResponseForm irForm, RedirectAttributes ra) {
+		log.info("Generating InvoiceResponse for " + irForm);
 		
-		if (invoiceResponseStatusCode == null) {
-			ra.addFlashAttribute("errorMessage", "Undefined status code: "+invoiceResponseStatusCode);
+		Document document = documentService.getDocument(irForm.getDocumentId());
+		if (document == null) {
+			ra.addFlashAttribute("errorMessage", "Document is not found");
+			return redirectEntity("/home");
 		}
 		
-		return "redirect:/document/view/" + id;
+		byte[] res;
+		String defaultReturnPath = "/document/view/" + irForm.getDocumentId();
+		try {
+			res = invoiceResponseService.generateInvoiceResponse(document, irForm);
+		} catch (InvoiceResponseGenerationException e) {
+			ra.addFlashAttribute("errorMessage", e.getMessage());
+			if (e.getDocumentId() != null) {
+				return redirectEntity(defaultReturnPath);
+			}
+			return redirectEntity("/home");
+		}
+		
+		if (res == null) {
+			ra.addFlashAttribute("errorMessage", "Failed to generate InvoiceResponse");
+			return redirectEntity(defaultReturnPath);
+		} else {
+			BodyBuilder resp = ResponseEntity.ok();
+			resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"InvoiceResponse.xml\"");
+			resp.contentType(MediaType.parseMediaType("application/octet-stream"));
+			return resp.body(res);
+		}
+	}
+	
+	@Getter @Setter
+	public static class InvoiceResponseForm extends InvoiceResponseGenerationData {
+		private long documentId;
 	}
 	
 	@PostMapping("/document/upload")

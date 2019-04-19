@@ -25,5 +25,9 @@ public enum DocumentBytesType {
 	public String getTechnicalDescription() {
 		return technicalDescription;
 	}
+	
+	public String getCode() {
+		return this.name();
+	}
 
 }

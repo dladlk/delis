@@ -37,7 +37,7 @@
 		<!-- DELIS-XSLT-UTIL -->
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
-			<artifactId>delis-xslt-util</artifactId>
+			<artifactId>delis-xml-builder</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
 		

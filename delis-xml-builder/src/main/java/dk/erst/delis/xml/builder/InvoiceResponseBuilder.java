@@ -6,7 +6,9 @@ import java.nio.file.Paths;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -14,6 +16,7 @@ import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.xml.builder.data.DocumentResponse;
 import dk.erst.delis.xml.builder.data.InvoiceResponseData;
 import dk.erst.delis.xml.builder.data.Party;
+import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ApplicationResponseType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ConditionType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentReferenceType;
@@ -24,9 +27,9 @@ import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.Part
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.StatusType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.DescriptionType;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.NoteType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.StatusReasonType;
 
+@Slf4j
 public class InvoiceResponseBuilder {
 
 	private static String INVOCIE_RESPONSE_TEMPLATE_XSLT = "invoice-response.xslt";
@@ -60,80 +63,183 @@ public class InvoiceResponseBuilder {
 		return jaxbElement.getValue();
 	}
 
-	public boolean build(InvoiceResponseData d, OutputStream out) throws Exception {
+	public void parseAndEnrich(InputStream is, InvoiceResponseData d, OutputStream out) throws Exception {
+		log.info("parseAndEnrich for " + d);
+		ApplicationResponseType ar = parse(is);
+		copyDataToType(d, ar);
+
+		removeElementsAbsentInModel(ar);
+
+		serialize(ar, out);
+	}
+
+	private void removeElementsAbsentInModel(ApplicationResponseType ar) {
+		cleanupPartyLegalEntity(ar.getSenderParty().getPartyLegalEntity().get(0));
+		cleanupPartyLegalEntity(ar.getReceiverParty().getPartyLegalEntity().get(0));
+	}
+
+	private void cleanupPartyLegalEntity(PartyLegalEntityType partyLegalEntity) {
+		partyLegalEntity.setCompanyID(null);
+		partyLegalEntity.setCompanyLegalForm(null);
+	}
+
+	public void build(InvoiceResponseData d, OutputStream out) throws Exception {
 		ApplicationResponseType ar = arFactory.createApplicationResponseType();
+		copyDataToType(d, ar);
+		serialize(ar, out);
+	}
 
-		ar.setCustomizationID(cbcFactory.createCustomizationIDType());
-		ar.getCustomizationID().setValue("urn:fdc:peppol.eu:poacc:trns:invoice_response:3");
-
-		ar.setProfileID(cbcFactory.createProfileIDType());
-		ar.getProfileID().setValue("urn:fdc:peppol.eu:poacc:bis:invoice_response:3");
-
-		ar.setID(cbcFactory.createIDType());
-		ar.getID().setValue(d.getId());
-
-		ar.setIssueDate(cbcFactory.createIssueDateType());
-		ar.getIssueDate().setValue(datatypeFactory.newXMLGregorianCalendar(d.getIssueDate()));
-
-		ar.setIssueTime(cbcFactory.createIssueTimeType());
-		ar.getIssueTime().setValue(datatypeFactory.newXMLGregorianCalendar(d.getIssueTime()));
-
-		NoteType createNote = cbcFactory.createNoteType();
-		createNote.setValue(d.getNote());
-		ar.getNote().add(createNote);
-
-		ar.setSenderParty(cacFactory.createPartyType());
-		fillPartyType(ar.getSenderParty(), d.getSenderParty());
-		ar.setReceiverParty(cacFactory.createPartyType());
-		fillPartyType(ar.getReceiverParty(), d.getReceiverParty());
-		ar.getDocumentResponse().add(cacFactory.createDocumentResponseType());
-		fillDocumentResponse(ar.getDocumentResponse().get(0), d.getDocumentResponse());
-
+	private void serialize(ApplicationResponseType ar, OutputStream out) throws JAXBException, PropertyException {
 		Marshaller marshaller = jaxbContext.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(arFactory.createApplicationResponse(ar), out);
+	}
 
-		return true;
+	private void copyDataToType(InvoiceResponseData d, ApplicationResponseType ar) {
+		if (ar.getCustomizationID() == null)
+			ar.setCustomizationID(cbcFactory.createCustomizationIDType());
+		ar.getCustomizationID().setValue("urn:fdc:peppol.eu:poacc:trns:invoice_response:3");
+
+		if (ar.getProfileID() == null)
+			ar.setProfileID(cbcFactory.createProfileIDType());
+		ar.getProfileID().setValue("urn:fdc:peppol.eu:poacc:bis:invoice_response:3");
+
+		if (d.getId() != null) {
+			if (ar.getID() == null)
+				ar.setID(cbcFactory.createIDType());
+			ar.getID().setValue(d.getId());
+		}
+
+		if (d.getIssueDate() != null) {
+			if (ar.getIssueDate() == null)
+				ar.setIssueDate(cbcFactory.createIssueDateType());
+			ar.getIssueDate().setValue(datatypeFactory.newXMLGregorianCalendar(d.getIssueDate()));
+		}
+
+		if (d.getIssueTime() != null) {
+			if (ar.getIssueTime() == null)
+				ar.setIssueTime(cbcFactory.createIssueTimeType());
+			ar.getIssueTime().setValue(datatypeFactory.newXMLGregorianCalendar(d.getIssueTime()));
+		}
+
+		if (d.getNote() != null) {
+			if (ar.getNote().isEmpty()) {
+				ar.getNote().add(cbcFactory.createNoteType());
+			}
+			ar.getNote().get(0).setValue(d.getNote());
+		}
+
+		if (d.getSenderParty() != null) {
+			if (ar.getSenderParty() == null) {
+				ar.setSenderParty(cacFactory.createPartyType());
+			}
+			fillPartyType(ar.getSenderParty(), d.getSenderParty());
+		}
+		if (d.getReceiverParty() != null) {
+			if (ar.getReceiverParty() == null) {
+				ar.setReceiverParty(cacFactory.createPartyType());
+			}
+			fillPartyType(ar.getReceiverParty(), d.getReceiverParty());
+		}
+
+		if (d.getDocumentResponse() != null) {
+			if (ar.getDocumentResponse().isEmpty()) {
+				ar.getDocumentResponse().add(cacFactory.createDocumentResponseType());
+			}
+			fillDocumentResponse(ar.getDocumentResponse().get(0), d.getDocumentResponse());
+		}
 	}
 
 	private void fillDocumentResponse(DocumentResponseType drType, DocumentResponse dr) {
-		drType.setResponse(cacFactory.createResponseType());
-		drType.getResponse().setResponseCode(cbcFactory.createResponseCodeType());
-		drType.getResponse().getResponseCode().setValue(dr.getResponse().getResponseCode());
-		drType.getResponse().setEffectiveDate(cbcFactory.createEffectiveDateType());
-		drType.getResponse().getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getResponse().getEffectiveDate()));
+		if (drType.getResponse() == null) {
+			drType.setResponse(cacFactory.createResponseType());
+		}
 
-		StatusType statusType = cacFactory.createStatusType();
-		drType.getResponse().getStatus().add(statusType);
-		statusType.setStatusReasonCode(cbcFactory.createStatusReasonCodeType());
+		if (dr.getResponse().getResponseCode() != null) {
+			if (drType.getResponse().getResponseCode() == null) {
+				drType.getResponse().setResponseCode(cbcFactory.createResponseCodeType());
+			}
+			drType.getResponse().getResponseCode().setValue(dr.getResponse().getResponseCode());
+		}
+
+		if (dr.getResponse().getEffectiveDate() != null) {
+			if (drType.getResponse().getEffectiveDate() == null) {
+				drType.getResponse().setEffectiveDate(cbcFactory.createEffectiveDateType());
+			}
+			drType.getResponse().getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getResponse().getEffectiveDate()));
+		}
+
+		StatusType statusType;
+		if (drType.getResponse().getStatus().isEmpty()) {
+			statusType = cacFactory.createStatusType();
+			drType.getResponse().getStatus().add(statusType);
+		} else {
+			statusType = drType.getResponse().getStatus().get(0);
+		}
+
+		if (statusType.getStatusReasonCode() == null) {
+			statusType.setStatusReasonCode(cbcFactory.createStatusReasonCodeType());
+		}
 		statusType.getStatusReasonCode().setValue(dr.getResponse().getStatus().getStatusReasonCode());
 
-		StatusReasonType statusReasonType = cbcFactory.createStatusReasonType();
-		statusType.getStatusReason().add(statusReasonType);
-		statusReasonType.setValue(dr.getResponse().getStatus().getStatusReason());
+		if (statusType.getStatusReason().isEmpty()) {
+			StatusReasonType statusReasonType = cbcFactory.createStatusReasonType();
+			statusType.getStatusReason().add(statusReasonType);
+		}
+		statusType.getStatusReason().get(0).setValue(dr.getResponse().getStatus().getStatusReason());
 
-		ConditionType conditionType = cacFactory.createConditionType();
-		statusType.getCondition().add(conditionType);
-		conditionType.setAttributeID(cbcFactory.createAttributeIDType());
+		ConditionType conditionType;
+		if (statusType.getCondition().isEmpty()) {
+			conditionType = cacFactory.createConditionType();
+			statusType.getCondition().add(conditionType);
+		} else {
+			conditionType = statusType.getCondition().get(0);
+		}
+
+		if (conditionType.getAttributeID() == null) {
+			conditionType.setAttributeID(cbcFactory.createAttributeIDType());
+		}
 		conditionType.getAttributeID().setValue(dr.getResponse().getStatus().getConditionAttributeID());
 
-		DescriptionType descriptionType = cbcFactory.createDescriptionType();
-		conditionType.getDescription().add(descriptionType);
-		descriptionType.setValue(dr.getResponse().getStatus().getConditionDescription());
+		if (conditionType.getDescription() == null) {
+			DescriptionType descriptionType = cbcFactory.createDescriptionType();
+			conditionType.getDescription().add(descriptionType);
+		}
+		conditionType.getDescription().get(0).setValue(dr.getResponse().getStatus().getConditionDescription());
 
-		drType.setIssuerParty(cacFactory.createPartyType());
-		fillPartyType(drType.getIssuerParty(), dr.getIssuerParty());
+		if (dr.getIssuerParty() != null) {
+			if (drType.getIssuerParty() == null) {
+				drType.setIssuerParty(cacFactory.createPartyType());
+			}
+			fillPartyType(drType.getIssuerParty(), dr.getIssuerParty());
+		}
 
-		DocumentReferenceType refType = cacFactory.createDocumentReferenceType();
-		drType.getDocumentReference().add(refType);
-		refType.setID(cbcFactory.createIDType());
-		refType.getID().setValue(dr.getDocumentReference().getId());
+		if (dr.getDocumentReference() != null) {
+			DocumentReferenceType refType;
+			if (drType.getDocumentReference().isEmpty()) {
+				refType = cacFactory.createDocumentReferenceType();
+				drType.getDocumentReference().add(refType);
+			} else {
+				refType = drType.getDocumentReference().get(0);
+			}
 
-		refType.setIssueDate(cbcFactory.createIssueDateType());
-		refType.getIssueDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getDocumentReference().getIssueDate()));
+			if (dr.getDocumentReference().getId() != null) {
+				if (refType.getID() == null) {
+					refType.setID(cbcFactory.createIDType());
+				}
+				refType.getID().setValue(dr.getDocumentReference().getId());
+			}
 
-		refType.setDocumentTypeCode(cbcFactory.createDocumentTypeCodeType());
-		refType.getDocumentTypeCode().setValue(dr.getDocumentReference().getDocumentTypeCode());
+			if (dr.getDocumentReference().getIssueDate() != null) {
+				if (refType.getIssueDate() == null) {
+					refType.setIssueDate(cbcFactory.createIssueDateType());
+				}
+				refType.getIssueDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getDocumentReference().getIssueDate()));
+			}
+
+			refType.setDocumentTypeCode(cbcFactory.createDocumentTypeCodeType());
+			refType.getDocumentTypeCode().setValue(dr.getDocumentReference().getDocumentTypeCode());
+		}
 	}
 
 	private void fillPartyType(PartyType partyType, Party party) {
@@ -174,7 +280,7 @@ public class InvoiceResponseBuilder {
 				partyType.getContact().getTelephone().setValue(party.getContact().getTelephone());
 			}
 		}
-		
+
 		if (party.getPartyLegalEntity() != null) {
 			PartyLegalEntityType partyLegalEntityType = cacFactory.createPartyLegalEntityType();
 			partyType.getPartyLegalEntity().add(partyLegalEntityType);
