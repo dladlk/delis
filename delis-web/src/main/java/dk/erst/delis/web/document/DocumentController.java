@@ -90,6 +90,17 @@ public class DocumentController {
 		return "/document/view";
 	}
 
+	@PostMapping("/document/generate/invoiceResponse")
+	public String generateInvoiceResponse(long id, String invoiceResponseStatusCode, RedirectAttributes ra) {
+		log.info("Generating InvoiceResponse for " + id + " with code " + invoiceResponseStatusCode);
+		
+		if (invoiceResponseStatusCode == null) {
+			ra.addFlashAttribute("errorMessage", "Undefined status code: "+invoiceResponseStatusCode);
+		}
+		
+		return "redirect:/document/view/" + id;
+	}
+	
 	@PostMapping("/document/upload")
 	public String upload(
 
