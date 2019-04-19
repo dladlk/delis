@@ -30,7 +30,7 @@ public class XSLTUtil {
 	}
 
 	private static Transformer getTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
-		return buildTransformer(xslStream, xslFilePath, new CachingTransformerFactory());
+		return buildTransformer(xslStream, xslFilePath, CachingTransformerFactory.getInstance());
 	}
 	
 	protected static Transformer buildTransformer(InputStream xslStream, Path xslFilePath, TransformerFactory transFactory) throws Exception {
@@ -52,7 +52,10 @@ public class XSLTUtil {
 			 * It is critical for relative paths in XSLT - e.g. in
 			 * BIS-Billing_2_OIOUBL_MASTER.xslt
 			 */
-			source.setSystemId(xslFilePath.toString());
+			
+			String normalized = xslFilePath.normalize().toUri().toString();
+			log.info("Normalized path "+xslFilePath+" to "+normalized);
+			source.setSystemId(normalized);
 		}
 		Transformer transformer = transFactory.newTransformer(source);
 		
