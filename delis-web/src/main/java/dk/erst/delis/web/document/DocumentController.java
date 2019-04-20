@@ -166,8 +166,9 @@ public class DocumentController {
 		List<ErrorRecord> errorList = invoiceResponseService.validateInvoiceResponse(tempFile);
 		if (!errorList.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Generated InvoiceResponse is not valid by schema or schematron, ");
+			sb.append("Generated InvoiceResponse is not valid by schema or schematron, found ");
 			sb.append(errorList.size());
+			sb.append(" errors");
 			ra.addFlashAttribute("errorMessage", sb.toString());
 			ra.addFlashAttribute("invoiceResponseErrorList", errorList);
 			return redirectEntity(defaultReturnPath);
