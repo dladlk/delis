@@ -20,6 +20,7 @@
         <module>delis-vfs</module>
         <module>delis-xml-ubl21</module>
         <module>delis-xml-builder</module>
+        <module>delis-oxalis-sender</module>
     </modules>
 
     <properties>
