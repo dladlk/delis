@@ -1,8 +1,9 @@
 package dk.erst.delis.xml.builder.data;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 public class InvoiceResponseData {
 
 	private String id;

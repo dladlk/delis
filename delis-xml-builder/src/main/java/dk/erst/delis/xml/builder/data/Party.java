@@ -1,15 +1,16 @@
 package dk.erst.delis.xml.builder.data;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 @Builder
 public class Party {
 
 	private EndpointID endpointID;
 	private PartyIdentification partyIdentification;
-	private PartyName partyName;
+	private String partyName;
 	private PartyLegalEntity partyLegalEntity;
 	private Contact contact;
 
