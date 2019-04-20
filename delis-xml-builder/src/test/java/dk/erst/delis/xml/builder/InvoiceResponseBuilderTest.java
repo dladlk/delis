@@ -2,10 +2,12 @@ package dk.erst.delis.xml.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.BeforeClass;
@@ -20,7 +22,6 @@ import dk.erst.delis.xml.builder.data.InvoiceResponseData;
 import dk.erst.delis.xml.builder.data.Party;
 import dk.erst.delis.xml.builder.data.PartyIdentification;
 import dk.erst.delis.xml.builder.data.PartyLegalEntity;
-import dk.erst.delis.xml.builder.data.PartyName;
 import dk.erst.delis.xml.builder.data.Response;
 import dk.erst.delis.xml.builder.data.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,21 @@ public class InvoiceResponseBuilderTest {
 	@Test
 	public void testBuild() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		InvoiceResponseData d = generateFullData();
+
+		builder.build(d, out);
+
+		byte[] bytes = out.toByteArray();
+		assertNotNull(bytes);
+
+		String res = new String(bytes, StandardCharsets.UTF_8);
+		assertNotNull(res);
+
+		ApplicationResponseType r = builder.parse(new ByteArrayInputStream(bytes));
+		assertEquals(d.getIssueDate(), r.getDocumentResponse().get(0).getDocumentReference().get(0).getIssueDate().getValue().toXMLFormat());
+	}
+
+	private InvoiceResponseData generateFullData() {
 		InvoiceResponseData d = new InvoiceResponseData();
 		d.setId("imrid001");
 		String issueDate = "2019-03-27";
@@ -102,19 +118,59 @@ public class InvoiceResponseBuilderTest {
 		DocumentReference documentReference = DocumentReference.builder().id("inv060").issueDate(issueDate).documentTypeCode("380").build();
 		Party issuerParty = Party.builder().build();
 		issuerParty.setPartyIdentification(PartyIdentification.builder().id(ID.builder().schemeID("0184").value("DK88776655").build()).build());
-		issuerParty.setPartyName(PartyName.builder().name("TEST").build());
+		issuerParty.setPartyName("TEST");
 		d.setDocumentResponse(DocumentResponse.builder().response(response).documentReference(documentReference).issuerParty(issuerParty).build());
-
-		builder.build(d, out);
-
-		byte[] bytes = out.toByteArray();
-		assertNotNull(bytes);
-
-		String res = new String(bytes, StandardCharsets.UTF_8);
-		assertNotNull(res);
-
-		ApplicationResponseType r = builder.parse(new ByteArrayInputStream(bytes));
-		assertEquals(issueDate, r.getDocumentResponse().get(0).getDocumentReference().get(0).getIssueDate().getValue().toXMLFormat());
+		return d;
 	}
 
+	@Test
+	public void testBuildEmpty() throws Exception {
+		InvoiceResponseData d = new InvoiceResponseData();
+		OutputStream out = new ByteArrayOutputStream();
+		builder.build(d, out);
+	}
+
+	@Test
+	public void testParseAndEnrich() throws Exception {
+		System.out.println("Check on empty initial ApplicationResponse and empty data:");
+		
+		String xmlString = "<ApplicationResponse xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2\"/>";
+		InvoiceResponseData data = new InvoiceResponseData();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), data, out);
+		System.out.println("On ");
+		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		assertTrue(out.toByteArray().length > 100);
+		
+		System.out.println("Check on empty AR but full data");
+		data = generateFullData();
+		out = new ByteArrayOutputStream();
+		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), data, out);
+		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		assertTrue(out.toByteArray().length > 500);
+		
+		System.out.println("Check on both full data and AR");
+		byte[] fullAR = out.toByteArray();
+		builder.parseAndEnrich(new ByteArrayInputStream(fullAR), data, out);
+		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		assertTrue(out.toByteArray().length > 500);
+		
+		System.out.println("Check on partly data and empty AR");
+		
+		InvoiceResponseData partlyData = new InvoiceResponseData();
+		partlyData.setReceiverParty(Party.builder().build());
+		partlyData.setSenderParty(Party.builder().build());
+		partlyData.setDocumentResponse(DocumentResponse.builder().build());
+		
+		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), partlyData, out);
+		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		assertTrue(out.toByteArray().length > 500);
+		
+		partlyData.getSenderParty().setContact(Contact.builder().build());
+		partlyData.getDocumentResponse().setResponse(Response.builder().build());
+		partlyData.getDocumentResponse().setDocumentReference(DocumentReference.builder().build());
+		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), partlyData, out);
+		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		assertTrue(out.toByteArray().length > 500);
+	}
 }

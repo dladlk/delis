@@ -74,8 +74,12 @@ public class InvoiceResponseBuilder {
 	}
 
 	private void removeElementsAbsentInModel(ApplicationResponseType ar) {
-		cleanupPartyLegalEntity(ar.getSenderParty().getPartyLegalEntity().get(0));
-		cleanupPartyLegalEntity(ar.getReceiverParty().getPartyLegalEntity().get(0));
+		if (ar.getSenderParty() != null && !ar.getSenderParty().getPartyLegalEntity().isEmpty()) {
+			cleanupPartyLegalEntity(ar.getSenderParty().getPartyLegalEntity().get(0));
+		}
+		if (ar.getSenderParty() != null && !ar.getSenderParty().getPartyLegalEntity().isEmpty()) {
+			cleanupPartyLegalEntity(ar.getSenderParty().getPartyLegalEntity().get(0));
+		}
 	}
 
 	private void cleanupPartyLegalEntity(PartyLegalEntityType partyLegalEntity) {
@@ -155,57 +159,61 @@ public class InvoiceResponseBuilder {
 			drType.setResponse(cacFactory.createResponseType());
 		}
 
-		if (dr.getResponse().getResponseCode() != null) {
-			if (drType.getResponse().getResponseCode() == null) {
-				drType.getResponse().setResponseCode(cbcFactory.createResponseCodeType());
+		if (dr.getResponse() != null) {
+			if (dr.getResponse().getResponseCode() != null) {
+				if (drType.getResponse().getResponseCode() == null) {
+					drType.getResponse().setResponseCode(cbcFactory.createResponseCodeType());
+				}
+				drType.getResponse().getResponseCode().setValue(dr.getResponse().getResponseCode());
 			}
-			drType.getResponse().getResponseCode().setValue(dr.getResponse().getResponseCode());
-		}
 
-		if (dr.getResponse().getEffectiveDate() != null) {
-			if (drType.getResponse().getEffectiveDate() == null) {
-				drType.getResponse().setEffectiveDate(cbcFactory.createEffectiveDateType());
+			if (dr.getResponse().getEffectiveDate() != null) {
+				if (drType.getResponse().getEffectiveDate() == null) {
+					drType.getResponse().setEffectiveDate(cbcFactory.createEffectiveDateType());
+				}
+				drType.getResponse().getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getResponse().getEffectiveDate()));
 			}
-			drType.getResponse().getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getResponse().getEffectiveDate()));
-		}
 
-		StatusType statusType;
-		if (drType.getResponse().getStatus().isEmpty()) {
-			statusType = cacFactory.createStatusType();
-			drType.getResponse().getStatus().add(statusType);
-		} else {
-			statusType = drType.getResponse().getStatus().get(0);
-		}
+			if (dr.getResponse().getStatus() != null) {
+				StatusType statusType;
+				if (drType.getResponse().getStatus().isEmpty()) {
+					statusType = cacFactory.createStatusType();
+					drType.getResponse().getStatus().add(statusType);
+				} else {
+					statusType = drType.getResponse().getStatus().get(0);
+				}
 
-		if (statusType.getStatusReasonCode() == null) {
-			statusType.setStatusReasonCode(cbcFactory.createStatusReasonCodeType());
-		}
-		statusType.getStatusReasonCode().setValue(dr.getResponse().getStatus().getStatusReasonCode());
+				if (statusType.getStatusReasonCode() == null) {
+					statusType.setStatusReasonCode(cbcFactory.createStatusReasonCodeType());
+				}
+				statusType.getStatusReasonCode().setValue(dr.getResponse().getStatus().getStatusReasonCode());
 
-		if (statusType.getStatusReason().isEmpty()) {
-			StatusReasonType statusReasonType = cbcFactory.createStatusReasonType();
-			statusType.getStatusReason().add(statusReasonType);
-		}
-		statusType.getStatusReason().get(0).setValue(dr.getResponse().getStatus().getStatusReason());
+				if (statusType.getStatusReason().isEmpty()) {
+					StatusReasonType statusReasonType = cbcFactory.createStatusReasonType();
+					statusType.getStatusReason().add(statusReasonType);
+				}
+				statusType.getStatusReason().get(0).setValue(dr.getResponse().getStatus().getStatusReason());
 
-		ConditionType conditionType;
-		if (statusType.getCondition().isEmpty()) {
-			conditionType = cacFactory.createConditionType();
-			statusType.getCondition().add(conditionType);
-		} else {
-			conditionType = statusType.getCondition().get(0);
-		}
+				ConditionType conditionType;
+				if (statusType.getCondition().isEmpty()) {
+					conditionType = cacFactory.createConditionType();
+					statusType.getCondition().add(conditionType);
+				} else {
+					conditionType = statusType.getCondition().get(0);
+				}
 
-		if (conditionType.getAttributeID() == null) {
-			conditionType.setAttributeID(cbcFactory.createAttributeIDType());
-		}
-		conditionType.getAttributeID().setValue(dr.getResponse().getStatus().getConditionAttributeID());
+				if (conditionType.getAttributeID() == null) {
+					conditionType.setAttributeID(cbcFactory.createAttributeIDType());
+				}
+				conditionType.getAttributeID().setValue(dr.getResponse().getStatus().getConditionAttributeID());
 
-		if (conditionType.getDescription() == null) {
-			DescriptionType descriptionType = cbcFactory.createDescriptionType();
-			conditionType.getDescription().add(descriptionType);
+				if (conditionType.getDescription().isEmpty()) {
+					DescriptionType descriptionType = cbcFactory.createDescriptionType();
+					conditionType.getDescription().add(descriptionType);
+				}
+				conditionType.getDescription().get(0).setValue(dr.getResponse().getStatus().getConditionDescription());
+			}
 		}
-		conditionType.getDescription().get(0).setValue(dr.getResponse().getStatus().getConditionDescription());
 
 		if (dr.getIssuerParty() != null) {
 			if (drType.getIssuerParty() == null) {
@@ -260,7 +268,7 @@ public class InvoiceResponseBuilder {
 			partyType.getPartyName().add(partyNameType);
 
 			partyNameType.setName(cbcFactory.createNameType());
-			partyNameType.getName().setValue(party.getPartyName().getName());
+			partyNameType.getName().setValue(party.getPartyName());
 		}
 
 		if (party.getContact() != null) {
