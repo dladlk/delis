@@ -103,7 +103,7 @@ public class InvoiceResponseService {
 			
 			Response response = Response.builder().build();
 			response.setEffectiveDate(dateFormat.format(currentTime));
-			response.setResponseCode("AB");
+			response.setResponseCode(invoiceResponseData.getStatus());
 			response.setStatus(responseStatus);
 			irData.setDocumentResponse(DocumentResponse.builder().response(response).build());
 
