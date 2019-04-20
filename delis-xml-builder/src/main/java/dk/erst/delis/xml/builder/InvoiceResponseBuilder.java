@@ -74,15 +74,15 @@ public class InvoiceResponseBuilder {
 	}
 
 	private void removeElementsAbsentInModel(ApplicationResponseType ar) {
-		if (ar.getSenderParty() != null && !ar.getSenderParty().getPartyLegalEntity().isEmpty()) {
-			cleanupPartyLegalEntity(ar.getSenderParty().getPartyLegalEntity().get(0));
-		}
-		if (ar.getSenderParty() != null && !ar.getSenderParty().getPartyLegalEntity().isEmpty()) {
-			cleanupPartyLegalEntity(ar.getSenderParty().getPartyLegalEntity().get(0));
-		}
+		cleanupPartyLegalEntity(ar.getSenderParty());
+		cleanupPartyLegalEntity(ar.getReceiverParty());
 	}
 
-	private void cleanupPartyLegalEntity(PartyLegalEntityType partyLegalEntity) {
+	private void cleanupPartyLegalEntity(PartyType party) {
+		if (party == null || party.getPartyLegalEntity().isEmpty()) {
+			return;
+		}
+		PartyLegalEntityType partyLegalEntity = party.getPartyLegalEntity().get(0);
 		partyLegalEntity.setCompanyID(null);
 		partyLegalEntity.setCompanyLegalForm(null);
 	}
