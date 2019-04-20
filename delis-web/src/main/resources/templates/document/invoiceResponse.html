@@ -2,6 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	th:fragment="invoiceResponse">
+
+<th:block th:replace="~{/document/invoiceResponse_scripts}"/>
+
 <div>
 	<button class="m-2 btn btn-primary btn-sm" onclick="$('#invoiceResponseForm').toggle()">New Invoice Response 3.0</button>
 
@@ -22,183 +25,65 @@
 		</table>
 	</div>
 
-	<div class="card border-secondary w-75 m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapse'" id="invoiceResponseForm">
-			
-<script>
+<div class="card border-secondary w-75 m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapsed'" id="invoiceResponseForm">
+		
+<div class="card-body pb-1 invoice-response">
 
-var invoiceStatusCodeList = [
-	["AB", "Message acknowledgement ", "Indicates that an acknowledgement relating to receipt of message or transaction is required. Status is used when Buyer has received a readable invoice message that can be understood and submitted for processing by the Buyer. "], 
-	["AP", "Accepted ", "Indication that the referenced offer or transaction (e.g., cargo booking or quotation request) has been accepted. Status is used only when the Buyer has given a final approval of the invoice and the next step is payment "], 
-	["RE", "Rejected ", "Indication that the referenced offer or transaction (e.g., cargo booking or quotation request) is not accepted. Status is used only when the Buyer will not process the referenced Invoice any further. Buyer is rejecting this invoice but not necessarily the commercial transaction. Although it can be used also for rejection for commercial reasons (invoice not corresponding to delivery). "], 
-	["IP", "In process ", "Indicates that the referenced message or transaction is being processed. Status is used when the processing of the Invoice has started in Buyers system. "], 
-	["UQ", "Under query ", "Indicates that the processing of the referenced message has been halted pending response to a query. Status is used when Buyer will not proceed to accept the Invoice without receiving additional information from the Seller."], 
-	["CA", "Conditionally accepted ", "Indication that the referenced offer or transaction (e.g., cargo booking or quotation request) has been accepted under conditions indicated in this message. Status is used when Buyer is accepting the Invoice under conditions stated in ‘Status Reason’ and proceed to pay accordingly unless disputed by Seller."], 
-	["PD", "Paid ", "Indicates that the referenced document or transaction has been paid. Status is used only when the Buyer has initiated the payment of the invoice."] 
-];
-
-var statusActionList = [
-	
-	["NOA", "No action required ", "No action required"], 
-	["PIN", "Provide information ", "Missing information requested without re-issuing invoice"], 
-	["NIN", "Issue new invoice ", "Request to re-issue a corrected invoice"], 
-	["CNF", "Credit fully ", "Request to fully cancel the referenced invoice with a credit note"], 
-	["CNP", "Credit partially ", "Request to issue partial credit note for corrections only"], 
-	["CNA", "Credit the amount ", "Request to repay the amount paid on the invoice"], 
-	["OTH", "Other ", "Requested action is not defined by code"]
-	
-];
-
-var statusReasonList = [
-["NON", "No Issue ", "Indicates that receiver of the documents sends the message just to update the status and there are no problems with document processing"],
-["REF", "References incorrect ", "Indicates that the received document did not contain references as required by the receiver for correctly routing the document for approval or processing."],
-["LEG", "Legal information incorrect ", "Information in the received document is not according to legal requirements."],
-["REC", "Receiver unknown ", "The party to which the document is addressed is not known."],
-["QUA", "Item quality insufficient ", "Unacceptable or incorrect quality"],
-["DEL", "Delivery issues ", "Delivery proposed or provided is not acceptable."],
-["PRI", "Prices incorrect ", "Prices not according to previous expectation."],
-["QTY", "Quantity incorrect ", "Quantity not according to previous expectation."],
-["ITM", "Items incorrect ", "Items not according to previous expectation."],
-["PAY", "Payment terms incorrect ", "Payment terms not according to previous expectation."],
-["UNR", "Not recognized ", "Commercial transaction not recognized."],
-["FIN", "Finance incorrect ", "Finance terms not according to previous expectation."],
-["OTH", "Other", "Reason for status is not defined by code."]
-]
-;
-
-function selectChanged(jQuerySelector, scanArray) {
-	var code = $(jQuerySelector).val();
-	console.log('Value of '+jQuerySelector+": "+code);
-	for (var i=0; i < scanArray.length; i++) {
-		var v = scanArray[i];
-		if (v[0] == code) {
-			$(jQuerySelector+'Desc').text(v[0]+": " + v[2]);
-			break;
-		}
-	}
-}
-function initSelect(jQuerySelector, scanArray) {
-	var scr = $(jQuerySelector);
-	var scrOption = $(scr.find('option')[0]);
-	for (var i=0; i < scanArray.length; i++) {
-		var desc = scanArray[i];
-		var opt = scrOption.clone();
-		opt.attr('value', desc[0]);
-		if (i == 0) {
-			opt.attr('selected', 'true');
-		}
-		opt.text(desc[0]+': '+desc[1]);
-		opt.appendTo(scr);
-	}
-	scrOption.remove();
-	selectChanged(jQuerySelector, scanArray);
-}
-</script>
-
-<style>
-.invoice-response .input-group-text {
-	min-width: 100px;
-}
-</style>
-			
-			
-				<div class="card-body pb-1 invoice-response">
-				
-					<form method="post" action="#" th:action="@{/document/generate/invoiceResponse}" th:object="${irForm}">
-						<input type="hidden" name="id" class="form-control" th:field="*{documentId}"/>
-						
-						<h2>Invoice Response BIS 3.0</h2>
-						
-						<div class="mb-3">
-							<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/" target="_blank">PEPPOL BIS Invoice Response 3.0 documentation</a> for details</small>						
-						</div>
-						
-						<div class="form-group">
-							<div class="input-group">
-								<div class="input-group-prepend">
-									<span class="input-group-text">Status</span>
-								</div>
-								<select th:field="*{status}" id="invoiceResponseStatusCode" name="invoiceResponseStatusCode" class="form-control" onchange="selectChanged('#invoiceResponseStatusCode', invoiceStatusCodeList)">
-									<option value=""></option>
-								</select>
-							</div>
-							<div>
-								<small class="form-text text-muted" id="invoiceResponseStatusCodeDesc"></small>
-							</div>							
-							<div>
-								<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">Invoice status code (UNCL4343 Subset)</a> for details</small>
-							</div>
-							<script>
-						initSelect('#invoiceResponseStatusCode', invoiceStatusCodeList);
-					</script>							
-				</div>
-				
-				<div class="form-group">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text">Action</span>
-						</div>
-						<select th:field="*{action}" id="statusClarificationAction" name="statusClarificationAction" class="form-control" onchange="selectChanged('#statusClarificationAction', statusActionList)">
-							<option value=""></option>
-						</select>								
-					</div>
-					<div>
-						<small class="form-text text-muted" id="statusClarificationActionDesc"></small>
-					</div>								
-					<div>
-						<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">Status Clarification Action (OpenPEPPOL)</a> for details</small>
-					</div>
-					<script>
-						initSelect('#statusClarificationAction', statusActionList);
-					</script>														
-				</div>
-				
-				<div class="form-group">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text">Reason</span>
-						</div>
-						<select th:field="*{reason}" id="statusClarificationReason" name="statusClarificationReason" class="form-control" onchange="selectChanged('#statusClarificationReason', statusReasonList)">
-							<option value=""></option>
-						</select>
-					</div>
-					<div>
-						<small class="form-text text-muted" id="statusClarificationReasonDesc"></small>
-					</div>							
-					<div>
-						<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">Status Clarification Reason (OpenPEPPOL)</a> for details</small>
-					</div>
-					<script>
-						initSelect('#statusClarificationReason', statusReasonList);
-					</script>								
-				</div>
-
-				<div class="form-group">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text">Detail type</span>
-						</div>
-						<input th:field="*{detailType}" type="text" name="invoiceResponseDetailTypeCode" class="form-control"/>
-					</div>
-					<div>
-						<small class="form-text text-muted">E.g. BT-48</small>
-					</div>							
-				</div>
-				<div class="form-group">
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text">Detail value</span>
-						</div>
-						<input th:field="*{detailValue}" type="text" name="invoiceResponseDetailValue" class="form-control"/>
-					</div>
-					<div>
-						<small class="form-text text-muted">E.g. EU12345</small>
-					</div>							
-				</div>
-
-				<button type="submit" class="m-2 btn btn-primary btn-sm">Generate</button>
-			</form>
+	<form method="post" action="#" th:action="@{/document/generate/invoiceResponse}" th:object="${irForm}">
+		<input type="hidden" name="id" class="form-control" th:field="*{documentId}"/>
+		
+		<h2>Invoice Response BIS 3.0</h2>
+		
+		<div class="mb-3">
+			<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/" target="_blank">PEPPOL BIS Invoice Response 3.0 documentation</a> for details</small>						
 		</div>
-	</div>
+			
+		<div th:replace="~{/document/layout::dynamicSelect('irs', 'Status', 'invoiceStatusCodeList', 'status', ~{::section#irs})}">
+			<section id="irs">See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
+				Invoice status code (UNCL4343 Subset)</a> for details
+			</section>
+		</div>
+		
+		<div th:replace="~{/document/layout::dynamicSelect('sca', 'Action', 'statusActionList', 'action', ~{::section#sca})}">
+			<section id="sca">See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
+				Status Clarification Action (OpenPEPPOL)</a> for details
+			</section>
+		</div>
+		
+		<div th:replace="~{/document/layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
+			<section id="scr">See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
+				Status Clarification Reason (OpenPEPPOL)</a> for details
+			</section>
+		</div>
+				
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">Detail type</span>
+				</div>
+				<input th:field="*{detailType}" type="text" name="invoiceResponseDetailTypeCode" class="form-control"/>
+			</div>
+			<div>
+				<small class="form-text text-muted">E.g. BT-48</small>
+			</div>							
+		</div>
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">Detail value</span>
+				</div>
+				<input th:field="*{detailValue}" type="text" name="invoiceResponseDetailValue" class="form-control"/>
+			</div>
+			<div>
+				<small class="form-text text-muted">E.g. EU12345</small>
+			</div>							
+		</div>
+
+		<button type="submit" class="m-2 btn btn-primary btn-sm">Generate</button>
+	</form>
+</div>
+
+</div>
 </div>
 
 </html>
