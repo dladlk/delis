@@ -1,13 +1,17 @@
 package dk.erst.delis.web.document;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +36,7 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.response.InvoiceResponseService;
 import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationData;
 import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationException;
@@ -146,12 +151,32 @@ public class DocumentController {
 		if (res == null) {
 			ra.addFlashAttribute("errorMessage", "Failed to generate InvoiceResponse");
 			return redirectEntity(defaultReturnPath);
-		} else {
-			BodyBuilder resp = ResponseEntity.ok();
-			resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"InvoiceResponse.xml\"");
-			resp.contentType(MediaType.parseMediaType("application/octet-stream"));
-			return resp.body(res);
 		}
+		
+		Path tempFile = null;
+		try {
+			tempFile = Files.createTempFile("GeneratedInvoiceResponse_", ".xml");
+			FileUtils.copyToFile(new ByteArrayInputStream(res), tempFile.toFile());
+		} catch (IOException e) {
+			log.error("Failed to save generated invoice response to file "+tempFile, e);
+			ra.addFlashAttribute("errorMessage", "Failed to save generated InvoiceResponse");
+			return redirectEntity(defaultReturnPath);
+		}
+		
+		List<ErrorRecord> errorList = invoiceResponseService.validateInvoiceResponse(tempFile);
+		if (!errorList.isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Generated InvoiceResponse is not valid by schema or schematron, ");
+			sb.append(errorList.size());
+			ra.addFlashAttribute("errorMessage", sb.toString());
+			ra.addFlashAttribute("invoiceResponseErrorList", errorList);
+			return redirectEntity(defaultReturnPath);
+		}
+		
+		BodyBuilder resp = ResponseEntity.ok();
+		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"InvoiceResponse.xml\"");
+		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
+		return resp.body(res);
 	}
 	
 	@Getter @Setter

@@ -21,13 +21,11 @@ import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
+import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationServiceUnitTest;
-import dk.erst.delis.task.document.process.log.DocumentProcessLog;
-import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationData;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
-import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 
 public class InvoiceResponseServiceTest {
 
@@ -43,7 +41,8 @@ public class InvoiceResponseServiceTest {
 			return true;
 		});
 
-		InvoiceResponseService s = new InvoiceResponseService(storageService);
+		DocumentValidationTransformationService validationTransformationService = DocumentValidationTransformationServiceUnitTest.getTestInstance();
+		InvoiceResponseService s = new InvoiceResponseService(storageService, validationTransformationService);
 		Document document = new Document();
 		document.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE);
 		InvoiceResponseGenerationData data = new InvoiceResponseGenerationData();
@@ -58,19 +57,12 @@ public class InvoiceResponseServiceTest {
 		System.out.println(new String(res, StandardCharsets.UTF_8));
 		Path testPath = TestDocumentUtil.createTestFile(new ByteArrayInputStream(res), "InvoiceResponse");
 
-		Document documentInvoiceResponse = new Document();
-		documentInvoiceResponse.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE_RESPONSE);
-		DocumentProcessLog log = DocumentValidationTransformationServiceUnitTest.getTestInstance().process(documentInvoiceResponse, testPath, OrganisationReceivingFormatRule.BIS3);
-		List<DocumentProcessStep> stepList = log.getStepList();
-		for (DocumentProcessStep step : stepList) {
-			List<ErrorRecord> errorRecords = step.getErrorRecords();
-			if (errorRecords != null) {
-				for (ErrorRecord errorRecord : errorRecords) {
-					System.out.println(errorRecord.getCode() + " " + errorRecord.getLocation() + " " + errorRecord.getMessage() + "[" + errorRecord.getFlag() + "]");
-				}
-			}
+		List<ErrorRecord> errorRecords = s.validateInvoiceResponse(testPath);
+
+		for (ErrorRecord errorRecord : errorRecords) {
+			System.out.println(errorRecord.getCode() + " " + errorRecord.getLocation() + " " + errorRecord.getMessage() + "[" + errorRecord.getFlag() + "]");
 		}
-		assertTrue(log.isSuccess());
+		assertTrue(errorRecords.isEmpty());
 	}
 
 }

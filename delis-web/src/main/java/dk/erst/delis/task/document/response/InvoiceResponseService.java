@@ -2,9 +2,12 @@ package dk.erst.delis.task.document.response;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +15,14 @@ import org.springframework.stereotype.Service;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
+import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.xml.builder.InvoiceResponseBuilder;
 import dk.erst.delis.xml.builder.data.DocumentResponse;
 import dk.erst.delis.xml.builder.data.InvoiceResponseData;
@@ -27,10 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 public class InvoiceResponseService {
 
 	private DocumentBytesStorageService documentBytesStorageService;
+	private DocumentValidationTransformationService validationTransformationService;
 
 	@Autowired
-	public InvoiceResponseService(DocumentBytesStorageService documentBytesStorageService) {
+	public InvoiceResponseService(DocumentBytesStorageService documentBytesStorageService, DocumentValidationTransformationService validationTransformationService) {
 		this.documentBytesStorageService = documentBytesStorageService;
+		this.validationTransformationService = validationTransformationService;
 	}
 	
 	@Data
@@ -122,6 +133,22 @@ public class InvoiceResponseService {
 		}
 
 		return res;
+	}
+	
+	public List<ErrorRecord> validateInvoiceResponse(Path xmlFile) {
+		Document documentInvoiceResponse = new Document();
+		documentInvoiceResponse.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE_RESPONSE);
+
+		DocumentProcessLog log = validationTransformationService.process(documentInvoiceResponse, xmlFile, OrganisationReceivingFormatRule.BIS3);
+		List<DocumentProcessStep> stepList = log.getStepList();
+		List<ErrorRecord> errors = new ArrayList<>();
+		for (DocumentProcessStep step : stepList) {
+			List<ErrorRecord> errorRecords = step.getErrorRecords();
+			if (errorRecords != null) {
+				errors.addAll(errorRecords);
+			}
+		}
+		return errors;
 	}
 
 	public static class InvoiceResponseGenerationException extends Exception {
