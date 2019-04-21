@@ -20,10 +20,12 @@ public class SimpleSenderTest {
 			byte[] payload = loadTestPayload();
 			SimpleSender s = new SimpleSender();
 			log.info("Sending by AS2...");
-			s.sendFile(payload, false);
-			
+			s.setPreferAS2(true);
+			s.sendFile(payload);
+
+			s.setPreferAS2(false);
 			log.info("Sending by AS4...");
-			s.sendFile(payload, true);
+			s.sendFile(payload);
 		} catch (Exception e) {
 			log.error("Failed", e);
 			throw e;
@@ -36,8 +38,10 @@ public class SimpleSenderTest {
 		byte[] payload = loadTestPayload();
 		SimpleSender s = new SimpleSender();
 		for (int i = 0; i < 10; i++) {
-			s.sendFile(payload, false);
-			s.sendFile(payload, true);
+			s.setPreferAS2(true);
+			s.sendFile(payload);
+			s.setPreferAS2(false);
+			s.sendFile(payload);
 		}
 	}
 
