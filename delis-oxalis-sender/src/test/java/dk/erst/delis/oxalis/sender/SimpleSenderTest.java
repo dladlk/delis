@@ -18,6 +18,7 @@ import com.google.inject.util.Modules;
 
 import dk.erst.delis.oxalis.sender.request.LookupTransmissionRequestBuilder;
 import dk.erst.delis.oxalis.sender.request.StaticTransmissionRequestBuilder;
+import dk.erst.delis.oxalis.sender.response.DelisResponse;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.oxalis.api.lookup.LookupService;
 import no.difi.oxalis.as4.inbound.As4InboundModule;
@@ -57,19 +58,30 @@ public class SimpleSenderTest {
 	public void testSendFileStatic() throws Exception {
 		byte[] payload = loadTestPayload();
 		SimpleSender sender = new SimpleSender(injector, staticBuilder);
-		send(sender, payload);
+		sendBothTransports(sender, payload);
 	}
 
-	private void send(SimpleSender sender, byte[] payload) throws Exception {
+	private void sendBothTransports(SimpleSender sender, byte[] payload) throws Exception {
 		staticBuilder.setHeader(buildHeader());
 
 		log.info("Sending by AS2...");
 		staticBuilder.setEndpoint(buildEndpoint(false));
-		sender.sendFile(payload);
+		sendPayload(sender, payload);
 
 		log.info("Sending by AS4...");
 		staticBuilder.setEndpoint(buildEndpoint(true));
-		sender.sendFile(payload);
+		sendPayload(sender, payload);
+	}
+
+	private void sendPayload(SimpleSender sender, byte[] payload) throws Exception {
+		long start = System.currentTimeMillis();
+
+		DelisResponse response = sender.send(payload);
+
+		log.info("Sent to endpoint " + response.getEndpoint().getAddress());
+		log.info("Header: " + response.getHeader());
+
+		log.debug("Done in " + (System.currentTimeMillis() - start) + " ms");
 	}
 
 	private Header buildHeader() {
@@ -107,7 +119,7 @@ public class SimpleSenderTest {
 
 		SimpleSender s = new SimpleSender(injector, lookupBuilder);
 		log.info("Sending by dynamic lookup...");
-		s.sendFile(payload);
+		sendPayload(s, payload);
 	}
 
 	@Test
@@ -117,7 +129,7 @@ public class SimpleSenderTest {
 		SimpleSender sender = new SimpleSender(injector, staticBuilder);
 
 		for (int i = 0; i < 10; i++) {
-			this.send(sender, payload);
+			this.sendBothTransports(sender, payload);
 		}
 	}
 

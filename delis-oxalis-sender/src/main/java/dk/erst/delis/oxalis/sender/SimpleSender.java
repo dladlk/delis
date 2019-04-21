@@ -1,6 +1,7 @@
 package dk.erst.delis.oxalis.sender;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -9,11 +10,11 @@ import com.google.inject.name.Names;
 import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest;
 import dk.erst.delis.oxalis.sender.request.IDelisTransmissionRequestBuilder;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import lombok.extern.slf4j.Slf4j;
+import no.difi.oxalis.api.lang.OxalisTransmissionException;
 import no.difi.oxalis.api.outbound.MessageSender;
 import no.difi.oxalis.api.persist.PersisterHandler;
+import no.difi.vefa.peppol.sbdh.lang.SbdhException;
 
-@Slf4j
 public class SimpleSender {
 
 	private MessageSender messageSenderAs4;
@@ -28,10 +29,14 @@ public class SimpleSender {
 		this.persisterHandler = injector.getInstance(Key.get(PersisterHandler.class, Names.named("default")));
 	}
 
-	public void sendFile(final byte[] payload) throws Exception {
-		DelisTransmissionRequest tr = this.requestBuilder.build(new ByteArrayInputStream(payload));
+	public DelisResponse send(final byte[] payload) throws Exception {
+		ByteArrayInputStream payloadStream = new ByteArrayInputStream(payload);
+		return send(payloadStream);
+	}
 
-		long start = System.currentTimeMillis();
+	public DelisResponse send(ByteArrayInputStream payloadStream) throws IOException, OxalisTransmissionException, SbdhException {
+		DelisTransmissionRequest tr = this.requestBuilder.build(payloadStream);
+
 		DelisResponse response;
 		if (tr.isAs4()) {
 			response = DelisResponse.of(messageSenderAs4.send(tr));
@@ -42,12 +47,9 @@ public class SimpleSender {
 		// Persist receipt - default persister does not save payload
 		persisterHandler.persist(response, null);
 		// Persist sent payload
-		persisterHandler.persist(response.getTransmissionIdentifier(), response.getHeader(), new ByteArrayInputStream(payload));
-
-		log.info("Sent to endpoint " + response.getEndpoint().getAddress());
-		log.info("Header: " + response.getHeader());
-
-		log.debug("Done in " + (System.currentTimeMillis() - start) + " ms");
+		persisterHandler.persist(response.getTransmissionIdentifier(), response.getHeader(), payloadStream);
+		
+		return response;
 	}
 
 }
