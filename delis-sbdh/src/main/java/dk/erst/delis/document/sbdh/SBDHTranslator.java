@@ -1,19 +1,21 @@
 package dk.erst.delis.document.sbdh;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import dk.erst.delis.document.domibus.MetadataBuilder;
 import dk.erst.delis.document.domibus.MetadataSerializer;
 import eu.domibus.plugin.fs.ebms3.UserMessage;
 import no.difi.vefa.peppol.common.model.Header;
 import no.difi.vefa.peppol.sbdh.SbdWriter;
 import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
 
 public class SBDHTranslator {
 
@@ -37,6 +39,27 @@ public class SBDHTranslator {
         return null;
     }
 
+    public Header addHeader(InputStream source, OutputStream target) {
+        try {
+            DelisSbdhParser sbdhParser = new DelisSbdhParser();
+            source.mark(Integer.MAX_VALUE);
+            Header header = sbdhParser.parse(source);
+            try (SbdWriter sbdWriter = SbdWriter.newInstance(target, header)) {
+            	source.reset();
+                XMLStreamUtils.copy(source, sbdWriter.xmlWriter());
+            } catch (Exception ex) {
+                throw new IllegalStateException("Unable to wrap document inside SBD (SBDH): " + ex.getMessage(), ex);
+            }
+            return header;
+        } catch (AlreadySBDHException ae) {
+        	throw ae;
+        } catch (Exception e) {
+            log.error("Failed to generate SBDH for " + source, e);
+        }
+        return null;
+    }
+
+    
     private Header parseHeader(Path source) throws IOException {
         try (FileInputStream sourceFileStream = new FileInputStream(source.toString())) {
             DelisSbdhParser sbdhParser = new DelisSbdhParser();
