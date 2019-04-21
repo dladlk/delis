@@ -2,10 +2,10 @@
     <StandardBusinessDocumentHeader>
         <HeaderVersion>1.0</HeaderVersion>
         <Sender>
-            <Identifier Authority="iso6523-actorid-upis">0088:5790001968526</Identifier>
+            <Identifier Authority="iso6523-actorid-upis">0088:5798009882875</Identifier>
         </Sender>
         <Receiver>
-            <Identifier Authority="iso6523-actorid-upis">0088:5790001968526</Identifier>
+            <Identifier Authority="iso6523-actorid-upis">0088:5798009882875</Identifier>
         </Receiver>
         <DocumentIdentification>
             <Standard>urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</Standard>
@@ -21,14 +21,14 @@
             </Scope>
             <Scope>
                 <Type>PROCESSID</Type>
-                <InstanceIdentifier>urn:www.cenbii.eu:profile:bii04:ver1.0</InstanceIdentifier>
+                <InstanceIdentifier>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</InstanceIdentifier>
             </Scope>
         </BusinessScope>
     </StandardBusinessDocumentHeader>
     <Invoice:Invoice xmlns:Invoice="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
         <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
-        <cbc:CustomizationID>urn:www.cenbii.eu:transaction:biicoretrdm010:ver1.0:#urn:www.peppol.eu:bis:peppol4a:ver1.0</cbc:CustomizationID>
-        <cbc:ProfileID>urn:www.cenbii.eu:profile:bii04:ver1.0</cbc:ProfileID>
+        <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+        <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
         <cbc:ID>1</cbc:ID>
         <cbc:IssueDate>2012-06-08</cbc:IssueDate>
         <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
@@ -38,7 +38,7 @@
         <cac:AccountingSupplierParty>
             <cac:Party>
                 <cac:PartyIdentification>
-                    <cbc:ID schemeID="GLN">5790001968526</cbc:ID>
+                    <cbc:ID schemeID="GLN">5798009882875</cbc:ID>
                 </cac:PartyIdentification>
                 <cac:PartyName>
                     <cbc:Name>Ecru Consulting</cbc:Name>
@@ -53,13 +53,13 @@
                     </cac:Country>
                 </cac:PostalAddress>
                 <cac:PartyTaxScheme>
-                    <cbc:CompanyID>SE579000196852601</cbc:CompanyID>
+                    <cbc:CompanyID>SE5798009882875</cbc:CompanyID>
                     <cac:TaxScheme>
                         <cbc:ID>VAT</cbc:ID>
                     </cac:TaxScheme>
                 </cac:PartyTaxScheme>
                 <cac:PartyLegalEntity>
-                    <cbc:CompanyID>5790001968526</cbc:CompanyID>
+                    <cbc:CompanyID>5798009882875</cbc:CompanyID>
                 </cac:PartyLegalEntity>
                 <cac:Person>
                     <cbc:FirstName>Martin</cbc:FirstName>
@@ -70,7 +70,7 @@
         <cac:AccountingCustomerParty>
             <cac:Party>
                 <cac:PartyIdentification>
-                    <cbc:ID schemeID="GLN">5790001968526</cbc:ID>
+                    <cbc:ID schemeID="GLN">5798009882875</cbc:ID>
                 </cac:PartyIdentification>
                 <cac:PartyName>
                     <cbc:Name>EKONOMISTYRNINGSVERKET (NATIONAL FINANCIAL MANAGEMENT AUTHORITY)</cbc:Name>

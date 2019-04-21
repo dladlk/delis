@@ -28,6 +28,13 @@
 		</dependency>     
 	
 	
+		<!-- Delis-sbdh -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-sbdh</artifactId>
+			<version>${delis.version}</version>
+		</dependency>  	
+	
 		<dependency>
 			<groupId>no.difi.oxalis</groupId>
 			<artifactId>oxalis-as4</artifactId>
@@ -106,6 +113,15 @@
 			<artifactId>jul-to-slf4j</artifactId>
 			<version>1.7.25</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.google.guava/failureaccess -->
+		<dependency>
+		    <groupId>com.google.guava</groupId>
+		    <artifactId>failureaccess</artifactId>
+		    <version>1.0.1</version>
+		    <scope>test</scope>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

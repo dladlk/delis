@@ -1,4 +1,4 @@
-package dk.erst.delis.oxalis.sender;
+package dk.erst.delis.oxalis.sender.request;
 
 import java.io.InputStream;
 import java.io.Serializable;
@@ -17,9 +17,11 @@ public class DelisTransmissionRequest implements TransmissionRequest, Serializab
 
 	private static final long serialVersionUID = 5493008704054063660L;
 
-	private boolean as4;
 	private final Endpoint endpoint;
-    private final Header header;
-    private final InputStream payload;
+	private final Header header;
+	private final InputStream payload;
 
+	public boolean isAs4() {
+		return this.endpoint.getTransportProfile().getIdentifier().indexOf("-as4-") > 0;
+	}
 }

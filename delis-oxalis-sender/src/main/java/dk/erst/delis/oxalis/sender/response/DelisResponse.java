@@ -1,4 +1,4 @@
-package dk.erst.delis.oxalis.sender;
+package dk.erst.delis.oxalis.sender.response;
 
 import java.security.cert.X509Certificate;
 
@@ -17,7 +17,7 @@ import no.difi.vefa.peppol.common.model.TransportProfile;
 public class DelisResponse extends As4InboundMetadata {
 
 	private Endpoint endpoint;
-	
+
 	private DelisResponse(TransmissionIdentifier transmissionIdentifier, String conversationId, Header header, Timestamp timestamp, TransportProfile transportProfile, Digest digest, X509Certificate certificate, byte[] primaryReceipt, As4EnvelopeHeader as4EnvelopeHeader) {
 		super(transmissionIdentifier, conversationId, header, timestamp, transportProfile, digest, certificate, primaryReceipt, as4EnvelopeHeader);
 	}
