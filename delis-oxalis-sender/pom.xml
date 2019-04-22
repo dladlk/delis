@@ -115,11 +115,11 @@
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/com.google.guava/failureaccess -->
+		<!-- Needed to see more details reasons of failures in Guice injection -->
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>failureaccess</artifactId>
 		    <version>1.0.1</version>
-		    <scope>test</scope>
 		</dependency>
 		
 	</dependencies>

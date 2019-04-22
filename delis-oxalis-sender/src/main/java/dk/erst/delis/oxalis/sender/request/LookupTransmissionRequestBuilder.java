@@ -1,9 +1,9 @@
 package dk.erst.delis.oxalis.sender.request;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 
 import dk.erst.delis.document.sbdh.AlreadySBDHException;
 import dk.erst.delis.document.sbdh.SBDHTranslator;
@@ -25,17 +25,22 @@ public class LookupTransmissionRequestBuilder implements IDelisTransmissionReque
 
 	@Override
 	public DelisTransmissionRequest build(InputStream payload) throws IOException, TransmissionLookupException, SbdhException {
-		PipedInputStream in = new PipedInputStream();
-		PipedOutputStream out = new PipedOutputStream(in);
-
 		SBDHTranslator t = new SBDHTranslator();
 		Header header;
+		payload.mark(Integer.MAX_VALUE);
+		InputStream sbdhStream;
 		try {
-			header = t.addHeader(payload, out);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			header = t.addHeader(payload, baos);
+			payload.close();
+			sbdhStream = new ByteArrayInputStream(baos.toByteArray());
 		} catch (AlreadySBDHException e) {
 			payload.reset();
 			SbdReader reader = SbdReader.newInstance(payload);
 			header = reader.getHeader();
+			payload.reset();
+			sbdhStream = payload;
+		} finally {
 		}
 
 		Endpoint endpoint;
@@ -49,7 +54,7 @@ public class LookupTransmissionRequestBuilder implements IDelisTransmissionReque
 				.builder()
 					.header(header)
 					.endpoint(endpoint)
-					.payload(payload)
+					.payload(sbdhStream)
 					.build();
 
 		return r;
