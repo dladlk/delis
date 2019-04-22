@@ -30,28 +30,32 @@ public class SimpleSender implements ISender {
 		this.persisterHandler = injector.getInstance(Key.get(PersisterHandler.class, Names.named("default")));
 	}
 
-	@Override
 	public DelisResponse send(final byte[] payload) throws Exception {
 		ByteArrayInputStream payloadStream = new ByteArrayInputStream(payload);
 		return send(payloadStream);
 	}
 
 	@Override
-	public DelisResponse send(InputStream payloadStream) throws IOException, OxalisTransmissionException, SbdhException {
+	public DelisResponse send(InputStream payloadStream) throws TransmissionLookupException, TransmissionException, SbdhException, IOException {
 		DelisTransmissionRequest tr = this.requestBuilder.build(payloadStream);
 
 		DelisResponse response;
-		if (tr.isAs4()) {
-			response = DelisResponse.of(messageSenderAs4.send(tr));
-		} else {
-			response = DelisResponse.of(messageSenderAs2.send(tr));
+
+		try {
+			if (tr.isAs4()) {
+				response = DelisResponse.of(messageSenderAs4.send(tr));
+			} else {
+				response = DelisResponse.of(messageSenderAs2.send(tr));
+			}
+		} catch (OxalisTransmissionException e) {
+			throw new TransmissionException(e.getMessage(), e);
 		}
 
 		// Persist receipt - default persister does not save payload
 		persisterHandler.persist(response, null);
 		// Persist sent payload
 		persisterHandler.persist(response.getTransmissionIdentifier(), response.getHeader(), payloadStream);
-		
+
 		return response;
 	}
 

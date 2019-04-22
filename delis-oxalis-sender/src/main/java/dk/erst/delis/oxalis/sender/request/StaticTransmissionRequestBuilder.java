@@ -3,10 +3,10 @@ package dk.erst.delis.oxalis.sender.request;
 import java.io.IOException;
 import java.io.InputStream;
 
+import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest.DelisTransmissionRequestBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import no.difi.oxalis.api.lang.OxalisTransmissionException;
 import no.difi.vefa.peppol.common.model.Endpoint;
 import no.difi.vefa.peppol.common.model.Header;
 import no.difi.vefa.peppol.sbdh.lang.SbdhException;
@@ -22,7 +22,7 @@ public class StaticTransmissionRequestBuilder implements IDelisTransmissionReque
 	}
 
 	@Override
-	public DelisTransmissionRequest build(InputStream payload) throws IOException, OxalisTransmissionException, SbdhException {
+	public DelisTransmissionRequest build(InputStream payload) throws IOException, TransmissionLookupException, SbdhException {
 		return buildTransmissionRequest(payload);
 	}
 

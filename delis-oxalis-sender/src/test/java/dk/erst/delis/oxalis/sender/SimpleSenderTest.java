@@ -1,5 +1,6 @@
 package dk.erst.delis.oxalis.sender;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +77,7 @@ public class SimpleSenderTest {
 	private void sendPayload(ISender sender, byte[] payload) throws Exception {
 		long start = System.currentTimeMillis();
 
-		DelisResponse response = sender.send(payload);
+		DelisResponse response = sender.send(new ByteArrayInputStream(payload));
 
 		log.info("Sent to endpoint " + response.getEndpoint().getAddress());
 		log.info("Header: " + response.getHeader());

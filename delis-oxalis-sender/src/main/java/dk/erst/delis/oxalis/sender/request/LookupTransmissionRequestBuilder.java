@@ -7,6 +7,7 @@ import java.io.PipedOutputStream;
 
 import dk.erst.delis.document.sbdh.AlreadySBDHException;
 import dk.erst.delis.document.sbdh.SBDHTranslator;
+import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import no.difi.oxalis.api.lang.OxalisTransmissionException;
 import no.difi.oxalis.api.lookup.LookupService;
 import no.difi.vefa.peppol.common.model.Endpoint;
@@ -23,7 +24,7 @@ public class LookupTransmissionRequestBuilder implements IDelisTransmissionReque
 	}
 
 	@Override
-	public DelisTransmissionRequest build(InputStream payload) throws IOException, OxalisTransmissionException, SbdhException {
+	public DelisTransmissionRequest build(InputStream payload) throws IOException, TransmissionLookupException, SbdhException {
 		PipedInputStream in = new PipedInputStream();
 		PipedOutputStream out = new PipedOutputStream(in);
 
@@ -37,7 +38,12 @@ public class LookupTransmissionRequestBuilder implements IDelisTransmissionReque
 			header = reader.getHeader();
 		}
 
-		Endpoint endpoint = lookupService.lookup(header);
+		Endpoint endpoint;
+		try {
+			endpoint = lookupService.lookup(header);
+		} catch (OxalisTransmissionException e) {
+			throw new TransmissionLookupException(e.getMessage(), e);
+		}
 
 		DelisTransmissionRequest r = DelisTransmissionRequest
 				.builder()
