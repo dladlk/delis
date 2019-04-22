@@ -57,11 +57,11 @@ public class SimpleSenderTest {
 	@Test
 	public void testSendFileStatic() throws Exception {
 		byte[] payload = loadTestPayload();
-		SimpleSender sender = new SimpleSender(injector, staticBuilder);
+		ISender sender = new SimpleSender(injector, staticBuilder);
 		sendBothTransports(sender, payload);
 	}
 
-	private void sendBothTransports(SimpleSender sender, byte[] payload) throws Exception {
+	private void sendBothTransports(ISender sender, byte[] payload) throws Exception {
 		staticBuilder.setHeader(buildHeader());
 
 		log.info("Sending by AS2...");
@@ -73,7 +73,7 @@ public class SimpleSenderTest {
 		sendPayload(sender, payload);
 	}
 
-	private void sendPayload(SimpleSender sender, byte[] payload) throws Exception {
+	private void sendPayload(ISender sender, byte[] payload) throws Exception {
 		long start = System.currentTimeMillis();
 
 		DelisResponse response = sender.send(payload);
@@ -117,7 +117,7 @@ public class SimpleSenderTest {
 	public void testSendFileByLookup() throws Exception {
 		byte[] payload = loadTestPayload();
 
-		SimpleSender s = new SimpleSender(injector, lookupBuilder);
+		ISender s = new SimpleSender(injector, lookupBuilder);
 		log.info("Sending by dynamic lookup...");
 		sendPayload(s, payload);
 	}
@@ -126,7 +126,7 @@ public class SimpleSenderTest {
 	@Ignore
 	public void testSendFileStaticMany() throws Exception {
 		byte[] payload = loadTestPayload();
-		SimpleSender sender = new SimpleSender(injector, staticBuilder);
+		ISender sender = new SimpleSender(injector, staticBuilder);
 
 		for (int i = 0; i < 10; i++) {
 			this.sendBothTransports(sender, payload);

@@ -15,7 +15,7 @@ import no.difi.oxalis.api.outbound.MessageSender;
 import no.difi.oxalis.api.persist.PersisterHandler;
 import no.difi.vefa.peppol.sbdh.lang.SbdhException;
 
-public class SimpleSender {
+public class SimpleSender implements ISender {
 
 	private MessageSender messageSenderAs4;
 	private MessageSender messageSenderAs2;
@@ -29,11 +29,13 @@ public class SimpleSender {
 		this.persisterHandler = injector.getInstance(Key.get(PersisterHandler.class, Names.named("default")));
 	}
 
+	@Override
 	public DelisResponse send(final byte[] payload) throws Exception {
 		ByteArrayInputStream payloadStream = new ByteArrayInputStream(payload);
 		return send(payloadStream);
 	}
 
+	@Override
 	public DelisResponse send(ByteArrayInputStream payloadStream) throws IOException, OxalisTransmissionException, SbdhException {
 		DelisTransmissionRequest tr = this.requestBuilder.build(payloadStream);
 
