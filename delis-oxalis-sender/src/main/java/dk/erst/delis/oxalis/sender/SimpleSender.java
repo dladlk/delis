@@ -2,6 +2,7 @@ package dk.erst.delis.oxalis.sender;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -36,7 +37,7 @@ public class SimpleSender implements ISender {
 	}
 
 	@Override
-	public DelisResponse send(ByteArrayInputStream payloadStream) throws IOException, OxalisTransmissionException, SbdhException {
+	public DelisResponse send(InputStream payloadStream) throws IOException, OxalisTransmissionException, SbdhException {
 		DelisTransmissionRequest tr = this.requestBuilder.build(payloadStream);
 
 		DelisResponse response;
