@@ -6,10 +6,11 @@ import java.util.Map;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.pagefiltering.persistence.AbstractRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface DocumentDaoRepository extends PagingAndSortingRepository<Document, Long>, DocumentDao {
+public interface DocumentDaoRepository extends AbstractRepository<Document>, DocumentDao {
 
 	@Query("select s.documentStatus as documentStatus, count(*) as documentCount "
 			+ "from Document s "

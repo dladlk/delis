@@ -51,20 +51,32 @@
 			</form>
 
 			<form action="#" th:action="@{/document/updatestatuses}" th:object="${selectedIdList}" method="post">
+
+				<span th:text="${#strings.equals(documentList.sortField,'createTime')}">0088:234234234</span>
+				<span th:text="${documentList.sortField}">0088:234234234</span>
+				<span th:text="${#strings.equals(documentList.sortDirection,'Desc')}">0088:234234234</span>
+				<span th:text="${documentList.sortDirection}">0088:234234234</span>
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
-					<th>
+                    <th>
 						<input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" />
 					</th>
-					<th>Received</th>
-					<th>Organisation</th>
-					<th>Receiver</th>
-					<th>Status</th>
-					<th>Ingoing Type</th>
-					<th>Ingoing Format</th>
-					<th>Sender</th>
+					<th>Received<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'createTime'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+								   th:onclick="'sortTableForm(\'documentTableForm\', \'createTime_'+ ${(#strings.equals(documentList.sortField,'createTime'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
+					<th>Organisation<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'organisation.name'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+                                       th:onclick="'sortTableForm(\'documentTableForm\', \'organisation.name_'+ ${(#strings.equals(documentList.sortField,'organisation.name'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
+					<th>Receiver<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'receiverIdentifier.name'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+                                   th:onclick="'sortTableForm(\'documentTableForm\', \'receiverIdentifier.name_'+ ${(#strings.equals(documentList.sortField,'receiverIdentifier.name'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
+					<th>Status<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'documentStatus'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+                                 th:onclick="'sortTableForm(\'documentTableForm\', \'documentStatus_'+ ${(#strings.equals(documentList.sortField,'documentStatus'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
+					<th>Ingoing Type<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'documentType'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+                                       th:onclick="'sortTableForm(\'documentTableForm\', \'documentType_'+ ${(#strings.equals(documentList.sortField,'documentType'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
+					<th>Ingoing Format<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'ingoingDocumentFormat'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+                                         th:onclick="'sortTableForm(\'documentTableForm\', \'ingoingDocumentFormat_'+ ${(#strings.equals(documentList.sortField,'ingoingDocumentFormat'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
+					<th>Sender<i th:class="'fa fa-fw ' + ${(#strings.equals(documentList.sortField,'senderName'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}"
+                                 th:onclick="'sortTableForm(\'documentTableForm\', \'senderName_'+ ${(#strings.equals(documentList.sortField,'senderName'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'"></i></th>
 				</tr>
-				<tr th:each="r,iter : ${documentList}">
+				<tr th:each="r,iter : ${documentList.items}">
 					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
 					<td>
 						<a href="#" th:href="@{/document/view/__${r.id}__}" th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
@@ -77,7 +89,7 @@
 						<span th:text="${r.receiverIdRaw}">0088:234234234</span>
 					</td>
 					<td th:text="${r.documentStatus}">LOAD_OK</td>
-					<td th:text="${r.ingoingDocumentFormat.documentType}">Invoice</td>
+					<td th:text="${r.documentType}">Invoice</td>
 					<td th:text="${r.ingoingDocumentFormat}">BIS3_INVOICE</td>
 					<td th:text="${r.senderName}">Lego Spain</td>
 				</tr>
@@ -93,9 +105,72 @@
 			</div>
 			</form>
 		</div>
+		<div class="card-footer">
+			<!-- customers pagination -->
+			<nav aria-label="Pagination" th:if="${documentList.totalPages gt 0}">
+				<ul class="pagination justify-content-center font-weight-medium">
+					<li class="page-item" th:classappend="${documentList.currentPage eq 1} ? 'disabled'">
+						<a class="page-link svg-icon"
+						   href="#"
+						   th:onclick="|pageTableForm('documentTableForm', ${1})|"
+						   aria-label="First"
+						   title="First Page" rel="tooltip">
+							<span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">First</span>
+						</a>
+					</li>
+					<li class="page-item" th:classappend="${documentList.currentPage eq 1} ? 'disabled'">
+						<a class="page-link svg-icon"
+						   href="#"
+						   th:onclick="|pageTableForm('documentTableForm', ${documentList.currentPage lt 2 ? 1 : documentList.currentPage - 1})|"
+						   aria-label="Previous"
+						   title="Previous Page" rel="tooltip">
+							<span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">Previous</span>
+						</a>
+					</li>
+					<li class="page-item" th:classappend="${i eq documentList.currentPage} ? 'active'"
+						th:each="i : ${#numbers.sequence( documentList.paginatorStart, documentList.paginatorEnd, 1)}">
+						<a class="page-link"
+						   href="#"
+						   th:text="${i}"
+						   th:onclick="|pageTableForm('documentTableForm', ${i})|"
+						   th:title="${'Page '+ i}"
+						   rel="tooltip"></a>
+					</li>
+					<li class="page-item" th:if="${documentList.currentPage + 10 < documentList.totalPages}">
+						<a class="page-link svg-icon" href="#">
+							<span data-feather="more-horizontal" width="20" height="20">...</span>
+						</a>
+					</li>
+					<li class="page-item" th:classappend="${documentList.currentPage eq documentList.totalPages} ? 'disabled'">
+						<a class="page-link svg-icon"
+						   href="#"
+						   th:onclick="|pageTableForm('documentTableForm', ${documentList.currentPage + 1})|"
+						   aria-label="Next"
+						   title="Next Page" rel="tooltip">
+							<span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Next</span>
+						</a>
+					</li>
+					<li class="page-item" th:classappend="${documentList.currentPage eq documentList.totalPages} ? 'disabled'">
+						<a class="page-link svg-icon"
+						   href="#"
+						   th:onclick="|pageTableForm('documentTableForm', ${documentList.totalPages})|"
+						   aria-label="Last"
+						   title="Last Page" rel="tooltip">
+							<span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">Last</span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 	</div>
-	
-	<div class="card">
+
+
+    <form id="documentTableForm" action="#" th:action="@{/document/list/filter}" method="post">
+        <input type="hidden" name="sort" id="sort" th:value="'sortby_' + ${documentList.sortField + '_' + documentList.sortDirection}" />
+        <input type="hidden" name="page" id="page" th:value="${documentList.currentPage}" />
+    </form>
+
+		<div class="card">
 		<div class="card-header bg-primary text-white">
 			Upload document
 		</div>
@@ -113,6 +188,18 @@
 			</form>
 		</div>
 	</div>
+<script>
+	function pageTableForm(formName, page) {
+		var currentForm = document.forms[formName];
+		currentForm.page.value = page;
+		currentForm.submit();
+	}
+	function sortTableForm(formName, sort) {
+		var currentForm = document.forms[formName];
+		currentForm.sort.value = "sortby_" + sort;
+		currentForm.submit();
+	}
+</script>
 	
 </body>
 </html>

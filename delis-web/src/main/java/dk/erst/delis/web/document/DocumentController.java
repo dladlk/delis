@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import dk.erst.delis.pagefiltering.response.PageContainer;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -40,14 +42,14 @@ public class DocumentController {
 	private DocumentBytesDaoRepository documentBytesDaoRepository;
 
 	@RequestMapping("/document/list")
-	public String list(Model model) {
-		return listFilter(model);
+	public String list(Model model, WebRequest webRequest) {
+		return listFilter(model, webRequest);
 	}
 
 	@PostMapping("/document/list/filter")
-	public String listFilter(Model model) {
-		List<Document> list = documentService.documentList(0, 10);
-		model.addAttribute("documentList", list);
+	public String listFilter(Model model, WebRequest webRequest) {
+		PageContainer<Document> pageContainer = documentService.getAll(webRequest);
+		model.addAttribute("documentList", pageContainer);
 		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", DocumentStatus.values());
 		return "/document/list";
