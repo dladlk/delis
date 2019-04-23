@@ -47,7 +47,7 @@ public class IdentifierCheckRestController {
     private OrganisationSetupService organisationSetupService;
 
     @RequestMapping(value = "/receivercheck/{identifier}/{service}/{action}", method = RequestMethod.GET)
-    public ResponseEntity checkIdentifier(@PathVariable("identifier") String compoundIdentifier,
+    public ResponseEntity<?> checkIdentifier(@PathVariable("identifier") String compoundIdentifier,
                                           @PathVariable("service") String service,
                                           @PathVariable("action") String action) {
 
@@ -95,7 +95,7 @@ public class IdentifierCheckRestController {
         long stopTime = new Date().getTime();
         log.info("Stop checkIdentifier. Execution time: " + (stopTime - startTime) + " ms.");
 
-        ResponseEntity response;
+        ResponseEntity<?> response;
         if (result.status == HttpStatus.OK) {
             response = ResponseEntity.ok().build();
         } else {

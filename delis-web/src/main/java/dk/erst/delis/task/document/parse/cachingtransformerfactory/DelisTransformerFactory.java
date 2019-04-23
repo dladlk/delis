@@ -31,7 +31,7 @@ public final class DelisTransformerFactory extends TransformerFactory {
 
 	public static TransformerFactory newInstance(boolean cacheEnabled) {
 		if (cacheEnabled) {
-			return new CachingTransformerFactory();
+			return CachingTransformerFactory.getInstance();
 		} else {
 			return TransformerFactory.newInstance();
 		}

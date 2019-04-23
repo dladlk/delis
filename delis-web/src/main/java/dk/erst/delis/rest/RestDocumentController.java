@@ -49,7 +49,7 @@ public class RestDocumentController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity upload(@RequestParam MultipartFile file, @RequestParam boolean validateImmediately) {
+    public ResponseEntity<DocumentLoadResponse> upload(@RequestParam MultipartFile file, @RequestParam boolean validateImmediately) {
         File tempFile;
         try {
             tempFile = File.createTempFile("manual_upload_" + file.getName() + "_", ".xml");

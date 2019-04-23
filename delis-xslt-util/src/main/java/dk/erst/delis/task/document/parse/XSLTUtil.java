@@ -1,10 +1,8 @@
 package dk.erst.delis.task.document.parse;
 
-import dk.erst.delis.task.document.parse.cachingtransformerfactory.DelisTransformerFactory;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.saxon.Configuration;
-import net.sf.saxon.lib.StandardErrorListener;
-import org.w3c.dom.Document;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -13,9 +11,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Path;
+
+import org.w3c.dom.Document;
+
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.CachingTransformerFactory;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.saxon.Configuration;
+import net.sf.saxon.lib.StandardErrorListener;
 
 @Slf4j
 public class XSLTUtil {
@@ -28,7 +30,7 @@ public class XSLTUtil {
 	}
 
 	private static Transformer getTransformer(InputStream xslStream, Path xslFilePath) throws Exception {
-		return buildTransformer(xslStream, xslFilePath, DelisTransformerFactory.getInstance());
+		return buildTransformer(xslStream, xslFilePath, CachingTransformerFactory.getInstance());
 	}
 	
 	protected static Transformer buildTransformer(InputStream xslStream, Path xslFilePath, TransformerFactory transFactory) throws Exception {
@@ -50,7 +52,10 @@ public class XSLTUtil {
 			 * It is critical for relative paths in XSLT - e.g. in
 			 * BIS-Billing_2_OIOUBL_MASTER.xslt
 			 */
-			source.setSystemId(xslFilePath.toString());
+			
+			String normalized = xslFilePath.normalize().toUri().toString();
+			log.info("Normalized path "+xslFilePath+" to "+normalized);
+			source.setSystemId(normalized);
 		}
 		Transformer transformer = transFactory.newTransformer(source);
 		

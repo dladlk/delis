@@ -69,7 +69,7 @@ public class IdentifierCheckTestIT {
     @Test
     public void testOK() {
 
-        ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
+        ResponseEntity<?> responseEntity = idController.checkIdentifier("0088:5790000436057",
                 "urn:www.nesubl.eu:profiles:profile5:ver2.0",
                 "busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0");
 
@@ -80,7 +80,7 @@ public class IdentifierCheckTestIT {
     public void testOKActionSkip() {
 
         System.setProperty(IDENTIFIER_CHECK_STEP_SKIP, "sometext_ACTiOn_some text");
-        ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
+        ResponseEntity<?> responseEntity = idController.checkIdentifier("0088:5790000436057",
                 "urn:www.nesubl.eu:profiles:profile5:ver2.0",
                 "wrong");
 
@@ -91,7 +91,7 @@ public class IdentifierCheckTestIT {
     public void testOKServiceSkip() {
 
         System.setProperty(IDENTIFIER_CHECK_STEP_SKIP, "sometext_SERVICE_some text");
-        ResponseEntity responseEntity = idController.checkIdentifier("0088:5790000436057",
+        ResponseEntity<?> responseEntity = idController.checkIdentifier("0088:5790000436057",
                 "wrong",
                 "busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0");
 
@@ -101,7 +101,7 @@ public class IdentifierCheckTestIT {
     @Test
     public void test204() {
 
-        ResponseEntity responseEntity = idController.checkIdentifier("something:wrong", "", "");
+        ResponseEntity<?> responseEntity = idController.checkIdentifier("something:wrong", "", "");
 
         assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
     }

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>dk.erst.delis</groupId>
+		<artifactId>delis</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>delis-xslt-util</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Delis :: XSLT Util</name>
+
+	<dependencies>
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-jre</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>com.google.guava</groupId>
+            		<artifactId>failureaccess</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.guava</groupId>
+            		<artifactId>listenablefuture</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.code.findbugs</groupId>
+            		<artifactId>jsr305</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.checkerframework</groupId>
+            		<artifactId>checker-qual</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.errorprone</groupId>
+            		<artifactId>error_prone_annotations</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>com.google.j2objc</groupId>
+            		<artifactId>j2objc-annotations</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>org.codehaus.mojo</groupId>
+            		<artifactId>animal-sniffer-annotations</artifactId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+
+		<!-- Saxon is required for CII/BIS3 schematron - they do not work with 
+			integrated JAXP nor with Xalan 2.7.1! -->
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.9.0-2</version>
+		</dependency>
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmockit</groupId>
+			<artifactId>jmockit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>

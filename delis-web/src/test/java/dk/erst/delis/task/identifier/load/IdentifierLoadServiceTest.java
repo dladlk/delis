@@ -1,16 +1,6 @@
 package dk.erst.delis.task.identifier.load;
 
-import dk.erst.delis.dao.OrganisationDaoRepository;
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,7 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import dk.erst.delis.dao.OrganisationDaoRepository;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
 
 
 @SpringBootTest

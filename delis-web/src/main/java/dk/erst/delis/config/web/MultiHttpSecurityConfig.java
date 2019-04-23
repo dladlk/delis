@@ -24,11 +24,8 @@ public class MultiHttpSecurityConfig {
         @Order (1)
         public static class RestSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-            private final CustomUserDetailsService customUserDetailsService;
-
             @Autowired
-            public RestSecurityConfigurerAdapter(CustomUserDetailsService customUserDetailsService) {
-                this.customUserDetailsService = customUserDetailsService;
+            public RestSecurityConfigurerAdapter() {
             }
 
             @Override

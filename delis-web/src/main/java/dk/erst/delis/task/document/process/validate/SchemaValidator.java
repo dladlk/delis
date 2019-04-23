@@ -1,6 +1,5 @@
 package dk.erst.delis.task.document.process.validate;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -13,11 +12,12 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import lombok.extern.slf4j.Slf4j;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 @Slf4j
 public class SchemaValidator {
@@ -26,14 +26,20 @@ public class SchemaValidator {
 		SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
         List<ErrorRecord> errors = new ArrayList<>();
 
-		Schema schema;
+		Schema schema = null;
         try {
             try {
                 URL url = this.getClass().getResource(schemaFileName.toString());
-                schema = factory.newSchema(url);
+                if (url != null) {
+                	schema = factory.newSchema(url);
+                }
             } catch (Exception var9) {
-                File file = schemaFileName.toFile();
-                schema = factory.newSchema(file);
+            	/*
+            	 * Fails if schema is not a resource but a file
+            	 */
+            }
+            if (schema == null) {
+                schema = factory.newSchema(schemaFileName.toFile());
             }
 
             Validator validator = schema.newValidator();

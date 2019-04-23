@@ -1,5 +1,14 @@
 package dk.erst.delis.task.document.deliver;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
@@ -17,15 +26,6 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.vfs.service.VFSService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -169,11 +169,6 @@ public class DocumentDeliverService {
         step.setSuccess(uploaded);
         step.done();
         processLog.addStep(step);
-    }
-
-    private String getParamValue(String url, String paramName) {
-        String paramValuePart = StringUtils.substringAfter(url, paramName + "=");
-        return paramValuePart.split("&")[0];
     }
 
     private String buildOutputFileName(Document document) {

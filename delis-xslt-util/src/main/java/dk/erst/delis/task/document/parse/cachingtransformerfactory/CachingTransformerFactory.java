@@ -1,13 +1,19 @@
 package dk.erst.delis.task.document.parse.cachingtransformerfactory;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
-
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 
 public class CachingTransformerFactory extends TransformerFactory {
 
@@ -18,6 +24,8 @@ public class CachingTransformerFactory extends TransformerFactory {
     private final TransformerFactory delegate;
 
     private final LoadingCache<SourceWrapper, Templates> templateCache;
+    
+    private static CachingTransformerFactory INSTANCE = null;
 
     private final CacheLoader<SourceWrapper, Templates> cacheLoader = new CacheLoader<SourceWrapper, Templates>() {
         @Override
@@ -25,11 +33,23 @@ public class CachingTransformerFactory extends TransformerFactory {
             return delegate.newTemplates(streamSource.getDelegate());
         }
     };
+    
+	public static TransformerFactory getInstance() {
+		if (INSTANCE == null) {
+			CachingTransformerFactory inst = new CachingTransformerFactory();
+			synchronized (CachingTransformerFactory.class) {
+				if (INSTANCE == null) {
+					INSTANCE = inst;
+				}
+			}
+		}
+		return INSTANCE;
+	}
 
-    public CachingTransformerFactory() {
+    private CachingTransformerFactory() {
         try {
             TransformerFactory delegate = (TransformerFactory) Class.forName(delegateClassName).newInstance();
-            CacheBuilder cacheBuilder = CacheBuilder.from(cacheSpec);
+            CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.from(cacheSpec);
             if(cacheStats) {
                 cacheBuilder.recordStats();
             }
@@ -40,7 +60,7 @@ public class CachingTransformerFactory extends TransformerFactory {
         }
     }
 
-    public CachingTransformerFactory(TransformerFactory delegate, CacheBuilder cacheBuilder) {
+    public CachingTransformerFactory(TransformerFactory delegate, CacheBuilder<Object, Object> cacheBuilder) {
         this.delegate = delegate;
         this.templateCache = cacheBuilder.build(cacheLoader);
     }

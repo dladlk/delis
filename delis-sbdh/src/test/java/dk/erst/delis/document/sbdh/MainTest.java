@@ -23,13 +23,15 @@ public class MainTest {
 		File resourcesFolder = new File("../delis-resources/examples/xml");
 		String suffix = "_sbdh.xml";
 
+		Main main = new Main();
+		
 		for (File sourceFile : resourcesFolder.listFiles()) {
 			File targetFile = File.createTempFile(sourceFile.getName() + "_", ".xml");
 			log.info("Copy " + sourceFile + " to " + targetFile);
 			Files.copy(sourceFile, targetFile);
 			targetFile.deleteOnExit();
 
-			Main.main(new String[] { targetFile.getAbsolutePath() });
+			main.entryPoint(new String[] { targetFile.getAbsolutePath() });
 			File sbdhFile = new File(targetFile.getAbsolutePath() + suffix);
 			try {
 				log.info("Check presence of result file " + sbdhFile);
