@@ -8,7 +8,6 @@ import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.pagefiltering.persistence.AbstractRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface DocumentDaoRepository extends AbstractRepository<Document>, DocumentDao {
 
