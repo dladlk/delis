@@ -22,7 +22,7 @@
 					<th>Document Type</th>
 					<th>Delivered</th>
 				</tr>
-				<tr th:each="r,iter : ${documentList.items}">
+				<tr th:each="r,iter : ${documentList}">
 					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
 					<td>
 						<a href="#" th:href="@{/document/send/view/__${r.id}__}" th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
