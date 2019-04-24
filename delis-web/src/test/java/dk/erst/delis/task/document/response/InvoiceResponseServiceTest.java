@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -51,7 +52,9 @@ public class InvoiceResponseServiceTest {
 		data.setStatus("AB");
 		data.setDetailType("BT-48");
 		data.setDetailValue("EU12345");
-		byte[] res = s.generateInvoiceResponse(document, data);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		s.generateInvoiceResponse(document, data, baos);
+		byte[] res = baos.toByteArray();
 		assertNotNull(res);
 
 		System.out.println(new String(res, StandardCharsets.UTF_8));

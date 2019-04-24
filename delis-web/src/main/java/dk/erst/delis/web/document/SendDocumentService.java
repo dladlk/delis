@@ -37,6 +37,8 @@ import dk.erst.delis.task.document.parse.data.DocumentParticipant;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.storage.SendDocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 
@@ -124,7 +126,19 @@ public class SendDocumentService implements AbstractService<SendDocument> {
 			for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
 				DocumentProcessStep step = documentValidationTransformationService.validateByRule(path, ruleDocumentValidation);
 				if (!step.isSuccess()) {
-					throw new Exception("Document is resolved as "+documentFormat+" but is not valid: "+step.getMessage());
+					StringBuilder sb = new StringBuilder();
+					sb.append(step.getErrorCode());
+					sb.append(" failed with ");
+					if (step.getErrorRecords()!= null) {
+						List<ErrorRecord> errorRecords = step.getErrorRecords();
+						sb.append(errorRecords.size()+" errors: ");
+						for (ErrorRecord errorRecord : errorRecords) {
+							sb.append(errorRecord.toString());
+						}
+					} else {
+						sb.append(step.getMessage());
+					}
+					throw new DocumentProcessStepException(null, "Document is resolved as "+documentFormat+" but is not valid", step);
 				}
 			}
     	}

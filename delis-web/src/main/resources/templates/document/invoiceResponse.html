@@ -6,8 +6,13 @@
 <th:block th:replace="~{/document/invoiceResponse_scripts}"/>
 
 <div>
-	<button class="m-2 btn btn-primary btn-sm" onclick="$('#invoiceResponseForm').toggle()">New Invoice Response 3.0</button>
-
+	<div>
+		<form th:action="@{/document/generate/invoiceResponseByErrorAndSend/__${document.id}__}" method="post">
+			<button class="m-2 btn btn-primary btn-sm" onclick="$('#invoiceResponseForm').toggle()">New Invoice Response 3.0 via Form</button>
+			<button class="m-2 btn btn-primary btn-sm" type="submit">Generate Invoice Response 3.0 by last error and send</button>
+		</form>
+	</div>
+	
 	<div class="card border-danger" th:if="${invoiceResponseErrorList}">
 		<div class="card-body">
 			<div class="card-title alert alert-danger">
@@ -30,7 +35,7 @@
 		</div>
 	</div>
 
-<div class="card border-secondary w-50 m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapsed'" id="invoiceResponseForm">
+<div class="card border-secondary w-50 m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapse'" id="invoiceResponseForm">
 		
 <div class="card-body pb-1 invoice-response">
 

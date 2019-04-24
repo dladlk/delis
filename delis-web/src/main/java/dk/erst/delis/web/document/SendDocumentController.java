@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.pagefiltering.response.PageContainer;
+import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -112,6 +113,11 @@ public class SendDocumentController {
 					SendDocument document = documentService.sendFile(tempFile.toPath(), validateImmediately);
 					redirectAttributes.addFlashAttribute("message", "Successfully uploaded file as a document with status " + document.getDocumentStatus());
 					return "redirect:/document/send/view/" + document.getId();
+				} catch (DocumentProcessStepException se) {
+					log.error("Failed document processing", se);
+					redirectAttributes.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error "+se.getMessage());
+					return "redirect:/document/send/view/" + se.getDocumentId();
+
 				} catch (Exception e) {
 					log.error("Failed to load file "+tempFile, e);
 					redirectAttributes.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error "+e.getMessage());

@@ -1,20 +1,19 @@
 package dk.erst.delis.web.document;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
-import dk.erst.delis.pagefiltering.response.PageContainer;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,8 +35,10 @@ import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentBytesDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.pagefiltering.response.PageContainer;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.response.InvoiceResponseService;
 import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationData;
@@ -128,8 +129,27 @@ public class DocumentController {
 	    return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
 	}
 
+	@PostMapping("/document/generate/invoiceResponseByErrorAndSend/{id}")
+	public String generateInvoiceResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
+		Document document = documentService.getDocument(id);
+		if (document == null) {
+			ra.addFlashAttribute("errorMessage", "Document is not found");
+			return "redirect:/home";
+		}
+		
+		DocumentProcessStep step = documentProcessService.generateAndSendInvoiceResponse(document);
+		if (step.isSuccess()) {
+			ra.addFlashAttribute("message", step.getMessage());
+		} else {
+			ra.addFlashAttribute("errorMessage", step.getMessage());
+			ra.addFlashAttribute("invoiceResponseErrorList", step.getErrorRecords());
+		}
+
+		return "redirect:/document/view/" + id;
+	}
+	
 	@PostMapping("/document/generate/invoiceResponse")
-	public ResponseEntity<Object> generateInvoiceResponse(InvoiceResponseForm irForm, RedirectAttributes ra) {
+	public ResponseEntity<Object> generateInvoiceResponse(InvoiceResponseForm irForm, RedirectAttributes ra) throws IOException {
 		log.info("Generating InvoiceResponse for " + irForm);
 		
 		Document document = documentService.getDocument(irForm.getDocumentId());
@@ -138,10 +158,11 @@ public class DocumentController {
 			return redirectEntity("/home");
 		}
 		
-		byte[] res;
 		String defaultReturnPath = "/document/view/" + irForm.getDocumentId();
-		try {
-			res = invoiceResponseService.generateInvoiceResponse(document, irForm);
+		boolean success = false;
+		File tempFile = Files.createTempFile("GeneratedInvoiceResponse_", ".xml").toFile();
+		try (OutputStream out = new FileOutputStream(tempFile)){
+			success = invoiceResponseService.generateInvoiceResponse(document, irForm, out);
 		} catch (InvoiceResponseGenerationException e) {
 			ra.addFlashAttribute("errorMessage", e.getMessage());
 			if (e.getDocumentId() != null) {
@@ -150,22 +171,12 @@ public class DocumentController {
 			return redirectEntity("/home");
 		}
 		
-		if (res == null) {
+		if (!success) {
 			ra.addFlashAttribute("errorMessage", "Failed to generate InvoiceResponse");
 			return redirectEntity(defaultReturnPath);
 		}
 		
-		Path tempFile = null;
-		try {
-			tempFile = Files.createTempFile("GeneratedInvoiceResponse_", ".xml");
-			FileUtils.copyToFile(new ByteArrayInputStream(res), tempFile.toFile());
-		} catch (IOException e) {
-			log.error("Failed to save generated invoice response to file "+tempFile, e);
-			ra.addFlashAttribute("errorMessage", "Failed to save generated InvoiceResponse");
-			return redirectEntity(defaultReturnPath);
-		}
-		
-		List<ErrorRecord> errorList = invoiceResponseService.validateInvoiceResponse(tempFile);
+		List<ErrorRecord> errorList = invoiceResponseService.validateInvoiceResponse(tempFile.toPath());
 		if (!errorList.isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Generated InvoiceResponse is not valid by schema or schematron, found ");
@@ -179,7 +190,7 @@ public class DocumentController {
 		BodyBuilder resp = ResponseEntity.ok();
 		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"InvoiceResponse.xml\"");
 		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
-		return resp.body(res);
+		return resp.body(new InputStreamResource(new FileInputStream(tempFile)));
 	}
 	
 	@Getter @Setter

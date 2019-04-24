@@ -1,5 +1,7 @@
 package dk.erst.delis.xml.builder.data;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,5 +14,9 @@ public class ResponseStatus {
 	private String statusReason;
 	private String conditionAttributeID;
 	private String conditionDescription;
+	
+	public boolean isFilledCondition() {
+		return isNotBlank(conditionAttributeID) || isNotBlank(conditionDescription);
+	}
 
 }

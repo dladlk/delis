@@ -16,6 +16,7 @@ import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.xml.builder.data.DocumentResponse;
 import dk.erst.delis.xml.builder.data.InvoiceResponseData;
 import dk.erst.delis.xml.builder.data.Party;
+import dk.erst.delis.xml.builder.data.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ApplicationResponseType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ConditionType;
@@ -174,7 +175,8 @@ public class InvoiceResponseBuilder {
 				drType.getResponse().getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getResponse().getEffectiveDate()));
 			}
 
-			if (dr.getResponse().getStatus() != null) {
+			ResponseStatus status = dr.getResponse().getStatus();
+			if (status != null) {
 				StatusType statusType;
 				if (drType.getResponse().getStatus().isEmpty()) {
 					statusType = cacFactory.createStatusType();
@@ -186,32 +188,34 @@ public class InvoiceResponseBuilder {
 				if (statusType.getStatusReasonCode() == null) {
 					statusType.setStatusReasonCode(cbcFactory.createStatusReasonCodeType());
 				}
-				statusType.getStatusReasonCode().setValue(dr.getResponse().getStatus().getStatusReasonCode());
+				statusType.getStatusReasonCode().setValue(status.getStatusReasonCode());
 
 				if (statusType.getStatusReason().isEmpty()) {
 					StatusReasonType statusReasonType = cbcFactory.createStatusReasonType();
 					statusType.getStatusReason().add(statusReasonType);
 				}
-				statusType.getStatusReason().get(0).setValue(dr.getResponse().getStatus().getStatusReason());
+				statusType.getStatusReason().get(0).setValue(status.getStatusReason());
 
-				ConditionType conditionType;
-				if (statusType.getCondition().isEmpty()) {
-					conditionType = cacFactory.createConditionType();
-					statusType.getCondition().add(conditionType);
-				} else {
-					conditionType = statusType.getCondition().get(0);
+				if (status.isFilledCondition()) {
+					ConditionType conditionType;
+					if (statusType.getCondition().isEmpty()) {
+						conditionType = cacFactory.createConditionType();
+						statusType.getCondition().add(conditionType);
+					} else {
+						conditionType = statusType.getCondition().get(0);
+					}
+	
+					if (conditionType.getAttributeID() == null) {
+						conditionType.setAttributeID(cbcFactory.createAttributeIDType());
+					}
+					conditionType.getAttributeID().setValue(status.getConditionAttributeID());
+	
+					if (conditionType.getDescription().isEmpty()) {
+						DescriptionType descriptionType = cbcFactory.createDescriptionType();
+						conditionType.getDescription().add(descriptionType);
+					}
+					conditionType.getDescription().get(0).setValue(status.getConditionDescription());
 				}
-
-				if (conditionType.getAttributeID() == null) {
-					conditionType.setAttributeID(cbcFactory.createAttributeIDType());
-				}
-				conditionType.getAttributeID().setValue(dr.getResponse().getStatus().getConditionAttributeID());
-
-				if (conditionType.getDescription().isEmpty()) {
-					DescriptionType descriptionType = cbcFactory.createDescriptionType();
-					conditionType.getDescription().add(descriptionType);
-				}
-				conditionType.getDescription().get(0).setValue(dr.getResponse().getStatus().getConditionDescription());
 			}
 		}
 

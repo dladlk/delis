@@ -16,5 +16,7 @@ public enum DocumentProcessStepType {
 	
 	DELIVER,
 
-	MANUAL
+	MANUAL,
+	
+	GENERATE_RESPONSE,
 }

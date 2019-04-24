@@ -1,10 +1,12 @@
 package dk.erst.delis.task.document.process;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
@@ -22,10 +25,15 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
+import dk.erst.delis.task.document.response.InvoiceResponseService;
+import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationData;
+import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationException;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
+import dk.erst.delis.web.document.SendDocumentService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -41,18 +49,26 @@ public class DocumentProcessService {
 	private DocumentBytesStorageService documentBytesStorageService;
 	
 	private OrganisationSetupService organisationSetupService;
+	
+	private InvoiceResponseService invoiceResponseService;
+	
+	private SendDocumentService sendDocumentService;
 
 	@Autowired
 	public DocumentProcessService(DocumentBytesStorageService documentBytesStorageService,
 								  DocumentValidationTransformationService documentValidationTransformationService,
 								  DocumentDaoRepository documentDaoRepository,
 								  JournalDocumentService journalDocumentService,
-								  OrganisationSetupService organisationSetupService) {
+								  OrganisationSetupService organisationSetupService, 
+								  InvoiceResponseService invoiceResponseService,
+								  SendDocumentService sendDocumentService) {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.documentValidationTransformationService = documentValidationTransformationService;
 		this.documentDaoRepository = documentDaoRepository;
 		this.journalDocumentService = journalDocumentService;
 		this.organisationSetupService = organisationSetupService;
+		this.invoiceResponseService = invoiceResponseService;
+		this.sendDocumentService = sendDocumentService;
 	}
 
 	public StatData processLoaded() {
@@ -152,8 +168,84 @@ public class DocumentProcessService {
 
 			List<DocumentProcessStep> stepList = plog.getStepList();
 			journalDocumentService.saveDocumentStep(document, stepList);
+			
+			if (setupData.isGenerateInvoiceResponseOnError()) {
+				if (generateAndSendInvoiceResponse(document).isSuccess()) {
+					statData.increment("GENERATED_INVOICE_RESPONSE_OK");
+				} else {
+					statData.increment("GENERATED_INVOICE_RESPONSE_ERROR");
+				}
+			}
 		} else {
 			statData.increment("UNDEFINED");
+		}
+	}
+
+	public DocumentProcessStep generateAndSendInvoiceResponse(Document document) {
+		DocumentProcessStep step = new DocumentProcessStep("Generate and send InvoiceResponse", DocumentProcessStepType.GENERATE_RESPONSE);
+		SendDocument sendDocument = null;
+		String errorMessage = null;
+		DocumentProcessStep failedStep = null;
+		
+		try {
+			sendDocument = generateAndSendInvoiceResponseInternal(document);
+		} catch (InvoiceResponseGenerationException e) {
+			log.error("Failed InvoiceResponse generation", e);
+			errorMessage = e.getMessage();
+			failedStep = e.getFailedStep();
+		} finally {
+			step.done();
+			List<DocumentProcessStep> irStepList = new ArrayList<>();
+			
+			String appendMessage;
+			if (sendDocument == null) {
+				step.setSuccess(false);
+				appendMessage = errorMessage;
+			} else {
+				step.setSuccess(true);
+				appendMessage = "Generated InvoiceResponse and successfully sent with number #"+sendDocument.getDocumentId();
+			}
+			step.setMessage((step.getMessage() != null ? step.getMessage() : "") + appendMessage);
+			step.setResult(sendDocument);
+			
+			if (failedStep != null) {
+				step.setErrorRecords(failedStep.getErrorRecords());
+			}
+			
+			irStepList.add(step);
+			
+			journalDocumentService.saveDocumentStep(document, irStepList);
+		}
+		return step;
+	}
+	
+	private SendDocument generateAndSendInvoiceResponseInternal(Document document) throws InvoiceResponseGenerationException {
+		Path tempPath;
+		try {
+			tempPath = Files.createTempFile("invoiceResponse_", ".xml");
+		} catch (IOException e) {
+			throw new InvoiceResponseGenerationException(document.getId(), "Failed to create temp file", e);
+		}
+
+		try {
+			InvoiceResponseGenerationData d = new InvoiceResponseGenerationData();
+			d.setStatus("RE");
+			d.setAction("NIN");
+			d.setReason("OTH");
+			try (OutputStream out = new FileOutputStream(tempPath.toFile())) {
+				invoiceResponseService.generateInvoiceResponse(document, d, out);
+			}
+		} catch (InvoiceResponseGenerationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new InvoiceResponseGenerationException(document.getId(), "Failed to store generated invoice to temp file", e);
+		}
+		try {
+			return sendDocumentService.sendFile(tempPath, true);
+		} catch (DocumentProcessStepException se) {
+			throw new InvoiceResponseGenerationException(document.getId(), se.getMessage(), se.getStep(), se);
+		} catch (Exception e) {
+			throw new InvoiceResponseGenerationException(document.getId(), e.getMessage(), e);
 		}
 	}
 }
