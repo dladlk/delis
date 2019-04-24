@@ -85,4 +85,17 @@
         $(".selectAll").prop('checked', '');
     });
 </script>
+<script>
+    function pageTableForm(formName, page) {
+        var currentForm = document.forms[formName];
+        currentForm.page.value = page;
+        currentForm.submit();
+    }
+
+    function sortTableForm(formName, sort) {
+        var currentForm = document.forms[formName];
+        currentForm.sort.value = "sortby_" + sort;
+        currentForm.submit();
+    }
+</script>
 </html>
