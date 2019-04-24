@@ -116,7 +116,9 @@ public class SendDocumentController {
 				} catch (DocumentProcessStepException se) {
 					log.error("Failed document processing", se);
 					redirectAttributes.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error "+se.getMessage());
-					return "redirect:/document/send/view/" + se.getDocumentId();
+					if (se.getDocumentId() != null) {
+						return "redirect:/document/send/view/" + se.getDocumentId();
+					}
 
 				} catch (Exception e) {
 					log.error("Failed to load file "+tempFile, e);
