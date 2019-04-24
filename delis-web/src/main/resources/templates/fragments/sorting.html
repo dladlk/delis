@@ -2,63 +2,70 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <div class="card-footer" th:fragment="paginator (start, end, total, current)">
-        <!-- customers pagination -->
-        <nav aria-label="Pagination" th:if="${total gt 0}">
-            <ul class="pagination justify-content-center font-weight-medium">
-                <li class="page-item" th:classappend="${current eq 1} ? 'disabled'">
-                    <a class="page-link svg-icon"
-                       href="#"
-                       th:onclick="|pageTableForm('documentTableForm', ${1})|"
-                       aria-label="First"
-                       title="First Page" rel="tooltip">
-                        <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">First</span>
-                    </a>
-                </li>
-                <li class="page-item" th:classappend="${current eq 1} ? 'disabled'">
-                    <a class="page-link svg-icon"
-                       href="#"
-                       th:onclick="|pageTableForm('documentTableForm', ${current lt 2 ? 1 : current - 1})|"
-                       aria-label="Previous"
-                       title="Previous Page" rel="tooltip">
-                        <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item" th:classappend="${i eq current} ? 'active'"
-                    th:each="i : ${#numbers.sequence( start, end, 1)}">
-                    <a class="page-link"
-                       href="#"
-                       th:text="${i}"
-                       th:onclick="|pageTableForm('documentTableForm', ${i})|"
-                       th:title="${'Page '+ i}"
-                       rel="tooltip"></a>
-                </li>
-                <li class="page-item" th:if="${current + 10 < total}">
-                    <a class="page-link svg-icon" href="#">
-                        <span data-feather="more-horizontal" width="20" height="20">...</span>
-                    </a>
-                </li>
-                <li class="page-item" th:classappend="${current eq total} ? 'disabled'">
-                    <a class="page-link svg-icon"
-                       href="#"
-                       th:onclick="|pageTableForm('documentTableForm', ${current + 1})|"
-                       aria-label="Next"
-                       title="Next Page" rel="tooltip">
-                        <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Next</span>
-                    </a>
-                </li>
-                <li class="page-item" th:classappend="${current eq total} ? 'disabled'">
-                    <a class="page-link svg-icon"
-                       href="#"
-                       th:onclick="|pageTableForm('documentTableForm', ${total})|"
-                       aria-label="Last"
-                       title="Last Page" rel="tooltip">
-                        <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">Last</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
+<div th:fragment="tableheader (pageContainer, columnNames, fieldNames)">
+    <th th:each="cName, iStat : ${columnNames}"><label th:text="${columnNames[iStat.index]}"/>
+        <i th:class="'fa fa-fw ' + ${T(dk.erst.delis.pagefiltering.util.PaginatorUtil).arrowStyle(pageContainer, fieldNames[iStat.index])}"
+           th:onclick="${T(dk.erst.delis.pagefiltering.util.PaginatorUtil).sortFunc(pageContainer, fieldNames[iStat.index])}"></i>
+    </th>
+</div>
+
+<div class="card-footer" th:fragment="paginator (start, end, total, current)">
+    <!-- customers pagination -->
+    <nav aria-label="Pagination" th:if="${total gt 0}">
+        <ul class="pagination justify-content-center font-weight-medium">
+            <li class="page-item" th:classappend="${current eq 1} ? 'disabled'">
+                <a class="page-link svg-icon"
+                   href="#"
+                   th:onclick="|pageTableForm('documentTableForm', ${1})|"
+                   aria-label="First"
+                   title="First Page" rel="tooltip">
+                    <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">First</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${current eq 1} ? 'disabled'">
+                <a class="page-link svg-icon"
+                   href="#"
+                   th:onclick="|pageTableForm('documentTableForm', ${current lt 2 ? 1 : current - 1})|"
+                   aria-label="Previous"
+                   title="Previous Page" rel="tooltip">
+                    <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">Previous</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${i eq current} ? 'active'"
+                th:each="i : ${#numbers.sequence( start, end, 1)}">
+                <a class="page-link"
+                   href="#"
+                   th:text="${i}"
+                   th:onclick="|pageTableForm('documentTableForm', ${i})|"
+                   th:title="${'Page '+ i}"
+                   rel="tooltip"></a>
+            </li>
+            <li class="page-item" th:if="${current + 10 < total}">
+                <a class="page-link svg-icon" href="#">
+                    <span data-feather="more-horizontal" width="20" height="20">...</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${current eq total} ? 'disabled'">
+                <a class="page-link svg-icon"
+                   href="#"
+                   th:onclick="|pageTableForm('documentTableForm', ${current + 1})|"
+                   aria-label="Next"
+                   title="Next Page" rel="tooltip">
+                    <span aria-hidden="true" data-feather="chevrons-right" width="20" height="20">Next</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${current eq total} ? 'disabled'">
+                <a class="page-link svg-icon"
+                   href="#"
+                   th:onclick="|pageTableForm('documentTableForm', ${total})|"
+                   aria-label="Last"
+                   title="Last Page" rel="tooltip">
+                    <span aria-hidden="true" data-feather="chevrons-left" width="20" height="20">Last</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
 </body>
 
