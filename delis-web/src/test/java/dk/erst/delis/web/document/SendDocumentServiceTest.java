@@ -21,7 +21,7 @@ public class SendDocumentServiceTest {
 	
 	@Test
 	public void testGetDocument() {
-		assertNull(sendDocument.getOneById(-1));
+		assertNull(sendDocument.getDocument(-1L));
 	
 	}
 

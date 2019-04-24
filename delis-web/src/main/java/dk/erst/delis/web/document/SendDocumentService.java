@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.WebRequest;
 
 import dk.erst.delis.dao.JournalSendDocumentDaoRepository;
 import dk.erst.delis.dao.SendDocumentDaoRepository;
@@ -27,9 +25,6 @@ import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentProcessStepType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
-import dk.erst.delis.pagefiltering.response.PageContainer;
-import dk.erst.delis.pagefiltering.service.AbstractGenerateDataService;
-import dk.erst.delis.pagefiltering.service.AbstractService;
 import dk.erst.delis.task.document.parse.DocumentFormatDetectService;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
@@ -43,10 +38,9 @@ import dk.erst.delis.task.document.storage.SendDocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 
 @Service
-public class SendDocumentService implements AbstractService<SendDocument> {
+public class SendDocumentService {
 	private SendDocumentDaoRepository documentDaoRepository;
 	private JournalSendDocumentDaoRepository journalDocumentDaoRepository;
-	private final AbstractGenerateDataService<SendDocumentDaoRepository, SendDocument> abstractGenerateDataService;
 
 	@Autowired
 	private IdentifierResolverService identifierResolverService; 
@@ -63,10 +57,9 @@ public class SendDocumentService implements AbstractService<SendDocument> {
 	private DocumentValidationTransformationService documentValidationTransformationService;
 	
 	@Autowired
-	public SendDocumentService(SendDocumentDaoRepository sendDocumentDaoRepository, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository, AbstractGenerateDataService<SendDocumentDaoRepository, SendDocument> abstractGenerateDataService) {
+	public SendDocumentService(SendDocumentDaoRepository sendDocumentDaoRepository, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository) {
 		this.documentDaoRepository = sendDocumentDaoRepository;
 		this.journalDocumentDaoRepository = journalSendDocumentDaoRepository;
-		this.abstractGenerateDataService = abstractGenerateDataService;
 	}
 
 	public List<SendDocument> documentList(int start, int pageSize) {
@@ -190,18 +183,6 @@ public class SendDocumentService implements AbstractService<SendDocument> {
 
 	public List<JournalSendDocument> getDocumentRecords(SendDocument document) {
 		return journalDocumentDaoRepository.findByDocumentOrderByIdAsc(document);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public PageContainer<SendDocument> getAll(WebRequest webRequest) {
-		return abstractGenerateDataService.generateDataPageContainer(SendDocument.class, webRequest, documentDaoRepository);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public SendDocument getOneById(long id) {
-		return (SendDocument) abstractGenerateDataService.getOneById(id, SendDocument.class, documentDaoRepository);
 	}
 
 	public List<SendDocumentBytes> getDocumentBytes(SendDocument document) {

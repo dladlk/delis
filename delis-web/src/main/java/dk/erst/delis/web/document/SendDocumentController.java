@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
-import dk.erst.delis.pagefiltering.response.PageContainer;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +44,7 @@ public class SendDocumentController {
 
 	@PostMapping("/document/send/list/filter")
 	public String listFilter(Model model, WebRequest webRequest) {
-		PageContainer<SendDocument> pageContainer = documentService.getAll(webRequest);
+		List<SendDocument> pageContainer = documentService.documentList(0, 10);
 		model.addAttribute("documentList", pageContainer);
 		model.addAttribute("selectedIdList", new SendDocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", SendDocumentStatus.values());
