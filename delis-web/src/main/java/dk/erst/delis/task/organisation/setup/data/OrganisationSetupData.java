@@ -19,5 +19,6 @@ public class OrganisationSetupData {
 	private String receivingMethodSetup;
 	private Long as2;
 	private Long as4;
-	
+	private boolean generateInvoiceResponseOnError;
+	private boolean sendUndeliverableInvoiceResponseToERST;
 }

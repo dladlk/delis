@@ -150,6 +150,8 @@ public class OrganisationSetupService {
 		if (d.getAs4() != null) {
 			m.put(OrganisationSetupKey.ACCESS_POINT_AS4, String.valueOf(d.getAs4()));
 		}
+		m.put(OrganisationSetupKey.GENERATE_INVOICE_RESPONSE_ON_ERROR, String.valueOf(d.isGenerateInvoiceResponseOnError()));
+		m.put(OrganisationSetupKey.SEND_UNDELIVERABLE_INVOICE_RESPONSE_TO_ERST, String.valueOf(d.isSendUndeliverableInvoiceResponseToERST()));
 		return m;
 	}
 
@@ -187,6 +189,14 @@ public class OrganisationSetupService {
 					break;
 				case ACCESS_POINT_AS4:
 					d.setAs4(toId(os.getValue()));
+					break;
+				case GENERATE_INVOICE_RESPONSE_ON_ERROR:
+					d.setGenerateInvoiceResponseOnError(Boolean.valueOf(os.getValue()));
+					break;
+				case SEND_UNDELIVERABLE_INVOICE_RESPONSE_TO_ERST:
+					d.setSendUndeliverableInvoiceResponseToERST(Boolean.valueOf(os.getValue()));
+					break;
+				default:
 					break;
 				}
 			}
