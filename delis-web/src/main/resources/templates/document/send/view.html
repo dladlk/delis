@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+
+	<h3 class="m-2 text-secondary"><a href="#" th:href="@{/document/send/list}" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i></a> Document details</h3>
+
+	<div class="card border-secondary m-1">
+		<div class="card-body pb-0">
+			<table class="table table-sm table-borderless">
+				<tr>
+					<th>Organisation</th>
+					<th>Sender</th>
+					<th>Receiver</th>
+					<th>Created</th>
+				</tr>
+				<tr>
+					<td><a th:if="${document.organisation}" href="#" th:href="@{/organisation/view/__${document.organisation.id}__}" th:text="${document.organisation.name}">Region Nord</a></td>
+					<td th:text="${document.senderIdRaw}">0088:234234234</td>
+					<td th:text="${document.receiverIdRaw}">0088:234234234</td>
+					<td th:text="${#dates.format(document.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+				</tr>
+				<tr>
+					<th>Status</th>
+					<th>Document type</th>
+					<th>Document Id</th>
+					<th>Document date</th>
+				</tr>
+				<tr>
+					<td>
+						<span th:text="${document.documentStatus}">LOADED</span>
+					</td>					
+					<td th:text="${document.documentType}">INVOICE</td>
+					<td th:text="${document.documentId}">F-2345RWELF2</td>
+					<td th:text="${document.documentDate}">2018-13-23</td>
+				</tr>
+				<th:block th:if="${document.deliveredTime}">
+				<tr>
+					<th>Delivered date</th>
+					<th colspan="2">Message ID</th>
+				</tr>
+				<tr>
+					<td th:text="${#dates.format(document.deliveredTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+					<td colspan="2" th:text="${document.sentMessageId}">BSD-332-32D2-2342-ABD3-353F</td>
+				</tr>
+				</th:block>
+			</table>
+		</div>		
+	</div>
+	
+	<div class="card border-secondary m-1">
+		<div class="card-body pb-0">
+			<div class="card-title">
+				Journal records
+			</div>
+			<table class="table table-borderless table-sm">
+				<tr>
+					<th>Date</th>
+					<th>Type</th>
+					<th>Status</th>
+					<th>Message</th>
+					<th>Duration, ms</th>
+				</tr>
+				<th:block th:each="r,iter : ${lastJournalList}">
+				<tr>
+					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}" class="text-nowrap"></td>
+					<td th:text="${r.type}"></td>
+					<td>
+						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
+						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
+					</td>
+					<td th:text="${r.message}"/>
+					<td th:text="${r.durationMs}"/>
+				</tr>
+				</th:block>
+			</table>
+		</div>
+	</div>
+
+	<div class="row m-1">
+
+	<div class="col card border-secondary w-50 m-1">
+		<div class="card-body pb-0">
+			<div class="card-title">
+				Document Bytes
+			</div>
+			<table class="table table-borderless table-sm">
+				<tr>
+					<th>Id</th>
+					<th>Type</th>
+					<th>Size, bytes</th>
+				</tr>
+				<tr th:each="r,iter : ${documentBytes}">
+					<td th:text="${r.id}"></td>
+					<td th:text="${r.type}"></td>
+					<td th:text="${r.size}"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div class="col card border-secondary w-50 m-1 mb-3">
+		<div class="card-body pb-1">
+			<form method="post" action="#" th:action="@{/document/send/updatestatus}" th:object="${document}">
+				<div class="d-flex justify-content-end">
+					<label class="m-2 col-form-label font-weight-bold">Status change:</label>
+					<select th:field="*{documentStatus}" class="m-2">
+						<option th:each="documentStatus : ${documentStatusList}" th:text="${documentStatus}" th:value="${documentStatus}"></option>
+					</select>
+					<button type="submit" class="m-2 btn btn-primary btn-sm">Update Status</button>
+					<input type="hidden" th:field="*{id}" class="form-control" th:value="${document.id}"/>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	</div>
+</body>
+</html>

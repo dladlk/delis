@@ -61,6 +61,10 @@ public class ConfigBean {
 	public Path getStorageLoadedPath() {
 		return buildStoragePath(DocumentStorageType.LOADED);
 	}
+	
+	public Path getStorageSendPath() {
+		return buildStoragePath(DocumentStorageType.SEND);
+	}
 
 	public Path getStorageFailedPath() {
 		return buildStoragePath(DocumentStorageType.FAILED);
