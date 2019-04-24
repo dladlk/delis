@@ -19,7 +19,7 @@ public class EmptyResultProcessor implements IResultProcessor {
 	}
 
 	@Override
-	public void processFailure(IDocumentData documentData, SendFailureType failureType) {
+	public void processFailure(IDocumentData documentData, SendFailureType failureType, Throwable exception) {
 		log.info("Empty failure processor for " + documentData + " " + failureType);
 	}
 

@@ -8,5 +8,5 @@ public interface IResultProcessor {
 
 	void processResult(IDocumentData documentData, DelisResponse response);
 
-	void processFailure(IDocumentData documentData, SendFailureType failureType);
+	void processFailure(IDocumentData documentData, SendFailureType failureType, Throwable exception);
 }

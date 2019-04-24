@@ -37,18 +37,18 @@ public class SendService {
 				sendContext.getResultProcessor().processResult(documentData, response);
 			} catch (TransmissionLookupException e) {
 				log.error("Failed lookup for " + documentData.getDescription());
-				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.LOOKUP);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.LOOKUP, e);
 			} catch (TransmissionException e) {
 				log.error("Failed transmission for " + documentData.getDescription(), e);
-				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.TRANSMISSION);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.TRANSMISSION, e);
 			} catch (SbdhException e) {
 				log.error("Failed SBDH processing for " + documentData.getDescription(), e);
-				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.SBDH);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.SBDH, e);
 			} catch (IOException e) {
 				log.error("Failed IO operations for " + documentData.getDescription(), e);
-				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.IO);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.IO, e);
 			} catch (Throwable t) {
-				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.OTHER);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.OTHER, t);
 			}
 		}
 	}
