@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.service.document;
+package dk.erst.delis.sender.document;
 
 import java.io.InputStream;
 

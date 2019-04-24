@@ -7,9 +7,9 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import dk.erst.delis.sender.service.collector.IDocumentCollector;
-import dk.erst.delis.sender.service.document.DocumentData;
-import dk.erst.delis.sender.service.document.IDocumentData;
+import dk.erst.delis.sender.collector.IDocumentCollector;
+import dk.erst.delis.sender.document.DocumentData;
+import dk.erst.delis.sender.document.IDocumentData;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

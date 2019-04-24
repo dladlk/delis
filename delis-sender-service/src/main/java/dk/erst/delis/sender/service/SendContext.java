@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.service.task;
+package dk.erst.delis.sender.service;
 
 import javax.annotation.PostConstruct;
 
@@ -13,8 +13,8 @@ import com.google.inject.util.Modules;
 import dk.erst.delis.oxalis.sender.ISender;
 import dk.erst.delis.oxalis.sender.SimpleSender;
 import dk.erst.delis.oxalis.sender.request.LookupTransmissionRequestBuilder;
-import dk.erst.delis.sender.service.collector.IDocumentCollector;
-import dk.erst.delis.sender.service.result.IResultProcessor;
+import dk.erst.delis.sender.collector.IDocumentCollector;
+import dk.erst.delis.sender.result.IResultProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.service.collector;
+package dk.erst.delis.sender.collector;
 
 import java.io.ByteArrayOutputStream;
 
@@ -11,8 +11,8 @@ import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
 import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
-import dk.erst.delis.sender.service.document.DocumentData;
-import dk.erst.delis.sender.service.document.IDocumentData;
+import dk.erst.delis.sender.document.DocumentData;
+import dk.erst.delis.sender.document.IDocumentData;
 import dk.erst.delis.task.document.storage.SendDocumentBytesStorageService;
 import lombok.extern.slf4j.Slf4j;
 

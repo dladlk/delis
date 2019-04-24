@@ -1,10 +1,9 @@
-package dk.erst.delis.sender.service.job;
+package dk.erst.delis.sender.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import dk.erst.delis.sender.service.task.SendService;
 import lombok.extern.slf4j.Slf4j;
 
 @Component

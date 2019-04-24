@@ -1,11 +1,11 @@
-package dk.erst.delis.sender.service.result;
+package dk.erst.delis.sender.result;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import dk.erst.delis.sender.service.document.IDocumentData;
-import dk.erst.delis.sender.service.task.SendService.SendFailureType;
+import dk.erst.delis.sender.document.IDocumentData;
+import dk.erst.delis.sender.service.SendService.SendFailureType;
 import lombok.extern.slf4j.Slf4j;
 
 @Component

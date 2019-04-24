@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.service;
+package dk.erst.delis.sender;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

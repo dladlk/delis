@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.service.task;
+package dk.erst.delis.sender.service;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import dk.erst.delis.oxalis.sender.TransmissionException;
 import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import dk.erst.delis.sender.service.document.IDocumentData;
+import dk.erst.delis.sender.document.IDocumentData;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.sbdh.lang.SbdhException;
 
