@@ -13,7 +13,8 @@ import com.google.inject.util.Modules;
 import dk.erst.delis.oxalis.sender.ISender;
 import dk.erst.delis.oxalis.sender.SimpleSender;
 import dk.erst.delis.oxalis.sender.request.LookupTransmissionRequestBuilder;
-import dk.erst.delis.sender.service.document.IDocumentCollector;
+import dk.erst.delis.sender.service.collector.IDocumentCollector;
+import dk.erst.delis.sender.service.result.IResultProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,9 @@ public class SendContext {
 
 	@Autowired
 	private IDocumentCollector documentCollector;
+	
+	@Autowired
+	private IResultProcessor resultProcessor;
 
 	private Injector injector;
 

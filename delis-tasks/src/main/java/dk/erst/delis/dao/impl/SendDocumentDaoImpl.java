@@ -1,13 +1,13 @@
-package dk.erst.delis.sender.service.dao.impl;
+package dk.erst.delis.dao.impl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import dk.erst.delis.dao.SendDocumentDao;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
-import dk.erst.delis.sender.service.dao.SendDocumentDao;
 
 public class SendDocumentDaoImpl implements SendDocumentDao {
 

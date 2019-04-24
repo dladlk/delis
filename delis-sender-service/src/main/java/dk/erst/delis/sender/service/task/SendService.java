@@ -22,6 +22,10 @@ public class SendService {
 	public SendService(SendContext sendContext) {
 		this.sendContext = sendContext;
 	}
+	
+	public enum SendFailureType {
+		LOOKUP, TRANSMISSION, SBDH, IO, OTHER
+	}
 
 	public void process() {
 		IDocumentData documentData;
@@ -30,14 +34,21 @@ public class SendService {
 				log.info("Found document to send: " + documentData.getDescription());
 				DelisResponse response = sendContext.getSender().send(documentData.getInputStream());
 				log.info("Sending result: " + response);
+				sendContext.getResultProcessor().processResult(documentData, response);
 			} catch (TransmissionLookupException e) {
 				log.error("Failed lookup for " + documentData.getDescription());
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.LOOKUP);
 			} catch (TransmissionException e) {
 				log.error("Failed transmission for " + documentData.getDescription(), e);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.TRANSMISSION);
 			} catch (SbdhException e) {
 				log.error("Failed SBDH processing for " + documentData.getDescription(), e);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.SBDH);
 			} catch (IOException e) {
 				log.error("Failed IO operations for " + documentData.getDescription(), e);
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.IO);
+			} catch (Throwable t) {
+				sendContext.getResultProcessor().processFailure(documentData, SendFailureType.OTHER);
 			}
 		}
 	}

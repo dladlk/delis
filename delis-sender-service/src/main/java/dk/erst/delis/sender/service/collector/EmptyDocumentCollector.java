@@ -1,7 +1,9 @@
-package dk.erst.delis.sender.service.document;
+package dk.erst.delis.sender.service.collector;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import dk.erst.delis.sender.service.document.IDocumentData;
 
 @Component
 @ConditionalOnProperty(name="delis.sender.document.collector", havingValue="empty")

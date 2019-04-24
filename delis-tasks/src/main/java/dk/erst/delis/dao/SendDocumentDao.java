@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.service.dao;
+package dk.erst.delis.dao;
 
 import org.springframework.transaction.annotation.Transactional;
 
