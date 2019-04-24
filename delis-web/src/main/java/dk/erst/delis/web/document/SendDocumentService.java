@@ -107,7 +107,7 @@ public class SendDocumentService implements AbstractService<SendDocument> {
 		return count;
 	}
 
-	public SendDocument sendFile(Path path, boolean validate) throws Exception {
+	public SendDocument sendFile(Path path, String logMessage, boolean validate) throws Exception {
 		long start = System.currentTimeMillis();
 		DocumentInfo documentInfo;
     	File file = path.toFile();
@@ -167,7 +167,7 @@ public class SendDocumentService implements AbstractService<SendDocument> {
 		journalRecord.setDocument(sd);
 		journalRecord.setType(SendDocumentProcessStepType.CREATE);
 		journalRecord.setOrganisation(sd.getOrganisation());
-		journalRecord.setMessage(MessageFormat.format("Uploaded manually with name ", path.getFileName()));
+		journalRecord.setMessage(logMessage);
 		journalRecord.setDurationMs(System.currentTimeMillis() - start);
 		journalDocumentDaoRepository.save(journalRecord);
 		

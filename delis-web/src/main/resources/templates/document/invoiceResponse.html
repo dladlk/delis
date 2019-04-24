@@ -88,6 +88,30 @@
 				<small class="form-text text-muted">E.g. EU12345</small>
 			</div>							
 		</div>
+		
+		<h5>Options</h5>
+
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text delis-input-checkbox">
+						<input id="validateCheckbox" th:field="*{validate}" type="checkbox" aria-label="Validate generated"/>
+					</div>
+				</div>
+				<label for="validateCheckbox" class="form-control">Validate generated</label>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text delis-input-checkbox">
+						<input id="generateWithoutSending" th:field="*{generateWithoutSending}" type="checkbox" aria-label="Only generate, do not send"/>
+					</div>
+				</div>
+				<label for="generateWithoutSending" class="form-control">Only generate, do not send</label>
+			</div>
+		</div>
 
 		<button type="submit" class="m-2 btn btn-primary btn-sm">Generate</button>
 	</form>

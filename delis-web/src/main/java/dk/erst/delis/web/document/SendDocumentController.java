@@ -110,7 +110,7 @@ public class SendDocumentController {
 			if (tempFile != null) {
 				log.info("Created test file " + tempFile);
 				try {
-					SendDocument document = documentService.sendFile(tempFile.toPath(), validateImmediately);
+					SendDocument document = documentService.sendFile(tempFile.toPath(), "Uploaded manually " + file.getName(),validateImmediately);
 					redirectAttributes.addFlashAttribute("message", "Successfully uploaded file as a document with status " + document.getDocumentStatus());
 					return "redirect:/document/send/view/" + document.getId();
 				} catch (DocumentProcessStepException se) {
