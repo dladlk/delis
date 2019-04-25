@@ -1,6 +1,5 @@
 package dk.erst.delis.task.organisation.setup.data;
 
-import dk.erst.delis.document.domibus.MetadataBuilder;
 
 /*
  * Copied from https://www.galaxygw.com/peppol-documents/ 
@@ -58,6 +57,8 @@ public enum OrganisationSubscriptionProfileGroup {
 	
 	;
 	
+	public static String DEFAULT_PROCESS_SCHEME_ID = "urn:fdc:peppol.eu:2017:identifiers:proc-id";
+	
 	private final String processId;
 	private final String[] documentIdentifiers;
 	
@@ -75,7 +76,7 @@ public enum OrganisationSubscriptionProfileGroup {
 	}
 	
 	public String getProcessScheme() {
-		return MetadataBuilder.DEFAULT_PROCESS_SCHEME_ID;
+		return DEFAULT_PROCESS_SCHEME_ID;
 	}
 	
 	public String getProcessSchemeSMP() {

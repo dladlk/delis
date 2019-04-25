@@ -11,6 +11,8 @@ public class StatData {
 	private Map<String, int[]> statMap;
 
 	private long startMs;
+	
+	private Object result;
 
 	public StatData() {
 		this.startMs = System.currentTimeMillis();
@@ -33,7 +35,7 @@ public class StatData {
 	}
 
 	public String toStatString() {
-		if (statMap.isEmpty()) {
+		if (isEmpty()) {
 			return "Nothing";
 		}
 
@@ -53,6 +55,10 @@ public class StatData {
 		return loadStatStr;
 	}
 
+	public boolean isEmpty() {
+		return statMap.isEmpty();
+	}
+
 	public long getStartMs() {
 		return startMs;
 	}
@@ -62,5 +68,13 @@ public class StatData {
 		sb.append(System.currentTimeMillis() - startMs);
 		sb.append(" ms");
 		return sb.toString();
+	}
+
+	public Object getResult() {
+		return result;
+	}
+
+	public void setResult(Object result) {
+		this.result = result;
 	}
 }
