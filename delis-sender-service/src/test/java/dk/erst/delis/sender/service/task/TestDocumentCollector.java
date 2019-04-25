@@ -26,7 +26,7 @@ public class TestDocumentCollector implements IDocumentCollector {
 	public IDocumentData findDocument() {
 		try {
 			this.takeCount++;
-			DocumentData d = new DocumentData();
+			DocumentData d = new DocumentData(this.takeCount);
 			byte[] bytes;
 			try (InputStream is = this.getClass().getResourceAsStream(testResource)) {
 				bytes = IOUtils.toByteArray(is);

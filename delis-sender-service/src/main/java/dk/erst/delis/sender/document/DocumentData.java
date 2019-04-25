@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import dk.erst.delis.data.entities.document.SendDocument;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +16,25 @@ public class DocumentData implements IDocumentData, Serializable {
 
 	private byte[] data;
 	private String description;
+	private SendDocument sendDocument;
+	private long id;
 
+	public DocumentData(long id) {
+		this.id = id;
+	}
+	
 	@Override
 	public InputStream getInputStream() {
 		return new ByteArrayInputStream(data);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("#");
+		sb.append(id);
+		sb.append(" ");
+		sb.append(description);
+		return sb.toString();
+	}
 }

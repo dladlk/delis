@@ -4,6 +4,8 @@ import java.io.InputStream;
 
 public interface IDocumentData {
 
+	public long getId();
+	
 	public InputStream getInputStream();
 
 	public String getDescription();
