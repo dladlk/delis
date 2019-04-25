@@ -1,4 +1,4 @@
-package dk.erst.delis.sender.collector;
+package dk.erst.delis.sender.delis;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +17,6 @@ import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentProcessStepType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import dk.erst.delis.sender.document.DocumentData;
 import dk.erst.delis.sender.document.IDocumentData;
 import dk.erst.delis.sender.service.SendService.SendFailureType;
 import dk.erst.delis.task.document.storage.SendDocumentBytesStorageService;
@@ -25,14 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class DbService {
+public class DelisService {
 
 	private SendDocumentDaoRepository sendDocumentDaoRepository;
 	private SendDocumentBytesStorageService sendDocumentBytesStorageService;
 	private JournalSendDocumentDaoRepository journalSendDocumentDaoRepository;
 
 	@Autowired
-	public DbService(SendDocumentDaoRepository sendDocumentDaoRepository, SendDocumentBytesStorageService sendDocumentBytesStorageService, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository) {
+	public DelisService(SendDocumentDaoRepository sendDocumentDaoRepository, SendDocumentBytesStorageService sendDocumentBytesStorageService, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository) {
 		this.sendDocumentDaoRepository = sendDocumentDaoRepository;
 		this.sendDocumentBytesStorageService = sendDocumentBytesStorageService;
 		this.journalSendDocumentDaoRepository = journalSendDocumentDaoRepository;
@@ -58,7 +57,7 @@ public class DbService {
 	}
 
 	public void createSentJournal(IDocumentData documentData, DelisResponse response) {
-		SendDocument sendDocument = ((DocumentData) documentData).getSendDocument();
+		SendDocument sendDocument = ((DelisDocumentData) documentData).getSendDocument();
 		JournalSendDocument j = new JournalSendDocument();
 		j.setDocument(sendDocument);
 		j.setMessage(trunc("Delivered to endpoint " + response.getEndpoint().getAddress() + " via " + response.getEndpoint().getTransportProfile().getIdentifier()));
@@ -70,7 +69,7 @@ public class DbService {
 	}
 
 	public void createFailureJournal(IDocumentData documentData, SendFailureType failureType, Throwable e) {
-		SendDocument sendDocument = ((DocumentData) documentData).getSendDocument();
+		SendDocument sendDocument = ((DelisDocumentData) documentData).getSendDocument();
 
 		JournalSendDocument j = new JournalSendDocument();
 		j.setDocument(sendDocument);
@@ -108,12 +107,12 @@ public class DbService {
 	}
 
 	public boolean markDocumentSent(IDocumentData documentData, String messageId, Date deliveredDate) {
-		DocumentData d = (DocumentData) documentData;
+		DelisDocumentData d = (DelisDocumentData) documentData;
 		return sendDocumentDaoRepository.markDocumentSent(d.getSendDocument(), messageId, deliveredDate) == 1;
 	}
 
 	public boolean markDocumentFailed(IDocumentData documentData) {
-		DocumentData d = (DocumentData) documentData;
+		DelisDocumentData d = (DelisDocumentData) documentData;
 		return sendDocumentDaoRepository.updateDocumentStatus(d.getSendDocument(), SendDocumentStatus.SEND_ERROR, SendDocumentStatus.SEND_START) == 1;
 	}
 
@@ -122,7 +121,7 @@ public class DbService {
 	}
 
 	public void saveReceipt(IDocumentData documentData, byte[] receipt) {
-		SendDocument sendDocument = ((DocumentData) documentData).getSendDocument();
+		SendDocument sendDocument = ((DelisDocumentData) documentData).getSendDocument();
 		sendDocumentBytesStorageService.save(sendDocument, SendDocumentBytesType.RECEIPT, receipt.length, new ByteArrayInputStream(receipt));
 	}
 }

@@ -12,10 +12,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan("dk.erst.delis")
 @EnableScheduling
 @EnableJpaRepositories(basePackages="dk.erst.delis")
-public class DelisSenderServiceApplication {
+public class SenderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DelisSenderServiceApplication.class, args);
+		SpringApplication.run(SenderApplication.class, args);
 	}
 
 }

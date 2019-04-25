@@ -1,16 +1,17 @@
-package dk.erst.delis.sender.document;
+package dk.erst.delis.sender.delis;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
 import dk.erst.delis.data.entities.document.SendDocument;
+import dk.erst.delis.sender.document.IDocumentData;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class DocumentData implements IDocumentData, Serializable {
+public class DelisDocumentData implements IDocumentData, Serializable {
 
 	private static final long serialVersionUID = -2505355023114834837L;
 
@@ -20,7 +21,7 @@ public class DocumentData implements IDocumentData, Serializable {
 	private long id;
 	private long startTime;
 
-	public DocumentData(long id) {
+	public DelisDocumentData(long id) {
 		this.id = id;
 		this.startTime = System.currentTimeMillis();
 	}

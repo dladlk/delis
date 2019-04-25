@@ -1,24 +1,24 @@
-package dk.erst.delis.sender.result;
+package dk.erst.delis.sender.delis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import dk.erst.delis.sender.collector.DbService;
 import dk.erst.delis.sender.document.IDocumentData;
+import dk.erst.delis.sender.result.IResultProcessor;
 import dk.erst.delis.sender.service.SendService.SendFailureType;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@ConditionalOnProperty(name = "delis.sender.document.processor", havingValue = "db")
-public class DbResultProcessor implements IResultProcessor {
+@ConditionalOnProperty(name = "delis.sender.document.processor", havingValue = "delis")
+public class DelisResultProcessor implements IResultProcessor {
 
-	private DbService dbService;
+	private DelisService dbService;
 
 	@Autowired
-	public DbResultProcessor(DbService dbService) {
+	public DelisResultProcessor(DelisService dbService) {
 		this.dbService = dbService;
 	}
 
