@@ -124,4 +124,12 @@ public class DelisService {
 		SendDocument sendDocument = ((DelisDocumentData) documentData).getSendDocument();
 		sendDocumentBytesStorageService.save(sendDocument, SendDocumentBytesType.RECEIPT, receipt.length, new ByteArrayInputStream(receipt));
 	}
+
+	public void failurePostProcess(IDocumentData documentData, SendFailureType failureType) {
+		DelisDocumentData d = (DelisDocumentData) documentData;
+		SendDocument sendDocument = d.getSendDocument();
+		if (sendDocument.getOrganisation() != null) {
+			
+		}
+	}
 }

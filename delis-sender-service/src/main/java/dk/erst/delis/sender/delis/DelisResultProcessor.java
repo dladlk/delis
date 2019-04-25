@@ -35,6 +35,7 @@ public class DelisResultProcessor implements IResultProcessor {
 		log.info("Document " + documentData + " failed delivery with failure type " + failureType + " and exception", e);
 		dbService.markDocumentFailed(documentData);
 		dbService.createFailureJournal(documentData, failureType, e);
+		dbService.failurePostProcess(documentData, failureType);
 	}
 
 }
