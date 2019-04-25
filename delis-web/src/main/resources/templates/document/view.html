@@ -4,7 +4,9 @@
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
 
-	<h3 class="m-2 text-secondary"><a href="#" th:href="@{/document/list}" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i></a> Document details</h3>
+	<h3 class="m-2 text-secondary"><a href="#" th:href="@{/document/list}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
+		<a href="#" th:href="@{/document/view/__${document.id}__}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+		Received document details</h3>
 
 	<div class="">
 
