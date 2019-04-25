@@ -83,6 +83,7 @@ public class DocumentService implements AbstractService<Document> {
     private void noticeInJournal(DocumentStatus status, Document document) {
         JournalDocument updateRecord = new JournalDocument();
         updateRecord.setDocument(document);
+        updateRecord.setSuccess(true);
         updateRecord.setType(DocumentProcessStepType.MANUAL);
         updateRecord.setOrganisation(document.getOrganisation());
         updateRecord.setMessage(MessageFormat.format("Updated by user manually. Set status={0}.", status));

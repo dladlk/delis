@@ -71,6 +71,15 @@
 						<input type="text" class="form-input w-100" th:value="${receivingMethodSetup}" th:field="*{receivingMethodSetup}"></input>
 					</td>
 				</tr>
+				<tr>
+					<th>On validation error</th>
+						<td>
+							<ul class="on-error-setup">
+								<li><input id="onerror1" th:field="*{generateInvoiceResponseOnError}" type="checkbox"></input> <label for="onerror1">Generate InvoiceResponse and try sending back to sender</label></li>
+								<li><input id="onerror2" th:field="*{sendUndeliverableInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror2">Send undeliverable InvoiceResponses to ERST</label></li>
+							</ul>
+						</td>
+					</tr>
 				
 			</table>
 			

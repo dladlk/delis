@@ -2,6 +2,7 @@ package dk.erst.delis.task.document.response;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ import dk.erst.delis.xml.builder.data.InvoiceResponseData;
 import dk.erst.delis.xml.builder.data.Response;
 import dk.erst.delis.xml.builder.data.ResponseStatus;
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -53,9 +56,8 @@ public class InvoiceResponseService {
 		private String detailValue;
 	}
 
-	public byte[] generateInvoiceResponse(Document document, InvoiceResponseGenerationData invoiceResponseData) throws InvoiceResponseGenerationException {
+	public boolean generateInvoiceResponse(Document document, InvoiceResponseGenerationData invoiceResponseData, OutputStream out) throws InvoiceResponseGenerationException {
 		long start = System.currentTimeMillis();
-		byte[] res = null;
 		try {
 			log.info("Started InvoiceResponse generation for document " + document);
 			DocumentBytesType documentBytesType = null;
@@ -109,8 +111,12 @@ public class InvoiceResponseService {
 			ResponseStatus responseStatus = ResponseStatus.builder().build();
 			responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
 			responseStatus.setStatusReason(invoiceResponseData.getReason());
-			responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
-			responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
+			if (StringUtils.isNotBlank(invoiceResponseData.getDetailType())) {
+				responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
+			}
+			if (StringUtils.isNotBlank(invoiceResponseData.getDetailValue())) {
+				responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
+			}
 			
 			Response response = Response.builder().build();
 			response.setEffectiveDate(dateFormat.format(currentTime));
@@ -118,21 +124,18 @@ public class InvoiceResponseService {
 			response.setStatus(responseStatus);
 			irData.setDocumentResponse(DocumentResponse.builder().response(response).build());
 
-			ByteArrayOutputStream resOutput = new ByteArrayOutputStream();
 			try {
-				b.parseAndEnrich(new ByteArrayInputStream(irBytes), irData, resOutput);
+				b.parseAndEnrich(new ByteArrayInputStream(irBytes), irData, out);
+				return true;
 			} catch (Exception e) {
 				log.error("Failed to parse as ApplicationResponse extracted basic data from BIS3 format", e);
 				throw new InvoiceResponseGenerationException(document.getId(),
 						"Failed to parse extracted information about sender/receiver as ApplicationResponse from BIS3 format: " + e.getMessage());
 			}
 
-			res = resOutput.toByteArray();
 		} finally {
-			log.info("Finished generation in " + (System.currentTimeMillis() - start) + " ms with result " + (res == null ? "null" : String.valueOf(res.length)) + " bytes");
+			log.info("Finished generation in " + (System.currentTimeMillis() - start) + " ms");
 		}
-
-		return res;
 	}
 	
 	public List<ErrorRecord> validateInvoiceResponse(Path xmlFile) {
@@ -151,18 +154,27 @@ public class InvoiceResponseService {
 		return errors;
 	}
 
+	@Getter
 	public static class InvoiceResponseGenerationException extends Exception {
 
 		private static final long serialVersionUID = 3472994655670634653L;
 		private Long documentId;
+		private DocumentProcessStep failedStep;
 
 		public InvoiceResponseGenerationException(Long documentId, String message) {
 			super(message);
 			this.documentId = documentId;
 		}
-
-		public Long getDocumentId() {
-			return documentId;
+		
+		public InvoiceResponseGenerationException(Long documentId, String message, Throwable cause) {
+			super(message, cause);
+			this.documentId = documentId;
+		}
+		
+		public InvoiceResponseGenerationException(Long documentId, String message, DocumentProcessStep failedStep, Throwable cause) {
+			super(message, cause);
+			this.documentId = documentId;
+			this.failedStep = failedStep;
 		}
 	}
 }

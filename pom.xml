@@ -13,6 +13,7 @@
     
     <modules>
         <module>delis-data</module>
+        <module>delis-tasks</module>
         <module>delis-xslt-util</module>
         <module>delis-web</module>
         <module>delis-web-api</module>

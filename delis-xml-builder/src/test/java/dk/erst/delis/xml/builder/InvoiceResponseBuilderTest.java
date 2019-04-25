@@ -90,6 +90,16 @@ public class InvoiceResponseBuilderTest {
 
 		ApplicationResponseType r = builder.parse(new ByteArrayInputStream(bytes));
 		assertEquals(d.getIssueDate(), r.getDocumentResponse().get(0).getDocumentReference().get(0).getIssueDate().getValue().toXMLFormat());
+		
+		/*
+		 * Check that condition is not created for empty attributes
+		 */
+		d.getDocumentResponse().getResponse().getStatus().setConditionAttributeID("");
+		d.getDocumentResponse().getResponse().getStatus().setConditionDescription("");
+		out = new ByteArrayOutputStream();
+		builder.build(d, out);
+		r = builder.parse(new ByteArrayInputStream(out.toByteArray()));
+		assertEquals(0, r.getDocumentResponse().get(0).getResponse().getStatus().get(0).getCondition().size());
 	}
 
 	private InvoiceResponseData generateFullData() {

@@ -130,7 +130,7 @@ public class DocumentValidationTransformationService {
 		return step;
 	}
 
-	protected DocumentProcessStep validateByRule(Path xmlPath, RuleDocumentValidation ruleDocumentValidation) {
+	public DocumentProcessStep validateByRule(Path xmlPath, RuleDocumentValidation ruleDocumentValidation) {
 		DocumentProcessStep step = new DocumentProcessStep(ruleDocumentValidation);
 
 		try {

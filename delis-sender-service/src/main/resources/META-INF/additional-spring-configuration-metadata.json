@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "delis.sender.document.collector",
+    "type": "java.lang.String",
+    "description": "One of values: empty, delis"
+  },
+  {
+    "name": "delis.sender.document.processor",
+    "type": "java.lang.String",
+    "description": "One of values: empty, delis"
+  },
+  {
+    "name": "application.database",
+    "type": "java.lang.String",
+    "description": "Name of database"
+  }
+]}

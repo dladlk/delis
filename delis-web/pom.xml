@@ -27,28 +27,27 @@
 
     <dependencies>
 
-		<!-- DELIS-DATA -->
+		<!-- Delis -->
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-data</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
-		
-		<!-- DELIS-XSLT-UTIL -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-tasks</artifactId>
+			<version>${delis.version}</version>
+		</dependency>		
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-xml-builder</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
-		
-		<!-- DELIS-SBDH -->
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-sbdh</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
-
-		<!-- DELIS-VFS -->
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-vfs</artifactId>
@@ -144,11 +143,6 @@
 			<groupId>no.difi.commons</groupId>
 			<artifactId>commons-busdox</artifactId>
 			<version>0.9.5</version>
-		</dependency>
-		<dependency>
-			<groupId>no.difi.vefa</groupId>
-			<artifactId>peppol-common</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>no.difi.vefa</groupId>

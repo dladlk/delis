@@ -7,9 +7,9 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import dk.erst.delis.sender.service.document.DocumentData;
-import dk.erst.delis.sender.service.document.IDocumentCollector;
-import dk.erst.delis.sender.service.document.IDocumentData;
+import dk.erst.delis.sender.collector.IDocumentCollector;
+import dk.erst.delis.sender.delis.DelisDocumentData;
+import dk.erst.delis.sender.document.IDocumentData;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,7 @@ public class TestDocumentCollector implements IDocumentCollector {
 	public IDocumentData findDocument() {
 		try {
 			this.takeCount++;
-			DocumentData d = new DocumentData();
+			DelisDocumentData d = new DelisDocumentData(this.takeCount);
 			byte[] bytes;
 			try (InputStream is = this.getClass().getResourceAsStream(testResource)) {
 				bytes = IOUtils.toByteArray(is);

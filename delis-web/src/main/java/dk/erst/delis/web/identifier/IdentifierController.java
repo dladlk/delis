@@ -4,7 +4,8 @@ import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
-import dk.erst.delis.web.organisation.OrganisationService;
+import dk.erst.delis.task.organisation.OrganisationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
