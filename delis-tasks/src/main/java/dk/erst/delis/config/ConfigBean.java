@@ -1,17 +1,32 @@
 package dk.erst.delis.config;
 
-import dk.erst.delis.dao.ConfigValueDaoRepository;
-import dk.erst.delis.data.entities.config.ConfigValue;
-import dk.erst.delis.data.enums.config.ConfigValueType;
-import dk.erst.delis.task.document.storage.DocumentStorageType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import static dk.erst.delis.data.enums.config.ConfigValueType.CODE_LISTS_PATH;
+import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_FORMAT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_PASSWORD;
+import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_URL;
+import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_USER_NAME;
+import static dk.erst.delis.data.enums.config.ConfigValueType.IDENTIFIER_INPUT_ROOT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_DOCUMENT_ROOT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_INPUT_ROOT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_TRANSFORMATION_ROOT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_VALIDATION_ROOT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.XSLT_CACHE_ENABLED;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import static dk.erst.delis.data.enums.config.ConfigValueType.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import dk.erst.delis.dao.ConfigValueDaoRepository;
+import dk.erst.delis.data.entities.config.ConfigValue;
+import dk.erst.delis.data.enums.config.ConfigValueType;
+import dk.erst.delis.task.document.storage.DocumentStorageType;
 
 @Component
 public class ConfigBean {
@@ -30,8 +45,10 @@ public class ConfigBean {
 
 	private void init () {
 		ConfigValueType[] valueTypes = ConfigValueType.values();
+		Stream<ConfigValue> dbConfigValueStream = StreamSupport.stream(configRepository.findAll().spliterator(), false);
+		Map<ConfigValueType, ConfigValue> configValueMap = dbConfigValueStream.collect(Collectors.toMap(ConfigValue::getConfigValueType, (n) -> n));
 		for (ConfigValueType valueType : valueTypes) {
-			ConfigValue dbValue = configRepository.findByConfigValueType(valueType);
+			ConfigValue dbValue = configValueMap.get(valueType);
 			String value;
 			if (dbValue != null) {
 				value = dbValue.getValue();
