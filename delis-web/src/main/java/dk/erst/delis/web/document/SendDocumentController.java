@@ -33,9 +33,9 @@ public class SendDocumentController {
 	@Autowired
 	@Qualifier("sendDocumentService")
 	private SendDocumentService documentService;
-	
-    @Value("#{servletContext.contextPath}")
-    private String servletContextPath;
+
+	@Value("#{servletContext.contextPath}")
+	private String servletContextPath;
 
 	@RequestMapping("/document/send/list")
 	public String list(Model model, WebRequest webRequest) {
@@ -86,12 +86,9 @@ public class SendDocumentController {
 
 		return "/document/send/view";
 	}
-	
+
 	@PostMapping("/document/send/upload")
-	public String upload(
-			@RequestParam("file") MultipartFile file,
-			@RequestParam(name = "validateImmediately", required = false) boolean validateImmediately,
-			RedirectAttributes redirectAttributes) {
+	public String upload(@RequestParam("file") MultipartFile file, @RequestParam(name = "validateImmediately", required = false) boolean validateImmediately, RedirectAttributes redirectAttributes) {
 
 		if (file == null || file.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "File is empty");
@@ -109,19 +106,19 @@ public class SendDocumentController {
 			if (tempFile != null) {
 				log.info("Created test file " + tempFile);
 				try {
-					SendDocument document = documentService.sendFile(tempFile.toPath(), "Uploaded manually " + file.getName(),validateImmediately);
+					SendDocument document = documentService.sendFile(tempFile.toPath(), "Uploaded manually " + file.getOriginalFilename(), validateImmediately);
 					redirectAttributes.addFlashAttribute("message", "Successfully uploaded file as a document with status " + document.getDocumentStatus());
 					return "redirect:/document/send/view/" + document.getId();
 				} catch (DocumentProcessStepException se) {
 					log.error("Failed document processing", se);
-					redirectAttributes.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error "+se.getMessage());
+					redirectAttributes.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error " + se.getMessage());
 					if (se.getDocumentId() != null) {
 						return "redirect:/document/send/view/" + se.getDocumentId();
 					}
 
 				} catch (Exception e) {
-					log.error("Failed to load file "+tempFile, e);
-					redirectAttributes.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error "+e.getMessage());
+					log.error("Failed to load file " + tempFile, e);
+					redirectAttributes.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error " + e.getMessage());
 				}
 			}
 		}
