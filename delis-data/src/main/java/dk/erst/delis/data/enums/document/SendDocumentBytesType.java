@@ -6,7 +6,7 @@ public enum SendDocumentBytesType {
 	
 	OUT_SBD("Outgoing SBD envelope"), 
 	
-	OUT_RECEIPT("Outgoing receipt"),
+	RECEIPT("Outgoing receipt"),
 	
 	;
 
@@ -22,6 +22,10 @@ public enum SendDocumentBytesType {
 	
 	public String getCode() {
 		return this.name();
+	}
+	
+	public boolean isReceipt() {
+		return this == RECEIPT;
 	}
 
 }
