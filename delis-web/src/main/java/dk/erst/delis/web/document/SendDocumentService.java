@@ -3,6 +3,7 @@ package dk.erst.delis.web.document;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
@@ -187,5 +188,13 @@ public class SendDocumentService {
 
 	public List<SendDocumentBytes> getDocumentBytes(SendDocument document) {
 		return this.sendDocumentBytesStorageService.findAll(document);
+	}
+	
+	public void getDocumentBytesContents(SendDocumentBytes sdb, OutputStream out) {
+		this.sendDocumentBytesStorageService.load(sdb, out);
+	}
+
+	public SendDocumentBytes findDocumentBytes(long documentId, long bytesId) {
+		return this.sendDocumentBytesStorageService.find(documentId, bytesId);
 	}
 }

@@ -1,12 +1,12 @@
 package dk.erst.delis.web.document;
 
+import static dk.erst.delis.web.RedirectUtil.redirectEntity;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
@@ -123,16 +122,6 @@ public class DocumentController {
 		return "/document/view";
 	}
 	
-	private ResponseEntity<Object> redirectEntity(String url) {
-	    HttpHeaders httpHeaders = new HttpHeaders();
-	    try {
-			httpHeaders.setLocation(new URI(this.servletContextPath + url));
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-	    return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
-	}
-
 	@PostMapping("/document/generate/invoiceResponseByErrorAndSend/{id}")
 	public String generateInvoiceResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
 		Document document = documentService.getDocument(id);
@@ -159,7 +148,7 @@ public class DocumentController {
 		Document document = documentService.getDocument(irForm.getDocumentId());
 		if (document == null) {
 			ra.addFlashAttribute("errorMessage", "Document is not found");
-			return redirectEntity("/home");
+			return redirectEntity(servletContextPath, "/home");
 		}
 		
 		String defaultReturnPath = "/document/view/" + irForm.getDocumentId();
@@ -170,14 +159,14 @@ public class DocumentController {
 		} catch (InvoiceResponseGenerationException e) {
 			ra.addFlashAttribute("errorMessage", e.getMessage());
 			if (e.getDocumentId() != null) {
-				return redirectEntity(defaultReturnPath);
+				return redirectEntity(servletContextPath,defaultReturnPath);
 			}
-			return redirectEntity("/home");
+			return redirectEntity(servletContextPath,"/home");
 		}
 		
 		if (!success) {
 			ra.addFlashAttribute("errorMessage", "Failed to generate InvoiceResponse");
-			return redirectEntity(defaultReturnPath);
+			return redirectEntity(servletContextPath,defaultReturnPath);
 		}
 
 		if (irForm.isValidate()) {
@@ -189,7 +178,7 @@ public class DocumentController {
 				sb.append(" errors");
 				ra.addFlashAttribute("errorMessage", sb.toString());
 				ra.addFlashAttribute("invoiceResponseErrorList", errorList);
-				return redirectEntity(defaultReturnPath);
+				return redirectEntity(servletContextPath,defaultReturnPath);
 			}
 		}
 
@@ -207,14 +196,14 @@ public class DocumentController {
 			log.error("Failed document processing", se);
 			ra.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error "+se.getMessage());
 			if (se.getDocumentId() != null) {
-				return redirectEntity("redirect:/document/send/view/" + se.getDocumentId());
+				return redirectEntity(servletContextPath,"redirect:/document/send/view/" + se.getDocumentId());
 			}
 		} catch (Exception e) {
 			log.error("Failed to load file "+tempFile, e);
 			ra.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error "+e.getMessage());
 		}		
 		
-		return redirectEntity(defaultReturnPath);
+		return redirectEntity(servletContextPath,defaultReturnPath);
 	}
 	
 	@Getter @Setter

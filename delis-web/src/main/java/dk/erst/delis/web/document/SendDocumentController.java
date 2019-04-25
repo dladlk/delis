@@ -1,5 +1,7 @@
 package dk.erst.delis.web.document;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +11,11 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.SendDocument;
+import dk.erst.delis.data.entities.document.SendDocumentBytes;
+import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
+import dk.erst.delis.web.RedirectUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -126,4 +136,24 @@ public class SendDocumentController {
 		return "redirect:/document/send/list";
 	}
 
+	@GetMapping("/document/send/download/{documentId}/{bytesId}")
+	public ResponseEntity<Object> download(@PathVariable long documentId, @PathVariable long bytesId, RedirectAttributes ra) throws IOException {
+		SendDocumentBytes sendDocumentBytes = documentService.findDocumentBytes(documentId, bytesId);
+		if (sendDocumentBytes == null) {
+			ra.addFlashAttribute("errorMessage", "Data not found");
+			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
+		}
+		if (sendDocumentBytes.getType() != SendDocumentBytesType.RECEIPT) {
+			ra.addFlashAttribute("errorMessage", "Only RECEIPT bytes are allowed for download, but " + sendDocumentBytes.getType() + " is requested");
+			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
+		}
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		this.documentService.getDocumentBytesContents(sendDocumentBytes, out);
+		byte[] data = out.toByteArray();
+		BodyBuilder resp = ResponseEntity.ok();
+		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"data_" + documentId + "_" + bytesId + ".xml\"");
+		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
+		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
+	}
 }
