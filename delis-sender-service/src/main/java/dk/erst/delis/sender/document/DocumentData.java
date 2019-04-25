@@ -18,9 +18,11 @@ public class DocumentData implements IDocumentData, Serializable {
 	private String description;
 	private SendDocument sendDocument;
 	private long id;
+	private long startTime;
 
 	public DocumentData(long id) {
 		this.id = id;
+		this.startTime = System.currentTimeMillis();
 	}
 	
 	@Override

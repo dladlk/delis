@@ -9,4 +9,6 @@ public interface IDocumentData {
 	public InputStream getInputStream();
 
 	public String getDescription();
+	
+	public long getStartTime();
 }
