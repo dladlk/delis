@@ -25,7 +25,7 @@ import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTestIT;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
-import dk.erst.delis.web.organisation.OrganisationService;
+import dk.erst.delis.task.organisation.OrganisationService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

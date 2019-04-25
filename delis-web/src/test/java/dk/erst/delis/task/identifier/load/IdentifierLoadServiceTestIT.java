@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dk.erst.delis.TestUtil;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReaderTest;
-import dk.erst.delis.web.organisation.OrganisationService;
+import dk.erst.delis.task.organisation.OrganisationService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

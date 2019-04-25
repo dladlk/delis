@@ -4,10 +4,11 @@ import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.rest.IdentifierCheckRestController;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadServiceTestIT;
+import dk.erst.delis.task.organisation.OrganisationService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
-import dk.erst.delis.web.organisation.OrganisationService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

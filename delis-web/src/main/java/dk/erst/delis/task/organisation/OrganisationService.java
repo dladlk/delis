@@ -1,4 +1,4 @@
-package dk.erst.delis.web.organisation;
+package dk.erst.delis.task.organisation;
 
 import dk.erst.delis.data.entities.organisation.Organisation;
 import org.springframework.beans.factory.annotation.Autowired;
