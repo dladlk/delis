@@ -13,10 +13,12 @@ import dk.erst.delis.dao.SendDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
 import dk.erst.delis.data.entities.journal.JournalSendDocument;
+import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentProcessStepType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
+import dk.erst.delis.sender.delis.DelisForwardService.ForwardResult;
 import dk.erst.delis.sender.document.IDocumentData;
 import dk.erst.delis.sender.service.SendService.SendFailureType;
 import dk.erst.delis.task.document.storage.SendDocumentBytesStorageService;
@@ -29,12 +31,16 @@ public class DelisService {
 	private SendDocumentDaoRepository sendDocumentDaoRepository;
 	private SendDocumentBytesStorageService sendDocumentBytesStorageService;
 	private JournalSendDocumentDaoRepository journalSendDocumentDaoRepository;
+	private DelisForwardService delisForwardService;
 
 	@Autowired
-	public DelisService(SendDocumentDaoRepository sendDocumentDaoRepository, SendDocumentBytesStorageService sendDocumentBytesStorageService, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository) {
+	public DelisService(SendDocumentDaoRepository sendDocumentDaoRepository, SendDocumentBytesStorageService sendDocumentBytesStorageService, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository 
+//			,DelisForwardService delisForwardService
+			) {
 		this.sendDocumentDaoRepository = sendDocumentDaoRepository;
 		this.sendDocumentBytesStorageService = sendDocumentBytesStorageService;
 		this.journalSendDocumentDaoRepository = journalSendDocumentDaoRepository;
+//		this.delisForwardService = delisForwardService;
 	}
 
 	public SendDocumentBytes findBytes(SendDocument sendDocument) {
@@ -78,6 +84,17 @@ public class DelisService {
 		j.setType(SendDocumentProcessStepType.SEND);
 		j.setSuccess(false);
 		j.setDurationMs(System.currentTimeMillis() - documentData.getStartTime());
+		journalSendDocumentDaoRepository.save(j);
+	}
+
+	private void createForwardJournal(SendDocument sendDocument, String message, boolean success, long duration) {
+		JournalSendDocument j = new JournalSendDocument();
+		j.setDocument(sendDocument);
+		j.setMessage(trunc(message));
+		j.setOrganisation(sendDocument.getOrganisation());
+		j.setType(SendDocumentProcessStepType.FORWARD);
+		j.setSuccess(success);
+		j.setDurationMs(duration);
 		journalSendDocumentDaoRepository.save(j);
 	}
 
@@ -128,8 +145,25 @@ public class DelisService {
 	public void failurePostProcess(IDocumentData documentData, SendFailureType failureType) {
 		DelisDocumentData d = (DelisDocumentData) documentData;
 		SendDocument sendDocument = d.getSendDocument();
-		if (sendDocument.getOrganisation() != null) {
-			
+		if (sendDocument.getDocumentType() == DocumentType.INVOICE_RESPONSE && sendDocument.getOrganisation() != null) {
+			long start = System.currentTimeMillis();
+			ForwardResult forwardResult = delisForwardService.forward(d, failureType);
+			long duration = System.currentTimeMillis() - start;
+
+			String message = null;
+			boolean success = false;
+			switch (forwardResult) {
+			case ERST_NOT_FOUND:
+				message = "Organisation is configured to forward undeliverable InvoiceResponse to ERST, but organisation with code \"erst\" is not found.";
+				break;
+			case OK:
+				message = "Organisation is configured to forward undeliverable InvoiceResponse to ERST, but organisation with code \"erst\" is not found.";
+				success = true;
+				break;
+			}
+			if (message != null) {
+				createForwardJournal(sendDocument, message, success, duration);
+			}
 		}
 	}
 }
