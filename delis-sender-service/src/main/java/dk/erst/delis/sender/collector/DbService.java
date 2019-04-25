@@ -1,6 +1,8 @@
 package dk.erst.delis.sender.collector;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,9 +107,9 @@ public class DbService {
 		return document;
 	}
 
-	public boolean markDocumentSent(IDocumentData documentData) {
+	public boolean markDocumentSent(IDocumentData documentData, String messageId, Date deliveredDate) {
 		DocumentData d = (DocumentData) documentData;
-		return sendDocumentDaoRepository.updateDocumentStatus(d.getSendDocument(), SendDocumentStatus.SEND_OK, SendDocumentStatus.SEND_START) == 1;
+		return sendDocumentDaoRepository.markDocumentSent(d.getSendDocument(), messageId, deliveredDate) == 1;
 	}
 
 	public boolean markDocumentFailed(IDocumentData documentData) {
@@ -117,5 +119,10 @@ public class DbService {
 
 	private String trunc(String string) {
 		return StringUtils.truncate(string, 250);
+	}
+
+	public void saveReceipt(IDocumentData documentData, byte[] receipt) {
+		SendDocument sendDocument = ((DocumentData) documentData).getSendDocument();
+		sendDocumentBytesStorageService.save(sendDocument, SendDocumentBytesType.RECEIPT, receipt.length, new ByteArrayInputStream(receipt));
 	}
 }

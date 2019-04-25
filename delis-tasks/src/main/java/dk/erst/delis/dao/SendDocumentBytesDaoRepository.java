@@ -13,4 +13,6 @@ public interface SendDocumentBytesDaoRepository extends PagingAndSortingReposito
 	SendDocumentBytes findTop1ByDocumentAndTypeOrderByIdDesc(SendDocument document, SendDocumentBytesType type);
 
 	List<SendDocumentBytes> findByDocument(SendDocument document);
+	
+	SendDocumentBytes findByDocumentIdAndId(long id, long documentId);
 }

@@ -25,8 +25,9 @@ public class DbResultProcessor implements IResultProcessor {
 	@Override
 	public void processResult(IDocumentData documentData, DelisResponse response) {
 		log.info("Document " + documentData + " is successfully sent with response " + response);
-		dbService.markDocumentSent(documentData);
+		dbService.markDocumentSent(documentData, response.getConversationId(), response.getTimestamp());
 		dbService.createSentJournal(documentData, response);
+		dbService.saveReceipt(documentData, response.primaryReceipt().getValue());
 	}
 
 	@Override

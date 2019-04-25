@@ -36,17 +36,17 @@ public class SendDocumentBytesStorageService {
 	private File buildFile(SendDocumentBytes documentBytes) {
 		SendDocument document = documentBytes.getDocument();
 		Organisation organisation = document.getOrganisation();
-		String fileName = wrapZeros(documentBytes.getId(), 3) + "-" + documentBytes.getType()+".xml";
-		
+		String fileName = wrapZeros(documentBytes.getId(), 3) + "-" + documentBytes.getType() + ".xml";
+
 		Path rootFolder;
 		String subFolder;
-		if (organisation != null ) {
+		if (organisation != null) {
 			subFolder = organisation.getCode();
 		} else {
 			subFolder = "_";
 		}
 		rootFolder = Paths.get(configBean.getStorageSendPath().toString(), subFolder);
-		
+
 		Path filePath = Paths.get(rootFolder.toString(), wrapZeros(document.getId(), 5), fileName);
 
 		return filePath.toFile();
@@ -99,7 +99,11 @@ public class SendDocumentBytesStorageService {
 	public SendDocumentBytes find(SendDocument document, SendDocumentBytesType type) {
 		return documentBytesDaoRepository.findTop1ByDocumentAndTypeOrderByIdDesc(document, type);
 	}
-	
+
+	public SendDocumentBytes find(long documentId, long id) {
+		return documentBytesDaoRepository.findByDocumentIdAndId(documentId, id);
+	}
+
 	public List<SendDocumentBytes> findAll(SendDocument document) {
 		return documentBytesDaoRepository.findByDocument(document);
 	}
