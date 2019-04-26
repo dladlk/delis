@@ -2,6 +2,7 @@ package dk.erst.delis.task.document.process;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,10 +60,19 @@ public class DocumentValidationTransformationService {
 	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule) {
 		List<RuleDocumentValidation> ruleByFormat = ruleService.getValidationRuleListByFormat(documentFormat);
 		for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
-			DocumentProcessStep step = validateByRule(xmlPath, ruleDocumentValidation);
-			plog.addStep(step);
-			if (!step.isSuccess()) {
-				return;
+			try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
+				DocumentProcessStep step = validateByRule(xmlStream, ruleDocumentValidation);
+				plog.addStep(step);
+				if (!step.isSuccess()) {
+					return;
+				}
+			} catch (IOException e) {
+				log.error("Failed to validate " + xmlPath + " by rule " + ruleDocumentValidation, e);
+				DocumentProcessStep step = new DocumentProcessStep(ruleDocumentValidation);
+				ErrorRecord err = new ErrorRecord(ruleDocumentValidation.buildErrorCode(), "", e.getMessage(), "error", "IOException");
+				step.addError(err);
+				step.setMessage(e.getMessage());
+				plog.addStep(step);
 			}
 		}
 
@@ -130,19 +140,20 @@ public class DocumentValidationTransformationService {
 		return step;
 	}
 
-	public DocumentProcessStep validateByRule(Path xmlPath, RuleDocumentValidation ruleDocumentValidation) {
+	public DocumentProcessStep validateByRule(InputStream xmlStream, RuleDocumentValidation ruleDocumentValidation) {
 		DocumentProcessStep step = new DocumentProcessStep(ruleDocumentValidation);
 
 		try {
 			switch (ruleDocumentValidation.getValidationType()) {
 				case XSD:
 					SchemaValidator xsdValidator = new SchemaValidator();
-					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
+					try {
+						xmlStream.reset();
 						List<ErrorRecord> errorList = xsdValidator.validate(xmlStream, ruleService.filePath(ruleDocumentValidation), ruleDocumentValidation);
 						step.setSuccess(errorList.isEmpty());
 						step.setErrorRecords(errorList);
 					} catch (Exception e) {
-						log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
+						log.error("Failed validation by rule " + ruleDocumentValidation, e);
 						step.setMessage(e.getMessage());
 					}
 
@@ -150,16 +161,14 @@ public class DocumentValidationTransformationService {
 				case SCHEMATRON:
 					SchematronValidator schValidator = new SchematronValidator();
 					Path xslFilePath = ruleService.filePath(ruleDocumentValidation);
-					try (InputStream xmlStream = new FileInputStream(xmlPath.toFile()); InputStream schematronStream = new FileInputStream(xslFilePath.toFile())) {
+					try (InputStream schematronStream = new FileInputStream(xslFilePath.toFile())) {
 						ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
+						xmlStream.reset();
 						List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector, xslFilePath);
 						step.setSuccess(errorList.isEmpty());
 						step.setErrorRecords(errorList);
-//						if (!errorList.isEmpty()) {
-//							System.out.println("errorList = " + errorList);
-//						}
 					} catch (Exception e) {
-						log.error("Failed validation of file " + xmlPath + " by rule " + ruleDocumentValidation, e);
+						log.error("Failed validation by rule " + ruleDocumentValidation, e);
 						step.setMessage(e.getMessage());
 					}
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
+import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.sender.collector.IDocumentCollector;
 import dk.erst.delis.sender.document.IDocumentData;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class DelisDocumentCollector implements IDocumentCollector {
 	@Override
 	public IDocumentData findDocument() {
 		long start = System.currentTimeMillis();
-		SendDocument sendDocument = dbService.findDocumentAndLock(0);
+		SendDocument sendDocument = dbService.findDocumentAndLock(SendDocumentStatus.VALID, SendDocumentStatus.SEND_START);
 		if (sendDocument != null) {
 			SendDocumentBytes documentBytes = dbService.findBytes(sendDocument);
 			if (documentBytes == null) {

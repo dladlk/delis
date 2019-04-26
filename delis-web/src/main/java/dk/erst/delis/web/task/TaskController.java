@@ -8,6 +8,7 @@ import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
+import dk.erst.delis.web.document.SendDocumentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,8 @@ public class TaskController {
 	@Autowired
 	private IdentifierBatchLoadService identifierBatchLoadService;
 
+	@Autowired
+	private SendDocumentService sendDocumentService;
 
 	@GetMapping("/task/index")
 	public String index() {
@@ -119,6 +122,19 @@ public class TaskController {
 		} catch (Exception e) {
 			log.error("Failed to invoke documentDeliveryService.processValidated", e);
 			model.addAttribute("errorMessage", "Failed to deliver validated documents: " + e.getMessage());
+		}
+		return "/task/index";
+	}
+	
+	@GetMapping("/task/sendDocumentValidate")
+	public String sendDocumentValidate(Model model) {
+		try {
+			StatData sd = sendDocumentService.validateNewDocuments();
+			String message = "Done processing of NEW sent documents in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke sendDocumentService.validateNewDocuments", e);
+			model.addAttribute("errorMessage", "Failed to validate sent documents: " + e.getMessage());
 		}
 		return "/task/index";
 	}

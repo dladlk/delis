@@ -21,26 +21,25 @@ import dk.erst.delis.oxalis.sender.response.DelisResponse;
 import dk.erst.delis.sender.delis.DelisForwardService.ForwardResult;
 import dk.erst.delis.sender.document.IDocumentData;
 import dk.erst.delis.sender.service.SendService.SendFailureType;
+import dk.erst.delis.task.document.send.SendDocumentLockService;
 import dk.erst.delis.task.document.storage.SendDocumentBytesStorageService;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class DelisService {
 
 	private SendDocumentDaoRepository sendDocumentDaoRepository;
 	private SendDocumentBytesStorageService sendDocumentBytesStorageService;
 	private JournalSendDocumentDaoRepository journalSendDocumentDaoRepository;
-	private DelisForwardService delisForwardService;
+	private SendDocumentLockService sendDocumentLockService;
+	
+	private DelisForwardService delisForwardService = null;
 
 	@Autowired
-	public DelisService(SendDocumentDaoRepository sendDocumentDaoRepository, SendDocumentBytesStorageService sendDocumentBytesStorageService, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository 
-//			,DelisForwardService delisForwardService
-			) {
+	public DelisService(SendDocumentDaoRepository sendDocumentDaoRepository, SendDocumentBytesStorageService sendDocumentBytesStorageService, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository, SendDocumentLockService sendDocumentLockService) {
 		this.sendDocumentDaoRepository = sendDocumentDaoRepository;
 		this.sendDocumentBytesStorageService = sendDocumentBytesStorageService;
 		this.journalSendDocumentDaoRepository = journalSendDocumentDaoRepository;
-//		this.delisForwardService = delisForwardService;
+		this.sendDocumentLockService = sendDocumentLockService;
 	}
 
 	public SendDocumentBytes findBytes(SendDocument sendDocument) {
@@ -98,29 +97,8 @@ public class DelisService {
 		journalSendDocumentDaoRepository.save(j);
 	}
 
-	public SendDocument findDocumentAndLock(int attemptIndex) {
-		if (log.isDebugEnabled()) {
-			log.debug("findAndLock " + attemptIndex);
-		}
-		if (attemptIndex > 5) {
-			/*
-			 * Potection again cicle
-			 */
-			log.error("SUSPICIOUS: findSendDocumentWithValidStatus reached attempt index limit with value " + attemptIndex + ", skip further attempts");
-			return null;
-		}
-		SendDocument document = sendDocumentDaoRepository.findTop1ByDocumentStatusOrderByIdAsc(SendDocumentStatus.VALID);
-		if (document != null) {
-			if (sendDocumentDaoRepository.updateDocumentStatus(document, SendDocumentStatus.SEND_START, SendDocumentStatus.VALID) != 1) {
-				return findDocumentAndLock(attemptIndex + 1);
-			}
-		}
-		if (document != null) {
-			if (log.isDebugEnabled()) {
-				log.debug("Found SendDocument #" + document.getId());
-			}
-		}
-		return document;
+	public SendDocument findDocumentAndLock(SendDocumentStatus status, SendDocumentStatus newStatus) {
+		return sendDocumentLockService.findDocumentAndLock(status, newStatus);
 	}
 
 	public boolean markDocumentSent(IDocumentData documentData, String messageId, Date deliveredDate) {
