@@ -37,8 +37,12 @@ delisAdmin:
         name: delis-root
       - mountPath: /load/input1
         name: data-input1
+      - mountPath: /load/input1_as2
+        name: data-input-as2-1
       - mountPath: /load/input2
         name: data-input2
+      - mountPath: /load/input2_as2
+        name: data-input-as2-2
     volumes:
       - name: delis-resources
         hostPath:
@@ -49,9 +53,15 @@ delisAdmin:
       - name: data-input1
         hostPath:
           path: /data/fs-plugin/dynconcepttestparty01gw/IN
+      - name: data-input-as2-1
+        hostPath:
+          path: /data/oxalis1/fs/IN
       - name: data-input2
         hostPath:
           path: /data/fs-plugin/dynconcepttestparty02gw/IN
+      - name: data-input-as2-2
+        hostPath:
+          path: /data/oxalis2/fs/IN
 
 delisSender:
     enabled: true
