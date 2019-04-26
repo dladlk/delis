@@ -67,6 +67,17 @@ public class ClassLoaderUtil {
         return fields;
     }
 
+    public Field getFieldsByEntity(Class entityClass, String fieldName) {
+        Field field = null;
+        Class nextClass = entityClass;
+        do {
+            field = Arrays.stream(nextClass.getDeclaredFields()).filter(f -> f.getName().equals(fieldName)).findFirst().get();
+            nextClass = nextClass.getSuperclass();
+        } while (Objects.isNull(field) || Objects.nonNull(nextClass));
+
+        return field;
+    }
+
     public Class findRepositoryByEntityMapper(String entityClass, ListableBeanFactory listableBeanFactory) {
         Repositories repositories = new Repositories(listableBeanFactory);
         for (Class domainClass : repositories) {

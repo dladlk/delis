@@ -9,6 +9,11 @@
     </th>
 </div>
 
+<div th:fragment="filter_field_option_list (fieldName, fieldValues, selectedValue)">
+    <option th:each="v: ${fieldValues}"
+            th:value="${v}" th:text="${v}" th:selected="${v.toString().equals(selectedValue)}"></option>
+</div>
+
 <div class="card-footer" th:fragment="paginator (start, end, total, current)">
     <!-- customers pagination -->
     <nav aria-label="Pagination" th:if="${total gt 0}">

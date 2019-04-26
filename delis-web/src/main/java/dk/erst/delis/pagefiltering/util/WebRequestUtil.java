@@ -6,6 +6,8 @@ import lombok.experimental.UtilityClass;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -20,6 +22,7 @@ public class WebRequestUtil {
     private static final int PAGE_PARAM_VALUE = 1;
     private static final int SIZE_PARAM_VALUE = 10;
     private static final String FLAG_PARAM_START_WITH = "flagParam";
+    public static final String SORT_PARAM = "sort";
 
     public PageAndSizeModel generatePageAndSizeModel(WebRequest webRequest) {
         int page = webRequest.getParameter(PAGE_PARAM) != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter(PAGE_PARAM))) : PAGE_PARAM_VALUE;
@@ -45,5 +48,16 @@ public class WebRequestUtil {
                 .stream()
                 .filter(key -> key.startsWith(FLAG_PARAM_START_WITH))
                 .findFirst().orElse(null);
+    }
+
+    public static Map collectFilterParametersFromRequest (WebRequest webRequest) {
+        HashMap<String, String> result = new HashMap<>();
+        Map<String, String[]> parameterMap = webRequest.getParameterMap();
+        for(String key:parameterMap.keySet()) {
+            if (!PAGE_PARAM.equalsIgnoreCase(key) && !SORT_PARAM.equalsIgnoreCase(key)) {
+                result.put(key, parameterMap.get(key)[0]);
+            }
+        }
+        return result;
     }
 }
