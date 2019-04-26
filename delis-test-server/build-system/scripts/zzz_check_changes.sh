@@ -4,6 +4,9 @@ PROJECT_ROOT=$1
 PROJECT_CODE=$2
 PROJECT_SCAN_PATH_LIST=$3
 DOCKER_REBUILD_COMMAND=$4
+FORCE_UPDATE=$5
+
+echo ${DOCKER_REBUILD_COMMAND}
 
 if [ -z $1 ]; then
 PROJECT_ROOT=/wsh/delis
@@ -15,6 +18,14 @@ fi
 echo "**********"
 echo Update of ${PROJECT_CODE}
 echo "**********"
+
+if [ -z $FORCE_UPDATE ]; then
+   echo Check whether code is changed since last docker image rebuild
+else
+    echo Forced update is requested - skip checks
+	${DOCKER_REBUILD_COMMAND}
+	./zzz_kill_pod.sh ${PROJECT_CODE}
+fi
 
 GIT_LOG_FILE=./log/${PROJECT_CODE}_git_log.txt
 
