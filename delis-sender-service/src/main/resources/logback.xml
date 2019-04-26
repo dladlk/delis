@@ -5,5 +5,5 @@
     <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     
 	<logger name="root" level="warn" />
-	<logger name="dk.erst.delis" level="debug" />
+	<logger name="dk.erst.delis" level="info" />
 </configuration>
