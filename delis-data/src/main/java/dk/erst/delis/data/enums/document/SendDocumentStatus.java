@@ -4,11 +4,12 @@ public enum SendDocumentStatus {
 
 	NEW,
 
-	VALID, // Schema/schematron valid document
-	
+	VALIDATE_START, VALID, VALIDATE_ERROR,
+
 	SEND_START, SEND_OK, SEND_ERROR,
-	
-	DELIVERED
+
+	DELIVERED,
+
 	;
-	
+
 }

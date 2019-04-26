@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,18 +63,18 @@ public class SendDocumentController {
 	}
 
 	@PostMapping("/document/send/updatestatuses")
-	public String listFilter(@ModelAttribute SendDocumentStatusBachUdpateInfo idList, Model model) {
+	public String listFilter(@ModelAttribute SendDocumentStatusBachUdpateInfo idList, Model model, Authentication authentication) {
 		List<Long> ids = idList.getIdList();
 		SendDocumentStatus status = idList.getStatus();
-		documentService.updateStatuses(ids, status);
+		documentService.updateStatuses(ids, status, authentication.getName());
 		return "redirect:/document/send/list";
 	}
 
 	@PostMapping("/document/send/updatestatus")
-	public String updateStatus(SendDocument document, RedirectAttributes ra) {
+	public String updateStatus(SendDocument document, RedirectAttributes ra, Authentication authentication) {
 		Long id = document.getId();
 		SendDocumentStatus documentStatus = document.getDocumentStatus();
-		int count = documentService.updateStatus(id, documentStatus);
+		int count = documentService.updateStatus(id, documentStatus, authentication.getName());
 		if (count == 0) {
 			ra.addFlashAttribute("errorMessage", "Document with ID " + id + " is not found");
 			return "redirect:/document/send/list";

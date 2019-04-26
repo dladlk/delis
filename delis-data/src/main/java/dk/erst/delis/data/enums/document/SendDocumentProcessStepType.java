@@ -12,6 +12,8 @@ public enum SendDocumentProcessStepType {
 
 	MANUAL,
 
-	FORWARD,
+	FORWARD, 
+	
+	VALIDATE,
 	
 }

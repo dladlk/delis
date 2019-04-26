@@ -169,11 +169,13 @@ public class DocumentProcessService {
 			List<DocumentProcessStep> stepList = plog.getStepList();
 			journalDocumentService.saveDocumentStep(document, stepList);
 			
-			if (setupData.isGenerateInvoiceResponseOnError()) {
-				if (generateAndSendInvoiceResponse(document).isSuccess()) {
-					statData.increment("GENERATED_INVOICE_RESPONSE_OK");
-				} else {
-					statData.increment("GENERATED_INVOICE_RESPONSE_ERROR");
+			if (!plog.isSuccess()) {
+				if (setupData.isGenerateInvoiceResponseOnError()) {
+					if (generateAndSendInvoiceResponse(document).isSuccess()) {
+						statData.increment("GENERATED_INVOICE_RESPONSE_OK");
+					} else {
+						statData.increment("GENERATED_INVOICE_RESPONSE_ERROR");
+					}
 				}
 			}
 		} else {

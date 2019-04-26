@@ -1,4 +1,4 @@
-package dk.erst.delis.config;
+package dk.erst.delis.task.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +36,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
 	@Value("${job.interval.sec.identifierPublish}")
 	private long identifierPublish;
+
+	@Value("${job.interval.sec.sentValidate}")
+	private long sentValidate;
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
@@ -77,6 +80,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		}
 		if (t.endsWith("identifierPublish")) {
 			return this.identifierPublish * 1000;
+		}
+		if (t.endsWith("sentValidate")) {
+			return this.sentValidate * 1000;
 		}
 		return Long.MAX_VALUE;
 	}

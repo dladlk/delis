@@ -1,5 +1,14 @@
 package dk.erst.delis.task.scheduler;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
@@ -8,15 +17,8 @@ import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
+import dk.erst.delis.web.document.SendDocumentService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
 
 /**
  * @author funtusthan, created by 05.02.19
@@ -26,28 +28,21 @@ import java.util.List;
 @Service
 public class TaskScheduler {
 
-    private final ConfigBean configBean;
-    private final DocumentLoadService documentLoadService;
-    private final DocumentProcessService documentProcessService;
-    private final DocumentDeliverService documentDeliverService;
-    private final IdentifierBatchLoadService identifierBatchLoadService;
-    private final IdentifierBatchPublishingService identifierBatchPublishingService;
+	@Autowired
+    private ConfigBean configBean;
+	@Autowired
+	private DocumentLoadService documentLoadService;
+	@Autowired
+	private DocumentProcessService documentProcessService;
+	@Autowired
+	private DocumentDeliverService documentDeliverService;
+	@Autowired
+	private IdentifierBatchLoadService identifierBatchLoadService;
+	@Autowired
+	private IdentifierBatchPublishingService identifierBatchPublishingService;
+	@Autowired
+	private SendDocumentService sendDocumentService;
 
-    @Autowired
-    public TaskScheduler(
-            ConfigBean configBean,
-            DocumentLoadService documentLoadService,
-            DocumentProcessService documentProcessService,
-            DocumentDeliverService documentDeliverService,
-            IdentifierBatchLoadService identifierBatchLoadService,
-            IdentifierBatchPublishingService identifierBatchPublishingService) {
-        this.configBean = configBean;
-        this.documentLoadService = documentLoadService;
-        this.documentProcessService = documentProcessService;
-        this.documentDeliverService = documentDeliverService;
-        this.identifierBatchLoadService = identifierBatchLoadService;
-        this.identifierBatchPublishingService = identifierBatchPublishingService;
-    }
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
     public void documentLoad() {
@@ -118,5 +113,17 @@ public class TaskScheduler {
             log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
         }
         log.info("-- DONE IDENTIFIERS PUBLISH TASK --");
+    }
+    
+    @Scheduled(fixedDelay = 5000L)
+    public void sendDocumentValidate() {
+        log.info("-- START SendDocument Validation -- ");
+        try {
+            StatData statData = sendDocumentService.validateNewDocuments();
+            log.info("Validation stat: " + statData);
+        } catch (Exception e) {
+            log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
+        }
+        log.info("-- DONE SendDocument Validation --");
     }
 }
