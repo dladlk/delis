@@ -9,6 +9,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -72,29 +73,31 @@ public class SendDocumentService {
 		return documentDaoRepository.findById(id).orElse(null);
 	}
 
-	public int updateStatuses(List<Long> idList, SendDocumentStatus status) {
+	public int updateStatuses(List<Long> idList, SendDocumentStatus newStatus, String user) {
 		AtomicInteger count = new AtomicInteger(0);
 		if (idList.size() > 0) {
 			Iterable<SendDocument> documents = documentDaoRepository.findAllById(idList);
 			documents.forEach(document -> {
 				long start = System.currentTimeMillis();
-				document.setDocumentStatus(status);
+				SendDocumentStatus oldStatus = document.getDocumentStatus();
+				document.setDocumentStatus(newStatus);
 				documentDaoRepository.save(document);
-				noticeInJournal(status, document, System.currentTimeMillis() - start);
+				noticeInJournal(oldStatus, newStatus, user, document, System.currentTimeMillis() - start);
 				count.getAndIncrement();
 			});
 		}
 		return count.get();
 	}
 
-	public int updateStatus(Long id, SendDocumentStatus status) {
+	public int updateStatus(Long id, SendDocumentStatus newStatus, String user) {
 		int count = 0;
 		long start = System.currentTimeMillis();
 		SendDocument document = documentDaoRepository.findById(id).get();
 		if (document != null) {
-			document.setDocumentStatus(status);
+			SendDocumentStatus oldStatus = document.getDocumentStatus();
+			document.setDocumentStatus(newStatus);
 			documentDaoRepository.save(document);
-			noticeInJournal(status, document, System.currentTimeMillis() - start);
+			noticeInJournal(oldStatus, newStatus, user, document, System.currentTimeMillis() - start);
 			count++;
 		}
 
@@ -171,13 +174,13 @@ public class SendDocumentService {
 		return sd;
     }
 
-	private void noticeInJournal(SendDocumentStatus status, SendDocument document, long duration) {
+	private void noticeInJournal(SendDocumentStatus oldStatus, SendDocumentStatus newStatus, String user, SendDocument document, long duration) {
 		JournalSendDocument updateRecord = new JournalSendDocument();
 		updateRecord.setDocument(document);
 		updateRecord.setSuccess(true);
 		updateRecord.setType(SendDocumentProcessStepType.MANUAL);
 		updateRecord.setOrganisation(document.getOrganisation());
-		updateRecord.setMessage(MessageFormat.format("Updated by user manually. Set status={0}.", status));
+		updateRecord.setMessage(StringUtils.truncate(MessageFormat.format("User {0} manually changed status from {1} to {2}", user, oldStatus, newStatus), 250));
 		updateRecord.setDurationMs(duration);
 		journalDocumentDaoRepository.save(updateRecord);
 	}
