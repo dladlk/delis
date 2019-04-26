@@ -20,32 +20,35 @@
                 </tr>
                 <tr>
                     <td>
-                        <select class="form-control">
-                            <option>Today</option>
-                            <option>Last week</option>
-                            <option>Last month</option>
+                        <select class="form-control"  th:onchange="|javascript:setTableFormDateFilter('documentTableForm', 'createTime', this.value, 'All')|">
+                            <option>All</option>
+                            <option th:selected="${'Today'.equals(filterFields.get('createTime_date_range_description'))}">Today</option>
+                            <option th:selected="${'Last week'.equals(filterFields.get('createTime_date_range_description'))}">Last week</option>
+                            <option th:selected="${'Last month'.equals(filterFields.get('createTime_date_range_description'))}">Last month</option>
                         </select>
                     </td>
                     <td>
-                        <select class="form-control">
+                        <select class="form-control" th:onchange="|javascript:setTableFormFilter('documentTableForm', 'organisation', this.value, 'All')|">
                             <option>All</option>
-                            <option>Undefined</option>
-                            <option>Region Midt</option>
-                            <option>Region Nord</option>
+                            <option th:replace="~{fragments/sorting :: filter_field_option_list (fieldName='organisation',
+                                    fieldValues=${availableOrganisationNames},
+                                    selectedValue=${filterFields.get('organisation')})}">All</option>
                         </select>
                     </td>
                     <td>
-                        <select class="form-control">
+                        <select class="form-control" th:onchange="|javascript:setTableFormFilter('documentTableForm', 'documentStatus', this.value, 'All')|">
                             <option>All</option>
-                            <option>LOAD OK</option>
+                            <option th:replace="~{fragments/sorting :: filter_field_option_list (fieldName='documentStatus',
+                                    fieldValues=${T(dk.erst.delis.data.enums.document.DocumentStatus).values()},
+                                    selectedValue=${filterFields.get('documentStatus')})}">LOAD_OK</option>
                         </select>
                     </td>
                     <td>
-                        <select class="form-control">
+                        <select class="form-control" th:onchange="|javascript:setTableFormFilter('documentTableForm', 'ingoingDocumentFormat', this.value, 'All')|">
                             <option>All</option>
-                            <option>CII</option>
-                            <option>BIS3</option>
-                            <option>OIOUBL</option>
+                            <option th:replace="~{fragments/sorting :: filter_field_option_list (fieldName='ingoingDocumentFormat',
+                                    fieldValues=${T(dk.erst.delis.data.enums.document.DocumentFormat).values()},
+                                    selectedValue=${filterFields.get('ingoingDocumentFormat')})}">CII</option>
                         </select>
                     </td>
                 </tr>
@@ -106,6 +109,9 @@
         <input type="hidden" name="sort" id="sort"
                th:value="'sortby_' + ${documentList.sortField + '_' + documentList.sortDirection}"/>
         <input type="hidden" name="page" id="page" th:value="${documentList.currentPage}"/>
+        <input th:each="r: ${filterFields.keySet()}" type="hidden" th:name="${r}" th:id="${r}"
+               th:value="${filterFields.get(r)}"/>
+
     </form>
 
     <div class="card">

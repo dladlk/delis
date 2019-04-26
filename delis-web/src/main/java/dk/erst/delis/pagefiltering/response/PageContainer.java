@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Iehor Funtusov, created by 18.12.18
@@ -29,6 +31,7 @@ public class PageContainer<T> {
     private String sortField = "id"; // todo modify for multifields sorting in future
     private SortingDirection sortDirection = SortingDirection.Asc;
 
+    private Map filterMap = new HashMap();
 
     public PageContainer(int currentPage, int pageSize, long collectionSize, List<T> items, String sortField, SortingDirection sortDirection) {
         this.currentPage = currentPage;
