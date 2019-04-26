@@ -32,5 +32,9 @@ spec:
             backend:
               serviceName: {{.Release.Name}}-domibus-ws-sender
               servicePort: 8080
+          - path: {{.Values.delisSender.contextPath}}
+            backend:
+              serviceName: {{.Release.Name}}-sender-service
+              servicePort: 8080
 
 {{- end }}

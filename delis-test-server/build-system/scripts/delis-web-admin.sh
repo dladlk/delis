@@ -4,7 +4,7 @@ PROJECT_ROOT=/wsh/delis
 PROJECT_CODE=delis-web-admin
 PROJECT_SCAN_PATH_LIST="/delis-sbdh;/delis-data;/delis-web"
 DOCKER_REBUILD_COMMAND=${PROJECT_ROOT}/delis-docker/delis-web/build-${PROJECT_CODE}.sh
-FORCE_UPDATE=0
+FORCE_UPDATE=
 if [ -z $1 ]; then
    echo
 else
