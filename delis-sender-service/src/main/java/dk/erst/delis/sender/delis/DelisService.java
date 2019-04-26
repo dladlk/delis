@@ -117,7 +117,7 @@ public class DelisService {
 		}
 		if (document != null) {
 			if (log.isDebugEnabled()) {
-				log.debug("Found " + document.getId());
+				log.debug("Found SendDocument #" + document.getId());
 			}
 		}
 		return document;

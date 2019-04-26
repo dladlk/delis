@@ -39,7 +39,7 @@ public class DelisDocumentCollector implements IDocumentCollector {
 				} else {
 					DelisDocumentData documentData = new DelisDocumentData(sendDocument.getId());
 					documentData.setData(baos.toByteArray());
-					documentData.setDescription("SendDocument#" + sendDocument.getId());
+					documentData.setDescription("SendDocument #" + sendDocument.getId());
 					documentData.setSendDocument(sendDocument);
 
 					long durationMs = System.currentTimeMillis() - start;
