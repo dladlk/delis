@@ -32,8 +32,8 @@ public class DelisResponse extends As4InboundMetadata {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if (this.endpoint != null) {
-			sb.append("endpiont ");
-			sb.append(this.getTransportProtocol());
+			sb.append("endpoint ");
+			sb.append(this.endpoint.getTransportProfile());
 			sb.append(", url=");
 			sb.append(this.endpoint.getAddress());
 		}
