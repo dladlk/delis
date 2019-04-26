@@ -29,7 +29,6 @@ public class LookupTransmissionRequestBuilder implements IDelisTransmissionReque
 	public DelisTransmissionRequest build(InputStream payload) throws IOException, TransmissionLookupException, SbdhException {
 		SBDHTranslator t = new SBDHTranslator();
 		Header header;
-		payload.mark(Integer.MAX_VALUE);
 		InputStream sbdhStream;
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
