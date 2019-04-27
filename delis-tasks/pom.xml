@@ -38,7 +38,12 @@
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-xslt-util</artifactId>
 			<version>${delis.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-vfs</artifactId>
+			<version>${delis.version}</version>
+		</dependency>				
 		
 		<!-- Commons -->
 		<dependency>
