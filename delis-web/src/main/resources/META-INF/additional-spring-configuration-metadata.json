@@ -33,5 +33,10 @@
     "name": "job.interval.sec.sentValidate",
     "type": "java.lang.String",
     "description": "Interval to execute sentValidate job, in seconds, if positive"
-  }
+  },
+  {
+    "name": "delis.forward.failed.invoiceresponse.vfs.config.path",
+    "type": "java.lang.String",
+    "description": "Path to VFS config file with setup configuration of failed to be sent Invoice Responses"
+  }  
 ]}
