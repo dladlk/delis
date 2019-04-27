@@ -19,6 +19,9 @@ public class StatData {
 		this.statMap = new HashMap<>();
 	}
 
+	public void incrementObject(Object key) {
+		increment(String.valueOf(key));
+	}
 	public void increment(String key) {
 		String code = key == null ? "UNDEFINED" : key;
 		int[] c = statMap.get(code);
