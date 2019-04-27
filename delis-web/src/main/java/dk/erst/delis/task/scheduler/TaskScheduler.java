@@ -14,6 +14,7 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.document.send.forward.SendDocumentFailedProcessService;
 import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
@@ -42,6 +43,8 @@ public class TaskScheduler {
 	private IdentifierBatchPublishingService identifierBatchPublishingService;
 	@Autowired
 	private SendDocumentService sendDocumentService;
+	@Autowired
+	private SendDocumentFailedProcessService sendDocumentFailedProcessService;
 
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
@@ -122,8 +125,20 @@ public class TaskScheduler {
             StatData statData = sendDocumentService.validateNewDocuments();
             log.info("Validation stat: " + statData);
         } catch (Exception e) {
-            log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
+            log.error("TaskScheduler: sendDocumentValidate ==> Failed to invoke sendDocumentService.validateNewDocuments", e);
         }
         log.info("-- DONE SendDocument Validation --");
+    }
+    
+    @Scheduled(fixedDelay = 5000L)
+    public void sendDocumentFailedProcess() {
+        log.info("-- START Failed SendDocument Processing -- ");
+        try {
+            StatData statData = sendDocumentFailedProcessService.processFailedDocuments();
+            log.info("Process stat: " + statData);
+        } catch (Exception e) {
+            log.error("TaskScheduler: Failed to invoke sendDocumentFailedProcessService.processFailedDocuments", e);
+        }
+        log.info("-- DONE Failed SendDocument Processing --");
     }
 }

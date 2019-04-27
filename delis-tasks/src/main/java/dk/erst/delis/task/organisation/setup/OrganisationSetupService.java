@@ -199,6 +199,8 @@ public class OrganisationSetupService {
 		OrganisationSetup probe = new OrganisationSetup();
 		probe.setKey(criteriaKey);
 		probe.setValue(criteriaValue);
+		probe.setUpdateTime(null);
+		probe.setCreateTime(null);
 		Example<OrganisationSetup> example = Example.of(probe);
 		Iterable<OrganisationSetup> setupIterable = organisationSetupDaoRepository.findAll(example);
 		

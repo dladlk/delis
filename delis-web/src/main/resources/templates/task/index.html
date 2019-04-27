@@ -78,6 +78,14 @@
 						Lookup db for SendDocument records with status = NEW and validate original format, if ok - change to VALID, otherwhise VALIDATE_ERROR.
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendFailedProcess}">Process failed</a>
+					</td>
+					<td>
+						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwhise FORWARD_ERROR) - otherwise FORWARD_SKIP.
+					</td>
+				</tr>
 				
 			</table>
 

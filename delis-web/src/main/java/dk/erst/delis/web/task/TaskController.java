@@ -5,6 +5,7 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.document.send.forward.SendDocumentFailedProcessService;
 import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
 import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
@@ -43,6 +44,9 @@ public class TaskController {
 
 	@Autowired
 	private SendDocumentService sendDocumentService;
+	
+	@Autowired
+	private SendDocumentFailedProcessService sendDocumentFailedProcessService;
 
 	@GetMapping("/task/index")
 	public String index() {
@@ -135,6 +139,19 @@ public class TaskController {
 		} catch (Exception e) {
 			log.error("Failed to invoke sendDocumentService.validateNewDocuments", e);
 			model.addAttribute("errorMessage", "Failed to validate sent documents: " + e.getMessage());
+		}
+		return "/task/index";
+	}
+	
+	@GetMapping("/task/sendFailedProcess")
+	public String sendFailedProcess(Model model) {
+		try {
+			StatData sd = sendDocumentFailedProcessService.processFailedDocuments();
+			String message = "Done processing of SEND_FAILED sent documents in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke sendDocumentFailedProcessService.processFailedDocuments", e);
+			model.addAttribute("errorMessage", "Failed to process failed sent documents: " + e.getMessage());
 		}
 		return "/task/index";
 	}

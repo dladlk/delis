@@ -116,7 +116,16 @@ public class SendDocumentFailedProcessService {
 				forwardSetup = organisationIdToSetupMap.get(sendDocument.getOrganisation().getId());
 				if (forwardSetup != null && forwardSetup.forward) {
 					SendDocumentBytes original = sendDocumentBytesStorageService.find(sendDocument, SendDocumentBytesType.ORIGINAL);
-					if (moveToVFS(original, outputFileName, this.forwardSetup)) {
+					boolean ok = false;
+					try {
+						ok = moveToVFS(original, outputFileName, this.forwardSetup);
+					} catch (Exception e) {
+						log.error("Failed moveToVFS for " + outputFileName + " with setup " + this.forwardSetup, e);
+						resultStatus = SendDocumentStatus.FORWARD_FAILED;
+						logMessage = "Failed to forward " + outputFileName + " with error " + e.getMessage();
+						return resultStatus;
+					}
+					if (ok) {
 						resultStatus = SendDocumentStatus.FORWARD_OK;
 						logMessage = "Successfully forwarded document as " + outputFileName;
 					} else {
@@ -143,7 +152,7 @@ public class SendDocumentFailedProcessService {
 		journalSendDocumentDaoRepository.save(journalRecord);
 	}
 
-	protected boolean moveToVFS(SendDocumentBytes documentBytes, String outputFileName, String configPath) {
+	protected boolean moveToVFS(SendDocumentBytes documentBytes, String outputFileName, String configPath) throws Exception {
 		File tempFile = null;
 		try {
 			tempFile = File.createTempFile("delis", "tmp");
@@ -156,8 +165,6 @@ public class SendDocumentFailedProcessService {
 				vfsService.upload(configPath, tempFile.getAbsolutePath(), "/" + outputFileName);
 				return true;
 			}
-		} catch (Exception e) {
-			log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, configPath), e);
 		} finally {
 			if (tempFile != null && !tempFile.delete()) {
 				log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));

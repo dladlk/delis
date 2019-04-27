@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class SchedulerConfig implements SchedulingConfigurer {
 
-	private static final int POOL_SIZE = 4;
+	private static final int POOL_SIZE = 10;
 
 	@Value("${job.interval.sec.documentLoad}")
 	private long documentLoad;
@@ -39,6 +39,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
 	@Value("${job.interval.sec.sentValidate}")
 	private long sentValidate;
+	
+	@Value("${job.interval.sec.sendFailedProcess}")
+	private long sendFailedProcess;
 
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
@@ -83,6 +86,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		}
 		if (t.endsWith("sentValidate")) {
 			return this.sentValidate * 1000;
+		}
+		if (t.endsWith("sendFailedProcess")) {
+			return this.sendFailedProcess * 1000;
 		}
 		return Long.MAX_VALUE;
 	}
