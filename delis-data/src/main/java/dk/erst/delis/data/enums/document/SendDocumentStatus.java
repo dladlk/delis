@@ -1,5 +1,8 @@
 package dk.erst.delis.data.enums.document;
 
+/*
+ * Max length of name 25
+ */
 public enum SendDocumentStatus {
 
 	NEW,

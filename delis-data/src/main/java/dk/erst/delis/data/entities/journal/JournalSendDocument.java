@@ -34,7 +34,7 @@ public class JournalSendDocument extends AbstractCreateEntity {
 	private boolean success;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false, length = 25)
 	private SendDocumentProcessStepType type;
 	
 	@Column(nullable = false)

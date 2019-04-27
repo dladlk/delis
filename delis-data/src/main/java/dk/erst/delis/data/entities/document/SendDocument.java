@@ -35,11 +35,11 @@ public class SendDocument extends AbstractCreateUpdateEntity {
 	private Organisation organisation;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, length = 25)
 	private SendDocumentStatus documentStatus;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = true)
+	@Column(nullable = true, length = 25)
 	private DocumentType documentType;
 
 	@Column(nullable = true, length = 50)
@@ -60,5 +60,8 @@ public class SendDocument extends AbstractCreateUpdateEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column()
     private Date deliveredTime;
+    
+    @Column(nullable = false, updatable = true)
+    private boolean locked;
     
 }
