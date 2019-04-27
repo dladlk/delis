@@ -11,6 +11,8 @@ import dk.erst.delis.data.enums.document.SendDocumentStatus;
 public interface SendDocumentDao {
 
 	int updateDocumentStatus(SendDocument document, SendDocumentStatus newStatus, SendDocumentStatus oldStatus);
+	
+	int updateLockedAndDocumentStatus(SendDocument document, SendDocumentStatus newStatus, SendDocumentStatus oldStatus, boolean lockOrUnlock);
 
 	int markDocumentSent(SendDocument document, String messageId, Date deliveredDate);
 	
