@@ -2,6 +2,10 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <body>
+<!--Table headed with sort icons-->
+<!--pageContainer - PageContainer object with page and sorting info-->
+<!--columnNames - labels to show in header-->
+<!--fieldNames - actual fields to be used for sorting-->
 <div th:fragment="tableheader (pageContainer, columnNames, fieldNames)">
     <th th:each="cName, iStat : ${columnNames}"><label th:text="${columnNames[iStat.index]}"/>
         <i th:class="'fa fa-fw ' + ${T(dk.erst.delis.pagefiltering.util.PaginatorUtil).arrowStyle(pageContainer, fieldNames[iStat.index])}"
@@ -9,11 +13,21 @@
     </th>
 </div>
 
+<!--Fragment to fullfill select options for filtering-->
+<!--fiealName - actual field name to be used for filtering-->
+<!--fieldValues - available field values-->
+<!--selectedValue - value than already selected for filtering on previous form submit-->
 <div th:fragment="filter_field_option_list (fieldName, fieldValues, selectedValue)">
     <option th:each="v: ${fieldValues}"
             th:value="${v}" th:text="${v}" th:selected="${v.toString().equals(selectedValue)}"></option>
 </div>
 
+<!--Table pagginator fragment-->
+<!--all values are 1 based here, not zero based.-->
+<!--start - First page shown in paginator-->
+<!--end - last page shown in paginator-->
+<!--totat - all pages count (including those that are out of showing range)-->
+<!--current - current page. Must be in start-end range.-->
 <div class="card-footer" th:fragment="paginator (start, end, total, current)">
     <!-- customers pagination -->
     <nav aria-label="Pagination" th:if="${total gt 0}">
@@ -70,6 +84,16 @@
             </li>
         </ul>
     </nav>
+</div>
+
+<div th:fragment="tableform (formNameForJS, formAction, sortField, sortDirection, currentPage, filterFields)">
+    <form th:id="${formNameForJS}" th:name="${formNameForJS}" action="#" th:action="${formAction}" method="post">
+        <input type="hidden" name="sort" id="sort"
+               th:value="'sortby_' + ${sortField + '_' + sortDirection}"/>
+        <input type="hidden" name="page" id="page" th:value="${currentPage}"/>
+        <input th:each="r: ${filterFields.keySet()}" type="hidden" th:name="${r}" th:id="${r}"
+               th:value="${filterFields.get(r)}"/>
+    </form>
 </div>
 
 </body>

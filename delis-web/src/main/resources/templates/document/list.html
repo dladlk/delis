@@ -104,15 +104,14 @@
          th:include="~{fragments/sorting :: paginator (${documentList.paginatorStart},${documentList.paginatorEnd},${documentList.totalPages},${documentList.currentPage})}">
     </div>
 
-
-    <form id="documentTableForm" action="#" th:action="@{/document/list/filter}" method="post">
-        <input type="hidden" name="sort" id="sort"
-               th:value="'sortby_' + ${documentList.sortField + '_' + documentList.sortDirection}"/>
-        <input type="hidden" name="page" id="page" th:value="${documentList.currentPage}"/>
-        <input th:each="r: ${filterFields.keySet()}" type="hidden" th:name="${r}" th:id="${r}"
-               th:value="${filterFields.get(r)}"/>
-
-    </form>
+    <div th:replace="~{fragments/sorting :: tableform (
+            formNameForJS = 'documentTableForm',
+            formAction = @{/document/list/filter},
+            sortField = ${documentList.sortField},
+            sortDirection = ${documentList.sortDirection},
+            currentPage = ${documentList.currentPage},
+            filterFields = ${filterFields} )}">
+    </div>
 
     <div class="card">
         <div class="card-header bg-primary text-white">
