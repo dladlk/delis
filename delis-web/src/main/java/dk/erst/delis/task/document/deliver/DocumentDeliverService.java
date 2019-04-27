@@ -145,8 +145,16 @@ public class DocumentDeliverService {
 
     private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
-        boolean uploaded = false;
-        File tempFile = null;
+        
+        boolean uploaded = moveToVFS(documentBytes, outputFileName, configPath);
+
+        step.setSuccess(uploaded);
+        step.done();
+        processLog.addStep(step);
+    }
+
+	private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath) {
+		File tempFile = null;
         try {
             tempFile = File.createTempFile("delis", "tmp");
         } catch (IOException e) {
@@ -156,7 +164,7 @@ public class DocumentDeliverService {
             boolean loaded = documentBytesStorageService.load(documentBytes, fileOutputStream);
             if (loaded) {
                 vfsService.upload(configPath, tempFile.getAbsolutePath(), "/" + outputFileName);
-                uploaded = true;
+                return true;
             }
         } catch (Exception e) {
             log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, configPath), e);
@@ -165,11 +173,8 @@ public class DocumentDeliverService {
                 log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));
             }
         }
-
-        step.setSuccess(uploaded);
-        step.done();
-        processLog.addStep(step);
-    }
+		return false;
+	}
 
     private String buildOutputFileName(Document document) {
         StringBuilder sb = new StringBuilder();
