@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
@@ -192,5 +193,19 @@ public class OrganisationSetupService {
 			id = Long.parseLong(value);
 		}
 		return id;
+	}
+
+	public List<Long> loadOrganisationIdWithSetup(OrganisationSetupKey criteriaKey, String criteriaValue) {
+		OrganisationSetup probe = new OrganisationSetup();
+		probe.setKey(criteriaKey);
+		probe.setValue(criteriaValue);
+		Example<OrganisationSetup> example = Example.of(probe);
+		Iterable<OrganisationSetup> setupIterable = organisationSetupDaoRepository.findAll(example);
+		
+		List<Long> res = new ArrayList<Long>(); 
+		for (OrganisationSetup organisationSetup : setupIterable) {
+			res.add(organisationSetup.getOrganisation().getId());
+		}
+		return res;
 	}
 }
