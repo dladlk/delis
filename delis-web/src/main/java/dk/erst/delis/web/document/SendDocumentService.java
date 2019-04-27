@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SendDocumentService {
 
 	private SendDocumentDaoRepository sendDocumentDaoRepository;
-	private JournalSendDocumentDaoRepository journalDocumentDaoRepository;
+	private JournalSendDocumentDaoRepository journalSendDocumentDaoRepository;
 
 	@Autowired
 	private SendDocumentLockService sendDocumentLockService;
@@ -73,7 +73,7 @@ public class SendDocumentService {
 	@Autowired
 	public SendDocumentService(SendDocumentDaoRepository sendDocumentDaoRepository, JournalSendDocumentDaoRepository journalSendDocumentDaoRepository) {
 		this.sendDocumentDaoRepository = sendDocumentDaoRepository;
-		this.journalDocumentDaoRepository = journalSendDocumentDaoRepository;
+		this.journalSendDocumentDaoRepository = journalSendDocumentDaoRepository;
 	}
 
 	public List<SendDocument> documentList(int start, int pageSize) {
@@ -169,7 +169,7 @@ public class SendDocumentService {
 		journalRecord.setOrganisation(sd.getOrganisation());
 		journalRecord.setMessage(StringUtils.truncate(logMessage, 250));
 		journalRecord.setDurationMs(durationMs);
-		journalDocumentDaoRepository.save(journalRecord);
+		journalSendDocumentDaoRepository.save(journalRecord);
 	}
 
 	public SendDocumentData processSendDocument(boolean validate, InputStream is) throws Exception, DocumentProcessStepException {
@@ -232,11 +232,11 @@ public class SendDocumentService {
 		updateRecord.setOrganisation(document.getOrganisation());
 		updateRecord.setMessage(StringUtils.truncate(MessageFormat.format("User {0} manually changed status from {1} to {2}", user, oldStatus, newStatus), 250));
 		updateRecord.setDurationMs(duration);
-		journalDocumentDaoRepository.save(updateRecord);
+		journalSendDocumentDaoRepository.save(updateRecord);
 	}
 
 	public List<JournalSendDocument> getDocumentRecords(SendDocument document) {
-		return journalDocumentDaoRepository.findByDocumentOrderByIdAsc(document);
+		return journalSendDocumentDaoRepository.findByDocumentOrderByIdAsc(document);
 	}
 
 	public List<SendDocumentBytes> getDocumentBytes(SendDocument document) {
