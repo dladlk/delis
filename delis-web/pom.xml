@@ -48,11 +48,6 @@
 			<artifactId>delis-sbdh</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>dk.erst.delis</groupId>
-			<artifactId>delis-vfs</artifactId>
-			<version>${delis.version}</version>
-		</dependency>
 
 		<!-- JAVAX-VALIDATION -->
 		<dependency>
