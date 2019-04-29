@@ -100,13 +100,14 @@ public class InvoiceResponseService {
 			byte[] irBytes = irOutput.toByteArray();
 
 			Date currentTime = Calendar.getInstance().getTime();
+			SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMdd-HHmmssSSS");
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
 			InvoiceResponseData irData = new InvoiceResponseData();
-			irData.setId("IRNumber");
 			irData.setIssueDate(dateFormat.format(currentTime));
 			irData.setIssueTime(timeFormat.format(currentTime));
+			irData.setId(idFormat.format(currentTime)+"-"+document.getId());
 			
 			ResponseStatus responseStatus = ResponseStatus.builder().build();
 			responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
