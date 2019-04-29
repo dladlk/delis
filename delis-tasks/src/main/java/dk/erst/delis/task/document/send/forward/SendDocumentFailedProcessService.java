@@ -52,7 +52,7 @@ public class SendDocumentFailedProcessService {
 
 			VFSService vfsService,
 
-			@Value("${delis.forward.failed.invoiceresponse.vfs.config.path}") String forwardSetup
+			@Value("${delis.forward.failed.invoiceresponse.vfs.config.path:#{null}}") String forwardSetup
 
 	) {
 		this.sendDocumentLockService = sendDocumentLockService;
