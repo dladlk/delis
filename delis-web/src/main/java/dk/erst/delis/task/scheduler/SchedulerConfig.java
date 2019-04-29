@@ -84,10 +84,10 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		if (t.endsWith("identifierPublish")) {
 			return this.identifierPublish * 1000;
 		}
-		if (t.endsWith("sentValidate")) {
+		if (t.endsWith("sendDocumentValidate")) {
 			return this.sentValidate * 1000;
 		}
-		if (t.endsWith("sendFailedProcess")) {
+		if (t.endsWith("sendDocumentFailedProcess")) {
 			return this.sendFailedProcess * 1000;
 		}
 		return Long.MAX_VALUE;
