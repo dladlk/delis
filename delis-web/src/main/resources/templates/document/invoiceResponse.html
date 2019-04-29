@@ -35,7 +35,7 @@
 		</div>
 	</div>
 
-<div class="card border-secondary m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapse'" id="invoiceResponseForm">
+<div class="card border-secondary m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapsed'" id="invoiceResponseForm">
 		
 <div class="card-body pb-1 invoice-response">
 
@@ -64,21 +64,37 @@
 			</section>
 		</div>
 		
-		<div th:replace="~{/document/layout::dynamicSelect('sca', 'Action', 'statusActionList', 'action', ~{::section#sca})}">
+		<div th:replace="~{/document/layout::dynamicSelect('sca', 'Action code', 'statusActionList', 'action', ~{::section#sca})}">
 			<section id="sca">
-				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode</div>
+				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
 				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
 				Status Clarification Action (OpenPEPPOL)</a> for details
 			</section>
 		</div>
 		
-		<div th:replace="~{/document/layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
+		<div th:replace="~{/document/layout::dynamicSelect('scr', 'Reason code', 'statusReasonList', 'reason', ~{::section#scr})}">
 			<section id="scr">
-				<div class="font-italic">//DocumentResponse/Response/Status/StatusReason</div>
+				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
 				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
 				Status Clarification Reason (OpenPEPPOL)</a> for details
 			</section>
 		</div>
+
+		<div class="row">
+			<div class="form-group col-5">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Reason text</span>
+					</div>
+					<input th:field="*{statusReasonText}" type="text" class="form-control" placeholder="Why the document is being rejected"/>
+				</div>
+			</div>
+			<div class="col-7">
+				<small class="form-text text-muted">
+				<div class="font-italic">//DocumentResponse/Response/Status/StatusReason</div>
+				</small>
+			</div>
+		</div>			
 				
 		<div class="row mb-2">
 			<div class="form-group col-5">
@@ -109,7 +125,7 @@
 				<div class="font-italic">//DocumentResponse/Response/Status/Condition/Description</div>
 				E.g. EU12345</small>
 			</div>
-		</div>							
+		</div>
 		
 		<h5>Options</h5>
 

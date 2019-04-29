@@ -129,9 +129,11 @@ public class DocumentController {
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
 		model.addAttribute("errorListByJournalDocumentIdMap", documentService.getErrorListByJournalDocumentIdMap(document));
 		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
-		InvoiceResponseForm irForm = new InvoiceResponseForm();
-		irForm.setDocumentId(document.getId());
-		model.addAttribute("irForm", irForm);
+		if (!model.containsAttribute("irForm")) {
+			InvoiceResponseForm irForm = new InvoiceResponseForm();
+			irForm.setDocumentId(document.getId());
+			model.addAttribute("irForm", irForm);
+		}
 
 		return "/document/view";
 	}
@@ -158,6 +160,7 @@ public class DocumentController {
 	@PostMapping("/document/generate/invoiceResponse")
 	public ResponseEntity<Object> generateInvoiceResponse(InvoiceResponseForm irForm, RedirectAttributes ra) throws IOException {
 		log.info("Generating InvoiceResponse for " + irForm);
+		ra.addFlashAttribute("irForm", irForm);
 		
 		Document document = documentService.getDocument(irForm.getDocumentId());
 		if (document == null) {
@@ -216,7 +219,6 @@ public class DocumentController {
 			log.error("Failed to load file "+tempFile, e);
 			ra.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error "+e.getMessage());
 		}		
-		
 		return redirectEntity(servletContextPath,defaultReturnPath);
 	}
 	

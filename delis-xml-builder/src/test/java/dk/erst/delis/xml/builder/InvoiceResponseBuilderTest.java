@@ -127,7 +127,8 @@ public class InvoiceResponseBuilderTest {
 		d.setReceiverParty(receiver);
 
 		ResponseStatus responseStatus = ResponseStatus.builder().statusReasonCode("REF").statusReason("VAT Reference not found").conditionAttributeID("BT-48").conditionDescription("EU123456789").build();
-		Response response = Response.builder().effectiveDate("2019-01-01").responseCode("RE").status(new ResponseStatus[] { responseStatus }).build();
+		Response response = Response.builder().effectiveDate("2019-01-01").responseCode("RE").build();
+		response.addStatus(responseStatus);
 		DocumentReference documentReference = DocumentReference.builder().id("inv060").issueDate(issueDate).documentTypeCode("380").build();
 		Party issuerParty = Party.builder().build();
 		issuerParty.setPartyIdentification(PartyIdentification.builder().id(ID.builder().schemeID("0184").value("DK88776655").build()).build());

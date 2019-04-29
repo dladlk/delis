@@ -230,7 +230,7 @@ public class InvoiceResponseBuilder {
 		if (responseType.getStatus() != null && !responseType.getStatus().isEmpty()) {
 			List<StatusType> list = responseType.getStatus();
 
-			List<ResponseStatus> rs = new ArrayList<ResponseStatus>();
+			ArrayList<ResponseStatus> rs = new ArrayList<ResponseStatus>();
 			for (StatusType statusType : list) {
 				ResponseStatusBuilder rsb = ResponseStatus.builder();
 
@@ -252,7 +252,7 @@ public class InvoiceResponseBuilder {
 
 				rs.add(rsb.build());
 			}
-			rb.status(rs.toArray(new ResponseStatus[] {}));
+			rb.status(rs);
 		}
 		Response response = rb.build();
 		return response;
@@ -467,10 +467,10 @@ public class InvoiceResponseBuilder {
 				responseType.getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(response.getEffectiveDate()));
 			}
 
-			ResponseStatus[] statusList = response.getStatus();
+			ArrayList<ResponseStatus> statusList = response.getStatus();
 			if (statusList != null) {
-				for (int i = 0; i < statusList.length; i++) {
-					ResponseStatus responseStatus = statusList[i];
+				for (int i = 0; i < statusList.size(); i++) {
+					ResponseStatus responseStatus = statusList.get(i);
 					ResponseStatus status = responseStatus;
 					StatusType statusType;
 					if (responseType.getStatus().isEmpty() || responseType.getStatus().size() <= i) {

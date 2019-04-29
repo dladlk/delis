@@ -1,5 +1,7 @@
 package dk.erst.delis.task.document.response;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -10,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+
+
 @Service
 @Slf4j
 public class InvoiceResponseService {
@@ -56,6 +59,11 @@ public class InvoiceResponseService {
 		private boolean reasonEnabled;
 		private String detailType;
 		private String detailValue;
+		private String statusReasonText;
+		
+		public boolean isStatusFilled() {
+			return isNotBlank(this.detailType) || isNotBlank(this.detailValue) || this.actionEnabled || this.reasonEnabled || isNotBlank(this.statusReasonText); 
+		}
 	}
 
 	public boolean generateInvoiceResponse(Document document, InvoiceResponseGenerationData invoiceResponseData, OutputStream out) throws InvoiceResponseGenerationException {
@@ -111,20 +119,37 @@ public class InvoiceResponseService {
 			irData.setIssueTime(timeFormat.format(currentTime));
 			irData.setId(idFormat.format(currentTime)+"-"+document.getId());
 			
-			ResponseStatus responseStatus = ResponseStatus.builder().build();
-			responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
-			responseStatus.setStatusReason(invoiceResponseData.getReason());
-			if (StringUtils.isNotBlank(invoiceResponseData.getDetailType())) {
-				responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
-			}
-			if (StringUtils.isNotBlank(invoiceResponseData.getDetailValue())) {
-				responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
+			Response response = Response.builder().build();
+
+			if (invoiceResponseData.isActionEnabled()) {
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
+				responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
+				responseStatus.setStatusReasonCodeListId("OPStatusAction");
+				response.addStatus(responseStatus);
 			}
 			
-			Response response = Response.builder().build();
+			if (invoiceResponseData.isStatusFilled()) {
+				if (invoiceResponseData.isReasonEnabled()) {
+					ResponseStatus responseStatus = ResponseStatus.builder().build();
+					responseStatus.setStatusReasonCode(invoiceResponseData.getReason());
+					responseStatus.setStatusReasonCodeListId("OPStatusReason");
+					if (isNotBlank(invoiceResponseData.getDetailType())) {
+						responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
+					}
+					if (isNotBlank(invoiceResponseData.getDetailValue())) {
+						responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
+					}
+					response.addStatus(responseStatus);
+				}
+			}
+			
+			if (isNotBlank(invoiceResponseData.statusReasonText)) {
+				response.addStatus(ResponseStatus.builder().statusReason(invoiceResponseData.statusReasonText).build());
+			}
+			
 			response.setEffectiveDate(dateFormat.format(currentTime));
 			response.setResponseCode(invoiceResponseData.getStatus());
-			response.setStatus(new ResponseStatus[] {responseStatus});
+			response.setResponseCodeListId("UNCL4343OpSubset");
 			irData.setDocumentResponse(DocumentResponse.builder().response(response).build());
 
 			try {

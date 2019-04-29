@@ -1,5 +1,7 @@
 package dk.erst.delis.xml.builder.data;
 
+import java.util.ArrayList;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,21 +15,24 @@ public class Response {
 	private String responseCodeListId;
 	private String responseDescription;
 	private String effectiveDate;
-	private ResponseStatus[] status;
+	private ArrayList<ResponseStatus> status;
 
 	public ResponseStatus getStatusOrCreate(int i) {
 		if (status == null) {
-			status = new ResponseStatus[i + 1];
+			status = new ArrayList<>();
 		}
-		if (status.length <= i) {
-			ResponseStatus[] statusNew = new ResponseStatus[i + 1];
-			System.arraycopy(this.status, 0, statusNew, 0, this.status.length);
-			this.status = statusNew;
+		status.ensureCapacity(i);
+		if (this.status.get(i) == null) {
+			this.status.set(i, ResponseStatus.builder().build());
 		}
-		if (this.status[i] == null) {
-			this.status[i] = ResponseStatus.builder().build();
+		return this.status.get(i);
+	}
+
+	public void addStatus(ResponseStatus responseStatus) {
+		if (status == null) {
+			status = new ArrayList<ResponseStatus>();
 		}
-		return this.status[i];
+		status.add(responseStatus);
 	}
 
 }

@@ -112,6 +112,12 @@ function initSelect(id) {
 	}
 	scrOption.remove();
 	selectChanged(jQuerySelector);
+	
+	for (var k in checkboxControlMap) {
+		if (checkboxControlMap[k] == id) {
+			checkboxChanged($('#'+k));						
+		}
+	}
 }
 </script>
 
