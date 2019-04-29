@@ -35,59 +35,81 @@
 		</div>
 	</div>
 
-<div class="card border-secondary w-50 m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapse'" id="invoiceResponseForm">
+<div class="card border-secondary m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapsed'" id="invoiceResponseForm">
 		
 <div class="card-body pb-1 invoice-response">
 
 	<form method="post" action="#" th:action="@{/document/generate/invoiceResponse}" th:object="${irForm}">
 		<input type="hidden" name="id" class="form-control" th:field="*{documentId}"/>
 		
-		<h2>Invoice Response BIS 3.0</h2>
+		<div class="row mb-3">
+			<h2 class="col-5">Invoice Response BIS 3.0</h2>
+			<div class="col-7">
+				<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/" target="_blank">PEPPOL BIS Invoice Response 3.0 documentation</a> for details</small>						
+			</div>
+		</div>
 		
-		<div class="mb-3">
-			<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/" target="_blank">PEPPOL BIS Invoice Response 3.0 documentation</a> for details</small>						
+
+		<div th:replace="~{/document/layout::dynamicSelect('ucl', 'Use case list', 'useCaseList', 'usecase', ~{::section#ucl})}">
+			<section id="ucl">See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
+				Invoice Response use cases</a> for details
+			</section>
 		</div>
 			
 		<div th:replace="~{/document/layout::dynamicSelect('irs', 'Status', 'invoiceStatusCodeList', 'status', ~{::section#irs})}">
-			<section id="irs">See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
+			<section id="irs">
+				<div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
+				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
 				Invoice status code (UNCL4343 Subset)</a> for details
 			</section>
 		</div>
 		
 		<div th:replace="~{/document/layout::dynamicSelect('sca', 'Action', 'statusActionList', 'action', ~{::section#sca})}">
-			<section id="sca">See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
+			<section id="sca">
+				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode</div>
+				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
 				Status Clarification Action (OpenPEPPOL)</a> for details
 			</section>
 		</div>
 		
 		<div th:replace="~{/document/layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
-			<section id="scr">See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
+			<section id="scr">
+				<div class="font-italic">//DocumentResponse/Response/Status/StatusReason</div>
+				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
 				Status Clarification Reason (OpenPEPPOL)</a> for details
 			</section>
 		</div>
 				
-		<div class="form-group">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">Detail type</span>
+		<div class="row mb-2">
+			<div class="form-group col-5">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Detail type</span>
+					</div>
+					<input th:field="*{detailType}" type="text" name="invoiceResponseDetailTypeCode" class="form-control"/>
 				</div>
-				<input th:field="*{detailType}" type="text" name="invoiceResponseDetailTypeCode" class="form-control"/>
 			</div>
-			<div>
-				<small class="form-text text-muted">E.g. BT-48</small>
+			<div class="col-7">
+				<small class="form-text text-muted">
+				<div class="font-italic">//DocumentResponse/Response/Status/Condition/AttributeID</div>
+				E.g. BT-48</small>
 			</div>							
 		</div>
-		<div class="form-group">
-			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text">Detail value</span>
+		<div class="row">
+			<div class="form-group col-5">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Detail value</span>
+					</div>
+					<input th:field="*{detailValue}" type="text" name="invoiceResponseDetailValue" class="form-control"/>
 				</div>
-				<input th:field="*{detailValue}" type="text" name="invoiceResponseDetailValue" class="form-control"/>
 			</div>
-			<div>
-				<small class="form-text text-muted">E.g. EU12345</small>
-			</div>							
-		</div>
+			<div class="col-7">
+				<small class="form-text text-muted">
+				<div class="font-italic">//DocumentResponse/Response/Status/Condition/Description</div>
+				E.g. EU12345</small>
+			</div>
+		</div>							
 		
 		<h5>Options</h5>
 

@@ -223,6 +223,7 @@ public class DocumentController {
 	@Getter @Setter
 	public static class InvoiceResponseForm extends InvoiceResponseGenerationData {
 		private long documentId;
+		private String usecase;
 		private boolean generateWithoutSending = true;
 		private boolean validate = true;
 	}
