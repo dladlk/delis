@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import dk.erst.delis.data.enums.document.DocumentFormat;
+
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
@@ -33,7 +35,7 @@ public class DocumentParseService {
 		long start = System.currentTimeMillis();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), Paths.get(DOCUMENT_INFO_XSLT_PATH), is, baos);
+			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), Paths.get(DOCUMENT_INFO_XSLT_PATH), new CloseShieldInputStream(is), baos);
 		} catch (Exception e) {
 			log.error("Failed to extract document header", e);
 			return null;

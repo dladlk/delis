@@ -12,6 +12,8 @@ import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeFactory;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
+
 import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.xml.builder.data.DocumentResponse;
 import dk.erst.delis.xml.builder.data.InvoiceResponseData;
@@ -54,7 +56,7 @@ public class InvoiceResponseBuilder {
 	}
 
 	public void extractBasicData(InputStream rejectedXmlInput, OutputStream out) throws Exception {
-		XSLTUtil.apply(InvoiceResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), rejectedXmlInput, out);
+		XSLTUtil.apply(InvoiceResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), new CloseShieldInputStream(rejectedXmlInput), out);
 	}
 
 	@SuppressWarnings("unchecked")

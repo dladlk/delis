@@ -1,5 +1,6 @@
 package dk.erst.delis.web.document;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -128,7 +129,8 @@ public class SendDocumentService {
 		File file = path.toFile();
 
 		SendDocumentData sendDocumentData;
-		try (InputStream is = new FileInputStream(file)) {
+		try (InputStream is = new BufferedInputStream(new FileInputStream(file), (int)file.length())) {
+			is.mark(Integer.MAX_VALUE);
 			sendDocumentData = processSendDocument(validate, is);
 		}
 
@@ -155,7 +157,8 @@ public class SendDocumentService {
 		long durationMs = System.currentTimeMillis() - start;
 		saveJournal(sd, true, logMessage, SendDocumentProcessStepType.CREATE, durationMs);
 
-		try (InputStream is = new FileInputStream(file)) {
+		try (InputStream is = new BufferedInputStream(new FileInputStream(file), (int)file.length())) {
+			is.mark(Integer.MAX_VALUE);
 			sendDocumentBytesStorageService.save(sd, SendDocumentBytesType.ORIGINAL, file.length(), is);
 		}
 		return sd;

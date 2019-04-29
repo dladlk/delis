@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document.process;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +62,8 @@ public class DocumentValidationTransformationService {
 	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule) {
 		List<RuleDocumentValidation> ruleByFormat = ruleService.getValidationRuleListByFormat(documentFormat);
 		for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
-			try (InputStream xmlStream = new FileInputStream(xmlPath.toFile())) {
+			try (InputStream xmlStream = new BufferedInputStream(new FileInputStream(xmlPath.toFile()), (int)xmlPath.toFile().length())) {
+				xmlStream.mark(Integer.MAX_VALUE);
 				DocumentProcessStep step = validateByRule(xmlStream, ruleDocumentValidation);
 				plog.addStep(step);
 				if (!step.isSuccess()) {
@@ -127,7 +130,7 @@ public class DocumentValidationTransformationService {
 		try (FileInputStream xslStream = new FileInputStream(xslFilePath.toFile());
 			FileInputStream xmlStream = new FileInputStream(xmlPath.toFile());
 			FileOutputStream resultStream = new FileOutputStream(xmlOutPath.toFile())) {
-			XSLTUtil.apply(xslStream, xslFilePath, xmlStream, resultStream);
+			XSLTUtil.apply(xslStream, xslFilePath, new CloseShieldInputStream(xmlStream), resultStream);
 			step.setSuccess(true);
 			step.setResult(xmlOutPath);
 		} catch (Exception e) {

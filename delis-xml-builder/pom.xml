@@ -24,6 +24,15 @@
 			<scope>provided</scope>
 		</dependency>
 		
+		<!-- Commons -->
+		
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		</dependency>	
+
+		<!-- Delis -->
+		
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-xml-ubl21</artifactId>

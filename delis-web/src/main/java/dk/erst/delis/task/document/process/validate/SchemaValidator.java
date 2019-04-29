@@ -12,6 +12,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -43,7 +44,7 @@ public class SchemaValidator {
             }
 
             Validator validator = schema.newValidator();
-            validator.validate(new StreamSource(xmlStream));
+            validator.validate(new StreamSource(new CloseShieldInputStream(xmlStream)));
         } catch (SAXException e) {
             if (e instanceof SAXParseException) {
                 SAXParseException ex = (SAXParseException)e;
