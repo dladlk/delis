@@ -29,6 +29,19 @@ public class VFSServiceTest {
     public void testSFTPUpload() {
         testSFTPUpload(loadResourcePath("config-sftp.xml"));
     }
+    
+    @Test
+    @Ignore
+    public void testFileUpload() {
+        String configPath = loadResourcePath("config-file.xml");
+        String remoteFilePath = "/testFile.txt";
+        URL resource = getClass().getClassLoader().getResource("testFile.txt");
+        vfsService.upload(configPath, resource.getPath(), remoteFilePath);
+        boolean exist = vfsService.exist(configPath, remoteFilePath);
+        Assert.assertTrue(exist);
+        boolean deleted = vfsService.delete(configPath, remoteFilePath);
+        Assert.assertTrue(deleted);
+    }
 
     @Test
     @Ignore

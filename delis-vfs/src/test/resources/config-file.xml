@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vfsConfig>
+    <url>file://d:/delis/data</url>
+    <options>
+        <FileSystemOptions builder="org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder">
+        </FileSystemOptions>
+    </options>
+</vfsConfig>
