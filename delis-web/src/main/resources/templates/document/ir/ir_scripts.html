@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:fragment="ir_scripts">
+
+<script>
+
+var checkboxControlMap = {};
+checkboxControlMap['actionEnabled1'] = 'sca';
+checkboxControlMap['reasonEnabled1'] = 'scr';
+
+function checkboxChanged(t) {
+	var id = ($(t).attr('id'));
+	var checked = $(t).is(':checked');
+	if (id in checkboxControlMap) {
+		var selectId = checkboxControlMap[id];
+		$('#'+selectId).prop('disabled', !checked);
+	}
+}
+
+function selectChanged(t) {
+	var id = ($(t).attr('id'));
+	var code = $(t).val();
+	var selectedOption = $(t).find("option:selected");
+	var optionTitle = selectedOption.attr('title');
+	if (optionTitle) {
+		$('#'+id+'Desc').text(selectedOption.attr('value')+": " + optionTitle);
+	}
+}
+function initSelect(id) {
+	var jQuerySelector = '#'+id;
+	selectChanged(jQuerySelector);
+	
+	for (var k in checkboxControlMap) {
+		if (checkboxControlMap[k] == id) {
+			checkboxChanged($('#'+k));						
+		}
+	}
+}
+</script>
+
+<style>
+.invoice-response .input-group-text {
+	min-width: 100px;
+}
+.invoice-response .input-group-text.delis-input-checkbox {
+	min-width: 0px;
+}
+</style>	
+
+</html>
