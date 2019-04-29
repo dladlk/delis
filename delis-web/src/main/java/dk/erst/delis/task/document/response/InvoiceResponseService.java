@@ -121,7 +121,7 @@ public class InvoiceResponseService {
 			Response response = Response.builder().build();
 			response.setEffectiveDate(dateFormat.format(currentTime));
 			response.setResponseCode(invoiceResponseData.getStatus());
-			response.setStatus(responseStatus);
+			response.setStatus(new ResponseStatus[] {responseStatus});
 			irData.setDocumentResponse(DocumentResponse.builder().response(response).build());
 
 			try {

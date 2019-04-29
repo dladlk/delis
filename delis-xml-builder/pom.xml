@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -23,16 +22,16 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Commons -->
-		
+
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		</dependency>	
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
 
 		<!-- Delis -->
-		
+
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-xml-ubl21</artifactId>
@@ -44,38 +43,38 @@
 			<artifactId>delis-xslt-util</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
-		
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>27.0.1-jre</version>
-            <exclusions>
-            	<exclusion>
-            		<groupId>com.google.guava</groupId>
-            		<artifactId>listenablefuture</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>com.google.code.findbugs</groupId>
-            		<artifactId>jsr305</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.checkerframework</groupId>
-            		<artifactId>checker-qual</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>com.google.errorprone</groupId>
-            		<artifactId>error_prone_annotations</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>com.google.j2objc</groupId>
-            		<artifactId>j2objc-annotations</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.codehaus.mojo</groupId>
-            		<artifactId>animal-sniffer-annotations</artifactId>
-            	</exclusion>
-            </exclusions>
-        </dependency>	
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.0.1-jre</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>listenablefuture</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>jsr305</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.checkerframework</groupId>
+					<artifactId>checker-qual</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.errorprone</groupId>
+					<artifactId>error_prone_annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.j2objc</groupId>
+					<artifactId>j2objc-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>animal-sniffer-annotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -91,6 +90,19 @@
 		<dependency>
 			<groupId>org.jmockit</groupId>
 			<artifactId>jmockit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Added to have PathMatchingResourcePatternResolver which supports search for resources like "classpath*:/InvoiceReponse_UseCases/*.xml" 
+			in InvoiceResponseBuilderTest.processInvoiceResponseUseCases() -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
 			<scope>test</scope>
 		</dependency>
 

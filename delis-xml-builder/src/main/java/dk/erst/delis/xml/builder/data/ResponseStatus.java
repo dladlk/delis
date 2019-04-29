@@ -6,15 +6,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 public class ResponseStatus {
 
 	private String statusReasonCode;
+	private String statusReasonCodeListId;
+
 	private String statusReason;
 	private String conditionAttributeID;
 	private String conditionDescription;
-	
+
 	public boolean isFilledCondition() {
 		return isNotBlank(conditionAttributeID) || isNotBlank(conditionDescription);
 	}
