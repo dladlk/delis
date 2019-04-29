@@ -51,7 +51,9 @@ public class InvoiceResponseService {
 	public static class InvoiceResponseGenerationData {
 		private String status;
 		private String action;
+		private boolean actionEnabled;
 		private String reason;
+		private boolean reasonEnabled;
 		private String detailType;
 		private String detailValue;
 	}

@@ -35,7 +35,7 @@
 		</div>
 	</div>
 
-<div class="card border-secondary m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapsed'" id="invoiceResponseForm">
+<div class="card border-secondary m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapse'" id="invoiceResponseForm">
 		
 <div class="card-body pb-1 invoice-response">
 
@@ -50,7 +50,7 @@
 		</div>
 		
 
-		<div th:replace="~{/document/layout::dynamicSelect('ucl', 'Use case list', 'useCaseList', 'usecase', ~{::section#ucl})}">
+		<div th:replace="~{/document/layout::dynamicSelect('ucl', 'Use case', 'useCaseList', 'usecase', ~{::section#ucl})}">
 			<section id="ucl">See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
 				Invoice Response use cases</a> for details
 			</section>

@@ -67,6 +67,19 @@ listMap['sca'] = statusActionList;
 listMap['scr'] = statusReasonList;
 ;
 
+var checkboxControlMap = {};
+checkboxControlMap['actionEnabled1'] = 'sca';
+checkboxControlMap['reasonEnabled1'] = 'scr';
+
+function checkboxChanged(t) {
+	var id = ($(t).attr('id'));
+	var checked = $(t).is(':checked');
+	if (id in checkboxControlMap) {
+		var selectId = checkboxControlMap[id];
+		$('#'+selectId).prop('disabled', !checked);
+	}
+}
+
 function selectChanged(t) {
 	var id = ($(t).attr('id'));
 	var scanArray = listMap[id];
@@ -98,7 +111,7 @@ function initSelect(id) {
 		opt.appendTo(scr);
 	}
 	scrOption.remove();
-	selectChanged(jQuerySelector, scanArray);
+	selectChanged(jQuerySelector);
 }
 </script>
 

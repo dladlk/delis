@@ -6,7 +6,10 @@
 	<div class="form-group col-5">
 		<div class="input-group">
 			<div class="input-group-prepend">
-				<span class="input-group-text" th:text="${selectName}">Status</span>
+				<label class="input-group-text" th:for="${__${fieldName}__Enabled1}">
+					<input class="mr-2" type="checkbox" th:field="*{__${fieldName}__Enabled}" aria-label="Checkbox for following text input" th:if="${#strings.contains(',sca,scr,', selectId)}" onchange="checkboxChanged(this)">
+					<th:block th:text="${selectName}">Status</th:block>
+				</label>
 			</div>
 	 		<select th:field="*{__${fieldName}__}" th:attr="id=${selectId},name=${selectId}" th:inline="text" class="form-control" onchange="selectChanged(this)">
 				<option value=""></option>
