@@ -38,5 +38,10 @@
     "name": "delis.forward.failed.invoiceresponse.vfs.config.path",
     "type": "java.lang.String",
     "description": "Path to VFS config file with setup configuration of failed to be sent Invoice Responses"
-  }  
+  },
+  {
+    "name": "delis.download.allow.all",
+    "type": "java.lang.String",
+    "description": "If set to true, all documents can be downloaded - not only receipts"
+  }
 ]}

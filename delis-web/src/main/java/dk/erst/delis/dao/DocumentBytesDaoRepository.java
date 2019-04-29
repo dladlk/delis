@@ -12,4 +12,6 @@ public interface DocumentBytesDaoRepository extends PagingAndSortingRepository<D
 	DocumentBytes findTop1ByDocumentAndTypeOrderByIdDesc(Document document, DocumentBytesType type);
 
 	List<DocumentBytes> findByDocument(Document document);
+
+	DocumentBytes findByDocumentIdAndId(long documentId, long id);
 }

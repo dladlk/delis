@@ -47,6 +47,9 @@ public class SendDocumentController {
 
 	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;
+	
+	@Value("${delis.download.allow.all:#{false}}")
+	private boolean downloadAllowAll;
 
 	@RequestMapping("/document/send/list")
 	public String list(Model model, WebRequest webRequest) {
@@ -136,6 +139,13 @@ public class SendDocumentController {
 
 		return "redirect:/document/send/list";
 	}
+	
+	private boolean isDownloadAllowed(SendDocumentBytes b) {
+		if (downloadAllowAll) {
+			return true;
+		}
+		return b.getType() == SendDocumentBytesType.RECEIPT;
+	}
 
 	@GetMapping("/document/send/download/{documentId}/{bytesId}")
 	public ResponseEntity<Object> download(@PathVariable long documentId, @PathVariable long bytesId, RedirectAttributes ra) throws IOException {
@@ -144,7 +154,7 @@ public class SendDocumentController {
 			ra.addFlashAttribute("errorMessage", "Data not found");
 			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
 		}
-		if (sendDocumentBytes.getType() != SendDocumentBytesType.RECEIPT) {
+		if (!isDownloadAllowed(sendDocumentBytes)) {
 			ra.addFlashAttribute("errorMessage", "Only RECEIPT bytes are allowed for download, but " + sendDocumentBytes.getType() + " is requested");
 			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
 		}
