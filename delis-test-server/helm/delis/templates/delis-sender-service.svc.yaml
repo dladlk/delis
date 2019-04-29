@@ -1,0 +1,20 @@
+{{- if .Values.delisSender.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{.Release.Name}}-sender-service
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-sender-service
+  namespace: '{{.Values.namespace}}'
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: '{{.Release.Name}}-sender-service'
+  type: 'NodePort'
+{{- end }}
