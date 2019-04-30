@@ -73,12 +73,12 @@
                     </td>
                     <td>
                         <a th:if="${r.organisation}" href="#"
-                           th:href="@{/organisation/view/__${r.organisation.id}__}"
+                           th:href="@{/document/view/__${r.id}__}"
                            th:text="${r.organisation.name}">Region Nord</a>
                     </td>
                     <td>
                         <a th:if="${r.receiverIdentifier}" href="#"
-                           th:href="@{/identifier/view/__${r.receiverIdentifier.id}__}"
+                           th:href="@{/document/view/__${r.id}__}"
                            th:text="${r.receiverIdentifier.name}">Receiver name</a>
                         <span th:text="${r.receiverIdRaw}">0088:234234234</span>
                     </td>
