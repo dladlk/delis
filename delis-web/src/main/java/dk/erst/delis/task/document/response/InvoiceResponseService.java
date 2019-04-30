@@ -35,8 +35,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-
-
 @Service
 @Slf4j
 public class InvoiceResponseService {
@@ -49,7 +47,7 @@ public class InvoiceResponseService {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.validationTransformationService = validationTransformationService;
 	}
-	
+
 	@Data
 	public static class InvoiceResponseGenerationData {
 		private String status;
@@ -62,10 +60,6 @@ public class InvoiceResponseService {
 		private String detailType;
 		private String detailValue;
 		private String statusReasonText;
-		
-		public boolean isDetailFilled() {
-			return isNotBlank(this.detailType) || isNotBlank(this.detailValue);
-		}
 	}
 
 	public boolean generateInvoiceResponse(Document document, InvoiceResponseGenerationData invoiceResponseData, OutputStream out) throws InvoiceResponseGenerationException {
@@ -83,8 +77,7 @@ public class InvoiceResponseService {
 			log.info("Search for document bytes type " + documentBytesType);
 
 			if (documentBytesType == null) {
-				throw new InvoiceResponseGenerationException(document.getId(),
-						"InvoiceResponse can be generated only for ingoing formats CII or BIS3, but current document ingoing format was " + ingoingFamily.getCode());
+				throw new InvoiceResponseGenerationException(document.getId(), "InvoiceResponse can be generated only for ingoing formats CII or BIS3, but current document ingoing format was " + ingoingFamily.getCode());
 			}
 
 			DocumentBytes documentBytes = documentBytesStorageService.find(document, documentBytesType);
@@ -119,50 +112,46 @@ public class InvoiceResponseService {
 			InvoiceResponseData irData = new InvoiceResponseData();
 			irData.setIssueDate(dateFormat.format(currentTime));
 			irData.setIssueTime(timeFormat.format(currentTime));
-			irData.setId(idFormat.format(currentTime)+"-"+document.getId());
-			
+			irData.setId(idFormat.format(currentTime) + "-" + document.getId());
+
 			Response response = Response.builder().build();
 
-			ResponseStatus responseStatus = null;
-			
+			/*
+			 * Important to generate OPStatusReason before OPStatusAction, so details are placed into it
+			 */
 			if (invoiceResponseData.isReasonEnabled()) {
-				responseStatus = ResponseStatus.builder().build();
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
 				responseStatus.setStatusReasonCode(invoiceResponseData.getReason());
 				responseStatus.setStatusReasonCodeListId("OPStatusReason");
 				response.addStatus(responseStatus);
 			}
-			
+
 			if (invoiceResponseData.isActionEnabled()) {
-				responseStatus = ResponseStatus.builder().build();
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
 				responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
 				responseStatus.setStatusReasonCodeListId("OPStatusAction");
 				response.addStatus(responseStatus);
 			}
 			if (invoiceResponseData.isAction2Enabled()) {
-				responseStatus = ResponseStatus.builder().build();
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
 				responseStatus.setStatusReasonCode(invoiceResponseData.getAction2());
 				responseStatus.setStatusReasonCodeListId("OPStatusAction");
 				response.addStatus(responseStatus);
 			}
-			
-			if (invoiceResponseData.isDetailFilled() && responseStatus == null) {
-				if (responseStatus == null) {
-					responseStatus = ResponseStatus.builder().build();
-					response.addStatus(responseStatus);
-				}
-			}
-			
+
+			/*
+			 * DetailType/DetailValue/StatusReason are always placed to first ResponseStatus - which is OPStatusReason if defined.
+			 */
 			if (isNotBlank(invoiceResponseData.getDetailType())) {
-				responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
+				response.getStatusOrCreate(0).setConditionAttributeID(invoiceResponseData.getDetailType());
 			}
 			if (isNotBlank(invoiceResponseData.getDetailValue())) {
-				responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
+				response.getStatusOrCreate(0).setConditionDescription(invoiceResponseData.getDetailValue());
 			}
-			
 			if (isNotBlank(invoiceResponseData.statusReasonText)) {
-				response.addStatus(ResponseStatus.builder().statusReason(invoiceResponseData.statusReasonText).build());
+				response.getStatusOrCreate(0).setStatusReason(invoiceResponseData.statusReasonText);
 			}
-			
+
 			response.setEffectiveDate(dateFormat.format(currentTime));
 			response.setResponseCode(invoiceResponseData.getStatus());
 			response.setResponseCodeListId("UNCL4343OpSubset");
@@ -173,15 +162,14 @@ public class InvoiceResponseService {
 				return true;
 			} catch (Exception e) {
 				log.error("Failed to parse as ApplicationResponse extracted basic data from BIS3 format", e);
-				throw new InvoiceResponseGenerationException(document.getId(),
-						"Failed to parse extracted information about sender/receiver as ApplicationResponse from BIS3 format: " + e.getMessage());
+				throw new InvoiceResponseGenerationException(document.getId(), "Failed to parse extracted information about sender/receiver as ApplicationResponse from BIS3 format: " + e.getMessage());
 			}
 
 		} finally {
 			log.info("Finished generation in " + (System.currentTimeMillis() - start) + " ms");
 		}
 	}
-	
+
 	public List<ErrorRecord> validateInvoiceResponse(Path xmlFile) {
 		Document documentInvoiceResponse = new Document();
 		documentInvoiceResponse.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE_RESPONSE);
@@ -209,12 +197,12 @@ public class InvoiceResponseService {
 			super(message);
 			this.documentId = documentId;
 		}
-		
+
 		public InvoiceResponseGenerationException(Long documentId, String message, Throwable cause) {
 			super(message, cause);
 			this.documentId = documentId;
 		}
-		
+
 		public InvoiceResponseGenerationException(Long documentId, String message, DocumentProcessStep failedStep, Throwable cause) {
 			super(message, cause);
 			this.documentId = documentId;
