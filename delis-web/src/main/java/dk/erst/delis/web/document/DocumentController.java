@@ -1,17 +1,13 @@
 package dk.erst.delis.web.document;
 
-import dk.erst.delis.common.util.StatData;
-import dk.erst.delis.dao.DocumentBytesDaoRepository;
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.document.DocumentBytes;
-import dk.erst.delis.data.enums.document.DocumentBytesType;
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.task.document.load.DocumentLoadService;
-import dk.erst.delis.task.document.process.DocumentProcessService;
-import dk.erst.delis.web.RedirectUtil;
-import dk.erst.delis.web.document.ir.InvoiceResponseFormController.InvoiceResponseForm;
-import dk.erst.delis.web.document.ir.InvoiceResponseFormControllerConst;
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,13 +18,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.*;
-import java.util.List;
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.dao.DocumentBytesDaoRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.pagefiltering.response.PageContainer;
+import dk.erst.delis.pagefiltering.util.WebRequestUtil;
+import dk.erst.delis.task.document.load.DocumentLoadService;
+import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.web.RedirectUtil;
+import dk.erst.delis.web.document.ir.InvoiceResponseFormControllerConst;
+import dk.erst.delis.web.document.ir.InvoiceResponseFormController.InvoiceResponseForm;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
@@ -51,15 +64,19 @@ public class DocumentController {
 
 	@RequestMapping("/document/list")
 	public String list(Model model, WebRequest webRequest) {
-		return listFilter(model);
+		return listFilter(model, webRequest);
 	}
 
 	@PostMapping("/document/list/filter")
-	public String listFilter(Model model) {
-		List<Document> list = documentService.documentList(0, 10);
-		model.addAttribute("documentList", list);
+	public String listFilter(Model model, WebRequest webRequest) {
+		PageContainer<Document> pageContainer = documentService.getAll(webRequest);
+		model.addAttribute("documentList", pageContainer);
+		List<Document> items = pageContainer.getItems();
+		List<String> orgNames = items.stream().map(r -> r.getOrganisation().getName()).distinct().sorted().collect(Collectors.toList());
+		model.addAttribute("availableOrganisationNames", orgNames);
 		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", DocumentStatus.values());
+		model.addAttribute("filterFields", WebRequestUtil.collectFilterParametersFromRequest(webRequest));
 		return "/document/list";
 	}
 
