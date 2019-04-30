@@ -52,6 +52,10 @@ useCaseConfig['4b'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actio
 useCaseConfig['4c'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'CNF', 'action2Enabled1': true, 'sca2': 'NIN'};
 useCaseConfig['5'] = {'irs': 'CA', 'reasonEnabled1': true, 'scr': 'PAY', 'detailType': 'BT-9', 'detailValue': '2018-01-15'};
 useCaseConfig['6a'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN'};
+useCaseConfig['6b'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN'};
+useCaseConfig['6c'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'DEL', 'statusReasonText': 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.', 'actionEnabled1': true, 'sca': 'CNP'};
+useCaseConfig['7'] = {'irs': 'PD'};
+useCaseConfig['8'] = {'irs': 'AP'};
 
 function applyConfig(caseConfig, markIsValid) {
 	for (var key in caseConfig) {
