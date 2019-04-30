@@ -8,9 +8,10 @@ public class InvoiceResponseFormControllerConst {
 
 			new String[] { "1", "Invoice in process" },
 
-			new String[] { "2a", "Additional reference data" },
+			new String[] { "2a", "Additional reference data", "Use case shows an invoice that is in process and states the date when the invoice was received and entered into processing which in this case is shown as a day before the IMR is sent. \r\n" + 
+					"The Buyer also communicates that his internal reference number is X001." },
 
-			new String[] { "2b", "In process but postponed" },
+			new String[] { "2b", "In process but postponed", "Invoice is in processing but the processing is on hold until future date. This is communicated by showing an as status effective date in the future." },
 
 			new String[] { "3", "Invoice is accepted" },
 

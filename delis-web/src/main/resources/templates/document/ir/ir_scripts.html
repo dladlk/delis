@@ -7,6 +7,7 @@
 
 var checkboxControlMap = {};
 checkboxControlMap['actionEnabled1'] = 'sca';
+checkboxControlMap['action2Enabled1'] = 'sca2';
 checkboxControlMap['reasonEnabled1'] = 'scr';
 
 function checkboxChanged(t) {
@@ -23,9 +24,11 @@ function selectChanged(t) {
 	var code = $(t).val();
 	var selectedOption = $(t).find("option:selected");
 	var optionTitle = selectedOption.attr('title');
+	var helpText = "";
 	if (optionTitle) {
-		$('#'+id+'Desc').text(selectedOption.attr('value')+": " + optionTitle);
+		helpText = selectedOption.attr('value')+": " + optionTitle;
 	}
+	$('#'+id+'Desc').text(helpText);
 }
 function initSelect(id) {
 	var jQuerySelector = '#'+id;
@@ -38,28 +41,47 @@ function initSelect(id) {
 	}
 }
 
+var useCaseReset = {'irs': 'AB', 'scr': 'NON', 'reasonEnabled1': false, 'sca': 'NOA', 'actionEnabled1': false, 'sca2': 'NOA', 'action2Enabled1': false, 'detailType': '', 'detailValue': '', statusReasonText: ''};
 var useCaseConfig = {};
 useCaseConfig['1'] = {'irs': 'IP'};
 useCaseConfig['2a'] = {'irs': 'IP', 'actionEnabled1': true, 'sca': 'NOA', 'detailType': 'Buyer process reference', 'detailValue': 'X001'};
+useCaseConfig['2b'] = {'irs': 'IP', 'statusReasonText': 'Shipment has not yet been received. Invoice processing will be attempted later.'};
 useCaseConfig['3'] = {'irs': 'AP'};
 useCaseConfig['4a'] = {'irs': 'RE','statusReasonText': 'A textual explanation for why the invoice is being rejected.'};
+useCaseConfig['4b'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'NIN'};
+useCaseConfig['4c'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'CNF', 'action2Enabled1': true, 'sca2': 'NIN'};
+
+function applyConfig(caseConfig, markIsValid) {
+	for (var key in caseConfig) {
+		var evalue = caseConfig[key];
+		var $e = $('#'+key);
+		if ($e.is(':checkbox')) {
+			$e.prop('checked', evalue);
+			checkboxChanged($e);
+		} else {
+			$e.val(evalue);
+			if (markIsValid) {
+				$e.addClass('is-valid');
+			} else {
+				$e.removeClass('is-valid');
+			}
+		}
+	}
+	return true;
+}
 
 $(document).ready(function () {
 	$('#ucl').change(function(){
 		var selectedCase = $(this).val(); 
 		console.log(selectedCase);
-		if (selectedCase in useCaseConfig){
+		if (selectedCase in useCaseConfig) {
+			applyConfig(useCaseReset, false);
 			var caseConfig = useCaseConfig[selectedCase];
-			for (var key in caseConfig) {
-				var evalue = caseConfig[key];
-				var $e = $('#'+key);
-				if ($e.is(':checkbox')) {
-					$e.prop('checked', evalue);
-					checkboxChanged($e);
-				} else {
-					$e.val(evalue);
-				}
-			}
+			console.log('Found case config: ');
+			console.log(caseConfig);
+			applyConfig(caseConfig, true);
+		} else {
+			console.log('Case config not found');
 		}
 	});
 });

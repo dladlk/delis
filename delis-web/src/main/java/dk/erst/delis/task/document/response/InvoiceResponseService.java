@@ -55,16 +55,14 @@ public class InvoiceResponseService {
 		private String status;
 		private String action;
 		private boolean actionEnabled;
+		private String action2;
+		private boolean action2Enabled;
 		private String reason;
 		private boolean reasonEnabled;
 		private String detailType;
 		private String detailValue;
 		private String statusReasonText;
 		
-		public boolean isStatusFilled() {
-			return isDetailFilled() || this.actionEnabled || this.reasonEnabled || isNotBlank(this.statusReasonText); 
-		}
-
 		public boolean isDetailFilled() {
 			return isNotBlank(this.detailType) || isNotBlank(this.detailValue);
 		}
@@ -126,20 +124,25 @@ public class InvoiceResponseService {
 			Response response = Response.builder().build();
 
 			ResponseStatus responseStatus = null;
+			
+			if (invoiceResponseData.isReasonEnabled()) {
+				responseStatus = ResponseStatus.builder().build();
+				responseStatus.setStatusReasonCode(invoiceResponseData.getReason());
+				responseStatus.setStatusReasonCodeListId("OPStatusReason");
+				response.addStatus(responseStatus);
+			}
+			
 			if (invoiceResponseData.isActionEnabled()) {
 				responseStatus = ResponseStatus.builder().build();
 				responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
 				responseStatus.setStatusReasonCodeListId("OPStatusAction");
 				response.addStatus(responseStatus);
 			}
-			
-			if (invoiceResponseData.isStatusFilled()) {
-				if (invoiceResponseData.isReasonEnabled()) {
-					responseStatus = ResponseStatus.builder().build();
-					responseStatus.setStatusReasonCode(invoiceResponseData.getReason());
-					responseStatus.setStatusReasonCodeListId("OPStatusReason");
-					response.addStatus(responseStatus);
-				}
+			if (invoiceResponseData.isAction2Enabled()) {
+				responseStatus = ResponseStatus.builder().build();
+				responseStatus.setStatusReasonCode(invoiceResponseData.getAction2());
+				responseStatus.setStatusReasonCodeListId("OPStatusAction");
+				response.addStatus(responseStatus);
 			}
 			
 			if (invoiceResponseData.isDetailFilled() && responseStatus == null) {

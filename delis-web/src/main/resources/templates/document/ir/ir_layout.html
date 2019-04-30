@@ -7,7 +7,7 @@
 		<div class="input-group">
 			<div class="input-group-prepend">
 				<label class="input-group-text" th:for="${__${fieldName}__Enabled1}">
-					<input class="mr-2" type="checkbox" th:field="*{__${fieldName}__Enabled}" aria-label="Checkbox for following text input" th:if="${#strings.contains(',sca,scr,', selectId)}" onchange="checkboxChanged(this)">
+					<input class="mr-2" type="checkbox" th:field="*{__${fieldName}__Enabled}" aria-label="Checkbox for following text input" th:if="${#strings.contains(',sca,sca2,scr,', selectId)}" onchange="checkboxChanged(this)">
 					<th:block th:text="${selectName}">Status</th:block>
 				</label>
 			</div>

@@ -64,15 +64,7 @@
 			</section>
 		</div>
 		
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('sca', 'Action code', 'statusActionList', 'action', ~{::section#sca})}">
-			<section id="sca">
-				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
-				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
-				Status Clarification Action (OpenPEPPOL)</a> for details
-			</section>
-		</div>
-		
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('scr', 'Reason code', 'statusReasonList', 'reason', ~{::section#scr})}">
+		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
 			<section id="scr">
 				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
 				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
@@ -80,6 +72,20 @@
 			</section>
 		</div>
 
+		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('sca', 'Action', 'statusActionList', 'action', ~{::section#sca})}">
+			<section id="sca">
+				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
+				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
+				Status Clarification Action (OpenPEPPOL)</a> for details
+			</section>
+		</div>
+
+		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('sca2', 'Action 2', 'statusActionList', 'action2', ~{::section#sca2})}">
+			<section id="sca2">
+				Some use cases suppose 2 actions
+			</section>
+		</div>
+		
 		<div class="row">
 			<div class="form-group col-5">
 				<div class="input-group">
