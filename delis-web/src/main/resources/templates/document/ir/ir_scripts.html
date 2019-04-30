@@ -37,6 +37,32 @@ function initSelect(id) {
 		}
 	}
 }
+
+var useCaseConfig = {};
+useCaseConfig['1'] = {'irs': 'IP'};
+useCaseConfig['2a'] = {'irs': 'IP', 'actionEnabled1': true, 'sca': 'NOA', 'detailType': 'Buyer process reference', 'detailValue': 'X001'};
+useCaseConfig['3'] = {'irs': 'AP'};
+useCaseConfig['4a'] = {'irs': 'RE','statusReasonText': 'A textual explanation for why the invoice is being rejected.'};
+
+$(document).ready(function () {
+	$('#ucl').change(function(){
+		var selectedCase = $(this).val(); 
+		console.log(selectedCase);
+		if (selectedCase in useCaseConfig){
+			var caseConfig = useCaseConfig[selectedCase];
+			for (var key in caseConfig) {
+				var evalue = caseConfig[key];
+				var $e = $('#'+key);
+				if ($e.is(':checkbox')) {
+					$e.prop('checked', evalue);
+					checkboxChanged($e);
+				} else {
+					$e.val(evalue);
+				}
+			}
+		}
+	});
+});
 </script>
 
 <style>

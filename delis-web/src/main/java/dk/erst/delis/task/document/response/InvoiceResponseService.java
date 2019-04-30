@@ -62,7 +62,11 @@ public class InvoiceResponseService {
 		private String statusReasonText;
 		
 		public boolean isStatusFilled() {
-			return isNotBlank(this.detailType) || isNotBlank(this.detailValue) || this.actionEnabled || this.reasonEnabled || isNotBlank(this.statusReasonText); 
+			return isDetailFilled() || this.actionEnabled || this.reasonEnabled || isNotBlank(this.statusReasonText); 
+		}
+
+		public boolean isDetailFilled() {
+			return isNotBlank(this.detailType) || isNotBlank(this.detailValue);
 		}
 	}
 
@@ -121,8 +125,9 @@ public class InvoiceResponseService {
 			
 			Response response = Response.builder().build();
 
+			ResponseStatus responseStatus = null;
 			if (invoiceResponseData.isActionEnabled()) {
-				ResponseStatus responseStatus = ResponseStatus.builder().build();
+				responseStatus = ResponseStatus.builder().build();
 				responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
 				responseStatus.setStatusReasonCodeListId("OPStatusAction");
 				response.addStatus(responseStatus);
@@ -130,17 +135,25 @@ public class InvoiceResponseService {
 			
 			if (invoiceResponseData.isStatusFilled()) {
 				if (invoiceResponseData.isReasonEnabled()) {
-					ResponseStatus responseStatus = ResponseStatus.builder().build();
+					responseStatus = ResponseStatus.builder().build();
 					responseStatus.setStatusReasonCode(invoiceResponseData.getReason());
 					responseStatus.setStatusReasonCodeListId("OPStatusReason");
-					if (isNotBlank(invoiceResponseData.getDetailType())) {
-						responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
-					}
-					if (isNotBlank(invoiceResponseData.getDetailValue())) {
-						responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
-					}
 					response.addStatus(responseStatus);
 				}
+			}
+			
+			if (invoiceResponseData.isDetailFilled() && responseStatus == null) {
+				if (responseStatus == null) {
+					responseStatus = ResponseStatus.builder().build();
+					response.addStatus(responseStatus);
+				}
+			}
+			
+			if (isNotBlank(invoiceResponseData.getDetailType())) {
+				responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
+			}
+			if (isNotBlank(invoiceResponseData.getDetailValue())) {
+				responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
 			}
 			
 			if (isNotBlank(invoiceResponseData.statusReasonText)) {

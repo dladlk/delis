@@ -4,7 +4,7 @@ public class InvoiceResponseFormControllerConst {
 
 	public static String[][] useCaseList = new String[][] {
 
-			new String[] { "0", "Manual" },
+			new String[] { "", "Select use case" },
 
 			new String[] { "1", "Invoice in process" },
 
