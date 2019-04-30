@@ -11,5 +11,7 @@ public class DocumentReference {
 	private String id;
 	private String issueDate;
 	private String documentTypeCode;
+	private String documentTypeCodeListId;
+	private String versionId;
 	
 }

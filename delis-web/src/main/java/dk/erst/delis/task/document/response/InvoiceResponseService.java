@@ -1,5 +1,7 @@
 package dk.erst.delis.task.document.response;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -10,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,14 +47,19 @@ public class InvoiceResponseService {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.validationTransformationService = validationTransformationService;
 	}
-	
+
 	@Data
 	public static class InvoiceResponseGenerationData {
 		private String status;
 		private String action;
+		private boolean actionEnabled;
+		private String action2;
+		private boolean action2Enabled;
 		private String reason;
+		private boolean reasonEnabled;
 		private String detailType;
 		private String detailValue;
+		private String statusReasonText;
 	}
 
 	public boolean generateInvoiceResponse(Document document, InvoiceResponseGenerationData invoiceResponseData, OutputStream out) throws InvoiceResponseGenerationException {
@@ -71,8 +77,7 @@ public class InvoiceResponseService {
 			log.info("Search for document bytes type " + documentBytesType);
 
 			if (documentBytesType == null) {
-				throw new InvoiceResponseGenerationException(document.getId(),
-						"InvoiceResponse can be generated only for ingoing formats CII or BIS3, but current document ingoing format was " + ingoingFamily.getCode());
+				throw new InvoiceResponseGenerationException(document.getId(), "InvoiceResponse can be generated only for ingoing formats CII or BIS3, but current document ingoing format was " + ingoingFamily.getCode());
 			}
 
 			DocumentBytes documentBytes = documentBytesStorageService.find(document, documentBytesType);
@@ -100,28 +105,56 @@ public class InvoiceResponseService {
 			byte[] irBytes = irOutput.toByteArray();
 
 			Date currentTime = Calendar.getInstance().getTime();
+			SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMdd-HHmmssSSS");
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
 			InvoiceResponseData irData = new InvoiceResponseData();
-			irData.setId("IRNumber");
 			irData.setIssueDate(dateFormat.format(currentTime));
 			irData.setIssueTime(timeFormat.format(currentTime));
-			
-			ResponseStatus responseStatus = ResponseStatus.builder().build();
-			responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
-			responseStatus.setStatusReason(invoiceResponseData.getReason());
-			if (StringUtils.isNotBlank(invoiceResponseData.getDetailType())) {
-				responseStatus.setConditionAttributeID(invoiceResponseData.getDetailType());
-			}
-			if (StringUtils.isNotBlank(invoiceResponseData.getDetailValue())) {
-				responseStatus.setConditionDescription(invoiceResponseData.getDetailValue());
-			}
-			
+			irData.setId(idFormat.format(currentTime) + "-" + document.getId());
+
 			Response response = Response.builder().build();
+
+			/*
+			 * Important to generate OPStatusReason before OPStatusAction, so details are placed into it
+			 */
+			if (invoiceResponseData.isReasonEnabled()) {
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
+				responseStatus.setStatusReasonCode(invoiceResponseData.getReason());
+				responseStatus.setStatusReasonCodeListId("OPStatusReason");
+				response.addStatus(responseStatus);
+			}
+
+			if (invoiceResponseData.isActionEnabled()) {
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
+				responseStatus.setStatusReasonCode(invoiceResponseData.getAction());
+				responseStatus.setStatusReasonCodeListId("OPStatusAction");
+				response.addStatus(responseStatus);
+			}
+			if (invoiceResponseData.isAction2Enabled()) {
+				ResponseStatus responseStatus = ResponseStatus.builder().build();
+				responseStatus.setStatusReasonCode(invoiceResponseData.getAction2());
+				responseStatus.setStatusReasonCodeListId("OPStatusAction");
+				response.addStatus(responseStatus);
+			}
+
+			/*
+			 * DetailType/DetailValue/StatusReason are always placed to first ResponseStatus - which is OPStatusReason if defined.
+			 */
+			if (isNotBlank(invoiceResponseData.getDetailType())) {
+				response.getStatusOrCreate(0).setConditionAttributeID(invoiceResponseData.getDetailType());
+			}
+			if (isNotBlank(invoiceResponseData.getDetailValue())) {
+				response.getStatusOrCreate(0).setConditionDescription(invoiceResponseData.getDetailValue());
+			}
+			if (isNotBlank(invoiceResponseData.statusReasonText)) {
+				response.getStatusOrCreate(0).setStatusReason(invoiceResponseData.statusReasonText);
+			}
+
 			response.setEffectiveDate(dateFormat.format(currentTime));
 			response.setResponseCode(invoiceResponseData.getStatus());
-			response.setStatus(responseStatus);
+			response.setResponseCodeListId("UNCL4343OpSubset");
 			irData.setDocumentResponse(DocumentResponse.builder().response(response).build());
 
 			try {
@@ -129,15 +162,14 @@ public class InvoiceResponseService {
 				return true;
 			} catch (Exception e) {
 				log.error("Failed to parse as ApplicationResponse extracted basic data from BIS3 format", e);
-				throw new InvoiceResponseGenerationException(document.getId(),
-						"Failed to parse extracted information about sender/receiver as ApplicationResponse from BIS3 format: " + e.getMessage());
+				throw new InvoiceResponseGenerationException(document.getId(), "Failed to parse extracted information about sender/receiver as ApplicationResponse from BIS3 format: " + e.getMessage());
 			}
 
 		} finally {
 			log.info("Finished generation in " + (System.currentTimeMillis() - start) + " ms");
 		}
 	}
-	
+
 	public List<ErrorRecord> validateInvoiceResponse(Path xmlFile) {
 		Document documentInvoiceResponse = new Document();
 		documentInvoiceResponse.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE_RESPONSE);
@@ -165,12 +197,12 @@ public class InvoiceResponseService {
 			super(message);
 			this.documentId = documentId;
 		}
-		
+
 		public InvoiceResponseGenerationException(Long documentId, String message, Throwable cause) {
 			super(message, cause);
 			this.documentId = documentId;
 		}
-		
+
 		public InvoiceResponseGenerationException(Long documentId, String message, DocumentProcessStep failedStep, Throwable cause) {
 			super(message, cause);
 			this.documentId = documentId;

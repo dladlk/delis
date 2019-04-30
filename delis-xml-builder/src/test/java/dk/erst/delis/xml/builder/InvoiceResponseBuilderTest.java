@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import dk.erst.delis.xml.builder.data.Contact;
 import dk.erst.delis.xml.builder.data.DocumentReference;
@@ -90,12 +93,12 @@ public class InvoiceResponseBuilderTest {
 
 		ApplicationResponseType r = builder.parse(new ByteArrayInputStream(bytes));
 		assertEquals(d.getIssueDate(), r.getDocumentResponse().get(0).getDocumentReference().get(0).getIssueDate().getValue().toXMLFormat());
-		
+
 		/*
 		 * Check that condition is not created for empty attributes
 		 */
-		d.getDocumentResponse().getResponse().getStatus().setConditionAttributeID("");
-		d.getDocumentResponse().getResponse().getStatus().setConditionDescription("");
+		d.getDocumentResponse().getResponse().getStatusOrCreate(0).setConditionAttributeID("");
+		d.getDocumentResponse().getResponse().getStatusOrCreate(0).setConditionDescription("");
 		out = new ByteArrayOutputStream();
 		builder.build(d, out);
 		r = builder.parse(new ByteArrayInputStream(out.toByteArray()));
@@ -124,7 +127,8 @@ public class InvoiceResponseBuilderTest {
 		d.setReceiverParty(receiver);
 
 		ResponseStatus responseStatus = ResponseStatus.builder().statusReasonCode("REF").statusReason("VAT Reference not found").conditionAttributeID("BT-48").conditionDescription("EU123456789").build();
-		Response response = Response.builder().effectiveDate("2019-01-01").responseCode("RE").status(responseStatus).build();
+		Response response = Response.builder().effectiveDate("2019-01-01").responseCode("RE").build();
+		response.addStatus(responseStatus);
 		DocumentReference documentReference = DocumentReference.builder().id("inv060").issueDate(issueDate).documentTypeCode("380").build();
 		Party issuerParty = Party.builder().build();
 		issuerParty.setPartyIdentification(PartyIdentification.builder().id(ID.builder().schemeID("0184").value("DK88776655").build()).build());
@@ -143,7 +147,7 @@ public class InvoiceResponseBuilderTest {
 	@Test
 	public void testParseAndEnrich() throws Exception {
 		System.out.println("Check on empty initial ApplicationResponse and empty data:");
-		
+
 		String xmlString = "<ApplicationResponse xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2\"/>";
 		InvoiceResponseData data = new InvoiceResponseData();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -151,36 +155,64 @@ public class InvoiceResponseBuilderTest {
 		System.out.println("On ");
 		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 100);
-		
+
 		System.out.println("Check on empty AR but full data");
 		data = generateFullData();
 		out = new ByteArrayOutputStream();
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), data, out);
 		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
-		
+
 		System.out.println("Check on both full data and AR");
 		byte[] fullAR = out.toByteArray();
 		builder.parseAndEnrich(new ByteArrayInputStream(fullAR), data, out);
 		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
-		
+
 		System.out.println("Check on partly data and empty AR");
-		
+
 		InvoiceResponseData partlyData = new InvoiceResponseData();
 		partlyData.setReceiverParty(Party.builder().build());
 		partlyData.setSenderParty(Party.builder().build());
 		partlyData.setDocumentResponse(DocumentResponse.builder().build());
-		
+
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), partlyData, out);
 		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
-		
+
 		partlyData.getSenderParty().setContact(Contact.builder().build());
 		partlyData.getDocumentResponse().setResponse(Response.builder().build());
 		partlyData.getDocumentResponse().setDocumentReference(DocumentReference.builder().build());
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), partlyData, out);
 		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
+	}
+
+	@Test
+	public void processInvoiceResponseUseCases() throws Exception {
+		ClassLoader cl = this.getClass().getClassLoader();
+		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(cl);
+		Resource[] resources = resolver.getResources("classpath*:/InvoiceReponse_UseCases/*.xml");
+
+		int count = 0;
+		for (int i = 0; i < resources.length; i++) {
+			Resource resource = resources[i];
+			count++;
+			log.info("Parsing " + resource.getFilename());
+			ApplicationResponseType ar = builder.parse(resource.getInputStream());
+			InvoiceResponseData data = builder.extractDataFromType(ar);
+
+			ByteArrayOutputStream baos;
+			baos = new ByteArrayOutputStream();
+			builder.build(data, baos);
+			String byData = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+			baos = new ByteArrayOutputStream();
+			builder.serializeType(ar, baos);
+			String byType = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+
+			assertEquals("Case [" + i + "] " + resource.getFilename() + " different result", byType, byData);
+		}
+		assertEquals(15, count);
 	}
 }
