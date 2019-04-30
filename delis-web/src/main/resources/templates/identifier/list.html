@@ -9,28 +9,21 @@
 		</div>
 		<div class="card-body">
 			<form action="#" th:action="@{/identifier/updatestatuses}" th:object="${selectedIdList}" method="post">
-			<table class="table table-striped table-bordered table-sm">
-				<tr>
-					<th>
-						<input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" />
-					</th>
-					<th>Organisation</th>
-					<th>Identifier</th>
-					<th>Value</th>
-					<th>Name</th>
-					<th>Status</th>
-					<th>Publishing</th>
-				</tr>
-				<tr th:each="r,iter : ${identifierList}">
-					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
-					<td><a href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}"></a></td>
-					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" th:text="${r.value}"></a></td>
-					<td th:text="${r.type}"></td>
-					<td th:text="${r.name}"/>
-					<td th:text="${r.status}"/>
-					<td th:text="${r.publishingStatus}"/>
-				</tr>
-			</table>
+				<div class="container">
+					<table id="identifiers" class="table">
+						<thead>
+						<tr>
+							<th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
+							<th>Organisation</th>
+							<th>Identifier</th>
+							<th>Value</th>
+							<th>Name</th>
+							<th>Status</th>
+							<th>Publishing</th>
+						</tr>
+						</thead>
+					</table>
+				</div>
 				<div class="card-footer">
 					<div class="d-flex justify-content-start">
                         <label class="m-2 col-form-label">Status:</label>
@@ -50,6 +43,51 @@
 			<a href="#" th:href="@{/organisation/view/__${organisation.id}__}" class="btn btn-primary">Back to <span th:text="${organisation.name}">Test organisation</span></a>
 		</div>
 
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+		<script>
+			$('table#identifiers').DataTable({
+				ajax: {
+					contentType: 'application/json',
+					url: '/delis/identifier/table',
+					type: 'POST',
+					data: function (d) {
+						return JSON.stringify(d);
+					}
+				},
+				serverSide: true,
+				columns: [
+					{
+						data: 'id',
+						orderable: false,
+						searchable: false,
+						render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList" id="idList"/>'; }
+					},
+					{
+						data: 'organisation',
+						render: function (data) { return '<a href="/delis/organisation/view/' + data.id + '">' + data.name + '</a>'; }
+					},
+					{
+
+						data: 'value',
+						render: function (data, type, row) { return '<a href="/delis/identifier/view/' + row["id"] + '">' + data + '</a>'; }
+					},
+					{
+						data: 'type'
+					},
+					{
+						data: 'name'
+					},
+					{
+						data: 'status'
+					},
+					{
+						data: 'publishingStatus'
+					}
+				]
+			});
+		</script>
 	</div>
 </body>
 </html>
