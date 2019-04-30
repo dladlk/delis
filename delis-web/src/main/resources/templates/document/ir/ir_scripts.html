@@ -50,6 +50,8 @@ useCaseConfig['3'] = {'irs': 'AP'};
 useCaseConfig['4a'] = {'irs': 'RE','statusReasonText': 'A textual explanation for why the invoice is being rejected.'};
 useCaseConfig['4b'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'NIN'};
 useCaseConfig['4c'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'CNF', 'action2Enabled1': true, 'sca2': 'NIN'};
+useCaseConfig['5'] = {'irs': 'CA', 'reasonEnabled1': true, 'scr': 'PAY', 'detailType': 'BT-9', 'detailValue': '2018-01-15'};
+useCaseConfig['6a'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN'};
 
 function applyConfig(caseConfig, markIsValid) {
 	for (var key in caseConfig) {
@@ -60,6 +62,7 @@ function applyConfig(caseConfig, markIsValid) {
 			checkboxChanged($e);
 		} else {
 			$e.val(evalue);
+			selectChanged($e);
 			if (markIsValid) {
 				$e.addClass('is-valid');
 			} else {
@@ -74,8 +77,8 @@ $(document).ready(function () {
 	$('#ucl').change(function(){
 		var selectedCase = $(this).val(); 
 		console.log(selectedCase);
+		applyConfig(useCaseReset, false);
 		if (selectedCase in useCaseConfig) {
-			applyConfig(useCaseReset, false);
 			var caseConfig = useCaseConfig[selectedCase];
 			console.log('Found case config: ');
 			console.log(caseConfig);

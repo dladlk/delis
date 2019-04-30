@@ -8,8 +8,7 @@ public class InvoiceResponseFormControllerConst {
 
 			new String[] { "1", "Invoice in process" },
 
-			new String[] { "2a", "Additional reference data", "Use case shows an invoice that is in process and states the date when the invoice was received and entered into processing which in this case is shown as a day before the IMR is sent. \r\n" + 
-					"The Buyer also communicates that his internal reference number is X001." },
+			new String[] { "2a", "Additional reference data", "Use case shows an invoice that is in process and states the date when the invoice was received and entered into processing which in this case is shown as a day before the IMR is sent. \r\n" + "The Buyer also communicates that his internal reference number is X001." },
 
 			new String[] { "2b", "In process but postponed", "Invoice is in processing but the processing is on hold until future date. This is communicated by showing an as status effective date in the future." },
 
@@ -21,19 +20,19 @@ public class InvoiceResponseFormControllerConst {
 
 			new String[] { "4c", "Rejected requesting replacement" },
 
-			new String[] { "5", "Invoice is conditionally accepted" },
+			new String[] { "5", "Invoice is conditionally accepted", "The buyer sets a new due date as 2018-01-15 using the Business term identifier BT-9 for Due Date as defined in EN 16931." },
 
-			new String[] { "6a", "Under query missing information" },
+			new String[] { "6a", "Under query missing information", "The use case assumes missing purchase order reference and proposes that the reference should be PO0001, the invoice is put under query 2 days after it was issued." },
 
-			new String[] { "6b", "Missing PO" },
+			new String[] { "6b", "Missing PO", "The use case assumes missing purchase order reference and proposes that the reference should be PO0001, the invoice is put under query 2 days after it was issued." },
 
-			new String[] { "6c", "Wrong detail partial credit" },
+			new String[] { "6c", "Wrong detail partial credit", "Use case demonstrates how line level corrections are given with textual notes." },
 
-			new String[] { "7", "Payment has been initiated" },
+			new String[] { "7", "Payment has been initiated", "Use case shows where payment has been initated on 2017-12-30." },
 
-			new String[] { "8", "Invoice is accepted by third party" } };
+			new String[] { "8", "Invoice is accepted by third party", "Use case shows where Invoice processing service sends an acceptance to the Seller company for an invoice that was issued to Buyer A." } };
 
-			public static String[][] invoiceStatusCodeList = new String[][] {
+	public static String[][] invoiceStatusCodeList = new String[][] {
 
 			new String[] { "AB", "Message acknowledgement ", "Indicates that an acknowledgement relating to receipt of message or transaction is required. Status is used when Buyer has received a readable invoice message that can be understood and submitted for processing by the Buyer. " },
 
@@ -49,7 +48,7 @@ public class InvoiceResponseFormControllerConst {
 
 			new String[] { "PD", "Paid ", "Indicates that the referenced document or transaction has been paid. Status is used only when the Buyer has initiated the payment of the invoice." } };
 
-			public static String[][] statusActionList = new String[][] {
+	public static String[][] statusActionList = new String[][] {
 
 			new String[] { "NOA", "No action required ", "No action required" },
 

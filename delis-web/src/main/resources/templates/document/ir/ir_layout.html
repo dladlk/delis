@@ -17,9 +17,7 @@
 		</div>
 	</div>
 	<div class="col-7">
-		<div>
-			<small class="form-text text-muted" th:attr="id=${selectId+'Desc'}"></small>
-		</div>							
+		<div class="form-text" th:classappend="${#strings.contains(',ucl,', selectId) ? 'text-dark font-weight-bold' : ''}" th:attr="id=${selectId+'Desc'}"></div>
 		<div>
 			<small class="form-text text-muted">
 				<th:block th:replace="${formText}"/>
