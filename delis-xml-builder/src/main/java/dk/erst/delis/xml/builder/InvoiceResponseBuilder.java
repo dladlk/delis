@@ -493,7 +493,7 @@ public class InvoiceResponseBuilder {
 							StatusReasonType statusReasonType = cbcFactory.createStatusReasonType();
 							statusType.getStatusReason().add(statusReasonType);
 						}
-						statusType.getStatusReason().get(i).setValue(status.getStatusReason());
+						statusType.getStatusReason().get(0).setValue(status.getStatusReason());
 					}
 
 					if (status.isFilledCondition()) {
@@ -514,7 +514,7 @@ public class InvoiceResponseBuilder {
 							DescriptionType descriptionType = cbcFactory.createDescriptionType();
 							conditionType.getDescription().add(descriptionType);
 						}
-						conditionType.getDescription().get(i).setValue(status.getConditionDescription());
+						conditionType.getDescription().get(0).setValue(status.getConditionDescription());
 					}
 				}
 			}
