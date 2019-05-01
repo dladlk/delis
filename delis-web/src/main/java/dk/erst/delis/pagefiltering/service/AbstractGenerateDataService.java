@@ -10,7 +10,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 
 public interface AbstractGenerateDataService<
-        R extends AbstractRepository,
+        R extends AbstractRepository<?>,
         E extends AbstractEntity> {
 
     PageContainer<E> generateDataPageContainer(Class<E> entityClass, WebRequest request, R repository);

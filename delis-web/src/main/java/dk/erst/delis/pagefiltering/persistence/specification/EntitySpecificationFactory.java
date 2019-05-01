@@ -11,9 +11,10 @@ import java.util.Objects;
 
 public class EntitySpecificationFactory<E extends AbstractEntity> {
 
-    public AbstractSpecification<? extends AbstractEntity> generateSpecification(EntitySpecification entitySpecification) {
+    @SuppressWarnings("unchecked")
+	public AbstractSpecification<E> generateSpecification(EntitySpecification entitySpecification) {
         if (Objects.equals(entitySpecification, EntitySpecification.FLAG_ERRORS_DOCUMENT)) {
-            return new DocumentErrorSpecificationProcess();
+            return (AbstractSpecification<E>) new DocumentErrorSpecificationProcess();
         } else return new AbstractSpecificationProcess<E>();
     }
 }

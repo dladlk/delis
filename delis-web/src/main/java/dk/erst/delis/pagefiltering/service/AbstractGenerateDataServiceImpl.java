@@ -30,11 +30,11 @@ import java.util.Objects;
 
 @Service
 public class AbstractGenerateDataServiceImpl<
-        R extends AbstractRepository,
+        R extends AbstractRepository<E>,
         E extends AbstractEntity>
         implements AbstractGenerateDataService<R, E> {
 
-    @Override
+	@Override
     public PageContainer<E> generateDataPageContainer(Class<E> entityClass, WebRequest request, R repository) {
         PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(request);
         String specificFlag = WebRequestUtil.existFlagParameter(request);
@@ -42,10 +42,10 @@ public class AbstractGenerateDataServiceImpl<
         Specification<E> specification;
         if (StringUtils.isNotBlank(specificFlag)) {
             entitySpecification = EntitySpecification.valueOf(request.getParameter(specificFlag));
-            specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request);
+            specification = new EntitySpecificationFactory<E>().generateSpecification(entitySpecification).generateCriteriaPredicate(request);
         } else {
             entitySpecification = EntitySpecification.DEFAULT;
-            specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass);
+            specification = new EntitySpecificationFactory<E>().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass);
         }
         long collectionSize = repository.count(specification);
         if (collectionSize == 0) {

@@ -31,7 +31,7 @@ public class PageContainer<T> {
     private String sortField = "id"; // todo modify for multifields sorting in future
     private SortingDirection sortDirection = SortingDirection.Asc;
 
-    private Map filterMap = new HashMap();
+    private Map<?, ?> filterMap = new HashMap<>();
 
     public PageContainer(int currentPage, int pageSize, long collectionSize, List<T> items, String sortField, SortingDirection sortDirection) {
         this.currentPage = currentPage;

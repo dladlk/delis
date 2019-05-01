@@ -58,7 +58,8 @@ public class SpecificationUtil {
         }
     }
 
-    private static Predicate getPredicate(Root<? extends AbstractEntity> root, CriteriaBuilder criteriaBuilder, Field field, String parameter) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	private static Predicate getPredicate(Root<? extends AbstractEntity> root, CriteriaBuilder criteriaBuilder, Field field, String parameter) {
         String containsLikePattern;
         Predicate predicate = null;
         if (field.getType().isPrimitive()) {

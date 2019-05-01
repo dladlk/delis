@@ -11,7 +11,7 @@ public class PaginatorUtil {
     public static final String ASC = "Asc";
     public static final String DESC = "Desc";
 
-    public static String arrowStyle (PageContainer pageContainer, String fieldName) {
+    public static String arrowStyle (PageContainer<?> pageContainer, String fieldName) {
         //${(#strings.equals(documentList.sortField,'createTime'))?((#strings.equals(documentList.sortDirection,'Desc'))?('fa-sort-down'):('fa-sort-up')):('fa-sort')}
         String result = FA_SORT;
         if (pageContainer.getSortField().equalsIgnoreCase(fieldName)) {
@@ -24,7 +24,7 @@ public class PaginatorUtil {
         return result;
     }
 
-    public static String sortFunc (PageContainer pageContainer, String fieldName) {
+    public static String sortFunc (PageContainer<?> pageContainer, String fieldName) {
         //'sortTableForm(\'documentTableForm\', \'createTime_'+ ${(#strings.equals(documentList.sortField,'createTime'))?((#strings.equals(documentList.sortDirection,'Desc'))?('Asc'):('Desc')):('Desc')} + '\')'
         String direction = DESC;
         if (pageContainer.getSortField().equalsIgnoreCase(fieldName)) {
