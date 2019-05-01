@@ -41,7 +41,11 @@ function initSelect(id) {
 	}
 }
 
-var useCaseReset = {'irs': 'AB', 'scr': 'NON', 'reasonEnabled1': false, 'sca': 'NOA', 'actionEnabled1': false, 'sca2': 'NOA', 'action2Enabled1': false, 'detailType': '', 'detailValue': '', statusReasonText: ''};
+var useCaseReset = {'irs': 'AB', 'scr': 'NON', 'reasonEnabled1': false, 'sca': 'NOA', 'actionEnabled1': false, 'sca2': 'NOA', 
+		'action2Enabled1': false, 'detailType': '', 'detailValue': '', statusReasonText: '',
+		'type': 'AB',
+		'description': ''
+};
 var useCaseConfig = {};
 useCaseConfig['1'] = {'irs': 'IP'};
 useCaseConfig['2a'] = {'irs': 'IP', 'actionEnabled1': true, 'sca': 'NOA', 'detailType': 'Buyer process reference', 'detailValue': 'X001'};
@@ -56,6 +60,10 @@ useCaseConfig['6b'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detai
 useCaseConfig['6c'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'DEL', 'statusReasonText': 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.', 'actionEnabled1': true, 'sca': 'CNP'};
 useCaseConfig['7'] = {'irs': 'PD'};
 useCaseConfig['8'] = {'irs': 'AP'};
+
+useCaseConfig['mlr1'] = {'art': 'AB'};
+useCaseConfig['mlr2'] = {'art': 'RE', 'description':'Rejected due to validation errors'};
+useCaseConfig['mlr3'] = {'art': 'RE', 'description':'Rejected due to validation errors'};
 
 function applyConfig(caseConfig, markIsValid) {
 	for (var key in caseConfig) {
@@ -77,20 +85,31 @@ function applyConfig(caseConfig, markIsValid) {
 	return true;
 }
 
+function useCaseListChanged(casePrefix, selectedCase){
+	if (selectedCase == '') {
+		return true;
+	}
+	var caseCode = casePrefix+selectedCase; 
+	console.log(caseCode);
+	applyConfig(useCaseReset, false);
+	
+	var caseConfig;
+	if (caseCode in useCaseConfig) {
+		caseConfig = useCaseConfig[caseCode];
+	}
+	if (caseConfig) {
+		console.log('Found case config: ');
+		console.log(caseConfig);
+		applyConfig(caseConfig, true);
+	} else {
+		console.log('Case config for '+caseCode+' is not found');
+	}
+	return true;
+}
+
 $(document).ready(function () {
-	$('#ucl').change(function(){
-		var selectedCase = $(this).val(); 
-		console.log(selectedCase);
-		applyConfig(useCaseReset, false);
-		if (selectedCase in useCaseConfig) {
-			var caseConfig = useCaseConfig[selectedCase];
-			console.log('Found case config: ');
-			console.log(caseConfig);
-			applyConfig(caseConfig, true);
-		} else {
-			console.log('Case config not found');
-		}
-	});
+	$('#ucl').change(function(){useCaseListChanged('', $(this).val());});
+	$('#mlrucl').change(function(){useCaseListChanged('mlr', $(this).val());});
 });
 </script>
 

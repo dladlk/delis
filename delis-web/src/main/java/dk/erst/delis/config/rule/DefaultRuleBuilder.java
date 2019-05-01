@@ -45,6 +45,7 @@ public class DefaultRuleBuilder {
         result.add(xsd(DocumentFormat.BIS3_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_INVOICE_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
+        result.add(xsd(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
 
         result.add(xsd(DocumentFormat.CII, "xsd/CII_D16B_SCRDM_uncoupled/data/standard/CrossIndustryInvoice_100pD16B.xsd"));
 
@@ -63,6 +64,7 @@ public class DefaultRuleBuilder {
         result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
 
         result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
+        result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T111.xslt", 10));
 
         result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-03-15_1/CEN-EN16931-CII.xslt", 10));
         result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-03-15_1/PEPPOL-EN16931-CII.xslt", 20));

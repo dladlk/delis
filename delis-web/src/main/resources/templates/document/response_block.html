@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:fragment="documentResponse">
+
+	<div>
+		<button class="m-2 btn btn-primary btn-sm" onclick="$('#invoiceResponseForm').toggle()">Invoice Response 3.0 Form</button>
+		<button class="m-2 btn btn-primary btn-sm" onclick="$('#messageLevelResponseForm').toggle()">Message Level Response 3.0 Form</button>
+		<form th:action="@{/document/generate/messageLevelResponseByErrorAndSend/__${document.id}__}" method="post" style="display: inline">
+			<button class="m-2 btn btn-primary btn-sm" type="submit">Generate MLR by last error and send</button>
+		</form>
+		
+		<div class="card border-danger" th:if="${responseErrorList}">
+			<div class="card-body">
+				<div class="card-title alert alert-danger">
+					<span th:text="${errorMessage}">3</span>
+				</div>
+				<table class="table table-sm">
+					<tr>
+						<th>Flag</th>
+						<th>Code</th>
+						<th>Location</th>
+						<th>Message</th>
+					</tr>
+					<tr th:each="e : ${responseErrorList}">
+						<td th:text="${e.flag}"></td>
+						<td th:text="${e.code}"></td>
+						<td th:text="${e.location}"></td>
+						<td th:text="${e.message}"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div th:replace="~{document/ir/ir_form}"></div>
+		<div th:replace="~{document/mlr/mlr_form}"></div>
+				
+	</div>
+
+</html>

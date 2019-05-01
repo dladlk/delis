@@ -1,41 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	th:fragment="invoiceResponse">
+	xmlns:th="http://www.thymeleaf.org">
 
 <th:block th:replace="~{/document/ir/ir_scripts}"/>
 
 <div>
-	<div>
-		<button class="m-2 btn btn-primary btn-sm" onclick="$('#invoiceResponseForm').toggle()">New Invoice Response 3.0 via Form</button>
-		<form th:action="@{/document/generate/invoiceResponseByErrorAndSend/__${document.id}__}" method="post" style="display: inline">
-			<button class="m-2 btn btn-primary btn-sm" type="submit">Generate Message Level Response (BIS3 PEPPOL UBL MLR) 3.0 by last error and send</button>
-		</form>
-	</div>
 	
-	<div class="card border-danger" th:if="${invoiceResponseErrorList}">
-		<div class="card-body">
-			<div class="card-title alert alert-danger">
-				<span th:text="${errorMessage}">3</span>
-			</div>
-			<table class="table table-sm">
-				<tr>
-					<th>Flag</th>
-					<th>Code</th>
-					<th>Location</th>
-					<th>Message</th>
-				</tr>
-				<tr th:each="e : ${invoiceResponseErrorList}">
-					<td th:text="${e.flag}"></td>
-					<td th:text="${e.code}"></td>
-					<td th:text="${e.location}"></td>
-					<td th:text="${e.message}"></td>
-				</tr>
-			</table>
-		</div>
-	</div>
-
-<div class="card border-secondary m-1 mb-3" th:classappend="${invoiceResponseErrorList}?'':'collapse'" id="invoiceResponseForm">
+<div class="card border-secondary m-1 mb-3 delis-app-response-form" th:classappend="${invoiceResponseFormOpened}?'':'collapse'" id="invoiceResponseForm">
 		
 <div class="card-body pb-1 invoice-response">
 
@@ -50,7 +21,7 @@
 		</div>
 		
 
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('ucl', 'Use case', 'useCaseList', 'usecase', ~{::section#ucl})}">
+		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('ucl', 'Use case', 'invoiceResponseUseCaseList', 'usecase', ~{::section#ucl})}">
 			<section id="ucl">See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
 				Invoice Response use cases</a> for details
 			</section>
@@ -87,7 +58,7 @@
 		</div>
 		
 		<div class="row">
-			<div class="form-group col-5">
+			<div class="form-group col-8">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text">Reason text</span>
@@ -95,13 +66,13 @@
 					<input th:field="*{statusReasonText}" type="text" class="form-control"/>
 				</div>
 			</div>
-			<div class="col-7">
+			<div class="col-4">
 				<div class="font-italic"><small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small></div>
 			</div>
 		</div>			
 				
 		<div class="row mb-2">
-			<div class="form-group col-5">
+			<div class="form-group col-8">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text">Detail type</span>
@@ -109,14 +80,14 @@
 					<input th:field="*{detailType}" type="text" name="invoiceResponseDetailTypeCode" class="form-control"/>
 				</div>
 			</div>
-			<div class="col-7">
+			<div class="col-4">
 				<small class="form-text text-muted">
 				<span class="font-italic display-block">//DocumentResponse/Response/Status/Condition/AttributeID</span>
-				E.g. BT-48</small>
+				<div>E.g. BT-48</div></small>
 			</div>							
 		</div>
 		<div class="row">
-			<div class="form-group col-5">
+			<div class="form-group col-8">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text">Detail value</span>
@@ -124,14 +95,14 @@
 					<input th:field="*{detailValue}" type="text" name="invoiceResponseDetailValue" class="form-control"/>
 				</div>
 			</div>
-			<div class="col-7">
+			<div class="col-4">
 				<small class="form-text text-muted">
 				<div class="font-italic">//DocumentResponse/Response/Status/Condition/Description</div>
-				E.g. EU12345</small>
+				<div>E.g. EU12345</div></small>
 			</div>
 		</div>
 
-		<div class="row">
+	<div class="row" th:fragment="footerBlock">
 		<div class="form-group col-6">
 			<div class="input-group">
 				<div class="input-group-prepend">
@@ -153,9 +124,10 @@
 				<label for="generateWithoutSending" class="form-control">Only generate, do not send</label>
 			</div>
 		</div>
-		</div>
-
 		<button type="submit" class="m-2 btn btn-primary btn-sm">Generate</button>
+		<button type="button" class="m-2 btn btn-secondary btn-sm" onclick="$(this).parents('.delis-app-response-form').toggle()">Hide</button>
+	</div>
+
 	</form>
 </div>
 

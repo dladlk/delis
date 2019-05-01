@@ -26,7 +26,7 @@ import dk.erst.delis.xml.builder.data.DocumentResponse.DocumentResponseBuilder;
 import dk.erst.delis.xml.builder.data.EndpointID;
 import dk.erst.delis.xml.builder.data.EndpointID.EndpointIDBuilder;
 import dk.erst.delis.xml.builder.data.ID;
-import dk.erst.delis.xml.builder.data.InvoiceResponseData;
+import dk.erst.delis.xml.builder.data.ApplicationResponseData;
 import dk.erst.delis.xml.builder.data.LineResponse;
 import dk.erst.delis.xml.builder.data.LineResponse.LineResponseBuilder;
 import dk.erst.delis.xml.builder.data.Party;
@@ -55,7 +55,7 @@ import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.Descript
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.StatusReasonType;
 
 @Slf4j
-public class InvoiceResponseBuilder {
+public class ApplicationResponseBuilder {
 
 	private static String INVOCIE_RESPONSE_TEMPLATE_XSLT = "invoice-response.xslt";
 	private oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ObjectFactory arFactory;
@@ -64,7 +64,7 @@ public class InvoiceResponseBuilder {
 	private JAXBContext jaxbContext;
 	private DatatypeFactory datatypeFactory;
 
-	public InvoiceResponseBuilder() {
+	public ApplicationResponseBuilder() {
 		arFactory = new oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ObjectFactory();
 		cbcFactory = new oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.ObjectFactory();
 		cacFactory = new oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ObjectFactory();
@@ -78,7 +78,7 @@ public class InvoiceResponseBuilder {
 	}
 
 	public void extractBasicData(InputStream rejectedXmlInput, OutputStream out) throws Exception {
-		XSLTUtil.apply(InvoiceResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), new CloseShieldInputStream(rejectedXmlInput), out);
+		XSLTUtil.apply(ApplicationResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), new CloseShieldInputStream(rejectedXmlInput), out);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -88,7 +88,7 @@ public class InvoiceResponseBuilder {
 		return jaxbElement.getValue();
 	}
 
-	public void parseAndEnrich(InputStream is, InvoiceResponseData d, OutputStream out) throws Exception {
+	public void parseAndEnrich(InputStream is, ApplicationResponseData d, OutputStream out) throws Exception {
 		log.info("parseAndEnrich for " + d);
 		ApplicationResponseType ar = parse(is);
 		copyDataToType(d, ar);
@@ -112,7 +112,7 @@ public class InvoiceResponseBuilder {
 		partyLegalEntity.setCompanyLegalForm(null);
 	}
 
-	public void build(InvoiceResponseData d, OutputStream out) throws Exception {
+	public void build(ApplicationResponseData d, OutputStream out) throws Exception {
 		ApplicationResponseType ar = arFactory.createApplicationResponseType();
 		copyDataToType(d, ar);
 		serializeType(ar, out);
@@ -124,8 +124,8 @@ public class InvoiceResponseBuilder {
 		marshaller.marshal(arFactory.createApplicationResponse(ar), out);
 	}
 
-	public InvoiceResponseData extractDataFromType(ApplicationResponseType ar) {
-		InvoiceResponseData d = new InvoiceResponseData();
+	public ApplicationResponseData extractDataFromType(ApplicationResponseType ar) {
+		ApplicationResponseData d = new ApplicationResponseData();
 		if (ar.getUBLVersionID() != null) {
 			d.setUblVersionID(ar.getUBLVersionID().getValue());
 		}
@@ -299,7 +299,7 @@ public class InvoiceResponseBuilder {
 		return b.build();
 	}
 
-	private void copyDataToType(InvoiceResponseData d, ApplicationResponseType ar) {
+	private void copyDataToType(ApplicationResponseData d, ApplicationResponseType ar) {
 		if (d.getUblVersionID() != null) {
 			if (ar.getUBLVersionID() == null)
 				ar.setUBLVersionID(cbcFactory.createUBLVersionIDType());

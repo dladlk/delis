@@ -39,8 +39,7 @@ import dk.erst.delis.pagefiltering.util.WebRequestUtil;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.web.RedirectUtil;
-import dk.erst.delis.web.document.ir.InvoiceResponseFormControllerConst;
-import dk.erst.delis.web.document.ir.InvoiceResponseFormController.InvoiceResponseForm;
+import dk.erst.delis.web.document.ir.ApplicationResponseFormController;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -114,15 +113,7 @@ public class DocumentController {
 		model.addAttribute("errorListByJournalDocumentIdMap", documentService.getErrorListByJournalDocumentIdMap(document));
 		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
 		
-		if (!model.containsAttribute("irForm")) {
-			InvoiceResponseForm irForm = new InvoiceResponseForm();
-			irForm.setDocumentId(document.getId());
-			model.addAttribute("irForm", irForm);
-		}
-		model.addAttribute("useCaseList", InvoiceResponseFormControllerConst.useCaseList);
-		model.addAttribute("invoiceStatusCodeList", InvoiceResponseFormControllerConst.invoiceStatusCodeList);
-		model.addAttribute("statusActionList", InvoiceResponseFormControllerConst.statusActionList);
-		model.addAttribute("statusReasonList", InvoiceResponseFormControllerConst.statusReasonList);
+		ApplicationResponseFormController.fillModel(model, document);
 
 		return "/document/view";
 	}

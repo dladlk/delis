@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:fragment="invoiceResponse">
+
+<div class="card border-secondary m-1 mb-3 delis-app-response-form" th:classappend="${messageLevelResponseFormOpened}?'':'collapseXXX'" id="messageLevelResponseForm">
+		
+<div class="card-body pb-1 invoice-response">
+
+	<form method="post" action="#" th:action="@{/document/generate/messageLevelResponse}" th:object="${mlrForm}">
+		<input type="hidden" name="id" class="form-control" th:field="*{documentId}"/>
+		
+		<div class="row mb-3">
+			<h2 class="col-5">Message Level Response BIS 3.0</h2>
+			<div class="col-7">
+				<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/" target="_blank">BIS Message Level Response 3.0</a> for details</small>						
+			</div>
+		</div>
+		
+
+		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('mlrucl', 'Use case', 'messageLevelResponseUseCaseList', 'usecase', ~{::section#mlrHint})}">
+			<section id="mlrHint">See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/#typical-use-cases" target="_blank">
+				Message Level Response use cases</a> for details
+			</section>
+		</div>
+			
+		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('art', 'Type', 'applicationResponseTypeCodeList', 'type', ~{::section#art})}">
+			<section id="art">
+				<div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
+				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343/" target="_blank">
+				Application Response type code (UNCL4343 Subset)</a> for details
+			</section>
+		</div>
+		
+		<div class="row">
+			<div class="form-group col-9">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Description</span>
+					</div>
+					<input th:field="*{description}" type="text" class="form-control"/>
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="font-italic"><small class="form-text text-muted">//DocumentResponse/Response/Description</small></div>
+			</div>
+		</div>			
+		
+		<th:block th:replace="~{/document/ir/ir_form :: footerBlock}"/>
+
+	</form>
+</div>
+
+</div>
+
+</html>

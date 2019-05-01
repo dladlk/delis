@@ -11,6 +11,8 @@ public enum DocumentType {
 	
 	CREDITNOTE,
 	
-	INVOICE_RESPONSE
+	INVOICE_RESPONSE,
+	
+	MESSAGE_LEVEL_RESPONSE,
 	
 }
