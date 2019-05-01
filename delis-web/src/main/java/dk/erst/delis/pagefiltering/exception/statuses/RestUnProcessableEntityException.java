@@ -15,7 +15,9 @@ import java.util.List;
 @Setter
 public class RestUnProcessableEntityException extends RestException {
 
-    public RestUnProcessableEntityException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = 935861307472562571L;
+
+	public RestUnProcessableEntityException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }

@@ -15,7 +15,9 @@ import java.util.List;
 @Setter
 public class RestUnauthorizedException extends RestException {
 
-    public RestUnauthorizedException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = 7386379021058080578L;
+
+	public RestUnauthorizedException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }

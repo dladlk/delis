@@ -15,7 +15,9 @@ import java.util.List;
 @Setter
 public class RestBadRequestException extends RestException {
 
-    public RestBadRequestException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = 4335692028220960409L;
+
+	public RestBadRequestException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }

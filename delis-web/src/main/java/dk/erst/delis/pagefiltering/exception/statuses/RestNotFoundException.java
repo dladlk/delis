@@ -15,7 +15,9 @@ import java.util.List;
 @Setter
 public class RestNotFoundException extends RestException {
 
-    public RestNotFoundException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = -5205682191735353272L;
+
+	public RestNotFoundException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }
