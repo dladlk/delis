@@ -14,7 +14,9 @@ import java.util.List;
 @Setter
 public class RestException extends RuntimeException {
 
-    private List<FieldErrorModel> fieldErrors;
+	private static final long serialVersionUID = -4098469347184228451L;
+	
+	private List<FieldErrorModel> fieldErrors;
 
     public RestException(List<FieldErrorModel> fieldErrors){
         this.fieldErrors = fieldErrors;
