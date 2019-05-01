@@ -50,7 +50,7 @@
 			$('table#identifiers').DataTable({
 				ajax: {
 					contentType: 'application/json',
-					url: '/delis/identifier/table',
+					url: '[[@{/identifier/table}]]',
 					type: 'POST',
 					data: function (d) {
 						return JSON.stringify(d);
@@ -66,12 +66,14 @@
 					},
 					{
 						data: 'organisation',
-						render: function (data) { return '<a href="/delis/organisation/view/' + data.id + '">' + data.name + '</a>'; }
+						searchable: false,
+						render: function (data) { return '<a href="[[@{/organisation/view/}]]' + data.id + '">' + data.name + '</a>'; }
 					},
 					{
 
 						data: 'value',
-						render: function (data, type, row) { return '<a href="/delis/identifier/view/' + row["id"] + '">' + data + '</a>'; }
+						searchable: false,
+						render: function (data, type, row) { return '<a href="[[@{/identifier/view/}]]' + row["id"] + '">' + data + '</a>'; }
 					},
 					{
 						data: 'type'
