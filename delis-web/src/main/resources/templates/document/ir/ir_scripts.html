@@ -42,22 +42,23 @@ function initSelect(id) {
 
 var useCaseReset = {'irs': 'AB', 'scr': 'NON', 'reasonEnabled1': false, 'sca': 'NOA', 'actionEnabled1': false, 'sca2': 'NOA', 
 		'action2Enabled1': false, 'detailType': '', 'detailValue': '', statusReasonText: '',
+		'effectiveDateEnabled1': false,
 		'type': 'AB',
 		'description': ''
 };
 var useCaseConfig = {};
 useCaseConfig['1'] = {'irs': 'IP'};
-useCaseConfig['2a'] = {'irs': 'IP', 'actionEnabled1': true, 'sca': 'NOA', 'detailType': 'Buyer process reference', 'detailValue': 'X001'};
-useCaseConfig['2b'] = {'irs': 'IP', 'statusReasonText': 'Shipment has not yet been received. Invoice processing will be attempted later.'};
+useCaseConfig['2a'] = {'irs': 'IP', 'actionEnabled1': true, 'sca': 'NOA', 'detailType': 'Buyer process reference', 'detailValue': 'X001', 'effectiveDateEnabled1': true};
+useCaseConfig['2b'] = {'irs': 'IP', 'statusReasonText': 'Shipment has not yet been received. Invoice processing will be attempted later.', 'effectiveDateEnabled1': true};
 useCaseConfig['3'] = {'irs': 'AP'};
 useCaseConfig['4a'] = {'irs': 'RE','statusReasonText': 'A textual explanation for why the invoice is being rejected.'};
 useCaseConfig['4b'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'NIN'};
 useCaseConfig['4c'] = {'irs': 'RE', 'reasonEnabled1': true, 'scr': 'REF', 'actionEnabled1': true, 'sca': 'CNF', 'action2Enabled1': true, 'sca2': 'NIN'};
 useCaseConfig['5'] = {'irs': 'CA', 'reasonEnabled1': true, 'scr': 'PAY', 'detailType': 'BT-9', 'detailValue': '2018-01-15'};
-useCaseConfig['6a'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN'};
-useCaseConfig['6b'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN'};
+useCaseConfig['6a'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN', 'effectiveDateEnabled1': true};
+useCaseConfig['6b'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'REF', 'detailType': 'BT-13', 'detailValue': 'PO0001', 'actionEnabled1': true, 'sca': 'PIN', 'effectiveDateEnabled1': true};
 useCaseConfig['6c'] = {'irs': 'UQ', 'reasonEnabled1': true, 'scr': 'DEL', 'statusReasonText': 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.', 'actionEnabled1': true, 'sca': 'CNP'};
-useCaseConfig['7'] = {'irs': 'PD'};
+useCaseConfig['7'] = {'irs': 'PD', 'effectiveDateEnabled1': true};
 useCaseConfig['8'] = {'irs': 'AP'};
 
 useCaseConfig['mlr1'] = {'art': 'AB'};
