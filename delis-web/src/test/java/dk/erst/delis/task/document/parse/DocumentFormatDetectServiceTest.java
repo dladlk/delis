@@ -2,6 +2,7 @@ package dk.erst.delis.task.document.parse;
 
 import static org.junit.Assert.assertEquals;
 
+import dk.erst.delis.data.constants.DocumentFormatConst;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import org.junit.Test;
 
@@ -32,6 +33,9 @@ public class DocumentFormatDetectServiceTest {
 
 		assertEquals(DocumentFormat.OIOUBL_CREDITNOTE, s.defineDocumentFormat(tc("CreditNote", "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2", "OIOUBL-2.02")));
 		assertEquals(DocumentFormat.OIOUBL_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "OIOUBL-2.02")));
+
+		assertEquals(DocumentFormat.BIS3_INVOICE_RESPONSE, s.defineDocumentFormat(tc("ApplicationResponse", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_IR_STARTS_WITH)));
+		assertEquals(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, s.defineDocumentFormat(tc("ApplicationResponse", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_MLR_STARTS_WITH)));
 	}
 
 	private DocumentInfo tc(String rootTag, String namespace, String customizationId) {

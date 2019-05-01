@@ -37,6 +37,9 @@ public class DocumentFormatDetectService {
 						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_BIS3_IR_STARTS_WITH)) {
 							return f;
 						}
+						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_BIS3_MLR_STARTS_WITH)) {
+							return DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE;
+						}
 					}
 				}
 			}

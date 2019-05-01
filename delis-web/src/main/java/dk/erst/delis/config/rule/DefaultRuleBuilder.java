@@ -64,7 +64,7 @@ public class DefaultRuleBuilder {
         result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
 
         result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
-        result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T111.xslt", 10));
+        result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T71.xslt", 10));
 
         result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-03-15_1/CEN-EN16931-CII.xslt", 10));
         result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-03-15_1/PEPPOL-EN16931-CII.xslt", 20));

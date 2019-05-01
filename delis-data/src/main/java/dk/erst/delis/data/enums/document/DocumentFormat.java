@@ -20,6 +20,11 @@ public enum DocumentFormat {
 	
 	BIS3_INVOICE_RESPONSE("BIS3-INR", "ApplicationResponse", DocumentFormatConst.NS_UBL_APPLICATION_RESPONSE, DocumentType.INVOICE_RESPONSE),
 
+	/*
+	 * BIS Message Level Response 3.0
+	 * 
+	 * http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/
+	 */
 	BIS3_MESSAGE_LEVEL_RESPONSE("BIS3-MLR", "ApplicationResponse", DocumentFormatConst.NS_UBL_APPLICATION_RESPONSE, DocumentType.MESSAGE_LEVEL_RESPONSE),
 
 	OIOUBL_INVOICE("OIO-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE, DocumentType.INVOICE),
