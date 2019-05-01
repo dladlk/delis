@@ -217,6 +217,7 @@ public class ApplicationResponseFormController {
 		if (!model.containsAttribute("irForm")) {
 			InvoiceResponseForm irForm = new InvoiceResponseForm();
 			irForm.setDocumentId(document.getId());
+			irForm.setEffectiveDate(document.getDocumentDate());
 			model.addAttribute("irForm", irForm);
 		}
 		if (!model.containsAttribute("mlrForm")) {

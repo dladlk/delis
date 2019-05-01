@@ -35,6 +35,23 @@
 			</section>
 		</div>
 		
+		<div class="row">
+			<div class="form-group col-5">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<label class="input-group-text" for="effectiveDateEnabled1">
+							<input class="mr-2" type="checkbox" th:field="*{effectiveDateEnabled}" onchange="checkboxChanged(this, true)">
+							Effective date
+						</label>
+					</div>
+					<input th:field="*{effectiveDate}" id="red" type="date" class="form-control" size="12"/>
+				</div>
+			</div>
+			<div class="col-7">
+				<div class="font-italic"><small class="form-text text-muted">//DocumentResponse/Response/EffectiveDate</small></div>
+			</div>
+		</div>
+		
 		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
 			<section id="scr">
 				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
@@ -70,7 +87,7 @@
 				<div class="font-italic"><small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small></div>
 			</div>
 		</div>			
-				
+
 		<div class="row mb-2">
 			<div class="form-group col-8">
 				<div class="input-group">

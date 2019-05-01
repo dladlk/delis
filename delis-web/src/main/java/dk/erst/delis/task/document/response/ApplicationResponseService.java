@@ -68,6 +68,8 @@ public class ApplicationResponseService {
 		private String detailType;
 		private String detailValue;
 		private String statusReasonText;
+		private String effectiveDate;
+		private boolean effectiveDateEnabled;
 	}
 
 	@Data
@@ -166,8 +168,9 @@ public class ApplicationResponseService {
 				if (isNotBlank(invoiceResponseData.statusReasonText)) {
 					response.getStatusOrCreate(0).setStatusReason(invoiceResponseData.statusReasonText);
 				}
-
-				response.setEffectiveDate(dateFormat.format(currentTime));
+				if (invoiceResponseData.isEffectiveDateEnabled()) {
+					response.setEffectiveDate(invoiceResponseData.getEffectiveDate());
+				}
 				response.setResponseCode(invoiceResponseData.getStatus());
 				response.setResponseCodeListId("UNCL4343OpSubset");
 			} else if (data instanceof MessageLevelResponseGenerationData) {

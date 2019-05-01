@@ -9,13 +9,18 @@ var checkboxControlMap = {};
 checkboxControlMap['actionEnabled1'] = 'sca';
 checkboxControlMap['action2Enabled1'] = 'sca2';
 checkboxControlMap['reasonEnabled1'] = 'scr';
+checkboxControlMap['effectiveDateEnabled1'] = 'red';
 
-function checkboxChanged(t) {
+function checkboxChanged(t, doFocus) {
 	var id = ($(t).attr('id'));
 	var checked = $(t).is(':checked');
 	if (id in checkboxControlMap) {
 		var selectId = checkboxControlMap[id];
 		$('#'+selectId).prop('disabled', !checked);
+		
+		if (doFocus && checked) {
+			$('#'+selectId).focus();
+		}
 	}
 }
 
@@ -33,12 +38,6 @@ function selectChanged(t) {
 function initSelect(id) {
 	var jQuerySelector = '#'+id;
 	selectChanged(jQuerySelector);
-	
-	for (var k in checkboxControlMap) {
-		if (checkboxControlMap[k] == id) {
-			checkboxChanged($('#'+k));						
-		}
-	}
 }
 
 var useCaseReset = {'irs': 'AB', 'scr': 'NON', 'reasonEnabled1': false, 'sca': 'NOA', 'actionEnabled1': false, 'sca2': 'NOA', 
@@ -110,6 +109,10 @@ function useCaseListChanged(casePrefix, selectedCase){
 $(document).ready(function () {
 	$('#ucl').change(function(){useCaseListChanged('', $(this).val());});
 	$('#mlrucl').change(function(){useCaseListChanged('mlr', $(this).val());});
+	
+	for (var k in checkboxControlMap) {
+		checkboxChanged($('#'+k));						
+	}	
 });
 </script>
 
