@@ -8,7 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.SendDocument;
+import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
@@ -36,6 +39,7 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.InvoiceRe
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
+import dk.erst.delis.web.error.ErrorDictionaryData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Delegate;
@@ -115,7 +119,11 @@ public class ApplicationResponseFormController {
 			return "redirect:/home";
 		}
 
-		DocumentProcessStep step = documentProcessService.generateAndSendInvoiceResponse(document);
+		/*
+		 * TODO: Load last failed step from database
+		 */
+		DocumentProcessStep lastFailedStep = null;
+		DocumentProcessStep step = documentProcessService.generateAndSendMessageLevelResponse(document, lastFailedStep);
 		if (step.isSuccess()) {
 			ra.addFlashAttribute("message", step.getMessage());
 		} else {
@@ -213,7 +221,8 @@ public class ApplicationResponseFormController {
 		return redirectEntity(servletContextPath, defaultReturnPath);
 	}
 
-	public static void fillModel(Model model, Document document) {
+	@SuppressWarnings("unchecked")
+	public void fillModel(Model model, Document document) {
 		if (!model.containsAttribute("irForm")) {
 			InvoiceResponseForm irForm = new InvoiceResponseForm();
 			irForm.setDocumentId(document.getId());
@@ -224,6 +233,40 @@ public class ApplicationResponseFormController {
 			MessageLevelResponseForm mlrForm = new MessageLevelResponseForm();
 			mlrForm.setDocumentId(document.getId());
 			model.addAttribute("mlrForm", mlrForm);
+
+			if (model.containsAttribute("lastJournalList")) {
+				List<JournalDocument> lastJournalList = (List<JournalDocument>) model.asMap().get("lastJournalList");
+
+				JournalDocument lastFailedValidationJournal = null;
+				for (int i = lastJournalList.size() - 1; i >= 0; i--) {
+					JournalDocument journalDocument = lastJournalList.get(i);
+					if (!journalDocument.isSuccess() && journalDocument.getType().isValidation()) {
+						lastFailedValidationJournal = journalDocument;
+						break;
+					}
+				}
+				if (lastFailedValidationJournal != null) {
+					if (model.containsAttribute("errorListByJournalDocumentIdMap")) {
+						Map<Long, List<ErrorDictionaryData>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorDictionaryData>>) model.asMap().get("errorListByJournalDocumentIdMap");
+						List<ErrorDictionaryData> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
+						if (list != null && !list.isEmpty()) {
+							DocumentProcessStep s = new DocumentProcessStep(lastFailedValidationJournal.getMessage(), lastFailedValidationJournal.getType());
+							s.setSuccess(false);
+
+							List<ErrorRecord> errorRecords = new ArrayList<ErrorRecord>();
+							for (ErrorDictionaryData ed : list) {
+								ErrorRecord e = new ErrorRecord(ed.getErrorType(), ed.getCode(), ed.getMessage(), ed.getFlag(), ed.getLocation());
+								e.setDetailedLocation(ed.getLocation());
+								errorRecords.add(e);
+							}
+							s.setErrorRecords(errorRecords);
+
+							MessageLevelResponseGenerationData mlrData = this.applicationResponseService.buildMLRDataByFailedStep(s);
+							mlrForm.setData(mlrData);
+						}
+					}
+				}
+			}
 		}
 
 		/*
@@ -238,6 +281,8 @@ public class ApplicationResponseFormController {
 		 */
 		model.addAttribute("messageLevelResponseUseCaseList", MessageLevelResponseConst.useCaseList);
 		model.addAttribute("applicationResponseTypeCodeList", MessageLevelResponseConst.applicationResponseTypeCodeList);
+		model.addAttribute("applicationResponseLineResponseCodeList", MessageLevelResponseConst.applicationResponseLineResponseCodeList);
+		model.addAttribute("applicationResponseLineReasonCodeList", MessageLevelResponseConst.applicationResponseLineReasonCodeList);
 	}
 
 }

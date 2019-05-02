@@ -27,8 +27,8 @@ import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
 import dk.erst.delis.task.document.response.ApplicationResponseService;
-import dk.erst.delis.task.document.response.ApplicationResponseService.InvoiceResponseGenerationData;
 import dk.erst.delis.task.document.response.ApplicationResponseService.ApplicationResponseGenerationException;
+import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
@@ -171,10 +171,11 @@ public class DocumentProcessService {
 			
 			if (!plog.isSuccess()) {
 				if (setupData.isGenerateInvoiceResponseOnError()) {
-					if (generateAndSendInvoiceResponse(document).isSuccess()) {
-						statData.increment("GENERATED_INVOICE_RESPONSE_OK");
+					DocumentProcessStep lastFailedStep = lastLastFailedStep(stepList);
+					if (generateAndSendMessageLevelResponse(document, lastFailedStep).isSuccess()) {
+						statData.increment("GENERATED_MLR_OK");
 					} else {
-						statData.increment("GENERATED_INVOICE_RESPONSE_ERROR");
+						statData.increment("GENERATED_MLR_ERROR");
 					}
 				}
 			}
@@ -183,16 +184,30 @@ public class DocumentProcessService {
 		}
 	}
 
-	public DocumentProcessStep generateAndSendInvoiceResponse(Document document) {
-		DocumentProcessStep step = new DocumentProcessStep("Generate and send InvoiceResponse", DocumentProcessStepType.GENERATE_RESPONSE);
+	public DocumentProcessStep lastLastFailedStep(List<DocumentProcessStep> stepList) {
+		DocumentProcessStep lastFailedStep = null;
+		if (stepList != null && !stepList.isEmpty()) {
+			for (int i = stepList.size() - 1; i >= 0; i--) {
+				DocumentProcessStep step = stepList.get(i);
+				if (!step.isSuccess()) {
+					lastFailedStep = step;
+					break;
+				}
+			}
+		}
+		return lastFailedStep;
+	}
+
+	public DocumentProcessStep generateAndSendMessageLevelResponse(Document document, DocumentProcessStep lastFailedStep) {
+		DocumentProcessStep step = new DocumentProcessStep("Generate and send MessageLevelResponse", DocumentProcessStepType.GENERATE_RESPONSE);
 		SendDocument sendDocument = null;
 		String errorMessage = null;
 		DocumentProcessStep failedStep = null;
 		
 		try {
-			sendDocument = generateAndSendInvoiceResponseInternal(document);
+			sendDocument = generateAndSendMessageLevelResponseInternal(document, lastFailedStep);
 		} catch (ApplicationResponseGenerationException e) {
-			log.error("Failed InvoiceResponse generation", e);
+			log.error("Failed MessageLevelResponse generation", e);
 			errorMessage = e.getMessage();
 			failedStep = e.getFailedStep();
 		} finally {
@@ -202,10 +217,10 @@ public class DocumentProcessService {
 			String appendMessage;
 			if (sendDocument == null) {
 				step.setSuccess(false);
-				appendMessage = errorMessage;
+				appendMessage = " failed: " + errorMessage;
 			} else {
 				step.setSuccess(true);
-				appendMessage = "Generated InvoiceResponse and successfully sent with number #"+sendDocument.getDocumentId();
+				appendMessage = " #"+sendDocument.getDocumentId();
 			}
 			step.setMessage((step.getMessage() != null ? step.getMessage() : "") + appendMessage);
 			step.setResult(sendDocument);
@@ -221,19 +236,16 @@ public class DocumentProcessService {
 		return step;
 	}
 	
-	private SendDocument generateAndSendInvoiceResponseInternal(Document document) throws ApplicationResponseGenerationException {
+	private SendDocument generateAndSendMessageLevelResponseInternal(Document document, DocumentProcessStep lastFailedStep) throws ApplicationResponseGenerationException {
 		Path tempPath;
 		try {
-			tempPath = Files.createTempFile("invoiceResponse_", ".xml");
+			tempPath = Files.createTempFile("mlr_"+document.getId()+"_", ".xml");
 		} catch (IOException e) {
 			throw new ApplicationResponseGenerationException(document.getId(), "Failed to create temp file", e);
 		}
 
 		try {
-			InvoiceResponseGenerationData d = new InvoiceResponseGenerationData();
-			d.setStatus("RE");
-			d.setAction("NIN");
-			d.setReason("OTH");
+			MessageLevelResponseGenerationData d = invoiceResponseService.buildMLRDataByFailedStep(lastFailedStep);
 			try (OutputStream out = new FileOutputStream(tempPath.toFile())) {
 				invoiceResponseService.generateApplicationResponse(document, d, out);
 			}
@@ -250,4 +262,5 @@ public class DocumentProcessService {
 			throw new ApplicationResponseGenerationException(document.getId(), e.getMessage(), e);
 		}
 	}
+
 }

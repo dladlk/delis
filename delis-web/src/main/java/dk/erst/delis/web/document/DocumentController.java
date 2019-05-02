@@ -54,6 +54,8 @@ public class DocumentController {
 	private DocumentService documentService;
 	@Autowired
 	private DocumentBytesDaoRepository documentBytesDaoRepository;
+	@Autowired
+	private ApplicationResponseFormController applicationResponseFormController;
 	
     @Value("#{servletContext.contextPath}")
     private String servletContextPath;
@@ -113,7 +115,7 @@ public class DocumentController {
 		model.addAttribute("errorListByJournalDocumentIdMap", documentService.getErrorListByJournalDocumentIdMap(document));
 		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
 		
-		ApplicationResponseFormController.fillModel(model, document);
+		applicationResponseFormController.fillModel(model, document);
 
 		return "/document/view";
 	}

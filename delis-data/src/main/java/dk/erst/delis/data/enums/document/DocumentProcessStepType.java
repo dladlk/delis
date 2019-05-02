@@ -19,4 +19,14 @@ public enum DocumentProcessStepType {
 	MANUAL,
 	
 	GENERATE_RESPONSE,
+	
+	;
+	
+	public boolean isXsd() {
+		return this == VALIDATE_XSD;
+	}
+	
+	public boolean isValidation() {
+		return this == VALIDATE_SCH || this == VALIDATE_XSD;
+	}
 }

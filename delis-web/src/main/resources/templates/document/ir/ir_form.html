@@ -119,15 +119,15 @@
 			</div>
 		</div>
 
-	<div class="row" th:fragment="footerBlock">
+	<div class="row" th:fragment="footerBlock(formCode)">
 		<div class="form-group col-6">
 			<div class="input-group">
 				<div class="input-group-prepend">
 					<div class="input-group-text delis-input-checkbox">
-						<input id="validateCheckbox" th:field="*{validate}" type="checkbox" aria-label="Validate generated"/>
+						<input th:id="validateCheckbox__${formCode}__" th:field="*{validate}" type="checkbox" aria-label="Validate generated"/>
 					</div>
 				</div>
-				<label for="validateCheckbox" class="form-control">Validate generated</label>
+				<label th:for="validateCheckbox__${formCode}__" class="form-control">Validate generated</label>
 			</div>
 		</div>
 		
@@ -135,10 +135,10 @@
 			<div class="input-group">
 				<div class="input-group-prepend">
 					<div class="input-group-text delis-input-checkbox">
-						<input id="generateWithoutSending" th:field="*{generateWithoutSending}" type="checkbox" aria-label="Only generate, do not send"/>
+						<input th:id="generateWithoutSending__${formCode}__" th:field="*{generateWithoutSending}" type="checkbox" aria-label="Only generate, do not send"/>
 					</div>
 				</div>
-				<label for="generateWithoutSending" class="form-control">Only generate, do not send</label>
+				<label th:for="generateWithoutSending__${formCode}__" class="form-control">Only generate, do not send</label>
 			</div>
 		</div>
 		<button type="submit" class="m-2 btn btn-primary btn-sm">Generate</button>

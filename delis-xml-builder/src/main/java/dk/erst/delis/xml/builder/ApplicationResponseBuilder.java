@@ -198,7 +198,7 @@ public class ApplicationResponseBuilder {
 
 					lineResponseList.add(lrb.build());
 				}
-				drb.lineResponse(lineResponseList.toArray(new LineResponse[] {}));
+				drb.lineResponse(lineResponseList);
 			}
 
 			if (drt.getIssuerParty() != null) {
@@ -416,13 +416,13 @@ public class ApplicationResponseBuilder {
 		}
 
 		if (dr.getLineResponse() != null) {
-			LineResponse[] lineResponseList = dr.getLineResponse();
-			for (int i = 0; i < lineResponseList.length; i++) {
+			List<LineResponse> lineResponseList = dr.getLineResponse();
+			for (int i = 0; i < lineResponseList.size(); i++) {
+				LineResponse lineResponse = lineResponseList.get(i);
 				if (drType.getLineResponse().size() <= i) {
 					drType.getLineResponse().add(cacFactory.createLineResponseType());
 				}
 				LineResponseType lrt = drType.getLineResponse().get(i);
-				LineResponse lineResponse = lineResponseList[i];
 				if (lrt.getLineReference() == null) {
 					lrt.setLineReference(cacFactory.createLineReferenceType());
 				}
