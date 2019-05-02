@@ -123,46 +123,34 @@
 					}
 				]
 			});
-			$('select#statusSelector').change(function() {
+
+			var onTextChange = function (value, column) {
+				table.column(column).search(value).draw();
+			};
+
+			var onSelectChange = function(selector, column) {
 				var filter = '';
-				$('select#statusSelector option:selected').each(function() {
+				$('select#' + selector + ' option:selected').each(function() {
 					filter += $(this).text() + "+";
 				});
 				filter = filter.substring(0, filter.length - 1);
 				if(filter == 'All') {
 					filter = '';
 				}
-				table.column(5).search(filter).draw();
-			});
-			$('select#publishingStatusSelector').change(function() {
-				var filter = '';
-				$('select#publishingStatusSelector option:selected').each(function() {
-					filter += $(this).text() + "+";
-				});
-				filter = filter.substring(0, filter.length - 1);
-				if(filter == 'All') {
-					filter = '';
-				}
-				table.column(6).search(filter).draw();
-			});
+				table.column(column).search(filter).draw();
+			};
+
+			$('select#statusSelector').change(function(){onSelectChange('statusSelector', 5)});
+			$('select#publishingStatusSelector').change(function(){onSelectChange('publishingStatusSelector', 6)});
 
 			var idInput = $('input#idFilter');
-			var onIdChange = function () {
-				table.column(2).search(idInput.val()).draw();
-			};
-			idInput.on('input', onIdChange);
+			idInput.on('input', function() {onTextChange(idInput.val(), 2)});
 
 			var typeInput = $('input#typeFilter');
-			var onTypeChange = function () {
-				table.column(3).search(typeInput.val()).draw();
-			};
-			typeInput.on('input', onTypeChange);
+			typeInput.on('input', function() {onTextChange(typeInput.val(), 3)});
 
 			var nameInput = $('input#nameFilter');
-			var onNameChange = function () {
-				table.column(4).search(nameInput.val()).draw();
-			};
-			nameInput.on('input', onNameChange);
+			nameInput.on('input', function() {onTextChange(nameInput.val(), 4)});
 
 			// var orgInput = $('input#orgFilter');
 			// var onOrgChange = function () {
