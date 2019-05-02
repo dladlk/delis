@@ -50,7 +50,7 @@ public class WebRequestUtil {
                 .findFirst().orElse(null);
     }
 
-    public static Map collectFilterParametersFromRequest (WebRequest webRequest) {
+    public static Map<String, String> collectFilterParametersFromRequest (WebRequest webRequest) {
         HashMap<String, String> result = new HashMap<>();
         Map<String, String[]> parameterMap = webRequest.getParameterMap();
         for(String key:parameterMap.keySet()) {

@@ -55,6 +55,20 @@ public enum OrganisationSubscriptionProfileGroup {
 					
 			}),	
 	
+	/*
+	 * BIS Invoice Response 3.0
+	 * 
+	 * http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/
+	 */
+	
+	MessageLevelResponse30("urn:fdc:peppol.eu:poacc:bis:mlr:3", 
+			
+			new String[] {
+					
+			"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:mlr:3::2.1"
+					
+			}),		
+	
 	;
 	
 	public static String DEFAULT_PROCESS_SCHEME_ID = "urn:fdc:peppol.eu:2017:identifiers:proc-id";

@@ -21,7 +21,7 @@ import dk.erst.delis.xml.builder.data.DocumentReference;
 import dk.erst.delis.xml.builder.data.DocumentResponse;
 import dk.erst.delis.xml.builder.data.EndpointID;
 import dk.erst.delis.xml.builder.data.ID;
-import dk.erst.delis.xml.builder.data.InvoiceResponseData;
+import dk.erst.delis.xml.builder.data.ApplicationResponseData;
 import dk.erst.delis.xml.builder.data.Party;
 import dk.erst.delis.xml.builder.data.PartyIdentification;
 import dk.erst.delis.xml.builder.data.PartyLegalEntity;
@@ -32,15 +32,15 @@ import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.Applicatio
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentReferenceType;
 
 @Slf4j
-public class InvoiceResponseBuilderTest {
+public class ApplicationResponseBuilderTest {
 
-	private static InvoiceResponseBuilder builder;
+	private static ApplicationResponseBuilder builder;
 
 	@BeforeClass
 	public static void before() {
 		long start = System.currentTimeMillis();
-		builder = new InvoiceResponseBuilder();
-		log.info("Initialized InvoiceResponseBuilder in " + (System.currentTimeMillis() - start) + " ms");
+		builder = new ApplicationResponseBuilder();
+		log.info("Initialized ApplicationResponseBuilder in " + (System.currentTimeMillis() - start) + " ms");
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class InvoiceResponseBuilderTest {
 	@Test
 	public void testBuild() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		InvoiceResponseData d = generateFullData();
+		ApplicationResponseData d = generateFullData();
 
 		builder.build(d, out);
 
@@ -105,8 +105,8 @@ public class InvoiceResponseBuilderTest {
 		assertEquals(0, r.getDocumentResponse().get(0).getResponse().getStatus().get(0).getCondition().size());
 	}
 
-	private InvoiceResponseData generateFullData() {
-		InvoiceResponseData d = new InvoiceResponseData();
+	private ApplicationResponseData generateFullData() {
+		ApplicationResponseData d = new ApplicationResponseData();
 		d.setId("imrid001");
 		String issueDate = "2019-03-27";
 		d.setIssueDate(issueDate);
@@ -139,7 +139,7 @@ public class InvoiceResponseBuilderTest {
 
 	@Test
 	public void testBuildEmpty() throws Exception {
-		InvoiceResponseData d = new InvoiceResponseData();
+		ApplicationResponseData d = new ApplicationResponseData();
 		OutputStream out = new ByteArrayOutputStream();
 		builder.build(d, out);
 	}
@@ -149,7 +149,7 @@ public class InvoiceResponseBuilderTest {
 		System.out.println("Check on empty initial ApplicationResponse and empty data:");
 
 		String xmlString = "<ApplicationResponse xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2\"/>";
-		InvoiceResponseData data = new InvoiceResponseData();
+		ApplicationResponseData data = new ApplicationResponseData();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), data, out);
 		System.out.println("On ");
@@ -171,7 +171,7 @@ public class InvoiceResponseBuilderTest {
 
 		System.out.println("Check on partly data and empty AR");
 
-		InvoiceResponseData partlyData = new InvoiceResponseData();
+		ApplicationResponseData partlyData = new ApplicationResponseData();
 		partlyData.setReceiverParty(Party.builder().build());
 		partlyData.setSenderParty(Party.builder().build());
 		partlyData.setDocumentResponse(DocumentResponse.builder().build());
@@ -200,7 +200,7 @@ public class InvoiceResponseBuilderTest {
 			count++;
 			log.info("Parsing " + resource.getFilename());
 			ApplicationResponseType ar = builder.parse(resource.getInputStream());
-			InvoiceResponseData data = builder.extractDataFromType(ar);
+			ApplicationResponseData data = builder.extractDataFromType(ar);
 
 			ByteArrayOutputStream baos;
 			baos = new ByteArrayOutputStream();

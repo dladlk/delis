@@ -25,10 +25,12 @@ import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationServiceUnitTest;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
-import dk.erst.delis.task.document.response.InvoiceResponseService.InvoiceResponseGenerationData;
+import dk.erst.delis.task.document.response.ApplicationResponseService.InvoiceResponseGenerationData;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 
-public class InvoiceResponseServiceTest {
+public class ApplicationResponseServiceTest {
+
+	private static final boolean SHOW_OUT = false;
 
 	@Test
 	public void testGenerateInvoiceResponse() throws Exception {
@@ -43,7 +45,7 @@ public class InvoiceResponseServiceTest {
 		});
 
 		DocumentValidationTransformationService validationTransformationService = DocumentValidationTransformationServiceUnitTest.getTestInstance();
-		InvoiceResponseService s = new InvoiceResponseService(storageService, validationTransformationService);
+		ApplicationResponseService s = new ApplicationResponseService(storageService, validationTransformationService);
 		Document document = new Document();
 		document.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE);
 		InvoiceResponseGenerationData data = new InvoiceResponseGenerationData();
@@ -53,11 +55,13 @@ public class InvoiceResponseServiceTest {
 		data.setDetailType("BT-48");
 		data.setDetailValue("EU12345");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		s.generateInvoiceResponse(document, data, baos);
+		s.generateApplicationResponse(document, data, baos);
 		byte[] res = baos.toByteArray();
 		assertNotNull(res);
 
-		System.out.println(new String(res, StandardCharsets.UTF_8));
+		if (SHOW_OUT) {
+			System.out.println(new String(res, StandardCharsets.UTF_8));
+		}
 		Path testPath = TestDocumentUtil.createTestFile(new ByteArrayInputStream(res), "InvoiceResponse");
 
 		List<ErrorRecord> errorRecords = s.validateInvoiceResponse(testPath);

@@ -15,7 +15,9 @@ import java.util.List;
 @Setter
 public class RestConflictException extends RestException {
 
-    public RestConflictException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = -344016776389277652L;
+
+	public RestConflictException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }

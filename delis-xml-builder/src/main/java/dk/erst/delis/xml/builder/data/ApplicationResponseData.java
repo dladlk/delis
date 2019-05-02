@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class InvoiceResponseData {
+public class ApplicationResponseData {
 
 	private String ublVersionID;
 	private String profileID = "urn:fdc:peppol.eu:poacc:bis:invoice_response:3";

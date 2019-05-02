@@ -15,7 +15,9 @@ import java.util.List;
 @Setter
 public class RestInternalServerErrorException extends RestException {
 
-    public RestInternalServerErrorException(List<FieldErrorModel> fieldErrors) {
+	private static final long serialVersionUID = -2187892367381817529L;
+
+	public RestInternalServerErrorException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);
     }
 }
