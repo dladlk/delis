@@ -10,7 +10,7 @@
 		<div class="card-body">
 			<table class="table form-group">
 				<tr>
-					<!--<th>Organisation</th>-->
+					<th>Organisation</th>
 					<th>Identifier</th>
 					<th>Type</th>
 					<th>Name</th>
@@ -18,9 +18,9 @@
 					<th>Publishing</th>
 				</tr>
 				<tr>
-					<!--<td>-->
-						<!--<input type="text" class="form-control" id="orgFilter">-->
-					<!--</td>-->
+					<td>
+						<input type="text" class="form-control" id="orgFilter">
+					</td>
 					<td>
 						<input type="text" class="form-control" id="idFilter">
 					</td>
@@ -101,9 +101,8 @@
 						render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList" id="idList"/>'; }
 					},
 					{
-						data: 'organisation',
-						searchable: false,
-						render: function (data) { return '<a href="[[@{/organisation/view/}]]' + data.id + '">' + data.name + '</a>'; }
+						data: 'organisation.name',
+						render: function (data, type, row) { return '<a href="[[@{/organisation/view/}]]' + row["organisation"].id + '">' + data + '</a>'; }
 					},
 					{
 						data: 'value',
@@ -152,11 +151,8 @@
 			var nameInput = $('input#nameFilter');
 			nameInput.on('input', function() {onTextChange(nameInput.val(), 4)});
 
-			// var orgInput = $('input#orgFilter');
-			// var onOrgChange = function () {
-			// 	table.column(1).search(orgInput.val()).draw();
-			// };
-			// orgInput.on('input', onOrgChange);
+			var orgInput = $('input#orgFilter');
+			orgInput.on('input', function() {onTextChange(orgInput.val(), 1)});
 		</script>
 	</div>
 </body>
