@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/rest/table-info")
+@RequestMapping("/rest/open/table-info")
 public class TableInfoController {
 
     private final TableInfoService tableInfoService;

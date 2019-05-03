@@ -16,7 +16,7 @@ export class IdentifierService {
         private configService: RuntimeConfigService,
         private httpRestService: HttpRestService) {
         this.url = this.configService.getConfigUrl();
-        this.url = this.url + '/identifier';
+        this.url = this.url + '/rest/identifier';
     }
 
     getListIdentifiers(currentPage: number, sizeElement: number, filter: IdentifierFilterProcessResult) : Observable<any> {

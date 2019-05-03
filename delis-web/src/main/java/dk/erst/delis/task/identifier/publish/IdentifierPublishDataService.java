@@ -91,7 +91,7 @@ public class IdentifierPublishDataService {
             SmpPublishServiceData serviceData = new SmpPublishServiceData();
             serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(documentIdentifier));
             SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
-            smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessScheme());
+            smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessSchemeSMP());
             smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
             serviceData.setProcessIdentifier(smpProcessIdentifier);
             serviceData.setEndpoints(endpointList);
@@ -130,8 +130,8 @@ public class IdentifierPublishDataService {
 		String transportProfile = transportProfilesMap.get(accessPoint.getType());
 		endpointData.setTransportProfile(transportProfile);
 		endpointData.setUrl(accessPoint.getUrl());
-		endpointData.setServiceDescription("change_it");
-		endpointData.setTechnicalContactUrl("http://change.it");
+		endpointData.setServiceDescription(accessPoint.getServiceDescription());
+		endpointData.setTechnicalContactUrl(accessPoint.getTechnicalContactUrl());
 		endpointData.setServiceActivationDate(serviceActivationDate);
 		endpointData.setServiceExpirationDate(serviceExpirationDate);
 		endpointData.setRequireBusinessLevelSignature(true);

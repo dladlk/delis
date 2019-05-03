@@ -1,7 +1,9 @@
 package dk.erst.delis.task.rules;
 
-import dk.erst.delis.web.validationrule.RuleDocumentValidationData;
-import dk.erst.delis.web.validationrule.ValidationRuleService;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import static org.junit.Assert.assertTrue;
+import dk.erst.delis.web.validationrule.RuleDocumentValidationData;
+import dk.erst.delis.web.validationrule.ValidationRuleService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,6 +28,6 @@ public class ValidationRulesServiceTest {
 		service.recreateDefault();
 		List<RuleDocumentValidationData> ruleDocumentValidationData = service.loadRulesList();
 
-		assertTrue(ruleDocumentValidationData.size() == 13);
+		assertEquals(15, ruleDocumentValidationData.size());
 	}
 }

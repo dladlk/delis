@@ -1,24 +1,43 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
+
 import { HttpRestService } from "./http.rest.service";
-import { LocaleService } from "./locale.service";
 import { ListenErrorService } from "./listen.error.service";
 import { ErrorModel } from "../models/error.model";
-import { LogoutService } from "../logout/logout.service";
+import { TokenService } from "./token.service";
+import { RuntimeConfigService } from "./runtime.config.service";
+import { RefreshTokenService } from "./refresh.token.service";
+import { LoginData } from "../login/login.data";
 
 @Injectable()
 export class ErrorService {
 
     constructor(
+        private tokenService: TokenService,
+        private refreshTokenService: RefreshTokenService,
+        private router: Router,
+        private configService: RuntimeConfigService,
         private http: HttpRestService,
-        private localeService: LocaleService,
-        private listenErrorService: ListenErrorService, private logout: LogoutService) {
+        private listenErrorService: ListenErrorService) {
     }
 
     errorProcess(error: any) {
-
         switch (String(error["status"])) {
             case "401" : {
-                this.logout.logout();
+                let errorToken: string = JSON.stringify(error.error.error);
+                if (new String(JSON.parse(errorToken)).valueOf() == new String("invalid_token").valueOf()) {
+                    this.refreshTokenService.refreshTokenInit(localStorage.getItem("refreshToken")).subscribe(
+                        (data: {}) => {
+                            let loginData: LoginData = data["data"];
+                            this.tokenService.setToken(loginData.accessToken);
+                            location.reload();
+                        }, error => {
+                            this.resetProcess();
+                        }
+                    );
+                } else {
+                    this.resetProcess();
+                }
             } break;
             default : {
                 let listenError = new ErrorModel();
@@ -31,5 +50,12 @@ export class ErrorService {
                 this.listenErrorService.loadError(listenError);
             }
         }
+    }
+
+    resetProcess() {
+        this.tokenService.resetToken();
+        localStorage.removeItem("refreshToken");
+        this.configService.resetCurrentUser();
+        this.router.navigate(['/login']);
     }
 }

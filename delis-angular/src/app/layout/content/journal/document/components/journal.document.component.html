@@ -1,4 +1,4 @@
-<div [@routerTransition]>
+<div [@routerTransition] *ngIf="show">
     <app-page-header [heading]="'journal.documents.header'" [icon]="'fa-book'"></app-page-header>
     <div class="container-fluid">
         <div class="row">
@@ -21,6 +21,7 @@
                             <tr>
                                 <td>
                                     <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
                                                placeholder="organizations: "
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
@@ -28,6 +29,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="typeList"
+                                               [clearable]="clearableSelect"
                                                placeholder="types: "
                                                [(ngModel)]="selectedType"
                                                (change)="loadType()">
@@ -35,6 +37,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="successList"
+                                               [clearable]="clearableSelect"
                                                bindLabel="type"
                                                placeholder="Success: "
                                                [(ngModel)]="selectedSuccess"
@@ -43,31 +46,27 @@
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextMessage($event)"
                                            [(ngModel)]="textMessage"
-                                           placeholder="Message"
-                                           (change)="loadTextMessage($event.target.value)"/>
+                                           placeholder="{{'placeholder.message' | translate}}"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextDurationMs($event)"
                                            [(ngModel)]="textDurationMs"
-                                           placeholder="DurationMs"
-                                           (change)="loadTextDurationMs($event.target.value)"/>
+                                           placeholder="{{'placeholder.durationMs' | translate}}"/>
                                 </td>
                                 <td>
-                                    <input bsDaterangepicker
-                                           [bsConfig]="{containerClass: 'theme-dark-blue'}"
-                                           class="form-control"
-                                           placeholder="Received Date"
-                                           type="text"
-                                           (bsValueChange)="loadReceivedDate($event)">
+                                    <app-daterange></app-daterange>
                                 </td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of journalDocuments" [routerLink]="['/journal-documents/', doc.id]">
-                                <td>{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
                                 <td>{{doc.type}}</td>
                                 <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
                                 <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>

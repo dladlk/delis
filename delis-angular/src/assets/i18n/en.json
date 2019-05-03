@@ -1,4 +1,10 @@
 {
+    "login.error.username-or-password": "login and password can not be empty",
+    "login.error.username": "login can not be empty",
+    "login.error.password": "password can not be empty",
+    "login.error.unauthorized": "invalid username or password",
+    "login.error.disconnect": "server disconnect",
+
     "sidebar.dashboard": "Dashboard",
     "sidebar.documents": "Documents",
     "sidebar.identifier": "Identifier",
@@ -28,6 +34,7 @@
     "documents.header" : "Documents",
     "documents.header.details" : "Document details",
     "documents.table.header" : "Documents Overview",
+    "documents.table.error.header" : "Documents Error Overview",
     "documents.table.columnName.organisation" : "Organisation",
     "documents.table.columnName.receiverIdentifier" : "Receiver",
     "documents.table.columnName.documentStatus" : "Status",
@@ -127,5 +134,18 @@
     "signup.password": "Password",
     "signup.password.repeat": "Repeat Password",
     "signup.register": "Register",
-    "signup.login": "Log in"
+    "signup.login": "Log in",
+
+    "received.date": "Received date",
+
+    "placeholder.receiver": "Receiver",
+    "placeholder.sender": "Sender",
+    "placeholder.identifierGroup": "Identifier Group",
+    "placeholder.type": "Type",
+    "placeholder.value": "Value",
+    "placeholder.uniqueValueType": "Unique Value Type",
+    "placeholder.name": "Name",
+    "placeholder.message": "Message",
+    "placeholder.durationMs": "Duration, ms",
+    "placeholder.identifier": "Identifier"
 }

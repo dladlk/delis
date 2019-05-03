@@ -13,6 +13,8 @@ import { successList } from "../models/journal.document.view.model";
 import { DateRangeModel } from "../../../../../models/date.range.model";
 import { ErrorService } from "../../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
+import { DaterangeService } from "../../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.documents.table.columnName.organisation';
 const COLUMN_NAME_SUCCESS = 'journal.documents.table.columnName.success';
@@ -28,6 +30,8 @@ const COLUMN_NAME_CREATE_TIME = 'journal.documents.table.columnName.createTime';
     animations: [routerTransition()]
 })
 export class JournalDocumentComponent implements OnInit {
+
+    clearableSelect = true;
 
     pagination: PaginationModel;
     filter: JournalDocumentFilterProcessResult;
@@ -45,23 +49,44 @@ export class JournalDocumentComponent implements OnInit {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    show: boolean;
 
     constructor(
         private journalDocumentService: JournalDocumentService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private dtService: DaterangeService,
         private errorService: ErrorService,
-        private paginationService: PaginationService) {
+        private paginationService: PaginationService,
+        private dtShowService: DaterangeShowService) {
+        this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
-                this.loadPage(pag.currentPage, pag.pageSize);
-                this.pagination = pag;
+                if (pag.collectionSize <= pag.pageSize) {
+                    this.loadPage(1, this.pagination.pageSize);
+                } else {
+                    this.loadPage(pag.currentPage, pag.pageSize);
+                }
             } else {
                 this.initDefaultValues();
                 this.clearAllFilter();
                 this.loadPage(pag.currentPage, pag.pageSize);
             }
+            this.pagination = pag;
+        });
+        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
+            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+                this.filter.dateRange = dtRange;
+            } else {
+                this.filter.dateRange = null;
+            }
+            this.pagination.currentPage = 1;
+            this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
+        });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.filter.dateRange = null;
+            this.loadPage(1, this.pagination.pageSize);
         });
     }
 
@@ -166,14 +191,6 @@ export class JournalDocumentComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadReceivedDate(date: Date[]) {
-        this.pagination.currentPage = 1;
-        this.filter.dateRange = new DateRangeModel();
-        this.filter.dateRange.dateStart = date[0];
-        this.filter.dateRange.dateEnd = date[1];
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
     clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
@@ -186,7 +203,7 @@ export class JournalDocumentComponent implements OnInit {
         }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
-            this.filter.sortBy = 'orderBy_Id_Asc';
+            this.filter.sortBy = 'orderBy_Id_Desc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -204,8 +221,10 @@ export class JournalDocumentComponent implements OnInit {
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.journalDocuments = data["items"];
+                this.show = true;
             }, error => {
                 this.errorService.errorProcess(error);
+                this.show = false;
             }
         );
     }
@@ -217,6 +236,7 @@ export class JournalDocumentComponent implements OnInit {
         this.textDocument = '';
         this.textMessage = '';
         this.textDurationMs = '';
+        this.filter.dateRange = null;
     }
 
     private clearFilter(columnName: string) {

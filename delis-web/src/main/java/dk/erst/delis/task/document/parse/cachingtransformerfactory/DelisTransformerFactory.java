@@ -20,7 +20,10 @@ public final class DelisTransformerFactory extends TransformerFactory {
 
 	public static TransformerFactory getInstance() {
 		if (INSTANCE == null) {
-			boolean cacheEnabled = configBean.getXsltCacheEnabled();
+			/*
+			 * Enable cache in all tests by default
+			 */
+			boolean cacheEnabled = configBean != null ? configBean.getXsltCacheEnabled() : true;
 			INSTANCE = newInstance(cacheEnabled);
 		}
 		return INSTANCE;
@@ -28,7 +31,7 @@ public final class DelisTransformerFactory extends TransformerFactory {
 
 	public static TransformerFactory newInstance(boolean cacheEnabled) {
 		if (cacheEnabled) {
-			return new CachingTransformerFactory();
+			return CachingTransformerFactory.getInstance();
 		} else {
 			return TransformerFactory.newInstance();
 		}

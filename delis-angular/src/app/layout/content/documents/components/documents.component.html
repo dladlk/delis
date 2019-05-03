@@ -1,4 +1,4 @@
-<div [@routerTransition]>
+<div [@routerTransition] *ngIf="show">
     <app-page-header [heading]="'documents.header'" [icon]="'fa-book'"></app-page-header>
     <div class="container-fluid">
         <div class="row">
@@ -21,6 +21,7 @@
                             <tr>
                                 <td>
                                     <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
                                                placeholder="organizations: "
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
@@ -28,13 +29,14 @@
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
+                                           (ngModelChange)="loadTextReceiver($event)"
                                            [(ngModel)]="textReceiver"
-                                           placeholder="Receiver"
-                                           (change)="loadTextReceiver($event.target.value)"/>
+                                           placeholder="{{'placeholder.receiver' | translate}}"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statuses"
+                                               [clearable]="clearableSelect"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
@@ -42,6 +44,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="lastErrors"
+                                               [clearable]="clearableSelect"
                                                placeholder="lastErrors: "
                                                [(ngModel)]="selectedLastError"
                                                (change)="loadLastErrors()">
@@ -49,6 +52,7 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="documentTypes"
+                                               [clearable]="clearableSelect"
                                                placeholder="documentTypes: "
                                                [(ngModel)]="selectedDocumentType"
                                                (change)="loadDocumentType()">
@@ -56,32 +60,30 @@
                                 </td>
                                 <td>
                                     <ng-select [items]="ingoingFormats"
+                                               [clearable]="clearableSelect"
                                                placeholder="ingoingFormats: "
                                                [(ngModel)]="selectedIngoingFormat"
                                                (change)="loadIngoingFormat()">
                                     </ng-select>
                                 </td>
                                 <td>
-                                    <input bsDaterangepicker
-                                           [bsConfig]="{containerClass: 'theme-dark-blue'}"
-                                           class="form-control"
-                                           placeholder="{{textPlaceholderReceivedDate}}"
-                                           type="text"
-                                           (bsValueChange)="loadReceivedDate($event)">
+                                    <app-daterange></app-daterange>
                                 </td>
                                 <td>
                                     <input class="form-control"
-                                           type="text"
+                                           type="search"
                                            [(ngModel)]="textSenderName"
-                                           placeholder="Sender"
-                                           (change)="loadTextSenderName($event.target.value)"/>
+                                           (ngModelChange)="loadTextSenderName($event)"
+                                           placeholder="{{'placeholder.sender' | translate}}"/>
                                 </td>
                             </tr>
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of documents" [routerLink]="['/documents/details/', doc.id]">
-                                <td>{{doc.organisation.name}}</td>
-                                <td>{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
+                                <td *ngIf="doc.receiverIdentifier !== null">{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
+                                <td *ngIf="doc.receiverIdentifier === null"></td>
                                 <td>{{doc.documentStatus}}</td>
                                 <td>{{doc.lastError}}</td>
                                 <td>{{doc.documentType}}</td>

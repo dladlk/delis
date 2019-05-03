@@ -1,4 +1,10 @@
 {
+  "login.error.username-or-password": "login og adgangskode kan ikke være tomme",
+  "login.error.username": "login kan ikke være tomt",
+  "login.error.password": "adgangskoden kan ikke være tom",
+  "login.error.unauthorized": "ugyldigt brugernavn eller kodeord",
+  "login.error.disconnect": "server frakobles",
+
   "sidebar.dashboard": "Oversigt",
   "sidebar.documents": "Dokumenter",
   "sidebar.identifier": "Modtagere",
@@ -28,6 +34,7 @@
   "documents.header" : "Dokumenter",
   "documents.header.details" : "Dokument detaljer",
   "documents.table.header" : "Dokumenter Oversigt",
+  "documents.table.error.header" : "Dokumenter Fejl Oversigt",
   "documents.table.columnName.organisation" : "Organisation",
   "documents.table.columnName.receiverIdentifier" : "Modtager",
   "documents.table.columnName.documentStatus" : "Status",
@@ -126,5 +133,18 @@
   "signup.password": "Adgangskode",
   "signup.password.repeat": "Gentag adgangskode",
   "signup.register": "Registrer",
-  "signup.login": "Log ind"
+  "signup.login": "Log ind",
+
+  "received.date": "Modtaget dato",
+
+  "placeholder.receiver": "Modtager",
+  "placeholder.sender": "Afsender",
+  "placeholder.identifierGroup": "Nummer gruppe",
+  "placeholder.type": "Type",
+  "placeholder.value": "Værdi",
+  "placeholder.uniqueValueType": "Unik værdi type",
+  "placeholder.name": "Navn",
+  "placeholder.message": "Tekst",
+  "placeholder.durationMs": "Varighed, ms",
+  "placeholder.identifier": "Identifier"
 }

@@ -12,6 +12,21 @@ public enum DocumentFormat {
 
 	BIS3_CREDITNOTE("BIS3-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
 
+	/*
+	 * BIS Invoice Response 3.0
+	 * 
+	 * http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/
+	 */
+	
+	BIS3_INVOICE_RESPONSE("BIS3-INR", "ApplicationResponse", DocumentFormatConst.NS_UBL_APPLICATION_RESPONSE, DocumentType.INVOICE_RESPONSE),
+
+	/*
+	 * BIS Message Level Response 3.0
+	 * 
+	 * http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/
+	 */
+	BIS3_MESSAGE_LEVEL_RESPONSE("BIS3-MLR", "ApplicationResponse", DocumentFormatConst.NS_UBL_APPLICATION_RESPONSE, DocumentType.MESSAGE_LEVEL_RESPONSE),
+
 	OIOUBL_INVOICE("OIO-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE, DocumentType.INVOICE),
 
 	OIOUBL_CREDITNOTE("OIO-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
@@ -29,7 +44,20 @@ public enum DocumentFormat {
 		this.rootTag = rootTag;
 		this.namespace = namespace;
 		this.documentType = documentType;
-		this.documentFormatFamily = (code.equals("CII") ? DocumentFormatFamily.CII : (code.startsWith("BIS3") ? DocumentFormatFamily.BIS3 : DocumentFormatFamily.OIOUBL));
+		this.documentFormatFamily = defineFormatFamily();
+	}
+
+	private DocumentFormatFamily defineFormatFamily() {
+		if (code.equals("CII")) {
+			return DocumentFormatFamily.CII;
+		}
+		if (code.equals("BIS3-INR")) {
+			return DocumentFormatFamily.BIS3_IR;
+		}
+		if (code.startsWith("BIS3")) {
+			return DocumentFormatFamily.BIS3;
+		}
+		return DocumentFormatFamily.OIOUBL;
 	}
 
 	public String getCode() {
@@ -58,6 +86,14 @@ public enum DocumentFormat {
 	
 	public boolean isBIS3() {
 		return this == BIS3_INVOICE || this == BIS3_CREDITNOTE;
+	}
+	
+	public boolean isBIS3IR() {
+		return this == BIS3_INVOICE_RESPONSE;
+	}
+	
+	public boolean isBIS3MLR() {
+		return this == BIS3_MESSAGE_LEVEL_RESPONSE;
 	}
 
 	public DocumentType getDocumentType() {

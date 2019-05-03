@@ -4,9 +4,9 @@ import { FormsModule } from "@angular/forms";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NgSelectModule } from "@ng-select/ng-select";
-import { PageHeaderModule } from "../../../../../shared/modules";
-import { BsDatepickerModule } from "ngx-bootstrap";
 import { HttpClientModule } from "@angular/common/http";
+
+import { PageHeaderModule } from "../../../../../shared/modules";
 import { BsComponentModule } from "../../../../bs-component/bs-component.module";
 import { JournalIdentifierRoutingModule } from "../journal.identifier-routing.module";
 import { JournalIdentifierComponent } from "../components/journal.identifier.component";
@@ -22,7 +22,6 @@ import { JournalIdentifierService } from "../services/journal.identifier.service
         NgSelectModule,
         JournalIdentifierRoutingModule,
         PageHeaderModule,
-        BsDatepickerModule,
         HttpClientModule,
         BsComponentModule],
     declarations: [JournalIdentifierComponent, JournalOneIdentifierComponent],

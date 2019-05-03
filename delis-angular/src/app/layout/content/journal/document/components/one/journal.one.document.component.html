@@ -4,7 +4,8 @@
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
                 <div class="card">
-                    <div class="card-header"><strong>{{ journalDocument.organisation.name }}</strong></div>
+                    <div *ngIf="journalDocument.organisation !== null" class="card-header"><strong>{{ journalDocument.organisation.name }}</strong></div>
+                    <div *ngIf="journalDocument.organisation === null" class="card-header"></div>
                     <br>
                     <div class="card-body">
                         <table class="table table-striped">
@@ -35,47 +36,58 @@
                             </tr>
                             <tr>
                                 <td>organisation create time</td>
-                                <td>{{journalDocument.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.organisation !== null">{{journalDocument.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.organisation === null"></td>
                             </tr>
                             <tr>
                                 <td>organisation update time</td>
-                                <td>{{journalDocument.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.organisation !== null">{{journalDocument.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.organisation === null"></td>
                             </tr>
                             <tr>
                                 <td>organisation code</td>
-                                <td>{{journalDocument.organisation.code}}</td>
+                                <td *ngIf="journalDocument.organisation !== null">{{journalDocument.organisation.code}}</td>
+                                <td *ngIf="journalDocument.organisation === null"></td>
                             </tr>
                             <tr>
                                 <td>document id</td>
-                                <td>{{journalDocument.document.id}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.id}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document create time</td>
-                                <td>{{journalDocument.document.createTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.createTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document update time</td>
-                                <td>{{journalDocument.document.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document status</td>
-                                <td>{{journalDocument.document.documentStatus}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.documentStatus}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document type</td>
-                                <td>{{journalDocument.document.documentType}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.documentType}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document format</td>
-                                <td>{{journalDocument.document.ingoingDocumentFormat}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.ingoingDocumentFormat}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document receiver name</td>
-                                <td>{{journalDocument.document.receiverName}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.receiverName}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             <tr>
                                 <td>document sender name</td>
-                                <td>{{journalDocument.document.senderName}}</td>
+                                <td *ngIf="journalDocument.document !== null">{{journalDocument.document.senderName}}</td>
+                                <td *ngIf="journalDocument.document === null"></td>
                             </tr>
                             </tbody>
                         </table>

@@ -41,7 +41,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th colspan="2" style="text-align: center">Document tasks</th>
+					<th colspan="2" style="text-align: center">Received documents tasks</th>
 				</tr>
 				<tr>
 					<td>
@@ -67,6 +67,26 @@
 						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
 					</td>
 				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center">Sent documents tasks</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendDocumentValidate}">Validate</a>
+					</td>
+					<td>
+						Lookup db for SendDocument records with status = NEW and validate original format, if ok - change to VALID, otherwhise VALIDATE_ERROR.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendFailedProcess}">Process failed</a>
+					</td>
+					<td>
+						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwhise FORWARD_ERROR) - otherwise FORWARD_SKIP.
+					</td>
+				</tr>
+				
 			</table>
 
 		</div>

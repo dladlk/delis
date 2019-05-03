@@ -43,22 +43,24 @@ public class OrganisationStatisticsService {
 			int identifierCount = ((Long) map.get("identifierCount")).intValue();
 			IdentifierStatus status = (IdentifierStatus) map.get("status");
 			IdentifierPublishingStatus publishingStatus = (IdentifierPublishingStatus) map.get("publishingStatus");
-			if (publishingStatus.isFailed()) {
-				d.failed += identifierCount;
-			}
-			if (!(status.isDeleted() && publishingStatus.isDone())) {
-				// Done deletions should be excluded from total
-				d.total += identifierCount;
-			}
-			if (status.isActive()) {
-				if (publishingStatus.isDone()) {
-					d.activeDone += identifierCount;
-				} else if (publishingStatus.isPending()) {
-					d.activePending += identifierCount;
+			if (publishingStatus != null && status != null) {
+				if (publishingStatus.isFailed()) {
+					d.failed += identifierCount;
 				}
-			} else {
-				if (publishingStatus.isPending()) {
-					d.disabledPending += identifierCount;
+				if (!(status.isDeleted() && publishingStatus.isDone())) {
+					// Done deletions should be excluded from total
+					d.total += identifierCount;
+				}
+				if (status.isActive()) {
+					if (publishingStatus.isDone()) {
+						d.activeDone += identifierCount;
+					} else if (publishingStatus.isPending()) {
+						d.activePending += identifierCount;
+					}
+				} else {
+					if (publishingStatus.isPending()) {
+						d.disabledPending += identifierCount;
+					}
 				}
 			}
 		}

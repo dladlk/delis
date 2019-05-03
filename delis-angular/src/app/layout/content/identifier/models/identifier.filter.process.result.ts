@@ -23,6 +23,6 @@ export class IdentifierFilterProcessResult {
         this.status = 'ALL';
         this.publishingStatus = 'ALL';
         this.dateRange = null;
-        this.sortBy = 'orderBy_Id_Asc';
+        this.sortBy = 'orderBy_Id_Desc';
     }
 }

@@ -5,7 +5,11 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.document.send.forward.SendDocumentFailedProcessService;
+import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
+import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
+import dk.erst.delis.web.document.SendDocumentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +39,14 @@ public class TaskController {
 	@Autowired
 	private IdentifierBatchPublishingService identifierBatchPublishingService;
 
+	@Autowired
+	private IdentifierBatchLoadService identifierBatchLoadService;
+
+	@Autowired
+	private SendDocumentService sendDocumentService;
+	
+	@Autowired
+	private SendDocumentFailedProcessService sendDocumentFailedProcessService;
 
 	@GetMapping("/task/index")
 	public String index() {
@@ -43,7 +55,16 @@ public class TaskController {
 
 	@GetMapping("/task/identifierLoad")
 	public String identifierLoad(Model model) {
-		return unimplemented(model);
+		try {
+			List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
+			String message = identifierBatchLoadService.createReportMessage(loadReports);
+			model.addAttribute("message", message);
+			log.info(message);
+		} catch (Throwable e) {
+			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
+			log.error(e.getMessage(), e);
+		}
+		return "/task/index";
 	}
 
 	@GetMapping("/task/identifierPublish")
@@ -105,6 +126,32 @@ public class TaskController {
 		} catch (Exception e) {
 			log.error("Failed to invoke documentDeliveryService.processValidated", e);
 			model.addAttribute("errorMessage", "Failed to deliver validated documents: " + e.getMessage());
+		}
+		return "/task/index";
+	}
+	
+	@GetMapping("/task/sendDocumentValidate")
+	public String sendDocumentValidate(Model model) {
+		try {
+			StatData sd = sendDocumentService.validateNewDocuments();
+			String message = "Done processing of NEW sent documents in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke sendDocumentService.validateNewDocuments", e);
+			model.addAttribute("errorMessage", "Failed to validate sent documents: " + e.getMessage());
+		}
+		return "/task/index";
+	}
+	
+	@GetMapping("/task/sendFailedProcess")
+	public String sendFailedProcess(Model model) {
+		try {
+			StatData sd = sendDocumentFailedProcessService.processFailedDocuments();
+			String message = "Done processing of SEND_FAILED sent documents in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke sendDocumentFailedProcessService.processFailedDocuments", e);
+			model.addAttribute("errorMessage", "Failed to process failed sent documents: " + e.getMessage());
 		}
 		return "/task/index";
 	}

@@ -2,6 +2,8 @@ package dk.erst.delis.document.sbdh;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 
@@ -17,23 +19,52 @@ import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
 
 public class SBDHTranslator {
 
-	private static final Logger log = LoggerFactory.getLogger(SBDHTranslator.class);
-	
+    private static final Logger log = LoggerFactory.getLogger(SBDHTranslator.class);
+
     public Header addHeader(Path source, Path target) {
-        try {
-        	DelisSbdhParser sbdhParser = new DelisSbdhParser();
-            Header header = sbdhParser.parse(new FileInputStream(source.toString()));
-            FileOutputStream resultStream = new FileOutputStream(target.toString());
-            try (SbdWriter sbdWriter = SbdWriter.newInstance(resultStream, header)) {
-                XMLStreamUtils.copy(new FileInputStream(source.toString()), sbdWriter.xmlWriter());
+        try (FileOutputStream targetFileStream = new FileOutputStream(target.toString())) {
+            Header header = parseHeader(source);
+            try (SbdWriter sbdWriter = SbdWriter.newInstance(targetFileStream, header);
+                 FileInputStream sourceFileStream = new FileInputStream(source.toString())) {
+                XMLStreamUtils.copy(sourceFileStream, sbdWriter.xmlWriter());
             } catch (Exception ex) {
                 throw new IllegalStateException("Unable to wrap document inside SBD (SBDH): " + ex.getMessage(), ex);
             }
             return header;
+        } catch (AlreadySBDHException ae) {
+        	throw ae;
         } catch (Exception e) {
-            log.error("Failed to generate SBDH for "+source, e);
+            log.error("Failed to generate SBDH for " + source, e);
         }
         return null;
+    }
+
+    public Header addHeader(InputStream source, OutputStream target) {
+        try {
+            DelisSbdhParser sbdhParser = new DelisSbdhParser();
+            source.mark(Integer.MAX_VALUE);
+            Header header = sbdhParser.parse(source);
+            try (SbdWriter sbdWriter = SbdWriter.newInstance(target, header)) {
+            	source.reset();
+                XMLStreamUtils.copy(source, sbdWriter.xmlWriter());
+            } catch (Exception ex) {
+                throw new IllegalStateException("Unable to wrap document inside SBD (SBDH): " + ex.getMessage(), ex);
+            }
+            return header;
+        } catch (AlreadySBDHException ae) {
+        	throw ae;
+        } catch (Exception e) {
+            log.error("Failed to generate SBDH for " + source, e);
+        }
+        return null;
+    }
+
+    
+    private Header parseHeader(Path source) throws IOException {
+        try (FileInputStream sourceFileStream = new FileInputStream(source.toString())) {
+            DelisSbdhParser sbdhParser = new DelisSbdhParser();
+            return sbdhParser.parse(sourceFileStream);
+        }
     }
 
     public boolean writeMetadata(Header header, String partyId, Path target) {
@@ -44,7 +75,7 @@ public class SBDHTranslator {
             metadataSerializer.serialize(userMessage, fileOutputStream);
             return true;
         } catch (Exception e) {
-            log.error("Failed to write metadata: "+e.getMessage(), e);
+            log.error("Failed to write metadata: " + e.getMessage(), e);
             return false;
         }
     }

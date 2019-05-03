@@ -44,7 +44,7 @@ public class IdentifierService {
     public int updateStatuses (List<Long> idList, IdentifierStatus status, IdentifierPublishingStatus publishStatus) {
         AtomicInteger count = new AtomicInteger(0);
         if (idList.size() > 0) {
-            List<Identifier> identifierList = identifierDaoRepository.findAllById(idList);
+            Iterable<Identifier> identifierList = identifierDaoRepository.findAllById(idList);
             identifierList.forEach(identifier -> {identifier.setStatus(status); identifier.setPublishingStatus(publishStatus); noticeInJournal(status, publishStatus, identifier);count.getAndIncrement();});
             identifierDaoRepository.saveAll(identifierList);
         }

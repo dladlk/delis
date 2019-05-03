@@ -17,7 +17,7 @@ export class LogoutService {
 
     logout() {
         this.url = this.configService.getConfigUrl();
-        this.http.methodDelete(this.url + '/security/logout', this.tokenService.getToken()).subscribe(
+        this.http.methodDelete(this.url + '/rest/logout', this.tokenService.getToken()).subscribe(
             (data: {}) => {
                 console.log('logout : ' + data["data"])
             }

@@ -23,7 +23,7 @@ import lombok.Setter;
 public class JournalDocument extends AbstractCreateEntity {
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "ORGANISATION_ID", nullable = false)
+	@JoinColumn(name = "ORGANISATION_ID", nullable = true)
 	private Organisation organisation;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)

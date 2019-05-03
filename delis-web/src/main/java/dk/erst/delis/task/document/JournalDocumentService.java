@@ -86,6 +86,7 @@ public class JournalDocumentService {
                         JournalDocumentError journalDocumentError = new JournalDocumentError();
                         journalDocumentError.setErrorDictionary(errorDictionary);
                         journalDocumentError.setJournalDocument(journalDocument);
+                        journalDocumentError.setDetailedLocation(errorRecord.getDetailedLocation());
                         journalDocumentErrorDaoRepository.save(journalDocumentError);
                     }
                 }

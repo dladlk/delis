@@ -56,7 +56,9 @@ spec:
         - name: config.smpPassword
           value: Systest1
         - name: config.domibusRootPattern
-          value: http://dt[PARTY_INDEX].default.svc.cluster.local:8080/domibus[PARTY_INDEX]
+          value: https://edelivery-test.trueservice.dk/domibus[PARTY_INDEX]
+        - name: config.wsForceHTTPS
+          value: "true"
         image: '{{.Values.all.imagePrefix}}{{.Values.tw.image}}:{{.Values.tw.imageTag}}'
         imagePullPolicy: '{{.Values.tw.imagePullPolicy}}'
         name: test-web-console

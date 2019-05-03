@@ -71,6 +71,8 @@ public class AccessPointService {
 
         accessPoint.setUrl(accessPointData.getUrl());
         accessPoint.setType(accessPointData.getType());
+        accessPoint.setServiceDescription(accessPointData.getServiceDescription());
+        accessPoint.setTechnicalContactUrl(accessPointData.getTechnicalContactUrl());
         // Validate certificate
         String certificateString = accessPointData.getCertificate();
         certificateString = certificateString.replaceAll("\\s+","");

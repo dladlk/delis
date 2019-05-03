@@ -1,6 +1,6 @@
 package dk.erst.delis.task.rules;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -28,6 +28,6 @@ public class TransformationRulesServiceTest {
 		service.recreateDefault();
 		List<RuleDocumentTransformationData> ruleDocumentTransformationData = service.loadRulesList();
 
-		assertTrue(ruleDocumentTransformationData.size() == 2);
+		assertEquals(2, ruleDocumentTransformationData.size());
 	}
 }

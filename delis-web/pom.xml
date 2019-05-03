@@ -22,18 +22,33 @@
 
     <properties>
 		<delis.version>1.0.0</delis.version>
+		<swagger.version>2.5.0</swagger.version>
 	</properties>
 
     <dependencies>
 
-		<!-- DELIS-DATA -->
+		<dependency>
+			<groupId>com.github.darrachequesne</groupId>
+			<artifactId>spring-data-jpa-datatables</artifactId>
+			<version>5.0.0</version>
+		</dependency>
+
+		<!-- Delis -->
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-data</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
-		
-		<!-- DELIS-SBDH -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-tasks</artifactId>
+			<version>${delis.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-xml-builder</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>dk.erst.delis</groupId>
 			<artifactId>delis-sbdh</artifactId>
@@ -86,14 +101,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.6</version>
-		    <scope>test</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>failureaccess</artifactId>
@@ -120,13 +127,6 @@
 		    <artifactId>opencsv</artifactId>
 		    <version>4.4</version>
 		</dependency>
-		
-		<!-- Saxon is required for CII/BIS3 schematron - they do not work with integrated JAXP nor with Xalan 2.7.1! -->
-	    <dependency>
-	      <groupId>net.sf.saxon</groupId>
-	      <artifactId>Saxon-HE</artifactId>
-	      <version>9.9.0-2</version>
-	    </dependency>
 
 		<dependency>
 			<groupId>no.difi.commons</groupId>
@@ -137,11 +137,6 @@
 			<groupId>no.difi.commons</groupId>
 			<artifactId>commons-busdox</artifactId>
 			<version>0.9.5</version>
-		</dependency>
-		<dependency>
-			<groupId>no.difi.vefa</groupId>
-			<artifactId>peppol-common</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>no.difi.vefa</groupId>
@@ -164,32 +159,40 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-core -->
+		<!-- SWAGGER -->
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-			<version>3.6.3</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-maven-plugin</artifactId>
-			<version>3.6.3</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+			<scope>compile</scope>
 		</dependency>
-	</dependencies>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-test -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+    </dependencies>
     
     <build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.liquibase</groupId>
-				<artifactId>liquibase-maven-plugin</artifactId>
-				<version>3.6.3</version>
-				<configuration>
-					<propertyFile>src/main/resources/liquibase.properties</propertyFile>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

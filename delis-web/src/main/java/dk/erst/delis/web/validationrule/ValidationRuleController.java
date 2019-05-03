@@ -1,7 +1,9 @@
 package dk.erst.delis.web.validationrule;
 
-import javax.validation.Valid;
-
+import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
+import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
+import dk.erst.delis.task.document.process.RuleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,19 +13,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
-import dk.erst.delis.data.enums.document.DocumentFormat;
-import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/validationrule")
 public class ValidationRuleController {
 
     private ValidationRuleService service;
+    private RuleService ruleService;
 
     @Autowired
-    public ValidationRuleController(ValidationRuleService service) {
+    public ValidationRuleController(ValidationRuleService service, RuleService ruleService) {
         this.service = service;
+        this.ruleService = ruleService;
     }
 
     @GetMapping("list")
@@ -54,7 +56,7 @@ public class ValidationRuleController {
     }
 
     @GetMapping("update/{id}")
-    public String updateAccessPoint(@PathVariable long id, Model model) {
+    public String updateRule(@PathVariable long id, Model model) {
         RuleDocumentValidation validationRule = service.findById(id);
         RuleDocumentValidationData validationRuleData = new RuleDocumentValidationData();
         BeanUtils.copyProperties(validationRule, validationRuleData);
@@ -73,6 +75,12 @@ public class ValidationRuleController {
     @GetMapping("createdefault")
     public String createDefault(Model model) {
         service.recreateDefault();
+        return "redirect:/setup/index";
+    }
+
+    @GetMapping("flushcache")
+    public String flushCache(Model model) {
+        ruleService.refreshValidationList();
         return "redirect:/setup/index";
     }
 }

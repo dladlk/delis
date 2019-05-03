@@ -1,5 +1,6 @@
 export class LoginData {
 
-    token: string;
+    accessToken: string;
+    refreshToken: string;
     username: string;
 }

@@ -21,7 +21,7 @@ public class DocumentParseServiceTest {
 			log.info("Test " + testDocument);
 
 			DocumentInfo header = parser.parseDocumentInfo(testDocument.getInputStream());
-			assertNotNull(header);
+			assertFilledHeader(header);
 			assertFalse(header.isAmountNegative());
 		}
 
@@ -33,7 +33,26 @@ public class DocumentParseServiceTest {
 		
 		DocumentParseService parser = new DocumentParseService();
 		DocumentInfo header = parser.parseDocumentInfo(testDocument.getInputStream());
+		assertFilledHeader(header);
+	}
+	
+	@Test
+	public void testInvoiceResponse() throws Exception {
+		TestDocument testDocument = TestDocument.BIS3_INVOICE_RESPONSE;
+		
+		DocumentParseService parser = new DocumentParseService();
+		DocumentInfo header = parser.parseDocumentInfo(testDocument.getInputStream());
+		assertFilledHeader(header);
+	}
+	
+	private void assertFilledHeader(DocumentInfo header) {
 		assertNotNull(header);
+		assertNotNull(header.getDate());
+		assertNotNull(header.getId());
+		assertNotNull(header.getProfile());
+		assertNotNull(header.getSender());
+		assertNotNull(header.getReceiver());
+		assertNotNull(header.getCustomizationID());
 	}
 
 }

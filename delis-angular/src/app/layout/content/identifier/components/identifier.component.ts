@@ -1,17 +1,19 @@
-import { Component } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
+import {Component} from "@angular/core";
+import {TranslateService} from "@ngx-translate/core";
 
-import { routerTransition } from "../../../../router.animations";
-import { PaginationModel } from "../../../bs-component/components/pagination/pagination.model";
-import { IdentifierFilterProcessResult } from "../models/identifier.filter.process.result";
-import { TableHeaderSortModel } from "../../../bs-component/components/table-header-sort/table.header.sort.model";
-import { IdentifierModel } from "../models/identifier.model";
-import { LocaleService } from "../../../../service/locale.service";
-import { ErrorService } from "../../../../service/error.service";
-import { PaginationService } from "../../../bs-component/components/pagination/pagination.service";
-import { IdentifierService } from "../services/identifier.service";
-import { DateRangeModel } from "../../../../models/date.range.model";
-import { SHOW_DATE_FORMAT } from "../../../../app.constants";
+import {routerTransition} from "../../../../router.animations";
+import {PaginationModel} from "../../../bs-component/components/pagination/pagination.model";
+import {IdentifierFilterProcessResult} from "../models/identifier.filter.process.result";
+import {TableHeaderSortModel} from "../../../bs-component/components/table-header-sort/table.header.sort.model";
+import {IdentifierModel} from "../models/identifier.model";
+import {LocaleService} from "../../../../service/locale.service";
+import {ErrorService} from "../../../../service/error.service";
+import {PaginationService} from "../../../bs-component/components/pagination/pagination.service";
+import {IdentifierService} from "../services/identifier.service";
+import {DateRangeModel} from "../../../../models/date.range.model";
+import {SHOW_DATE_FORMAT} from "../../../../app.constants";
+import {DaterangeService} from "../../../bs-component/components/daterange/daterange.service";
+import {DaterangeShowService} from "../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
@@ -30,6 +32,8 @@ const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.createTime';
     animations: [routerTransition()]
 })
 export class IdentifierComponent {
+
+    clearableSelect = true;
 
     pagination: PaginationModel;
     filter: IdentifierFilterProcessResult;
@@ -50,22 +54,43 @@ export class IdentifierComponent {
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+    show: boolean;
 
-    constructor(private translate: TranslateService,
-                private locale: LocaleService,
-                private errorService: ErrorService,
-                private paginationService: PaginationService,
-                private identifierService: IdentifierService) {
+    constructor(
+        private translate: TranslateService,
+        private locale: LocaleService,
+        private errorService: ErrorService,
+        private paginationService: PaginationService,
+        private identifierService: IdentifierService,
+        private dtService: DaterangeService, private dtShowService: DaterangeShowService) {
+        this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
-                this.loadPage(pag.currentPage, pag.pageSize);
-                this.pagination = pag;
+                if (pag.collectionSize <= pag.pageSize) {
+                    this.loadPage(1, this.pagination.pageSize);
+                } else {
+                    this.loadPage(pag.currentPage, pag.pageSize);
+                }
             } else {
                 this.initDefaultValues();
                 this.clearAllFilter();
                 this.loadPage(pag.currentPage, pag.pageSize);
             }
+            this.pagination = pag;
+        });
+        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
+            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+                this.filter.dateRange = dtRange;
+            } else {
+                this.filter.dateRange = null;
+            }
+            this.pagination.currentPage = 1;
+            this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
+        });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.filter.dateRange = null;
+            this.loadPage(1, this.pagination.pageSize);
         });
     }
 
@@ -210,14 +235,6 @@ export class IdentifierComponent {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadReceivedDate(date: Date[]) {
-        this.pagination.currentPage = 1;
-        this.filter.dateRange = new DateRangeModel();
-        this.filter.dateRange.dateStart = date[0];
-        this.filter.dateRange.dateEnd = date[1];
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
     clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
@@ -230,7 +247,7 @@ export class IdentifierComponent {
         }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
-            this.filter.sortBy = 'orderBy_Id_Asc';
+            this.filter.sortBy = 'orderBy_Id_Desc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -248,8 +265,10 @@ export class IdentifierComponent {
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.identifiers = data["items"];
+                this.show = true;
             }, error => {
                 this.errorService.errorProcess(error);
+                this.show = false;
             }
         );
     }
@@ -264,6 +283,7 @@ export class IdentifierComponent {
         this.textValue = '';
         this.textUniqueValueType = '';
         this.textName = '';
+        this.filter.dateRange = null;
     }
 
     private clearFilter(columnName: string) {

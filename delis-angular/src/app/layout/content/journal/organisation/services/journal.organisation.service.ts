@@ -1,27 +1,22 @@
 import { JournalOrganisationFilterProcessResult } from "../models/journal.organisation.filter.process.result";
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { HttpClient, HttpParams } from "@angular/common/http";
+
 import { environment } from "../../../../../../environments/environment";
 import { TokenService } from "../../../../../service/token.service";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { RuntimeConfigService } from "../../../../../service/runtime.config.service";
+import { HttpRestService } from "../../../../../service/http.rest.service";
 
 @Injectable()
 export class JournalOrganisationService {
 
-    private headers: HttpHeaders;
     private env = environment;
     private url = this.env.api_url + '/journal/organisation';
-    private config: string;
 
-    constructor(private http: HttpClient, private tokenService: TokenService) {
-        this.headers = new HttpHeaders({
-            'Authorization' : tokenService.getToken()
-        });
-        this.config = localStorage.getItem('url');
-        if (this.config !== '${API_URL}') {
-            this.url = this.config + '/journal/organisation';
-        }
+    constructor(private http: HttpClient, private tokenService: TokenService, private configService: RuntimeConfigService, private httpRestService: HttpRestService) {
+        this.url = this.configService.getConfigUrl();
+        this.url = this.url + '/rest/journal/organisation';
     }
 
     getListJournalOrganisations(currentPage: number, sizeElement: number, filter: JournalOrganisationFilterProcessResult) : Observable<any> {
@@ -48,14 +43,10 @@ export class JournalOrganisationService {
             params = params.append('createTime', String(filter.dateRange.dateStart.getTime()) + ':' + String(filter.dateRange.dateEnd.getTime()));
         }
 
-        return this.http.get(this.url + '', {headers : this.headers, params: params}).pipe(map(JournalOrganisationService.extractData));
+        return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 
     getOneJournalOrganisationById(id: any) : Observable<any> {
-        return this.http.get(this.url + '/' + id, {headers : this.headers}).pipe(map(JournalOrganisationService.extractData));
-    }
-
-    private static extractData(res: Response) {
-        return res || { };
+        return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 }

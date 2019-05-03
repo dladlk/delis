@@ -92,8 +92,12 @@ public class DocumentBytesStorageService {
 		}
 		return result;
 	}
+	
+	public DocumentBytes find(long documentId, long id) {
+		return documentBytesDaoRepository.findByDocumentIdAndId(documentId, id);
+	}
 
 	public DocumentBytes find(Document document, DocumentBytesType type) {
-		return documentBytesDaoRepository.findLastByDocumentAndType(document, type);
+		return documentBytesDaoRepository.findTop1ByDocumentAndTypeOrderByIdDesc(document, type);
 	}
 }

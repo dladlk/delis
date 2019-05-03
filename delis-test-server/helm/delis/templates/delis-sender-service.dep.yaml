@@ -1,0 +1,54 @@
+{{- if .Values.delisSender.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-sender-service'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-sender-service
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-sender-service'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-sender-service'
+    spec:
+      containers:
+      - image: {{.Values.delisSender.image}}
+        imagePullPolicy: IfNotPresent
+        name: {{.Release.Name}}-sender-service
+        #command: ["sh", "-c", "sleep 3600"]
+        env:
+          - name: SERVER_SERVLET_CONTEXT-PATH
+            value: {{.Values.delisSender.contextPath}}
+          - name: SERVER_PORT
+            value: "8080"
+          - name: SPRING_DATASOURCE_URL
+            value: {{.Values.delisDb.url}}
+          - name: SPRING_DATASOURCE_USERNAME
+            value: {{.Values.delisDb.user}}
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: {{.Values.delisDb.password}}
+          {{- with .Values.delisSender.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        {{- with .Values.delisSender.volumeMounts }}
+        volumeMounts:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.delisSender.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}

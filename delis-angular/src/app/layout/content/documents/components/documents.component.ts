@@ -12,6 +12,8 @@ import { PaginationModel } from "../../../bs-component/components/pagination/pag
 import { DocumentModel } from "../models/document.model";
 import { ErrorService } from "../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
+import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
+import { DaterangeShowService } from "../../../bs-component/components/daterange/daterange.show.service";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -29,6 +31,8 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
     animations: [routerTransition()]
 })
 export class DocumentsComponent implements OnInit {
+
+    clearableSelect = true;
 
     selectedStatus: any;
     selectedLastError: any;
@@ -51,24 +55,44 @@ export class DocumentsComponent implements OnInit {
 
     pagination: PaginationModel;
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
-    errorsFlag = false;
+    show: boolean;
 
     constructor(
         private translate: TranslateService,
         private documentsService: DocumentsService,
         private locale: LocaleService,
         private errorService: ErrorService,
-        private paginationService: PaginationService) {
+        private paginationService: PaginationService,
+        private dtService: DaterangeService,
+        private dtShowService: DaterangeShowService) {
+        this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag.collectionSize !== 0) {
-                this.loadPage(pag.currentPage, pag.pageSize);
-                this.pagination = pag;
+                if (pag.collectionSize <= pag.pageSize) {
+                    this.loadPage(1, this.pagination.pageSize);
+                } else {
+                    this.loadPage(pag.currentPage, pag.pageSize);
+                }
             } else {
                 this.initDefaultValues();
                 this.clearAllFilter();
                 this.loadPage(pag.currentPage, pag.pageSize);
             }
+            this.pagination = pag;
+        });
+        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
+            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+                this.filter.dateReceived = dtRange;
+            } else {
+                this.filter.dateReceived = null;
+            }
+            this.pagination.currentPage = 1;
+            this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
+        });
+        this.dtShowService.listen().subscribe((show: boolean) => {
+            this.filter.dateReceived = null;
+            this.loadPage(1, this.pagination.pageSize);
         });
     }
 
@@ -90,7 +114,7 @@ export class DocumentsComponent implements OnInit {
     protected initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
-        this.currentProdDocuments(1, 10, this.errorsFlag);
+        this.currentProdDocuments(1, 10);
         this.clearAllFilter();
     }
 
@@ -132,21 +156,23 @@ export class DocumentsComponent implements OnInit {
         }
     }
 
-    protected currentProdDocuments(currentPage: number, sizeElement: number, errorsFlag: boolean) {
-        this.documentsService.getListDocuments(currentPage, sizeElement, this.filter, errorsFlag).subscribe(
+    protected currentProdDocuments(currentPage: number, sizeElement: number) {
+        this.documentsService.getListDocuments(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
                 this.pagination.collectionSize = data["collectionSize"];
                 this.pagination.currentPage = data["currentPage"];
                 this.pagination.pageSize = data["pageSize"];
                 this.documents = data["items"];
+                this.show = true;
             }, error => {
                 this.errorService.errorProcess(error);
+                this.show = false
             }
         );
     }
 
     protected loadPage(page: number, pageSize: number) {
-        this.currentProdDocuments(page, pageSize, this.errorsFlag);
+        this.currentProdDocuments(page, pageSize);
     }
 
     loadOrganisations() {
@@ -214,14 +240,6 @@ export class DocumentsComponent implements OnInit {
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
-    loadReceivedDate(date: Date[]) {
-        this.pagination.currentPage = 1;
-        this.filter.dateReceived = new DateRangeModel();
-        this.filter.dateReceived.dateStart = date[0];
-        this.filter.dateReceived.dateEnd = date[1];
-        this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
     clickFilter(target: string) {
         this.clickProcess(target);
         this.pagination.currentPage = 1;
@@ -240,7 +258,7 @@ export class DocumentsComponent implements OnInit {
         }
         if (countClick > 2) {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = 0;
-            this.filter.sortBy = 'orderBy_Id_Asc';
+            this.filter.sortBy = 'orderBy_Id_Desc';
         } else {
             this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick = countClick;
         }
@@ -260,7 +278,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedOrganization = 'ALL';
         this.textReceiver = '';
         this.textSenderName = '';
-        this.textPlaceholderReceivedDate = "Received Date";
-        this.filter.sortBy = 'orderBy_Id_Asc';
+        this.filter.dateReceived = null;
+        this.filter.sortBy = 'orderBy_Id_Desc';
     }
 }

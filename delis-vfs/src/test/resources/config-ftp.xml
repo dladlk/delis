@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vfsConfig>
+    <url username="" password="">ftp://speedtest.tele2.net</url>
+    <options>
+        <FileSystemOptions builder="org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder">
+            <option name="UserDirIsRoot">false</option>
+            <option name="ConnectTimeout">10000</option>
+            <option name="SoTimeout">10000</option>
+        </FileSystemOptions>
+    </options>
+</vfsConfig>

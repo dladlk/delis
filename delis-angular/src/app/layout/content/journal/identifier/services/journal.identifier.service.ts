@@ -15,7 +15,7 @@ export class JournalIdentifierService {
     constructor(private configService: RuntimeConfigService,
                 private httpRestService: HttpRestService, private tokenService: TokenService) {
         this.url = this.configService.getConfigUrl();
-        this.url = this.url + '/journal/identifier';
+        this.url = this.url + '/rest/journal/identifier';
     }
 
     getListJournalIdentifiers(currentPage: number, sizeElement: number, filter: JournalIdentifierFilterProcessResultModel) : Observable<any> {

@@ -14,7 +14,7 @@ export class DashboardService {
         private configService: RuntimeConfigService,
         private httpRestService: HttpRestService) {
         this.url = this.configService.getConfigUrl();
-        this.url = this.url + '/dashboard';
+        this.url = this.url + '/rest/dashboard';
     }
 
     getDashboardModel() : Observable<any> {

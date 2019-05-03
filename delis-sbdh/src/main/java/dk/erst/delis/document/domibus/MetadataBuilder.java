@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MetadataBuilder {
 
-	public static String DEFAULT_PROCESS_SCHEME_ID = "cenbii-procid-ubl";
+	public static String DEFAULT_PROCESS_SCHEME_ID = "urn:fdc:peppol.eu:2017:identifiers:proc-id";
 
 	public UserMessage buildUserMessage(Header sbdhHeader, String partyIdValue) {
 		UserMessage userMessage = new UserMessage();

@@ -4,6 +4,8 @@ import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.process.validate.result.ISchematronResultCollector;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,7 +23,7 @@ public class SchematronValidator {
 
 	public List<ErrorRecord> validate(InputStream xmlStream, InputStream schematronStream, ISchematronResultCollector collector, Path xslPath) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		XSLTUtil.apply(schematronStream, xslPath, xmlStream, baos);
+		XSLTUtil.apply(schematronStream, xslPath, new CloseShieldInputStream(xmlStream), baos);
 
 		DocumentBuilderFactory factoryNoNS = DocumentBuilderFactory.newInstance();
 		factoryNoNS.setNamespaceAware(true);

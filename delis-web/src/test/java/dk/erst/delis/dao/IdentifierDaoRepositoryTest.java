@@ -49,11 +49,11 @@ public class IdentifierDaoRepositoryTest {
 
 	@Test
 	public void revertAll() {
-		List<Identifier> identifiers = identifierDaoRepository.findAll();
+		Iterable<Identifier> identifiers = identifierDaoRepository.findAll();
 		for (Identifier identifier : identifiers) {
 			identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
 			identifier.setStatus(IdentifierStatus.ACTIVE);
-			identifierDaoRepository.saveAndFlush(identifier);
+			identifierDaoRepository.save(identifier);
 		}
 	}
 }

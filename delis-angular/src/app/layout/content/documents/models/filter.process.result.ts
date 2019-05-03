@@ -21,6 +21,6 @@ export class FilterProcessResult {
         this.documentType = 'ALL';
         this.senderName = null;
         this.dateReceived = null;
-        this.sortBy = 'orderBy_Id_Asc';
+        this.sortBy = 'orderBy_Id_Desc';
     }
 }

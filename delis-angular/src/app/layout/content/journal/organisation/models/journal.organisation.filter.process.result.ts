@@ -14,6 +14,6 @@ export class JournalOrganisationFilterProcessResult {
         this.message = null;
         this.durationMs = null;
         this.dateRange = null;
-        this.sortBy = 'orderBy_Id_Asc';
+        this.sortBy = 'orderBy_Id_Desc';
     }
 }

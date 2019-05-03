@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dk.erst.delis</groupId>
+        <artifactId>delis</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>delis-sch2xslt-converter</artifactId>
+
+    <name>Delis :: Sch2Xslt</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.helger.maven</groupId>
+                <artifactId>ph-sch2xslt-maven-plugin</artifactId>
+                <version>5.0.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>convert</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schematronDirectory>${basedir}/sch</schematronDirectory>
+                    <schematronPattern>**/*.sch</schematronPattern>
+                    <xsltDirectory>${basedir}/xslt</xsltDirectory>
+                    <xsltExtension>.xslt</xsltExtension>
+                    <parameters>
+                        <allow-foreign>true</allow-foreign>
+                        <anything>else</anything>
+                    </parameters>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.helger.maven/ph-sch2xslt-maven-plugin -->
+        <dependency>
+            <groupId>com.helger.maven</groupId>
+            <artifactId>ph-sch2xslt-maven-plugin</artifactId>
+            <version>5.0.8</version>
+        </dependency>
+    </dependencies>
+</project>
