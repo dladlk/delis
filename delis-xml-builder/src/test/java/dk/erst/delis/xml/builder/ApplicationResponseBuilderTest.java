@@ -28,8 +28,8 @@ import dk.erst.delis.xml.builder.data.PartyLegalEntity;
 import dk.erst.delis.xml.builder.data.Response;
 import dk.erst.delis.xml.builder.data.ResponseStatus;
 import lombok.extern.slf4j.Slf4j;
-import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ApplicationResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentReferenceType;
+import oasis.names.specification.ubl.schema.xsd.applicationresponse_21.ApplicationResponseType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.DocumentReferenceType;
 
 @Slf4j
 public class ApplicationResponseBuilderTest {

@@ -13,7 +13,7 @@
 		<div class="row mb-3">
 			<h2 class="col-5">Message Level Response BIS 3.0</h2>
 			<div class="col-7">
-				<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/" target="_blank">BIS Message Level Response 3.0</a> for details</small>						
+				<small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/36-mlr/" target="_blank">BIS Message Level Response 3.0</a> for general overview and <a href="http://docs.peppol.eu/poacc/upgrade-3/syntax/MLR/tree/" target="_blank">MLR syntax</a> for structure.</small>						
 			</div>
 		</div>
 		
@@ -32,21 +32,117 @@
 			</section>
 		</div>
 		
-		<div class="row">
-			<div class="form-group col-9">
+		<div class="row mb-2">
+			<div class="form-group col-12">
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text">Description</span>
 					</div>
 					<input th:field="*{description}" type="text" class="form-control"/>
 				</div>
-			</div>
-			<div class="col-3">
 				<div class="font-italic"><small class="form-text text-muted">//DocumentResponse/Response/Description</small></div>
 			</div>
-		</div>			
+		</div>
 		
-		<th:block th:replace="~{/document/ir/ir_form :: footerBlock}"/>
+		<div class="row mb-2" th:each="lineResponse,iter: *{lineResponseList}">
+			<div class="col-12">
+			<div class="card">
+				<div class="card-header">
+					Line Response <th:block th:text="${iter.index + 1}">1</th:block>
+				</div>
+				<div class="card-body container">
+					<div class="row">
+						<div th:classappend="${iter.index == 0 ? 'col-5':'col-12'}">
+							<div class="form-group">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<span class="input-group-text">Line ID</span>
+									</div>
+									<input th:field="*{lineResponseList[__${iter.index}__].lineId}" type="text" class="form-control"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-7" th:if="${iter.index == 0}">
+							<div>Identifies the section of the document to which the reported issue applies. The LineID element must be used to indicate where in the business document the error occurred by using XPath to reference the element causing the error. To cater for scenarios where it is not possible to provide XPath, a dummy value must be applied. The dummy value must consist of the characters NA. This is due to that the LineID element is mandatory in the ApplicationResponse message in UBL 2.1 on which the MLR message is based.</div>
+							<small class="form-text text-muted"><div class="font-italic">//DocumentResponse/LineResponse/LineReference/LineID</div>
+								See <a href="http://docs.peppol.eu/poacc/upgrade-3/syntax/MLR/cac-DocumentResponse/cac-LineResponse/cac-LineReference/cbc-LineID/" target="_blank">cac:LineReference/cbc:LineID</a> for details
+							</small>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="form-group" th:classappend="${iter.index == 0 ? 'col-5':'col-12'}">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Line code</span>
+								</div>
+						 		<select th:field="*{lineResponseList[__${iter.index}__].lineCode}" th:inline="text" class="form-control line-response-code" onchange="selectChanged(this)">
+									<option th:each="e: ${applicationResponseLineResponseCodeList}" th:value="${e[0]}" th:text="${(e[0].length() > 0 ? e[0] + ': ' : '')+ e[1]}" th:title="${e.length > 2 ? e[2] : ''}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="col-7" th:if="${iter.index == 0}">
+							<div class="form-text" id="someDesc"></div>
+							<div>
+								<small class="form-text text-muted"><div class="font-italic">//DocumentResponse/LineResponse/Response/ResponseCode</div>
+								See <a href="http://docs.peppol.eu/poacc/upgrade-3/syntax/MLR/cac-DocumentResponse/cac-LineResponse/cac-Response/cbc-ResponseCode/" target="_blank">cac:LineResponse/cac:Response/cbc:ResponseCode</a> for details
+								</small>
+							</div>
+							<script>
+								initSelect('.line-response-code');
+							</script>	
+						</div>					
+					</div>
+					
+					<div class="row">
+						<div class="col-12">
+							<div class="form-group">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<span class="input-group-text">Description</span>
+									</div>
+									<input th:field="*{lineResponseList[__${iter.index}__].description}" type="text" class="form-control"/>
+								</div>
+								<div th:if="${iter.index == 0}">
+									The description of the issue identified in the transaction document.
+									<small class="form-text text-muted"><span class="font-italic">//DocumentResponse/LineResponse/Response/Description</span>
+										See <a href="http://docs.peppol.eu/poacc/upgrade-3/syntax/MLR/cac-DocumentResponse/cac-LineResponse/cac-Response/cbc-Description/" target="_blank">cac:LineResponse/cac:Response/cbc:Description</a> for details
+									</small>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div class="row">
+						<div class="form-group" th:classappend="${iter.index == 0 ? 'col-5':'col-12'}">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<span class="input-group-text">Reason code</span>
+								</div>
+						 		<select th:field="*{lineResponseList[__${iter.index}__].reasonCode}" th:inline="text" class="form-control line-reason-code" onchange="selectChanged(this)">
+									<option th:each="e: ${applicationResponseLineReasonCodeList}" th:value="${e[0]}" th:text="${(e[0].length() > 0 ? e[0] + ': ' : '')+ e[1]}" th:title="${e.length > 2 ? e[2] : ''}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="col-7" th:if="${iter.index == 0}">
+							<div class="form-text" id="someDesc"></div>
+							<div>
+								<small class="form-text text-muted"><div class="font-italic">//DocumentResponse/LineResponse/Response/Status/StatusReason</div>
+								See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/StatusReason/" target="_blank">StatusReason code list</a> for details
+								</small>
+							</div>
+							<script>
+								initSelect('.line-reason-code');
+							</script>	
+						</div>					
+					</div>					
+				</div>
+			</div>
+			</div>
+		</div>					
+		
+		<th:block th:replace="~{/document/ir/ir_form :: footerBlock('mlr')}"/>
 
 	</form>
 </div>

@@ -20,6 +20,7 @@
         <module>delis-sbdh</module>
         <module>delis-vfs</module>
         <module>delis-xml-builder</module>
+        <module>delis-sender-service</module>
         <module>delis-oxalis-sender</module>
     </modules>
 

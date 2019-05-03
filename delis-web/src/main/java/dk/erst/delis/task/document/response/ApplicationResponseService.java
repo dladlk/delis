@@ -20,6 +20,7 @@ import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
@@ -27,8 +28,9 @@ import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.xml.builder.ApplicationResponseBuilder;
-import dk.erst.delis.xml.builder.data.DocumentResponse;
 import dk.erst.delis.xml.builder.data.ApplicationResponseData;
+import dk.erst.delis.xml.builder.data.DocumentResponse;
+import dk.erst.delis.xml.builder.data.LineResponse;
 import dk.erst.delis.xml.builder.data.Response;
 import dk.erst.delis.xml.builder.data.ResponseStatus;
 import lombok.Data;
@@ -77,6 +79,15 @@ public class ApplicationResponseService {
 	public static class MessageLevelResponseGenerationData extends ApplicationResponseGenerationData {
 		private String type;
 		private String description;
+		private List<MessageLevelLineResponse> lineResponseList;
+	}
+
+	@Data
+	public static class MessageLevelLineResponse {
+		private String lineId;
+		private String lineCode;
+		private String description;
+		private String reasonCode;
 	}
 
 	public boolean generateApplicationResponse(Document document, ApplicationResponseGenerationData data, OutputStream out) throws ApplicationResponseGenerationException {
@@ -131,6 +142,7 @@ public class ApplicationResponseService {
 
 			Response response = Response.builder().build();
 
+			List<LineResponse> lineResponseList = null;
 			if (data instanceof InvoiceResponseGenerationData) {
 				InvoiceResponseGenerationData invoiceResponseData = (InvoiceResponseGenerationData) data;
 				/*
@@ -178,13 +190,21 @@ public class ApplicationResponseService {
 				irData.setCustomizationID("urn:fdc:peppol.eu:poacc:trns:mlr:3");
 				MessageLevelResponseGenerationData mlrd = (MessageLevelResponseGenerationData) data;
 				response.setResponseCode(mlrd.getType());
-				
+
 				if (isNotBlank(mlrd.getDescription())) {
 					response.setResponseDescription(mlrd.getDescription());
 				}
+				if (mlrd.getLineResponseList() != null) {
+					lineResponseList = new ArrayList<>();
+					for (MessageLevelLineResponse lr : mlrd.getLineResponseList()) {
+						Response r = Response.builder().responseCode(lr.getLineCode()).responseDescription(lr.getDescription()).build();
+						r.addStatus(ResponseStatus.builder().statusReason(lr.getReasonCode()).build());
+						lineResponseList.add(LineResponse.builder().lineId(lr.getLineId()).response(r).build());
+					}
+				}
 			}
 
-			irData.setDocumentResponse(DocumentResponse.builder().response(response).build());
+			irData.setDocumentResponse(DocumentResponse.builder().response(response).lineResponse(lineResponseList).build());
 
 			try {
 				builder.parseAndEnrich(new ByteArrayInputStream(irBytes), irData, out);
@@ -221,6 +241,87 @@ public class ApplicationResponseService {
 			}
 		}
 		return errors;
+	}
+
+	public MessageLevelResponseGenerationData buildMLRDataByFailedStep(DocumentProcessStep lastFailedStep) {
+		MessageLevelResponseGenerationData d = new MessageLevelResponseGenerationData();
+		d.setType("RE");
+		if (lastFailedStep == null) {
+			d.setDescription("Rejected due to processing errors");
+		} else {
+			DocumentProcessStepType stepType = lastFailedStep.getStepType();
+			int errorCount = 0;
+			int warningCount = 0;
+			if (lastFailedStep.getErrorRecords() != null) {
+				for (ErrorRecord errorRecord : lastFailedStep.getErrorRecords()) {
+					if (errorRecord.isWarning()) {
+						warningCount++;
+					} else {
+						errorCount++;
+					}
+				}
+			}
+
+			String errorDescription = "Rejected due to processing errors";
+
+			List<MessageLevelLineResponse> lineResponseList = null;
+			if (stepType != null && stepType.isValidation()) {
+				errorDescription = "Document is invalid by ";
+
+				if (stepType.isXsd()) {
+					errorDescription += "XSD";
+				} else {
+					errorDescription += "schematron";
+				}
+				if (errorCount > 0 || warningCount > 0) {
+					errorDescription += " with ";
+					if (errorCount > 0) {
+						errorDescription += errorCount + " errors";
+						if (warningCount > 0) {
+							errorDescription += " and ";
+						}
+					}
+					if (warningCount > 0) {
+						errorDescription += warningCount + " warnings";
+					}
+				}
+
+				if (lastFailedStep.getDescription() != null) {
+					errorDescription += ". " + lastFailedStep.getDescription();
+				}
+
+				if (errorCount > 0) {
+					lineResponseList = new ArrayList<>();
+					List<ErrorRecord> errorRecords = lastFailedStep.getErrorRecords();
+
+					String statusReasonCode = stepType.isXsd() ? "SV" : "BV";
+					for (ErrorRecord errorRecord : errorRecords) {
+						if (errorRecord.isWarning()) {
+							statusReasonCode = "BW";
+						}
+						MessageLevelLineResponse lr = new MessageLevelLineResponse();
+						if (stepType.isXsd()) {
+							lr.setLineId("NA");
+						} else {
+							lr.setLineId(errorRecord.getDetailedLocation());
+						}
+						lr.setLineCode("RE");
+
+						String description = errorRecord.getMessage();
+						if (stepType.isXsd()) {
+							description = errorRecord.getDetailedLocation() + ": " + description;
+						}
+						lr.setDescription(description);
+						lr.setReasonCode(statusReasonCode);
+						lineResponseList.add(lr);
+					}
+				}
+			}
+
+			d.setDescription(errorDescription);
+			d.setLineResponseList(lineResponseList);
+		}
+		return d;
 	}
 
 	@Getter

@@ -108,7 +108,7 @@ public class SendDocumentFailedProcessService {
 	protected SendDocumentStatus processDocument(SendDocument sendDocument, Map<Long, OrganisationForwardSetup> organisationIdToSetupMap) {
 		long start = System.currentTimeMillis();
 		SendDocumentStatus resultStatus = SendDocumentStatus.FORWARD_SKIPPED;
-		String outputFileName = "invoice_response_" + StringUtils.leftPad(String.valueOf(sendDocument.getId()), 5, "0") + ".xml";
+		String outputFileName = sendDocument.getDocumentType().getCode() +"_" + StringUtils.leftPad(String.valueOf(sendDocument.getId()), 5, "0") + ".xml";
 		String logMessage = "Failed delivery forwarding is not configured";
 		try {
 			OrganisationForwardSetup forwardSetup = null;
