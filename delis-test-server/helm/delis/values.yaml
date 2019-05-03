@@ -30,7 +30,7 @@ delisAdmin:
     image: delis-web-admin:latest
     contextPath: /delis-web-admin
     env: []
-    volumeMounts: 
+    volumeMounts:
       - mountPath: /delis-resources
         name: delis-resources
       - mountPath: /delis
@@ -74,7 +74,9 @@ delisSender:
       value: delis
     - name: delis.sender.document.processor
       value: delis
-    volumeMounts: 
+    - name: delis.forward.failed.invoiceresponse.vfs.config.path
+      value: /delis/conf/erst-vfs-forward.xml
+    volumeMounts:
       - mountPath: /delis-resources
         name: delis-resources
       - mountPath: /delis
