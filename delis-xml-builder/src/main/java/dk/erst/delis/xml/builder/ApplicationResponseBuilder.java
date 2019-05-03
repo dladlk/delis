@@ -6,17 +6,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 
+import com.helger.ubl21.UBL21Reader;
+import com.helger.ubl21.UBL21Writer;
+
 import dk.erst.delis.task.document.parse.XSLTUtil;
+import dk.erst.delis.xml.builder.data.ApplicationResponseData;
 import dk.erst.delis.xml.builder.data.Contact;
 import dk.erst.delis.xml.builder.data.Contact.ContactBuilder;
 import dk.erst.delis.xml.builder.data.DocumentReference;
@@ -26,7 +26,6 @@ import dk.erst.delis.xml.builder.data.DocumentResponse.DocumentResponseBuilder;
 import dk.erst.delis.xml.builder.data.EndpointID;
 import dk.erst.delis.xml.builder.data.EndpointID.EndpointIDBuilder;
 import dk.erst.delis.xml.builder.data.ID;
-import dk.erst.delis.xml.builder.data.ApplicationResponseData;
 import dk.erst.delis.xml.builder.data.LineResponse;
 import dk.erst.delis.xml.builder.data.LineResponse.LineResponseBuilder;
 import dk.erst.delis.xml.builder.data.Party;
@@ -39,38 +38,40 @@ import dk.erst.delis.xml.builder.data.Response.ResponseBuilder;
 import dk.erst.delis.xml.builder.data.ResponseStatus;
 import dk.erst.delis.xml.builder.data.ResponseStatus.ResponseStatusBuilder;
 import lombok.extern.slf4j.Slf4j;
-import oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ApplicationResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ConditionType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ContactType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentReferenceType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.LineResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyIdentificationType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyLegalEntityType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyNameType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ResponseType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.StatusType;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.DescriptionType;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.StatusReasonType;
+import oasis.names.specification.ubl.schema.xsd.applicationresponse_21.ApplicationResponseType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ConditionType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ContactType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.DocumentReferenceType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.DocumentResponseType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.LineResponseType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyIdentificationType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyLegalEntityType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyNameType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.PartyType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ResponseType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.StatusType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.CompanyIDType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.CompanyLegalFormType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.DescriptionType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.StatusReasonType;
 
 @Slf4j
 public class ApplicationResponseBuilder {
 
 	private static String INVOCIE_RESPONSE_TEMPLATE_XSLT = "invoice-response.xslt";
-	private oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ObjectFactory arFactory;
-	private oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.ObjectFactory cbcFactory;
-	private oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ObjectFactory cacFactory;
-	private JAXBContext jaxbContext;
+	private oasis.names.specification.ubl.schema.xsd.applicationresponse_21.ObjectFactory arFactory;
+	private oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.ObjectFactory cbcFactory;
+	private oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ObjectFactory cacFactory;
+//	private JAXBContext jaxbContext;
 	private DatatypeFactory datatypeFactory;
 
 	public ApplicationResponseBuilder() {
-		arFactory = new oasis.names.specification.ubl.schema.xsd.applicationresponse_2.ObjectFactory();
-		cbcFactory = new oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.ObjectFactory();
-		cacFactory = new oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ObjectFactory();
-
+		arFactory = new oasis.names.specification.ubl.schema.xsd.applicationresponse_21.ObjectFactory();
+		cbcFactory = new oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.ObjectFactory();
+		cacFactory = new oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ObjectFactory();
+//
 		try {
-			jaxbContext = JAXBContext.newInstance(ApplicationResponseType.class.getPackage().getName());
+//			jaxbContext = JAXBContext.newInstance(ApplicationResponseType.class.getPackage().getName());
 			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to build JAXBContext or DatatypeFactory: " + e.getMessage(), e);
@@ -81,11 +82,12 @@ public class ApplicationResponseBuilder {
 		XSLTUtil.apply(ApplicationResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), new CloseShieldInputStream(rejectedXmlInput), out);
 	}
 
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
 	public ApplicationResponseType parse(InputStream is) throws Exception {
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<ApplicationResponseType> jaxbElement = (JAXBElement<ApplicationResponseType>) unmarshaller.unmarshal(is);
-		return jaxbElement.getValue();
+		return UBL21Reader.applicationResponse().setUseSchema(false).read(is);
+//		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+//		JAXBElement<ApplicationResponseType> jaxbElement = (JAXBElement<ApplicationResponseType>) unmarshaller.unmarshal(is);
+//		return jaxbElement.getValue();
 	}
 
 	public void parseAndEnrich(InputStream is, ApplicationResponseData d, OutputStream out) throws Exception {
@@ -108,8 +110,8 @@ public class ApplicationResponseBuilder {
 			return;
 		}
 		PartyLegalEntityType partyLegalEntity = party.getPartyLegalEntity().get(0);
-		partyLegalEntity.setCompanyID(null);
-		partyLegalEntity.setCompanyLegalForm(null);
+		partyLegalEntity.setCompanyID((CompanyIDType)null);
+		partyLegalEntity.setCompanyLegalForm((CompanyLegalFormType)null);
 	}
 
 	public void build(ApplicationResponseData d, OutputStream out) throws Exception {
@@ -119,9 +121,10 @@ public class ApplicationResponseBuilder {
 	}
 
 	public void serializeType(ApplicationResponseType ar, OutputStream out) throws JAXBException, PropertyException {
-		Marshaller marshaller = jaxbContext.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-		marshaller.marshal(arFactory.createApplicationResponse(ar), out);
+		UBL21Writer.applicationResponse().setFormattedOutput(true).setUseSchema(false).write(ar, out);
+//		Marshaller marshaller = jaxbContext.createMarshaller();
+//		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+//		marshaller.marshal(arFactory.createApplicationResponse(ar), out);
 	}
 
 	public ApplicationResponseData extractDataFromType(ApplicationResponseType ar) {
