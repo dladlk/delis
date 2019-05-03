@@ -13,7 +13,6 @@ import dk.erst.delis.dao.SendDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
 import dk.erst.delis.data.entities.journal.JournalSendDocument;
-import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentProcessStepType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
@@ -123,7 +122,7 @@ public class DelisService {
 	public void failurePostProcess(IDocumentData documentData, SendFailureType failureType) {
 		DelisDocumentData d = (DelisDocumentData) documentData;
 		SendDocument sendDocument = d.getSendDocument();
-		if (sendDocument.getDocumentType() == DocumentType.INVOICE_RESPONSE && sendDocument.getOrganisation() != null) {
+		if (sendDocument.getDocumentType().isResponse() && sendDocument.getOrganisation() != null) {
 			long start = System.currentTimeMillis();
 			ForwardResult forwardResult = delisForwardService.forward(d, failureType);
 			long duration = System.currentTimeMillis() - start;
