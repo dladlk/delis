@@ -62,20 +62,16 @@ public class DocumentController {
 	private boolean downloadAllowAll;    
 
 	@RequestMapping("/document/list")
-	public String list(Model model, WebRequest webRequest) {
-		return listFilter(model, webRequest);
+	public String list(Model model) {
+		return listFilter(model);
 	}
 
 	@PostMapping("/document/list/filter")
-	public String listFilter(Model model, WebRequest webRequest) {
-		PageContainer<Document> pageContainer = documentService.getAll(webRequest);
-		model.addAttribute("documentList", pageContainer);
-		List<Document> items = pageContainer.getItems();
-		List<String> orgNames = items.stream().map(r -> r.getOrganisation().getName()).distinct().sorted().collect(Collectors.toList());
-		model.addAttribute("availableOrganisationNames", orgNames);
+	public String listFilter(Model model) {
+		List<Document> list = documentService.documentList(0, 10);
+		model.addAttribute("documentList", list);
 		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", DocumentStatus.values());
-		model.addAttribute("filterFields", WebRequestUtil.collectFilterParametersFromRequest(webRequest));
 		return "/document/list";
 	}
 

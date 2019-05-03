@@ -9,85 +9,56 @@
         Documents
     </div>
     <div class="card-body">
-        <form method="POST" enctype="multipart/form-data" action="/document/list/filter"
-              th:action="@{/document/list/filter}">
-            <table class="table form-group">
-                <tr>
-                    <th>Received</th>
-                    <th>Organisation</th>
-                    <th>Status</th>
-                    <th>Format</th>
-                </tr>
-                <tr>
-                    <td>
-                        <select class="form-control"  th:onchange="|javascript:setTableFormDateFilter('documentTableForm', 'createTime', this.value, 'All')|">
-                            <option>All</option>
-                            <option th:selected="${'Today'.equals(filterFields.get('createTime_date_range_description'))}">Today</option>
-                            <option th:selected="${'Last week'.equals(filterFields.get('createTime_date_range_description'))}">Last week</option>
-                            <option th:selected="${'Last month'.equals(filterFields.get('createTime_date_range_description'))}">Last month</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" th:onchange="|javascript:setTableFormFilter('documentTableForm', 'organisation', this.value, 'All')|">
-                            <option>All</option>
-                            <option th:replace="~{fragments/sorting :: filter_field_option_list (fieldName='organisation',
-                                    fieldValues=${availableOrganisationNames},
-                                    selectedValue=${filterFields.get('organisation')})}">All</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" th:onchange="|javascript:setTableFormFilter('documentTableForm', 'documentStatus', this.value, 'All')|">
-                            <option>All</option>
-                            <option th:replace="~{fragments/sorting :: filter_field_option_list (fieldName='documentStatus',
-                                    fieldValues=${T(dk.erst.delis.data.enums.document.DocumentStatus).values()},
-                                    selectedValue=${filterFields.get('documentStatus')})}">LOAD_OK</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="form-control" th:onchange="|javascript:setTableFormFilter('documentTableForm', 'ingoingDocumentFormat', this.value, 'All')|">
-                            <option>All</option>
-                            <option th:replace="~{fragments/sorting :: filter_field_option_list (fieldName='ingoingDocumentFormat',
-                                    fieldValues=${T(dk.erst.delis.data.enums.document.DocumentFormat).values()},
-                                    selectedValue=${filterFields.get('ingoingDocumentFormat')})}">CII</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-        </form>
         <form action="#" th:action="@{/document/updatestatuses}" th:object="${selectedIdList}" method="post">
-            <table class="table table-striped table-bordered table-sm">
-                <tr>
-                    <th>
-                        <input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll"/>
-                    </th>
-                    <th th:replace="~{fragments/sorting :: tableheader (${documentList},
-                        ${new String[]{'Received', 'Organisation', 'Receiver', 'Status', 'Ingoing Type', 'Ingoing Format', 'Sender'}},
-                        ${new String[]{'createTime','organisation.name','receiverIdentifier.name','documentStatus','documentType','ingoingDocumentFormat','senderName'}})}"/>
-                </tr>
-                <tr th:each="r,iter : ${documentList.items}">
-                    <td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox"
-                               name="selectItem" id="selectItem"/></td>
-                    <td>
-                        <a href="#" th:href="@{/document/view/__${r.id}__}"
-                           th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
-                    </td>
-                    <td>
-                        <a th:if="${r.organisation}" href="#"
-                           th:href="@{/document/view/__${r.id}__}"
-                           th:text="${r.organisation.name}">Region Nord</a>
-                    </td>
-                    <td>
-                        <a th:if="${r.receiverIdentifier}" href="#"
-                           th:href="@{/document/view/__${r.id}__}"
-                           th:text="${r.receiverIdentifier.name}">Receiver name</a>
-                        <span th:text="${r.receiverIdRaw}">0088:234234234</span>
-                    </td>
-                    <td th:text="${r.documentStatus}">LOAD_OK</td>
-                    <td th:text="${r.documentType}">Invoice</td>
-                    <td th:text="${r.ingoingDocumentFormat}">BIS3_INVOICE</td>
-                    <td th:text="${r.senderName}">Lego Spain</td>
-                </tr>
-            </table>
+            <div class="container">
+                <table class="table form-group">
+                    <tr>
+                        <th>Received</th>
+                        <th>Organisation</th>
+                        <th>Status</th>
+                        <th>Format</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <select class="form-control" id="receivedFilter">
+                                <option>All</option>
+                                <option>Today</option>
+                                <option>Last week</option>
+                                <option>Last month</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" id="orgFilter">
+                        </td>
+                        <td>
+                            <select class="form-control"  id="statusSelector">
+                                <option>All</option>
+                                <option th:each="r : ${statusList}" th:text="${r}" th:value="${r}"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control"  id="formatSelector">
+                                <option>All</option>
+                                <option th:each="r : ${T(dk.erst.delis.data.enums.document.DocumentFormat).values()}" th:text="${r}" th:value="${r}"></option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <table id="documents" class="table">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
+                        <th>Received</th>
+                        <th>Organisation</th>
+                        <th>Receiver</th>
+                        <th>Status</th>
+                        <th>Ingoing Type</th>
+                        <th>Ingoing Format</th>
+                        <th>Sender</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
             <div class="card-footer">
                 <div class="d-flex justify-content-start">
                     <label class="m-2 col-form-label">Status:</label>
@@ -100,18 +71,79 @@
             </div>
         </form>
     </div>
-    <div class="card-footer"
-         th:include="~{fragments/sorting :: paginator (${documentList.paginatorStart},${documentList.paginatorEnd},${documentList.totalPages},${documentList.currentPage})}">
-    </div>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        var table = $('table#documents').DataTable({
+            ajax: {
+                contentType: 'application/json',
+                url: '/delis/document/table',
+                type: 'POST',
+                data: function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            serverSide: true,
+            columns: [
+                {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList" id="idList"/>'; }
+                },
+                {
+                    data: 'createTime',
+                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + moment(data).format("YYYY-MM-dd HH:mm:ss") + '</a>'; }
+                },
+                {
 
-    <div th:replace="~{fragments/sorting :: tableform (
-            formNameForJS = 'documentTableForm',
-            formAction = @{/document/list/filter},
-            sortField = ${documentList.sortField},
-            sortDirection = ${documentList.sortDirection},
-            currentPage = ${documentList.currentPage},
-            filterFields = ${filterFields} )}">
-    </div>
+                    data: 'organisation.name',
+                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + data + '</a>'; }
+                },
+                {
+                    data: 'receiverIdRaw',
+                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + row["receiverIdentifier"].name + ' </a><span> ' + data + '</span>'; }
+                },
+                {
+                    data: 'documentStatus'
+                },
+                {
+                    data: 'documentType'
+                },
+                {
+                    data: 'ingoingDocumentFormat'
+                },
+                {
+                    data: 'senderName'
+                }
+            ]
+        });
+
+        // todo move two functions below to one place
+        var onTextChange = function (value, column) {
+            table.column(column).search(value).draw();
+        };
+
+        var onSelectChange = function(selector, column) {
+            var filter = '';
+            $('select#' + selector + ' option:selected').each(function() {
+                filter += $(this).text() + "+";
+            });
+            filter = filter.substring(0, filter.length - 1);
+            if(filter == 'All') {
+                filter = '';
+            }
+            table.column(column).search(filter).draw();
+        };
+
+        $('select#statusSelector').change(function(){onSelectChange('statusSelector', 4)});
+        $('select#formatSelector').change(function(){onSelectChange('formatSelector', 6)});
+
+        var orgInput = $('input#orgFilter');
+        orgInput.on('input', function() {onTextChange(orgInput.val(), 2)});
+
+    </script>
 
     <div class="card">
         <div class="card-header bg-primary text-white">

@@ -1,22 +1,5 @@
 package dk.erst.delis.web.document;
 
-import java.io.ByteArrayOutputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.WebRequest;
-
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
@@ -27,32 +10,41 @@ import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalDocumentError;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.pagefiltering.response.PageContainer;
-import dk.erst.delis.pagefiltering.service.AbstractGenerateDataService;
 import dk.erst.delis.pagefiltering.service.AbstractService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.web.error.ErrorDictionaryData;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class DocumentService implements AbstractService<Document> {
+public class DocumentService {
     private DocumentDaoRepository documentDaoRepository;
     private JournalDocumentDaoRepository journalDocumentDaoRepository;
     private JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository;
     private DocumentBytesStorageService documentBytesStorageService;
 
-    private final AbstractGenerateDataService<DocumentDaoRepository, Document> abstractGenerateDataService;
-
     @Autowired
     public DocumentService(DocumentDaoRepository documentDaoRepository,
                            JournalDocumentDaoRepository journalDocumentDaoRepository,
                            JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository,
-                           DocumentBytesStorageService documentBytesStorageService,
-                           AbstractGenerateDataService<DocumentDaoRepository, Document> abstractGenerateDataService) {
+                           DocumentBytesStorageService documentBytesStorageService
+                           ) {
         this.documentDaoRepository = documentDaoRepository;
         this.journalDocumentDaoRepository = journalDocumentDaoRepository;
         this.journalDocumentErrorDaoRepository = journalDocumentErrorDaoRepository;
 		this.documentBytesStorageService = documentBytesStorageService;
-        this.abstractGenerateDataService = abstractGenerateDataService;
     }
 
     public List<Document> documentList (int start, int pageSize) {
@@ -129,18 +121,6 @@ public class DocumentService implements AbstractService<Document> {
 	public DocumentBytes findDocumentBytes(long documentId, long bytesId) {
 		return this.documentBytesStorageService.find(documentId, bytesId);
 	}
-
-    @Override
-    @Transactional(readOnly = true)
-    public PageContainer<Document> getAll(WebRequest webRequest) {
-        return abstractGenerateDataService.generateDataPageContainer(Document.class, webRequest, documentDaoRepository);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Document getOneById(long id) {
-        return (Document) abstractGenerateDataService.getOneById(id, Document.class, documentDaoRepository);
-    }
 
 	public void getDocumentBytesContents(DocumentBytes documentBytes, ByteArrayOutputStream out) {
 		this.documentBytesStorageService.load(documentBytes, out);
