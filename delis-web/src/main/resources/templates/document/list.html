@@ -75,12 +75,19 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script>
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+                console.log('dataIndex=' + dataIndex);
+                return false;
+            }
+        );
         var table = $('table#documents').DataTable({
             ajax: {
                 contentType: 'application/json',
                 url: '/delis/document/table',
                 type: 'POST',
                 data: function (d) {
+                    console.log(JSON.stringify(d));
                     return JSON.stringify(d);
                 }
             },
@@ -139,6 +146,7 @@
 
         $('select#statusSelector').change(function(){onSelectChange('statusSelector', 4)});
         $('select#formatSelector').change(function(){onSelectChange('formatSelector', 6)});
+        $('select#receivedFilter').change(function(){onSelectChange('receivedFilter', 1)});
 
         var orgInput = $('input#orgFilter');
         orgInput.on('input', function() {onTextChange(orgInput.val(), 2)});
