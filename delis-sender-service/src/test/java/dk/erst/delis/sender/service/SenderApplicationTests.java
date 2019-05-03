@@ -11,7 +11,7 @@ import dk.erst.delis.sender.service.task.TestDocumentCollector;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DelisSenderServiceApplicationTests {
+public class SenderApplicationTests {
 
 	@Autowired
 	private TestDocumentCollector documentCollector;
