@@ -10,7 +10,6 @@ import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalDocumentError;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.pagefiltering.service.AbstractService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.web.error.ErrorDictionaryData;
 import org.apache.commons.lang3.StringUtils;

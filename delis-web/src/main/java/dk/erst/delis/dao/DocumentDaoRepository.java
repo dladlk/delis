@@ -1,14 +1,13 @@
 package dk.erst.delis.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.pagefiltering.persistence.AbstractRepository;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Map;
 
 public interface DocumentDaoRepository extends DataTablesRepository<Document, Long>, DocumentDao {
 
