@@ -194,11 +194,13 @@ public class ApplicationResponseService {
 				if (isNotBlank(mlrd.getDescription())) {
 					response.setResponseDescription(mlrd.getDescription());
 				}
-				lineResponseList = new ArrayList<>();
-				for (MessageLevelLineResponse lr : mlrd.getLineResponseList()) {
-					Response r = Response.builder().responseCode(lr.getLineCode()).responseDescription(lr.getDescription()).build();
-					r.addStatus(ResponseStatus.builder().statusReason(lr.getReasonCode()).build());
-					lineResponseList.add(LineResponse.builder().lineId(lr.getLineId()).response(r).build());
+				if (mlrd.getLineResponseList() != null) {
+					lineResponseList = new ArrayList<>();
+					for (MessageLevelLineResponse lr : mlrd.getLineResponseList()) {
+						Response r = Response.builder().responseCode(lr.getLineCode()).responseDescription(lr.getDescription()).build();
+						r.addStatus(ResponseStatus.builder().statusReason(lr.getReasonCode()).build());
+						lineResponseList.add(LineResponse.builder().lineId(lr.getLineId()).response(r).build());
+					}
 				}
 			}
 
