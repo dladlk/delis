@@ -84,7 +84,7 @@
         var table = $('table#documents').DataTable({
             ajax: {
                 contentType: 'application/json',
-                url: '/delis/document/table',
+                url: '[[@{/document/table}]]',
                 type: 'POST',
                 data: function (d) {
                     console.log(JSON.stringify(d));
