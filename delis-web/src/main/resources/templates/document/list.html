@@ -4,7 +4,7 @@
       th:replace="~{fragments/layout :: layout (~{::body})}"
 >
 <body>
-<div class="card border-primary">
+<div class="card border-primary mb-3">
     <div class="card-header bg-primary text-white">
         Documents
     </div>
@@ -59,7 +59,7 @@
                     </thead>
                 </table>
             </div>
-            <div class="card-footer">
+            <div class="card-footer mt-2">
                 <div class="d-flex justify-content-start">
                     <label class="m-2 col-form-label">Status:</label>
                     <select th:field="*{status}" class="m-2">
