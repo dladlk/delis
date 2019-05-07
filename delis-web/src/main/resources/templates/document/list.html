@@ -96,11 +96,11 @@
                     data: 'id',
                     orderable: false,
                     searchable: false,
-                    render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList" id="idList"/>'; }
+                    render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList" />'; }
                 },
                 {
                     data: 'createTime',
-                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + moment(data).format("YYYY-MM-dd HH:mm:ss") + '</a>'; }
+                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + moment(data).format("YYYY-MM-DD HH:mm:ss") + '</a>'; }
                 },
                 {
 
