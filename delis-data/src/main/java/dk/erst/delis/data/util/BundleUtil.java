@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 @UtilityClass
 public class BundleUtil {
 
-    private static final ResourceBundle RESOURCE = ResourceBundle.getBundle("messages");
+    private final ResourceBundle RESOURCE = ResourceBundle.getBundle("messages");
 
     public String getName(Enum<? extends Named> e) {
         String m = BundleUtil.getMessage(e.getClass().getSimpleName()+"." + e.name());
@@ -19,7 +19,7 @@ public class BundleUtil {
         return m;
     }
 
-    public String getMessage(String name) {
+    private String getMessage(String name) {
         try {
             return RESOURCE.getString(name);
         } catch (MissingResourceException e) {
