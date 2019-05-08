@@ -33,13 +33,13 @@
 					<td>
 						<select class="form-control"  id="statusSelector">
 							<option>All</option>
-							<option th:each="status : ${statusList}" th:text="${status}" th:value="${status}"></option>
+							<option th:each="status : ${statusList}" th:text="${status.getName()}" th:value="${status}"></option>
 						</select>
 					</td>
 					<td>
 						<select class="form-control"  id="publishingStatusSelector">
 							<option>All</option>
-							<option th:each="status : ${publishingStatusList}" th:text="${status}" th:value="${status}"></option>
+							<option th:each="status : ${publishingStatusList}" th:text="${status.getName()}" th:value="${status}"></option>
 						</select>
 					</td>
 				</tr>
@@ -64,11 +64,11 @@
 					<div class="d-flex justify-content-start">
                         <label class="m-2 col-form-label">Status:</label>
                         <select th:field="*{status}" class="m-2">
-                            <option th:each="status : ${statusList}" th:text="${status}" th:value="${status}"></option>
+                            <option th:each="status : ${statusList}" th:text="${status.getName()}" th:value="${status}"></option>
                         </select>
                         <label class="m-2 col-form-label">Publishing Status:</label>
                         <select th:field="*{publishStatus}" class="m-2">
-                            <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus}" th:value="${publishStatus}"></option>
+                            <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus.getName()}" th:value="${publishStatus}"></option>
                         </select>
 						<button type="submit" class="m-2 btn btn-primary">Update Statuses</button>
 					</div>
