@@ -33,13 +33,13 @@
                         <td>
                             <select class="form-control"  id="statusSelector">
                                 <option>All</option>
-                                <option th:each="r : ${statusList}" th:text="${r}" th:value="${r}"></option>
+                                <option th:each="r : ${statusList}" th:text="${r.getName()}" th:value="${r}"></option>
                             </select>
                         </td>
                         <td>
                             <select class="form-control"  id="formatSelector">
                                 <option>All</option>
-                                <option th:each="r : ${T(dk.erst.delis.data.enums.document.DocumentFormat).values()}" th:text="${r}" th:value="${r}"></option>
+                                <option th:each="r : ${T(dk.erst.delis.data.enums.document.DocumentFormat).values()}" th:text="${r.getName()}" th:value="${r}"></option>
                             </select>
                         </td>
                     </tr>
