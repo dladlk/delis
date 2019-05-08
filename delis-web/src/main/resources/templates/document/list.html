@@ -74,6 +74,7 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script>
+
         $.fn.dataTable.ext.search.push(
             function( settings, data, dataIndex ) {
                 console.log('dataIndex=' + dataIndex);
@@ -81,6 +82,7 @@
             }
         );
         var table = $('table#documents').DataTable({
+
             ajax: {
                 contentType: 'application/json',
                 url: '[[@{/document/table}]]',
@@ -90,6 +92,7 @@
                     return JSON.stringify(d);
                 }
             },
+            order: [1, "desc"],
             serverSide: true,
             columns: [
                 {
