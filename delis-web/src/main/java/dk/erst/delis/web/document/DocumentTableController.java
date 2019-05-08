@@ -17,10 +17,12 @@ import java.util.Date;
 
 @RestController
 public class DocumentTableController {
-    public static final String CREATE_TIME = "createTime";
-    public static final String TODAY = "Today";
-    public static final String LAST_WEEK = "Last week";
-    public static final String LAST_MONTH = "Last month";
+
+    private static final String CREATE_TIME = "createTime";
+    private static final String TODAY = "Today";
+    private static final String LAST_WEEK = "Last week";
+    private static final String LAST_MONTH = "Last month";
+
     private DocumentDaoRepository repository;
 
     public DocumentTableController(DocumentDaoRepository repository) {
@@ -38,7 +40,6 @@ public class DocumentTableController {
         } else {
             return repository.findAll(input);
         }
-
     }
 
     private Specification getDateRangeSpec(final String field, String value) {
