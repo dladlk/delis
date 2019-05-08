@@ -161,11 +161,11 @@ public class DocumentController {
 		DocumentBytes documentBytes = documentService.findDocumentBytes(documentId, bytesId);
 		if (documentBytes == null) {
 			ra.addFlashAttribute("errorMessage", "Data not found");
-			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
+			return RedirectUtil.redirectEntity(servletContextPath, "/document/view/" + documentId);
 		}
 		if (!isDownloadAllowed(documentBytes)) {
 			ra.addFlashAttribute("errorMessage", "Only RECEIPT bytes are allowed for download, but " + documentBytes.getType() + " is requested");
-			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
+			return RedirectUtil.redirectEntity(servletContextPath, "/document/view/" + documentId);
 		}
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
