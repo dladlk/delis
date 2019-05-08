@@ -63,7 +63,7 @@
                 <div class="d-flex justify-content-start">
                     <label class="m-2 col-form-label">Status:</label>
                     <select th:field="*{status}" class="m-2">
-                        <option th:each="documentStatus : ${statusList}" th:text="${documentStatus}"
+                        <option th:each="documentStatus : ${statusList}" th:text="${documentStatus.getName()}"
                                 th:value="${documentStatus}"></option>
                     </select>
                     <button type="submit" class="m-2 btn btn-primary">Update Statuses</button>
