@@ -1,6 +1,9 @@
 package dk.erst.delis.data.enums.identifier;
 
-public enum IdentifierPublishingStatus {
+import dk.erst.delis.data.enums.Named;
+import dk.erst.delis.data.util.BundleUtil;
+
+public enum IdentifierPublishingStatus implements Named {
 
 	PENDING, DONE, FAILED;
 	
@@ -23,5 +26,10 @@ public enum IdentifierPublishingStatus {
 	
 	public boolean isFailed() {
 		return this == FAILED;
+	}
+
+	@Override
+	public String getName() {
+		return BundleUtil.getName(this);
 	}
 }

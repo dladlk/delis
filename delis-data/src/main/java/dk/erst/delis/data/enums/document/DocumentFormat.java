@@ -1,8 +1,10 @@
 package dk.erst.delis.data.enums.document;
 
 import dk.erst.delis.data.constants.DocumentFormatConst;
+import dk.erst.delis.data.enums.Named;
+import dk.erst.delis.data.util.BundleUtil;
 
-public enum DocumentFormat {
+public enum DocumentFormat implements Named {
 
 	UNSUPPORTED("U", "", "", DocumentType.UNSUPPORTED),
 
@@ -104,5 +106,8 @@ public enum DocumentFormat {
 		return documentFormatFamily;
 	}
 
-
+	@Override
+	public String getName() {
+		return BundleUtil.getName(this);
+	}
 }
