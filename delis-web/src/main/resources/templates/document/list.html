@@ -100,16 +100,16 @@
                 },
                 {
                     data: 'createTime',
-                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + moment(data).format("YYYY-MM-DD HH:mm:ss") + '</a>'; }
+                    render: function (data, type, row) { return generateRenderView(row, moment(data).format("YYYY-MM-DD HH:mm:ss"), null); }
                 },
                 {
 
-                    data: 'organisation.name',
-                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + data + '</a>'; }
+                    data: 'organisation',
+                    render: function (data, type, row) { return (data !== null) ? generateRenderView(row, row["organisation"].name, null) : ''; }
                 },
                 {
-                    data: 'receiverIdRaw',
-                    render: function (data, type, row) { return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + row["receiverIdentifier"].name + ' </a><span> ' + data + '</span>'; }
+                    data: 'receiverIdentifier',
+                    render: function (data, type, row) { return (data !== null) ? generateRenderView(row, row["receiverIdentifier"].name, row["receiverIdRaw"]) : ''; }
                 },
                 {
                     data: 'documentStatus'
@@ -125,6 +125,14 @@
                 }
             ]
         });
+
+        function generateRenderView(row, aHrefText, spanText) {
+            if (spanText !== null) {
+                return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + aHrefText + ' </a><span> ' + spanText + '</span>';
+            } else {
+                return '<a href="[[@{/document/view/}]]' + row["id"] + '">' + aHrefText + '</a>';
+            }
+        }
 
         // todo move two functions below to one place
         var onTextChange = function (value, column) {
