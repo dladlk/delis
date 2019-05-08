@@ -88,7 +88,6 @@
                 url: '[[@{/document/table}]]',
                 type: 'POST',
                 data: function (d) {
-                    console.log(JSON.stringify(d));
                     return JSON.stringify(d);
                 }
             },
@@ -145,7 +144,8 @@
         var onSelectChange = function(selector, column) {
             var filter = '';
             $('select#' + selector + ' option:selected').each(function() {
-                filter += $(this).text() + "+";
+                filter += $(this).val() + "+";
+                console.log('filter = ' + filter);
             });
             filter = filter.substring(0, filter.length - 1);
             if(filter == 'All') {

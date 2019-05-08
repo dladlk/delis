@@ -98,7 +98,7 @@
 						data: 'id',
 						orderable: false,
 						searchable: false,
-						render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList" id="idList"/>'; }
+						render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList"/>'; }
 					},
 					{
 						data: 'organisation.name',
@@ -130,7 +130,7 @@
 			var onSelectChange = function(selector, column) {
 				var filter = '';
 				$('select#' + selector + ' option:selected').each(function() {
-					filter += $(this).text() + "+";
+					filter += $(this).val() + "+";
 				});
 				filter = filter.substring(0, filter.length - 1);
 				if(filter == 'All') {
