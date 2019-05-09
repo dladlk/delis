@@ -1,7 +1,6 @@
 package dk.erst.delis.data.enums.identifier;
 
 import dk.erst.delis.data.enums.Named;
-import dk.erst.delis.data.util.BundleUtil;
 
 public enum IdentifierStatus implements Named {
 
@@ -24,8 +23,4 @@ public enum IdentifierStatus implements Named {
 		return this == DELETED;
 	}
 
-	@Override
-	public String getName() {
-		return BundleUtil.getName(this);
-	}
 }

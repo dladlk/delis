@@ -1,7 +1,6 @@
 package dk.erst.delis.data.enums.document;
 
 import dk.erst.delis.data.enums.Named;
-import dk.erst.delis.data.util.BundleUtil;
 
 public enum DocumentStatus implements Named {
 
@@ -19,10 +18,5 @@ public enum DocumentStatus implements Named {
 	
 	public boolean isLoadFailed() {
 		return this == LOAD_ERROR || this == UNKNOWN_RECEIVER; 
-	}
-
-	@Override
-	public String getName() {
-		return BundleUtil.getName(this);
 	}
 }

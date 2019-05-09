@@ -2,7 +2,6 @@ package dk.erst.delis.data.enums.document;
 
 import dk.erst.delis.data.constants.DocumentFormatConst;
 import dk.erst.delis.data.enums.Named;
-import dk.erst.delis.data.util.BundleUtil;
 
 public enum DocumentFormat implements Named {
 
@@ -106,8 +105,4 @@ public enum DocumentFormat implements Named {
 		return documentFormatFamily;
 	}
 
-	@Override
-	public String getName() {
-		return BundleUtil.getName(this);
-	}
 }

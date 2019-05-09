@@ -1,7 +1,6 @@
 package dk.erst.delis.data.enums.identifier;
 
 import dk.erst.delis.data.enums.Named;
-import dk.erst.delis.data.util.BundleUtil;
 
 public enum IdentifierPublishingStatus implements Named {
 
@@ -28,8 +27,4 @@ public enum IdentifierPublishingStatus implements Named {
 		return this == FAILED;
 	}
 
-	@Override
-	public String getName() {
-		return BundleUtil.getName(this);
-	}
 }

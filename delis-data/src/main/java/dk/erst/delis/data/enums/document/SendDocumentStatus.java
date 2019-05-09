@@ -1,7 +1,6 @@
 package dk.erst.delis.data.enums.document;
 
 import dk.erst.delis.data.enums.Named;
-import dk.erst.delis.data.util.BundleUtil;
 
 /*
  * Max length of name 25
@@ -18,8 +17,4 @@ public enum SendDocumentStatus implements Named {
 	
 	;
 
-	@Override
-	public String getName() {
-		return BundleUtil.getName(this);
-	}
 }
