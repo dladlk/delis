@@ -1,9 +1,31 @@
 package dk.erst.delis.task.document.deliver;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import com.google.common.io.Files;
+
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.dao.*;
+import dk.erst.delis.dao.ConfigValueDaoRepository;
+import dk.erst.delis.dao.DocumentBytesDaoRepository;
+import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.IdentifierDaoRepository;
+import dk.erst.delis.dao.IdentifierGroupDaoRepository;
+import dk.erst.delis.dao.JournalDocumentDaoRepository;
+import dk.erst.delis.dao.OrganisationDaoRepository;
+import dk.erst.delis.dao.OrganisationSetupDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.identifier.Identifier;
@@ -19,19 +41,6 @@ import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.vfs.service.VFSService;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
