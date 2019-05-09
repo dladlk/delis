@@ -25,6 +25,9 @@
     </modules>
 
     <properties>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<delis.version>1.0.0</delis.version>
 		<lombok.version>1.18.4</lombok.version>
 		
