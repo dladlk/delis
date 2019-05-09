@@ -1,12 +1,17 @@
 package dk.erst.delis.task.organisation.setup;
 
-import static org.junit.Assert.*;
+import static dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup.BIS3;
+import static dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup.CII;
+import static dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup.OIOUBL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import dk.erst.delis.data.entities.organisation.Organisation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +20,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup.*;
-
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationDaoRepository;
+import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -35,13 +39,12 @@ public class OrganisationSetupServiceTest {
 	@Autowired
 	private OrganisationSetupService organisationSetupService;
 
-	
-	private void assertStat(StatData stat, String ... keyList) {
+	private void assertStat(StatData stat, String... keyList) {
 		for (String key : keyList) {
 			assertStat(key, stat);
 		}
 	}
-	
+
 	private void assertStat(String key, StatData stat) {
 		assertTrue("Expected stat to have positive value for a key " + key, stat.getCount(key) > 0);
 	}
@@ -49,8 +52,8 @@ public class OrganisationSetupServiceTest {
 	@Test
 	public void testLoadUpdate() {
 		Organisation o = new Organisation();
-		o.setCode("test");
-		o.setName("test");
+		o.setCode("test" + System.currentTimeMillis());
+		o.setName("test" + System.currentTimeMillis());
 		organisationDaoRepository.save(o);
 
 		OrganisationSetupData dbSetup = organisationSetupService.load(o);
