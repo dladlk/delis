@@ -37,7 +37,6 @@ import dk.erst.delis.xml.builder.data.Response;
 import dk.erst.delis.xml.builder.data.Response.ResponseBuilder;
 import dk.erst.delis.xml.builder.data.ResponseStatus;
 import dk.erst.delis.xml.builder.data.ResponseStatus.ResponseStatusBuilder;
-import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.applicationresponse_21.ApplicationResponseType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ConditionType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ContactType;
@@ -55,7 +54,6 @@ import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.Company
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.DescriptionType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.StatusReasonType;
 
-@Slf4j
 public class ApplicationResponseBuilder {
 
 	private static String INVOCIE_RESPONSE_TEMPLATE_XSLT = "invoice-response.xslt";
@@ -91,7 +89,6 @@ public class ApplicationResponseBuilder {
 	}
 
 	public void parseAndEnrich(InputStream is, ApplicationResponseData d, OutputStream out) throws Exception {
-		log.info("parseAndEnrich for " + d);
 		ApplicationResponseType ar = parse(is);
 		copyDataToType(d, ar);
 

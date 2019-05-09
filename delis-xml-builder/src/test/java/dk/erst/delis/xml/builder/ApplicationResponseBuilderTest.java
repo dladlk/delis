@@ -152,21 +152,21 @@ public class ApplicationResponseBuilderTest {
 		ApplicationResponseData data = new ApplicationResponseData();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), data, out);
-		System.out.println("On ");
-		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		//System.out.println("On ");
+		//System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 100);
 
 		System.out.println("Check on empty AR but full data");
 		data = generateFullData();
 		out = new ByteArrayOutputStream();
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), data, out);
-		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		//System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
 
 		System.out.println("Check on both full data and AR");
 		byte[] fullAR = out.toByteArray();
 		builder.parseAndEnrich(new ByteArrayInputStream(fullAR), data, out);
-		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		//System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
 
 		System.out.println("Check on partly data and empty AR");
@@ -177,14 +177,14 @@ public class ApplicationResponseBuilderTest {
 		partlyData.setDocumentResponse(DocumentResponse.builder().build());
 
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), partlyData, out);
-		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		//System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
 
 		partlyData.getSenderParty().setContact(Contact.builder().build());
 		partlyData.getDocumentResponse().setResponse(Response.builder().build());
 		partlyData.getDocumentResponse().setDocumentReference(DocumentReference.builder().build());
 		builder.parseAndEnrich(new ByteArrayInputStream(xmlString.getBytes()), partlyData, out);
-		System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
+		//System.out.println(new String(out.toByteArray(), StandardCharsets.UTF_8));
 		assertTrue(out.toByteArray().length > 500);
 	}
 
