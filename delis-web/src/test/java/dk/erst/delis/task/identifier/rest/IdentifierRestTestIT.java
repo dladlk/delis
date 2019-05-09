@@ -36,7 +36,7 @@ public class IdentifierRestTestIT {
 	@Test
 	public void test204() throws Exception {
 
-		String uri = "/rest/receivercheck/wrong:id/a/b";
+		String uri = "/rest/open/receivercheck/wrong:id/a/b";
 		MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
 				.accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
