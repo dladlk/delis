@@ -35,7 +35,7 @@ public class DocumentTableControllerTest {
 
         DocumentDaoRepository repo = mock(DocumentDaoRepository.class);
         when(repo.findAll(any(DataTablesInput.class))).then(d -> {
-            DataTablesOutput o = new DataTablesOutput<>();
+            DataTablesOutput<Document> o = new DataTablesOutput<>();
             o.setData(documentList);
             return o;
         });

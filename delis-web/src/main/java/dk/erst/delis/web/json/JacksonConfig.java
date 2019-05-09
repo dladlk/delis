@@ -18,25 +18,23 @@ import java.util.ArrayList;
 public class JacksonConfig {
 
     public static class NamedSerializer extends StdSerializer<Named> {
-        public NamedSerializer() {
+        
+		private static final long serialVersionUID = 939861471871096893L;
+
+		public NamedSerializer() {
             super(Named.class);
         }
 
-        public NamedSerializer(Class t) {
-            super(t);
-        }
-
-        public void serialize(Named o, JsonGenerator generator,
-                              SerializerProvider provider)
-                throws IOException, JsonProcessingException {
+        public void serialize(Named o, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
             generator.writeString(o.getName());
-        }
-    }
+		}
+	}
 
     public class DelisJsonSerializer extends SimpleSerializers {
 
+		private static final long serialVersionUID = -94489345341356855L;
 
-        @Override
+		@Override
         public JsonSerializer<?> findSerializer(SerializationConfig config, JavaType type, BeanDescription beanDesc) {
             if (type.isEnumType() &&  type.isTypeOrSubTypeOf(Named.class)) {
                 return new NamedSerializer();

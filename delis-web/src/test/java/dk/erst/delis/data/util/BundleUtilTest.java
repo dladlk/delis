@@ -18,22 +18,23 @@ import static org.junit.Assert.assertTrue;
 public class BundleUtilTest {
 
     private String DATA_ENUMS_PACKAGES = "dk.erst.delis.data.enums";
-    private List<Enum> missName = new ArrayList<>();
+    private List<Enum<? extends Named>> missName = new ArrayList<>();
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void checkBundlesForAllNamed() throws ClassNotFoundException {
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AssignableTypeFilter(Named.class));
         Set<BeanDefinition> res = scanner.findCandidateComponents(DATA_ENUMS_PACKAGES);
         for (BeanDefinition b : res) {
             Class<?> c = Class.forName(b.getBeanClassName());
-            check((Class<? extends Enum>) c);
+            check((Class<? extends Enum<? extends Named>>) c);
         }
 
         List<String> keyPropertiesIsNotMiss = new ArrayList<>();
 
         if (!missName.isEmpty()) {
-            for (Enum v : missName) {
+            for (Enum<? extends Named> v : missName) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(v.getDeclaringClass().getSimpleName());
                 sb.append('.');
@@ -53,8 +54,8 @@ public class BundleUtilTest {
 
     }
 
-    private void check(Class<? extends Enum> d) {
-        for (Enum e : d.getEnumConstants()) {
+    private void check(Class<? extends Enum<? extends Named>> d) {
+        for (Enum<? extends Named> e : d.getEnumConstants()) {
             Named n = (Named) e;
             String ename = n.getName();
             if (ename == null || e.name().equals(ename)) {

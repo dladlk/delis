@@ -34,7 +34,7 @@ public class DocumentTableController {
         Column column = input.getColumns().get(1);
         String value = column.getSearch().getValue();
         if (StringUtils.isNotEmpty(value)) {
-            Specification additionalSpecification = getDateRangeSpec(CREATE_TIME, value);
+            Specification<Document> additionalSpecification = getDateRangeSpec(CREATE_TIME, value);
             column.getSearch().setValue("");
             return repository.findAll(input, additionalSpecification);
         } else {
@@ -42,7 +42,7 @@ public class DocumentTableController {
         }
     }
 
-    private Specification getDateRangeSpec(final String field, String value) {
+    private Specification<Document> getDateRangeSpec(final String field, String value) {
         final Date startDate;
         final Date endDate = new Date();
 
@@ -55,6 +55,6 @@ public class DocumentTableController {
         } else {
             startDate = endDate;
         }
-        return (Specification) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.between(root.get(field), startDate, endDate);
+        return (Specification<Document>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.between(root.get(field), startDate, endDate);
     }
 }
