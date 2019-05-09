@@ -44,16 +44,6 @@
 			<artifactId>delis-tasks</artifactId>
 			<version>${delis.version}</version>
 		</dependency>		
-		<dependency>
-			<groupId>dk.erst.delis</groupId>
-			<artifactId>delis-xml-builder</artifactId>
-			<version>${delis.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dk.erst.delis</groupId>
-			<artifactId>delis-sbdh</artifactId>
-			<version>${delis.version}</version>
-		</dependency>
 
 		<!-- JAVAX-VALIDATION -->
 		<dependency>
@@ -120,29 +110,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        
-        <!-- OpenCSV for IdentifierLoadService -->
-		<dependency>
-		    <groupId>com.opencsv</groupId>
-		    <artifactId>opencsv</artifactId>
-		    <version>4.4</version>
-		</dependency>
 
-		<dependency>
-			<groupId>no.difi.commons</groupId>
-			<artifactId>commons-bdx</artifactId>
-			<version>0.9.5</version>
-		</dependency>
-		<dependency>
-			<groupId>no.difi.commons</groupId>
-			<artifactId>commons-busdox</artifactId>
-			<version>0.9.5</version>
-		</dependency>
-		<dependency>
-			<groupId>no.difi.vefa</groupId>
-			<artifactId>peppol-lookup</artifactId>
-			<version>1.1.1</version>
-		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>

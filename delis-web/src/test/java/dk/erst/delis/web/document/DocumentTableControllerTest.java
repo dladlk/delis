@@ -1,26 +1,28 @@
 package dk.erst.delis.web.document;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.enums.document.DocumentType;
-import dk.erst.delis.web.json.JacksonConfig;
-import org.junit.Test;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import dk.erst.delis.dao.DocumentTableRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.enums.document.DocumentType;
+import dk.erst.delis.web.json.JacksonConfig;
 
 public class DocumentTableControllerTest {
 
@@ -33,7 +35,7 @@ public class DocumentTableControllerTest {
         doc.setDocumentType(DocumentType.INVOICE);
         documentList.add(doc);
 
-        DocumentDaoRepository repo = mock(DocumentDaoRepository.class);
+        DocumentTableRepository repo = mock(DocumentTableRepository.class);
         when(repo.findAll(any(DataTablesInput.class))).then(d -> {
             DataTablesOutput<Document> o = new DataTablesOutput<>();
             o.setData(documentList);

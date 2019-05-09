@@ -1,7 +1,9 @@
 package dk.erst.delis.web.document;
 
-import dk.erst.delis.dao.DocumentDaoRepository;
-import dk.erst.delis.data.entities.document.Document;
+import java.util.Date;
+
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.Date;
+import dk.erst.delis.dao.DocumentTableRepository;
+import dk.erst.delis.data.entities.document.Document;
 
 @RestController
 public class DocumentTableController {
@@ -23,9 +25,9 @@ public class DocumentTableController {
     private static final String LAST_WEEK = "Last week";
     private static final String LAST_MONTH = "Last month";
 
-    private DocumentDaoRepository repository;
+    private DocumentTableRepository repository;
 
-    public DocumentTableController(DocumentDaoRepository repository) {
+    public DocumentTableController(DocumentTableRepository repository) {
         this.repository = repository;
     }
 

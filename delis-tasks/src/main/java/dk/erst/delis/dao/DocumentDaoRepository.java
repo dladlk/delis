@@ -1,15 +1,16 @@
 package dk.erst.delis.dao;
 
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 import java.util.Map;
 
-public interface DocumentDaoRepository extends DataTablesRepository<Document, Long>, DocumentDao {
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+
+public interface DocumentDaoRepository extends PagingAndSortingRepository<Document, Long>, DocumentDao {
 
 	@Query("select s.documentStatus as documentStatus, count(*) as documentCount "
 			+ "from Document s "
