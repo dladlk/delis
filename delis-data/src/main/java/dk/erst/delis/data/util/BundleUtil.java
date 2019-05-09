@@ -9,21 +9,30 @@ import java.util.ResourceBundle;
 @UtilityClass
 public class BundleUtil {
 
-    private final ResourceBundle RESOURCE = ResourceBundle.getBundle("messages");
+	private final ResourceBundle RESOURCE = ResourceBundle.getBundle("messages");
 
-    public String getName(Enum<? extends Named> e) {
-        String m = BundleUtil.getMessage(e.getClass().getSimpleName()+"." + e.name());
-        if (m == null) {
-            return e.name();
-        }
-        return m;
-    }
+	public String getName(Named n) {
+		String m;
+		if (n instanceof Enum<?>) {
+			Enum<?> e = (Enum<?>) n;
+			m = BundleUtil.getMessage(e.getClass().getSimpleName() + "." + e.name());
+			if (m == null) {
+				m = e.name();
+			}
+		} else {
+			m = BundleUtil.getMessage(n.getClass().getSimpleName() + ".name");
+			if (m == null) {
+				m = n.getClass().getSimpleName();
+			}
+		}
+		return m;
+	}
 
-    private String getMessage(String name) {
-        try {
-            return RESOURCE.getString(name);
-        } catch (MissingResourceException e) {
-            return null;
-        }
-    }
+	private String getMessage(String name) {
+		try {
+			return RESOURCE.getString(name);
+		} catch (MissingResourceException e) {
+			return null;
+		}
+	}
 }
