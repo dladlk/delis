@@ -79,8 +79,6 @@ public class XSLTMemoryMeasureTool {
 		}
 	}
 
-	@Ignore
-	@Test
 	public void testTransformerCreation(Path xslFilePath, int creationTimes) {
 		boolean cacheEnabled = true;
 		System.gc();
