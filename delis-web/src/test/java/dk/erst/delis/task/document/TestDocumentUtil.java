@@ -29,6 +29,9 @@ public class TestDocumentUtil {
 	}
 
 	public static void cleanupTestFile(Path testFile) {
+		if (testFile == null) {
+			return;
+		}
 		if (testFile.toFile().exists()) {
 			if (testFile.toFile().delete()) {
 				log.info("Deleted test file " + testFile);
