@@ -18,6 +18,14 @@ public class StatData {
 		this.startMs = System.currentTimeMillis();
 		this.statMap = new HashMap<>();
 	}
+	
+	public int getCount(String key) {
+		int[] c = this.statMap.get(key);
+		if (c != null) {
+			return c[0];
+		}
+		return -1;
+	}
 
 	public void incrementObject(Object key) {
 		increment(String.valueOf(key));
