@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import dk.erst.delis.config.rule.DefaultRuleBuilder;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
@@ -33,8 +34,11 @@ public class RuleServiceTest {
 
 	@Test
 	public void testDefaults() {
-		assertEquals(15, service.getValidationList().size());
-		assertEquals(2, service.getTransformationList().size());
+		int validationSize = DefaultRuleBuilder.buildDefaultValidationRuleList().size();
+		int transformationSize = DefaultRuleBuilder.buildDefaultTransformationRuleList().size();
+		
+		assertEquals(validationSize, service.getValidationList().size());
+		assertEquals(transformationSize, service.getTransformationList().size());
 
 		RuleDocumentValidationData validationData = new RuleDocumentValidationData();
 		validationData.setDocumentFormat(DocumentFormat.UNSUPPORTED);
@@ -50,38 +54,14 @@ public class RuleServiceTest {
 		transformationData.setDocumentFormatFamilyTo(DocumentFormatFamily.OIOUBL);
 		transformationRuleService.saveRule(transformationData);
 
-		assertEquals(15, service.getValidationList().size());
-		assertEquals(2, service.getTransformationList().size());
+		assertEquals(validationSize, service.getValidationList().size());
+		assertEquals(transformationSize, service.getTransformationList().size());
 
 		service.refreshValidationList();
 		service.refreshTransformationList();
 
-		assertEquals(16, service.getValidationList().size());
-		assertEquals(3, service.getTransformationList().size());
+		assertEquals(validationSize + 1, service.getValidationList().size());
+		assertEquals(transformationSize + 1, service.getTransformationList().size());
 	}
 
-	//todo Have to keep @SpringBootTest since it depends on actual repository
-//	@BeforeClass
-//	public static void init() {
-//		RuleDocumentTransformationDaoRepository ruleDocumentTransformationDaoRepository = mock(RuleDocumentTransformationDaoRepository.class);
-//		when(ruleDocumentTransformationDaoRepository.findAll(any(PageRequest.class))).then(d -> {
-//			return new PageImpl<>(transformationRuleService.loadRulesList());
-//		});
-//		when(ruleDocumentTransformationDaoRepository.findAll()).then(d -> {
-//			return DefaultRuleBuilder.buildDefaultTransformationRuleList();
-//		});
-//		RuleDocumentValidationDaoRepository ruleDocumentValidationDaoRepository = mock(RuleDocumentValidationDaoRepository.class);
-//		when(ruleDocumentValidationDaoRepository.findAll(any(PageRequest.class))).then(d -> {
-//			return new PageImpl<>(DefaultRuleBuilder.buildDefaultValidationRuleList());
-//		});
-//		when(ruleDocumentValidationDaoRepository.findAll()).then(d -> {
-//			return DefaultRuleBuilder.buildDefaultValidationRuleList();
-//		});
-//
-//		ConfigBean configBean = new ConfigBean(TestUtil.getEmptyConfigValueDaoRepository());
-//		transformationRuleService = new TransformationRuleService(ruleDocumentTransformationDaoRepository);
-//		validationRuleService = new ValidationRuleService(ruleDocumentValidationDaoRepository);
-//		service = new RuleService(configBean, validationRuleService, transformationRuleService);
-//
-//	}
 }

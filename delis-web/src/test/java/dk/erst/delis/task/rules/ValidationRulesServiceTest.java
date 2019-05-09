@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import dk.erst.delis.config.rule.DefaultRuleBuilder;
 import dk.erst.delis.web.validationrule.RuleDocumentValidationData;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 
@@ -28,6 +29,6 @@ public class ValidationRulesServiceTest {
 		service.recreateDefault();
 		List<RuleDocumentValidationData> ruleDocumentValidationData = service.loadRulesList();
 
-		assertEquals(15, ruleDocumentValidationData.size());
+		assertEquals(DefaultRuleBuilder.buildDefaultValidationRuleList().size(), ruleDocumentValidationData.size());
 	}
 }
