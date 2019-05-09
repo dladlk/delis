@@ -30,7 +30,7 @@ public class IdentifierService {
     }
 
     public Identifier findOne (Long id) {
-        return identifierDaoRepository.findById(id).get();
+        return identifierDaoRepository.findById(id).orElse(null);
     }
 
     public Iterator<Identifier> findAll () {
