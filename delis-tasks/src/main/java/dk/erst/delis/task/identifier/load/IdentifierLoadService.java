@@ -173,7 +173,7 @@ public class IdentifierLoadService {
 		return stat;
 	}
 
-	private String buildUniqueValueType(Identifier identifier) {
+	public static String buildUniqueValueType(Identifier identifier) {
 		return identifier.getType()+"::"+identifier.getValue();
 	}
 
