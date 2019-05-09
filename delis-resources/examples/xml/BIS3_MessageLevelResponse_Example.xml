@@ -19,10 +19,10 @@
 	<cbc:IssueDate>2016-08-15</cbc:IssueDate>
 	<cbc:IssueTime>12:00:00</cbc:IssueTime>
 	<cac:SenderParty>
-		<cbc:EndpointID schemeID="0088">7300010000001</cbc:EndpointID>
+		<cbc:EndpointID schemeID="0088">5790000436057</cbc:EndpointID>
 	</cac:SenderParty>
 	<cac:ReceiverParty>
-		<cbc:EndpointID schemeID="0088">7315458756324</cbc:EndpointID>
+		<cbc:EndpointID schemeID="0088">5790000012348</cbc:EndpointID>
 	</cac:ReceiverParty>
 	<cac:DocumentResponse>
 		<cac:Response>
