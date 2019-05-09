@@ -16,7 +16,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -43,7 +42,7 @@ public class SetupControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testIndex() throws Exception {
-        this.mockMvc.perform(get("/setup/index")).andDo(print())
+        this.mockMvc.perform(get("/setup/index"))
                 .andExpect(view().name("/setup/index"))
                 .andExpect(model().attribute("configValuesList", notNullValue()))
                 .andExpect(model().attribute("configBean", notNullValue()))
@@ -67,7 +66,7 @@ public class SetupControllerTest {
     public void testSave() throws Exception {
         this.mockMvc.perform(post("/setup/config/save")
                 .param("configValueType", "ENDPOINT_FORMAT")
-                .param("value", "test")).andDo(print())
+                .param("value", "test"))
                 .andExpect(redirectedUrl("/setup/index"))
                 .andExpect(model().attribute("errorMessage", nullValue()));
     }
@@ -75,14 +74,14 @@ public class SetupControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testUpdate() throws Exception {
-        this.mockMvc.perform(get("/setup/config/dbupdate")).andDo(print())
+        this.mockMvc.perform(get("/setup/config/dbupdate"))
                 .andExpect(redirectedUrl("/setup/index"));
     }
 
     @Test
     @WithMockUser(username = "delis")
     public void testEdit() throws Exception {
-        this.mockMvc.perform(get("/setup/config/edit/ENDPOINT_FORMAT")).andDo(print())
+        this.mockMvc.perform(get("/setup/config/edit/ENDPOINT_FORMAT"))
                 .andExpect(view().name("/setup/config_value_edit"))
                 .andExpect(model().attribute("configValue", notNullValue()));
     }

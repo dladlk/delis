@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -50,7 +49,7 @@ public class DocumentControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/document/list")).andDo(print())
+        this.mockMvc.perform(get("/document/list"))
                 .andExpect(view().name("/document/list"))
                 .andExpect(model().attribute("documentList", notNullValue()))
                 .andExpect(model().attribute("selectedIdList", notNullValue()))
@@ -72,7 +71,7 @@ public class DocumentControllerTest {
                 .param("id", "" + save.getId())
                 .param("messageId", save.getMessageId())
                 .param("documentStatus", save.getDocumentStatus().name()))
-                .andDo(print())
+                
                 .andExpect(redirectedUrl("/document/view/" + save.getId()));
     }
 
@@ -85,7 +84,7 @@ public class DocumentControllerTest {
         document.setDocumentStatus(DocumentStatus.LOAD_ERROR);
         Document save = documentDaoRepository.save(document);
 
-        this.mockMvc.perform(get("/document/view/" + save.getId())).andDo(print())
+        this.mockMvc.perform(get("/document/view/" + save.getId()))
                 .andExpect(view().name("/document/view"))
                 .andExpect(model().attribute("document", notNullValue()))
                 .andExpect(model().attribute("documentStatusList", notNullValue()))

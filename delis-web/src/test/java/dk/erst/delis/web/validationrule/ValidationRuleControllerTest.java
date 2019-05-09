@@ -18,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -44,7 +43,7 @@ public class ValidationRuleControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/validationrule/list")).andDo(print())
+        this.mockMvc.perform(get("/validationrule/list"))
                 .andExpect(view().name("setup/index"))
                 .andExpect(model().attribute("validationRuleList", notNullValue()));
     }
@@ -60,7 +59,7 @@ public class ValidationRuleControllerTest {
                 .param("validationType","SCHEMATRON")
                 .param("rootPath","rootPath")
                 .param("config","config"))
-                .andDo(print())
+                
                 .andExpect(redirectedUrl("/setup/index"));
     }
 
@@ -70,7 +69,7 @@ public class ValidationRuleControllerTest {
         RuleDocumentValidation rule = createRule();
 
         this.mockMvc.perform(get("/validationrule/create/" + rule.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("validationrule/edit"))
                 .andExpect(model().attribute("validationRule", notNullValue()))
                 .andExpect(model().attribute("documentFormatList", notNullValue()))
@@ -83,7 +82,7 @@ public class ValidationRuleControllerTest {
         RuleDocumentValidation rule = createRule();
 
         this.mockMvc.perform(get("/validationrule/update/" + rule.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("validationrule/edit"))
                 .andExpect(model().attribute("validationRule", notNullValue()))
                 .andExpect(model().attribute("documentFormatList", notNullValue()))

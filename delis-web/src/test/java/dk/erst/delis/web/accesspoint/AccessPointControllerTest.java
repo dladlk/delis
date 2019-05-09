@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -61,7 +60,7 @@ public class AccessPointControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/accesspoint/list")).andDo(print())
+        this.mockMvc.perform(get("/accesspoint/list"))
                 .andExpect(view().name("accesspoint/list"))
                 .andExpect(content().string(containsString("aaa/aaa/aaa")))
                 .andExpect(content().string(containsString("s_d")))
@@ -77,7 +76,7 @@ public class AccessPointControllerTest {
                 .param("serviceDescription", "serviceDescription")
                 .param("technicalContactUrl", "technicalContactUrl")
                 .param("certificate", "certificate"))
-                .andDo(print())
+                
                 .andExpect(view().name("accesspoint/edit"))
                 .andExpect(model().attribute("errorMessage", notNullValue()))
                 .andExpect(model().attribute("accessPoint", notNullValue()));
@@ -87,7 +86,7 @@ public class AccessPointControllerTest {
     @WithMockUser(username = "delis")
     public void testCreateNew() throws Exception {
         this.mockMvc.perform(get("/accesspoint/create/0"))
-                .andDo(print())
+                
                 .andExpect(view().name("accesspoint/edit"))
                 .andExpect(model().attribute("errorMessage", nullValue()))
                 .andExpect(model().attribute("accessPoint", notNullValue()));
@@ -119,7 +118,7 @@ public class AccessPointControllerTest {
         Assert.assertEquals(created.getTechnicalContactUrl(), "ttt/ttt/ttt");
 
         this.mockMvc.perform(get("/accesspoint/update/" + created.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("accesspoint/edit"))
                 .andExpect(model().attribute("accessPoint", notNullValue()));
     }
@@ -145,7 +144,7 @@ public class AccessPointControllerTest {
         Assert.assertNotNull(created);
 
         this.mockMvc.perform(get("/accesspoint/delete/" + created.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("accesspoint/list"))
                 .andExpect(model().attribute("accessPointList", notNullValue()));
     }

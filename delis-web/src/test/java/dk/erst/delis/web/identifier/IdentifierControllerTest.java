@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -60,7 +59,7 @@ public class IdentifierControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/identifier/list")).andDo(print())
+        this.mockMvc.perform(get("/identifier/list"))
                 .andExpect(view().name("identifier/list"))
                 .andExpect(model().attribute("identifierList", notNullValue()))
                 .andExpect(model().attribute("selectedIdList", notNullValue()))
@@ -71,7 +70,7 @@ public class IdentifierControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testUpdateStatuses() throws Exception {
-        this.mockMvc.perform(post("/identifier/updatestatuses")).andDo(print())
+        this.mockMvc.perform(post("/identifier/updatestatuses"))
                 .andExpect(redirectedUrl("/identifier/list"));
     }
 
@@ -82,7 +81,7 @@ public class IdentifierControllerTest {
         Identifier save = getIdentifier();
 
         this.mockMvc.perform(get("/identifier/view/" + save.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("identifier/view"))
                 .andExpect(model().attribute("identifierStatusList", notNullValue()))
                 .andExpect(model().attribute("identifierPublishingStatusList", notNullValue()))
@@ -118,7 +117,7 @@ public class IdentifierControllerTest {
         Identifier save = getIdentifier();
 
         this.mockMvc.perform(get("/identifier/delete/" + save.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("identifier/view"))
                 .andExpect(model().attribute("identifier", notNullValue()));
     }

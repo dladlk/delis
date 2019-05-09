@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -42,7 +41,7 @@ public class HomeControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testHome() throws Exception {
-        this.mockMvc.perform(get("/home")).andDo(print())
+        this.mockMvc.perform(get("/home"))
                 .andExpect(model().attribute("organisationCount", notNullValue()))
                 .andExpect(model().attribute("identifierFailedCount", notNullValue()))
                 .andExpect(model().attribute("identifierPendingCount", notNullValue()))

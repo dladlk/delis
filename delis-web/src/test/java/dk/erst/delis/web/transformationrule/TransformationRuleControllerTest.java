@@ -17,7 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -43,7 +42,7 @@ public class TransformationRuleControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/transformationrule/list")).andDo(print())
+        this.mockMvc.perform(get("/transformationrule/list"))
                 .andExpect(view().name("setup/index"))
                 .andExpect(model().attribute("transformationRuleList", notNullValue()));
     }
@@ -58,7 +57,7 @@ public class TransformationRuleControllerTest {
                 .param("documentFormatFamilyTo", "OIOUBL")
                 .param("rootPath", "rootPath")
                 .param("config", "config"))
-                .andDo(print())
+                
                 .andExpect(redirectedUrl("/setup/index"));
     }
 
@@ -68,7 +67,7 @@ public class TransformationRuleControllerTest {
         RuleDocumentTransformation rule = createRule();
 
         this.mockMvc.perform(get("/transformationrule/create/" + rule.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("transformationrule/edit"))
                 .andExpect(model().attribute("transformationRule", notNullValue()))
                 .andExpect(model().attribute("documentFormatList", notNullValue()));
@@ -80,7 +79,7 @@ public class TransformationRuleControllerTest {
         RuleDocumentTransformation rule = createRule();
 
         this.mockMvc.perform(get("/transformationrule/update/" + rule.getId()))
-                .andDo(print())
+                
                 .andExpect(view().name("transformationrule/edit"))
                 .andExpect(model().attribute("transformationRule", notNullValue()))
                 .andExpect(model().attribute("documentFormatList", notNullValue()));
@@ -92,7 +91,7 @@ public class TransformationRuleControllerTest {
         createRule();
 
         this.mockMvc.perform(get("/transformationrule/createdefault"))
-                .andDo(print())
+                
                 .andExpect(redirectedUrl("/setup/index"));
     }
 

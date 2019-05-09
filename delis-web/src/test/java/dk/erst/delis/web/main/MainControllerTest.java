@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -41,14 +40,14 @@ public class MainControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testMain() throws Exception {
-        this.mockMvc.perform(get("/")).andDo(print())
+        this.mockMvc.perform(get("/"))
                 .andExpect(redirectedUrl("/home"));
     }
 
     @Test
     @WithMockUser(username = "delis")
     public void testLogin() throws Exception {
-        this.mockMvc.perform(get("/login")).andDo(print())
+        this.mockMvc.perform(get("/login"))
                 .andExpect(view().name("login"));
     }
 }

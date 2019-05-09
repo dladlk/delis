@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -65,13 +64,13 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testCreateGet() throws Exception {
-        this.mockMvc.perform(get("/users/create")).andDo(print()).andExpect(view().name("user/edit"));
+        this.mockMvc.perform(get("/users/create")).andExpect(view().name("user/edit"));
     }
 
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/users/list")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/users/list")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("test_user_1")))
                 .andExpect(content().string(containsString("test_user_3")));
     }
@@ -83,7 +82,7 @@ public class UserControllerTest {
                 .param("username", "new_user")
                 .param("password", "new_pass")
                 .param("email", "new_user@test.com"))
-                .andDo(print()).andExpect(redirectedUrl("/users/list"));
+                .andExpect(redirectedUrl("/users/list"));
     }
 
     @Test
@@ -92,7 +91,7 @@ public class UserControllerTest {
         User test_user = userService.findUserByUsername("test_user_0");
         Long id = test_user.getId();
         this.mockMvc.perform(get("/users/update/" + id))
-                .andDo(print()).andExpect(view().name("user/update"));
+                .andExpect(view().name("user/update"));
     }
 
     @Test
@@ -105,7 +104,7 @@ public class UserControllerTest {
                 .param("password", user.getPassword())
                 .param("email", user.getEmail())
                 .param("lastName", "new_not_empty_last_name"))
-                .andDo(print()).andExpect(redirectedUrl("/users/list"));
+                .andExpect(redirectedUrl("/users/list"));
 
         User updated = userService.findUserByUsername("test_user_0");
         Assert.assertEquals("new_not_empty_last_name", updated.getLastName());
@@ -119,7 +118,7 @@ public class UserControllerTest {
 
         Assert.assertNotNull(userToDelete);
 
-        this.mockMvc.perform(get("/users/delete/" + userToDelete.getId())).andDo(print()).andExpect(view().name("user/list"));
+        this.mockMvc.perform(get("/users/delete/" + userToDelete.getId())).andExpect(view().name("user/list"));
 
         User deletedUser = userService.findUserByUsername("user_to_delete");
         Assert.assertNull(deletedUser);
