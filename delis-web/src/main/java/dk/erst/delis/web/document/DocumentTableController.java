@@ -1,9 +1,8 @@
 package dk.erst.delis.web.document;
 
-import java.util.Date;
-
-import javax.validation.Valid;
-
+import dk.erst.delis.dao.DocumentTableRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.web.util.DataTableUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.datatables.mapping.Column;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import dk.erst.delis.dao.DocumentTableRepository;
-import dk.erst.delis.data.entities.document.Document;
+import javax.validation.Valid;
+import java.util.Date;
 
 @RestController
 public class DocumentTableController {
@@ -32,15 +31,15 @@ public class DocumentTableController {
     }
 
     @RequestMapping(value = "/document/table", method = RequestMethod.POST)
-    public DataTablesOutput<Document> listPOST(@Valid @RequestBody DataTablesInput input) {
+    public DataTablesOutput listPOST(@Valid @RequestBody DataTablesInput input) {
         Column column = input.getColumns().get(1);
         String value = column.getSearch().getValue();
         if (StringUtils.isNotEmpty(value)) {
             Specification<Document> additionalSpecification = getDateRangeSpec(CREATE_TIME, value);
             column.getSearch().setValue("");
-            return repository.findAll(input, additionalSpecification);
+            return DataTableUtil.reinitializationRecordsTotal(repository.findAll(input, additionalSpecification));
         } else {
-            return repository.findAll(input);
+            return DataTableUtil.reinitializationRecordsTotal(repository.findAll(input));
         }
     }
 

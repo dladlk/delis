@@ -1,7 +1,7 @@
 package dk.erst.delis.web.identifier;
 
 import dk.erst.delis.dao.IdentifierTableRepository;
-import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.web.util.DataTableUtil;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,12 +15,12 @@ import javax.validation.Valid;
 public class IdentifierTableController {
     private IdentifierTableRepository repository;
 
-    public IdentifierTableController (IdentifierTableRepository repository) {
+    public IdentifierTableController(IdentifierTableRepository repository) {
         this.repository = repository;
     }
 
     @RequestMapping(value = "/identifier/table", method = RequestMethod.POST)
-    public DataTablesOutput<Identifier> listPOST(@Valid @RequestBody DataTablesInput input) {
-        return repository.findAll(input);
+    public DataTablesOutput listPOST(@Valid @RequestBody DataTablesInput input) {
+        return DataTableUtil.reinitializationRecordsTotal(repository.findAll(input));
     }
 }
