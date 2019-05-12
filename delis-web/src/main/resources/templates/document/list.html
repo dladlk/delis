@@ -106,12 +106,12 @@
                 },
                 {
 
-                    data: 'organisation',
-                    render: function (data, type, row) { return (data !== null) ? generateRenderView(row, row["organisation"].name, null) : ''; }
+                    data: 'organisation.name',
+                    render: function (data, type, row) { return (row["organisation"] !== undefined) ? generateRenderView(row, data, null) : ''; }
                 },
                 {
-                    data: 'receiverIdentifier',
-                    render: function (data, type, row) { return (data !== null) ? generateRenderView(row, row["receiverIdentifier"].name, row["receiverIdRaw"]) : ''; }
+                    data: 'receiverIdentifier.name',
+                    render: function (data, type, row) { return (row["receiverIdentifier"] !== undefined) ? generateRenderView(row, data, row["receiverIdRaw"]) : ''; }
                 },
                 {
                     data: 'documentStatus'
