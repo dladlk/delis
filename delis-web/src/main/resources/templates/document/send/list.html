@@ -82,51 +82,44 @@
     <script type="text/javascript" th:inline="javascript">
         $(document).ready(function() {
 
-            var sendDocumentData = [[${pageContainer}]];
+			var sendDocumentData = [[${pageContainer}]];
 
 			var collectionSize = sendDocumentData.collectionSize;
 			var currentPage = sendDocumentData.currentPage;
-			var start = generateFrom(sendDocumentData.pageSize, currentPage, collectionSize);
-			var end = generateTo(sendDocumentData.pageSize, currentPage, collectionSize);
+			var pageSize = sendDocumentData.pageSize;
+			var totalPages = sendDocumentData.totalPages;
+			var startPage = generateFrom(pageSize, currentPage, collectionSize);
+			var endPage = generateTo(pageSize, currentPage, collectionSize);
 
 			$('.customDataTable').addClass('table-striped table-bordered table-sm').DataTable({
 
-                searching: false,
-				pageLength: sendDocumentData.pageSize,
-				pagingType: "full",
-				language: {
-					paginate: {
-						first: '<i class="fa fa-fast-backward" aria-hidden="true"></i>',
-						previous: '<i class="fa fa-backward" aria-hidden="true"></i>',
-						next: '<i class="fa fa-forward" aria-hidden="true"></i>',
-						last: '<i class="fa fa-fast-forward" aria-hidden="true"></i>'
-					}
+				pageLength: pageSize,
+				searching: false,
+				preDrawCallback: function(settings) {
+					console.log("preDrawCallback");
+					settings.oFeatures.bServerSide = "ssp";
+					settings.bDestroying = true;
+					settings._iDisplayStart = startPage - 1;
+					settings.iInitDisplayStart = startPage - 1;
+					settings._iRecordsDisplay = pageSize;
+					settings._iRecordsTotal = collectionSize;
+					settings.fnDisplayEnd = function() {
+						return endPage;
+					};
+					settings.fnRecordsDisplay = function() {
+						return collectionSize;
+					};
 				},
-                preDrawCallback: function(settings) {
 
-					settings.fnInitDisplayStart = function() {
-						return start;
-					};
-					settings.fnInitDisplayEnd = function() {
-						return end;
-					};
-                    settings.fnRecordsDisplay = function() {
-                        return collectionSize;
-                    };
-                    settings.fnRecordsTotal = function() {
-                        return collectionSize;
-                    };
-                    console.log(settings)
-                },
-				infoCallback: function( settings, start, end, max, total, pre ) {
-					console.log("infoCallback");
-					console.log('start = ' + start);
-					console.log('end = ' + end);
-					console.log('max = ' + max);
-					console.log('total = ' + total);
-					console.log('pre = ' + pre);
-					return pre;
-				}
+				// pagingType: "full",
+				// language: {
+				// 	paginate: {
+				// 		first: '<i class="fa fa-fast-backward" aria-hidden="true"></i>',
+				// 		previous: '<i class="fa fa-backward" aria-hidden="true"></i>',
+				// 		next: '<i class="fa fa-forward" aria-hidden="true"></i>',
+				// 		last: '<i class="fa fa-fast-forward" aria-hidden="true"></i>'
+				// 	}
+				// },
             });
 
 			function generateFrom(pageSize, currentPage, collectionSize) {
@@ -141,7 +134,6 @@
 
 			function generateTo(pageSize, currentPage, collectionSize) {
 				let lastSize = pageSize * (currentPage - 1) + pageSize;
-				console.log('lastSize = ' + lastSize);
 				if (lastSize <= collectionSize) {
 					return lastSize;
 				} else {

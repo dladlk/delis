@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
@@ -60,7 +61,9 @@ public class SendDocumentController {
 		PageContainer<SendDocument> pageContainer = new PageContainer<>();
 		pageContainer.setCollectionSize(sendDocumentDaoRepository.count());
 		pageContainer.setCurrentPage(page);
-		pageContainer.setItems(sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("id").descending())).getContent());
+		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("id").descending()));
+		pageContainer.setItems(sendDocuments.getContent());
+		pageContainer.setTotalPages(sendDocuments.getTotalPages());
 
 		model.addAttribute("pageContainer", pageContainer);
 		model.addAttribute("selectedIdList", new SendDocumentStatusBachUdpateInfo());
