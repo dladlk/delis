@@ -1,13 +1,13 @@
 package dk.erst.delis.web.document;
 
 import dk.erst.delis.dao.SendDocumentDaoRepository;
-import dk.erst.delis.data.PageContainer;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
 import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
 import dk.erst.delis.web.RedirectUtil;
+import dk.erst.delis.web.container.PageDataContainer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -58,14 +58,21 @@ public class SendDocumentController {
 		if (StringUtils.isNotBlank(pageParam)) {
 			page = Integer.parseInt(pageParam);
 		}
-		PageContainer<SendDocument> pageContainer = new PageContainer<>();
-		pageContainer.setCollectionSize(sendDocumentDaoRepository.count());
-		pageContainer.setCurrentPage(page);
-		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("id").descending()));
-		pageContainer.setItems(sendDocuments.getContent());
-		pageContainer.setTotalPages(sendDocuments.getTotalPages());
+		int size = 10;
+		String sizeParam = webRequest.getParameter("size");
+		if (StringUtils.isNotBlank(sizeParam)) {
+			size = Integer.parseInt(sizeParam);
+		}
 
-		model.addAttribute("pageContainer", pageContainer);
+		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("id").descending()));
+		PageDataContainer pageDataContainer = new PageDataContainer();
+		pageDataContainer.setPage(page);
+		pageDataContainer.setSize(size);
+		pageDataContainer.setTotalElements(sendDocumentDaoRepository.count());
+		pageDataContainer.setTotalPages(sendDocuments.getTotalPages());
+
+		model.addAttribute("sendDocumentsList", sendDocuments.getContent());
+		model.addAttribute("pageDataContainer", pageDataContainer);
 		model.addAttribute("selectedIdList", new SendDocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", SendDocumentStatus.values());
 		return "/document/send/list";
