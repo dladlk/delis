@@ -9,7 +9,8 @@
 		</div>
 		<div class="card-body">
 			<form action="#" th:action="@{/document/send/updatestatuses}" th:object="${selectedIdList}" method="post">
-			<table id="customDataTable" class="table table-striped table-bordered table-sm customDataTable" data-th-attr="page-data-container=${T(dk.erst.delis.web.json.JsonGenerator).genJson(pageDataContainer)}">
+			<table class="table table-striped table-bordered table-sm delis-dataTable"
+				   data-th-attr="page-data-container=${T(dk.erst.delis.web.json.JsonGenerator).genJson(pageDataContainer)}">
                 <thead>
                 <tr>
                     <th>
@@ -77,84 +78,5 @@
 			</form>
 		</div>
 	</div>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" th:inline="javascript">
-        $(document).ready(function() {
-
-        	var d = document.getElementById('customDataTable');
-        	console.log(d.getAttribute('page-data-container'));
-
-			var pageDataContainer = [[${pageDataContainer}]];
-
-			// console.log(pageDataContainer);
-
-			var totalElements = pageDataContainer.totalElements;
-			var page = pageDataContainer.page;
-			var size = pageDataContainer.size;
-			var totalPages = pageDataContainer.totalPages;
-			var startPage = generateFrom(size, page, totalElements);
-			var endPage = generateTo(size, page, totalElements);
-
-			$('.customDataTable').DataTable({
-				// dom: 't<""d-flex justify-content-between"><"p-2"ilp><"clear">',
-				pageLength: size,
-				searching: false,
-				displayStart: startPage - 1,
-				preDrawCallback: function(settings) {
-					settings.oFeatures.bServerSide = "ssp";
-					settings.bDestroying = true;
-					settings.fnDisplayEnd = function() {
-						return endPage;
-					};
-					settings.fnRecordsTotal = function() {
-						return totalElements;
-					};
-					settings.fnRecordsDisplay = function() {
-						return totalElements;
-					};
-				},
-            });
-
-			function generateFrom(size, page, totalElements) {
-				if (totalElements === 0) {
-					return 0;
-				} else if (size > totalElements) {
-					return 1;
-				} else {
-					return size * (page - 1) + 1;
-				}
-			}
-
-			function generateTo(size, page, totalElements) {
-				let lastSize = size * (page - 1) + size;
-				if (lastSize <= totalElements) {
-					return lastSize;
-				} else {
-					return totalElements;
-				}
-			}
-
-			$('a.page-link').click( function () {
-				var index = this.getAttribute("data-dt-idx");
-				var page = 1;
-				switch (index) {
-					case "0": {
-						page = 1;
-					} break;
-					case "1": {
-						page = page - 1;
-					} break;
-					case "2": {
-						page = page + 1;
-					} break;
-					case "3": {
-						page = page + 1;
-					} break;
-				}
-				window.location.replace('?page=' + page);
-			} );
-        });
-    </script>
 </body>
 </html>

@@ -57,7 +57,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 <script>
     $(".toggle-div-password").click(function() {
         $(this).toggleClass("fa-eye fa-eye-slash");
@@ -90,6 +91,90 @@
     $(".selectItem").click(function () {
         $(".selectAll").prop('checked', '');
     });
+
+    function generateFrom(size, page, totalElements) {
+        if (totalElements === 0) {
+            return 0;
+        } else if (size > totalElements) {
+            return 1;
+        } else {
+            return size * (page - 1) + 1;
+        }
+    }
+
+    function generateTo(size, page, totalElements) {
+        let lastSize = size * (page - 1) + size;
+        if (lastSize <= totalElements) {
+            return lastSize;
+        } else {
+            return totalElements;
+        }
+    }
+
+    $('table.delis-dataTable').each(function () {
+
+        var pageDataJson = this.getAttribute('page-data-container');
+        var ddt = eval('(' + pageDataJson + ')');
+
+        var totalElements = ddt.totalElements;
+        var page = ddt.page;
+        var size = ddt.size;
+        var startPage = generateFrom(size, page, totalElements);
+        var endPage = generateTo(size, page, totalElements);
+
+        $(this).DataTable({
+            // dom: 't<""d-flex justify-content-between"><"p-2"ilp><"clear">',
+            pageLength: size,
+            searching: false,
+            displayStart: startPage - 1,
+            preDrawCallback: function(settings) {
+                settings.oFeatures.bServerSide = "ssp";
+                settings.bDestroying = true;
+                settings.fnDisplayEnd = function() {
+                    return endPage;
+                };
+                settings.fnRecordsTotal = function() {
+                    return totalElements;
+                };
+                settings.fnRecordsDisplay = function() {
+                    return totalElements;
+                };
+            },
+
+        });
+    });
+
+    $('a.page-link').click( function () {
+        var index = this.getAttribute("data-dt-idx");
+        var page = 1;
+        switch (index) {
+            case "0": {
+                page = 1;
+            } break;
+            case "1": {
+                page = page - 1;
+            } break;
+            case "2": {
+                page = page + 1;
+            } break;
+            case "3": {
+                page = page + 1;
+            } break;
+        }
+        window.location.replace('?page=' + page);
+    });
+
+    $('#5demo').bind('click', function (e) {
+
+        $('li').each(function (index) {
+            $(this).css('background-color', 'orange')
+                .delay(index * 200)
+                .fadeOut(1500);
+        });
+        e.preventDefault();
+
+    });
+
 </script>
 
 </body>
