@@ -147,29 +147,25 @@
         });
     });
 
-    function callBackClickPageLinkPaginationDataTable() {
-        $('a.page-link').click( function () {
-            var index = this.getAttribute("data-dt-idx");
-            var page = 1;
-            switch (index) {
-                case "0": {
-                    page = 1;
-                } break;
-                case "1": {
-                    page = page - 1;
-                } break;
-                case "2": {
-                    page = page + 1;
-                } break;
-                case "3": {
-                    page = page + 1;
-                } break;
-            }
-            window.location.replace('?page=' + page);
-        });
-    }
-
-
+    $('a.page-link').click( function () {
+        var index = this.getAttribute("data-dt-idx");
+        var page = 1;
+        switch (index) {
+            case "0": {
+                page = 1;
+            } break;
+            case "1": {
+                page = page - 1;
+            } break;
+            case "2": {
+                page = page + 1;
+            } break;
+            case "3": {
+                page = page + 1;
+            } break;
+        }
+        window.location.replace('?page=' + page);
+    });
 
 </script>
 

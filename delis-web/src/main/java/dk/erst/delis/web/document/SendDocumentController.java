@@ -57,11 +57,17 @@ public class SendDocumentController {
 		String pageParam = webRequest.getParameter("page");
 		if (StringUtils.isNotBlank(pageParam)) {
 			page = Integer.parseInt(pageParam);
+			if (page == 0) {
+				page = 1;
+			}
 		}
 		int size = 10;
 		String sizeParam = webRequest.getParameter("size");
 		if (StringUtils.isNotBlank(sizeParam)) {
 			size = Integer.parseInt(sizeParam);
+			if (size == 0) {
+				size = 10;
+			}
 		}
 
 		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("id").descending()));
