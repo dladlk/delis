@@ -17,4 +17,5 @@ public class PageDataContainer implements Serializable {
     private int size;
     private int totalPages;
     private long totalElements;
+    private ColumnDefs columnDefs;
 }

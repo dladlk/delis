@@ -1,14 +1,15 @@
 package dk.erst.delis.web.document;
 
-import dk.erst.delis.dao.SendDocumentDaoRepository;
-import dk.erst.delis.data.entities.document.SendDocument;
-import dk.erst.delis.data.entities.document.SendDocumentBytes;
-import dk.erst.delis.data.enums.document.SendDocumentBytesType;
-import dk.erst.delis.data.enums.document.SendDocumentStatus;
-import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
-import dk.erst.delis.web.RedirectUtil;
-import dk.erst.delis.web.container.PageDataContainer;
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,11 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.datatables.mapping.Column;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Order;
+import org.springframework.data.jpa.datatables.mapping.Search;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +31,30 @@ import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.*;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dk.erst.delis.dao.SendDocumentDaoRepository;
+import dk.erst.delis.dao.SendDocumentDataTableRepository;
+import dk.erst.delis.data.entities.document.SendDocument;
+import dk.erst.delis.data.entities.document.SendDocumentBytes;
+import dk.erst.delis.data.enums.document.SendDocumentBytesType;
+import dk.erst.delis.data.enums.document.SendDocumentStatus;
+import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
+import dk.erst.delis.web.RedirectUtil;
+import dk.erst.delis.web.container.ColumnDefs;
+import dk.erst.delis.web.container.PageDataContainer;
+import dk.erst.delis.web.json.JacksonConfig;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
@@ -43,6 +66,9 @@ public class SendDocumentController {
 
 	@Autowired
 	private SendDocumentDaoRepository sendDocumentDaoRepository;
+	
+	@Autowired
+	private SendDocumentDataTableRepository sendDocumentDataTableRepository;
 
 	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;
@@ -70,17 +96,25 @@ public class SendDocumentController {
 			}
 		}
 
-		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, 10, Sort.by("id").descending()));
+		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, size, Sort.by("id").descending()));
+		if (page> sendDocuments.getTotalPages()) {
+			page = page - 1;
+		}
+		System.out.println("page = " + page);
+		System.out.println("totalPages = " + sendDocuments.getTotalPages());
 		PageDataContainer pageDataContainer = new PageDataContainer();
 		pageDataContainer.setPage(page);
 		pageDataContainer.setSize(size);
 		pageDataContainer.setTotalElements(sendDocumentDaoRepository.count());
 		pageDataContainer.setTotalPages(sendDocuments.getTotalPages());
+		int[] targets = new int[] {0, 5, 6};
+		pageDataContainer.setColumnDefs(new ColumnDefs(targets, false));
 
 		model.addAttribute("sendDocumentsList", sendDocuments.getContent());
 		model.addAttribute("pageDataContainer", pageDataContainer);
 		model.addAttribute("selectedIdList", new SendDocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", SendDocumentStatus.values());
+
 		return "/document/send/list";
 	}
 

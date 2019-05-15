@@ -1,173 +1,215 @@
 <!doctype html>
-<html th:fragment="layout (template)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:fragment="layout (template)"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-	<meta charset="utf-8">
-    <meta name="context-path" th:content="${#request.contextPath}"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" type="image/png" th:href="@{/image/logo.png}"/>
+<meta charset="utf-8">
+<meta name="context-path" th:content="${#request.contextPath}" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="shortcut icon" type="image/png" th:href="@{/image/logo.png}" />
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
-    <link rel="stylesheet" th:href="@{/css/main.css?v=__${'1.01'}__}"/>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+	integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+	crossorigin="anonymous">
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" th:href="@{/css/main.css?v=__${'1.01'}__}" />
 
-	<title>DELIS Setup Cockpit</title>
+<title>DELIS Setup Cockpit</title>
 
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://unpkg.com/moment"></script>
+<script type="text/javascript"
+	src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/moment"></script>
 
 </head>
 <body>
-<div class="container">
-<header class="navbar navbar-expand navbar-light">
- <a class="navbar-brand" th:href="@{/home}"><img src="/image/logo.png" th:src="@{/image/logo.png}" height="60"></img></a>
- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+	<div class="container">
+		<header class="navbar navbar-expand navbar-light">
+			<a class="navbar-brand" th:href="@{/home}"><img
+				src="/image/logo.png" th:src="@{/image/logo.png}" height="60"></img></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent" th:if="${loggedIn}">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/organisation/list}">Organisations</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Documents Received</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/send/list}">Documents Sent</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/errordict/list}">Errors</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/identifier/list}">Identifiers</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/task/index}">Tasks</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/setup/index}">Setup</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/accesspoint/list}">Access Points</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/users/list}">Users</a></li>
-    </ul>
-    <ul class="navbar-nav justify-content-end">
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Logout</a></li>
-     </ul>
-  </div>
-</header>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent"
+				th:if="${loggedIn}">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/organisation/list}">Organisations</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/document/list}">Documents Received</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/document/send/list}">Documents Sent</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/errordict/list}">Errors</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/identifier/list}">Identifiers</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/task/index}">Tasks</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/setup/index}">Setup</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/accesspoint/list}">Access Points</a></li>
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/users/list}">Users</a></li>
+				</ul>
+				<ul class="navbar-nav justify-content-end">
+					<li class="nav-item"><a class="nav-link" href="#"
+						th:href="@{/logout}">Logout</a></li>
+				</ul>
+			</div>
+		</header>
 
-<div th:if="${message}" class="alert alert-primary" role="alert">
-	<span th:text="${message}">message text</span>
-</div>
-<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-	<span th:text="${errorMessage}">message text</span>
-</div>
+		<div th:if="${message}" class="alert alert-primary" role="alert">
+			<span th:text="${message}">message text</span>
+		</div>
+		<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+			<span th:text="${errorMessage}">message text</span>
+		</div>
 
- <th:block th:include="${template}"/>
+		<th:block th:include="${template}" />
 
-</div> <!-- .container -->
+	</div>
+	<!-- .container -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-<script>
-    $(".toggle-div-password").click(function() {
-        $(this).toggleClass("fa-eye fa-eye-slash");
-        var input1 = $($(this).attr("toggle"));
-        var input2 = $($(this).attr("untoggle"));
-        if (input1.attr("hidden")) {
-            input1.attr("hidden", false);
-            input2.attr("hidden", true);
-        } else {
-            input1.attr("hidden", true);
-            input2.attr("hidden", false);
-        }
-    });
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+		integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+		integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+		crossorigin="anonymous"></script>
+	<script type="text/javascript"
+		src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+	<script type="text/javascript"
+		src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+	<script>
+		$(".toggle-div-password").click(function() {
+			$(this).toggleClass("fa-eye fa-eye-slash");
+			var input1 = $($(this).attr("toggle"));
+			var input2 = $($(this).attr("untoggle"));
+			if (input1.attr("hidden")) {
+				input1.attr("hidden", false);
+				input2.attr("hidden", true);
+			} else {
+				input1.attr("hidden", true);
+				input2.attr("hidden", false);
+			}
+		});
 
-    $(".toggle-password").click(function() {
+		$(".toggle-password").click(function() {
 
-        $(this).toggleClass("fa-eye fa-eye-slash");
-        var input = $($(this).attr("toggle"));
-        if (input.attr("type") == "password") {
-            input.attr("type", "text");
-        } else {
-            input.attr("type", "password");
-        }
-    });
+			$(this).toggleClass("fa-eye fa-eye-slash");
+			var input = $($(this).attr("toggle"));
+			if (input.attr("type") == "password") {
+				input.attr("type", "text");
+			} else {
+				input.attr("type", "password");
+			}
+		});
 
-    $("#selectAll").click(function () {
-        $(".selectItem").prop('checked', $(this).prop('checked'));
-    });
+		$("#selectAll").click(function() {
+			$(".selectItem").prop('checked', $(this).prop('checked'));
+		});
 
-    $(".selectItem").click(function () {
-        $(".selectAll").prop('checked', '');
-    });
+		$(".selectItem").click(function() {
+			$(".selectAll").prop('checked', '');
+		});
 
-    function generateFrom(size, page, totalElements) {
-        if (totalElements === 0) {
-            return 0;
-        } else if (size > totalElements) {
-            return 1;
-        } else {
-            return size * (page - 1) + 1;
-        }
-    }
+		function generateFrom(size, page, totalElements) {
+			if (totalElements === 0) {
+				return 0;
+			} else if (size > totalElements) {
+				return 1;
+			} else {
+				return size * (page - 1) + 1;
+			}
+		}
 
-    function generateTo(size, page, totalElements) {
-        let lastSize = size * (page - 1) + size;
-        if (lastSize <= totalElements) {
-            return lastSize;
-        } else {
-            return totalElements;
-        }
-    }
+		function generateTo(size, page, totalElements) {
+			let lastSize = size * (page - 1) + size;
+			if (lastSize <= totalElements) {
+				return lastSize;
+			} else {
+				return totalElements;
+			}
+		}
 
-    $('table.delis-dataTable').each(function () {
+		$('table.delis-dataTable')
+				.each(
+						function() {
 
-        console.log($(this));
-        console.log($(this).get(0).baseURI);
+							var pageDataJson = this
+									.getAttribute('page-data-container');
+							var pdj = eval('(' + pageDataJson + ')');
 
-        var pageDataJson = this.getAttribute('page-data-container');
-        var ddt = eval('(' + pageDataJson + ')');
+							var totalElements = pdj.totalElements;
+							var page = pdj.page;
+							var size = pdj.size;
+							var startPage = generateFrom(size, page,
+									totalElements);
+							var endPage = generateTo(size, page, totalElements);
+							var columnDefs = pdj.columnDefs;
 
-        var totalElements = ddt.totalElements;
-        var page = ddt.page;
-        var size = ddt.size;
-        var startPage = generateFrom(size, page, totalElements);
-        var endPage = generateTo(size, page, totalElements);
+							var dataTable = $(this)
+									.on('order.dt', function() {
+										console.log('Order');
+									})
+									.on('search.dt', function() {
+										console.log('Search');
+									})
+									.on('length.dt',
+											function(e, settings, len) {
+												console.log('Length = ' + len);
+											})
+									.on(
+											'page.dt',
+											function() {
+												var page = dataTable.page
+														.info().page + 1;
+												console.log('Page = ' + page);
+											})
+									.DataTable(
+											{
+												dom : 't<"bottom"><"d-flex justify-content-between"ilp><"clear">',
+												pageLength : size,
+												searching : false,
+												displayStart : startPage - 1,
+												order : [ 1, "desc" ],
+												columnDefs : [ {
+													"orderable" : columnDefs.orderable,
+													"targets" : columnDefs.targets
+												} ],
+												stateSave : true,
+												preDrawCallback : function(
+														settings) {
+													settings.oFeatures.bServerSide = "ssp";
+													settings.bDestroying = true;
+													settings.fnDisplayEnd = function() {
+														return endPage;
+													};
+													settings.fnRecordsTotal = function() {
+														return totalElements;
+													};
+													settings.fnRecordsDisplay = function() {
+														return totalElements;
+													};
+												},
 
-        $(this).DataTable({
-           	dom: 't<"bottom"><"d-flex justify-content-between"ilp><"clear">',
-            pageLength: size,
-            searching: false,
-            displayStart: startPage - 1,
-            preDrawCallback: function(settings) {
-                settings.oFeatures.bServerSide = "ssp";
-                settings.bDestroying = true;
-                settings.fnDisplayEnd = function() {
-                    return endPage;
-                };
-                settings.fnRecordsTotal = function() {
-                    return totalElements;
-                };
-                settings.fnRecordsDisplay = function() {
-                    return totalElements;
-                };
-            },
-
-        });
-    });
-
-    $('a.page-link').click( function () {
-        var index = this.getAttribute("data-dt-idx");
-        var page = 1;
-        switch (index) {
-            case "0": {
-                page = 1;
-            } break;
-            case "1": {
-                page = page - 1;
-            } break;
-            case "2": {
-                page = page + 1;
-            } break;
-            case "3": {
-                page = page + 1;
-            } break;
-        }
-        window.location.replace('?page=' + page);
-    });
-
-</script>
+											});
+						});
+	</script>
 
 </body>
 </html>
