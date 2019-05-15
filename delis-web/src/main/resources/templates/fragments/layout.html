@@ -113,6 +113,9 @@
 
     $('table.delis-dataTable').each(function () {
 
+        console.log($(this));
+        console.log($(this).get(0).baseURI);
+
         var pageDataJson = this.getAttribute('page-data-container');
         var ddt = eval('(' + pageDataJson + ')');
 
@@ -123,7 +126,7 @@
         var endPage = generateTo(size, page, totalElements);
 
         $(this).DataTable({
-            // dom: 't<""d-flex justify-content-between"><"p-2"ilp><"clear">',
+           	dom: 't<"bottom"><"d-flex justify-content-between"ilp><"clear">',
             pageLength: size,
             searching: false,
             displayStart: startPage - 1,
@@ -144,25 +147,29 @@
         });
     });
 
-    $('a.page-link').click( function () {
-        var index = this.getAttribute("data-dt-idx");
-        var page = 1;
-        switch (index) {
-            case "0": {
-                page = 1;
-            } break;
-            case "1": {
-                page = page - 1;
-            } break;
-            case "2": {
-                page = page + 1;
-            } break;
-            case "3": {
-                page = page + 1;
-            } break;
-        }
-        window.location.replace('?page=' + page);
-    });
+    function callBackClickPageLinkPaginationDataTable() {
+        $('a.page-link').click( function () {
+            var index = this.getAttribute("data-dt-idx");
+            var page = 1;
+            switch (index) {
+                case "0": {
+                    page = 1;
+                } break;
+                case "1": {
+                    page = page - 1;
+                } break;
+                case "2": {
+                    page = page + 1;
+                } break;
+                case "3": {
+                    page = page + 1;
+                } break;
+            }
+            window.location.replace('?page=' + page);
+        });
+    }
+
+
 
 </script>
 
