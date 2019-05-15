@@ -163,8 +163,10 @@
 							var columnDefs = pdj.columnDefs;
 
 							var dataTable = $(this)
-									.on('order.dt', function() {
-										console.log('Order');
+									.on('order.dt', function(e, settings, order) {
+										var col = order[0].col;
+										var dir = order[0].dir;
+										console.log('Order = ' + col + ':' + dir);
 									})
 									.on('search.dt', function() {
 										console.log('Search');
