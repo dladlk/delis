@@ -5,12 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,11 +15,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.datatables.mapping.Column;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.mapping.Order;
-import org.springframework.data.jpa.datatables.mapping.Search;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +32,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import dk.erst.delis.dao.SendDocumentDaoRepository;
 import dk.erst.delis.dao.SendDocumentDataTableRepository;
 import dk.erst.delis.data.entities.document.SendDocument;
@@ -53,7 +42,7 @@ import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
 import dk.erst.delis.web.RedirectUtil;
 import dk.erst.delis.web.container.ColumnDefs;
 import dk.erst.delis.web.container.PageDataContainer;
-import dk.erst.delis.web.json.JacksonConfig;
+import dk.erst.delis.web.util.WebRequestUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -66,48 +55,34 @@ public class SendDocumentController {
 
 	@Autowired
 	private SendDocumentDaoRepository sendDocumentDaoRepository;
-	
+
 	@Autowired
 	private SendDocumentDataTableRepository sendDocumentDataTableRepository;
 
 	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;
-	
+
 	@Value("${delis.download.allow.all:#{false}}")
 	private boolean downloadAllowAll;
 
 	@RequestMapping("/document/send/list")
 	public String list(Model model, WebRequest webRequest) {
 
-		int page = 1;
-		String pageParam = webRequest.getParameter("page");
-		if (StringUtils.isNotBlank(pageParam)) {
-			page = Integer.parseInt(pageParam);
-			if (page == 0) {
-				page = 1;
-			}
-		}
-		int size = 10;
-		String sizeParam = webRequest.getParameter("size");
-		if (StringUtils.isNotBlank(sizeParam)) {
-			size = Integer.parseInt(sizeParam);
-			if (size == 0) {
-				size = 10;
-			}
-		}
+		int page = WebRequestUtil.pageParam(webRequest);
+		int size = WebRequestUtil.sizeParam(webRequest);
 
-		Page<SendDocument> sendDocuments = sendDocumentDaoRepository.findAll(PageRequest.of(page - 1, size, Sort.by("id").descending()));
-		if (page> sendDocuments.getTotalPages()) {
+		Page<SendDocument> sendDocuments = sendDocumentDaoRepository
+				.findAll(PageRequest.of(page - 1, size, Sort.by("id").descending()));
+		if (page > sendDocuments.getTotalPages()) {
 			page = page - 1;
 		}
-		System.out.println("page = " + page);
-		System.out.println("totalPages = " + sendDocuments.getTotalPages());
+
 		PageDataContainer pageDataContainer = new PageDataContainer();
 		pageDataContainer.setPage(page);
 		pageDataContainer.setSize(size);
 		pageDataContainer.setTotalElements(sendDocumentDaoRepository.count());
 		pageDataContainer.setTotalPages(sendDocuments.getTotalPages());
-		int[] targets = new int[] {0, 5, 6};
+		int[] targets = new int[] { 0, 5, 6 };
 		pageDataContainer.setColumnDefs(new ColumnDefs(targets, false));
 
 		model.addAttribute("sendDocumentsList", sendDocuments.getContent());
@@ -128,11 +103,22 @@ public class SendDocumentController {
 	}
 
 	@PostMapping("/document/send/updatestatuses")
-	public String listFilter(@ModelAttribute SendDocumentStatusBachUdpateInfo idList, Model model, Authentication authentication) {
+	public String listFilter(@ModelAttribute SendDocumentStatusBachUdpateInfo idList, WebRequest webRequest,
+			Authentication authentication) {
 		List<Long> ids = idList.getIdList();
 		SendDocumentStatus status = idList.getStatus();
 		documentService.updateStatuses(ids, status, authentication.getName());
-		return "redirect:/document/send/list";
+		PageDataContainer container = WebRequestUtil.getPageDataContainerByWebRequest(webRequest);
+		if (container != null) {
+			int page = container.getPage();
+			int size = container.getSize();
+			if (container.getSize() >= container.getTotalElements()) {
+				page = 1;
+			}
+			return "redirect:/document/send/list" + "?page=" + page + "&size=" + size;
+		} else {
+			return "redirect:/document/send/list";
+		}
 	}
 
 	@PostMapping("/document/send/updatestatus")
@@ -164,7 +150,9 @@ public class SendDocumentController {
 	}
 
 	@PostMapping("/document/send/upload")
-	public String upload(@RequestParam("file") MultipartFile file, @RequestParam(name = "validateImmediately", required = false) boolean validateImmediately, RedirectAttributes redirectAttributes) {
+	public String upload(@RequestParam("file") MultipartFile file,
+			@RequestParam(name = "validateImmediately", required = false) boolean validateImmediately,
+			RedirectAttributes redirectAttributes) {
 
 		if (file == null || file.isEmpty()) {
 			redirectAttributes.addFlashAttribute("errorMessage", "File is empty");
@@ -182,26 +170,30 @@ public class SendDocumentController {
 			if (tempFile != null) {
 				log.info("Created test file " + tempFile);
 				try {
-					SendDocument document = documentService.sendFile(tempFile.toPath(), "Uploaded manually " + file.getOriginalFilename(), validateImmediately);
-					redirectAttributes.addFlashAttribute("message", "Successfully uploaded file as a document with status " + document.getDocumentStatus());
+					SendDocument document = documentService.sendFile(tempFile.toPath(),
+							"Uploaded manually " + file.getOriginalFilename(), validateImmediately);
+					redirectAttributes.addFlashAttribute("message",
+							"Successfully uploaded file as a document with status " + document.getDocumentStatus());
 					return "redirect:/document/send/view/" + document.getId();
 				} catch (DocumentProcessStepException se) {
 					log.error("Failed document processing", se);
-					redirectAttributes.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error " + se.getMessage());
+					redirectAttributes.addFlashAttribute("errorMessage",
+							"Failed to process file " + tempFile + " with error " + se.getMessage());
 					if (se.getDocumentId() != null) {
 						return "redirect:/document/send/view/" + se.getDocumentId();
 					}
 
 				} catch (Exception e) {
 					log.error("Failed to load file " + tempFile, e);
-					redirectAttributes.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error " + e.getMessage());
+					redirectAttributes.addFlashAttribute("errorMessage",
+							"Failed to load file " + tempFile + " with error " + e.getMessage());
 				}
 			}
 		}
 
 		return "redirect:/document/send/list";
 	}
-	
+
 	private boolean isDownloadAllowed(SendDocumentBytes b) {
 		if (downloadAllowAll) {
 			return true;
@@ -210,14 +202,16 @@ public class SendDocumentController {
 	}
 
 	@GetMapping("/document/send/download/{documentId}/{bytesId}")
-	public ResponseEntity<Object> download(@PathVariable long documentId, @PathVariable long bytesId, RedirectAttributes ra) throws IOException {
+	public ResponseEntity<Object> download(@PathVariable long documentId, @PathVariable long bytesId,
+			RedirectAttributes ra) throws IOException {
 		SendDocumentBytes sendDocumentBytes = documentService.findDocumentBytes(documentId, bytesId);
 		if (sendDocumentBytes == null) {
 			ra.addFlashAttribute("errorMessage", "Data not found");
 			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
 		}
 		if (!isDownloadAllowed(sendDocumentBytes)) {
-			ra.addFlashAttribute("errorMessage", "Only RECEIPT bytes are allowed for download, but " + sendDocumentBytes.getType() + " is requested");
+			ra.addFlashAttribute("errorMessage", "Only RECEIPT bytes are allowed for download, but "
+					+ sendDocumentBytes.getType() + " is requested");
 			return RedirectUtil.redirectEntity(servletContextPath, "/document/send/view/" + documentId);
 		}
 
@@ -225,7 +219,8 @@ public class SendDocumentController {
 		this.documentService.getDocumentBytesContents(sendDocumentBytes, out);
 		byte[] data = out.toByteArray();
 		BodyBuilder resp = ResponseEntity.ok();
-		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"data_" + documentId + "_" + bytesId + ".xml\"");
+		resp.header(HttpHeaders.CONTENT_DISPOSITION,
+				"attachment; filename=\"data_" + documentId + "_" + bytesId + ".xml\"");
 		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
 		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
 	}

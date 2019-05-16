@@ -9,6 +9,7 @@
 		</div>
 		<div class="card-body">
 			<form action="#" th:action="@{/document/send/updatestatuses}" th:object="${selectedIdList}" method="post">
+			
 			<table class="table table-striped table-bordered table-sm delis-dataTable"
 				   data-th-attr="page-data-container=${T(dk.erst.delis.web.json.JsonGenerator).genJson(pageDataContainer)}">
                 <thead>
@@ -46,6 +47,8 @@
                </tr>
                </tbody>
 			</table>
+			<button hidden type="submit">insert</button>
+			
 			<div class="card-footer mt-2">
 				<div class="d-flex justify-content-start">
 					<label class="m-2 col-form-label">Status:</label>

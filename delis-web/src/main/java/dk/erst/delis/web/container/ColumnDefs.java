@@ -1,13 +1,11 @@
 package dk.erst.delis.web.container;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @AllArgsConstructor
 public class ColumnDefs {
 

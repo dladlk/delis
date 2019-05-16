@@ -1,14 +1,14 @@
 package dk.erst.delis.web.container;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageDataContainer implements Serializable {
 
     private static final long serialVersionUID = 84982870159183974L;
