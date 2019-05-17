@@ -156,6 +156,10 @@
 
         switch (type) {
             case "order": {
+            	 var orderCol = data.col;
+                 var orderDir = data.dir;
+                 pdContainer.orderCol = orderCol;
+                 pdContainer.orderDir = orderDir;
             }
                 break;
             case "search": {
@@ -193,6 +197,8 @@
                     totalElements);
                 var endPage = generateTo(size, page, totalElements);
                 var columnDefs = pdContainer.columnDefs;
+                var orderCol = pdContainer.orderCol;
+                var orderDir = pdContainer.orderDir;
 
                 var dataTable = $(this)
                     .DataTable(
@@ -201,7 +207,7 @@
                             pageLength: size,
                             searching: false,
                             displayStart: startPage - 1,
-                            order: [1, "desc"],
+                            order: [orderCol, orderDir],
                             columnDefs: [{
                                 "orderable": columnDefs.orderable,
                                 "targets": columnDefs.targets

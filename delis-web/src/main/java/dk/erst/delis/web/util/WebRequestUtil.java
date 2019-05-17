@@ -34,6 +34,16 @@ public class WebRequestUtil {
         }
         return size;
     }
+    
+    public String[] orderParam(WebRequest webRequest) {
+    	String[] orderBy = new String[2];
+        String pageParam = webRequest.getParameter("orderBy");
+        if (StringUtils.isNotBlank(pageParam)) {
+        	orderBy = pageParam.split("_");
+            return orderBy;
+        }
+        return new String[] {"1", "desc"};
+    }
 
     public PageDataContainer getPageDataContainerByWebRequest(WebRequest webRequest) {
         String datatableParam = webRequest.getParameter("datatable");

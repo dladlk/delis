@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -68,22 +69,40 @@ public class SendDocumentController {
 	@RequestMapping("/document/send/list")
 	public String list(Model model, WebRequest webRequest) {
 
-		int page = WebRequestUtil.pageParam(webRequest);
-		int size = WebRequestUtil.sizeParam(webRequest);
-
-		Page<SendDocument> sendDocuments = sendDocumentDaoRepository
-				.findAll(PageRequest.of(page - 1, size, Sort.by("id").descending()));
-		if (page > sendDocuments.getTotalPages()) {
-			page = page - 1;
+		PageDataContainer pageDataContainer = WebRequestUtil.getPageDataContainerByWebRequest(webRequest);
+		if (pageDataContainer == null) {
+			pageDataContainer = new PageDataContainer();
 		}
-
-		PageDataContainer pageDataContainer = new PageDataContainer();
-		pageDataContainer.setPage(page);
-		pageDataContainer.setSize(size);
+		
+		String[] orderBy = WebRequestUtil.orderParam(webRequest);
+		String sortBy = "id";
+		List<String> documentColumns = Arrays.asList("id", "createTime", "organisation.id", "senderIdRaw", "receiverIdRaw", "documentStatus", "documentType", "deliveredTime");
+		for (int i = 0; i < documentColumns.size(); i++) {
+			if (i == Integer.parseInt(orderBy[0])) {
+				sortBy = documentColumns.get(i);
+				break;
+			}
+		}
+		
+		Page<SendDocument> sendDocuments;
+		if (pageDataContainer.getOrderDir().equals(orderBy[1])) {
+			sendDocuments = sendDocumentDaoRepository
+					.findAll(PageRequest.of(pageDataContainer.getPage() - 1, pageDataContainer.getSize(), Sort.by(sortBy).descending()));
+		} else {
+			sendDocuments = sendDocumentDaoRepository
+					.findAll(PageRequest.of(pageDataContainer.getPage() - 1, pageDataContainer.getSize(), Sort.by(sortBy).ascending()));
+		}
+		 
+		if (pageDataContainer.getPage() > sendDocuments.getTotalPages()) {
+			pageDataContainer.setPage(pageDataContainer.getPage() - 1);
+		}
+		
 		pageDataContainer.setTotalElements(sendDocumentDaoRepository.count());
 		pageDataContainer.setTotalPages(sendDocuments.getTotalPages());
 		int[] targets = new int[] { 0, 5, 6 };
 		pageDataContainer.setColumnDefs(new ColumnDefs(targets, false));
+		pageDataContainer.setOrderCol(1);
+		pageDataContainer.setOrderDir("desc");
 
 		model.addAttribute("sendDocumentsList", sendDocuments.getContent());
 		model.addAttribute("pageDataContainer", pageDataContainer);
@@ -115,7 +134,7 @@ public class SendDocumentController {
 			if (container.getSize() >= container.getTotalElements()) {
 				page = 1;
 			}
-			return "redirect:/document/send/list" + "?page=" + page + "&size=" + size;
+			return "redirect:/document/send/list" + "?page=" + page + "&size=" + size + "&orderBy=" + container.getOrderCol()+ "_" + container.getOrderDir();
 		} else {
 			return "redirect:/document/send/list";
 		}
