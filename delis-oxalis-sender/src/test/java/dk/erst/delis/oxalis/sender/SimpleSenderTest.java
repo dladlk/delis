@@ -31,6 +31,7 @@ import no.difi.vefa.peppol.common.model.Header;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import no.difi.vefa.peppol.common.model.ProcessIdentifier;
 import no.difi.vefa.peppol.common.model.TransportProfile;
+import no.difi.vefa.peppol.mode.Mode;
 
 @Slf4j
 public class SimpleSenderTest {
@@ -104,12 +105,11 @@ public class SimpleSenderTest {
 		String url;
 		TransportProfile transportProfile;
 		if (as4) {
-			url = "https://peppol-test.trueservice.dk/domibus/services/msh";
 			transportProfile = TransportProfile.AS4;
 		} else {
-			url = "https://peppol-test.trueservice.dk/oxalis/as2";
 			transportProfile = TransportProfile.of("busdox-transport-as2-ver1p0");
 		}
+		url = Mode.of(Mode.TEST).getString("oxalis.dev.url."+(as4?"as4":"as2"));
 
 		return Endpoint.of(transportProfile, URI.create(url), certificate);
 	}
