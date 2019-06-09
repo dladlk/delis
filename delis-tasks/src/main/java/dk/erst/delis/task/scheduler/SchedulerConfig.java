@@ -22,25 +22,25 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
 	private static final int POOL_SIZE = 10;
 
-	@Value("${job.interval.sec.documentLoad}")
+	@Value("${job.interval.sec.documentLoad:-1}")
 	private long documentLoad;
 
-	@Value("${job.interval.sec.documentValidate}")
+	@Value("${job.interval.sec.documentValidate:-1}")
 	private long documentValidate;
 
-	@Value("${job.interval.sec.documentDeliver}")
+	@Value("${job.interval.sec.documentDeliver:-1}")
 	private long documentDeliver;
 
-	@Value("${job.interval.sec.identifierLoad}")
+	@Value("${job.interval.sec.identifierLoad:-1}")
 	private long identifierLoad;
 
-	@Value("${job.interval.sec.identifierPublish}")
+	@Value("${job.interval.sec.identifierPublish:-1}")
 	private long identifierPublish;
 
-	@Value("${job.interval.sec.sentValidate}")
+	@Value("${job.interval.sec.sentValidate:-1}")
 	private long sentValidate;
 	
-	@Value("${job.interval.sec.sendFailedProcess}")
+	@Value("${job.interval.sec.sendFailedProcess:-1}")
 	private long sendFailedProcess;
 
 	@Override
