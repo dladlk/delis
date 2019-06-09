@@ -24,9 +24,10 @@ public class SenderApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		while (emptyResultProcessor.getTotalCount() == 0 && documentCollector.getTakeCount() < 2) {
+		documentCollector.setMaxTakeCount(1);
+		while (documentCollector.getTakeCount() == 0 || emptyResultProcessor.getTotalCount() == 0) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				break;
 			}

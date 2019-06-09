@@ -11,6 +11,7 @@ import dk.erst.delis.sender.collector.IDocumentCollector;
 import dk.erst.delis.sender.delis.DelisDocumentData;
 import dk.erst.delis.sender.document.IDocumentData;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -21,9 +22,15 @@ public class TestDocumentCollector implements IDocumentCollector {
 
 	private volatile int takeCount = 0;
 	private String testResource = "/BIS3_Invoice_TL_TEST.xml";
+	
+	@Setter
+	private int maxTakeCount = 100;
 
 	@Override
 	public IDocumentData findDocument() {
+		if (takeCount >= maxTakeCount) {
+			return null;
+		}
 		try {
 			this.takeCount++;
 			DelisDocumentData d = new DelisDocumentData(this.takeCount);
@@ -36,9 +43,6 @@ public class TestDocumentCollector implements IDocumentCollector {
 			return d;
 		} catch (IOException e) {
 			log.error("Failed to read test file " + testResource, e);
-		}
-		if (takeCount > 100) {
-			return null;
 		}
 		return null;
 	}
