@@ -27,7 +27,7 @@ public class EmptyResultProcessor implements IResultProcessor {
 	@Override
 	public void processFailure(IDocumentData documentData, SendFailureType failureType, Throwable e) {
 		this.failedCount++;
-		log.info("[" + this.sentCount + "] Faiiled sending of " + documentData + " with failure type " + failureType, e);
+		log.info("[" + this.sentCount + "] Failed sending of " + documentData + " with failure type " + failureType, e);
 	}
 
 	public int getTotalCount() {
