@@ -1,6 +1,5 @@
 package dk.erst.delis.sender.service;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import dk.erst.delis.sender.service.task.TestDocumentCollector;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Ignore
 public class SenderApplicationTests {
 
 	@Autowired
