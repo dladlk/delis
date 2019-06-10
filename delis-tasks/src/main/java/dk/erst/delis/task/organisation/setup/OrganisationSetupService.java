@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +53,17 @@ public class OrganisationSetupService {
 		StatData sd = new StatData();
 		Map<OrganisationSetupKey, String> newDataToSetupMap = convertDataToSetupMap(data);
 		List<OrganisationSetup> currentSetupList = organisationSetupDaoRepository.findAllByOrganisation(data.getOrganisation());
+		
+		/*
+		 * Cleanup unsupported keys to avoid Duplicated Key exception
+		 */
+		for (Iterator<OrganisationSetup> iterator = currentSetupList.iterator(); iterator.hasNext();) {
+			OrganisationSetup organisationSetup = iterator.next();
+			if (organisationSetup.getKey() == null) {
+				iterator.remove();
+			}
+		}
+		
 		Map<OrganisationSetupKey, OrganisationSetup> currentSetupMap = currentSetupList.stream().collect(Collectors.toMap(OrganisationSetup::getKey, Function.identity()));
 
 		if (log.isDebugEnabled()) {
@@ -130,8 +142,10 @@ public class OrganisationSetupService {
 		if (d.getAs4() != null) {
 			m.put(OrganisationSetupKey.ACCESS_POINT_AS4, String.valueOf(d.getAs4()));
 		}
-		m.put(OrganisationSetupKey.GENERATE_INVOICE_RESPONSE_ON_ERROR, String.valueOf(d.isGenerateInvoiceResponseOnError()));
-		m.put(OrganisationSetupKey.SEND_UNDELIVERABLE_INVOICE_RESPONSE_TO_ERST, String.valueOf(d.isSendUndeliverableInvoiceResponseToERST()));
+		m.put(OrganisationSetupKey.GENERATE_RESPONSE_ON_ERROR, String.valueOf(d.isGenerateInvoiceResponseOnError()));
+		m.put(OrganisationSetupKey.SEND_UNDELIVERABLE_RESPONSE_TO_ERST, String.valueOf(d.isSendUndeliverableInvoiceResponseToERST()));
+		
+		m.put(OrganisationSetupKey.RECEIVE_BOTH_BIS3_AND_OIOUBL, String.valueOf(d.isReceiveBothOIOUBLBIS3()));
 		return m;
 	}
 
@@ -140,6 +154,10 @@ public class OrganisationSetupService {
 		d.setOrganisation(organisation);
 		if (setupList != null) {
 			for (OrganisationSetup os : setupList) {
+				if (os.getKey() == null) {
+					// Skip unsupported outdated setup options
+					continue;
+				}
 				switch (os.getKey()) {
 				case SUBSCRIBED_SMP_PROFILES:
 					String[] profiles = os.getValue().split(",");
@@ -170,11 +188,14 @@ public class OrganisationSetupService {
 				case ACCESS_POINT_AS4:
 					d.setAs4(toId(os.getValue()));
 					break;
-				case GENERATE_INVOICE_RESPONSE_ON_ERROR:
+				case GENERATE_RESPONSE_ON_ERROR:
 					d.setGenerateInvoiceResponseOnError(Boolean.valueOf(os.getValue()));
 					break;
-				case SEND_UNDELIVERABLE_INVOICE_RESPONSE_TO_ERST:
+				case SEND_UNDELIVERABLE_RESPONSE_TO_ERST:
 					d.setSendUndeliverableInvoiceResponseToERST(Boolean.valueOf(os.getValue()));
+					break;
+				case RECEIVE_BOTH_BIS3_AND_OIOUBL:
+					d.setReceiveBothOIOUBLBIS3(Boolean.valueOf(os.getValue()));
 					break;
 				default:
 					break;

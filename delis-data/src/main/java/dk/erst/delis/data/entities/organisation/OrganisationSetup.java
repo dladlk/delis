@@ -22,8 +22,8 @@ public class OrganisationSetup extends AbstractCreateUpdateEntity {
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)
 	private Organisation organisation;
 
-	@Enumerated(EnumType.STRING)
 	@Column(name = "SETUP_KEY", nullable = false)
+	@Convert(converter = dk.erst.delis.data.enums.organisation.OrganisationSetupKeyConverter.class)
 	private OrganisationSetupKey key;
 
 	@Column(name = "SETUP_VALUE", nullable = false, length = 250)

@@ -6,7 +6,7 @@ html {
 }
 
 /* START Organisation setup */
-ul.org-smp-setup, ul.on-error-setup {
+ul.org-smp-setup, ul.on-error-setup, ul.none-list-style {
 	list-style: none;
 }
 ul.org-smp-setup li ul li {

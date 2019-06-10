@@ -93,7 +93,7 @@ public class SendDocumentFailedProcessService {
 	}
 
 	protected Map<Long, OrganisationForwardSetup> loadOrganisationIdToSetupMap() {
-		List<Long> organisationIdWithSetup = organisationSetupService.loadOrganisationIdWithSetup(OrganisationSetupKey.SEND_UNDELIVERABLE_INVOICE_RESPONSE_TO_ERST, "true");
+		List<Long> organisationIdWithSetup = organisationSetupService.loadOrganisationIdWithSetup(OrganisationSetupKey.SEND_UNDELIVERABLE_RESPONSE_TO_ERST, "true");
 
 		Map<Long, OrganisationForwardSetup> res = new HashMap<>();
 		for (Long organisationId : organisationIdWithSetup) {
