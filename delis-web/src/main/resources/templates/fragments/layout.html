@@ -31,12 +31,12 @@
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/organisation/list}">Organisations</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Documents Received</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/send/list}">Documents Sent</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/errordict/list}">Errors</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/errordict/list}" th:if="${admin}">Errors</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/identifier/list}">Identifiers</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/task/index}">Tasks</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/setup/index}">Setup</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/accesspoint/list}">Access Points</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/users/list}">Users</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/task/index}" th:if="${admin}">Tasks</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/setup/index}" th:if="${admin}">Setup</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/accesspoint/list}" th:if="${admin}">Access Points</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/users/list}" th:if="${admin}">Users</a></li>
     </ul>
     <ul class="navbar-nav justify-content-end">
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/logout}">Logout</a></li>
