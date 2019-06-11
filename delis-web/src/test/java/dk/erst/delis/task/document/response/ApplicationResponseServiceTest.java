@@ -18,7 +18,6 @@ import org.mockito.Mockito;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
-import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
@@ -35,7 +34,7 @@ public class ApplicationResponseServiceTest {
 	@Test
 	public void testGenerateInvoiceResponse() throws Exception {
 		DocumentBytesStorageService storageService = Mockito.mock(DocumentBytesStorageService.class);
-		when(storageService.find(any(Document.class), any(DocumentBytesType.class))).then(d -> {
+		when(storageService.find(any(Document.class), any(DocumentFormat.class))).then(d -> {
 			return new DocumentBytes();
 		});
 		when(storageService.load(any(DocumentBytes.class), any(OutputStream.class))).then(d -> {

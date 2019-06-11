@@ -96,7 +96,7 @@ public class ApplicationResponseService {
 
 			DocumentFormatFamily ingoingFamily = document.getIngoingDocumentFormat().getDocumentFormatFamily();
 
-			if (ingoingFamily != DocumentFormatFamily.BIS3 || ingoingFamily != DocumentFormatFamily.CII) {
+			if (ingoingFamily != DocumentFormatFamily.BIS3 && ingoingFamily != DocumentFormatFamily.CII) {
 				throw new ApplicationResponseGenerationException(document.getId(), "ApplicationResponse can be generated only for ingoing formats CII or BIS3, but current document ingoing format was " + ingoingFamily.getCode());
 			}
 
