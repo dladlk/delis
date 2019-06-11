@@ -2,7 +2,10 @@ package dk.erst.delis.web.user;
 
 import javax.validation.Valid;
 
+import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.user.User;
+import dk.erst.delis.task.organisation.OrganisationService;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,12 +27,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+	@Autowired
+    private UserService userService;
+	
+	@Autowired
+	private OrganisationService organisationService;
 
     @GetMapping("/list")
     public String list(Model model) {
@@ -48,6 +50,9 @@ public class UserController {
         User user = userService.findById(id);
         UserData userData = new UserData();
         BeanUtils.copyProperties(user, userData);
+        if (user.getOrganisation() != null) {
+        	userData.setOrganisationCode(user.getOrganisation().getCode());
+        }
         model.addAttribute("user", userData);
         return "user/update";
     }
@@ -87,7 +92,26 @@ public class UserController {
                 return "redirect:/users/update/" + user.getId();
             }
         }
+        String result = processOrganisationCode(user, ra, userExists);
+        if (result != null) {
+        	return result;
+        }
         userService.saveOrUpdateUser(user);
         return "redirect:/users/list";
     }
+
+	private String processOrganisationCode(UserData user, RedirectAttributes ra, User userExists) {
+		String organisationCode = user.getOrganisationCode();
+		if (StringUtils.isNotBlank(organisationCode)) {
+			organisationCode = StringUtils.trim(organisationCode);
+        	Organisation organisation = organisationService.findOrganisationByCode(organisationCode);
+        	if (organisation == null) {
+                ra.addFlashAttribute("errorMessage", "No organisation is found by code "+organisationCode);
+                return "redirect:/users/update/" + user.getId();
+        	}
+        	
+        	userExists.setOrganisation(organisation);
+        }
+		return null;
+	}
 }

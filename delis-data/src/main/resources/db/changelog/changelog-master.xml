@@ -16,4 +16,5 @@
     <include file="changes/changelog-1.07-add_send_document_bytes.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.08-add_send_document_changed.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.09-expand_DocumentBytes_add_format.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.10-expand_User_add_organisationId.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
