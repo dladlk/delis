@@ -132,23 +132,16 @@ public class DocumentProcessService {
 		}
 
 		
-		DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule);
+		TransformationResultListener transformationResultListener = new TransformationResultListener(documentBytesStorageService, document);
+		
+		DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener);
 		DocumentErrorCode lastError = null;
 		if (plog != null) {
 			statData.increment(plog.isSuccess() ? "OK" : "ERROR");
 
+			DocumentBytesType documentBytesType = null;
 			if (plog.isSuccess()) {
-				File file = plog.getResultPath().toFile();
-				try {
-					documentBytesStorageService.save(document, DocumentBytesType.READY, plog.getLastDocumentFormat(), file.length(), Files.newInputStream(file.toPath()));
-				} catch (IOException e) {
-					String description = "Can not save validated document " + document.getName();
-					log.error(description, e);
-					DocumentProcessStep step = new DocumentProcessStep(description, DocumentProcessStepType.COPY);
-					step.setMessage(e.getMessage());
-					step.setSuccess(false);
-					plog.addStep(step);
-				}
+				documentBytesType = DocumentBytesType.READY;
 			} else {
 				DocumentProcessStep lastStep = null;
 				if (plog.getStepList() != null && !plog.getStepList().isEmpty()) {
@@ -159,7 +152,29 @@ public class DocumentProcessService {
 				} else {
 					lastError = DocumentErrorCode.OTHER;
 				}
+				
+				if (receivingFormatRule.isLast(plog.getLastDocumentFormat().getDocumentFormatFamily())) {
+					/*
+					 * If according to receiving format rule, failed validation format is last - we should save it not as READY type, but as INTERMEDIATE.
+					 */
+					documentBytesType = DocumentBytesType.INTERM;
+				}
 			}
+			
+			if (documentBytesType != null) {
+				File file = plog.getResultPath().toFile();
+				try {
+					documentBytesStorageService.save(document, documentBytesType, plog.getLastDocumentFormat(), file.length(), Files.newInputStream(file.toPath()));
+				} catch (IOException e) {
+					String description = "Can not save validated document " + document.getName();
+					log.error(description, e);
+					DocumentProcessStep step = new DocumentProcessStep(description, DocumentProcessStepType.COPY);
+					step.setMessage(e.getMessage());
+					step.setSuccess(false);
+					plog.addStep(step);
+				}
+			}
+			
 
 			document.setDocumentStatus(plog.isSuccess() ? DocumentStatus.VALIDATE_OK : DocumentStatus.VALIDATE_ERROR);
 			document.setLastError(lastError);

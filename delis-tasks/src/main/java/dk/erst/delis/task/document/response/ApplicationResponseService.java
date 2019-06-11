@@ -231,7 +231,7 @@ public class ApplicationResponseService {
 		Document documentInvoiceResponse = new Document();
 		documentInvoiceResponse.setIngoingDocumentFormat(format);
 
-		DocumentProcessLog log = validationTransformationService.process(documentInvoiceResponse, xmlFile, OrganisationReceivingFormatRule.BIS3);
+		DocumentProcessLog log = validationTransformationService.process(documentInvoiceResponse, xmlFile, OrganisationReceivingFormatRule.BIS3, null);
 		List<DocumentProcessStep> stepList = log.getStepList();
 		List<ErrorRecord> errors = new ArrayList<>();
 		for (DocumentProcessStep step : stepList) {

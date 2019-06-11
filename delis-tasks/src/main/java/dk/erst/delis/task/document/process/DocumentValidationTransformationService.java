@@ -44,14 +44,14 @@ public class DocumentValidationTransformationService {
 		this.documentParseService = documentParseService;
 	}
 
-	public DocumentProcessLog process(Document document, Path xmlLoadedPath, OrganisationReceivingFormatRule receivingFormatRule) {
+	public DocumentProcessLog process(Document document, Path xmlLoadedPath, OrganisationReceivingFormatRule receivingFormatRule, TransformationResultListener transformationResultListener) {
 		DocumentFormat ingoingDocumentFormat = document.getIngoingDocumentFormat();
 		DocumentProcessLog plog = new DocumentProcessLog();
 
 		plog.setResultPath(xmlLoadedPath);
 
 		try {
-			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat, receivingFormatRule);
+			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat, receivingFormatRule, transformationResultListener);
 		} catch (Exception e) {
 			log.error("Failed to process all formats on document " + document + " by path " + xmlLoadedPath, e);
 		}
@@ -59,7 +59,7 @@ public class DocumentValidationTransformationService {
 		return plog;
 	}
 
-	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule) {
+	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule, TransformationResultListener transformationListener) {
 		List<RuleDocumentValidation> ruleByFormat = ruleService.getValidationRuleListByFormat(documentFormat);
 		for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
 			try (InputStream xmlStream = new BufferedInputStream(new FileInputStream(xmlPath.toFile()), (int)xmlPath.toFile().length())) {
@@ -67,6 +67,7 @@ public class DocumentValidationTransformationService {
 				DocumentProcessStep step = validateByRule(xmlStream, ruleDocumentValidation);
 				plog.addStep(step);
 				if (!step.isSuccess()) {
+					plog.setLastDocumentFormat(documentFormat);
 					return;
 				}
 			} catch (IOException e) {
@@ -102,8 +103,16 @@ public class DocumentValidationTransformationService {
 		}
 
 		DocumentFormat resultFormat = identifyResultFormat(plog, xmlOutPath);
+		if (transformationListener != null) {
+			/*
+			 * Do not save INTERM version if it is last format already
+			 */
+			if (!receivingFormatRule.isLast(resultFormat.getDocumentFormatFamily())) {
+				transformationListener.notify(plog, resultFormat, xmlOutPath.toFile());
+			}
+		}
 
-		processAllFormats(plog, xmlOutPath, resultFormat, receivingFormatRule);
+		processAllFormats(plog, xmlOutPath, resultFormat, receivingFormatRule, transformationListener);
 	}
 
 	protected DocumentFormat identifyResultFormat(DocumentProcessLog plog, Path xmlPath) {

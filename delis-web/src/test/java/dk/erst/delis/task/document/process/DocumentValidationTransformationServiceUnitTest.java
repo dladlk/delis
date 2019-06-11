@@ -99,7 +99,7 @@ public class DocumentValidationTransformationServiceUnitTest {
 			Document d = new Document();
 			d.setIngoingDocumentFormat(testDocument.getDocumentFormat());
 			
-			DocumentProcessLog processLog = processService.process(d, testFile, OrganisationReceivingFormatRule.OIOUBL);
+			DocumentProcessLog processLog = processService.process(d, testFile, OrganisationReceivingFormatRule.OIOUBL, null);
 			assertNotNull(processLog);
 			
 			List<DocumentProcessStep> stepList = processLog.getStepList();
