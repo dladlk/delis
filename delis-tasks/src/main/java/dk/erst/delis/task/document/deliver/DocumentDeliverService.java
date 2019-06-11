@@ -15,6 +15,7 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.JournalDocumentService;
@@ -102,10 +103,8 @@ public class DocumentDeliverService {
         DocumentProcessLog processLog = new DocumentProcessLog();
 
         OrganisationReceivingMethod receivingMethod = setupData.getReceivingMethod();
-        String receivingMethodSetup = setupData.getReceivingMethodSetup();
 
         DocumentBytes documentBytes = documentBytesStorageService.find(document, DocumentBytesType.READY);
-
         if (receivingMethod == null) {
             DocumentProcessStep failStep = new DocumentProcessStep("Can not export - receiving method is not set for organization " +
                     document.getOrganisation().getName(), DocumentProcessStepType.DELIVER);
@@ -119,29 +118,53 @@ public class DocumentDeliverService {
             failStep.done();
             processLog.addStep(failStep);
         } else {
-            String outputFileName = buildOutputFileName(document);
-            switch (receivingMethod) {
-                case FILE_SYSTEM:
-                    File outputFile = new File(receivingMethodSetup, outputFileName);
-                    moveToFileSystem(documentBytes, outputFile, processLog);
-                    break;
-                case AZURE_STORAGE_ACCOUNT:
-                    moveToAzure(documentBytes, processLog);
-                    break;
-                case VFS:
-                    moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
-                    break;
-                default:
-                    DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " +
-                            receivingMethod, DocumentProcessStepType.DELIVER);
-                    failStep.setSuccess(false);
-                    failStep.done();
-                    processLog.addStep(failStep);
+        	
+        	boolean doDoubleSending = setupData.isReceiveBothOIOUBLBIS3() && documentBytes.getFormat().isOIOUBL();
+            
+        	String outputFileName = buildOutputFileName(document, doDoubleSending ? "OIOUBL" : null);
+            uploadDocument(setupData, processLog, documentBytes, outputFileName);
+            
+            if (doDoubleSending) {
+            	DocumentFormat addReceivingFormat;
+        		if (documentBytes.getFormat() == DocumentFormat.OIOUBL_CREDITNOTE) {
+        			addReceivingFormat = DocumentFormat.BIS3_CREDITNOTE;
+        		} else {
+        			addReceivingFormat = DocumentFormat.BIS3_INVOICE;
+        		}
+        		DocumentBytes addDocumentBytes = documentBytesStorageService.find(document, addReceivingFormat);
+        		
+        		if (addDocumentBytes != null) {
+        			outputFileName = buildOutputFileName(document, "BIS3");
+        			uploadDocument(setupData, processLog, addDocumentBytes, outputFileName);
+        		}
             }
         }
 
         return processLog;
     }
+
+	private void uploadDocument(OrganisationSetupData setupData, DocumentProcessLog processLog, DocumentBytes documentBytes, String outputFileName) {
+		OrganisationReceivingMethod receivingMethod = setupData.getReceivingMethod();
+		String receivingMethodSetup = setupData.getReceivingMethodSetup();
+		switch (receivingMethod) {
+		    case FILE_SYSTEM:
+		        File outputFile = new File(receivingMethodSetup, outputFileName);
+		        moveToFileSystem(documentBytes, outputFile, processLog);
+		        break;
+		    case AZURE_STORAGE_ACCOUNT:
+		        moveToAzure(documentBytes, processLog);
+		        break;
+		    case VFS:
+		        moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
+		        break;
+		    default:
+		        DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " +
+		                receivingMethod, DocumentProcessStepType.DELIVER);
+		        failStep.setSuccess(false);
+		        failStep.done();
+		        processLog.addStep(failStep);
+		}
+	}
 
     private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
@@ -176,7 +199,7 @@ public class DocumentDeliverService {
 		return false;
 	}
 
-    private String buildOutputFileName(Document document) {
+    private String buildOutputFileName(Document document, String suffix) {
         StringBuilder sb = new StringBuilder();
         sb.append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss_").format(document.getUpdateTime()));
         sb.append(document.getReceiverIdRaw());
@@ -186,6 +209,10 @@ public class DocumentDeliverService {
         sb.append(document.getDocumentId());
         sb.append("_");
         sb.append(document.getDocumentDate());
+        if (suffix != null) {
+        	sb.append("_");
+        	sb.append(suffix);
+        }
         sb.append(".xml");
         String s = sb.toString();
 
