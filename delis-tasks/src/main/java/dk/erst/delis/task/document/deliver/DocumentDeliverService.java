@@ -199,7 +199,7 @@ public class DocumentDeliverService {
 		return false;
 	}
 
-    private String buildOutputFileName(Document document, String suffix) {
+    private String buildOutputFileName(Document document, String subfolder) {
         StringBuilder sb = new StringBuilder();
         sb.append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss_").format(document.getUpdateTime()));
         sb.append(document.getReceiverIdRaw());
@@ -209,10 +209,6 @@ public class DocumentDeliverService {
         sb.append(document.getDocumentId());
         sb.append("_");
         sb.append(document.getDocumentDate());
-        if (suffix != null) {
-        	sb.append("_");
-        	sb.append(suffix);
-        }
         sb.append(".xml");
         String s = sb.toString();
 
@@ -224,6 +220,9 @@ public class DocumentDeliverService {
         s = s.replaceAll(";", "");
         s = s.replaceAll(" ", "_");
 
+        if (subfolder != null) {
+        	s = subfolder +"/" + s;
+        }
 
         return s;
     }
