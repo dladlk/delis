@@ -4,7 +4,7 @@
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
 
-	<h3 class="my-3">Welcome to Delis <sup>1.0</sup></h3>
+	<h3 class="my-3">Welcome to Delis <sup>1.0</sup>, <span th:text="${#authentication.principal.fullName}"></span></h3>
 	
 	<div class="row">
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/document/list', ${documentStat.documentLoadedCount}, 'Documents Loaded', 'oi-comment-square', 'bg-warning')}"></div>

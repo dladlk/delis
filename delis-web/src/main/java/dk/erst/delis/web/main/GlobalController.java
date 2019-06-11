@@ -14,7 +14,7 @@ import dk.erst.delis.data.enums.user.RoleType;
 public class GlobalController {
 
 	public static final SimpleGrantedAuthority ADMIN_AUTHORITY = new SimpleGrantedAuthority(RoleType.ADMIN.name());
-	public static final SimpleGrantedAuthority USER_AUTHORITY = new SimpleGrantedAuthority(RoleType.ORGANISATION_USER.name());
+	public static final SimpleGrantedAuthority USER_AUTHORITY = new SimpleGrantedAuthority(RoleType.USER.name());
 
 	@ModelAttribute(name = "loggedIn")
 	public boolean isLoggedIn(Authentication authentication) {
