@@ -80,6 +80,7 @@ public class DocumentValidationTransformationService {
 		}
 
 		if (receivingFormatRule.isLast(documentFormat.getDocumentFormatFamily())) {
+			plog.setLastDocumentFormat(documentFormat);
 			return;
 		}
 

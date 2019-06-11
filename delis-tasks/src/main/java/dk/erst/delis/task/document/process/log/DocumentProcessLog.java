@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import lombok.Data;
 
 @Data
@@ -14,6 +15,8 @@ public class DocumentProcessLog {
 	private Path resultPath;
 	
 	private boolean success;
+	
+	private DocumentFormat lastDocumentFormat;
 
 	public DocumentProcessLog() {
 		this.stepList = new ArrayList<>();

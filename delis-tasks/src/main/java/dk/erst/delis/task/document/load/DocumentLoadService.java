@@ -183,7 +183,7 @@ public class DocumentLoadService {
 			document.setName(originalFileName);
 			documentDaoRepository.save(document);
 
-			moveToLoaded(file, metadataFilePath, fileSbd, document);
+			moveToLoaded(file, metadataFilePath, fileSbd, document, document.getIngoingDocumentFormat());
 
 			JournalDocument jd = new JournalDocument();
 			jd.setDocument(document);
@@ -267,9 +267,9 @@ public class DocumentLoadService {
 		return metadataFile.toFile();
 	}
 
-	private void moveToLoaded(File file, File metadataFile, File fileSbd, Document document) {
+	private void moveToLoaded(File file, File metadataFile, File fileSbd, Document document, DocumentFormat format) {
 		try (InputStream is = Files.newInputStream(file.toPath())) {
-			boolean saved = documentBytesStorageService.save(document, DocumentBytesType.IN, file.length(), is);
+			boolean saved = documentBytesStorageService.save(document, DocumentBytesType.IN, format, file.length(), is);
 			if (!saved) {
 				return;
 			}
@@ -282,7 +282,7 @@ public class DocumentLoadService {
 
 		if (metadataFile != null) {
 			try (InputStream is = Files.newInputStream(metadataFile.toPath())) {
-				documentBytesStorageService.save(document, DocumentBytesType.IN_AS4, metadataFile.length(), is);
+				documentBytesStorageService.save(document, DocumentBytesType.IN_AS4, null, metadataFile.length(), is);
 			} catch (IOException e) {
 				log.error("Failed to save metadata file " + metadataFile, e);
 			}
@@ -292,7 +292,7 @@ public class DocumentLoadService {
 
 		if (fileSbd != null) {
 			try (InputStream is = Files.newInputStream(fileSbd.toPath())){
-				documentBytesStorageService.save(document, DocumentBytesType.IN_SBD, fileSbd.length(), is);
+				documentBytesStorageService.save(document, DocumentBytesType.IN_SBD, null, fileSbd.length(), is);
 			} catch (IOException e) {
 				log.error("Failed to save SBD file " + fileSbd, e);
 			}

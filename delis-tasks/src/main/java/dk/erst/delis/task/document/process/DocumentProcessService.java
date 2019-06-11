@@ -140,7 +140,7 @@ public class DocumentProcessService {
 			if (plog.isSuccess()) {
 				File file = plog.getResultPath().toFile();
 				try {
-					documentBytesStorageService.save(document, DocumentBytesType.READY, file.length(), Files.newInputStream(file.toPath()));
+					documentBytesStorageService.save(document, DocumentBytesType.READY, plog.getLastDocumentFormat(), file.length(), Files.newInputStream(file.toPath()));
 				} catch (IOException e) {
 					String description = "Can not save validated document " + document.getName();
 					log.error(description, e);

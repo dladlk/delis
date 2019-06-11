@@ -17,6 +17,7 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -57,13 +58,14 @@ public class DocumentBytesStorageService {
 		return s;
 	}
 
-	public boolean save(Document document, DocumentBytesType type, long fileSize, InputStream stream) {
+	public boolean save(Document document, DocumentBytesType type, DocumentFormat format, long fileSize, InputStream stream) {
 		boolean result = true;
 
 		DocumentBytes documentBytes = new DocumentBytes();
 		documentBytes.setDocument(document);
 		documentBytes.setType(type);
 		documentBytes.setSize(fileSize);
+		documentBytes.setFormat(format);
 
 		documentBytesDaoRepository.save(documentBytes);
 
@@ -99,5 +101,9 @@ public class DocumentBytesStorageService {
 
 	public DocumentBytes find(Document document, DocumentBytesType type) {
 		return documentBytesDaoRepository.findTop1ByDocumentAndTypeOrderByIdDesc(document, type);
+	}
+	
+	public DocumentBytes find(Document document, DocumentFormat format) {
+		return documentBytesDaoRepository.findTop1ByDocumentAndFormatOrderByIdDesc(document, format);
 	}
 }

@@ -142,11 +142,14 @@
 				<tr>
 					<th>Id</th>
 					<th>Type</th>
+					<th>Format</th>
 					<th>Size, bytes</th>
+					<th>Download</th>
 				</tr>
 				<tr th:each="r,iter : ${documentBytes}">
 					<td th:text="${r.id}"></td>
 					<td th:text="${r.type}"></td>
+					<td th:text="${r.format}"></td>
 					<td th:text="${r.size}"></td>
 					<th><a href="#" th:href="@{/document/download/__${document.id}__/__${r.id}__}" class="text-muted">Download</a></th>
 				</tr>
