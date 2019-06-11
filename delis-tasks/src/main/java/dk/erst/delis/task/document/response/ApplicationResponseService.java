@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
-import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
@@ -94,24 +93,21 @@ public class ApplicationResponseService {
 		long start = System.currentTimeMillis();
 		try {
 			log.info("Started ApplicatResponse generation for document " + document);
-			DocumentBytesType documentBytesType = null;
+
 			DocumentFormatFamily ingoingFamily = document.getIngoingDocumentFormat().getDocumentFormatFamily();
-			if (ingoingFamily == DocumentFormatFamily.BIS3) {
-				documentBytesType = DocumentBytesType.IN;
-			} else if (ingoingFamily == DocumentFormatFamily.CII) {
-				documentBytesType = DocumentBytesType.INTERM;
-			}
 
-			log.info("Search for document bytes type " + documentBytesType);
-
-			if (documentBytesType == null) {
+			if (ingoingFamily != DocumentFormatFamily.BIS3 || ingoingFamily != DocumentFormatFamily.CII) {
 				throw new ApplicationResponseGenerationException(document.getId(), "ApplicationResponse can be generated only for ingoing formats CII or BIS3, but current document ingoing format was " + ingoingFamily.getCode());
 			}
 
-			DocumentBytes documentBytes = documentBytesStorageService.find(document, documentBytesType);
+			log.info("Search for document bytes with format BIS3 ");
+			DocumentBytes documentBytes = documentBytesStorageService.find(document, DocumentFormat.BIS3_INVOICE);
+			if (documentBytes == null) {
+				documentBytes = documentBytesStorageService.find(document, DocumentFormat.BIS3_CREDITNOTE);
+			}
 			log.info("Found document bytes: " + documentBytes);
 			if (documentBytes == null) {
-				throw new ApplicationResponseGenerationException(document.getId(), "Cannot find document data in format BIS3 by bytes type " + documentBytesType.getCode());
+				throw new ApplicationResponseGenerationException(document.getId(), "Cannot find document data in format family BIS3");
 			}
 
 			ByteArrayOutputStream bisOutput = new ByteArrayOutputStream();
