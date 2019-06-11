@@ -1,9 +1,16 @@
 package dk.erst.delis.data.entities.document;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import dk.erst.delis.data.entities.AbstractCreateEntity;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -30,6 +37,10 @@ public class DocumentBytes extends AbstractCreateEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 10)
 	private DocumentBytesType type;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true, length = 30)
+	private DocumentFormat format;
 
 	@Column(nullable = false)
 	private long size;
