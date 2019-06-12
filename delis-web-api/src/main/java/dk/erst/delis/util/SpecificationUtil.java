@@ -77,7 +77,6 @@ public class SpecificationUtil {
                 }
             }
         }
-
         return predicates;
     }
 
@@ -103,7 +102,22 @@ public class SpecificationUtil {
                 }
             }
         }
+        return predicates;
+    }
 
+    public List<Predicate> generateSpecificationPredicatesByEntityId(
+            Long entityId,
+            Class<? extends AbstractEntity> entityClass,
+            Root<? extends AbstractEntity> root,
+            CriteriaBuilder criteriaBuilder) {
+        List<Predicate> predicates = new ArrayList<>();
+        for (Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass)) {
+            if (Modifier.isPrivate(field.getModifiers())) {
+                if (Objects.equals(field.getName(), "id")) {
+                    predicates.add(criteriaBuilder.equal(root.get(field.getName()), entityId));
+                }
+            }
+        }
         return predicates;
     }
 

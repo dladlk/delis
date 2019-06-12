@@ -78,6 +78,7 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
             Long finalOrgId = orgId;
             Specification<E> specification = (Specification<E>) (root, criteriaQuery, criteriaBuilder) -> {
                 List<Predicate> predicates = SpecificationUtil.generateSpecificationPredicatesByOrganisation(finalOrgId, entityClass, root, criteriaBuilder);
+                predicates.addAll(SpecificationUtil.generateSpecificationPredicatesByEntityId(id, entityClass, root, criteriaBuilder));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             };
             List<E> es = repository.findAll(specification);
