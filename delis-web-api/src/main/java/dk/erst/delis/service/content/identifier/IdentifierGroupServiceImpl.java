@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author funtusthan, created by 17.01.19
- */
-
 @Service
 public class IdentifierGroupServiceImpl implements IdentifierGroupService {
 
@@ -28,14 +24,14 @@ public class IdentifierGroupServiceImpl implements IdentifierGroupService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public PageContainer<IdentifierGroup> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(IdentifierGroup.class, webRequest, identifierGroupRepository);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public IdentifierGroup getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, IdentifierGroup.class, identifierGroupRepository);
