@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author funtusthan, created by 14.01.19
- */
-
 @Service
 public class JournalOrganisationServiceImpl implements JournalOrganisationService {
 
@@ -28,14 +24,14 @@ public class JournalOrganisationServiceImpl implements JournalOrganisationServic
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public PageContainer<JournalOrganisation> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(JournalOrganisation.class, webRequest, journalOrganisationRepository);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public JournalOrganisation getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, JournalOrganisation.class, journalOrganisationRepository);

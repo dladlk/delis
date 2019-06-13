@@ -6,5 +6,6 @@ export class DocumentBytesModel {
     createTime: string;
     type: string;
     size: number;
+    format: string;
     document: DocumentModel = new DocumentModel();
 }

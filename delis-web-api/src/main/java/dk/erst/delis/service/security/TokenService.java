@@ -21,10 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @Service
 public class TokenService {
 
@@ -48,7 +44,7 @@ public class TokenService {
         this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessToken(OAuth2AccessToken token) {
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByUserId(SecurityUtil.getUserId());

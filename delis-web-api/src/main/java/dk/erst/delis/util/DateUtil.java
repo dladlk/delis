@@ -4,25 +4,20 @@ import dk.erst.delis.rest.data.request.param.DateRangeModel;
 
 import lombok.experimental.UtilityClass;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Objects;
-import java.util.TimeZone;
-
-/**
- * @author funtusthan, created by 12.01.19
- */
+import java.util.*;
 
 @UtilityClass
 public class DateUtil {
 
     public final SimpleDateFormat DATE_FORMAT_BY_DAY = new SimpleDateFormat("HH:mm");
     public final SimpleDateFormat DATE_FORMAT_BY_CUSTOM_PERIOD = new SimpleDateFormat("dd.MM");
-    public static final String DEFAULT_TIME_ZONE = "Europe/Copenhagen";
+    public static final String DEFAULT_TIME_ZONE = "Europe/Dublin";
 
     public long getMinutesBetween(Date start, Date end) {
         return ChronoUnit.MINUTES.between(start.toInstant(), end.toInstant());
@@ -77,41 +72,28 @@ public class DateUtil {
 
     public Date convertClientTimeToServerTime(String timeZone, Date date, boolean beginning) {
 
-        // generate server time
         Calendar serverCalendar = Calendar.getInstance();
-        if (Objects.nonNull(date)) {
-            serverCalendar.setTime(date);
-        }
-        TimeZone timeZoneServer = serverCalendar.getTimeZone();
-        long serverTime = serverCalendar.getTime().getTime();
-        Date serverTimeDate = new Date(serverTime);
+        ZoneId serverTimeZone = ZoneId.of(serverCalendar.getTimeZone().getID());
+        ZoneId clientTimeZone = ZoneId.of(timeZone);
 
-        // generate client time
-        Calendar clientCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
-        if (Objects.nonNull(date)) {
-            clientCalendar.setTime(date);
-        }
-        TimeZone timeZoneClient = clientCalendar.getTimeZone();
+        date = (date != null) ? date : new Date();
 
-        if (compareTimeZones(timeZoneServer, timeZoneClient)) {
-            long clientTime = serverTime + timeZoneClient.getRawOffset();
-            Date clientTimeDate = new Date(clientTime);
-            int hoursBetween = getHoursBetween(serverTimeDate, clientTimeDate);
-            if (beginning) {
-                return addHour(generateBeginningOfDay(serverTimeDate), hoursBetween);
-            } else {
-                return addHour(generateEndOfDay(serverTimeDate), hoursBetween);
-            }
+        LocalDateTime serverLocalDateTime = Instant.ofEpochMilli(date.getTime())
+                .atZone(serverTimeZone)
+                .toLocalDateTime();
+
+        ZonedDateTime serverTime = serverLocalDateTime.atZone(serverTimeZone);
+        ZonedDateTime clientTime = serverTime.withZoneSameInstant(clientTimeZone);
+
+        Instant instant = clientTime.toInstant();
+        Instant instantTruncatedToMilliseconds = Instant.ofEpochMilli( instant.toEpochMilli() );
+
+        Date targetDate = Date.from(instantTruncatedToMilliseconds);
+
+        if (beginning) {
+            return generateBeginningOfDay(targetDate);
         } else {
-            if (beginning) {
-                return generateBeginningOfDay(serverTimeDate);
-            } else {
-                return generateEndOfDay(serverTimeDate);
-            }
+            return generateEndOfDay(targetDate);
         }
-    }
-
-    private boolean compareTimeZones(TimeZone timeZoneServer, TimeZone timeZoneClient) {
-        return ObjectUtils.notEqual(timeZoneServer.getID(), timeZoneClient.getID());
     }
 }

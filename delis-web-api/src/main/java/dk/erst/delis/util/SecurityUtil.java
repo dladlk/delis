@@ -10,10 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @UtilityClass
 public class SecurityUtil {
 
@@ -25,7 +21,8 @@ public class SecurityUtil {
         return SecurityUtil.getAuthentication().getName();
     }
 
-    public boolean hasRole(Authentication authentication, String role) {
+    public boolean hasRole(String role) {
+        Authentication authentication = getAuthentication();
         if (Objects.nonNull(authentication)) {
             AtomicBoolean result = new AtomicBoolean(false);
             authentication.getAuthorities().forEach(authority -> result.set(authority.getAuthority().equalsIgnoreCase(role)));

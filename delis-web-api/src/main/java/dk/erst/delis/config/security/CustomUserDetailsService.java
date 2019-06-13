@@ -14,10 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -34,11 +30,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (Objects.isNull(user)) {
             throw new UsernameNotFoundException(login + " not found");
         }
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_ADMIN.name());
+        List<GrantedAuthority> authorities;
+        if (user.getOrganisation() == null) {
+            authorities = AuthorityUtils.createAuthorityList(Role.ROLE_ADMIN.name());
+        } else {
+            authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
+        }
         return new CustomUserDetails(user, authorities);
     }
 
     private enum Role {
-        ROLE_ADMIN
+        ROLE_ADMIN, ROLE_USER
     }
 }

@@ -17,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
-/**
- * @author funtusthan, created by 22.01.19
- */
-
 @Service
 public class DashboardServiceImpl implements DashboardService {
 
@@ -45,7 +41,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public DashboardData generateDashboardData() {
 

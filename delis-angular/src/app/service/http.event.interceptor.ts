@@ -21,12 +21,10 @@ export class HttpEventInterceptor implements HttpInterceptor {
             tap(
                 event => {
                     if (event instanceof HttpResponse) {
-                        console.log("api call success :", event);
                     }
                 },
                 error => {
                     if (error instanceof HttpErrorResponse) {
-                        console.log("api call error :", error);
                     }
                 }
             )

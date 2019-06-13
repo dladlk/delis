@@ -18,10 +18,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-/**
- * @author funtusthan, created by 14.01.19
- */
-
 @Service
 public class JournalIdentifierServiceImpl implements JournalIdentifierService {
 
@@ -37,21 +33,21 @@ public class JournalIdentifierServiceImpl implements JournalIdentifierService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public PageContainer<JournalIdentifier> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(JournalIdentifier.class, webRequest, journalIdentifierRepository);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public JournalIdentifier getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, JournalIdentifier.class, journalIdentifierRepository);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ListContainer<JournalIdentifier> getByIdentifier(WebRequest webRequest, long identifierId) {
         long collectionSize = journalIdentifierRepository.countByIdentifierId(identifierId);

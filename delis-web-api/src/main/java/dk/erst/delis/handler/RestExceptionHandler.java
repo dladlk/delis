@@ -13,10 +13,6 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 09.01.19
- */
-
 @ControllerAdvice
 public class RestExceptionHandler {
 
@@ -28,6 +24,11 @@ public class RestExceptionHandler {
     @ExceptionHandler(value = RestBadRequestException.class)
     public ResponseEntity<Object> handleBadRequest(RestBadRequestException error) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponseModel(error));
+    }
+
+    @ExceptionHandler(value = RestForbiddenException.class)
+    public ResponseEntity<Object> handleForbidden(RestForbiddenException error) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponseModel(error));
     }
 
     @ExceptionHandler(value = RestConflictException.class)

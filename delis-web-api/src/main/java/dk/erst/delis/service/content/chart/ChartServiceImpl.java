@@ -17,10 +17,6 @@ import java.util.*;
 
 import static dk.erst.delis.util.DateUtil.DEFAULT_TIME_ZONE;
 
-/**
- * @author funtusthan, created by 23.01.19
- */
-
 @Service
 public class ChartServiceImpl implements ChartService {
 
@@ -32,7 +28,7 @@ public class ChartServiceImpl implements ChartService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ChartData generateChartData(WebRequest request) {
 

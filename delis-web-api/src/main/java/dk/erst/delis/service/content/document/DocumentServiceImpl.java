@@ -16,10 +16,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Collections;
 
-/**
- * @author Iehor Funtusov, created by 03.01.19
- */
-
 @Service
 public class DocumentServiceImpl implements DocumentService {
 
@@ -38,21 +34,21 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public PageContainer<Document> getAll(WebRequest webRequest) {
         return abstractGenerateDataService.generateDataPageContainer(Document.class, webRequest, documentRepository);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public Document getOneById(long id) {
         return abstractGenerateDataService.getOneById(id, Document.class, documentRepository);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ListContainer<DocumentBytes> findListDocumentBytesByDocumentId(Long documentId) {
         Document document = abstractGenerateDataService.getOneById(documentId, Document.class, documentRepository);

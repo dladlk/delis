@@ -9,12 +9,10 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @Getter
 public class CustomUserDetails extends User {
+
+    private static final long serialVersionUID = 7085909667165639569L;
 
     private Long id;
     private String userName;

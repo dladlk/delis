@@ -23,7 +23,7 @@ export class ErrorService {
 
     errorProcess(error: any) {
         switch (String(error["status"])) {
-            case "401" : {
+            case '401' : {
                 let errorToken: string = JSON.stringify(error.error.error);
                 if (new String(JSON.parse(errorToken)).valueOf() == new String("invalid_token").valueOf()) {
                     this.refreshTokenService.refreshTokenInit(localStorage.getItem("refreshToken")).subscribe(
@@ -39,14 +39,17 @@ export class ErrorService {
                     this.resetProcess();
                 }
             } break;
+            case '403' : {
+                let listenError = new ErrorModel();
+                listenError.status = String(error["status"]);
+                listenError.message = error.error.fieldErrors[0].message;
+                this.listenErrorService.loadError(listenError);
+            }
+            break;
             default : {
                 let listenError = new ErrorModel();
                 listenError.status = String(error["status"]);
-                let errorMessage = '';
-                if (error["message"]) {
-                    errorMessage += error["message"];
-                }
-                listenError.message = errorMessage;
+                listenError.message = error.error.fieldErrors[0].message;
                 this.listenErrorService.loadError(listenError);
             }
         }

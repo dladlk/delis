@@ -14,13 +14,13 @@ export class LayoutComponent implements OnInit {
     collapsedSideBar: boolean;
 
     error: boolean = false;
-    errorMessage: string;
+    listenError: ErrorModel;
 
     constructor(private translate: TranslateService, private locale: LocaleService, private errorService: ListenErrorService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.errorService.listen().subscribe((listenError: ErrorModel) => {
             this.error = true;
-            this.errorMessage = 'status is: ' + listenError.status + ' : ' + ' message is: ' + listenError.message;
+            this.listenError = listenError;
         });
     }
 

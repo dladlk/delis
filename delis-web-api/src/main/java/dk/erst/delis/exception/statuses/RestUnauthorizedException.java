@@ -8,13 +8,11 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * @author funtusthan, created by 12.01.19
- */
-
 @Getter
 @Setter
 public class RestUnauthorizedException extends RestException {
+
+    private static final long serialVersionUID = 2579970359209648014L;
 
     public RestUnauthorizedException(List<FieldErrorModel> fieldErrors) {
         super(fieldErrors);

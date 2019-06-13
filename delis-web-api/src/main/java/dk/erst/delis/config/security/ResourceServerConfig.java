@@ -7,10 +7,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
@@ -31,7 +27,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .permitAll()
 
                 .antMatchers("/rest/**")
-                .access("hasRole('ROLE_ADMIN')")
+                .access("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
 
                 .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
     }

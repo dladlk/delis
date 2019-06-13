@@ -118,11 +118,13 @@
                     <tr>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
                     </tr>
                     <tr *ngFor="let doc of documentBytesModels" >
                         <td>{{doc.id}}</td>
                         <td>{{doc.type}}</td>
+                        <td>{{doc.format}}</td>
                         <td>{{doc.size}}</td>
                     </tr>
                 </table>
