@@ -1,13 +1,18 @@
 package dk.erst.delis.service.content.chart;
 
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.exception.model.FieldErrorModel;
+import dk.erst.delis.exception.statuses.RestConflictException;
 import dk.erst.delis.persistence.repository.document.DocumentRepository;
+import dk.erst.delis.persistence.repository.organization.OrganizationRepository;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;
+import dk.erst.delis.service.security.SecurityService;
 import dk.erst.delis.util.DateUtil;
-
+import dk.erst.delis.util.SecurityUtil;
 import org.apache.commons.lang3.StringUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +26,14 @@ import static dk.erst.delis.util.DateUtil.DEFAULT_TIME_ZONE;
 public class ChartServiceImpl implements ChartService {
 
     private final DocumentRepository documentRepository;
+    private final OrganizationRepository organizationRepository;
+    private final SecurityService securityService;
 
     @Autowired
-    public ChartServiceImpl(DocumentRepository documentRepository) {
+    public ChartServiceImpl(DocumentRepository documentRepository, OrganizationRepository organizationRepository, SecurityService securityService) {
         this.documentRepository = documentRepository;
+        this.organizationRepository = organizationRepository;
+        this.securityService = securityService;
     }
 
     @Override
@@ -77,7 +86,7 @@ public class ChartServiceImpl implements ChartService {
             endSearchDate = DateUtil.addDay(startSearchDate, 1);
             for (int d = 0 ; d <= days ; ++d) {
                 lineChartLabels.add(DateUtil.DATE_FORMAT_BY_CUSTOM_PERIOD.format(start));
-                dataGraph.add(documentRepository.countByCreateTimeBetween(startSearchDate, endSearchDate));
+                dataGraph.add(generateDataGraphCount(startSearchDate, endSearchDate));
                 start = DateUtil.addDay(start, 1);
                 startSearchDate = new Date(endSearchDate.getTime());
                 endSearchDate = DateUtil.addDay(startSearchDate, 1);
@@ -103,7 +112,7 @@ public class ChartServiceImpl implements ChartService {
         List<Long> dataGraph = new ArrayList<>();
         for (int h = 0 ; h <= hours ; ++h) {
             lineChartLabels.add(DateUtil.DATE_FORMAT_BY_DAY.format(clientDate));
-            dataGraph.add(documentRepository.countByCreateTimeBetween(startSearchDate, end));
+            dataGraph.add(generateDataGraphCount(startSearchDate, endSearchDate));
             startSearchDate = new Date(end.getTime());
             clientDate = DateUtil.addHour(clientDate, 1);
             end = DateUtil.addHour(startSearchDate, 1);
@@ -113,5 +122,26 @@ public class ChartServiceImpl implements ChartService {
         chartData.setLineChartData(lineChartData);
         chartData.setLineChartLabels(lineChartLabels);
         return chartData;
+    }
+
+    private Long generateDataGraphCount(Date startSearchDate, Date endSearchDate) {
+        if (SecurityUtil.hasRole("ROLE_USER")) {
+            Long orgId = securityService.getOrganisation().getId();
+            if (orgId == null) {
+                conflictProcess();
+            }
+            Organisation organisation = organizationRepository.findById(orgId).orElse(null);
+            if (organisation == null) {
+                conflictProcess();
+            }
+            return documentRepository.countByCreateTimeBetweenAndOrganisation(startSearchDate, endSearchDate, organisation);
+        } else {
+            return documentRepository.countByCreateTimeBetween(startSearchDate, endSearchDate);
+        }
+    }
+
+    private void conflictProcess() {
+        throw new RestConflictException(Collections.singletonList(
+                new FieldErrorModel("organization", HttpStatus.CONFLICT.getReasonPhrase(), "there was a problem reading your organization")));
     }
 }
