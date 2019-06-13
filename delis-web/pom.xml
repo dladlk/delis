@@ -28,9 +28,9 @@
     <dependencies>
 
 		<dependency>
-			<groupId>com.github.darrachequesne</groupId>
-			<artifactId>spring-data-jpa-datatables</artifactId>
-			<version>5.0.0</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>datatables-easy</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!-- Delis -->
