@@ -75,6 +75,7 @@
     "documents.table.one.columnName.documentBytesModels.id" : "Id",
     "documents.table.one.columnName.documentBytesModels.type" : "Type",
     "documents.table.one.columnName.documentBytesModels.size" : "Size, bytes",
+    "documents.table.one.columnName.documentBytesModels.format" : "Format",
 
     "identifier.header" : "Identifier",
     "identifier.header.details" : "Identifier details",

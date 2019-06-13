@@ -74,6 +74,7 @@
   "documents.table.one.columnName.documentBytesModels.id" : "Id",
   "documents.table.one.columnName.documentBytesModels.type" : "Type",
   "documents.table.one.columnName.documentBytesModels.size" : "Størrelse, bytes",
+  "documents.table.one.columnName.documentBytesModels.format" : "Format",
 
   "identifier.header" : "Nummer",
   "identifier.header.details" : "Modtager detaljer",
