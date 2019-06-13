@@ -1,6 +1,8 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'documents.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
 
+    <div *ngIf="error">{{resetData()}}</div>
+
     <div class="card">
         <div class="card border-secondary m-1">
             <div class="card-body table-responsive">

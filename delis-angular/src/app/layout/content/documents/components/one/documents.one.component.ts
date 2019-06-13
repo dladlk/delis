@@ -29,6 +29,7 @@ export class DocumentsOneComponent implements OnInit {
     journalDocuments: JournalDocumentModel[];
     journalDocumentErrors: JournalDocumentErrorModel[] = [];
     documentBytesModels: DocumentBytesModel[] = [];
+    error = false;
 
     constructor(
         private translate: TranslateService,
@@ -49,17 +50,20 @@ export class DocumentsOneComponent implements OnInit {
             this.document = data;
         }, error => {
             this.errorService.errorProcess(error);
+            this.error = true;
         });
         this.documentService.getListDocumentBytesByDocumentId(id).subscribe((data: {}) => {
             this.documentBytesModels = data["items"];
         }, error => {
             this.errorService.errorProcess(error);
+            this.error = true;
         });
         this.journalDocumentService.getAllByDocumentId(id).subscribe(
             (data: {}) => {
                 this.journalDocuments = data["items"];
             }, error => {
                 this.errorService.errorProcess(error);
+                this.error = true;
             }
         );
         this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe(
@@ -67,8 +71,16 @@ export class DocumentsOneComponent implements OnInit {
                 this.journalDocumentErrors = data["items"];
             }, error => {
                 this.errorService.errorProcess(error);
+                this.error = true;
             }
         );
+    }
+
+    resetData() {
+        this.document = new DocumentModel();
+        this.journalDocuments = [];
+        this.journalDocumentErrors = [];
+        this.documentBytesModels = [];
     }
 
     getErrorDictionaryModel(id : number) : ErrorDictionaryModel[] {

@@ -1,5 +1,6 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'identifier.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div *ngIf="error">{{resetData()}}</div>
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">

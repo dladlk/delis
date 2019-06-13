@@ -38,6 +38,7 @@ export class IdentifierOneComponent {
     filter: JournalIdentifierFilterProcessResultModel;
     journalIdentifiers: JournalIdentifierModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
+    error = false;
 
     constructor(
         private translate: TranslateService,
@@ -59,9 +60,15 @@ export class IdentifierOneComponent {
             this.identifier = data;
         }, error => {
             this.errorService.errorProcess(error);
+            this.error = true;
         });
         this.id = id;
         this.initProcess();
+    }
+
+    resetData() {
+        this.identifier = new IdentifierModel();
+        this.journalIdentifiers = [];
     }
 
     clickFilter(target: string) {
@@ -123,6 +130,7 @@ export class IdentifierOneComponent {
                 this.journalIdentifiers = data["items"];
             }, error => {
                 this.errorService.errorProcess(error);
+                this.error = true;
             }
         );
     }
