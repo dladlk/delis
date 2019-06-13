@@ -1,37 +1,97 @@
 package dk.erst.delis.web.identifier;
 
-import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
-import dk.erst.delis.data.enums.identifier.IdentifierStatus;
-import dk.erst.delis.task.organisation.OrganisationService;
+import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.easy.data.PageData;
+import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListService;
+import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListServiceImpl;
+import org.springframework.data.jpa.datatables.easy.web.EasyDatatablesListController;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Iterator;
-import java.util.List;
+import dk.erst.delis.config.web.security.CustomUserDetails;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+import dk.erst.delis.task.organisation.OrganisationService;
 
 @Controller
-public class IdentifierController {
+public class IdentifierController extends EasyDatatablesListController<Identifier> {
 
 	@Autowired
 	private IdentifierService identifierService;
 	@Autowired
 	private OrganisationService organisationService;
 
+	/*
+	 * START EasyDatatables block
+	 */
+	@Autowired
+	private IdentifierDataTableRepository identifierDataTableRepository;
+	@Autowired
+	private EasyDatatablesListServiceImpl<Identifier> identifierEasyDatatablesListService;
+	
+	@Override
+	protected String getListCode() {
+		return "identifier";
+	}
+	@Override
+	protected DataTablesRepository<Identifier, Long> getDataTableRepository() {
+		return this.identifierDataTableRepository;
+	}
+	@Override
+	protected EasyDatatablesListService<Identifier> getEasyDatatablesListService() {
+		return identifierEasyDatatablesListService;
+	}
 
-	@GetMapping("/identifier/list")
-	public String listAll(Model model, RedirectAttributes redirectAttributes) {
-		return list(-1, model, redirectAttributes);
+	@RequestMapping("/identifier/list")
+	public String list(Model model, WebRequest webRequest) {
+		model.addAttribute("selectedIdList", new IdentifierStatusBachUdpateInfo());
+		model.addAttribute("statusList", IdentifierStatus.values());
+		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
+		
+		return super.list(model, webRequest);
 	}
 	
+	@Override
+	protected PageData updatePageData(WebRequest webRequest) {
+		PageData pageData = super.updatePageData(webRequest);
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
+		
+		if (cud.getOrganisation() != null) {
+			pageData.addFilterValue("organisation.id", String.valueOf(cud.getOrganisation().getId()));
+		}
+		
+		return pageData;
+	}	
+	
+	/*
+	 * END EasyDatatables block
+	 */
+	
+	
+	@GetMapping("/identifier/listOld")
+	public String listAll(Model model, RedirectAttributes redirectAttributes) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
+		return list(cud.getOrganisationId(), model, redirectAttributes);
+	}
+
 	@GetMapping("/identifier/list/{organisationId}")
 	public String list(@PathVariable long organisationId, Model model, RedirectAttributes redirectAttributes) {
 		Iterator<Identifier> list;
@@ -43,7 +103,7 @@ public class IdentifierController {
 				redirectAttributes.addFlashAttribute("errorMessage", "Organisation is not found");
 				return "redirect:/home";
 			}
-			
+
 			list = identifierService.findByOrganisation(organisation);
 			model.addAttribute("organisation", organisation);
 		}
@@ -86,10 +146,10 @@ public class IdentifierController {
 		model.addAttribute("identifierPublishingStatusList", IdentifierPublishingStatus.values());
 		model.addAttribute("identifier", identifier);
 		model.addAttribute("lastJournalList", identifierService.getJournalRecords(identifier));
-		
+
 		return "identifier/view";
 	}
-	
+
 	@GetMapping("/identifier/delete/{id}")
 	public String delete(@PathVariable long id, Model model, RedirectAttributes ra) {
 		int count = identifierService.markAsDeleted(id);
@@ -100,4 +160,5 @@ public class IdentifierController {
 		ra.addFlashAttribute("message", String.format("Identifier %s is marked as deleted", identifierService.findOne(id).getUniqueValueType()));
 		return view(id, model, ra);
 	}
+
 }

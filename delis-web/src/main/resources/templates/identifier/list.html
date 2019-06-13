@@ -8,56 +8,31 @@
 			Test organisation
 		</div>
 		<div class="card-body">
-			<table class="table form-group">
-				<tr>
-					<th>Organisation</th>
-					<th>Identifier</th>
-					<th>Type</th>
-					<th>Name</th>
-					<th>Status</th>
-					<th>Publishing</th>
-				</tr>
-				<tr>
-					<td>
-						<input type="text" class="form-control" id="orgFilter">
-					</td>
-					<td>
-						<input type="text" class="form-control" id="idFilter">
-					</td>
-					<td>
-						<input type="text" class="form-control" id="typeFilter">
-					</td>
-					<td>
-						<input type="text" class="form-control" id="nameFilter">
-					</td>
-					<td>
-						<select class="form-control"  id="statusSelector">
-							<option>All</option>
-							<option th:each="status : ${statusList}" th:text="${status.getName()}" th:value="${status}"></option>
-						</select>
-					</td>
-					<td>
-						<select class="form-control"  id="publishingStatusSelector">
-							<option>All</option>
-							<option th:each="status : ${publishingStatusList}" th:text="${status.getName()}" th:value="${status}"></option>
-						</select>
-					</td>
-				</tr>
-			</table>
-			<form action="#" th:action="@{/identifier/updatestatuses}" th:object="${selectedIdList}" method="post">
+			<form action="#" th:action="@{/identifier/list}" th:object="${selectedIdList}" method="post">
 				<div class="container">
-					<table id="identifiers" class="table table-striped table-bordered table-sm">
+					<table id="identifiers" class="table table-striped table-bordered table-sm datatables-easy"
+						th:attr="dt-page=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(identifierPage)}"
+						>
 						<thead>
 						<tr>
+							<th dt-field="organisation.name">Organisation</th>
+							<th dt-field="value">Identifier</th>
+							<th dt-field="type">Type</th>
+							<th dt-field="name">Name</th>
+							<th dt-field="status" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(statusList)}">Status</th>
+							<th dt-field="publishingStatus" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(publishingStatusList)}">Publishing</th>
 							<th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
-							<th>Organisation</th>
-							<th>Identifier</th>
-							<th>Type</th>
-							<th>Name</th>
-							<th>Status</th>
-							<th>Publishing</th>
 						</tr>
 						</thead>
+				<tr th:each="r,iter : ${identifierList}">
+					<td><a href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}"></a></td>
+					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" th:text="${r.value}"></a></td>
+					<td th:text="${r.type}"></td>
+					<td th:text="${r.name}"/>
+					<td th:text="${r.status}"/>
+					<td th:text="${r.publishingStatus}"/>
+					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
+				</tr>						
 					</table>
 				</div>
 				<div class="card-footer mt-2">
@@ -70,7 +45,7 @@
                         <select th:field="*{publishStatus}" class="m-2">
                             <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus.getName()}" th:value="${publishStatus}"></option>
                         </select>
-						<button type="submit" class="m-2 btn btn-primary">Update Statuses</button>
+						<button th:attr="onclick-action=@{/identifier/updatestatuses}" onclick="$(this).closest('form').attr('action', $(this).attr('onclick-action'))" type="submit" class="m-2 btn btn-primary">Update Statuses</button>
 					</div>
 				</div>
 			</form>
@@ -78,82 +53,6 @@
 		<div class="card-footer" th:if="${organisation}">
 			<a href="#" th:href="@{/organisation/view/__${organisation.id}__}" class="btn btn-primary">Back to <span th:text="${organisation.name}">Test organisation</span></a>
 		</div>
-
-		<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-		<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-		<script>
-			var table = $('table#identifiers').DataTable({
-				ajax: {
-					contentType: 'application/json',
-					url: '[[@{/identifier/table}]]',
-					type: 'POST',
-					data: function (d) {
-						return JSON.stringify(d);
-					}
-				},
-				serverSide: true,
-				columns: [
-					{
-						data: 'id',
-						orderable: false,
-						searchable: false,
-						render: function (data) { return '<input type="checkbox" value="' + data + '" class="selectItem checkbox" name="idList"/>'; }
-					},
-					{
-						data: 'organisation.name',
-						render: function (data, type, row) { return '<a href="[[@{/organisation/view/}]]' + row["organisation"].id + '">' + data + '</a>'; }
-					},
-					{
-						data: 'value',
-						render: function (data, type, row) { return '<a href="[[@{/identifier/view/}]]' + row["id"] + '">' + data + '</a>'; }
-					},
-					{
-						data: 'type'
-					},
-					{
-						data: 'name'
-					},
-					{
-						data: 'status'
-					},
-					{
-						data: 'publishingStatus'
-					}
-				]
-			});
-
-			var onTextChange = function (value, column) {
-				table.column(column).search(value).draw();
-			};
-
-			var onSelectChange = function(selector, column) {
-				var filter = '';
-				$('select#' + selector + ' option:selected').each(function() {
-					filter += $(this).val() + "+";
-				});
-				filter = filter.substring(0, filter.length - 1);
-				if(filter == 'All') {
-					filter = '';
-				}
-				table.column(column).search(filter).draw();
-			};
-
-			$('select#statusSelector').change(function(){onSelectChange('statusSelector', 5)});
-			$('select#publishingStatusSelector').change(function(){onSelectChange('publishingStatusSelector', 6)});
-
-			var idInput = $('input#idFilter');
-			idInput.on('input', function() {onTextChange(idInput.val(), 2)});
-
-			var typeInput = $('input#typeFilter');
-			typeInput.on('input', function() {onTextChange(typeInput.val(), 3)});
-
-			var nameInput = $('input#nameFilter');
-			nameInput.on('input', function() {onTextChange(nameInput.val(), 4)});
-
-			var orgInput = $('input#orgFilter');
-			orgInput.on('input', function() {onTextChange(orgInput.val(), 1)});
-		</script>
 	</div>
 </body>
 </html>
