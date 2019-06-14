@@ -20,9 +20,12 @@ export class DocumentInvoiceComponent implements OnInit {
 
     invoiceStatusCodeView: string;
     invoiceResponseUseCaseView: string;
+    statusReasonView: string;
 
-    effectiveDateEnabled: any;
-    effectiveDate: any;
+    effectiveDateEnabled = false;
+    effectiveDate: Date;
+
+    statusReasonEnabled = false;
 
     constructor(private route: ActivatedRoute, private documentInvoiceService: DocumentInvoiceService, private errorService: ErrorService) {
     }
@@ -34,6 +37,7 @@ export class DocumentInvoiceComponent implements OnInit {
             this.documentInvoiceModel = data['data'];
             console.log(this.documentInvoiceModel);
             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[0];
+            this.statusReasonView = this.documentInvoiceModel.statusReasonList[0];
         }, error => {
             this.errorService.errorProcess(error);
             this.error = true;
@@ -50,8 +54,23 @@ export class DocumentInvoiceComponent implements OnInit {
         console.log(this.invoiceStatusCodeView);
     }
 
-    checkboxChanged(thisValue: any, boolValue: boolean) {
+    checkEffectiveDateEnabled(thisValue: any, boolValue: boolean) {
         console.log(thisValue);
         console.log(boolValue);
+        this.effectiveDateEnabled = boolValue;
+        console.log(this.effectiveDate);
+        return !this.effectiveDateEnabled;
+    }
+
+    selectStatusReasonView(value: any) {
+        console.log(value);
+        console.log(this.statusReasonView);
+    }
+
+    checkStatusReasonEnabled(thisValue: any, boolValue: boolean) {
+        console.log(thisValue);
+        console.log(boolValue);
+        this.statusReasonEnabled = boolValue;
+        return !this.statusReasonEnabled;
     }
 }

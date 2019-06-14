@@ -76,11 +76,11 @@
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="effectiveDateEnabled">
-                                        <input class="mr-2" type="checkbox" [(ngModel)]="effectiveDateEnabled" onchange="checkboxChanged(this, true)">
+                                        <input class="mr-2" type="checkbox" [checked]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled(this, true)">
                                         Effective date
                                     </label>
                                 </div>
-                                <input [(ngModel)]="effectiveDate" id="effectiveDateEnabled" type="date" class="form-control" size="10" style="max-width: 11em" lang="en"/>
+                                <input [disabled]="!effectiveDateEnabled" [(ngModel)]="effectiveDate" id="effectiveDateEnabled" type="date" class="form-control" size="10" style="max-width: 11em" lang="en"/>
                             </div>
                         </div>
                         <div class="col-sm">
@@ -89,6 +89,39 @@
                             </small>
                         </div>
                     </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <label class="input-group-text" for="inputGroupStatusReason">
+                                                <input class="mr-2" type="checkbox" [checked]="statusReasonEnabled" (change)="checkStatusReasonEnabled(this, true)">
+                                                Reason
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <select class="custom-select" id="inputGroupStatusReason" (change)="selectStatusReasonView($event.target.value)" [disabled]="!statusReasonEnabled">
+                                    <option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [ngValue]="statusReasonView">{{statusReason[0]}}: {{statusReason[1]}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div *ngIf="statusReasonView !== undefined">
+                                {{statusReasonView[0]}}: {{statusReasonView[2]}}
+                            </div>
+                            <br>
+                            <small id="scr">
+                                <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
+                                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
+                                Status Clarification Reason (OpenPEPPOL)</a> for details
+                            </small>
+                        </div>
+                    </div>
+
+                    <hr>
 
                     <div class="d-flex justify-content-start">
                         <div class="p-2">
