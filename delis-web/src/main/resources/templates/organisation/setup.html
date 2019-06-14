@@ -85,7 +85,8 @@
 						<td>
 							<ul class="on-error-setup">
 								<li><input id="onerror1" th:field="*{generateInvoiceResponseOnError}" type="checkbox"></input> <label for="onerror1">Generate MessageLevelResponse and try sending back to sender</label></li>
-								<li><input id="onerror2" th:field="*{sendUndeliverableInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror2">Send undeliverable InvoiceResponses and MessageLevelResponses to ERST</label></li>
+								<li><input id="onerror2" th:field="*{sendUndeliverableInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror2">Forward undeliverable InvoiceResponses and MessageLevelResponses to ERST</label></li>
+								<li><input id="onerror3" th:field="*{sendAllInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror3">Forward ALL InvoiceResponses and MessageLevelResponses to ERST</label></li>
 							</ul>
 						</td>
 					</tr>
