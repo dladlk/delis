@@ -43,7 +43,7 @@ public class DocumentController {
 	@Autowired
 	private ApplicationResponseFormController applicationResponseFormController;
 	
-    @Value("#{servletContext.contextPath}")
+    @Value("${servletContext?.contextPath:}")
     private String servletContextPath;
     
 	@Value("${delis.download.allow.all:#{false}}")
