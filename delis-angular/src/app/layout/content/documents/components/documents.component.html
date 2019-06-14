@@ -3,13 +3,14 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
-                <div class="card" style="min-height: 768px">
+                <div class="card">
                     <div class="card-header"><span>{{ 'documents.table.header' | translate }}</span></div>
                     <div class="card-body table-responsive">
                         <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
                         <table class="table table-hover table-sm">
                             <thead>
                             <tr>
+                                <th></th>
                                 <th *ngFor="let hed of tableHeaderSortModels">
                                     <div class="text-center">
                                         <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
@@ -19,6 +20,9 @@
                                 </th>
                             </tr>
                             <tr>
+                                <td>
+                                    <input type="checkbox" [checked]="isChecked(0)" (change)="checkTab(0)">
+                                </td>
                                 <td>
                                     <ng-select [items]="organizations"
                                                [clearable]="clearableSelect"
@@ -79,7 +83,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr *ngFor="let doc of documents" [routerLink]="['/documents/details/', doc.id]">
+                            <tr *ngFor="let doc of documents">
+                                <td>
+                                    <input type="checkbox" [checked]="isChecked(doc.id)" (change)="checkTab(doc.id)">
+                                </td>
                                 <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
                                 <td *ngIf="doc.organisation === null"></td>
                                 <td *ngIf="doc.receiverIdentifier !== null">{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
@@ -88,13 +95,30 @@
                                 <td>{{doc.lastError}}</td>
                                 <td>{{doc.documentType}}</td>
                                 <td>{{doc.ingoingDocumentFormat}}</td>
-                                <td>{{doc.createTime | date : SHOW_DATE_FORMAT}}</td>
+                                <td class="btn-link" style="cursor: pointer" [routerLink]="['/documents/details/', doc.id]">{{doc.createTime | date : SHOW_DATE_FORMAT}}</td>
                                 <td>{{doc.senderName}}</td>
                             </tr>
                             </tbody>
                         </table>
                         <hr>
                         <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-start">
+                            <div class="p-2">
+                                <label class="col-form-label">Status:</label>
+                            </div>
+                            <div class="p-2">
+                                <select class="form-control" (change)="checkStatus($event.target.value)">
+                                    <option *ngFor="let status of statuses" [ngValue]="loadDocumentStatus">{{status}}</option>
+                                </select>
+                            </div>
+                            <div class="p-2">
+                                <button type="submit" class="btn sys-button" (click)="updateStatusAndLoadPage()">Update Statuses</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

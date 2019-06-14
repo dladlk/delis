@@ -10,14 +10,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 03.01.19
- */
-
 @Repository
 public interface DocumentRepository extends AbstractRepository<Document> {
 
     Long countByLastErrorNotNullAndCreateTimeBetween(Date start, Date end);
     Long countByDocumentStatusInAndCreateTimeBetween(List<DocumentStatus> statuses, Date start, Date end);
     Long countByCreateTimeBetweenAndOrganisation(Date start, Date end, Organisation organisation);
+
+    List<Document> findByIdIn(List<Long> longs);
 }

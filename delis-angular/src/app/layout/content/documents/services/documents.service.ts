@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { RuntimeConfigService } from "../../../../service/runtime.config.service";
 import { HttpRestService } from "../../../../service/http.rest.service";
 import { TokenService } from "../../../../service/token.service";
+import {LoadDocumentStatusModel} from "../models/loadDocumentStatus.model";
 
 @Injectable()
 export class DocumentsService {
@@ -55,6 +56,14 @@ export class DocumentsService {
 
     getListDocumentBytesByDocumentId(id: any) : Observable<any> {
         return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
+    }
+
+    updateDocumentStatus(statusModel: LoadDocumentStatusModel) : Observable<any> {
+        return this.httpRestService.methodPostModel(this.url + '/update-status', statusModel, this.tokenService.getToken());
+    }
+
+    downloadFileByDocumentAndDocumentBytes(id: number, bytesId) : Observable<any> {
+        return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
     }
 
     private generateParams(currentPage: number, sizeElement: number, filter: FilterProcessResult) : HttpParams {

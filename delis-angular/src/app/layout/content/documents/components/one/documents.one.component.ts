@@ -1,19 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from '@angular/router';
-import { TranslateService } from "@ngx-translate/core";
+import {Component, OnInit} from "@angular/core";
+import {ActivatedRoute} from '@angular/router';
+import {TranslateService} from "@ngx-translate/core";
 
-import { routerTransition } from "../../../../../router.animations";
-import { DocumentsService } from "../../services/documents.service";
-import { JournalDocumentService } from "../../../journal/document/services/journal.document.service";
-import { LocaleService } from "../../../../../service/locale.service";
-import { HeaderModel } from "../../../../components/header/header.model";
-import { DocumentModel } from "../../models/document.model";
-import { ErrorService } from "../../../../../service/error.service";
-import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
-import { JournalDocumentModel } from "../../../journal/document/models/journal.document.model";
-import { ErrorDictionaryModel } from "../../../journal/document/models/error.dictionary.model";
-import { DocumentBytesModel } from "../../models/document.bytes.model";
-import { JournalDocumentErrorModel } from "../../../journal/document/models/journal.document.error.model";
+import {routerTransition} from "../../../../../router.animations";
+import {DocumentsService} from "../../services/documents.service";
+import {JournalDocumentService} from "../../../journal/document/services/journal.document.service";
+import {LocaleService} from "../../../../../service/locale.service";
+import {HeaderModel} from "../../../../components/header/header.model";
+import {DocumentModel} from "../../models/document.model";
+import {ErrorService} from "../../../../../service/error.service";
+import {SHOW_DATE_FORMAT} from "../../../../../app.constants";
+import {JournalDocumentModel} from "../../../journal/document/models/journal.document.model";
+import {ErrorDictionaryModel} from "../../../journal/document/models/error.dictionary.model";
+import {DocumentBytesModel} from "../../models/document.bytes.model";
+import {JournalDocumentErrorModel} from "../../../journal/document/models/journal.document.error.model";
+
+import * as fileSaver from 'file-saver';
 
 @Component({
     selector: 'app-documents-one',
@@ -40,11 +42,11 @@ export class DocumentsOneComponent implements OnInit {
         private journalDocumentService: JournalDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
-            { routerLink : '/documents', heading : 'documents.header', icon : 'fa fa-book'}
+            {routerLink: '/documents', heading: 'documents.header', icon: 'fa fa-book'}
         );
     }
 
-    ngOnInit() : void {
+    ngOnInit(): void {
         let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
             this.document = data;
@@ -76,6 +78,18 @@ export class DocumentsOneComponent implements OnInit {
         );
     }
 
+    download(id: number) {
+        this.documentService.downloadFileByDocumentAndDocumentBytes(this.document.id, id).subscribe(response => {
+                const filename = response.headers.get('filename');
+                this.saveFile(response.body, filename);
+            },
+            error => {
+                this.error = true;
+                this.errorService.errorProcess(error);
+            }
+        );
+    }
+
     resetData() {
         this.document = new DocumentModel();
         this.journalDocuments = [];
@@ -83,12 +97,17 @@ export class DocumentsOneComponent implements OnInit {
         this.documentBytesModels = [];
     }
 
-    getErrorDictionaryModel(id : number) : ErrorDictionaryModel[] {
+    getErrorDictionaryModel(id: number): ErrorDictionaryModel[] {
         let err = this.journalDocumentErrors.filter(value => value.journalDocument.id === id);
         if (err === null) {
             return [];
         } else {
             return err.map(value => value.errorDictionary);
         }
+    }
+
+    saveFile(data: any, filename?: string) {
+        const blob = new Blob([data], {type: 'text/xml; charset=utf-8'});
+        fileSaver.saveAs(blob, filename);
     }
 }

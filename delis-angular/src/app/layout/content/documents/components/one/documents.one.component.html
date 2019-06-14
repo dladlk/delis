@@ -122,12 +122,14 @@
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+                        <th>Download</th>
                     </tr>
                     <tr *ngFor="let doc of documentBytesModels" >
                         <td>{{doc.id}}</td>
                         <td>{{doc.type}}</td>
                         <td>{{doc.format}}</td>
                         <td>{{doc.size}}</td>
+                        <td class="btn-link" style="cursor: pointer" (click)="download(doc.id)">Download</td>
                     </tr>
                 </table>
             </div>

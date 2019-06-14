@@ -44,12 +44,11 @@ export class ErrorService {
                 listenError.status = String(error["status"]);
                 listenError.message = error.error.fieldErrors[0].message;
                 this.listenErrorService.loadError(listenError);
-            }
-            break;
+            } break;
             default : {
                 let listenError = new ErrorModel();
                 listenError.status = String(error["status"]);
-                listenError.message = error.error.fieldErrors[0].message;
+                listenError.message = String(error["message"]);
                 this.listenErrorService.loadError(listenError);
             }
         }
