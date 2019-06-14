@@ -84,7 +84,6 @@ export class DocumentsOneComponent implements OnInit {
                 this.saveFile(response.body, filename);
             },
             error => {
-                this.error = true;
                 this.errorService.errorProcess(error);
             }
         );
