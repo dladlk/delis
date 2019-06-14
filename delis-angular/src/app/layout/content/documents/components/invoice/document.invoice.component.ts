@@ -27,12 +27,17 @@ export class DocumentInvoiceComponent implements OnInit {
     detailType: string;
     detailValue: string;
 
+    validateGenerated = "Validate generated";
+    onlyGenerated = "Only generate, do not send";
+
     effectiveDateEnabled = false;
     effectiveDate: Date;
 
     statusReasonEnabled = false;
     statusActionEnabled = false;
     statusAction2Enabled = false;
+    validateGeneratedEnabled = true;
+    onlyGeneratedEnabled = true;
 
     constructor(private route: ActivatedRoute, private documentInvoiceService: DocumentInvoiceService, private errorService: ErrorService) {
     }
@@ -96,5 +101,15 @@ export class DocumentInvoiceComponent implements OnInit {
     checkStatusAction2Enabled() {
         this.statusAction2Enabled = !this.statusAction2Enabled;
         return this.statusAction2Enabled;
+    }
+
+    checkValidateGeneratedEnabled() {
+        this.validateGeneratedEnabled = !this.validateGeneratedEnabled;
+        return this.validateGeneratedEnabled;
+    }
+
+    checkOnlyGeneratedEnabled() {
+        this.onlyGeneratedEnabled = !this.onlyGeneratedEnabled;
+        return this.onlyGeneratedEnabled;
     }
 }

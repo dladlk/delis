@@ -227,6 +227,28 @@
                         </div>
                     </div>
 
+                    <div class="row mt-3">
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="validateGenerated">
+                                        <input class="mr-2" type="checkbox" [checked]="validateGeneratedEnabled" (change)="checkValidateGeneratedEnabled()">
+                                    </label>
+                                </div>
+                                <input [(ngModel)]="validateGenerated" id="validateGenerated" type="text" class="form-control" lang="en"/>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="onlyGenerated">
+                                        <input class="mr-2" type="checkbox" [checked]="onlyGeneratedEnabled" (change)="checkOnlyGeneratedEnabled()">
+                                    </label>
+                                </div>
+                                <input [(ngModel)]="onlyGenerated" id="onlyGenerated" type="text" class="form-control" lang="en"/>
+                            </div>
+                        </div>
+                    </div>
                     <hr>
 
                     <div class="d-flex justify-content-start">
