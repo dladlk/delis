@@ -84,14 +84,12 @@ export class HttpRestService {
 
     downloadFileByDocumentAndDocumentBytes(url: string, token: any) : Observable<any> {
         this.headers = new HttpHeaders({
-            'Content-Type':  'text/xml',
-            'Accept': 'text/xml',
             'Authorization' : 'Bearer ' + token
         });
         return this.http.get(url, {
             headers: this.headers,
             observe: 'response',
-            responseType: 'text'
+            responseType: 'arraybuffer'
         });
     }
 

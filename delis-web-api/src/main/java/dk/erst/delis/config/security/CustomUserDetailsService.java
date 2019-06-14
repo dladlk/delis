@@ -1,7 +1,7 @@
 package dk.erst.delis.config.security;
 
+import dk.erst.delis.dao.UserRepository;
 import dk.erst.delis.data.entities.user.User;
-import dk.erst.delis.persistence.repository.user.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

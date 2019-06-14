@@ -75,7 +75,7 @@
                 <div class="card-title">
                     {{ 'documents.table.one.columnName.journalRecords' | translate }}
                 </div>
-                <table class="table table-borderless table-sm">
+                <table *ngIf="journalDocuments.length > 0" class="table table-borderless table-sm">
                     <tr>
                         <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>

@@ -28,7 +28,7 @@ export class DocumentsOneComponent implements OnInit {
     pageHeaders: HeaderModel[] = [];
     document: DocumentModel = new DocumentModel();
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
-    journalDocuments: JournalDocumentModel[];
+    journalDocuments: JournalDocumentModel[] = [];
     journalDocumentErrors: JournalDocumentErrorModel[] = [];
     documentBytesModels: DocumentBytesModel[] = [];
     error = false;
@@ -107,7 +107,7 @@ export class DocumentsOneComponent implements OnInit {
     }
 
     saveFile(data: any, filename?: string) {
-        const blob = new Blob([data], {type: 'text/xml; charset=utf-8'});
+        const blob = new Blob([data], {type: 'application/octet-stream'});
         fileSaver.saveAs(blob, filename);
     }
 }
