@@ -21,11 +21,15 @@ export class DocumentInvoiceComponent implements OnInit {
     invoiceStatusCodeView: string;
     invoiceResponseUseCaseView: string;
     statusReasonView: string;
+    statusActionView: string;
+    statusAction2View: string;
 
     effectiveDateEnabled = false;
     effectiveDate: Date;
 
     statusReasonEnabled = false;
+    statusActionEnabled = false;
+    statusAction2Enabled = false;
 
     constructor(private route: ActivatedRoute, private documentInvoiceService: DocumentInvoiceService, private errorService: ErrorService) {
     }
@@ -38,6 +42,8 @@ export class DocumentInvoiceComponent implements OnInit {
             console.log(this.documentInvoiceModel);
             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[0];
             this.statusReasonView = this.documentInvoiceModel.statusReasonList[0];
+            this.statusActionView = this.documentInvoiceModel.statusActionList[0];
+            this.statusAction2View = this.documentInvoiceModel.statusActionList[0];
         }, error => {
             this.errorService.errorProcess(error);
             this.error = true;
@@ -72,5 +78,29 @@ export class DocumentInvoiceComponent implements OnInit {
         console.log(boolValue);
         this.statusReasonEnabled = boolValue;
         return !this.statusReasonEnabled;
+    }
+
+    selectStatusActionView(value: any) {
+        console.log(value);
+        console.log(this.statusActionView);
+    }
+
+    checkStatusActionEnabled(thisValue: any, boolValue: boolean) {
+        console.log(thisValue);
+        console.log(boolValue);
+        this.statusActionEnabled = boolValue;
+        return !this.statusActionEnabled;
+    }
+
+    selectStatusAction2View(value: any) {
+        console.log(value);
+        console.log(this.statusAction2View);
+    }
+
+    checkStatusAction2Enabled(thisValue: any, boolValue: boolean) {
+        console.log(thisValue);
+        console.log(boolValue);
+        this.statusAction2Enabled = boolValue;
+        return !this.statusAction2Enabled;
     }
 }
