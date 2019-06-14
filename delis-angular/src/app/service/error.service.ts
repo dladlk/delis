@@ -44,12 +44,23 @@ export class ErrorService {
                 listenError.status = String(error["status"]);
                 listenError.message = error.error.fieldErrors[0].message;
                 this.listenErrorService.loadError(listenError);
-            }
-            break;
+            } break;
+            case '409' : {
+                let listenError = new ErrorModel();
+                listenError.status = String(error["status"]);
+                if (error.error instanceof ArrayBuffer) {
+                    var decodedString = String.fromCharCode.apply(null, new Uint8Array(error.error));
+                    var obj = JSON.parse(decodedString);
+                    listenError.message = obj.fieldErrors[0].message;
+                } else {
+                    listenError.message = error.error.fieldErrors[0].message;
+                }
+                this.listenErrorService.loadError(listenError);
+            } break;
             default : {
                 let listenError = new ErrorModel();
                 listenError.status = String(error["status"]);
-                listenError.message = error.error.fieldErrors[0].message;
+                listenError.message = String(error["message"]);
                 this.listenErrorService.loadError(listenError);
             }
         }

@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 import dk.erst.delis.DelisWebApiApplication
+import dk.erst.delis.dao.UserRepository
 import dk.erst.delis.data.entities.user.User
-import dk.erst.delis.persistence.repository.user.UserRepository
 import dk.erst.delis.rest.data.response.DataContainer
 import dk.erst.delis.rest.data.response.auth.AuthData
 

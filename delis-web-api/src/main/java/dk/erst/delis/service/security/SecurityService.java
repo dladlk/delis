@@ -1,10 +1,10 @@
 package dk.erst.delis.service.security;
 
+import dk.erst.delis.dao.UserRepository;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.user.User;
 import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestForbiddenException;
-import dk.erst.delis.persistence.repository.user.UserRepository;
 import dk.erst.delis.util.SecurityUtil;
 
 import org.springframework.http.HttpStatus;

@@ -63,6 +63,16 @@ export class HttpRestService {
         }).pipe(map(HttpRestService.extractData));
     }
 
+    methodPostModel(url: string, model: any, token: any) : Observable<any> {
+        this.headers = new HttpHeaders({
+            'Content-Type' : `application/json`,
+            'Authorization' : 'Bearer ' + token
+        });
+        return this.http.post(url, model, {
+            headers : this.headers
+        }).pipe(map(HttpRestService.extractData));
+    }
+
     methodDelete(url: string, token: any) : Observable<any> {
         this.headers = new HttpHeaders({
             'Authorization' : 'Bearer ' + token
@@ -70,6 +80,17 @@ export class HttpRestService {
         return this.http.delete(url, {
             headers : this.headers
         }).pipe(map(HttpRestService.extractData));
+    }
+
+    downloadFileByDocumentAndDocumentBytes(url: string, token: any) : Observable<any> {
+        this.headers = new HttpHeaders({
+            'Authorization' : 'Bearer ' + token
+        });
+        return this.http.get(url, {
+            headers: this.headers,
+            observe: 'response',
+            responseType: 'arraybuffer'
+        });
     }
 
     private static extractData(res: Response) {
