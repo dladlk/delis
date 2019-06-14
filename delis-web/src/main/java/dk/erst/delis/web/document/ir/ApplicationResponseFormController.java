@@ -33,16 +33,12 @@ import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.response.ApplicationResponseService;
-import dk.erst.delis.task.document.response.ApplicationResponseService.ApplicationResponseGenerationData;
 import dk.erst.delis.task.document.response.ApplicationResponseService.ApplicationResponseGenerationException;
-import dk.erst.delis.task.document.response.ApplicationResponseService.InvoiceResponseGenerationData;
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
 import dk.erst.delis.web.error.ErrorDictionaryData;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Delegate;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -59,57 +55,6 @@ public class ApplicationResponseFormController {
 	private DocumentProcessService documentProcessService;
 	@Value("${servletContext?.contextPath:}")
 	private String servletContextPath;
-
-	@Getter
-	@Setter
-	public static abstract class AbstractApplicationResponseForm {
-		private long documentId;
-		private String usecase;
-		private boolean generateWithoutSending = true;
-		private boolean validate = true;
-
-		public abstract boolean isMessageLevelResponse();
-
-		public abstract String getDocumentFormatName();
-
-		public abstract ApplicationResponseGenerationData getData();
-	}
-
-	@Getter
-	@Setter
-	public static class InvoiceResponseForm extends AbstractApplicationResponseForm {
-		@Delegate
-		@Getter
-		private InvoiceResponseGenerationData data = new InvoiceResponseGenerationData();
-
-		@Override
-		public boolean isMessageLevelResponse() {
-			return false;
-		}
-
-		@Override
-		public String getDocumentFormatName() {
-			return "InvoiceResponse";
-		}
-	}
-
-	@Getter
-	@Setter
-	public static class MessageLevelResponseForm extends AbstractApplicationResponseForm {
-		@Delegate
-		@Getter
-		private MessageLevelResponseGenerationData data = new MessageLevelResponseGenerationData();
-
-		@Override
-		public boolean isMessageLevelResponse() {
-			return true;
-		}
-
-		@Override
-		public String getDocumentFormatName() {
-			return "MessageLevelResponse";
-		}
-	}
 
 	@PostMapping("/document/generate/messageLevelResponseByErrorAndSend/{id}")
 	public String generateMessageLevelResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {

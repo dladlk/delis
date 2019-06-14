@@ -1,0 +1,109 @@
+<div class="card-body">
+    <div class="d-flex justify-content-start">
+        <div class="p-2">
+            <a class="btn sys-button"
+               data-toggle="collapse"
+               href="#multiCollapseExample1"
+               role="button"
+               aria-expanded="false"
+               aria-controls="multiCollapseExample1">Invoice Response 3.0 Form</a>
+        </div>
+    </div>
+
+    <div class="collapse multi-collapse mt-2" id="multiCollapseExample1">
+        <div class="card">
+            <div class="card border-secondary m-1 mb-3">
+                <div class="card card-body">
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <h2>
+                                Invoice Response BIS 3.0
+                            </h2>
+                        </div>
+                        <div class="col-sm">
+                            <small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/" target="_blank">PEPPOL BIS Invoice Response 3.0 documentation</a> for details</small>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text invoice-input-group" for="inputGroupUseCase">Use case</label>
+                                </div>
+                                <select class="custom-select" id="inputGroupUseCase" (change)="selectInvoiceResponseUseCaseView($event.target.value)">
+                                    <option *ngFor="let useCase of documentInvoiceModel.invoiceResponseUseCaseList; index as i">
+                                        <div *ngIf="i === 0; else elseBlock">{{useCase[1]}}</div>
+                                        <ng-template #elseBlock>{{useCase[0]}}: {{useCase[1]}}</ng-template>
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <small id="ucl">See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
+                                Invoice Response use cases</a> for details
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text invoice-input-group" for="inputGroupStatusCode">Status</label>
+                                </div>
+                                <select class="custom-select" id="inputGroupStatusCode" (change)="selectInvoiceStatusCodeView($event.target.value)">
+                                    <option *ngFor="let statusCode of documentInvoiceModel.invoiceStatusCodeList" [ngValue]="invoiceStatusCodeView">{{statusCode[0]}}: {{statusCode[1]}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div *ngIf="invoiceStatusCodeView !== undefined">
+                                {{invoiceStatusCodeView[0]}}: {{invoiceStatusCodeView[2]}}
+                            </div>
+                            <br>
+                            <small id="irs">
+                                <div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
+                                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
+                                Invoice status code (UNCL4343 Subset)</a> for details
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label class="input-group-text" for="effectiveDateEnabled">
+                                        <input class="mr-2" type="checkbox" [(ngModel)]="effectiveDateEnabled" onchange="checkboxChanged(this, true)">
+                                        Effective date
+                                    </label>
+                                </div>
+                                <input [(ngModel)]="effectiveDate" id="effectiveDateEnabled" type="date" class="form-control" size="10" style="max-width: 11em" lang="en"/>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <small>
+                                <div class="font-italic">//DocumentResponse/Response/EffectiveDate</div>
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-start">
+                        <div class="p-2">
+                            <button type="submit" class="btn sys-button">Generate</button>
+                        </div>
+                        <div class="p-2">
+                            <button type="button" class="btn btn-secondary btn" onclick="$(this).parents('.delis-app-response-form').toggle()">Hide</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
