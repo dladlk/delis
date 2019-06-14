@@ -76,7 +76,7 @@
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <label class="input-group-text" for="effectiveDateEnabled">
-                                        <input class="mr-2" type="checkbox" [checked]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled(this, true)">
+                                        <input class="mr-2" type="checkbox" [checked]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled()">
                                         Effective date
                                     </label>
                                 </div>
@@ -97,7 +97,7 @@
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text invoice-input-group" for="inputGroupStatusReason">
-                                                <input class="mr-2" type="checkbox" [checked]="statusReasonEnabled" (change)="checkStatusReasonEnabled(this, true)">
+                                                <input class="mr-2" type="checkbox" [checked]="statusReasonEnabled" (change)="checkStatusReasonEnabled()">
                                                 Reason
                                             </label>
                                         </div>
@@ -128,14 +128,14 @@
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text invoice-input-group" for="inputGroupStatusAction">
-                                                <input class="mr-2" type="checkbox" [checked]="statusActionEnabled" (change)="checkStatusActionEnabled(this, true)">
+                                                <input class="mr-2" type="checkbox" [checked]="statusActionEnabled" (change)="checkStatusActionEnabled()">
                                                 Action
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <select class="custom-select" id="inputGroupStatusAction" (change)="selectStatusActionView($event.target.value)" [disabled]="!statusActionEnabled">
-                                    <option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [ngValue]="statusActionView">{{statusAction[0]}}: {{statusAction[1]}}</option>
+                                    <option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [ngValue]="!statusActionView">{{statusAction[0]}}: {{statusAction[1]}}</option>
                                 </select>
                             </div>
                         </div>
@@ -159,14 +159,14 @@
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <label class="input-group-text invoice-input-group" for="inputGroupStatusAction2">
-                                                <input class="mr-2" type="checkbox" [checked]="statusAction2Enabled" (change)="checkStatusAction2Enabled(this, true)">
+                                                <input class="mr-2" type="checkbox" [checked]="statusAction2Enabled" (change)="checkStatusAction2Enabled()">
                                                 Action 2
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <select class="custom-select" id="inputGroupStatusAction2" (change)="selectStatusAction2View($event.target.value)" [disabled]="!statusAction2Enabled">
-                                    <option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [ngValue]="statusAction2View">{{statusAction2[0]}}: {{statusAction2[1]}}</option>
+                                    <option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [ngValue]="!statusAction2View">{{statusAction2[0]}}: {{statusAction2[1]}}</option>
                                 </select>
                             </div>
                         </div>

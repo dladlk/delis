@@ -63,12 +63,9 @@ export class DocumentInvoiceComponent implements OnInit {
         console.log(this.invoiceStatusCodeView);
     }
 
-    checkEffectiveDateEnabled(thisValue: any, boolValue: boolean) {
-        console.log(thisValue);
-        console.log(boolValue);
-        this.effectiveDateEnabled = boolValue;
-        console.log(this.effectiveDate);
-        return !this.effectiveDateEnabled;
+    checkEffectiveDateEnabled() {
+        this.effectiveDateEnabled = !this.effectiveDateEnabled;
+        return this.effectiveDateEnabled;
     }
 
     selectStatusReasonView(value: any) {
@@ -76,11 +73,9 @@ export class DocumentInvoiceComponent implements OnInit {
         console.log(this.statusReasonView);
     }
 
-    checkStatusReasonEnabled(thisValue: any, boolValue: boolean) {
-        console.log(thisValue);
-        console.log(boolValue);
-        this.statusReasonEnabled = boolValue;
-        return !this.statusReasonEnabled;
+    checkStatusReasonEnabled() {
+        this.statusReasonEnabled = !this.statusReasonEnabled;
+        return this.statusReasonEnabled;
     }
 
     selectStatusActionView(value: any) {
@@ -88,11 +83,9 @@ export class DocumentInvoiceComponent implements OnInit {
         console.log(this.statusActionView);
     }
 
-    checkStatusActionEnabled(thisValue: any, boolValue: boolean) {
-        console.log(thisValue);
-        console.log(boolValue);
-        this.statusActionEnabled = boolValue;
-        return !this.statusActionEnabled;
+    checkStatusActionEnabled() {
+        this.statusActionEnabled = !this.statusActionEnabled;
+        return this.statusActionEnabled;
     }
 
     selectStatusAction2View(value: any) {
@@ -100,10 +93,8 @@ export class DocumentInvoiceComponent implements OnInit {
         console.log(this.statusAction2View);
     }
 
-    checkStatusAction2Enabled(thisValue: any, boolValue: boolean) {
-        console.log(thisValue);
-        console.log(boolValue);
-        this.statusAction2Enabled = boolValue;
-        return !this.statusAction2Enabled;
+    checkStatusAction2Enabled() {
+        this.statusAction2Enabled = !this.statusAction2Enabled;
+        return this.statusAction2Enabled;
     }
 }
