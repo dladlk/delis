@@ -23,6 +23,9 @@ export class DocumentInvoiceComponent implements OnInit {
     statusReasonView: string;
     statusActionView: string;
     statusAction2View: string;
+    statusReasonText: string;
+    detailType: string;
+    detailValue: string;
 
     effectiveDateEnabled = false;
     effectiveDate: Date;
