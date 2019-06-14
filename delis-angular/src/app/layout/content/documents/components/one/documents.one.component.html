@@ -3,7 +3,7 @@
 
     <div *ngIf="error">{{resetData()}}</div>
 
-    <div class="card">
+    <div *ngIf="!error" class="card">
         <div class="card border-secondary m-1">
             <div class="card-body table-responsive">
                 <table class="table table-sm table-borderless">
@@ -75,7 +75,7 @@
                 <div class="card-title">
                     {{ 'documents.table.one.columnName.journalRecords' | translate }}
                 </div>
-                <table *ngIf="journalDocuments.length > 0" class="table table-borderless table-sm">
+                <table class="table table-borderless table-sm">
                     <tr>
                         <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
                         <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>

@@ -12,8 +12,7 @@ import { ErrorModel } from "../models/error.model";
 export class LayoutComponent implements OnInit {
 
     collapsedSideBar: boolean;
-
-    error: boolean = false;
+    error = false;
     listenError: ErrorModel;
 
     constructor(private translate: TranslateService, private locale: LocaleService, private errorService: ListenErrorService) {
@@ -22,6 +21,7 @@ export class LayoutComponent implements OnInit {
             this.error = true;
             this.listenError = listenError;
         });
+        this.error = false;
     }
 
     ngOnInit() {}
