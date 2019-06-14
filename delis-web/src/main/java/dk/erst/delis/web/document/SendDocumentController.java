@@ -45,7 +45,7 @@ public class SendDocumentController {
 	@Qualifier("sendDocumentService")
 	private SendDocumentService documentService;
 
-	@Value("#{servletContext.contextPath}")
+	@Value("${servletContext?.contextPath:}")
 	private String servletContextPath;
 	
 	@Value("${delis.download.allow.all:#{false}}")

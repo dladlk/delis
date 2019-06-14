@@ -22,6 +22,7 @@
   </cac:DespatchDocumentReference>
   <cac:AccountingSupplierParty>
     <cac:Party>
+      <cbc:EndpointID schemeID="0088">5790000436057</cbc:EndpointID>
       <cac:PartyName>
         <cbc:Name>Erhvervsstyrelsen</cbc:Name>
       </cac:PartyName>
@@ -87,7 +88,7 @@
   <cac:LegalMonetaryTotal>
     <cbc:LineExtensionAmount currencyID="DKK">100.00</cbc:LineExtensionAmount>
     <cbc:TaxExclusiveAmount currencyID="DKK">100.00</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount currencyID="DKK">125.00</cbc:TaxInclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="DKK">127.00</cbc:TaxInclusiveAmount>
     <cbc:PayableAmount currencyID="DKK">125.00</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
   <cac:InvoiceLine>

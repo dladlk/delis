@@ -21,6 +21,7 @@ public class OrganisationSetupData {
 	private Long as4;
 	private boolean generateInvoiceResponseOnError;
 	private boolean sendUndeliverableInvoiceResponseToERST;
+	private boolean sendAllInvoiceResponseToERST;
 	
 	private boolean receiveBothOIOUBLBIS3;
 }
