@@ -67,8 +67,21 @@ public class DocumentValidationTransformationServiceUnitTest {
 	}
 	
 	@Test
+	public void testAll() throws Exception {
+		TestDocument[] values = TestDocument.values();
+		for (TestDocument testDocument : values) {
+			runCase(testDocument);
+		}
+	}
+
+	@Test
 	public void testCII() throws Exception {
 		runCase(TestDocument.CII);
+	}
+
+	@Test
+	public void testMLR() throws Exception {
+		runCase(TestDocument.BIS3_MESSAGE_LEVEL_RESPONSE);
 	}
 	
 	@Test
