@@ -27,4 +27,8 @@ public enum DocumentType implements Named {
 		return name();
 	}
 
+	public boolean isInvoiceOrCreditNote() {
+		return this == INVOICE || this == CREDITNOTE;
+	}
+
 }

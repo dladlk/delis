@@ -153,7 +153,7 @@ public class DocumentProcessService {
 					lastError = DocumentErrorCode.OTHER;
 				}
 				
-				if (receivingFormatRule.isLast(plog.getLastDocumentFormat().getDocumentFormatFamily())) {
+				if (receivingFormatRule.isLast(plog.getLastDocumentFormat())) {
 					/*
 					 * If according to receiving format rule, failed validation format is last - we should save it not as READY type, but as INTERMEDIATE.
 					 */

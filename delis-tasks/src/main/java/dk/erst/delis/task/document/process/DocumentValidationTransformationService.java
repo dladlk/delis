@@ -80,7 +80,7 @@ public class DocumentValidationTransformationService {
 			}
 		}
 
-		if (receivingFormatRule.isLast(documentFormat.getDocumentFormatFamily())) {
+		if (receivingFormatRule.isLast(documentFormat)) {
 			plog.setLastDocumentFormat(documentFormat);
 			return;
 		}
@@ -107,7 +107,7 @@ public class DocumentValidationTransformationService {
 			/*
 			 * Do not save INTERM version if it is last format already
 			 */
-			if (!receivingFormatRule.isLast(resultFormat.getDocumentFormatFamily())) {
+			if (!receivingFormatRule.isLast(resultFormat)) {
 				transformationListener.notify(plog, resultFormat, xmlOutPath.toFile());
 			}
 		}
