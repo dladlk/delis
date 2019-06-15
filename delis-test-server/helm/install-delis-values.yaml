@@ -22,3 +22,9 @@ delisAdmin:
           value: /delis/conf/erst-vfs-forward.xml
         - name: delis.download.allow.all
           value: "true"
+delisApi:
+    env:
+        - name: delis.download.allow.all
+          value: "true"
+        - name: spring.jpa.show-sql
+          value: "false"
