@@ -1,25 +1,16 @@
 #!/bin/bash -e
 CURDIR="$(dirname $(readlink -f $0))"
+CURTIME="$(date '+%Y.%m.%d_%H.%M.%S')"
 
-${CURDIR}/docker_access.sh
+CURLOG=${CURDIR}/log/${CURTIME}.log
+echo "${CURLOG}" > ${CURDIR}/log/last_log_path.txt
 
-pushd ${CURDIR}/scripts
-./pull-all.sh
-popd
+local_add_timestamp() {
+    while IFS= read -r line; do
+        echo "$(date) $line"
+    done
+}
 
-pushd ${CURDIR}/../..
-mvn clean install -DskipTests=true
-popd
+#./thisscript.sh | adddate >>/var/log/logfile
 
-export SKIP_REBUILD=yes
-
-pushd ${CURDIR}/scripts
-
-./delis-web-admin.sh
-./delis-web-api.sh
-./delis-angular.sh
-./delis-domibus-ws-sender.sh
-./delis-sender-service.sh
-./cef-erst-test-web-console.sh
-
-popd
+${CURDIR}/update-all-nolog.sh 2>&1 | local_add_timestamp | tee ${CURLOG}

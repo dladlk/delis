@@ -50,6 +50,7 @@ sed -i '/^$/d' ${GIT_LOG_FILE}
 if [ -s ${GIT_LOG_FILE} ]; then
 	echo Docker image ${DOCKER_IMAGE_NAME} should be rebuilt - found changes:
         cat ${GIT_LOG_FILE}
+	echo Invoking command ${DOCKER_REBUILD_COMMAND} ...
 	${DOCKER_REBUILD_COMMAND}
 	./zzz_kill_pod.sh ${PROJECT_CODE}
 else
