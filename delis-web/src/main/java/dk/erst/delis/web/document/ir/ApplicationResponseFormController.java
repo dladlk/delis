@@ -57,7 +57,7 @@ public class ApplicationResponseFormController {
 	private ApplicationResponseService applicationResponseService;
 	@Autowired
 	private DocumentProcessService documentProcessService;
-	@Value("${servletContext?.contextPath:}")
+	@Value("#{servletContext.contextPath}")
 	private String servletContextPath;
 
 	@Getter
