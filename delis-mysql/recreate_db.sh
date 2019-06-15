@@ -1,1 +1,2 @@
-sudo mysql -u root --password=test < recreate_delis.sql
+#!/bin/bash -e
+mysql -u root --password=test < recreate_delis.sql

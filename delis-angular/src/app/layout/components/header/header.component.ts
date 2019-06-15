@@ -3,6 +3,9 @@ import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
 import { LocaleService } from "../../../service/locale.service";
+import { RuntimeConfigService } from "../../../service/runtime.config.service";
+import { LogoutService } from "../../../logout/logout.service";
+import {ForwardingLanguageService} from "../../../service/forwarding.language.service";
 
 @Component({
   selector: 'app-header',
@@ -13,10 +16,15 @@ export class HeaderComponent implements OnInit {
 
   public pushRightClass: string;
   public lang: string;
+  public username: string;
 
   constructor(
     private auth: AuthorizationService,
-    private translate: TranslateService, private locale: LocaleService,
+    private translate: TranslateService,
+    private locale: LocaleService,
+    private configService: RuntimeConfigService,
+    private logout: LogoutService,
+    private forwardingLanguageService: ForwardingLanguageService,
     public router: Router) {
 
     this.lang = locale.getlocale();
@@ -35,6 +43,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.pushRightClass = 'push-right';
+    this.username = this.configService.getCurrentUser();
   }
 
   isToggled(): boolean {
@@ -47,14 +56,8 @@ export class HeaderComponent implements OnInit {
     dom.classList.toggle(this.pushRightClass);
   }
 
-  rltAndLtr() {
-    const dom: any = document.querySelector('body');
-    dom.classList.toggle('rtl');
-  }
-
   onLoggedout() {
-    localStorage.removeItem('isLoggedin');
-    this.auth.logout();
+    this.logout.logout();
   }
 
   changeLang(language: string) {
@@ -62,5 +65,6 @@ export class HeaderComponent implements OnInit {
     this.translate.setDefaultLang(language);
     this.locale.setLocale(language);
     this.lang = language;
+    this.forwardingLanguageService.forwardLanguage(this.lang);
   }
 }

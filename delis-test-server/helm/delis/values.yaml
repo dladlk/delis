@@ -1,0 +1,130 @@
+namespace: default
+
+delisAngular:
+    enabled: true
+    image: delis-angular:latest
+    contextName: delis
+    apiUrl: https://edelivery-test.trueservice.dk/delis-web-api
+    baseUrl: https://edelivery-test.trueservice.dk/delis
+    
+delisApi:
+    enabled: true
+    image: delis-web-api:latest
+    contextPath: /delis-web-api
+    env: []
+    volumeMounts: 
+      - mountPath: /delis-resources
+        name: delis-resources
+      - mountPath: /delis
+        name: delis-root
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /wsh/delis/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+    
+delisAdmin:
+    enabled: true
+    image: delis-web-admin:latest
+    contextPath: /delis-web-admin
+    env: []
+    volumeMounts:
+      - mountPath: /delis-resources
+        name: delis-resources
+      - mountPath: /delis
+        name: delis-root
+      - mountPath: /load/input1
+        name: data-input1
+      - mountPath: /load/input1_as2
+        name: data-input-as2-1
+      - mountPath: /load/input2
+        name: data-input2
+      - mountPath: /load/input2_as2
+        name: data-input-as2-2
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /wsh/delis/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+      - name: data-input1
+        hostPath:
+          path: /data/fs-plugin/dynconcepttestparty01gw/IN
+      - name: data-input-as2-1
+        hostPath:
+          path: /data/oxalis1/fs/IN
+      - name: data-input2
+        hostPath:
+          path: /data/fs-plugin/dynconcepttestparty02gw/IN
+      - name: data-input-as2-2
+        hostPath:
+          path: /data/oxalis2/fs/IN
+
+delisSender:
+    enabled: true
+    image: delis-sender-service:latest
+    contextPath: /delis-sender-service
+    env:
+    - name: server.port
+      value: "8080"
+    - name: delis.sender.document.collector
+      value: delis
+    - name: delis.sender.document.processor
+      value: delis
+    - name: delis.forward.failed.invoiceresponse.vfs.config.path
+      value: /delis/conf/erst-vfs-forward.xml
+    volumeMounts:
+      - mountPath: /delis-resources
+        name: delis-resources
+      - mountPath: /delis
+        name: delis-root
+      - mountPath: /oxalis/conf
+        name: oxalis-conf-root
+      - mountPath: /oxalis/keystore/keystore.jks
+        name: oxalis-keystore
+      - mountPath: /app/BOOT-INF/classes/reference.conf
+        name: reference-conf
+      - mountPath: /app/BOOT-INF/lib/pki_local.xml.jar
+        name: pki-local-xml-jar
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /wsh/delis/delis-resources
+      - name: delis-root
+        hostPath:
+          path: /data/delis-root
+      - name: oxalis-conf-root
+        hostPath:
+          path: /data/delis-sender/oxalis
+      - name: oxalis-keystore
+        hostPath:
+          path: /data/keystores/keystore_dynconcepttestparty01gw/keystore.jks
+      - name: reference-conf
+        hostPath:
+          path: /data/delis-sender/reference.conf
+      - name: pki-local-xml-jar
+        hostPath:
+          path: /data/keystores/peppol_pki_local/pki_local.xml.jar
+
+delisDomibusWsSender:
+    enabled: true
+    image: delis-domibus-ws-sender:latest
+    contextPath: /delis-domibus-ws-sender
+    env: []
+    volumeMounts: []
+    volumes: []
+
+delisIngress:
+    enabled: true
+    clusterIssuer: letsencrypt-prod
+    secretName: tls-secret
+    host: edelivery-test.trueservice.dk
+
+delisDb:
+    url: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
+    user: delis
+    password: delis
+

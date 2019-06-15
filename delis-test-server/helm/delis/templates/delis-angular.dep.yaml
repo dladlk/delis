@@ -1,0 +1,40 @@
+{{- if .Values.delisAngular.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-angular'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-angular
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-angular'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-angular'
+    spec:
+      containers:
+      - image: {{.Values.delisAngular.image}}
+        imagePullPolicy: IfNotPresent
+        name: {{.Release.Name}}-angular
+        env:
+          - name: CONTEXT_NAME
+            value: {{.Values.delisAngular.contextName}}
+          - name: API_URL
+            value: {{.Values.delisAngular.apiUrl}}
+          - name: BASE_URL
+            value: {{.Values.delisAngular.baseUrl}}
+          - name: SERVER_PORT
+            value: "8080"
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}

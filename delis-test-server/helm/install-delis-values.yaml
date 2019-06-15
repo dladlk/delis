@@ -1,0 +1,30 @@
+delisAdmin:
+    env:
+        - name: config.storageDocumentInput
+          value: "/load"
+        - name: job.interval.sec.documentLoad
+          value: "10"
+        - name: job.interval.sec.documentValidate
+          value: "20"
+        - name: job.interval.sec.documentDeliver
+          value: "60"
+        - name: job.interval.sec.identifierLoad
+          value: "120"
+        - name: job.interval.sec.identifierPublish
+          value: "10"
+        - name: job.interval.sec.sentValidate
+          value: "21"
+        - name: job.interval.sec.sendFailedProcess
+          value: "22"
+        - name: spring.jpa.show-sql
+          value: "false"
+        - name: delis.forward.failed.invoiceresponse.vfs.config.path
+          value: /delis/conf/erst-vfs-forward.xml
+        - name: delis.download.allow.all
+          value: "true"
+delisApi:
+    env:
+        - name: delis.download.allow.all
+          value: "true"
+        - name: spring.jpa.show-sql
+          value: "false"

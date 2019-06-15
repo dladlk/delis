@@ -8,27 +8,51 @@
 			Test organisation
 		</div>
 		<div class="card-body">
-			<table class="table table-striped table-bordered table-sm">
-				<tr>
-					<th>Identifier</th>
-					<th>Value</th>
-					<th>Name</th>
-					<th>Status</th>
-					<th>Publishing</th>
-				</tr>
+			<form action="#" th:action="@{/identifier/list}" th:object="${selectedIdList}" method="post">
+				<div class="container">
+					<table id="identifiers" class="table table-striped table-bordered table-sm datatables-easy"
+						th:attr="dt-page=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(identifierPage)}"
+						>
+						<thead>
+						<tr>
+							<th dt-field="organisation.name">Organisation</th>
+							<th dt-field="value">Identifier</th>
+							<th dt-field="type">Type</th>
+							<th dt-field="name">Name</th>
+							<th dt-field="status" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(statusList)}">Status</th>
+							<th dt-field="publishingStatus" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(publishingStatusList)}">Publishing</th>
+							<th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
+						</tr>
+						</thead>
 				<tr th:each="r,iter : ${identifierList}">
+					<td><a href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}"></a></td>
 					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" th:text="${r.value}"></a></td>
 					<td th:text="${r.type}"></td>
 					<td th:text="${r.name}"/>
 					<td th:text="${r.status}"/>
 					<td th:text="${r.publishingStatus}"/>
-				</tr>
-			</table>
+					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
+				</tr>						
+					</table>
+				</div>
+				<div class="card-footer mt-2">
+					<div class="d-flex justify-content-start">
+                        <label class="m-2 col-form-label">Status:</label>
+                        <select th:field="*{status}" class="m-2">
+                            <option th:each="status : ${statusList}" th:text="${status.getName()}" th:value="${status}"></option>
+                        </select>
+                        <label class="m-2 col-form-label">Publishing Status:</label>
+                        <select th:field="*{publishStatus}" class="m-2">
+                            <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus.getName()}" th:value="${publishStatus}"></option>
+                        </select>
+						<button th:attr="onclick-action=@{/identifier/updatestatuses}" onclick="$(this).closest('form').attr('action', $(this).attr('onclick-action'))" type="submit" class="m-2 btn btn-primary">Update Statuses</button>
+					</div>
+				</div>
+			</form>
 		</div>
-		<div class="card-footer">
+		<div class="card-footer" th:if="${organisation}">
 			<a href="#" th:href="@{/organisation/view/__${organisation.id}__}" class="btn btn-primary">Back to <span th:text="${organisation.name}">Test organisation</span></a>
 		</div>
-		
 	</div>
 </body>
 </html>

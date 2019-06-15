@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="true"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	<changeSet author="dlk" id="1560256829000-1">
+		<addColumn tableName="user">
+			<column name="organisation_id" type="bigint">
+				<constraints nullable="true" />
+			</column>
+		</addColumn>
+	</changeSet>
+	<changeSet author="dlk" id="1560256829000-2">
+		<createIndex indexName="USR_ORGANISATION_ID"
+			tableName="user">
+			<column name="organisation_id" />
+		</createIndex>
+	</changeSet>
+	<changeSet author="dlk" id="1560256829000-3">
+		<addForeignKeyConstraint
+			baseColumnNames="organisation_id" baseTableName="user"
+			constraintName="FK_USER_ORGANISATION" deferrable="false"
+			initiallyDeferred="false" onDelete="SET NULL" onUpdate="SET NULL"
+			referencedColumnNames="id_pk" referencedTableName="organisation"
+			validate="true" />
+	</changeSet>
+
+
+</databaseChangeLog>

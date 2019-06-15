@@ -1,0 +1,67 @@
+{{- if .Values.delisAdmin.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-admin'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-admin
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-admin'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-admin'
+    spec:
+      containers:
+      - image: {{.Values.delisAdmin.image}}
+        imagePullPolicy: IfNotPresent
+        name: {{.Release.Name}}-admin
+        env:
+          - name: SERVER_SERVLET_CONTEXT-PATH
+            value: {{.Values.delisAdmin.contextPath}}
+          - name: SPRING_DATASOURCE_URL
+            value: {{.Values.delisDb.url}}
+          - name: SPRING_DATASOURCE_USERNAME
+            value: {{.Values.delisDb.user}}
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: {{.Values.delisDb.password}}
+          {{- with .Values.delisAdmin.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        livenessProbe:
+            httpGet:
+                path: {{.Values.delisAdmin.contextPath}}/login
+                port: http
+            initialDelaySeconds: 20
+            periodSeconds: 60
+        readinessProbe:
+            httpGet:
+                path: {{.Values.delisAdmin.contextPath}}/login
+                port: http
+            initialDelaySeconds: 10
+            periodSeconds: 3
+        {{- with .Values.delisAdmin.volumeMounts }}
+        volumeMounts:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.delisAdmin.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}

@@ -1,4 +1,4 @@
-$topnav-background-color: #222;
+$topnav-background-color: #005b7c;
 :host {
     display: block;
 }
@@ -92,4 +92,11 @@ $topnav-background-color: #222;
         border-radius: 50%;
         border: 2px solid #fff;
     }
+}
+
+img {
+    border-radius: 50px 50px 10px 10px !important;
+    background-color: aliceblue !important;
+    border-style: solid !important;
+    width: 30% !important;
 }

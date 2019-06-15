@@ -1,0 +1,52 @@
+{"properties": [
+  {
+    "name": "application.database",
+    "type": "java.lang.String",
+    "description": "Database schema name"
+  },
+  {
+    "name": "job.interval.sec.documentLoad",
+    "type": "java.lang.String",
+    "description": "Interval to execute documentLoad job, in seconds, if positive"
+  },
+  {
+    "name": "job.interval.sec.documentValidate",
+    "type": "java.lang.String",
+    "description": "Interval to execute documentValidate job, in seconds, if positive"
+  },
+  {
+    "name": "job.interval.sec.documentDeliver",
+    "type": "java.lang.String",
+    "description": "Interval to execute documentDeliver job, in seconds, if positive"
+  },
+  {
+    "name": "job.interval.sec.identifierLoad",
+    "type": "java.lang.String",
+    "description": "Interval to execute identifierLoad job, in seconds, if positive"
+  },
+  {
+    "name": "job.interval.sec.identifierPublish",
+    "type": "java.lang.String",
+    "description": "Interval to execute identifierPublish job, in seconds, if positive"
+  },
+  {
+    "name": "job.interval.sec.sentValidate",
+    "type": "java.lang.String",
+    "description": "Interval to execute sentValidate job, in seconds, if positive"
+  },
+  {
+    "name": "job.interval.sec.sendFailedProcess",
+    "type": "java.lang.String",
+    "description": "Interval to execute sendFailedProcess job, in seconds, if positive"
+  },
+  {
+    "name": "delis.forward.failed.invoiceresponse.vfs.config.path",
+    "type": "java.lang.String",
+    "description": "Path to VFS config file with setup configuration of failed to be sent Invoice Responses"
+  },
+  {
+    "name": "delis.download.allow.all",
+    "type": "java.lang.String",
+    "description": "If set to true, all documents can be downloaded - not only receipts"
+  }
+]}

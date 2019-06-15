@@ -1,0 +1,109 @@
+<div [@routerTransition] *ngIf="show">
+    <app-page-header [heading]="'identifier.header'" [icon]="'fa-id-card'"></app-page-header>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card" style="min-height: 768px">
+                    <div class="card-header"><span>{{ 'identifier.table.header' | translate }}</span></div>
+                    <div class="card-body table-responsive">
+                        <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
+                        <table class="table table-hover table-sm">
+                            <thead>
+                            <tr>
+                                <th *ngFor="let hed of tableHeaderSortModels">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
+                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ng-select [items]="organizations"
+                                               [clearable]="clearableSelect"
+                                               placeholder="organizations: "
+                                               [(ngModel)]="selectedOrganization"
+                                               (change)="loadOrganisations()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           (ngModelChange)="loadTextIdentifierGroup($event)"
+                                           [(ngModel)]="textIdentifierGroup"
+                                           placeholder="{{'placeholder.identifierGroup' | translate}}"/>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           (ngModelChange)="loadTextType($event)"
+                                           [(ngModel)]="textType"
+                                           placeholder="{{'placeholder.type' | translate}}"/>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           (ngModelChange)="loadTextValue($event)"
+                                           [(ngModel)]="textValue"
+                                           placeholder="{{'placeholder.value' | translate}}"/>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           (ngModelChange)="loadTextUniqueValueType($event)"
+                                           [(ngModel)]="textUniqueValueType"
+                                           placeholder="{{'placeholder.uniqueValueType' | translate}}"/>
+                                </td>
+                                <td>
+                                    <ng-select [items]="statusList"
+                                               [clearable]="clearableSelect"
+                                               placeholder="statuses: "
+                                               [(ngModel)]="selectedStatus"
+                                               (change)="loadStatus()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <ng-select [items]="publishingStatusList"
+                                               [clearable]="clearableSelect"
+                                               placeholder="statuses: "
+                                               [(ngModel)]="selectedPublishingStatus"
+                                               (change)="loadPublishingStatus()">
+                                    </ng-select>
+                                </td>
+                                <td>
+                                    <input class="form-control"
+                                           type="search"
+                                           (ngModelChange)="loadTextName($event)"
+                                           [(ngModel)]="textName"
+                                           placeholder="{{'placeholder.name' | translate}}"/>
+                                </td>
+                                <td>
+                                    <app-daterange></app-daterange>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let identifier of identifiers" [routerLink]="['/identifiers/', identifier.id]">
+                                <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>
+                                <td *ngIf="identifier.organisation === null"></td>
+                                <td *ngIf="identifier.identifierGroup !== null">{{identifier.identifierGroup.name}}</td>
+                                <td *ngIf="identifier.identifierGroup === null"></td>
+                                <td>{{identifier.type}}</td>
+                                <td>{{identifier.value}}</td>
+                                <td>{{identifier.uniqueValueType}}</td>
+                                <td>{{identifier.status}}</td>
+                                <td>{{identifier.publishingStatus}}</td>
+                                <td>{{identifier.name}}</td>
+                                <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                        <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

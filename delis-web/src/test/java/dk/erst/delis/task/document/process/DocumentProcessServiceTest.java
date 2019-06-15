@@ -1,67 +1,62 @@
 package dk.erst.delis.task.document.process;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.config.ConfigProperties;
-import dk.erst.delis.data.Document;
-import dk.erst.delis.task.document.TestDocument;
-import dk.erst.delis.task.document.TestDocumentUtil;
-import dk.erst.delis.task.document.parse.DocumentParseService;
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.test.AbstractDelisIntegrationTest;
 
-public class DocumentProcessServiceTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@AutoConfigureTestDatabase(replace = Replace.ANY)
+public class DocumentProcessServiceTest extends AbstractDelisIntegrationTest {
 
 	@Test
-	public void testCII() throws Exception {
-		runCase(TestDocument.CII);
+	public void testProcessLoaded() {
+		StatData statData = documentProcessService.processLoaded();
+		System.out.println(statData.toStatString());
+		assertNotNull(statData);
+		Document document = prepareTestDoc();
+		statData = new StatData();
+		documentProcessService.processDocument(statData, document);
+		assertEquals("Document xml not found: 1", statData.toStatString());
 	}
 
-	@Test
-	public void testBIS3() throws Exception {
-		runCase(TestDocument.BIS3_INVOICE);
-		runCase(TestDocument.BIS3_CREDITNOTE);
+	@Before
+	public void initTest() throws Exception {
+		this.init();
 	}
-	@Test
-	public void testOIOUBL() throws Exception {
-		runCase(TestDocument.OIOUBL_INVOICE);
-		runCase(TestDocument.OIOUBL_CREDITNOTE);
-	}
-	
-	private void runCase(TestDocument testDocument) throws IOException {
-		Path testFile = TestDocumentUtil.createTestFile(testDocument);
-		try {
-			RuleService ruleService = new RuleService();
-			DocumentParseService parseService = new DocumentParseService();
-			ConfigProperties configProperties = new ConfigProperties();
-			configProperties.setStorageTransformationRoot("../delis-resources/transformation");
-			configProperties.setStorageValidationRoot("../delis-resources/validation");
-			ConfigBean configBean = new ConfigBean(configProperties);
-			DocumentProcessService processService = new DocumentProcessService(ruleService, parseService, configBean);
-			
-			Document d = new Document();
-			d.setIngoingDocumentFormat(testDocument.getDocumentFormat());
-			
-			DocumentProcessLog processLog = processService.process(d, testFile);
-			assertNotNull(processLog);
-			
-			List<DocumentProcessStep> stepList = processLog.getStepList();
-			assertNotNull(stepList);
-			assertTrue(!stepList.isEmpty());
-			for (DocumentProcessStep step : stepList) {
-				System.out.println(step);
-			}
-			
-			assertTrue(processLog.isSuccess());
-		} finally {
-			TestDocumentUtil.cleanupTestFile(testFile);
-		}
+
+	public Document prepareTestDoc() {
+		Document doc = new Document();
+		doc.setOrganisation(organisation);
+		doc.setDocumentStatus(DocumentStatus.VALIDATE_OK);
+		doc.setName("test");
+		doc.setReceiverIdentifier(identifier);
+		doc.setMessageId("message_id");
+		documentDaoRepository.save(doc);
+
+		DocumentBytes documentBytes = new DocumentBytes();
+		documentBytes.setDocument(doc);
+		documentBytes.setType(DocumentBytesType.READY);
+		documentBytesDaoRepository.save(documentBytes);
+
+		documentBytes.setSize(1024L);
+		documentBytesDaoRepository.save(documentBytes);
+
+		return doc;
 	}
 
 }

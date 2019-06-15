@@ -1,0 +1,8 @@
+namespace: default
+all:
+  imagePrefix:
+smp:
+  serviceType: NodePort
+  contextName: 
+  env:
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dsmp.server.properties.path=/setup/config/smp-server.properties -Dsmp.webapp.properties.path=/setup/config/webapp.properties -Dpd.client.properties.path=/setup/config/pd-client.properties

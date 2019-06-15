@@ -1,0 +1,64 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: oxalis{{.Values.partyIndex}}
+  namespace: default
+  labels:
+    k8s-app: oxalis{{.Values.partyIndex}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oxalis{{.Values.partyIndex}}
+  template:
+    metadata:
+      name: oxalis
+      labels:
+        k8s-app: oxalis{{.Values.partyIndex}}
+    spec:
+      containers:
+      - name: oxalis
+        image: difi/oxalis:4.0.4
+        #command: ["sh", "-c", "sleep 3600"]
+        volumeMounts:
+        - name: oxalis-keystore
+          mountPath: "/oxalis/conf/keystore.jks"
+        - name: pki-local
+          mountPath: "/oxalis/ext/pki_local.xml.jar"
+        - name: oxalis-conf
+          mountPath: "/oxalis/conf/oxalis.conf"
+        - name: file-storage
+          mountPath: "/peppol"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: JAVA_OPTS
+          value: "-Xmx512m -XX:MaxMetaspaceSize=128m -Dmode.TEST.security.pki=/pki_local.xml"
+        - name: MODE
+          value: server
+        resources:
+          limits:
+            cpu: "0.3"
+            memory: 600Mi
+        imagePullPolicy: IfNotPresent
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      volumes:
+      - name: oxalis-keystore
+        hostPath:
+          path: /data/keystores/keystore_dynconcepttestparty0{{.Values.partyIndex}}gw/keystore.jks
+      - name: oxalis-conf
+        hostPath:
+          path: /data/oxalis{{.Values.partyIndex}}/oxalis.conf
+      - name: pki-local
+        hostPath:
+          path: /data/keystores/peppol_pki_local/pki_local.xml.jar
+      - name: file-storage
+        hostPath:
+          path: /data/oxalis{{.Values.partyIndex}}/fs
+      restartPolicy: Always
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 2
+  progressDeadlineSeconds: 600

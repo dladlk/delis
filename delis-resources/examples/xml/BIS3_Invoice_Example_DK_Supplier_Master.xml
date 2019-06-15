@@ -10,6 +10,7 @@ PEPPOL BIS Billing example file - all possible data.
 ******************************************************************************
 -->
 <Invoice xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDataTypes-2" xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnqualifiedDataTypes-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<cbc:UBLVersionID>2.1</cbc:UBLVersionID>
 	<cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
 	<cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
 	<cbc:ID>20150483</cbc:ID>
@@ -229,7 +230,7 @@ PEPPOL BIS Billing example file - all possible data.
 			<cbc:HolderName>Peter Petersen</cbc:HolderName>
 		</cac:CardAccount>
 	</cac:PaymentMeans>
-	<!--Bank transfer-->
+<!-- 
 	<cac:PaymentMeans>
 		<cbc:PaymentMeansCode name="National Bank Transfer">42</cbc:PaymentMeansCode>
 		<cbc:PaymentID>2015 0483 0000 0000</cbc:PaymentID>
@@ -242,7 +243,6 @@ PEPPOL BIS Billing example file - all possible data.
 		</cac:PayeeFinancialAccount>
 	</cac:PaymentMeans>
 	<cac:PaymentMeans>
-		<!--Possible PaymentMeansCodes: 30, 31 or 45-->
 		<cbc:PaymentMeansCode name="Bank Transfer">31</cbc:PaymentMeansCode>
 		<cbc:PaymentID>2015 0483 0000 0000</cbc:PaymentID>
 		<cac:PayeeFinancialAccount>
@@ -261,7 +261,6 @@ PEPPOL BIS Billing example file - all possible data.
 			<cbc:Name>Peter Petersen</cbc:Name>
 		</cac:PayeeFinancialAccount>
 	</cac:PaymentMeans>
-	<!--Direct Debit-->
 	<cac:PaymentMeans>
 		<cbc:PaymentMeansCode name="Direct Debit">49</cbc:PaymentMeansCode>
 		<cbc:PaymentID>2015 0483 0000 0000</cbc:PaymentID>
@@ -269,11 +268,7 @@ PEPPOL BIS Billing example file - all possible data.
 			<cbc:ID>1234567891234656</cbc:ID>
 			<cac:PayerFinancialAccount>
 				<cbc:ID>1234567890</cbc:ID>
-				<!-- PEPPOL does not allow for BIC/SWIFT when IBAN is used for Direct Debit - "IBAN Only"-->
-<!--		    <cac:FinancialInstitutionBranch>
-					<cbc:ID>DABADKKK</cbc:ID>
-				</cac:FinancialInstitutionBranch>
--->			</cac:PayerFinancialAccount>
+			</cac:PayerFinancialAccount>
 		</cac:PaymentMandate>
 	</cac:PaymentMeans>
 	<cac:PaymentMeans>
@@ -286,12 +281,9 @@ PEPPOL BIS Billing example file - all possible data.
 			</cac:PayerFinancialAccount>
 		</cac:PaymentMandate>
 	</cac:PaymentMeans>
-	<!--NemKonto, Customer agreement-->
 	<cac:PaymentMeans>
-		<!--Possible PaymentMeansCodes: 1 or 97-->
 		<cbc:PaymentMeansCode name="Clearing between partners">97</cbc:PaymentMeansCode>
 	</cac:PaymentMeans>
-	<!--Post giro-->
 	<cac:PaymentMeans>
 		<cbc:PaymentMeansCode name="Post Giro">50</cbc:PaymentMeansCode>
 		<cbc:PaymentID>01</cbc:PaymentID>
@@ -320,9 +312,7 @@ PEPPOL BIS Billing example file - all possible data.
 			<cbc:ID>1234567890123456</cbc:ID>
 		</cac:PaymentMandate>
 	</cac:PaymentMeans>
-	<!--Bank giro-->
 	<cac:PaymentMeans>
-		<!--Possible PaymentMeansCodes: 56 or 93-->
 		<cbc:PaymentMeansCode name="Post Giro">93</cbc:PaymentMeansCode>
 		<cbc:PaymentID>71</cbc:PaymentID>
 		<cac:PayeeFinancialAccount>
@@ -333,7 +323,6 @@ PEPPOL BIS Billing example file - all possible data.
 		</cac:PaymentMandate>
 	</cac:PaymentMeans>
 	<cac:PaymentMeans>
-		<!--Possible PaymentMeansCodes: 56 or 93-->
 		<cbc:PaymentMeansCode name="Post Giro">93</cbc:PaymentMeansCode>
 		<cbc:PaymentID>73</cbc:PaymentID>
 		<cac:PayeeFinancialAccount>
@@ -342,7 +331,6 @@ PEPPOL BIS Billing example file - all possible data.
 		</cac:PayeeFinancialAccount>
 	</cac:PaymentMeans>
 	<cac:PaymentMeans>
-		<!--Possible PaymentMeansCodes: 56 or 93-->
 		<cbc:PaymentMeansCode name="Post Giro">93</cbc:PaymentMeansCode>
 		<cbc:PaymentID>75</cbc:PaymentID>
 		<cac:PayeeFinancialAccount>
@@ -353,6 +341,7 @@ PEPPOL BIS Billing example file - all possible data.
 			<cbc:ID>1234567890123456</cbc:ID>
 		</cac:PaymentMandate>
 	</cac:PaymentMeans>
+ -->
 	<cac:PaymentTerms>
 		<cbc:Note>payment terms note</cbc:Note>
 	</cac:PaymentTerms>
@@ -428,7 +417,7 @@ PEPPOL BIS Billing example file - all possible data.
 				<cbc:Percent>0</cbc:Percent>
 				<!--            <cbc:TaxExemptionReasonCode></cbc:TaxExemptionReasonCode>
 -->
-				<cbc:TaxExemptionReason>Excempt</cbc:TaxExemptionReason>
+<!-- 				<cbc:TaxExemptionReason>Excempt</cbc:TaxExemptionReason> -->
 				<cac:TaxScheme>
 					<cbc:ID>VAT</cbc:ID>
 				</cac:TaxScheme>

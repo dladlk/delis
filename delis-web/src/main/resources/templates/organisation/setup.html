@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div th:replace="~{fragments/org-menu :: org-menu (~{::body}, 'setup')}"></div>
+
+	<div class="card my-2">
+		<div class="card-header bg-primary text-white">
+			Configuration
+		</div>
+		<div class="card-body">
+			<form method="post" action="#" th:action="@{/organisation/setup-save/__${organisation.id}__}" th:object="${organisationSetupData}">
+			<table class="table table-striped table-bordered table-sm">
+				<tr>
+					<th style="width: 190px;">C4 receiving format</th>
+					<td>
+						<select th:field="*{receivingFormatRule}">
+							<option value="" th:selected="${receivingFormatRule == null}">Select format</option>
+							<option th:each="rule : ${organisationReceivingFormatRuleList}" th:text="${rule.title}" th:value="${rule.code}">OIOUBL - convert everything to OIOUBL</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>Subscribed SMP profiles</th>
+					<td>
+						<ul class="org-smp-setup">
+							<li th:each="p : ${organisationSubscriptionProfileGroupList}">
+								<input th:field="*{subscribeProfileSet}" th:id="${p.code}" th:value="${p.code}" th:name="${p.code}" type="checkbox" th:checked="${subscribeProfileSet?.contains(p)}"></input>
+								<label th:for="${p.code}" th:text="${p.code}">CII</label>
+								<ul>
+									<li th:each="documentIdentifier: ${p.documentIdentifiers}"><label th:for="${p.code}" th:text="${documentIdentifier}">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100::CrossIndustryInvoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::D16B</label></li>
+								</ul>
+							</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th>Subscribed SMP AP</th>
+					<td>
+						<ul class="org-smp-setup">
+							<li>
+								AS2:
+								<select th:field="*{as2}">
+									<option value="" th:selected="${as2 == null}">No access point</option>
+									<option th:each="point : ${as2AccessPointList}" th:text="${point.url}" th:value="${point.id}">---</option>
+								</select>
+							</li>
+							<li>
+								AS4:
+								<select th:field="*{as4}">
+									<option value="" th:selected="${as4 == null}">No access point</option>
+									<option th:each="point : ${as4AccessPointList}" th:text="${point.url}" th:value="${point.id}">---</option>
+								</select>
+							</li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th>Receiving method</th>
+					<td>
+						<select th:field="*{receivingMethod}">
+							<option value="" th:selected="${receivingMethod == null}">Select method</option>
+							<option th:each="rule : ${organisationReceivingMethodList}" th:text="${rule.title}" th:value="${rule.code}">File system</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>Receiving method config</th>
+					<td>
+						<input type="text" class="form-input w-100" th:value="${receivingMethodSetup}" th:field="*{receivingMethodSetup}"></input>
+					</td>
+				</tr>
+				<tr>
+					<th>Receiving options</th>
+					<td>
+						<ul class="none-list-style">
+							<li><input id="receiveoption1" th:field="*{receiveBothOIOUBLBIS3}" type="checkbox"></input> <label for="receiveoption1">Receive both BIS3 and OIOUBL into different subfolders</label></li>
+						</ul>
+						
+					</td>
+				</tr>
+				<tr>
+					<th>On receiving validation error</th>
+						<td>
+							<ul class="on-error-setup">
+								<li><input id="onerror1" th:field="*{generateInvoiceResponseOnError}" type="checkbox"></input> <label for="onerror1">Generate MessageLevelResponse and try sending back to sender</label></li>
+								<li><input id="onerror2" th:field="*{sendUndeliverableInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror2">Forward undeliverable InvoiceResponses and MessageLevelResponses to ERST</label></li>
+								<li><input id="onerror3" th:field="*{sendAllInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror3">Forward ALL InvoiceResponses and MessageLevelResponses to ERST</label></li>
+							</ul>
+						</td>
+					</tr>
+				
+			</table>
+			
+				<button type="submit" class="btn btn-primary">Save</button>
+			
+			</form>
+		</div>
+	</div>
+	
+</body>
+</html>

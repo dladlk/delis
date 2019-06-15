@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: '{{.Release.Name}}'
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod-smp
+spec:
+  tls:
+  - hosts:
+    - smp.edelivery-test.trueservice.dk
+    secretName: tls-secret-smp
+  rules:
+      - host: smp.edelivery-test.trueservice.dk
+        http:
+          paths:
+          - path: '/{{.Values.smp.contextName}}'
+            backend:
+              serviceName: '{{.Release.Name}}'
+              servicePort: 80

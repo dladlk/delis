@@ -12,6 +12,10 @@
 		<div class="card-body">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
+					<td>Organisation</td>
+					<td><a href="#" th:href="@{/organisation/view/__${identifier.organisation.id}__}" th:text="${identifier.organisation.name}"></a></td>
+				</tr>
+				<tr>
 					<td>Type</td>
 					<td th:text="${identifier.type}">EAN</td>
 				</tr>
@@ -38,7 +42,25 @@
 			</table>
 		</div>
 		<div class="card-footer">
+			<form method="post" action="#" th:action="@{/identifier/updatestatus}" th:object="${identifier}">
+
+				<div class="d-flex justify-content-end">
+					<label class="m-2 col-form-label">Status:</label>
+					<select th:field="*{status}" class="m-2">
+						<option th:each="status : ${identifierStatusList}" th:text="${status}" th:value="${status}"></option>
+					</select>
+					<label class="m-2 col-form-label">Publishing Status:</label>
+					<select th:field="*{publishingStatus}" class="m-2">
+						<option th:each="publishingStatus : ${identifierPublishingStatusList}" th:text="${publishingStatus}" th:value="${publishingStatus}"></option>
+					</select>
+					<input type="hidden" th:field="*{id}" class="form-control" th:value="${identifier.id}"/>
+					<button type="submit" class="m-2 btn btn-primary">Update Statuses</button>
+				</div>
+
+			</form>
+
 			<a href="#" th:href="@{/identifier/list/__${identifier.organisation.id}__}" class="btn btn-primary">Back to identifier list</a>
+			<a href="#" th:href="@{/identifier/delete/__${identifier.organisation.id}__}" class="btn btn-secondary" th:if="${identifier.status.active}">Delete</a>
 		</div>
 		
 	</div>

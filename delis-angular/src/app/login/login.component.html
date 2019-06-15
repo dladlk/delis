@@ -1,20 +1,29 @@
 <div class="login-page" [@routerTransition]>
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <img src="assets/images/logo.png" width="150px" class="user-avatar" />
+            <img src="assets/images/delis.png" class="user-avatar"/>
             <h1>Delis Authentication</h1>
-            <form role="form">
+            <div *ngIf="errorStatus">
+                <app-error [message]="message | translate"></app-error>
+            </div>
+            <form role="form" method="post" (ngSubmit)="onLoggedin()">
                 <div class="form-content">
                   <div class="form-group">
-                    <input type="text" name="email" [(ngModel)]="email" class="form-control input-underline input-lg" id="email" placeholder="{{ 'Email' | translate }}">
+                    <input type="text"
+                           name="login" [(ngModel)]="login"
+                           class="form-control input-underline input-lg"
+                           id="login"
+                           placeholder="{{ 'auth.username' | translate }}">
                   </div>
                   <div class="form-group">
-                    <input type="password" name="password" [(ngModel)]="password" class="form-control input-underline input-lg" id="password" placeholder="{{ 'Password' | translate }}">
+                    <input type="password"
+                           name="password" [(ngModel)]="password"
+                           class="form-control input-underline input-lg"
+                           id="password"
+                           placeholder="{{ 'auth.password' | translate }}">
                   </div>
                 </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin(email, password)">{{ 'Log in' | translate }}</a>
-                &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>
+                <button class="btn rounded-btn" >{{ 'auth.login' | translate }}</button>
             </form>
         </div>
     </div>

@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="true" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="dlk" id="1556355570055-6">
+        <addColumn tableName="send_document">
+            <column name="locked" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="dlk" id="1556355570055-1">
+        <modifyDataType columnName="document_status" newDataType="varchar(25)" tableName="send_document"/>
+    </changeSet>
+    <changeSet author="dlk" id="1556355570055-2">
+        <modifyDataType columnName="document_type" newDataType="varchar(25)" tableName="send_document"/>
+    </changeSet>
+    <changeSet author="dlk" id="1556355570055-3">
+        <modifyDataType columnName="service_description" newDataType="varchar(255)" tableName="access_point"/>
+    </changeSet>
+    <changeSet author="dlk" id="1556355570055-4">
+        <modifyDataType columnName="technical_contact_url" newDataType="varchar(255)" tableName="access_point"/>
+    </changeSet>
+    <changeSet author="dlk" id="1556355570055-5">
+        <modifyDataType columnName="type" newDataType="varchar(25)" tableName="journal_send_document"/>
+    </changeSet>
+</databaseChangeLog>

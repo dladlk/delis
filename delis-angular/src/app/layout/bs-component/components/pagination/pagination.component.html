@@ -1,61 +1,46 @@
-<div class="row">
-    <div class="col col-sm-6">
-        <div class="card mt-3">
-            <div class="card-header">Basic Pagination</div>
-            <div class="card-body">
-                <div class="text-uppercase text-muted fs-12">Default pagination</div>
-                <ngb-pagination [collectionSize]="70" [(page)]="defaultPagination"></ngb-pagination>
-                <div class="text-uppercase text-muted fs-12">directionLinks = false</div>
-                <ngb-pagination [collectionSize]="70" [(page)]="defaultPagination" [directionLinks]="false"></ngb-pagination>
-                <div class="text-uppercase text-muted fs-12">boundaryLinks = true</div>
-                <ngb-pagination [collectionSize]="70" [(page)]="defaultPagination" [boundaryLinks]="true"></ngb-pagination>
-                <div class="alert alert-info">
-                    <b>Current page: </b>{{defaultPagination}}
-                </div>
-            </div>
+<div class="container">
+    <div class="row justify-content-end" style="align-items: center !important; margin: 1% !important;">
+        <div class="col-sm-3">
+             <span>&nbsp;&nbsp;
+                 {{ 'pagination.status.start' | translate }} {{generateFrom()}} {{ 'pagination.status.to' | translate }} {{generateTo()}}
+                 {{ 'pagination.status.of' | translate }} {{pagination.collectionSize}} {{ 'pagination.status.end' | translate }}
+                </span>
         </div>
-    </div>
-    <div class="col col-sm-6">
-        <div class="card mt-3">
-            <div class="card-header">Advanced Pagination</div>
-            <div class="card-body">
-                <div class="text-uppercase text-muted fs-12">maxSize = 5, rotate = false</div>
-                <ngb-pagination [collectionSize]="120" [(page)]="advancedPagination" [maxSize]="5" [boundaryLinks]="true"></ngb-pagination>
-
-                <div class="text-uppercase text-muted fs-12">maxSize = 5, rotate = true</div>
-                <ngb-pagination [collectionSize]="120" [(page)]="advancedPagination" [maxSize]="5" [rotate]="true" [boundaryLinks]="true"></ngb-pagination>
-
-                <div class="text-uppercase text-muted fs-12">maxSize = 5, rotate = true, ellipses = false</div>
-                <ngb-pagination [collectionSize]="120" [(page)]="advancedPagination" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
-                <div class="alert alert-info">
-                    <b>Current page: </b>{{advancedPagination}}
-                </div>
-            </div>
+        <div class="col-sm-4" *ngIf="pagination.collectionSize > pagination.pageSize">
+            <ngb-pagination
+                    [collectionSize]="pagination.collectionSize"
+                    [pageSize]="pagination.pageSize"
+                    [(page)]="pagination.currentPage"
+                    [maxSize]="4"
+                    [ellipses]="false"
+                    [rotate]="true"
+                    [boundaryLinks]="true"
+                    (pageChange)="loadPage($event)">
+            </ngb-pagination>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col col-sm-6">
-        <div class="card mt-3">
-            <div class="card-header">Pagination size</div>
-            <div class="card-body">
-                <ngb-pagination [collectionSize]="50" [(page)]="paginationSize" size="lg"></ngb-pagination>
-                <ngb-pagination [collectionSize]="50" [(page)]="paginationSize"></ngb-pagination>
-                <ngb-pagination [collectionSize]="50" [(page)]="paginationSize" size="sm"></ngb-pagination>
-            </div>
+        <div class="col-sm-2">
+            <span>
+                {{ 'pagination.page-size' | translate }}:
+            </span>
         </div>
-    </div>
-    <div class="col col-sm-6">
-        <div class="card mt-3">
-            <div class="card-header">Disabled pagination</div>
-            <div class="card-body">
-                <p>Pagination control can be disabled:</p>
-                <ngb-pagination [collectionSize]="70" [(page)]="disabledPagination" [disabled]='isDisabled'></ngb-pagination>
-                <hr>
-                <button class="btn btn-outline-primary" (click)="toggleDisabled()">
-                    Toggle disabled
-                </button>
-            </div>
+        <div class="col-sm-2">
+            <ng-select [items]="pageSizes"
+                       bindLabel="pageSize"
+                       placeholder="&#8721;"
+                       [(ngModel)]="pagination.selectedPageSize"
+                       [searchable]="false"
+                       [clearable]="false"
+                       [dropdownPosition]="dropdownPosition"
+                       (change)="loadPageSize()">
+            </ng-select>
+        </div>
+        <div class="col-sm-1">
+            <button type="button" class="btn btn-default clear ng-star-inserted" (click)="clearFilter()" style="background-color: white">&nbsp;{{ 'pagination.clear' | translate }}&nbsp;&nbsp;
+                <svg height="30" viewBox="0 -5 24 24" width="30"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
+                </svg>
+            </button>
         </div>
     </div>
 </div>

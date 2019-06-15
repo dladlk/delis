@@ -1,0 +1,30 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="true" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="dlk" id="1556079980036-1">
+        <createTable tableName="send_document_bytes">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="dlk" id="1556079980036-2">
+        <createIndex indexName="FK_sdb_document_id" tableName="send_document_bytes">
+            <column name="document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="dlk" id="1556079980036-3">
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="send_document_bytes" constraintName="FK_sdb_document_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="send_document" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

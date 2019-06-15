@@ -1,0 +1,77 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="true" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="dlk" id="1556027472172-1">
+        <createTable tableName="journal_send_document">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration_ms" type="BIGINT"/>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="success" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organisation_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-2">
+        <createTable tableName="send_document">
+            <column autoIncrement="true" name="id_pk" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivered_time" type="datetime"/>
+            <column name="document_date" type="VARCHAR(10)"/>
+            <column name="document_id" type="VARCHAR(50)"/>
+            <column name="document_status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_type" type="VARCHAR(255)"/>
+            <column name="receiver_id_raw" type="VARCHAR(50)"/>
+            <column name="sender_id_raw" type="VARCHAR(50)"/>
+            <column name="sent_message_id" type="VARCHAR(50)"/>
+            <column name="organisation_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-3">
+        <createIndex indexName="FK_jsd_organisation_id" tableName="journal_send_document">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-4">
+        <createIndex indexName="FK_sd_organisation_id" tableName="send_document">
+            <column name="organisation_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-5">
+        <createIndex indexName="FK_jsd_document_id" tableName="journal_send_document">
+            <column name="document_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-6">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="journal_send_document" constraintName="FK_jsd_organisation_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-7">
+        <addForeignKeyConstraint baseColumnNames="organisation_id" baseTableName="send_document" constraintName="FK_sd_organisation_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="organisation" validate="true"/>
+    </changeSet>
+    <changeSet author="dlk" id="1556027472172-8">
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="journal_send_document" constraintName="FK_jsd_document_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id_pk" referencedTableName="send_document" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

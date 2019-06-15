@@ -2,55 +2,40 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from "@ngx-translate/core";
+import { NgSelectModule } from "@ng-select/ng-select";
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
-import { BsComponentRoutingModule } from './bs-component-routing.module';
-import { BsComponentComponent } from './bs-component.component';
-import {
-    AlertComponent,
-    ButtonsComponent,
-    ModalComponent,
-    CollapseComponent,
-    DatePickerComponent,
-    DropdownComponent,
-    PaginationComponent,
-    PopOverComponent,
-    ProgressbarComponent,
-    TabsComponent,
-    RatingComponent,
-    TooltipComponent,
-    TimepickerComponent
-} from './components';
+import { PaginationComponent, TableHeaderSortComponent, ErrorComponent } from './components';
 import { PageHeaderModule } from '../../shared';
-import {TableHeaderSortComponent} from "./components/table-header-sort/table.header.sort.component";
-import {TranslateModule} from "@ngx-translate/core";
+import { PaginationService } from "./components/pagination/pagination.service";
+import { DaterangeComponent } from "./components/daterange/daterange.component";
+import { DaterangeService } from "./components/daterange/daterange.service";
+import { DaterangeShowService } from "./components/daterange/daterange.show.service";
 
 @NgModule({
     imports: [
         CommonModule,
-        BsComponentRoutingModule,
         FormsModule,
         ReactiveFormsModule,
-        NgbModule,
-        PageHeaderModule, TranslateModule
+        NgbModule, NgSelectModule,
+        PageHeaderModule, TranslateModule,
+        NgxDaterangepickerMd.forRoot(),
     ],
     declarations: [
-        BsComponentComponent,
-        ButtonsComponent,
-        AlertComponent,
-        ModalComponent,
-        CollapseComponent,
-        DatePickerComponent,
-        DropdownComponent,
+        TableHeaderSortComponent,
         PaginationComponent,
-        PopOverComponent,
-        ProgressbarComponent,
-        TabsComponent,
-        RatingComponent,
-        TooltipComponent,
-        TimepickerComponent,
-        TableHeaderSortComponent
-    ], exports: [
-        TableHeaderSortComponent
+        DaterangeComponent,
+        ErrorComponent
+    ],
+    exports: [
+        TableHeaderSortComponent,
+        PaginationComponent,
+        DaterangeComponent,
+        ErrorComponent
+    ],
+    providers: [
+        PaginationService, DaterangeService, DaterangeShowService
     ]
 })
 export class BsComponentModule {}

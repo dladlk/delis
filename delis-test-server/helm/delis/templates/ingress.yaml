@@ -1,0 +1,40 @@
+{{- if .Values.delisIngress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{.Release.Name}}-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: {{.Values.delisIngress.clusterIssuer}}
+spec:
+  tls:
+  - hosts:
+    - {{.Values.delisIngress.host}}
+    secretName: {{.Values.delisIngress.secretName}}
+  rules:
+      - host: {{.Values.delisIngress.host}}
+        http:
+          paths:
+          - path: /{{.Values.delisAngular.contextName}}
+            backend:
+              serviceName: {{.Release.Name}}-angular
+              servicePort: 8080
+          - path: {{.Values.delisApi.contextPath}}
+            backend:
+              serviceName: {{.Release.Name}}-api
+              servicePort: 8080
+          - path: {{.Values.delisAdmin.contextPath}}
+            backend:
+              serviceName: {{.Release.Name}}-admin
+              servicePort: 8080
+          - path: {{.Values.delisDomibusWsSender.contextPath}}
+            backend:
+              serviceName: {{.Release.Name}}-domibus-ws-sender
+              servicePort: 8080
+          - path: {{.Values.delisSender.contextPath}}
+            backend:
+              serviceName: {{.Release.Name}}-sender-service
+              servicePort: 8080
+
+{{- end }}

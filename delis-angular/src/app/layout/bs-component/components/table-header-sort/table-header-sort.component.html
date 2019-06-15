@@ -1,9 +1,30 @@
-<strong *ngIf="countClick == 0">{{ headerName | translate }}
-    <i class="fa fa-fw fa-sort"></i>
-</strong>
-<strong *ngIf="countClick == 1">{{ headerName | translate }}
-    <i class="fa fa-fw fa-sort-asc"></i>
-</strong>
-<strong *ngIf="countClick == 2">{{ headerName | translate }}
-    <i class="fa fa-fw fa-sort-desc"></i>
-</strong>
+<div class="d-sm-flex justify-content-between" *ngIf="countClick == 0">
+    <div class="p-2">
+        <strong>
+            {{ headerName | translate }}
+        </strong>
+    </div>
+    <div class="p-2">
+        <i class="fa fa-fw fa-sort"></i>
+    </div>
+</div>
+<div class="d-sm-flex justify-content-between" *ngIf="countClick == 1">
+    <div class="p-2">
+        <strong>
+            {{ headerName | translate }}
+        </strong>
+    </div>
+    <div class="p-2">
+        <i class="fa fa-fw fa-sort-asc"></i>
+    </div>
+</div>
+<div class="d-sm-flex justify-content-between" *ngIf="countClick == 2">
+    <div class="p-2">
+        <strong>
+            {{ headerName | translate }}
+        </strong>
+    </div>
+    <div class="p-2">
+        <i class="fa fa-fw fa-sort-desc"></i>
+    </div>
+</div>

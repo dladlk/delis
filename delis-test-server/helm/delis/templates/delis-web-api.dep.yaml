@@ -1,0 +1,53 @@
+{{- if .Values.delisApi.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-api'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-api
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-api'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-api'
+    spec:
+      containers:
+      - image: {{.Values.delisApi.image}}
+        imagePullPolicy: IfNotPresent
+        name: {{.Release.Name}}-api
+        env:
+          - name: SERVER_SERVLET_CONTEXT-PATH
+            value: {{.Values.delisApi.contextPath}}
+          - name: SERVER_PORT
+            value: "8080"
+          - name: SPRING_DATASOURCE_URL
+            value: {{.Values.delisDb.url}}
+          - name: SPRING_DATASOURCE_USERNAME
+            value: {{.Values.delisDb.user}}
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: {{.Values.delisDb.password}}
+          {{- with .Values.delisApi.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        {{- with .Values.delisApi.volumeMounts }}
+        volumeMounts:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.delisApi.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}

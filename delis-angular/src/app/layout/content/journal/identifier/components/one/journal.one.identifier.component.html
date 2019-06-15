@@ -1,0 +1,79 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'journal.identifier.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><strong>{{ journalIdentifier.organisation.name }}</strong></div>
+                    <br>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>{{journalIdentifier.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>create time</td>
+                                <td>{{journalIdentifier.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>update time</td>
+                                <td>{{journalIdentifier.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>message</td>
+                                <td>{{journalIdentifier.message}}</td>
+                            </tr>
+                            <tr>
+                                <td>duration ms</td>
+                                <td>{{journalIdentifier.durationMs}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation create time</td>
+                                <td>{{journalIdentifier.organisation.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation update time</td>
+                                <td>{{journalIdentifier.organisation.updateTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>organisation code</td>
+                                <td>{{journalIdentifier.organisation.code}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier value</td>
+                                <td>{{journalIdentifier.identifier.value}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier type</td>
+                                <td>{{journalIdentifier.identifier.type}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier unique value type</td>
+                                <td>{{journalIdentifier.identifier.uniqueValueType}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier status</td>
+                                <td>{{journalIdentifier.identifier.status}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier publishing status</td>
+                                <td>{{journalIdentifier.identifier.publishingStatus}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier name</td>
+                                <td>{{journalIdentifier.identifier.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>identifier last sync organisation fact id</td>
+                                <td>{{journalIdentifier.identifier.lastSyncOrganisationFactId}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

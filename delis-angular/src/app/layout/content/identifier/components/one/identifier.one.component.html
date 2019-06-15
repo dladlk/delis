@@ -1,0 +1,79 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'identifier.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
+    <div *ngIf="error">{{resetData()}}</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><strong>{{ identifier.name }}</strong></div>
+                    <br>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <td>Organisation</td>
+                                <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>
+                                <td *ngIf="identifier.organisation === null"></td>
+                            </tr>
+                            <tr>
+                                <td>Oprettet</td>
+                                <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            <tr>
+                                <td>Nummer</td>
+                                <td>{{identifier.type}} {{identifier.value}}</td>
+                            </tr>
+                            <tr>
+                                <td>Navn</td>
+                                <td>{{identifier.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>Publicering</td>
+                                <td>{{identifier.publishingStatus}}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>{{identifier.status}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 col-md-offset-0">
+                <div class="card">
+                    <div class="card-header"><span>{{ 'journal.identifier.table.header' | translate }}</span></div>
+                    <br>
+                    <div class="card-body table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                            <tr>
+                                <th *ngFor="let hed of tableHeaderSortModels">
+                                    <div class="text-center">
+                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
+                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let doc of journalIdentifiers" [routerLink]="['/journal-identifiers/', doc.id]">
+                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
+                                <td *ngIf="doc.organisation !== null">{{doc.identifier.name}}</td>
+                                <td *ngIf="doc.organisation === null"></td>
+                                <td>{{doc.message}}</td>
+                                <td>{{doc.durationMs}}</td>
+                                <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

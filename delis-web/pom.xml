@@ -16,22 +16,41 @@
     <artifactId>delis-web</artifactId>
     <version>1.0.0</version>
     
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 	
 	<name>Delis :: Web</name>
 
     <properties>
 		<delis.version>1.0.0</delis.version>
+		<swagger.version>2.9.2</swagger.version>
 	</properties>
 
     <dependencies>
-    	<!-- 
-        <dependency>
-            <groupId>dk.erst.delis</groupId>
-            <artifactId>delis-data</artifactId>
-            <version>${delis.version}</version>
-        </dependency>   
-    	 -->
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>datatables-easy</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<!-- Delis -->
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-data</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-tasks</artifactId>
+			<version>${delis.version}</version>
+		</dependency>		
+
+		<!-- JAVAX-VALIDATION -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+
      
 		<!-- Lombok -->
 		<dependency>
@@ -44,6 +63,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,20 +91,17 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.6</version>
-		    <scope>test</scope>
+			<groupId>com.google.guava</groupId>
+			<artifactId>failureaccess</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 
 		
 		<!-- Adds namespace xmlns:sec="http://www.thymeleaf.org/extras/spring-security" -->
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
-			<version>3.0.4.RELEASE</version>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
 		</dependency>
         
         <!-- MySQL -->
@@ -89,21 +109,62 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-        
-        <!-- OpenCSV for IdentifierLoadService -->
+
 		<dependency>
-		    <groupId>com.opencsv</groupId>
-		    <artifactId>opencsv</artifactId>
-		    <version>4.4</version>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>com.h2database</groupId>
+		    <artifactId>h2</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>no.difi.vefa</groupId>
+			<artifactId>peppol-sbdh</artifactId>
+			<version>1.1.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- SWAGGER -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-test -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+	<!-- Added because junit parts use apache-commons-logging framework, which 
+		cannot work with logback, so for tests it is switched to log4j and configured 
+		to surpress everything except errors -->		
+		<dependency>
+		    <groupId>log4j</groupId>
+		    <artifactId>log4j</artifactId>
+		    <version>1.2.17</version>
+		    <scope>test</scope>
 		</dependency>
 		
-		<!-- Saxon is required for CII/BIS3 schematron - they do not work with integrated JAXP nor with Xalan 2.7.1! -->
-	    <dependency>
-	      <groupId>net.sf.saxon</groupId>
-	      <artifactId>Saxon-HE</artifactId>
-	      <version>9.9.0-2</version>
-	    </dependency>
-        
+		
     </dependencies>
     
     <build>

@@ -2,6 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<title>Delis</title>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<link rel="stylesheet" th:href="@{/css/main.css}"/>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</head>
 <body>
 	<div class="card border-primary">
 		<div class="card-header bg-primary text-white">
@@ -14,7 +26,7 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Load from files</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierLoad}">Load from files</a>
 					</td>
 					<td>
 						Scan folder with exported list of identifiers per organisation and synchronize list of identifiers with database
@@ -22,18 +34,18 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Publish to SMP</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/identifierPublish}">Publish to SMP</a>
 					</td>
 					<td>
 						Lookup db for Identifier records with identifierPublishStatus = PENDING and send requests to SMP
 					</td>
 				</tr>
 				<tr>
-					<th colspan="2" style="text-align: center">Document tasks</th>
+					<th colspan="2" style="text-align: center">Received documents tasks</th>
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Load</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentLoad}">Load</a>
 					</td>
 					<td>
 						Scan IN folder of Domibus and Oxalis, resolve format, document details, receiver and load to database.
@@ -41,7 +53,7 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Validate</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentValidate}">Validate</a>
 					</td>
 					<td>
 						Lookup db for Document records with status = LOADED_OK, validate ingoing format, transform to intermediate/final formats and validate them.
@@ -49,12 +61,32 @@
 				</tr>
 				<tr>
 					<td>
-						<a href="#" class="btn btn-primary" th:href="@{/task/identifierPublish}">Deliver</a>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentDeliver}">Deliver</a>
 					</td>
 					<td>
 						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
 					</td>
 				</tr>
+				<tr>
+					<th colspan="2" style="text-align: center">Sent documents tasks</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendDocumentValidate}">Validate</a>
+					</td>
+					<td>
+						Lookup db for SendDocument records with status = NEW and validate original format, if ok - change to VALID, otherwhise VALIDATE_ERROR.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendFailedProcess}">Process failed</a>
+					</td>
+					<td>
+						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwhise FORWARD_ERROR) - otherwise FORWARD_SKIP.
+					</td>
+				</tr>
+				
 			</table>
 
 		</div>

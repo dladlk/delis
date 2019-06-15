@@ -2,6 +2,8 @@
 .settings/
 .classpath
 .project
+.factorypath
+.externalToolBuilders
 
 ## PMD Eclipse plugin files ##
 .pmd
@@ -42,4 +44,7 @@ dependency-reduced-pom.xml
 
 ## Node files
 node_modules
-delis-angular/dist
+
+# Skip all folders like
+dist/
+log/
