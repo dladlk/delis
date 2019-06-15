@@ -1,36 +1,57 @@
 package dk.erst.delis.web.document;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.jpa.datatables.easy.data.PageData;
+import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListService;
+import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListServiceImpl;
+import org.springframework.data.jpa.datatables.easy.web.EasyDatatablesListController;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.config.web.security.CustomUserDetails;
 import dk.erst.delis.dao.DocumentBytesDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.web.RedirectUtil;
 import dk.erst.delis.web.document.ir.ApplicationResponseFormController;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.*;
-import java.util.List;
 
 @Controller
 @Slf4j
-public class DocumentController {
+public class DocumentController extends EasyDatatablesListController<Document> {
 
 	@Autowired
 	private DocumentProcessService documentProcessService;
@@ -47,10 +68,61 @@ public class DocumentController {
     private String servletContextPath;
     
 	@Value("${delis.download.allow.all:#{false}}")
-	private boolean downloadAllowAll;    
+	private boolean downloadAllowAll;
+	
+	
+	/*
+	 * START EasyDatatables block
+	 */
+	@Autowired
+	private DocumentDataTableRepository documentDataTableRepository;
+	@Autowired
+	private EasyDatatablesListServiceImpl<Document> documentEasyDatatablesListService;
+	
+	@Override
+	protected String getListCode() {
+		return "document";
+	}
+	@Override
+	protected DataTablesRepository<Document, Long> getDataTableRepository() {
+		return this.documentDataTableRepository;
+	}
+	@Override
+	protected EasyDatatablesListService<Document> getEasyDatatablesListService() {
+		return documentEasyDatatablesListService;
+	}
 
 	@RequestMapping("/document/list")
-	public String list(Model model) {
+	public String list(Model model, WebRequest webRequest) {
+		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
+		model.addAttribute("statusList", DocumentStatus.values());
+		model.addAttribute("documentFormatList", DocumentFormat.values());
+		model.addAttribute("documentTypeList", DocumentType.values());
+		
+		return super.list(model, webRequest);
+	}
+	
+	@Override
+	protected PageData updatePageData(WebRequest webRequest) {
+		PageData pageData = super.updatePageData(webRequest);
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
+		
+		if (cud.getOrganisation() != null) {
+			pageData.addFilterValue("organisation.id", String.valueOf(cud.getOrganisation().getId()));
+		}
+		
+		return pageData;
+	}	
+	
+	/*
+	 * END EasyDatatables block
+	 */	
+	
+
+	@RequestMapping("/document/listOld")
+	public String listOld(Model model) {
 		return listFilter(model);
 	}
 
@@ -176,4 +248,5 @@ public class DocumentController {
 		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
 		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
 	}
+
 }
