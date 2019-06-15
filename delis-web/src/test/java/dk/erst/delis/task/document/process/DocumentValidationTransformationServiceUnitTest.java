@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document.process;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -122,7 +123,7 @@ public class DocumentValidationTransformationServiceUnitTest {
 				System.out.println(step);
 			}
 			
-			assertTrue(processLog.isSuccess());
+			assertEquals("Test document "+testDocument, testDocument.isExpectedSuccess(), processLog.isSuccess());
 			assertNotNull(processLog.getResultPath());
 			assertTrue(processLog.getResultPath().toFile().exists());
 		} finally {
