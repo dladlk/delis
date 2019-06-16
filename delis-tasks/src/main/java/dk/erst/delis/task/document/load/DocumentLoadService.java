@@ -168,7 +168,7 @@ public class DocumentLoadService {
 			Document document = buildDocument(info, messageId);
 
 			Identifier identifier = null;
-			if (info.getReceiver() != null) {
+			if (info != null && info.getReceiver() != null) {
 				identifier = identifierResolverService.resolve(info.getReceiver().getSchemeId(), info.getReceiver().getId());
 			}
 			if (identifier != null) {
