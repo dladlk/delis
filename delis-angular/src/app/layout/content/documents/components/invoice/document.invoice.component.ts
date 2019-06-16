@@ -210,6 +210,70 @@ export class DocumentInvoiceComponent implements OnInit {
                         }
                     }
                 } break;
+                case '6a': {
+                    // tslint:disable-next-line:forin
+                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                        if (this.isUQ(uCase)) {
+                            this.setDefaultConfig();
+                            this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
+                            this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '6a')[0];
+                            this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === 'REF')[0];
+                            this.statusActionView = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === 'PIN')[0];
+                            this.statusReasonEnabled = true;
+                            this.effectiveDateEnabled = true;
+                            this.statusActionEnabled = true;
+                            this.detailType = 'BT-13';
+                            this.detailValue = 'PO0001';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                        }
+                    }
+                } break;
+                case '6b': {
+                    // tslint:disable-next-line:forin
+                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                        if (this.isUQ(uCase)) {
+                            this.setDefaultConfig();
+                            this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
+                            this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '6b')[0];
+                            this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === 'REF')[0];
+                            this.statusActionView = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === 'PIN')[0];
+                            this.statusReasonEnabled = true;
+                            this.effectiveDateEnabled = true;
+                            this.statusActionEnabled = true;
+                            this.detailType = 'BT-13';
+                            this.detailValue = 'PO0001';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                        }
+                    }
+                } break;
+                case '6c': {
+                    // tslint:disable-next-line:forin
+                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                        if (this.isUQ(uCase)) {
+                            this.setDefaultConfig();
+                            this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
+                            this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '6c')[0];
+                            this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === 'DEL')[0];
+                            this.statusActionView = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === 'CNP')[0];
+                            this.statusReasonEnabled = true;
+                            this.effectiveDateEnabled = true;
+                            this.statusActionEnabled = true;
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREEN;
+                            this.statusReasonText = 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.';
+                        }
+                    }
+                } break;
                 default : {
                     this.setDefaultConfig();
                 }
@@ -233,6 +297,10 @@ export class DocumentInvoiceComponent implements OnInit {
 
     isCA(uCase: any) {
         return this.documentInvoiceModel.invoiceStatusCodeList[uCase][0] === 'CA';
+    }
+
+    isUQ(uCase: any) {
+        return this.documentInvoiceModel.invoiceStatusCodeList[uCase][0] === 'UQ';
     }
 
     selectInvoiceStatusCodeView(value: any) {
