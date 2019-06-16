@@ -7,6 +7,9 @@ import {DocumentModel} from '../../models/document.model';
 import {ErrorService} from '../../../../../service/error.service';
 import {DocumentInvoiceModel} from '../../models/document.invoice.model';
 
+const BORDER_COLOR_GREY = '#ced4da';
+const BORDER_COLOR_GREEN = '#28a745';
+
 @Component({
     selector: 'app-document-invoice',
     templateUrl: './document.invoice.component.html',
@@ -74,11 +77,13 @@ export class DocumentInvoiceComponent implements OnInit {
         this.statusActionEnabled = false;
         this.statusAction2Enabled = false;
         this.effectiveDateEnabled = false;
-        document.getElementById('inputGroupStatusCode').style.borderColor = '';
-        document.getElementById('inputGroupStatusAction').style.borderColor = '';
-        document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = '';
-        document.getElementById('invoiceResponseDetailValue').style.borderColor = '';
-        document.getElementById('statusReasonText').style.borderColor = '';
+        document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREY;
+        document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREY;
+        document.getElementById('inputGroupStatusAction2').style.borderColor = BORDER_COLOR_GREY;
+        document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREY;
+        document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREY;
+        document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREY;
+        document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREY;
     }
 
     selectInvoiceResponseUseCaseView(value: string) {
@@ -94,7 +99,7 @@ export class DocumentInvoiceComponent implements OnInit {
                         if (this.isIP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
                         }
                     }
                 } break;
@@ -110,10 +115,10 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.detailType = 'Buyer process reference';
                             this.detailValue = 'X001';
                             console.log(document.getElementById('inputGroupStatusCode').style.borderColor);
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
-                            document.getElementById('inputGroupStatusAction').style.borderColor = 'green';
-                            document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = 'green';
-                            document.getElementById('invoiceResponseDetailValue').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
                         }
                     }
                 } break;
@@ -124,8 +129,8 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
                             this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '2b')[0];
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
-                            document.getElementById('statusReasonText').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREEN;
                             this.statusReasonText = 'Shipment has not yet been received. Invoice processing will be attempted later.';
                         }
                     }
@@ -136,7 +141,7 @@ export class DocumentInvoiceComponent implements OnInit {
                         if (this.isAP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
                         }
                     }
                 } break;
@@ -146,7 +151,8 @@ export class DocumentInvoiceComponent implements OnInit {
                         if (this.isRE(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREEN;
                             this.statusReasonText = 'A textual explanation for why the invoice is being rejected.';
                         }
                     }
@@ -161,9 +167,9 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.statusActionView = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === 'NIN')[0];
                             this.statusReasonEnabled = true;
                             this.statusActionEnabled = true;
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
-                            document.getElementById('inputGroupStatusAction').style.borderColor = 'green';
-                            document.getElementById('inputGroupStatusReason').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
                         }
                     }
                 } break;
@@ -179,10 +185,10 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.statusReasonEnabled = true;
                             this.statusActionEnabled = true;
                             this.statusAction2Enabled = true;
-                            document.getElementById('inputGroupStatusCode').style.borderColor = 'green';
-                            document.getElementById('inputGroupStatusAction').style.borderColor = 'green';
-                            document.getElementById('inputGroupStatusAction2').style.borderColor = 'green';
-                            document.getElementById('inputGroupStatusReason').style.borderColor = 'green';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusAction2').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
                         }
                     }
                 } break;
