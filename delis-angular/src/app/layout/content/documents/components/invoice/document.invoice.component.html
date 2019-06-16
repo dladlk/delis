@@ -110,7 +110,7 @@
                                     </div>
                                 </div>
                                 <select #inputGroupStatusReason class="custom-select" id="inputGroupStatusReason" (change)="selectStatusReasonView($event.target.value)" [disabled]="!statusReasonEnabled">
-                                    <option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [ngValue]="statusReasonView">{{statusReason[0]}}: {{statusReason[1]}}</option>
+                                    <option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [selected]="statusReasonView === statusReason">{{statusReason[0]}}: {{statusReason[1]}}</option>
                                 </select>
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                                     </div>
                                 </div>
                                 <select #inputGroupStatusAction class="custom-select" id="inputGroupStatusAction" (change)="selectStatusActionView($event.target.value)" [disabled]="!statusActionEnabled">
-                                    <option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [ngValue]="!statusActionView">{{statusAction[0]}}: {{statusAction[1]}}</option>
+                                    <option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [selected]="statusActionView === statusAction">{{statusAction[0]}}: {{statusAction[1]}}</option>
                                 </select>
                             </div>
                         </div>
@@ -176,7 +176,7 @@
                                     </div>
                                 </div>
                                 <select #inputGroupStatusAction2 class="custom-select" id="inputGroupStatusAction2" (change)="selectStatusAction2View($event.target.value)" [disabled]="!statusAction2Enabled">
-                                    <option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [ngValue]="!statusAction2View">{{statusAction2[0]}}: {{statusAction2[1]}}</option>
+                                    <option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [selected]="statusAction2View === statusAction2">{{statusAction2[0]}}: {{statusAction2[1]}}</option>
                                 </select>
                             </div>
                         </div>
