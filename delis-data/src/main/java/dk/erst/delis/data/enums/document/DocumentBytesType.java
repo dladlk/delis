@@ -1,6 +1,8 @@
 package dk.erst.delis.data.enums.document;
 
-public enum DocumentBytesType {
+import dk.erst.delis.data.enums.Named;
+
+public enum DocumentBytesType implements Named {
 
 	IN_AS4("Ingoing Domibus AS4 metadata.xml"), 
 	

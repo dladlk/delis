@@ -1,6 +1,8 @@
 package dk.erst.delis.data.enums.document;
 
-public enum DocumentErrorCode {
+import dk.erst.delis.data.enums.Named;
+
+public enum DocumentErrorCode implements Named {
 
 	CII_XSD,
 	

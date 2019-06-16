@@ -1,19 +1,19 @@
 package dk.erst.delis.data.util;
 
-import dk.erst.delis.data.enums.Named;
-import dk.erst.delis.data.enums.document.DocumentFormat;
-import lombok.extern.slf4j.Slf4j;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.codehaus.plexus.util.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.assertTrue;
+import dk.erst.delis.data.enums.Named;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class BundleUtilTest {
@@ -63,9 +63,9 @@ public class BundleUtilTest {
 			String ename = n.getName();
 			if (ename == null || e.name().equals(ename)) {
 				/*
-				 * CII is too short to give a translation for it :)
+				 * Some names are too short to give a translation for it.
 				 */
-				if (e == DocumentFormat.CII) {
+				if (ename.equals("CII") || ename.equals("BIS3") || ename.equals("OIOUBL")) {
 					continue;
 				}
 				missName.add(e);

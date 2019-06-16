@@ -1,6 +1,8 @@
 package dk.erst.delis.data.enums.user;
 
-public enum RoleType {
+import dk.erst.delis.data.enums.Named;
+
+public enum RoleType implements Named {
 
     ADMIN, USER
 }
