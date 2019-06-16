@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {routerTransition} from '../../../../../router.animations';
@@ -14,6 +14,11 @@ import {DocumentInvoiceModel} from '../../models/document.invoice.model';
     animations: [routerTransition()]
 })
 export class DocumentInvoiceComponent implements OnInit {
+
+    @ViewChild('inputGroupStatusReason') inputGroupStatusReason: ElementRef;
+    @ViewChild('inputGroupEffectiveDate') inputGroupEffectiveDate: ElementRef;
+    @ViewChild('inputGroupStatusAction') inputGroupStatusAction: ElementRef;
+    @ViewChild('inputGroupStatusAction2') inputGroupStatusAction2: ElementRef;
 
     error = false;
     documentInvoiceModel: DocumentInvoiceModel = new DocumentInvoiceModel();
@@ -70,6 +75,7 @@ export class DocumentInvoiceComponent implements OnInit {
 
     checkEffectiveDateEnabled() {
         this.effectiveDateEnabled = !this.effectiveDateEnabled;
+        this.focusElement(this.inputGroupEffectiveDate, this.effectiveDateEnabled);
         return this.effectiveDateEnabled;
     }
 
@@ -80,6 +86,7 @@ export class DocumentInvoiceComponent implements OnInit {
 
     checkStatusReasonEnabled() {
         this.statusReasonEnabled = !this.statusReasonEnabled;
+        this.focusElement(this.inputGroupStatusReason, this.statusReasonEnabled);
         return this.statusReasonEnabled;
     }
 
@@ -90,6 +97,7 @@ export class DocumentInvoiceComponent implements OnInit {
 
     checkStatusActionEnabled() {
         this.statusActionEnabled = !this.statusActionEnabled;
+        this.focusElement(this.inputGroupStatusAction, this.statusActionEnabled);
         return this.statusActionEnabled;
     }
 
@@ -100,6 +108,7 @@ export class DocumentInvoiceComponent implements OnInit {
 
     checkStatusAction2Enabled() {
         this.statusAction2Enabled = !this.statusAction2Enabled;
+        this.focusElement(this.inputGroupStatusAction2, this.statusAction2Enabled);
         return this.statusAction2Enabled;
     }
 
@@ -111,5 +120,13 @@ export class DocumentInvoiceComponent implements OnInit {
     checkOnlyGeneratedEnabled() {
         this.onlyGeneratedEnabled = !this.onlyGeneratedEnabled;
         return this.onlyGeneratedEnabled;
+    }
+
+    focusElement(element: ElementRef, focus: boolean) {
+        if (focus) {
+            setTimeout(() => {
+                element.nativeElement.focus();
+            },0);
+        }
     }
 }

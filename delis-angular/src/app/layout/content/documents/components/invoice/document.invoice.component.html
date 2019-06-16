@@ -75,12 +75,12 @@
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <label class="input-group-text" for="effectiveDateEnabled">
+                                    <label class="input-group-text" for="inputGroupEffectiveDate">
                                         <input class="mr-2" type="checkbox" [checked]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled()">
                                         Effective date
                                     </label>
                                 </div>
-                                <input [disabled]="!effectiveDateEnabled" [(ngModel)]="effectiveDate" id="effectiveDateEnabled" type="date" class="form-control" size="10" style="max-width: 11em" lang="en"/>
+                                <input #inputGroupEffectiveDate [disabled]="!effectiveDateEnabled" [(ngModel)]="effectiveDate" id="inputGroupEffectiveDate" type="date" class="form-control" size="10" style="max-width: 11em" lang="en"/>
                             </div>
                         </div>
                         <div class="col-sm">
@@ -103,7 +103,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <select class="custom-select" id="inputGroupStatusReason" (change)="selectStatusReasonView($event.target.value)" [disabled]="!statusReasonEnabled">
+                                <select #inputGroupStatusReason class="custom-select" id="inputGroupStatusReason" (change)="selectStatusReasonView($event.target.value)" [disabled]="!statusReasonEnabled">
                                     <option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [ngValue]="statusReasonView">{{statusReason[0]}}: {{statusReason[1]}}</option>
                                 </select>
                             </div>
@@ -134,7 +134,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <select class="custom-select" id="inputGroupStatusAction" (change)="selectStatusActionView($event.target.value)" [disabled]="!statusActionEnabled">
+                                <select #inputGroupStatusAction class="custom-select" id="inputGroupStatusAction" (change)="selectStatusActionView($event.target.value)" [disabled]="!statusActionEnabled">
                                     <option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [ngValue]="!statusActionView">{{statusAction[0]}}: {{statusAction[1]}}</option>
                                 </select>
                             </div>
@@ -165,7 +165,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <select class="custom-select" id="inputGroupStatusAction2" (change)="selectStatusAction2View($event.target.value)" [disabled]="!statusAction2Enabled">
+                                <select #inputGroupStatusAction2 class="custom-select" id="inputGroupStatusAction2" (change)="selectStatusAction2View($event.target.value)" [disabled]="!statusAction2Enabled">
                                     <option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [ngValue]="!statusAction2View">{{statusAction2[0]}}: {{statusAction2[1]}}</option>
                                 </select>
                             </div>
