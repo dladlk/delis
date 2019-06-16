@@ -51,7 +51,7 @@
 				</tr>
 				<tr th:each="r,iter : ${errorDictList}">
                     <td>
-                        <a href="#" th:href="@{/errordict/view/__${r.id}__}" th:text="${r.errorType}"></a>
+                        <a href="#" th:href="@{/errordict/view/__${r.id}__}" th:text="${r.errorType?.name}"></a>
                     </td>
                     <td>
                         <a href="#" th:href="@{/errordict/view/__${r.id}__}" th:text="${r.code}"></a>

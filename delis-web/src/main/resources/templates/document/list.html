@@ -38,9 +38,9 @@
                         <a th:if="${r.receiverIdentifier}" href="#" th:href="@{/document/view/__${r.id}__}" th:text="${r.receiverIdentifier.name}">Receiver name</a>
                         <span th:text="${r.receiverIdRaw}">0088:234234234</span>
                     </td>
-                    <td th:text="${r.documentStatus}">LOAD_OK</td>
-                    <td th:text="${r.documentType}">Invoice</td>
-                    <td th:text="${r.ingoingDocumentFormat}">BIS3_INVOICE</td>
+                    <td th:text="${r.documentStatus?.name}">LOAD_OK</td>
+                    <td th:text="${r.documentType?.name}">Invoice</td>
+                    <td th:text="${r.ingoingDocumentFormat?.name}">BIS3_INVOICE</td>
                     <td th:text="${r.senderName}">Lego Spain</td>
                     <td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
                 </tr>                  

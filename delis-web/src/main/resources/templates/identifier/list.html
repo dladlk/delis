@@ -29,8 +29,8 @@
 					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" th:text="${r.value}"></a></td>
 					<td th:text="${r.type}"></td>
 					<td th:text="${r.name}"/>
-					<td th:text="${r.status}"/>
-					<td th:text="${r.publishingStatus}"/>
+					<td th:text="${r.status?.name}"/>
+					<td th:text="${r.publishingStatus?.name}"/>
 					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
 				</tr>						
 					</table>

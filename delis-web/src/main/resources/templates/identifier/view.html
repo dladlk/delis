@@ -29,11 +29,11 @@
 				</tr>
 				<tr>
 					<td>Status</td>
-					<td th:text="${identifier.status}">ACTIVE</td>
+					<td th:text="${identifier.status?.name}">ACTIVE</td>
 				</tr>
 				<tr>
 					<td>Publishing status</td>
-					<td th:text="${identifier.publishingStatus}">DONE</td>
+					<td th:text="${identifier.publishingStatus?.name}">DONE</td>
 				</tr>
 				<tr>
 					<td>Group</td>
@@ -47,11 +47,11 @@
 				<div class="d-flex justify-content-end">
 					<label class="m-2 col-form-label">Status:</label>
 					<select th:field="*{status}" class="m-2">
-						<option th:each="status : ${identifierStatusList}" th:text="${status}" th:value="${status}"></option>
+						<option th:each="status : ${identifierStatusList}" th:text="${status.name}" th:value="${status}"></option>
 					</select>
 					<label class="m-2 col-form-label">Publishing Status:</label>
 					<select th:field="*{publishingStatus}" class="m-2">
-						<option th:each="publishingStatus : ${identifierPublishingStatusList}" th:text="${publishingStatus}" th:value="${publishingStatus}"></option>
+						<option th:each="publishingStatus : ${identifierPublishingStatusList}" th:text="${publishingStatus.name}" th:value="${publishingStatus}"></option>
 					</select>
 					<input type="hidden" th:field="*{id}" class="form-control" th:value="${identifier.id}"/>
 					<button type="submit" class="m-2 btn btn-primary">Update Statuses</button>
