@@ -274,6 +274,29 @@ export class DocumentInvoiceComponent implements OnInit {
                         }
                     }
                 } break;
+                case '7': {
+                    // tslint:disable-next-line:forin
+                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                        if (this.isPD(uCase)) {
+                            this.setDefaultConfig();
+                            this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
+                            this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '7')[0];
+                            this.effectiveDateEnabled = true;
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                        }
+                    }
+                } break;
+                case '8': {
+                    // tslint:disable-next-line:forin
+                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                        if (this.isAP(uCase)) {
+                            this.setDefaultConfig();
+                            this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
+                            this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '8')[0];
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                        }
+                    }
+                } break;
                 default : {
                     this.setDefaultConfig();
                 }
@@ -301,6 +324,10 @@ export class DocumentInvoiceComponent implements OnInit {
 
     isUQ(uCase: any) {
         return this.documentInvoiceModel.invoiceStatusCodeList[uCase][0] === 'UQ';
+    }
+
+    isPD(uCase: any) {
+        return this.documentInvoiceModel.invoiceStatusCodeList[uCase][0] === 'PD';
     }
 
     selectInvoiceStatusCodeView(value: any) {
