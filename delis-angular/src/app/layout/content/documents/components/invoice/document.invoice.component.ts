@@ -192,6 +192,24 @@ export class DocumentInvoiceComponent implements OnInit {
                         }
                     }
                 } break;
+                case '5': {
+                    // tslint:disable-next-line:forin
+                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                        if (this.isCA(uCase)) {
+                            this.setDefaultConfig();
+                            this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
+                            this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '5')[0];
+                            this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === 'PAY')[0];
+                            this.statusReasonEnabled = true;
+                            this.detailType = 'BT-9';
+                            this.detailValue = '2018-01-15';
+                            document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
+                            document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
+                        }
+                    }
+                } break;
                 default : {
                     this.setDefaultConfig();
                 }
@@ -211,6 +229,10 @@ export class DocumentInvoiceComponent implements OnInit {
 
     isRE(uCase: any) {
         return this.documentInvoiceModel.invoiceStatusCodeList[uCase][0] === 'RE';
+    }
+
+    isCA(uCase: any) {
+        return this.documentInvoiceModel.invoiceStatusCodeList[uCase][0] === 'CA';
     }
 
     selectInvoiceStatusCodeView(value: any) {
