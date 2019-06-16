@@ -1,6 +1,9 @@
 #!/bin/bash -e
 CURDIR="$(dirname $(readlink -f $0))"
 
+#echo 'Last line'
+#exit 0
+
 ${CURDIR}/docker_access.sh
 
 pushd ${CURDIR}/scripts
@@ -23,3 +26,5 @@ pushd ${CURDIR}/scripts
 ./cef-erst-test-web-console.sh
 
 popd
+
+echo 'Test server is successfully updated'
