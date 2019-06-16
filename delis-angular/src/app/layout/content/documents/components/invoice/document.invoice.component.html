@@ -41,9 +41,15 @@
                             </div>
                         </div>
                         <div class="col-sm">
-                            <small id="ucl">See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
-                                Invoice Response use cases</a> for details
-                            </small>
+                            <section id="ucl">
+                                <strong *ngIf="invoiceResponseUseCaseView.length !== 0">
+                                    {{invoiceResponseUseCaseView[0]}}: {{invoiceResponseUseCaseView[2]}}
+                                    <br>
+                                </strong>
+                                <small>See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
+                                    Invoice Response use cases</a> for details
+                                </small>
+                            </section>
                         </div>
                     </div>
 
@@ -54,20 +60,20 @@
                                     <label class="input-group-text invoice-input-group" for="inputGroupStatusCode">Status</label>
                                 </div>
                                 <select class="custom-select" id="inputGroupStatusCode" (change)="selectInvoiceStatusCodeView($event.target.value)">
-                                    <option *ngFor="let statusCode of documentInvoiceModel.invoiceStatusCodeList" [ngValue]="invoiceStatusCodeView">{{statusCode[0]}}: {{statusCode[1]}}</option>
+                                    <option *ngFor="let statusCode of documentInvoiceModel.invoiceStatusCodeList" [selected]="invoiceStatusCodeView === statusCode">{{statusCode[0]}}: {{statusCode[1]}}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-sm">
-                            <div *ngIf="invoiceStatusCodeView !== undefined">
+                            <section id="irs">
                                 {{invoiceStatusCodeView[0]}}: {{invoiceStatusCodeView[2]}}
-                            </div>
-                            <br>
-                            <small id="irs">
-                                <div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
-                                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
-                                Invoice status code (UNCL4343 Subset)</a> for details
-                            </small>
+                                <br>
+                                <small>
+                                    <div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
+                                    See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
+                                    Invoice status code (UNCL4343 Subset)</a> for details
+                                </small>
+                            </section>
                         </div>
                     </div>
 
@@ -109,15 +115,17 @@
                             </div>
                         </div>
                         <div class="col-sm">
-                            <div *ngIf="statusReasonView !== undefined">
-                                {{statusReasonView[0]}}: {{statusReasonView[2]}}
-                            </div>
-                            <br>
-                            <small id="scr">
-                                <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
-                                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
-                                Status Clarification Reason (OpenPEPPOL)</a> for details
-                            </small>
+                            <section id="scr">
+                                <div *ngIf="statusReasonView !== undefined">
+                                    {{statusReasonView[0]}}: {{statusReasonView[2]}}
+                                </div>
+                                <br>
+                                <small>
+                                    <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
+                                    See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
+                                    Status Clarification Reason (OpenPEPPOL)</a> for details
+                                </small>
+                            </section>
                         </div>
                     </div>
 
@@ -140,15 +148,17 @@
                             </div>
                         </div>
                         <div class="col-sm">
-                            <div *ngIf="statusActionView !== undefined">
-                                {{statusActionView[0]}}: {{statusActionView[2]}}
-                            </div>
-                            <br>
-                            <small id="sca">
-                                <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
-                                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
-                                Status Clarification Action (OpenPEPPOL)</a> for details
-                            </small>
+                            <section id="sca">
+                                <div *ngIf="statusActionView !== undefined">
+                                    {{statusActionView[0]}}: {{statusActionView[2]}}
+                                </div>
+                                <br>
+                                <small>
+                                    <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
+                                    See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
+                                    Status Clarification Action (OpenPEPPOL)</a> for details
+                                </small>
+                            </section>
                         </div>
                     </div>
 
@@ -171,13 +181,15 @@
                             </div>
                         </div>
                         <div class="col-sm">
-                            <div *ngIf="statusAction2View !== undefined">
-                                {{statusAction2View[0]}}: {{statusAction2View[2]}}
-                            </div>
-                            <br>
-                            <small id="sca2">
-                                Some use cases suppose 2 actions
-                            </small>
+                            <section id="sca2">
+                                <div *ngIf="statusAction2View !== undefined">
+                                    {{statusAction2View[0]}}: {{statusAction2View[2]}}
+                                </div>
+                                <br>
+                                <small>
+                                    Some use cases suppose 2 actions
+                                </small>
+                            </section>
                         </div>
                     </div>
 
@@ -187,7 +199,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text invoice-input-group">Reason text</span>
                                 </div>
-                                <input [(ngModel)]="statusReasonText" type="text" class="form-control"/>
+                                <input [(ngModel)]="statusReasonText" id="statusReasonText" type="text" class="form-control"/>
                             </div>
                         </div>
                         <div class="col-4">
@@ -201,7 +213,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text invoice-input-group">Detail type</span>
                                 </div>
-                                <input [(ngModel)]="detailType" type="text" name="invoiceResponseDetailTypeCode" class="form-control"/>
+                                <input [(ngModel)]="detailType" type="text" name="invoiceResponseDetailTypeCode" id="invoiceResponseDetailTypeCode" class="form-control"/>
                             </div>
                         </div>
                         <div class="col-4">
@@ -217,7 +229,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text invoice-input-group">Detail value</span>
                                 </div>
-                                <input [(ngModel)]="detailValue" type="text" name="invoiceResponseDetailValue" class="form-control"/>
+                                <input [(ngModel)]="detailValue" type="text" name="invoiceResponseDetailValue" id="invoiceResponseDetailValue" class="form-control"/>
                             </div>
                         </div>
                         <div class="col-4">
