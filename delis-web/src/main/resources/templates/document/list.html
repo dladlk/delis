@@ -12,16 +12,16 @@
         <form action="#" th:action="@{/document/list}" th:object="${selectedIdList}" method="post">
             <div class="container">
                 <table id="documents" class="table table-striped table-bordered table-sm datatables-easy"
-                	th:attr="dt-page=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(documentPage)}"
+                	th:attr="dt-page=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(documentPage)}"
                 	>
                     <thead>
                     <tr>
                         <th dt-field="createTime" type="date">Received</th>
                         <th dt-field="organisation.name">Organisation</th>
                         <th dt-field="receiverIdentifier.name">Receiver</th>
-                        <th dt-field="documentStatus" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(statusList)}">Status</th>
-                        <th dt-field="documentType" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(documentTypeList)}">Ingoing Type</th>
-                        <th dt-field="ingoingDocumentFormat" th:attr="dt-enum=${T(org.springframework.data.jpa.datatables.easy.util.JsonUtil).json(documentFormatList)}">Ingoing Format</th>
+                        <th dt-field="documentStatus" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(statusList)}">Status</th>
+                        <th dt-field="documentType" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(documentTypeList)}">Ingoing Type</th>
+                        <th dt-field="ingoingDocumentFormat" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(documentFormatList)}">Ingoing Format</th>
                         <th dt-field="senderName">Sender</th>
                         <th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
                     </tr>

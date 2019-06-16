@@ -1,7 +1,7 @@
 package dk.erst.delis.web.list;
 
-import org.springframework.data.jpa.datatables.easy.data.PageData;
-import org.springframework.data.jpa.datatables.easy.web.EasyDatatablesListController;
+import dk.erst.delis.web.datatables.data.PageData;
+import dk.erst.delis.web.datatables.web.EasyDatatablesListController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.WebRequest;
