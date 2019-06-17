@@ -14,8 +14,7 @@ import {JournalDocumentModel} from "../../../journal/document/models/journal.doc
 import {ErrorDictionaryModel} from "../../../journal/document/models/error.dictionary.model";
 import {DocumentBytesModel} from "../../models/document.bytes.model";
 import {JournalDocumentErrorModel} from "../../../journal/document/models/journal.document.error.model";
-
-import * as fileSaver from 'file-saver';
+import {FileSaverService} from "../../../../../service/file.saver.service";
 
 @Component({
     selector: 'app-documents-one',
@@ -81,7 +80,7 @@ export class DocumentsOneComponent implements OnInit {
     download(id: number) {
         this.documentService.downloadFileByDocumentAndDocumentBytes(this.document.id, id).subscribe(response => {
                 const filename = response.headers.get('filename');
-                this.saveFile(response.body, filename);
+                FileSaverService.saveFile(response.body, filename);
             },
             error => {
                 this.errorService.errorProcess(error);
@@ -103,10 +102,5 @@ export class DocumentsOneComponent implements OnInit {
         } else {
             return err.map(value => value.errorDictionary);
         }
-    }
-
-    saveFile(data: any, filename?: string) {
-        const blob = new Blob([data], {type: 'application/octet-stream'});
-        fileSaver.saveAs(blob, filename);
     }
 }

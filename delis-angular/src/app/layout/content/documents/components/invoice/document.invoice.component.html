@@ -10,6 +10,15 @@
         </div>
     </div>
 
+    <div *ngIf="success !== undefined">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{success.message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
     <div class="collapse multi-collapse mt-2" id="multiCollapseExample1">
         <div class="card">
             <div class="card border-secondary m-1">
@@ -247,7 +256,7 @@
                                         <input class="mr-2" type="checkbox" [checked]="validateGeneratedEnabled" (change)="checkValidateGeneratedEnabled()">
                                     </label>
                                 </div>
-                                <input [(ngModel)]="validateGenerated" id="validateGenerated" type="text" class="form-control" lang="en"/>
+                                <label id="validateGenerated" class="form-control" (click)="checkValidateGeneratedEnabled()" lang="en">{{validateGenerated}}</label>
                             </div>
                         </div>
                         <div class="col-sm">
@@ -257,7 +266,7 @@
                                         <input class="mr-2" type="checkbox" [checked]="onlyGeneratedEnabled" (change)="checkOnlyGeneratedEnabled()">
                                     </label>
                                 </div>
-                                <input [(ngModel)]="onlyGenerated" id="onlyGenerated" type="text" class="form-control" lang="en"/>
+                                <label id="onlyGenerated" class="form-control" (click)="checkOnlyGeneratedEnabled()" lang="en">{{onlyGenerated}}</label>
                             </div>
                         </div>
                     </div>
@@ -265,7 +274,7 @@
 
                     <div class="d-flex justify-content-start">
                         <div class="p-2">
-                            <button type="submit" class="btn sys-button">Generate</button>
+                            <button type="submit" class="btn sys-button" (click)="sendInvoice()">Generate</button>
                         </div>
                     </div>
                 </div>

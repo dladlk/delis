@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import { FilterProcessResult } from '../models/filter.process.result';
-import { HttpParams } from "@angular/common/http";
-import { Observable } from 'rxjs';
-import { RuntimeConfigService } from "../../../../service/runtime.config.service";
-import { HttpRestService } from "../../../../service/http.rest.service";
-import { TokenService } from "../../../../service/token.service";
+import {Injectable} from '@angular/core';
+import {FilterProcessResult} from '../models/filter.process.result';
+import {HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {RuntimeConfigService} from "../../../../service/runtime.config.service";
+import {HttpRestService} from "../../../../service/http.rest.service";
+import {TokenService} from "../../../../service/token.service";
 import {LoadDocumentStatusModel} from "../models/loadDocumentStatus.model";
 
 @Injectable()
 export class DocumentsService {
 
-    private url : string;
+    private url: string;
 
     constructor(
         private tokenService: TokenService,
@@ -20,17 +20,17 @@ export class DocumentsService {
         this.url = this.url + '/rest/document';
     }
 
-    getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult) : Observable<any> {
+    getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult): Observable<any> {
         let params = this.generateParams(currentPage, sizeElement, filter);
         if (filter.dateReceived !== null) {
-            filter.dateReceived.dateStart.setHours(0,0,0,0);
-            filter.dateReceived.dateEnd.setHours(23,59,59,999);
+            filter.dateReceived.dateStart.setHours(0, 0, 0, 0);
+            filter.dateReceived.dateEnd.setHours(23, 59, 59, 999);
             params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
         }
         return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 
-    getErrorListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult, errors: boolean) : Observable<any> {
+    getErrorListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult, errors: boolean): Observable<any> {
         let params = this.generateParams(currentPage, sizeElement, filter);
         params = params.append('flagParamErrorsDocument', 'FLAG_ERRORS_DOCUMENT');
         if (!errors) {
@@ -41,8 +41,8 @@ export class DocumentsService {
 
         } else {
             if (filter.dateReceived !== null) {
-                filter.dateReceived.dateStart.setHours(0,0,0,0);
-                filter.dateReceived.dateEnd.setHours(23,59,59,999);
+                filter.dateReceived.dateStart.setHours(0, 0, 0, 0);
+                filter.dateReceived.dateEnd.setHours(23, 59, 59, 999);
                 params = params.append('createTime', String(filter.dateReceived.dateStart.getTime()) + ':' + String(filter.dateReceived.dateEnd.getTime()));
             }
         }
@@ -50,23 +50,23 @@ export class DocumentsService {
         return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
 
-    getOneDocumentById(id: any) : Observable<any> {
+    getOneDocumentById(id: any): Observable<any> {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
 
-    getListDocumentBytesByDocumentId(id: any) : Observable<any> {
+    getListDocumentBytesByDocumentId(id: any): Observable<any> {
         return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
     }
 
-    updateDocumentStatus(statusModel: LoadDocumentStatusModel) : Observable<any> {
+    updateDocumentStatus(statusModel: LoadDocumentStatusModel): Observable<any> {
         return this.httpRestService.methodPostModel(this.url + '/update-status', statusModel, this.tokenService.getToken());
     }
 
-    downloadFileByDocumentAndDocumentBytes(id: number, bytesId) : Observable<any> {
+    downloadFileByDocumentAndDocumentBytes(id: number, bytesId): Observable<any> {
         return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
     }
 
-    private generateParams(currentPage: number, sizeElement: number, filter: FilterProcessResult) : HttpParams {
+    private generateParams(currentPage: number, sizeElement: number, filter: FilterProcessResult): HttpParams {
         let params = new HttpParams();
         params = params.append('page', String(currentPage));
         params = params.append('size', String(sizeElement));

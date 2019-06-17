@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {routerTransition} from '../../../../../router.animations';
@@ -6,6 +6,11 @@ import {DocumentInvoiceService} from '../../services/document.invoice.service';
 import {DocumentModel} from '../../models/document.model';
 import {ErrorService} from '../../../../../service/error.service';
 import {DocumentInvoiceModel} from '../../models/document.invoice.model';
+import {InvoiceResponseGenerationModel} from '../../models/invoice.response.generation.model';
+import {DocumentInvoiceResponseFormModel} from '../../models/document.invoice.response.form.model';
+import * as fileSaver from "file-saver";
+import {FileSaverService} from "../../../../../service/file.saver.service";
+import {SuccessModel} from "../../../../../models/success.model";
 
 const BORDER_COLOR_GREY = '#ced4da';
 const BORDER_COLOR_GREEN = '#28a745';
@@ -18,19 +23,25 @@ const BORDER_COLOR_GREEN = '#28a745';
 })
 export class DocumentInvoiceComponent implements OnInit {
 
+    @Input() documentId: number;
+    @Input() effectiveDate: string;
+
     @ViewChild('inputGroupStatusReason') inputGroupStatusReason: ElementRef;
     @ViewChild('inputGroupEffectiveDate') inputGroupEffectiveDate: ElementRef;
     @ViewChild('inputGroupStatusAction') inputGroupStatusAction: ElementRef;
     @ViewChild('inputGroupStatusAction2') inputGroupStatusAction2: ElementRef;
 
     error = false;
+    success: SuccessModel;
     documentInvoiceModel: DocumentInvoiceModel = new DocumentInvoiceModel();
+    documentInvoiceResponseFormModel: DocumentInvoiceResponseFormModel = new DocumentInvoiceResponseFormModel();
+    invoiceResponseGenerationModel: InvoiceResponseGenerationModel = new InvoiceResponseGenerationModel();
 
     invoiceStatusCodeView: string[] = [];
     invoiceResponseUseCaseView: string[] = [];
-    statusReasonView: string;
-    statusActionView: string;
-    statusAction2View: string;
+    statusReasonView: string[] = [];
+    statusActionView: string[] = [];
+    statusAction2View: string[] = [];
     statusReasonText: string;
     detailType: string;
     detailValue: string;
@@ -39,7 +50,6 @@ export class DocumentInvoiceComponent implements OnInit {
     onlyGenerated = 'Only generate, do not send';
 
     effectiveDateEnabled = false;
-    effectiveDate: Date;
 
     statusReasonEnabled = false;
     statusActionEnabled = false;
@@ -47,9 +57,10 @@ export class DocumentInvoiceComponent implements OnInit {
     validateGeneratedEnabled = true;
     onlyGeneratedEnabled = true;
 
-    constructor(private route: ActivatedRoute, private documentInvoiceService: DocumentInvoiceService, private errorService: ErrorService) {
-
-    }
+    constructor(
+        private route: ActivatedRoute,
+        private documentInvoiceService: DocumentInvoiceService,
+        private errorService: ErrorService) {}
 
     ngOnInit(): void {
         // tslint:disable-next-line:radix
@@ -86,12 +97,14 @@ export class DocumentInvoiceComponent implements OnInit {
         document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREY;
     }
 
+    initUseCase(useCase: string) {
+        this.documentInvoiceResponseFormModel.usecase = useCase;
+    }
+
     selectInvoiceResponseUseCaseView(value: string) {
-        console.log(value);
         if (value !== 'Select use case') {
             let useCase = value.split(':');
             let useCaseId = useCase[0];
-            console.log(useCaseId);
             switch (useCaseId) {
                 case '1': {
                     // tslint:disable-next-line:forin
@@ -100,6 +113,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -114,11 +128,11 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.statusActionEnabled = true;
                             this.detailType = 'Buyer process reference';
                             this.detailValue = 'X001';
-                            console.log(document.getElementById('inputGroupStatusCode').style.borderColor);
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -132,6 +146,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREEN;
                             this.statusReasonText = 'Shipment has not yet been received. Invoice processing will be attempted later.';
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -142,6 +157,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -154,6 +170,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREEN;
                             this.statusReasonText = 'A textual explanation for why the invoice is being rejected.';
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -170,6 +187,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -189,6 +207,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusAction2').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -207,6 +226,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -229,6 +249,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -251,6 +272,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('invoiceResponseDetailTypeCode').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('invoiceResponseDetailValue').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -271,6 +293,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusAction').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('statusReasonText').style.borderColor = BORDER_COLOR_GREEN;
                             this.statusReasonText = 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.';
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -283,6 +306,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '7')[0];
                             this.effectiveDateEnabled = true;
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -294,6 +318,7 @@ export class DocumentInvoiceComponent implements OnInit {
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
                             this.invoiceResponseUseCaseView = this.documentInvoiceModel.invoiceResponseUseCaseList.filter(uc => uc[0] === '8')[0];
                             document.getElementById('inputGroupStatusCode').style.borderColor = BORDER_COLOR_GREEN;
+                            this.initUseCase(useCaseId);
                         }
                     }
                 } break;
@@ -331,9 +356,9 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectInvoiceStatusCodeView(value: any) {
-        console.log(value);
-        console.log(this.invoiceStatusCodeView);
-        console.log(this.invoiceResponseUseCaseView);
+        let status = value.split(':');
+        let statusId = status[0];
+        this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList.filter(uc => uc[0] === statusId)[0];
     }
 
     checkEffectiveDateEnabled() {
@@ -343,8 +368,9 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusReasonView(value: any) {
-        console.log(value);
-        console.log(this.statusReasonView);
+        let reason = value.split(':');
+        let reasonId = reason[0];
+        this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === reasonId)[0];
     }
 
     checkStatusReasonEnabled() {
@@ -354,8 +380,9 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusActionView(value: any) {
-        console.log(value);
-        console.log(this.statusActionView);
+        let action = value.split(':');
+        let actionId = action[0];
+        this.statusActionView = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === actionId)[0];
     }
 
     checkStatusActionEnabled() {
@@ -365,8 +392,9 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusAction2View(value: any) {
-        console.log(value);
-        console.log(this.statusAction2View);
+        let action2 = value.split(':');
+        let action2Id = action2[0];
+        this.statusAction2View = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === action2Id)[0];
     }
 
     checkStatusAction2Enabled() {
@@ -390,6 +418,57 @@ export class DocumentInvoiceComponent implements OnInit {
             setTimeout(() => {
                 element.nativeElement.focus();
             },0);
+        }
+    }
+
+    sendInvoice() {
+        this.documentInvoiceResponseFormModel.documentId = this.documentId;
+        this.documentInvoiceResponseFormModel.generateWithoutSending = this.onlyGeneratedEnabled;
+        this.documentInvoiceResponseFormModel.validate = this.validateGeneratedEnabled;
+
+        this.invoiceResponseGenerationModel.status = this.invoiceStatusCodeView[0];
+        this.invoiceResponseGenerationModel.effectiveDate = this.effectiveDate;
+        this.invoiceResponseGenerationModel.effectiveDateEnabled = this.effectiveDateEnabled;
+
+        this.invoiceResponseGenerationModel.reasonEnabled = this.statusReasonEnabled;
+        if (this.statusReasonEnabled) {
+            this.invoiceResponseGenerationModel.reason = this.invoiceResponseUseCaseView[0];
+        }
+        this.invoiceResponseGenerationModel.actionEnabled = this.statusActionEnabled;
+        if (this.statusActionEnabled) {
+            this.invoiceResponseGenerationModel.action = this.statusActionView[0];
+        }
+        this.invoiceResponseGenerationModel.action2Enabled = this.statusAction2Enabled;
+        if (this.statusAction2Enabled) {
+            this.invoiceResponseGenerationModel.action2 = this.statusAction2View[0];
+        }
+
+        this.invoiceResponseGenerationModel.statusReasonText = this.statusReasonText;
+        this.invoiceResponseGenerationModel.detailType = this.detailType;
+        this.invoiceResponseGenerationModel.detailValue = this.detailValue;
+
+        this.documentInvoiceResponseFormModel.data = this.invoiceResponseGenerationModel;
+
+        if (this.onlyGeneratedEnabled) {
+            // getFile
+            this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
+                    const filename = response.headers.get('filename');
+                    FileSaverService.saveFile(response.body, filename);
+                },
+                error => {
+                    this.errorService.errorProcess(error);
+                }
+            );
+        } else {
+            // easy post
+            this.documentInvoiceService.generateAndSend(this.documentInvoiceResponseFormModel).subscribe(
+                (data: {}) => {
+                    console.log(data);
+                    this.success = data['data'];
+                }, error => {
+                    this.errorService.errorProcess(error);
+                }
+            );
         }
     }
 }

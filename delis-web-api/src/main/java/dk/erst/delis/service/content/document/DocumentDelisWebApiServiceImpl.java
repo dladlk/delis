@@ -61,7 +61,9 @@ public class DocumentDelisWebApiServiceImpl implements DocumentDelisWebApiServic
             DocumentBytesRepository documentBytesRepository,
             SecurityService securityService,
             DocumentService documentService,
-            AbstractGenerateDataService<DocumentRepository, Document> abstractGenerateDataService, SendDocumentService sendDocumentService, ApplicationResponseService applicationResponseService) {
+            AbstractGenerateDataService<DocumentRepository, Document> abstractGenerateDataService,
+            SendDocumentService sendDocumentService,
+            ApplicationResponseService applicationResponseService) {
         this.documentRepository = documentRepository;
         this.documentBytesRepository = documentBytesRepository;
         this.securityService = securityService;

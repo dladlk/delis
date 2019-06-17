@@ -6,7 +6,7 @@ export class InvoiceResponseGenerationModel {
     action2: string;
     action2Enabled: boolean;
     reason: string;
-    reasonEnabled: string;
+    reasonEnabled: boolean;
     detailType: string;
     detailValue: string;
     statusReasonText: string;
