@@ -8,5 +8,5 @@ import dk.erst.delis.service.content.AbstractService;
 public interface DocumentDelisWebApiService extends AbstractService<Document> {
 
     ListContainer<DocumentBytes> findListDocumentBytesByDocumentId(Long documentId);
-    DocumentBytes findByIdAndDocumentId(Long id, Long bytesId);
+    byte[] downloadFile(Long id, Long bytesId);
 }
