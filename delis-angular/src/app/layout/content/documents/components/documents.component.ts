@@ -14,8 +14,6 @@ import { ErrorService } from "../../../../service/error.service";
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
 import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
 import { DaterangeShowService } from "../../../bs-component/components/daterange/daterange.show.service";
-import {CheckModel} from "../../../../models/check.model";
-import {LoadDocumentStatusModel} from "../models/loadDocumentStatus.model";
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -58,9 +56,6 @@ export class DocumentsComponent implements OnInit {
     pagination: PaginationModel;
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
     show: boolean;
-
-    loadDocumentStatus: string;
-    checked: CheckModel[] = [];
 
     constructor(
         private translate: TranslateService,
@@ -131,7 +126,7 @@ export class DocumentsComponent implements OnInit {
         this.selectedOrganization = "ALL";
         this.textPlaceholderReceivedDate = "Received Date";
         this.filter = new FilterProcessResult();
-        if (this.tableHeaderSortModels.length == 0) {
+        if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
@@ -190,7 +185,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadTextReceiver(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.receiver = null;
         } else {
             this.filter.receiver = text;
@@ -206,67 +201,6 @@ export class DocumentsComponent implements OnInit {
         this.filter.status = this.selectedStatus;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-    }
-
-    isChecked(id: number) {
-        if (id === 0) {
-            return this.checked.length === this.documents.length;
-        } else {
-            return this.checked.find(check => check.id === id) !== undefined;
-        }
-    }
-
-    checkStatus(select: any) {
-        this.loadDocumentStatus = select;
-    }
-
-    checkTab(id: number) {
-        let checkId;
-        if (id === 0) {
-            if (this.checked.length === this.documents.length) {
-                this.checked = [];
-            } else {
-                this.checked = [];
-                this.documents.forEach(doc => {
-                    checkId = new CheckModel();
-                    checkId.id = doc.id;
-                    this.checked.push(checkId);
-                });
-            }
-        } else {
-            if (this.checked.length === 0) {
-                checkId = new CheckModel();
-                checkId.id = id;
-                this.checked.push(checkId);
-            } else {
-                if (this.checked.find(check => check.id === id) === undefined) {
-                    checkId = new CheckModel();
-                    checkId.id = id;
-                    this.checked.push(checkId);
-                } else {
-                    this.checked = this.checked.filter(check => check.id !== id);
-                }
-            }
-        }
-    }
-
-    updateStatusAndLoadPage() {
-        if (this.checked.length !== 0 && this.loadDocumentStatus !== undefined) {
-            let updateStatusModel = new LoadDocumentStatusModel();
-            updateStatusModel.status = this.loadDocumentStatus;
-            updateStatusModel.ids = this.checked.map(value => value.id);
-            this.documentsService.updateDocumentStatus(updateStatusModel).subscribe(
-                (data: {}) => {
-                    this.show = true;
-                    this.initProcess();
-                    this.checked = [];
-                    this.loadDocumentStatus = undefined;
-                }, error => {
-                    this.errorService.errorProcess(error);
-                    this.show = false;
-                }
-            );
-        }
     }
 
     loadLastErrors() {
@@ -297,7 +231,7 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadTextSenderName(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.senderName = null;
         } else {
             this.filter.senderName = text;
