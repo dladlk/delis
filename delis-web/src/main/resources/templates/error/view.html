@@ -18,7 +18,7 @@
                     <th>Flag</th>
                 </tr>
                 <tr>
-                    <td th:text="${errorDictionary.errorType}"></td>
+                    <td th:text="${errorDictionary.errorType?.name}"></td>
                     <td th:text="${errorDictionary.code}"></td>
                     <td th:text="${errorDictionary.flag}"></td>
                 </tr>

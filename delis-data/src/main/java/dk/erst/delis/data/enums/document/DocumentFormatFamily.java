@@ -1,6 +1,8 @@
 package dk.erst.delis.data.enums.document;
 
-public enum DocumentFormatFamily {
+import dk.erst.delis.data.enums.Named;
+
+public enum DocumentFormatFamily implements Named {
 
 	UNSUPPORTED, CII, BIS3, OIOUBL, BIS3_IR;
 	

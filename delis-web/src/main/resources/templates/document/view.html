@@ -24,10 +24,10 @@
 					<td><a th:if="${document.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${document.receiverIdentifier.id}__}" th:text="${document.receiverIdentifier.name}">Receiver name</a></td>
 					<td th:text="${#dates.format(document.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
 					<td>
-						<span th:text="${document.documentStatus}">LOADED</span>
+						<span th:text="${document.documentStatus?.name}">LOADED</span>
 						<th:block th:if="${document.lastError}">
 							last error: 
-							<span th:text="${document.lastError}" class="text-muted">OIOUBL_XSD</span>
+							<span th:text="${document.lastError?.name}" class="text-muted">OIOUBL_XSD</span>
 						</th:block>
 					</td>					
 				</tr>
@@ -38,8 +38,8 @@
 					<th>Document date</th>
 				</tr>
 				<tr>
-					<td th:text="${document.ingoingDocumentFormat?.documentType}">INVOICE</td>
-					<td th:text="${document.ingoingDocumentFormat}">CII</td>
+					<td th:text="${document.ingoingDocumentFormat?.documentType?.name}">INVOICE</td>
+					<td th:text="${document.ingoingDocumentFormat?.name}">CII</td>
 					<td th:text="${document.documentId}">F-2345RWELF2</td>
 					<td th:text="${document.documentDate}">2018-13-23</td>
 				</tr>
@@ -100,7 +100,7 @@
 				<th:block th:each="r,iter : ${lastJournalList}">
 				<tr>
 					<td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}" class="text-nowrap"></td>
-					<td th:text="${r.type}"></td>
+					<td th:text="${r.type?.name}"></td>
 					<td>
 						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
 						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
@@ -148,8 +148,8 @@
 				</tr>
 				<tr th:each="r,iter : ${documentBytes}">
 					<td th:text="${r.id}"></td>
-					<td th:text="${r.type}"></td>
-					<td th:text="${r.format}"></td>
+					<td th:text="${r.type?.name}"></td>
+					<td th:text="${r.format?.name}"></td>
 					<td th:text="${r.size}"></td>
 					<th><a href="#" th:href="@{/document/download/__${document.id}__/__${r.id}__}" class="text-muted">Download</a></th>
 				</tr>
