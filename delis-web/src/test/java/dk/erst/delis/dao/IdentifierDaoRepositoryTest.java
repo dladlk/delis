@@ -1,8 +1,12 @@
 package dk.erst.delis.dao;
 
-import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
-import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +15,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertTrue;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

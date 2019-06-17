@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -38,7 +37,6 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLe
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
 import dk.erst.delis.web.error.ErrorDictionaryData;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -53,8 +51,6 @@ public class ApplicationResponseFormController {
 	private ApplicationResponseService applicationResponseService;
 	@Autowired
 	private DocumentProcessService documentProcessService;
-	@Value("${servletContext?.contextPath:}")
-	private String servletContextPath;
 
 	@PostMapping("/document/generate/messageLevelResponseByErrorAndSend/{id}")
 	public String generateMessageLevelResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
@@ -97,7 +93,7 @@ public class ApplicationResponseFormController {
 		Document document = documentService.getDocument(arForm.getDocumentId());
 		if (document == null) {
 			ra.addFlashAttribute("errorMessage", "Document is not found");
-			return redirectEntity(servletContextPath, "/home");
+			return redirectEntity("/home");
 		}
 
 		String defaultReturnPath = "/document/view/" + arForm.getDocumentId();
@@ -108,14 +104,14 @@ public class ApplicationResponseFormController {
 		} catch (ApplicationResponseGenerationException e) {
 			ra.addFlashAttribute("errorMessage", e.getMessage());
 			if (e.getDocumentId() != null) {
-				return redirectEntity(servletContextPath, defaultReturnPath);
+				return redirectEntity(defaultReturnPath);
 			}
-			return redirectEntity(servletContextPath, "/home");
+			return redirectEntity("/home");
 		}
 
 		if (!success) {
 			ra.addFlashAttribute("errorMessage", "Failed to generate " + arForm.getDocumentFormatName());
-			return redirectEntity(servletContextPath, defaultReturnPath);
+			return redirectEntity(defaultReturnPath);
 		}
 
 		if (arForm.isValidate()) {
@@ -139,7 +135,7 @@ public class ApplicationResponseFormController {
 					ra.addFlashAttribute("invoiceResponseFormOpened", true);
 				}
 				ra.addFlashAttribute("responseErrorList", errorList);
-				return redirectEntity(servletContextPath, defaultReturnPath);
+				return redirectEntity(defaultReturnPath);
 			}
 		}
 
@@ -157,13 +153,13 @@ public class ApplicationResponseFormController {
 			log.error("Failed document processing", se);
 			ra.addFlashAttribute("errorMessage", "Failed to process file " + tempFile + " with error " + se.getMessage());
 			if (se.getDocumentId() != null) {
-				return redirectEntity(servletContextPath, "redirect:/document/send/view/" + se.getDocumentId());
+				return redirectEntity("redirect:/document/send/view/" + se.getDocumentId());
 			}
 		} catch (Exception e) {
 			log.error("Failed to load file " + tempFile, e);
 			ra.addFlashAttribute("errorMessage", "Failed to load file " + tempFile + " with error " + e.getMessage());
 		}
-		return redirectEntity(servletContextPath, defaultReturnPath);
+		return redirectEntity(defaultReturnPath);
 	}
 
 	@SuppressWarnings("unchecked")

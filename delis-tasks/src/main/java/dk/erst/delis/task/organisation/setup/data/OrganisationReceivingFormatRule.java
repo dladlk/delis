@@ -1,5 +1,6 @@
 package dk.erst.delis.task.organisation.setup.data;
 
+import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 
 public enum OrganisationReceivingFormatRule {
@@ -32,7 +33,14 @@ public enum OrganisationReceivingFormatRule {
 		return OrganisationReceivingFormatRule.OIOUBL;
 	}
 
-	public boolean isLast(DocumentFormatFamily documentFormatFamily) {
+	public boolean isLast(DocumentFormat documentFormat) {
+		if (documentFormat == null || documentFormat == DocumentFormat.UNSUPPORTED) {
+			return true;
+		}
+		if (!documentFormat.getDocumentType().isInvoiceOrCreditNote()) {
+			return true;
+		}
+		DocumentFormatFamily documentFormatFamily = documentFormat.getDocumentFormatFamily();
 		if (documentFormatFamily == null || documentFormatFamily == DocumentFormatFamily.UNSUPPORTED) {
 			return true;
 		}

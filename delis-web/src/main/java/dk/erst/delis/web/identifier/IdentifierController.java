@@ -4,10 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.easy.data.PageData;
-import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListService;
-import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListServiceImpl;
-import org.springframework.data.jpa.datatables.easy.web.EasyDatatablesListController;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,9 +25,10 @@ import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.organisation.OrganisationService;
+import dk.erst.delis.web.list.AbstractEasyListController;
 
 @Controller
-public class IdentifierController extends EasyDatatablesListController<Identifier> {
+public class IdentifierController extends AbstractEasyListController<Identifier> {
 
 	@Autowired
 	private IdentifierService identifierService;
@@ -65,20 +64,6 @@ public class IdentifierController extends EasyDatatablesListController<Identifie
 		
 		return super.list(model, webRequest);
 	}
-	
-	@Override
-	protected PageData updatePageData(WebRequest webRequest) {
-		PageData pageData = super.updatePageData(webRequest);
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
-		
-		if (cud.getOrganisation() != null) {
-			pageData.addFilterValue("organisation.id", String.valueOf(cud.getOrganisation().getId()));
-		}
-		
-		return pageData;
-	}	
 	
 	/*
 	 * END EasyDatatables block

@@ -10,11 +10,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-/**
- * @author funtusthan, created by 12.03.19
- */
 
 @Configuration
 @EnableSwagger2
@@ -33,7 +30,7 @@ public class SwaggerConfig {
 
     @Bean
     public UiConfiguration uiConfig() {
-        return UiConfiguration.DEFAULT;
+    	return UiConfigurationBuilder.builder().build();
     }
 
     private ApiInfo metadata() {

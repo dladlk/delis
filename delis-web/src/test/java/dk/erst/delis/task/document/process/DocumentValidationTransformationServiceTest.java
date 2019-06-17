@@ -66,15 +66,15 @@ public class DocumentValidationTransformationServiceTest {
             @Override
             public boolean checkResult(DocumentProcessLog processLog) {
                 assertFalse(processLog.isSuccess());
-                assertTrue(processLog.getStepList().size() == 3);
-                DocumentProcessStep documentProcessStep = processLog.getStepList().get(2);
+                assertEquals(2, processLog.getStepList().size());
+                DocumentProcessStep documentProcessStep = processLog.getStepList().get(1);
                 List<ErrorRecord> errorRecords = documentProcessStep.getErrorRecords();
-                assertTrue(errorRecords.size() == 1);
-                ErrorRecord errorRecord = errorRecords.get(0);
-                assertEquals(errorRecord.getErrorType(), DocumentErrorCode.BIS3_SCH);
-                assertEquals(errorRecord.getCode(), "PEPPOL-EN16931-R020");
-                assertEquals(errorRecord.getLocation(), "/Invoice/AccountingSupplierParty/Party");
-                assertEquals(errorRecord.getDetailedLocation(), "/Invoice[1]/AccountingSupplierParty[1]/Party[1]");
+                assertEquals(2, errorRecords.size());
+                ErrorRecord errorRecord = errorRecords.get(1);
+                assertEquals(DocumentErrorCode.BIS3_SCH, errorRecord.getErrorType());
+                assertEquals("BR-CO-16", errorRecord.getCode());
+                assertEquals("/Invoice/LegalMonetaryTotal", errorRecord.getLocation());
+                assertEquals("/Invoice[1]/LegalMonetaryTotal[1]", errorRecord.getDetailedLocation());
                 return true;
             }
         });

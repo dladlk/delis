@@ -15,6 +15,7 @@
         <module>delis-data</module>
         <module>delis-tasks</module>
         <module>delis-xslt-util</module>
+        <module>delis-web-datatables</module>
         <module>delis-web</module>
         <module>delis-web-api</module>
         <module>delis-sbdh</module>

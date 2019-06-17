@@ -50,7 +50,7 @@ public class DocumentControllerTest {
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
         this.mockMvc.perform(get("/document/list"))
-                .andExpect(view().name("/document/list"))
+                .andExpect(view().name("document/list"))
                 .andExpect(model().attribute("documentList", notNullValue()))
                 .andExpect(model().attribute("selectedIdList", notNullValue()))
                 .andExpect(model().attribute("statusList", notNullValue()));

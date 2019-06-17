@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document.process;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -67,8 +68,21 @@ public class DocumentValidationTransformationServiceUnitTest {
 	}
 	
 	@Test
+	public void testAll() throws Exception {
+		TestDocument[] values = TestDocument.values();
+		for (TestDocument testDocument : values) {
+			runCase(testDocument);
+		}
+	}
+
+	@Test
 	public void testCII() throws Exception {
 		runCase(TestDocument.CII);
+	}
+
+	@Test
+	public void testMLR() throws Exception {
+		runCase(TestDocument.BIS3_MESSAGE_LEVEL_RESPONSE);
 	}
 	
 	@Test
@@ -109,7 +123,7 @@ public class DocumentValidationTransformationServiceUnitTest {
 				System.out.println(step);
 			}
 			
-			assertTrue(processLog.isSuccess());
+			assertEquals("Test document "+testDocument, testDocument.isExpectedSuccess(), processLog.isSuccess());
 			assertNotNull(processLog.getResultPath());
 			assertTrue(processLog.getResultPath().toFile().exists());
 		} finally {

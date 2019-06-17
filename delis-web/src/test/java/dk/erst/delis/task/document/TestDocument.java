@@ -62,4 +62,8 @@ import dk.erst.delis.data.enums.document.DocumentFormat;
 	public DocumentFormat getDocumentFormat() {
 		return documentFormat;
 	}
+	
+	public boolean isExpectedSuccess() {
+		return !this.name().startsWith("ERROR_");
+	}
 }
