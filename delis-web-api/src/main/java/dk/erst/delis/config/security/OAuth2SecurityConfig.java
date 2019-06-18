@@ -1,8 +1,5 @@
 package dk.erst.delis.config.security;
 
-import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
-import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +21,8 @@ import org.springframework.security.oauth2.provider.approval.TokenStoreUserAppro
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import javax.servlet.http.HttpServletRequest;
-
-/**
- * @author funtusthan, created by 22.03.19
- */
+import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
+import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
 
 @Order
 @Configuration
@@ -40,20 +34,17 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService userDetailsService;
     private final OAuthAccessTokenRepository oAuthAccessTokenRepository;
     private final OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
-    private final HttpServletRequest httpServletRequest;
 
     @Autowired
     public OAuth2SecurityConfig(
             ClientDetailsService clientDetailsService,
             CustomUserDetailsService userDetailsService,
             OAuthAccessTokenRepository oAuthAccessTokenRepository,
-            OAuthRefreshTokenRepository oAuthRefreshTokenRepository,
-            HttpServletRequest httpServletRequest) {
+            OAuthRefreshTokenRepository oAuthRefreshTokenRepository) {
         this.clientDetailsService = clientDetailsService;
         this.userDetailsService = userDetailsService;
         this.oAuthAccessTokenRepository = oAuthAccessTokenRepository;
         this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
-        this.httpServletRequest = httpServletRequest;
     }
 
     @Autowired
@@ -81,7 +72,7 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public TokenStore tokenStore() {
-        return new CustomTokenStore(oAuthAccessTokenRepository, oAuthRefreshTokenRepository, httpServletRequest);
+        return new CustomTokenStore(oAuthAccessTokenRepository, oAuthRefreshTokenRepository);
     }
 
     @Bean

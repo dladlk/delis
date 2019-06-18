@@ -1,13 +1,15 @@
 package dk.erst.delis.config.security;
 
-import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
-import dk.erst.delis.data.entities.tokens.OAuthRefreshToken;
-import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
-import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
+import static java.util.stream.Collectors.toList;
+
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
@@ -19,18 +21,10 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
-
-/**
- * @author funtusthan, created by 22.03.19
- */
+import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
+import dk.erst.delis.data.entities.tokens.OAuthRefreshToken;
+import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
+import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
 
 @Transactional
 public class CustomTokenStore implements TokenStore {
@@ -39,13 +33,11 @@ public class CustomTokenStore implements TokenStore {
 
     private OAuthAccessTokenRepository oAuthAccessTokenRepository;
     private OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
-    private HttpServletRequest httpServletRequest;
     private AuthenticationKeyGenerator authenticationKeyGenerator = new DefaultAuthenticationKeyGenerator();
 
-    CustomTokenStore(OAuthAccessTokenRepository oAuthAccessTokenRepository, OAuthRefreshTokenRepository oAuthRefreshTokenRepository, HttpServletRequest httpServletRequest) {
+    CustomTokenStore(OAuthAccessTokenRepository oAuthAccessTokenRepository, OAuthRefreshTokenRepository oAuthRefreshTokenRepository) {
         this.oAuthAccessTokenRepository = oAuthAccessTokenRepository;
         this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
-        this.httpServletRequest = httpServletRequest;
     }
 
     @Override

@@ -68,7 +68,7 @@ public class CustomAccessTokenConverter implements AccessTokenConverter {
 
     public OAuth2AccessToken extractAccessToken(String value, Map<String, ?> map) {
         DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(value);
-        Map<String, Object> info = new HashMap(map);
+        Map<String, Object> info = new HashMap<>(map);
         info.remove("exp");
         info.remove("aud");
         info.remove("client_id");
