@@ -1,19 +1,20 @@
-import {Component} from "@angular/core";
-import {TranslateService} from "@ngx-translate/core";
+import {Component} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 
-import {routerTransition} from "../../../../router.animations";
-import {PaginationModel} from "../../../bs-component/components/pagination/pagination.model";
-import {IdentifierFilterProcessResult} from "../models/identifier.filter.process.result";
-import {TableHeaderSortModel} from "../../../bs-component/components/table-header-sort/table.header.sort.model";
-import {IdentifierModel} from "../models/identifier.model";
-import {LocaleService} from "../../../../service/locale.service";
-import {ErrorService} from "../../../../service/error.service";
-import {PaginationService} from "../../../bs-component/components/pagination/pagination.service";
-import {IdentifierService} from "../services/identifier.service";
-import {DateRangeModel} from "../../../../models/date.range.model";
-import {SHOW_DATE_FORMAT} from "../../../../app.constants";
-import {DaterangeService} from "../../../bs-component/components/daterange/daterange.service";
-import {DaterangeShowService} from "../../../bs-component/components/daterange/daterange.show.service";
+import {routerTransition} from '../../../../router.animations';
+import {PaginationModel} from '../../../bs-component/components/pagination/pagination.model';
+import {IdentifierFilterProcessResult} from '../models/identifier.filter.process.result';
+import {TableHeaderSortModel} from '../../../bs-component/components/table-header-sort/table.header.sort.model';
+import {IdentifierModel} from '../models/identifier.model';
+import {LocaleService} from '../../../../service/locale.service';
+import {ErrorService} from '../../../../service/error.service';
+import {PaginationService} from '../../../bs-component/components/pagination/pagination.service';
+import {IdentifierService} from '../services/identifier.service';
+import {DateRangeModel} from '../../../../models/date.range.model';
+import {SHOW_DATE_FORMAT} from '../../../../app.constants';
+import {DaterangeService} from '../../../bs-component/components/daterange/daterange.service';
+import {DaterangeShowService} from '../../../bs-component/components/daterange/daterange.show.service';
+import {EnumInfoModel} from '../../../../models/enum.info.model';
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
@@ -39,8 +40,8 @@ export class IdentifierComponent {
     filter: IdentifierFilterProcessResult;
     identifiers: IdentifierModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
-    statusList: [];
-    publishingStatusList: [];
+    statusList: EnumInfoModel[];
+    publishingStatusList: EnumInfoModel[];
     organizations: [];
 
     textIdentifierGroup: string;
@@ -49,8 +50,8 @@ export class IdentifierComponent {
     textUniqueValueType: string;
     textName: string;
 
-    selectedStatus: any;
-    selectedPublishingStatus: any;
+    selectedStatus: EnumInfoModel = new EnumInfoModel();
+    selectedPublishingStatus: EnumInfoModel = new EnumInfoModel();
     selectedOrganization: any;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
@@ -107,19 +108,19 @@ export class IdentifierComponent {
     }
 
     initSelected() {
-        let select = JSON.parse(localStorage.getItem("Identifier"));
+        let select = JSON.parse(localStorage.getItem('Identifier'));
         this.statusList = select.status;
         this.publishingStatusList = select.publishingStatus;
-        select = JSON.parse(localStorage.getItem("organizations"));
+        select = JSON.parse(localStorage.getItem('organizations'));
         this.organizations = select;
     }
 
     private initDefaultValues() {
-        this.selectedStatus = "ALL";
-        this.selectedOrganization = "ALL";
-        this.selectedPublishingStatus = {type: 'ALL', selected: true};
+        this.selectedStatus = new EnumInfoModel();
+        this.selectedOrganization = 'ALL';
+        this.selectedPublishingStatus = new EnumInfoModel();
         this.filter = new IdentifierFilterProcessResult();
-        if (this.tableHeaderSortModels.length == 0) {
+        if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
@@ -159,20 +160,14 @@ export class IdentifierComponent {
     }
 
     loadStatus() {
-        if (this.selectedStatus === null) {
-            this.selectedStatus = 'ALL';
-        }
         this.pagination.currentPage = 1;
-        this.filter.status = this.selectedStatus;
+        this.filter.status = this.selectedStatus.name;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadPublishingStatus() {
-        if (this.selectedPublishingStatus === null) {
-            this.selectedPublishingStatus = 'ALL';
-        }
         this.pagination.currentPage = 1;
-        this.filter.publishingStatus = this.selectedPublishingStatus;
+        this.filter.publishingStatus = this.selectedPublishingStatus.name;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
@@ -186,7 +181,7 @@ export class IdentifierComponent {
     }
 
     loadTextIdentifierGroup(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.identifierGroup = null;
         } else {
             this.filter.identifierGroup = text;
@@ -206,7 +201,7 @@ export class IdentifierComponent {
     }
 
     loadTextValue(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.value = null;
         } else {
             this.filter.value = text;
@@ -216,7 +211,7 @@ export class IdentifierComponent {
     }
 
     loadTextUniqueValueType(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.uniqueValueType = null;
         } else {
             this.filter.uniqueValueType = text;
@@ -226,7 +221,7 @@ export class IdentifierComponent {
     }
 
     loadTextName(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.name = null;
         } else {
             this.filter.name = text;
@@ -238,7 +233,7 @@ export class IdentifierComponent {
     clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
-        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        const columnEntity = columnName.split('.').reduce((first, last) => last);
         if (countClick === 1) {
             this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
         }
@@ -261,10 +256,10 @@ export class IdentifierComponent {
     private currentProdIdentifiers(currentPage: number, sizeElement: number) {
         this.identifierService.getListIdentifiers(currentPage, sizeElement, this.filter).subscribe(
             (data: {}) => {
-                this.pagination.collectionSize = data["collectionSize"];
-                this.pagination.currentPage = data["currentPage"];
-                this.pagination.pageSize = data["pageSize"];
-                this.identifiers = data["items"];
+                this.pagination.collectionSize = data['collectionSize'];
+                this.pagination.currentPage = data['currentPage'];
+                this.pagination.pageSize = data['pageSize'];
+                this.identifiers = data['items'];
                 this.show = true;
             }, error => {
                 this.errorService.errorProcess(error);
@@ -275,8 +270,8 @@ export class IdentifierComponent {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.selectedStatus = "ALL";
-        this.selectedPublishingStatus = "ALL";
+        this.selectedStatus = new EnumInfoModel();
+        this.selectedPublishingStatus = new EnumInfoModel();
         this.selectedOrganization = 'ALL';
         this.textIdentifierGroup = '';
         this.textType = '';
@@ -287,6 +282,6 @@ export class IdentifierComponent {
     }
 
     private clearFilter(columnName: string) {
-        this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
+        this.tableHeaderSortModels.filter(cn => cn.columnName !== columnName).forEach(cn => cn.columnClick = 0);
     }
 }

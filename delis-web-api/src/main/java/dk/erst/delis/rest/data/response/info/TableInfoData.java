@@ -15,5 +15,5 @@ import java.util.Map;
 public class TableInfoData {
 
     private String entityName;
-    private Map<String, List<String>> entityEnumInfo;
+    private Map<String, List<EnumInfo>> entityEnumInfo;
 }

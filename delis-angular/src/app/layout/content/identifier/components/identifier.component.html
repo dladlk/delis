@@ -58,6 +58,7 @@
                                 <td>
                                     <ng-select [items]="statusList"
                                                [clearable]="clearableSelect"
+                                               bindLabel="viewName"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
@@ -66,6 +67,7 @@
                                 <td>
                                     <ng-select [items]="publishingStatusList"
                                                [clearable]="clearableSelect"
+                                               bindLabel="viewName"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedPublishingStatus"
                                                (change)="loadPublishingStatus()">

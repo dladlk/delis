@@ -13,6 +13,7 @@ import {DaterangeService} from "../../../bs-component/components/daterange/dater
 import {DaterangeShowService} from "../../../bs-component/components/daterange/daterange.show.service";
 import {DateRangeModel} from "../../../../models/date.range.model";
 import {SendDocumentsService} from "../service/send.documents.service";
+import {EnumInfoModel} from "../../../../models/enum.info.model";
 
 const COLUMN_NAME_CREATE_TIME = 'documents.table.send.columnName.createTime';
 const COLUMN_NAME_ORGANIZATION = 'documents.table.send.columnName.organisation';
@@ -36,16 +37,16 @@ export class SendDocumentsComponent implements OnInit {
     filter: SendDocumentsFilterProcessResult;
     sendDocuments: SendDocumentsModel[] = [];
 
-    organizations: [];
-    statuses: [];
-    documentTypes: [];
+    organizations: string[] = [];
+    statuses: EnumInfoModel[] = [];
+    documentTypes: EnumInfoModel[] = [];
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
     show: boolean;
 
     selectedOrganization: any;
-    selectedStatus: any;
-    selectedDocumentType: any;
+    selectedStatus: EnumInfoModel = new EnumInfoModel();
+    selectedDocumentType: EnumInfoModel = new EnumInfoModel();
 
     textReceiver: string;
     textSender: string;
@@ -102,10 +103,10 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     initSelected() {
-        let select = JSON.parse(localStorage.getItem("SendDocument"));
+        let select = JSON.parse(localStorage.getItem('SendDocument'));
         this.statuses = select.documentStatus;
         this.documentTypes = select.documentType;
-        select = JSON.parse(localStorage.getItem("organizations"));
+        select = JSON.parse(localStorage.getItem('organizations'));
         this.organizations = select;
     }
 
@@ -114,19 +115,13 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     loadDocumentType() {
-        if (this.selectedDocumentType === null) {
-            this.selectedDocumentType = 'ALL';
-        }
-        this.filter.documentType = this.selectedDocumentType;
+        this.filter.documentType = this.selectedDocumentType.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadStatus() {
-        if (this.selectedStatus === null) {
-            this.selectedStatus = 'ALL';
-        }
-        this.filter.documentStatus = this.selectedStatus;
+        this.filter.documentStatus = this.selectedStatus.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -152,7 +147,11 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     private initDefaultValues() {
-        this.selectedOrganization = "ALL";
+        this.selectedOrganization = 'ALL';
+        this.selectedDocumentType.name = 'ALL';
+        this.selectedDocumentType.viewName = 'ALL';
+        this.selectedStatus.name = 'ALL';
+        this.selectedStatus.viewName = 'ALL';
         this.filter = new SendDocumentsFilterProcessResult();
         if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
@@ -230,6 +229,8 @@ export class SendDocumentsComponent implements OnInit {
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
         this.selectedOrganization = 'ALL';
+        this.selectedDocumentType = new EnumInfoModel();
+        this.selectedStatus = new EnumInfoModel();
         this.filter.dateRange = null;
     }
 
