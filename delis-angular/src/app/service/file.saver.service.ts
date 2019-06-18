@@ -8,4 +8,10 @@ export class FileSaverService {
         const blob = new Blob([data], {type: 'application/octet-stream'});
         fileSaver.saveAs(blob, filename);
     }
+
+    public static getFileNameFromResponseContentDisposition = (res: Response) => {
+        const contentDisposition = res.headers.get('content-disposition') || '';
+        const matches = /filename=([^;]+)/ig.exec(contentDisposition);
+        return (matches[1] || 'untitled').trim();
+    }
 }

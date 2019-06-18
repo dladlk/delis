@@ -1,38 +1,28 @@
 package dk.erst.delis.rest.controller.content.document;
 
-import dk.erst.delis.exception.model.FieldErrorModel;
-import dk.erst.delis.exception.statuses.RestConflictException;
 import dk.erst.delis.rest.data.response.DataContainer;
 import dk.erst.delis.rest.data.response.invoice.InvoiceResponseData;
 import dk.erst.delis.service.content.document.DocumentDelisWebApiService;
+import dk.erst.delis.service.inner.DownloadService;
 import dk.erst.delis.web.document.ir.InvoiceResponseForm;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Collections;
 
-@Slf4j
 @Validated
 @RestController
 @RequestMapping("/rest/document")
 public class DocumentInvoiceRestController {
 
     private final DocumentDelisWebApiService documentDelisWebApiService;
+    private final DownloadService downloadService;
 
-    public DocumentInvoiceRestController(DocumentDelisWebApiService documentDelisWebApiService) {
+    public DocumentInvoiceRestController(DocumentDelisWebApiService documentDelisWebApiService, DownloadService downloadService) {
         this.documentDelisWebApiService = documentDelisWebApiService;
+        this.downloadService = downloadService;
     }
 
     @GetMapping("/{id}/invoice")
@@ -46,16 +36,7 @@ public class DocumentInvoiceRestController {
         if (o instanceof File) {
             File file = (File) o;
             String fileName = invoiceResponseForm.getDocumentFormatName() + ".xml";
-            BodyBuilder resp = ResponseEntity.ok();
-            resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-            resp.contentType(MediaType.parseMediaType("application/octet-stream"));
-            try {
-                return resp.body(new InputStreamResource(new FileInputStream(file)));
-            } catch (FileNotFoundException e) {
-                log.error("Failed to generate without sending", e);
-                throw new RestConflictException(Collections.singletonList(
-                        new FieldErrorModel("ids", HttpStatus.CONFLICT.getReasonPhrase(), "Failed to generate without sending: " + e.getMessage())));
-            }
+            return downloadService.downloadFile(file, fileName);
         } else {
             return ResponseEntity.ok(new DataContainer<>(o));
         }

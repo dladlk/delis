@@ -67,7 +67,6 @@ export class DocumentInvoiceComponent implements OnInit {
         const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentInvoiceService.getInvoice(id).subscribe((data: DocumentModel) => {
             this.documentInvoiceModel = data['data'];
-            console.log(this.documentInvoiceModel);
             this.setDefaultConfig();
         }, error => {
             this.errorService.errorProcess(error);
@@ -452,7 +451,7 @@ export class DocumentInvoiceComponent implements OnInit {
         if (this.onlyGeneratedEnabled) {
             // getFile
             this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
-                    const filename = response.headers.get('filename');
+                    const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
                     FileSaverService.saveFile(response.body, filename);
                 },
                 error => {
