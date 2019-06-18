@@ -1,17 +1,7 @@
 package dk.erst.delis.rest.data.response.invoice;
 
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.document.DocumentBytes;
-import dk.erst.delis.data.entities.journal.JournalDocument;
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.web.document.ir.InvoiceResponseForm;
-import dk.erst.delis.web.document.ir.MessageLevelResponseForm;
-import dk.erst.delis.web.error.ErrorDictionaryData;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter

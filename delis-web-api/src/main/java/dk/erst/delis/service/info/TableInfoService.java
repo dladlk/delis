@@ -1,5 +1,19 @@
 package dk.erst.delis.service.info;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.data.enums.Named;
 import dk.erst.delis.persistence.repository.organization.OrganizationRepository;
 import dk.erst.delis.rest.data.response.DataContainer;
@@ -8,17 +22,7 @@ import dk.erst.delis.rest.data.response.info.EnumInfo;
 import dk.erst.delis.rest.data.response.info.TableInfoData;
 import dk.erst.delis.rest.data.response.info.UniqueOrganizationNameData;
 import dk.erst.delis.util.ClassLoaderUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.stream.Collectors;
-
-@Slf4j
 @Service
 public class TableInfoService {
 

@@ -1,5 +1,17 @@
 package dk.erst.delis.service.content.document;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.Objects;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.WebRequest;
+
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
 import dk.erst.delis.data.entities.journal.JournalSendDocument;
@@ -17,20 +29,7 @@ import dk.erst.delis.service.content.AbstractGenerateDataService;
 import dk.erst.delis.service.security.SecurityService;
 import dk.erst.delis.util.SecurityUtil;
 import dk.erst.delis.web.document.SendDocumentService;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.WebRequest;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Collections;
-import java.util.Objects;
-
-@Slf4j
 @Service
 public class SendDocumentDelisWebApiServiceImpl implements SendDocumentDelisWebApiService {
 

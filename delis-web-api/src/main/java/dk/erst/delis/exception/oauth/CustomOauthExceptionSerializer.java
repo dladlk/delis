@@ -12,13 +12,11 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * @author funtusthan, created by 28.03.19
- */
-
 public class CustomOauthExceptionSerializer extends StdSerializer<CustomOauthException> {
 
-    public CustomOauthExceptionSerializer() {
+    private static final long serialVersionUID = 3680325905011229504L;
+
+	public CustomOauthExceptionSerializer() {
         super(CustomOauthException.class);
     }
 
