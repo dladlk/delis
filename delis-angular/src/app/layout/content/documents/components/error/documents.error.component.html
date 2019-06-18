@@ -37,6 +37,7 @@
                                 <td>
                                     <ng-select [items]="statuses"
                                                [clearable]="clearableSelect"
+                                               bindLabel="viewName"
                                                placeholder="statuses: "
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
@@ -45,6 +46,7 @@
                                 <td>
                                     <ng-select [items]="lastErrors"
                                                [clearable]="clearableSelect"
+                                               bindLabel="viewName"
                                                placeholder="lastErrors: "
                                                [(ngModel)]="selectedLastError"
                                                (change)="loadLastErrors()">
@@ -53,6 +55,7 @@
                                 <td>
                                     <ng-select [items]="documentTypes"
                                                [clearable]="clearableSelect"
+                                               bindLabel="viewName"
                                                placeholder="documentTypes: "
                                                [(ngModel)]="selectedDocumentType"
                                                (change)="loadDocumentType()">
@@ -61,6 +64,7 @@
                                 <td>
                                     <ng-select [items]="ingoingFormats"
                                                [clearable]="clearableSelect"
+                                               bindLabel="viewName"
                                                placeholder="ingoingFormats: "
                                                [(ngModel)]="selectedIngoingFormat"
                                                (change)="loadIngoingFormat()">

@@ -83,7 +83,8 @@ public class JournalDocumentDelisWebApiServiceImpl implements JournalDocumentDel
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
 	public ListContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId) {
-        long collectionSize = journalDocumentRepository.countByDocumentId(documentId);
+        Document document = getDocument(documentId);
+        long collectionSize = journalDocumentRepository.countByDocumentId(document.getId());
         if (collectionSize == 0) {
             return new ListContainer<>(Collections.emptyList());
         }
@@ -106,11 +107,7 @@ public class JournalDocumentDelisWebApiServiceImpl implements JournalDocumentDel
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ListContainer<JournalDocumentError> getByJournalDocumentDocumentId(long documentId) {
-        Document document = documentRepository.findById(documentId).orElse(null);
-        if (Objects.isNull(document)) {
-            throw new RestNotFoundException(Collections.singletonList(
-                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "Document not found by id")));
-        }
+        Document document = getDocument(documentId);
         long collectionSize = journalDocumentErrorRepository.countByJournalDocumentDocument(document);
         if (collectionSize == 0) {
             return new ListContainer<>(Collections.emptyList());
@@ -118,5 +115,14 @@ public class JournalDocumentDelisWebApiServiceImpl implements JournalDocumentDel
             return new ListContainer<>(
                     journalDocumentErrorRepository.findAllByJournalDocumentDocumentOrderById(document));
         }
+    }
+
+    private Document getDocument(long documentId) {
+        Document document = documentRepository.findById(documentId).orElse(null);
+        if (Objects.isNull(document)) {
+            throw new RestNotFoundException(Collections.singletonList(
+                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "Journal not found by this document")));
+        }
+        return document;
     }
 }

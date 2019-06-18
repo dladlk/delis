@@ -1,9 +1,12 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'documents.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
 
-    <div *ngIf="error">{{resetData()}}</div>
+    <div class="card">
 
-    <div *ngIf="!error" class="card">
+        <div *ngIf="errorOneDocument">
+            <app-error [errorModel]="errorOneDocumentModel"></app-error>
+        </div>
+
         <div class="card border-secondary m-1">
             <div class="card-body table-responsive">
                 <table class="table table-sm table-borderless">
@@ -45,7 +48,7 @@
             </div>
         </div>
 
-        <div class="card border-secondary m-1">
+        <div *ngIf="!errorOneDocument" class="card border-secondary m-1">
             <app-document-invoice [documentId]="document.id" [effectiveDate]="document.documentDate"></app-document-invoice>
         </div>
 
@@ -72,6 +75,10 @@
                     </tr>
                 </table>
             </div>
+        </div>
+
+        <div *ngIf="errorJournalDocuments">
+            <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
         </div>
 
         <div class="card border-secondary m-1">
@@ -113,6 +120,14 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div *ngIf="errorDocumentBytes">
+            <app-error [errorModel]="errorDocumentBytesModel"></app-error>
+        </div>
+
+        <div *ngIf="errorDownload">
+            <app-error [errorModel]="errorDownloadModel"></app-error>
         </div>
 
         <div class="card border-secondary m-1">

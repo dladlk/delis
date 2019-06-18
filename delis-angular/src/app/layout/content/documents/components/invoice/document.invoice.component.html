@@ -3,23 +3,26 @@
         <div class="p-2">
             <a class="btn sys-button"
                data-toggle="collapse"
-               href="#multiCollapseExample1"
+               href="#DocumentInvoiceComponent"
                role="button"
                aria-expanded="false"
-               aria-controls="multiCollapseExample1">Invoice Response 3.0 Form</a>
+               aria-controls="DocumentInvoiceComponent">Invoice Response 3.0 Form</a>
         </div>
     </div>
 
-    <div *ngIf="success !== undefined">
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{success.message}}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <div *ngIf="success !== undefined" class="card">
+        <div class="card border-secondary m-1">
+            <div class="alert alert-success m-2" role="alert">
+                {{success.message}}
+            </div>
         </div>
     </div>
 
-    <div class="collapse multi-collapse mt-2" id="multiCollapseExample1">
+    <div *ngIf="errorDownload" class="card">
+        <app-error [errorModel]="errorDownloadModel"></app-error>
+    </div>
+
+    <div class="collapse multi-collapse mt-2" id="DocumentInvoiceComponent">
         <div class="card">
             <div class="card border-secondary m-1">
                 <div class="card card-body">

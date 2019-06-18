@@ -7,7 +7,6 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { ChartDocumentComponent } from './components';
 import { StatModule } from '../../shared';
-import { ErrorsModule } from '../../shared';
 import { DashboardService } from "./dashboard.service";
 import { ChartDocumentService } from "./components/chart-document/services/chart.document.service";
 import { BsComponentModule } from "../bs-component/bs-component.module";
@@ -21,7 +20,6 @@ import { DaterangeShowService } from "../bs-component/components/daterange/dater
         DashboardRoutingModule,
         TranslateModule,
         StatModule,
-        ErrorsModule,
         BsComponentModule
     ],
     declarations: [

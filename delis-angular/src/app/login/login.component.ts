@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 
-import { routerTransition } from '../router.animations';
-import { AuthorizationService } from './authorization.service';
-import { LocaleService } from "../service/locale.service";
-import { ContentSelectInfoService } from "../service/content.select.info.service";
-import { TokenService } from "../service/token.service";
-import { LoginData } from "./login.data";
+import {routerTransition} from '../router.animations';
+import {AuthorizationService} from './authorization.service';
+import {LocaleService} from '../service/locale.service';
+import {ContentSelectInfoService} from '../service/content.select.info.service';
+import {TokenService} from '../service/token.service';
+import {LoginData} from './login.data';
 
 @Component({
     selector: 'app-login',
@@ -17,8 +17,8 @@ import { LoginData } from "./login.data";
 })
 export class LoginComponent implements OnInit {
 
-    login: string;
-    password: string;
+    login = '';
+    password = '';
 
     message: string;
     errorStatus: boolean;
@@ -38,24 +38,24 @@ export class LoginComponent implements OnInit {
     }
 
     onLoggedin() {
-        if (this.login === undefined && this.password === undefined) {
-            this.message = "login.error.username-or-password";
+        if (this.login.length === 0 && this.password.length === 0) {
+            this.message = 'login.error.username-or-password';
             this.errorStatus = true;
             return;
         }
-        if (this.login === undefined) {
-            this.message = "login.error.username";
+        if (this.login.length === 0) {
+            this.message = 'login.error.username';
             this.errorStatus = true;
             return;
         }
-        if (this.password === undefined) {
-            this.message = "login.error.password";
+        if (this.password.length === 0) {
+            this.message = 'login.error.password';
             this.errorStatus = true;
             return;
         }
         this.auth.login(this.login, this.password).subscribe(
             (data: {}) => {
-                let loginData: LoginData = data["data"];
+                const loginData: LoginData = data['data'];
                 this.tokenService.setToken(loginData.accessToken);
                 localStorage.setItem('username', loginData.username);
                 localStorage.setItem('refreshToken', loginData.refreshToken);
@@ -67,10 +67,10 @@ export class LoginComponent implements OnInit {
             }, error => {
                 this.errorStatus = true;
                 if (error.status === 0) {
-                    this.message = "login.error.disconnect";
+                    this.message = 'login.error.disconnect';
                 }
                 if (error.status === 401) {
-                    this.message = "login.error.unauthorized";
+                    this.message = 'login.error.unauthorized';
                 }
                 this.router.navigate(['/login']);
             }

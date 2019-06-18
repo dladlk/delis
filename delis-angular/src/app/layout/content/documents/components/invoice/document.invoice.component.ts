@@ -8,9 +8,9 @@ import {ErrorService} from '../../../../../service/error.service';
 import {DocumentInvoiceModel} from '../../models/document.invoice.model';
 import {InvoiceResponseGenerationModel} from '../../models/invoice.response.generation.model';
 import {DocumentInvoiceResponseFormModel} from '../../models/document.invoice.response.form.model';
-import * as fileSaver from "file-saver";
-import {FileSaverService} from "../../../../../service/file.saver.service";
-import {SuccessModel} from "../../../../../models/success.model";
+import {FileSaverService} from '../../../../../service/file.saver.service';
+import {SuccessModel} from '../../../../../models/success.model';
+import {ErrorModel} from "../../../../../models/error.model";
 
 const BORDER_COLOR_GREY = '#ced4da';
 const BORDER_COLOR_GREEN = '#28a745';
@@ -57,6 +57,9 @@ export class DocumentInvoiceComponent implements OnInit {
     validateGeneratedEnabled = true;
     onlyGeneratedEnabled = true;
 
+    errorDownload = false;
+    errorDownloadModel: ErrorModel;
+
     constructor(
         private route: ActivatedRoute,
         private documentInvoiceService: DocumentInvoiceService,
@@ -102,12 +105,12 @@ export class DocumentInvoiceComponent implements OnInit {
 
     selectInvoiceResponseUseCaseView(value: string) {
         if (value !== 'Select use case') {
-            let useCase = value.split(':');
-            let useCaseId = useCase[0];
+            const useCase = value.split(':');
+            const useCaseId = useCase[0];
             switch (useCaseId) {
                 case '1': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isIP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -118,7 +121,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '2a': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isIP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -137,7 +140,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '2b': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isIP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -151,7 +154,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '3': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isAP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -162,7 +165,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '4a': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isRE(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -175,7 +178,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '4b': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isRE(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -192,7 +195,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '4c': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isRE(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -212,7 +215,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '5': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isCA(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -231,7 +234,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '6a': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isUQ(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -254,7 +257,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '6b': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isUQ(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -277,7 +280,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '6c': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isUQ(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -298,7 +301,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '7': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isPD(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -311,7 +314,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 } break;
                 case '8': {
                     // tslint:disable-next-line:forin
-                    for (let uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
+                    for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
                         if (this.isAP(uCase)) {
                             this.setDefaultConfig();
                             this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList[uCase];
@@ -355,8 +358,8 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectInvoiceStatusCodeView(value: any) {
-        let status = value.split(':');
-        let statusId = status[0];
+        const status = value.split(':');
+        const statusId = status[0];
         this.invoiceStatusCodeView = this.documentInvoiceModel.invoiceStatusCodeList.filter(uc => uc[0] === statusId)[0];
     }
 
@@ -367,8 +370,8 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusReasonView(value: any) {
-        let reason = value.split(':');
-        let reasonId = reason[0];
+        const reason = value.split(':');
+        const reasonId = reason[0];
         this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === reasonId)[0];
     }
 
@@ -379,8 +382,8 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusActionView(value: any) {
-        let action = value.split(':');
-        let actionId = action[0];
+        const action = value.split(':');
+        const actionId = action[0];
         this.statusActionView = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === actionId)[0];
     }
 
@@ -391,8 +394,8 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusAction2View(value: any) {
-        let action2 = value.split(':');
-        let action2Id = action2[0];
+        const action2 = value.split(':');
+        const action2Id = action2[0];
         this.statusAction2View = this.documentInvoiceModel.statusActionList.filter(sr => sr[0] === action2Id)[0];
     }
 
@@ -416,7 +419,7 @@ export class DocumentInvoiceComponent implements OnInit {
         if (focus) {
             setTimeout(() => {
                 element.nativeElement.focus();
-            },0);
+            }, 0);
         }
     }
 
@@ -453,9 +456,12 @@ export class DocumentInvoiceComponent implements OnInit {
             this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
                     const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
                     FileSaverService.saveFile(response.body, filename);
+                    this.errorDownload = false;
                 },
                 error => {
-                    this.errorService.errorProcess(error);
+                    this.errorDownloadModel = this.errorService.errorProcess(error);
+                    this.errorDownload = true;
+                    this.success = undefined;
                 }
             );
         } else {
@@ -464,8 +470,11 @@ export class DocumentInvoiceComponent implements OnInit {
                 (data: {}) => {
                     console.log(data);
                     this.success = data['data'];
+                    this.errorDownload = false;
                 }, error => {
-                    this.errorService.errorProcess(error);
+                    this.errorDownloadModel = this.errorService.errorProcess(error);
+                    this.errorDownload = true;
+                    this.success = undefined;
                 }
             );
         }

@@ -1,4 +1,7 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {ErrorModel} from '../../../../models/error.model';
+import {LocaleService} from '../../../../service/locale.service';
 
 @Component({
     selector: 'app-error',
@@ -6,7 +9,9 @@ import { Component, Input } from "@angular/core";
 })
 export class ErrorComponent {
 
-    @Input() message: string;
+    @Input() errorModel: ErrorModel;
 
-    constructor() {}
+    constructor( private locale: LocaleService, private translate: TranslateService) {
+        this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
+    }
 }

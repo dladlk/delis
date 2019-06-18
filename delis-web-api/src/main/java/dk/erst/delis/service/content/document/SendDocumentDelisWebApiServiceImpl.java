@@ -70,7 +70,7 @@ public class SendDocumentDelisWebApiServiceImpl implements SendDocumentDelisWebA
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public SendDocument getOneById(long id) {
-        SendDocument sendDocument = getSendDocument(id);
+        SendDocument sendDocument = getSendDocument(id, "SendDocument not found");
         if (SecurityUtil.hasRole("ROLE_USER")) {
             Long orgId = securityService.getOrganisation().getId();
             if (Objects.equals(orgId, sendDocument.getOrganisation().getId())) {
@@ -88,7 +88,7 @@ public class SendDocumentDelisWebApiServiceImpl implements SendDocumentDelisWebA
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ListContainer<SendDocumentBytes> findListSendDocumentBytesBySendDocumentId(long id) {
-        SendDocument sendDocument = getSendDocument(id);
+        SendDocument sendDocument = getSendDocument(id, "Bytes not found by this Sent");
         if (SecurityUtil.hasRole("ROLE_USER")) {
             Long orgId = securityService.getOrganisation().getId();
             if (Objects.equals(orgId, sendDocument.getOrganisation().getId())) {
@@ -106,7 +106,7 @@ public class SendDocumentDelisWebApiServiceImpl implements SendDocumentDelisWebA
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ListContainer<JournalSendDocument> findListJournalSendDocumentBySendDocumentId(long id) {
-        SendDocument sendDocument = getSendDocument(id);
+        SendDocument sendDocument = getSendDocument(id, "Journal not found by this Sent");
         if (SecurityUtil.hasRole("ROLE_USER")) {
             Long orgId = securityService.getOrganisation().getId();
             if (Objects.equals(orgId, sendDocument.getOrganisation().getId())) {
@@ -128,11 +128,11 @@ public class SendDocumentDelisWebApiServiceImpl implements SendDocumentDelisWebA
         return out.toByteArray();
     }
 
-    private SendDocument getSendDocument(long id) {
+    private SendDocument getSendDocument(long id, String message) {
         SendDocument sendDocument = sendDocumentRepository.findById(id).orElse(null);
         if (sendDocument == null) {
             throw new RestNotFoundException(Collections.singletonList(
-                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "SendDocument not found")));
+                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), message)));
         }
         return sendDocument;
     }

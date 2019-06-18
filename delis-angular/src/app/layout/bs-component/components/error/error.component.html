@@ -1,7 +1,5 @@
-<div class="alert alert-danger" role="alert">
-    <div class="row">
-        <span>
-            {{message}}
-        </span>
+<div class="card border-secondary m-1">
+    <div class="alert alert-danger m-2" role="alert">
+        <strong *ngIf="errorModel.status !== undefined">{{errorModel.status}} : </strong>{{errorModel.message | translate}}
     </div>
 </div>

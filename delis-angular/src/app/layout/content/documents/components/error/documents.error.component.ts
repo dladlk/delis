@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from '@ngx-translate/core';
 
 import { routerTransition } from '../../../../../router.animations';
 import { DocumentsService } from '../../services/documents.service';
 import { FilterProcessResult } from '../../models/filter.process.result';
 import { DateRangeModel } from '../../../../../models/date.range.model';
-import { LocaleService } from "../../../../../service/locale.service";
-import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
-import { PaginationService } from "../../../../bs-component/components/pagination/pagination.service";
-import { PaginationModel } from "../../../../bs-component/components/pagination/pagination.model";
-import { DocumentModel } from "../../models/document.model";
-import { ErrorService } from "../../../../../service/error.service";
+import { LocaleService } from '../../../../../service/locale.service';
+import { TableHeaderSortModel } from '../../../../bs-component/components/table-header-sort/table.header.sort.model';
+import { PaginationService } from '../../../../bs-component/components/pagination/pagination.service';
+import { PaginationModel } from '../../../../bs-component/components/pagination/pagination.model';
+import { DocumentModel } from '../../models/document.model';
+import { ErrorService } from '../../../../../service/error.service';
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
-import { DaterangeService } from "../../../../bs-component/components/daterange/daterange.service";
-import { DaterangeShowService } from "../../../../bs-component/components/daterange/daterange.show.service";
+import { DaterangeService } from '../../../../bs-component/components/daterange/daterange.service';
+import { DaterangeShowService } from '../../../../bs-component/components/daterange/daterange.show.service';
+import { EnumInfoModel } from '../../../../../models/enum.info.model';
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -34,10 +35,10 @@ export class DocumentsErrorComponent implements OnInit {
 
     clearableSelect = true;
 
-    selectedStatus: any;
-    selectedLastError: any;
-    selectedDocumentType: any;
-    selectedIngoingFormat: any;
+    selectedStatus: EnumInfoModel = new EnumInfoModel();
+    selectedLastError: EnumInfoModel = new EnumInfoModel();
+    selectedDocumentType: EnumInfoModel = new EnumInfoModel();
+    selectedIngoingFormat: EnumInfoModel = new EnumInfoModel();
     selectedOrganization: any;
 
     textReceiver: string;
@@ -46,10 +47,10 @@ export class DocumentsErrorComponent implements OnInit {
 
     documents: DocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
-    statuses: [];
-    documentTypes: [];
-    ingoingFormats: [];
-    lastErrors: [];
+    statuses: EnumInfoModel[];
+    documentTypes: EnumInfoModel[];
+    ingoingFormats: EnumInfoModel[];
+    lastErrors: EnumInfoModel[];
     organizations: [];
     filter: FilterProcessResult;
 
@@ -107,16 +108,17 @@ export class DocumentsErrorComponent implements OnInit {
     }
 
     initSelected() {
-        let select = JSON.parse(localStorage.getItem("Document"));
+        let select = JSON.parse(localStorage.getItem('Document'));
+        console.log(select);
         this.statuses = select.documentStatus.filter(err => {
-            if (err.includes('ERROR')) {
+            if (err.name.includes('ERROR')) {
                 return err;
             }
         });
         this.documentTypes = select.documentType;
         this.ingoingFormats = select.ingoingDocumentFormat;
         this.lastErrors = select.lastError;
-        select = JSON.parse(localStorage.getItem("organizations"));
+        select = JSON.parse(localStorage.getItem('organizations'));
         this.organizations = select;
     }
 
@@ -128,12 +130,12 @@ export class DocumentsErrorComponent implements OnInit {
     }
 
     protected initDefaultValues() {
-        this.selectedStatus = "ALL";
-        this.selectedDocumentType = "ALL";
-        this.selectedIngoingFormat = "ALL";
-        this.selectedLastError = "ALL";
-        this.selectedOrganization = "ALL";
-        this.textPlaceholderReceivedDate = "Received Date";
+        this.selectedStatus = new EnumInfoModel();
+        this.selectedDocumentType = new EnumInfoModel();
+        this.selectedIngoingFormat = new EnumInfoModel();
+        this.selectedLastError = new EnumInfoModel();
+        this.selectedOrganization = 'ALL';
+        this.textPlaceholderReceivedDate = 'Received Date';
         this.filter = new FilterProcessResult();
         if (this.tableHeaderSortModels.length == 0) {
             this.tableHeaderSortModels.push(
@@ -168,10 +170,10 @@ export class DocumentsErrorComponent implements OnInit {
     protected currentProdDocuments(currentPage: number, sizeElement: number, errorsFlag: boolean) {
         this.documentsService.getErrorListDocuments(currentPage, sizeElement, this.filter, errorsFlag).subscribe(
             (data: {}) => {
-                this.pagination.collectionSize = data["collectionSize"];
-                this.pagination.currentPage = data["currentPage"];
-                this.pagination.pageSize = data["pageSize"];
-                this.documents = data["items"];
+                this.pagination.collectionSize = data['collectionSize'];
+                this.pagination.currentPage = data['currentPage'];
+                this.pagination.pageSize = data['pageSize'];
+                this.documents = data['items'];
                 this.show = true;
             }, error => {
                 this.errorService.errorProcess(error);
@@ -194,7 +196,7 @@ export class DocumentsErrorComponent implements OnInit {
     }
 
     loadTextReceiver(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.receiver = null;
         } else {
             this.filter.receiver = text;
@@ -204,43 +206,31 @@ export class DocumentsErrorComponent implements OnInit {
     }
 
     loadStatus() {
-        if (this.selectedStatus === null) {
-            this.selectedStatus = 'ALL';
-        }
-        this.filter.status = this.selectedStatus;
+        this.filter.status = this.selectedStatus.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadLastErrors() {
-        if (this.selectedLastError === null) {
-            this.selectedLastError = 'ALL';
-        }
-        this.filter.lastError = this.selectedLastError;
+        this.filter.lastError = this.selectedLastError.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadDocumentType() {
-        if (this.selectedDocumentType === null) {
-            this.selectedDocumentType = 'ALL';
-        }
-        this.filter.documentType = this.selectedDocumentType;
+        this.filter.documentType = this.selectedDocumentType.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIngoingFormat() {
-        if (this.selectedIngoingFormat === null) {
-            this.selectedIngoingFormat = 'ALL';
-        }
-        this.filter.ingoingFormat = this.selectedIngoingFormat;
+        this.filter.ingoingFormat = this.selectedIngoingFormat.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextSenderName(text: string) {
-        if (text.length === 0 || text == null) {
+        if (text.length === 0 || text === null) {
             this.filter.senderName = null;
         } else {
             this.filter.senderName = text;
@@ -258,7 +248,7 @@ export class DocumentsErrorComponent implements OnInit {
     clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
-        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        const columnEntity = columnName.split('.').reduce((first, last) => last);
         if (countClick === 1) {
             this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
         }
@@ -275,15 +265,15 @@ export class DocumentsErrorComponent implements OnInit {
     }
 
     private clearFilter(columnName: string) {
-        this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
+        this.tableHeaderSortModels.filter(cn => cn.columnName !== columnName).forEach(cn => cn.columnClick = 0);
     }
 
     protected clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.selectedStatus = "ALL";
-        this.selectedDocumentType = "ALL";
-        this.selectedIngoingFormat = "ALL";
-        this.selectedLastError = "ALL";
+        this.selectedStatus = new EnumInfoModel();
+        this.selectedDocumentType = new EnumInfoModel();
+        this.selectedIngoingFormat = new EnumInfoModel();
+        this.selectedLastError = new EnumInfoModel();
         this.selectedOrganization = 'ALL';
         this.textReceiver = '';
         this.textSenderName = '';

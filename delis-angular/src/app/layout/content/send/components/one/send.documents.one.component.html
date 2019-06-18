@@ -2,7 +2,12 @@
 
     <app-page-header [heading]="'documents.send.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
 
-    <div *ngIf="!error" class="card">
+    <div class="card">
+
+        <div *ngIf="errorOneDocument">
+            <app-error [errorModel]="errorOneDocumentModel"></app-error>
+        </div>
+
         <div class="card border-secondary m-1">
             <div class="card-body table-responsive">
                 <table class="table table-sm table-borderless">
@@ -35,6 +40,10 @@
             </div>
         </div>
 
+        <div *ngIf="errorJournalDocuments">
+            <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
+        </div>
+
         <div class="card border-secondary m-1">
             <div class="card-body table-responsive">
                 <div class="card-title">
@@ -60,6 +69,14 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <div *ngIf="errorDocumentBytes">
+            <app-error [errorModel]="errorDocumentBytesModel"></app-error>
+        </div>
+
+        <div *ngIf="errorDownload">
+            <app-error [errorModel]="errorDownloadModel"></app-error>
         </div>
 
         <div class="card border-secondary m-1">

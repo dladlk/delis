@@ -109,7 +109,7 @@ public class DocumentDelisWebApiServiceImpl implements DocumentDelisWebApiServic
         Document document = documentService.getDocument(documentId);
         if (document == null) {
             throw new RestNotFoundException(Collections.singletonList(
-                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "Document not found")));
+                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "Bytes not found by this document")));
         }
         long totalElements = documentBytesRepository.countByDocument(document);
         if (totalElements == 0) {

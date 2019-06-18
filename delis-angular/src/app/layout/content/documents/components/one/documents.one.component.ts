@@ -1,20 +1,21 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {TranslateService} from "@ngx-translate/core";
+import {TranslateService} from '@ngx-translate/core';
 
-import {routerTransition} from "../../../../../router.animations";
-import {DocumentsService} from "../../services/documents.service";
-import {JournalDocumentService} from "../../../journal/document/services/journal.document.service";
-import {LocaleService} from "../../../../../service/locale.service";
-import {HeaderModel} from "../../../../components/header/header.model";
-import {DocumentModel} from "../../models/document.model";
-import {ErrorService} from "../../../../../service/error.service";
-import {SHOW_DATE_FORMAT} from "../../../../../app.constants";
-import {JournalDocumentModel} from "../../../journal/document/models/journal.document.model";
-import {ErrorDictionaryModel} from "../../../journal/document/models/error.dictionary.model";
-import {DocumentBytesModel} from "../../models/document.bytes.model";
-import {JournalDocumentErrorModel} from "../../../journal/document/models/journal.document.error.model";
-import {FileSaverService} from "../../../../../service/file.saver.service";
+import {routerTransition} from '../../../../../router.animations';
+import {DocumentsService} from '../../services/documents.service';
+import {JournalDocumentService} from '../../../journal/document/services/journal.document.service';
+import {LocaleService} from '../../../../../service/locale.service';
+import {HeaderModel} from '../../../../components/header/header.model';
+import {DocumentModel} from '../../models/document.model';
+import {ErrorService} from '../../../../../service/error.service';
+import {SHOW_DATE_FORMAT} from '../../../../../app.constants';
+import {JournalDocumentModel} from '../../../journal/document/models/journal.document.model';
+import {ErrorDictionaryModel} from '../../../journal/document/models/error.dictionary.model';
+import {DocumentBytesModel} from '../../models/document.bytes.model';
+import {JournalDocumentErrorModel} from '../../../journal/document/models/journal.document.error.model';
+import {FileSaverService} from '../../../../../service/file.saver.service';
+import {ErrorModel} from '../../../../../models/error.model';
 
 @Component({
     selector: 'app-documents-one',
@@ -30,7 +31,18 @@ export class DocumentsOneComponent implements OnInit {
     journalDocuments: JournalDocumentModel[] = [];
     journalDocumentErrors: JournalDocumentErrorModel[] = [];
     documentBytesModels: DocumentBytesModel[] = [];
-    error = false;
+
+    errorOneDocument = false;
+    errorOneDocumentModel: ErrorModel;
+
+    errorDocumentBytes = false;
+    errorDocumentBytesModel: ErrorModel;
+
+    errorJournalDocuments = false;
+    errorJournalDocumentsModel: ErrorModel;
+
+    errorDownload = false;
+    errorDownloadModel: ErrorModel;
 
     constructor(
         private translate: TranslateService,
@@ -46,33 +58,32 @@ export class DocumentsOneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+        const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
             this.document = data;
         }, error => {
-            this.errorService.errorProcess(error);
-            this.error = true;
+            this.errorOneDocumentModel = this.errorService.errorProcess(error);
+            this.errorOneDocument = true;
         });
         this.documentService.getListDocumentBytesByDocumentId(id).subscribe((data: {}) => {
-            this.documentBytesModels = data["items"];
+            this.documentBytesModels = data['items'];
         }, error => {
-            this.errorService.errorProcess(error);
-            this.error = true;
+            this.errorDocumentBytesModel = this.errorService.errorProcess(error);
+            this.errorDocumentBytes = true;
         });
         this.journalDocumentService.getAllByDocumentId(id).subscribe(
             (data: {}) => {
-                this.journalDocuments = data["items"];
+                this.journalDocuments = data['items'];
             }, error => {
-                this.errorService.errorProcess(error);
-                this.error = true;
+                this.errorJournalDocumentsModel = this.errorService.errorProcess(error);
+                this.errorJournalDocuments = true;
             }
         );
         this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe(
             (data: {}) => {
-                this.journalDocumentErrors = data["items"];
+                this.journalDocumentErrors = data['items'];
             }, error => {
                 this.errorService.errorProcess(error);
-                this.error = true;
             }
         );
     }
@@ -81,22 +92,17 @@ export class DocumentsOneComponent implements OnInit {
         this.documentService.downloadFileByDocumentAndDocumentBytes(this.document.id, id).subscribe(response => {
                 const filename = response.headers.get('filename');
                 FileSaverService.saveFile(response.body, filename);
+                this.errorDownload = false;
             },
             error => {
-                this.errorService.errorProcess(error);
+                this.errorDownloadModel = this.errorService.errorProcess(error);
+                this.errorDownload = true;
             }
         );
     }
 
-    resetData() {
-        this.document = new DocumentModel();
-        this.journalDocuments = [];
-        this.journalDocumentErrors = [];
-        this.documentBytesModels = [];
-    }
-
     getErrorDictionaryModel(id: number): ErrorDictionaryModel[] {
-        let err = this.journalDocumentErrors.filter(value => value.journalDocument.id === id);
+        const err = this.journalDocumentErrors.filter(value => value.journalDocument.id === id);
         if (err === null) {
             return [];
         } else {
