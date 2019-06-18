@@ -4,6 +4,7 @@ import dk.erst.delis.data.entities.AbstractCreateEntity;
 import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
@@ -86,7 +87,9 @@ public class SpecificationUtil {
             Root<? extends AbstractEntity> root,
             CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        if (Document.class.isAssignableFrom(entityClass) || Identifier.class.isAssignableFrom(entityClass) ||
+        if (Document.class.isAssignableFrom(entityClass) ||
+                SendDocument.class.isAssignableFrom(entityClass) ||
+                Identifier.class.isAssignableFrom(entityClass) ||
                 JournalDocument.class.isAssignableFrom(entityClass) ||
                 JournalIdentifier.class.isAssignableFrom(entityClass) ||
                 JournalOrganisation.class.isAssignableFrom(entityClass)) {
