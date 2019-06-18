@@ -7,6 +7,8 @@
 
     "sidebar.dashboard": "Dashboard",
     "sidebar.documents": "Documents",
+    "sidebar.received.documents": "Received",
+    "sidebar.send.documents": "Send",
     "sidebar.identifier": "Identifier",
     "sidebar.journal": "Journal",
     "sidebar.journal.document": "Document",
@@ -44,6 +46,12 @@
     "documents.table.columnName.createTime" : "Received",
     "documents.table.columnName.senderName" : "Sender Name",
 
+    "documents.table.send.columnName.createTime" : "Received",
+    "documents.table.send.columnName.organisation" : "Organisation",
+    "documents.table.send.columnName.documentStatus" : "Document Status",
+    "documents.table.send.columnName.documentType" : "Document Type",
+    "documents.table.send.columnName.receiverIdRaw" : "Receiver",
+    "documents.table.send.columnName.senderIdRaw" : "Sender",
 
     "documents.table.one.columnName.organisation" : "Organisation",
     "documents.table.one.columnName.identifier" : "Identifier",

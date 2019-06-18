@@ -7,6 +7,8 @@
 
   "sidebar.dashboard": "Oversigt",
   "sidebar.documents": "Dokumenter",
+  "sidebar.received.documents": "Modtagelse",
+  "sidebar.send.documents": "Afsendelse",
   "sidebar.identifier": "Modtagere",
   "sidebar.journal": "Historik",
   "sidebar.journal.document": "Dokument",
@@ -43,6 +45,16 @@
   "documents.table.columnName.ingoingDocumentFormat" : "Indgående format",
   "documents.table.columnName.createTime" : "Modtaget",
   "documents.table.columnName.senderName" : "Afsender navn",
+
+  "documents.send.header" : "Afsendelse",
+  "documents.send.table.header" : "Afsendelse Oversigt",
+  "documents.table.send.columnName.createTime" : "Modtaget",
+  "documents.table.send.columnName.organisation" : "Organisation",
+  "documents.table.send.columnName.documentStatus" : "Status",
+  "documents.table.send.columnName.documentType" : "Type",
+  "documents.table.send.columnName.receiverIdRaw" : "Modtager",
+  "documents.table.send.columnName.senderIdRaw" : "Afsender",
+
 
   "documents.table.one.columnName.organisation" : "Organisation",
   "documents.table.one.columnName.identifier" : "Identifier",

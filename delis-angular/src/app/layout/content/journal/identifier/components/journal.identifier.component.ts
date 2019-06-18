@@ -104,7 +104,7 @@ export class JournalIdentifierComponent implements OnInit {
     private initDefaultValues() {
         this.selectedOrganization = "ALL";
         this.filter = new JournalIdentifierFilterProcessResultModel();
-        if (this.tableHeaderSortModels.length == 0) {
+        if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
@@ -218,6 +218,6 @@ export class JournalIdentifierComponent implements OnInit {
     }
 
     private clearFilter(columnName: string) {
-        this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
+        this.tableHeaderSortModels.filter(cn => cn.columnName !== columnName).forEach(cn => cn.columnClick = 0);
     }
 }
