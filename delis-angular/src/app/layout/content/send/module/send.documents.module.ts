@@ -10,6 +10,7 @@ import {BsComponentModule} from "../../../bs-component/bs-component.module";
 import {SendDocumentsComponent} from "../components/send.documents.component";
 import {SendDocumentsService} from "../service/send.documents.service";
 import {SendDocumentsRouting} from "../send.documents.routing";
+import {SendDocumentsOneComponent} from "../components/one/send.documents.one.component";
 
 @NgModule({
     imports: [
@@ -22,7 +23,7 @@ import {SendDocumentsRouting} from "../send.documents.routing";
         PageHeaderModule,
         HttpClientModule,
         BsComponentModule],
-    declarations: [SendDocumentsComponent],
+    declarations: [SendDocumentsComponent, SendDocumentsOneComponent],
     providers: [SendDocumentsService]
 })
 export class SendDocumentsModule {

@@ -106,7 +106,11 @@ public class DocumentDelisWebApiServiceImpl implements DocumentDelisWebApiServic
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @Transactional(readOnly = true)
     public ListContainer<DocumentBytes> findListDocumentBytesByDocumentId(Long documentId) {
-        Document document = abstractGenerateDataService.getOneById(documentId, Document.class, documentRepository);
+        Document document = documentService.getDocument(documentId);
+        if (document == null) {
+            throw new RestNotFoundException(Collections.singletonList(
+                    new FieldErrorModel("id", HttpStatus.NOT_FOUND.getReasonPhrase(), "Document not found")));
+        }
         long totalElements = documentBytesRepository.countByDocument(document);
         if (totalElements == 0) {
             return new ListContainer<>(Collections.emptyList());

@@ -6,6 +6,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -43,8 +44,9 @@ public class DocumentRestController {
     @GetMapping("/download/{id}/bytes/{bytesId}")
     public ResponseEntity<Object> downloadFile(@PathVariable @Min(1) Long id, @PathVariable @Min(1) Long bytesId) {
         byte[] data = documentDelisWebApiService.downloadFile(id, bytesId);
-        ResponseEntity.BodyBuilder resp = ResponseEntity.ok();
-        resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"data_" + id + "_" + bytesId + ".xml\"");
+        String fileName = "data_" + id + "_" + bytesId + ".xml";
+        BodyBuilder resp = ResponseEntity.ok();
+        resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
         resp.contentType(MediaType.parseMediaType("application/octet-stream"));
         return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
     }

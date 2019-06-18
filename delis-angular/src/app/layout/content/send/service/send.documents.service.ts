@@ -59,4 +59,16 @@ export class SendDocumentsService {
     getOneSendDocumentsById(id: any): Observable<any> {
         return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
     }
+
+    getListSendDocumentBytesBySendDocumentId(id: any): Observable<any> {
+        return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
+    }
+
+    getListJournalSendDocumentBySendDocumentId(id: any): Observable<any> {
+        return this.httpRestService.methodGet(this.url + '/' + id + '/journal', null, this.tokenService.getToken());
+    }
+
+    downloadFileBySendDocumentAndDocumentBytes(id: number, bytesId): Observable<any> {
+        return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
+    }
 }

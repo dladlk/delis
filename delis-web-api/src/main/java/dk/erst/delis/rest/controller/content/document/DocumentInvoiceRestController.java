@@ -12,10 +12,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -43,8 +45,9 @@ public class DocumentInvoiceRestController {
         Object o = documentDelisWebApiService.generateInvoiceResponse(invoiceResponseForm);
         if (o instanceof File) {
             File file = (File) o;
-            ResponseEntity.BodyBuilder resp = ResponseEntity.ok();
-            resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + invoiceResponseForm.getDocumentFormatName() + ".xml\"");
+            String fileName = invoiceResponseForm.getDocumentFormatName() + ".xml";
+            BodyBuilder resp = ResponseEntity.ok();
+            resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
             resp.contentType(MediaType.parseMediaType("application/octet-stream"));
             try {
                 return resp.body(new InputStreamResource(new FileInputStream(file)));

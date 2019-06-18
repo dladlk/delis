@@ -47,6 +47,7 @@
   "documents.table.columnName.senderName" : "Afsender navn",
 
   "documents.send.header" : "Afsendelse",
+  "documents.send.header.details" : "Afsendelse detaljer",
   "documents.send.table.header" : "Afsendelse Oversigt",
   "documents.table.send.columnName.createTime" : "Modtaget",
   "documents.table.send.columnName.organisation" : "Organisation",
@@ -55,6 +56,14 @@
   "documents.table.send.columnName.receiverIdRaw" : "Modtager",
   "documents.table.send.columnName.senderIdRaw" : "Afsender",
 
+  "documents.table.send.one.columnName.organisation" : "Organisation",
+  "documents.table.send.one.columnName.sender" : "Afsender",
+  "documents.table.send.one.columnName.receiver" : "Modtager",
+  "documents.table.send.one.columnName.created" : "Modtaget",
+  "documents.table.send.one.columnName.status" : "Status",
+  "documents.table.send.one.columnName.documentType" : "Dokument type",
+  "documents.table.send.one.columnName.documentId" : "Dokument Id",
+  "documents.table.send.one.columnName.documentDate" : "Dokument dato",
 
   "documents.table.one.columnName.organisation" : "Organisation",
   "documents.table.one.columnName.identifier" : "Identifier",
