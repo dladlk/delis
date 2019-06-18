@@ -1,6 +1,6 @@
 package dk.erst.delis.rest.controller.content.journal;
 
-import dk.erst.delis.service.content.journal.identifier.JournalIdentifierService;
+import dk.erst.delis.service.content.journal.identifier.JournalIdentifierDelisWebApiService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,25 +22,25 @@ import javax.validation.constraints.Min;
 @RequestMapping("/rest/journal/identifier")
 public class JournalIdentifierController {
 
-    private final JournalIdentifierService journalIdentifierService;
+    private final JournalIdentifierDelisWebApiService journalIdentifierDelisWebApiService;
 
     @Autowired
-    public JournalIdentifierController(JournalIdentifierService journalIdentifierService) {
-        this.journalIdentifierService = journalIdentifierService;
+    public JournalIdentifierController(JournalIdentifierDelisWebApiService journalIdentifierDelisWebApiService) {
+        this.journalIdentifierDelisWebApiService = journalIdentifierDelisWebApiService;
     }
 
     @GetMapping
     public ResponseEntity getAll(WebRequest webRequest) {
-        return ResponseEntity.ok(journalIdentifierService.getAll(webRequest));
+        return ResponseEntity.ok(journalIdentifierDelisWebApiService.getAll(webRequest));
     }
 
     @GetMapping("/one/{identifierId}")
     public ResponseEntity getByIdentifier(@PathVariable @Min(1) long identifierId, WebRequest webRequest) {
-        return ResponseEntity.ok(journalIdentifierService.getByIdentifier(webRequest, identifierId));
+        return ResponseEntity.ok(journalIdentifierDelisWebApiService.getByIdentifier(webRequest, identifierId));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(journalIdentifierService.getOneById(id));
+        return ResponseEntity.ok(journalIdentifierDelisWebApiService.getOneById(id));
     }
 }

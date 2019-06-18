@@ -7,5 +7,5 @@ import dk.erst.delis.service.content.AbstractService;
  * @author funtusthan, created by 14.01.19
  */
 
-public interface JournalOrganisationService extends AbstractService<JournalOrganisation> {
+public interface JournalOrganisationDelisWebApiService extends AbstractService<JournalOrganisation> {
 }

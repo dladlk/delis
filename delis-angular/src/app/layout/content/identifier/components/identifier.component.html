@@ -86,7 +86,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr *ngFor="let identifier of identifiers" [routerLink]="['/identifiers/', identifier.id]">
+                            <tr *ngFor="let identifier of identifiers" style="cursor: pointer" [routerLink]="['/identifiers/', identifier.id]">
                                 <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>
                                 <td *ngIf="identifier.organisation === null"></td>
                                 <td *ngIf="identifier.identifierGroup !== null">{{identifier.identifierGroup.name}}</td>

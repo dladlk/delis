@@ -11,7 +11,7 @@ import org.springframework.web.context.request.WebRequest;
  * @author funtusthan, created by 13.01.19
  */
 
-public interface JournalDocumentService extends AbstractService<JournalDocument> {
+public interface JournalDocumentDelisWebApiService extends AbstractService<JournalDocument> {
 
 	ListContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId);
 	ListContainer<JournalDocumentError> getByJournalDocumentDocumentId(long documentId);

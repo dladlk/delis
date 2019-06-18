@@ -1,6 +1,6 @@
 package dk.erst.delis.rest.controller.content.journal;
 
-import dk.erst.delis.service.content.journal.document.JournalDocumentService;
+import dk.erst.delis.service.content.journal.document.JournalDocumentDelisWebApiService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,30 +22,30 @@ import javax.validation.constraints.Min;
 @RequestMapping("/rest/journal/document")
 public class JournalDocumentController {
 
-    private final JournalDocumentService journalDocumentService;
+    private final JournalDocumentDelisWebApiService journalDocumentDelisWebApiService;
 
     @Autowired
-    public JournalDocumentController(JournalDocumentService journalDocumentService) {
-        this.journalDocumentService = journalDocumentService;
+    public JournalDocumentController(JournalDocumentDelisWebApiService journalDocumentDelisWebApiService) {
+        this.journalDocumentDelisWebApiService = journalDocumentDelisWebApiService;
     }
 
     @GetMapping()
     public ResponseEntity getAll(WebRequest webRequest) {
-        return ResponseEntity.ok(journalDocumentService.getAll(webRequest));
+        return ResponseEntity.ok(journalDocumentDelisWebApiService.getAll(webRequest));
     }
 
     @GetMapping("/one/{documentId}")
     public ResponseEntity getByDocument(@PathVariable @Min(1) long documentId, WebRequest webRequest) {
-        return ResponseEntity.ok(journalDocumentService.getByDocument(webRequest, documentId));
+        return ResponseEntity.ok(journalDocumentDelisWebApiService.getByDocument(webRequest, documentId));
     }
 
     @GetMapping("/one/error/{documentId}")
     public ResponseEntity getByJournalDocumentDocumentId(@PathVariable @Min(1) long documentId) {
-        return ResponseEntity.ok(journalDocumentService.getByJournalDocumentDocumentId(documentId));
+        return ResponseEntity.ok(journalDocumentDelisWebApiService.getByJournalDocumentDocumentId(documentId));
     }
     
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(journalDocumentService.getOneById(id));
+        return ResponseEntity.ok(journalDocumentDelisWebApiService.getOneById(id));
     }
 }
