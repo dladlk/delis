@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 
 import {routerTransition} from '../../../../router.animations';
@@ -32,7 +32,7 @@ const COLUMN_NAME_CREATE_TIME = 'identifier.table.columnName.createTime';
     styleUrls: ['./identifier.component.scss'],
     animations: [routerTransition()]
 })
-export class IdentifierComponent {
+export class IdentifierComponent implements OnInit {
 
     clearableSelect = true;
 
@@ -160,12 +160,18 @@ export class IdentifierComponent {
     }
 
     loadStatus() {
+        if (this.selectedStatus === null) {
+            this.selectedStatus = new EnumInfoModel();
+        }
         this.pagination.currentPage = 1;
         this.filter.status = this.selectedStatus.name;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadPublishingStatus() {
+        if (this.selectedPublishingStatus === null) {
+            this.selectedPublishingStatus = new EnumInfoModel();
+        }
         this.pagination.currentPage = 1;
         this.filter.publishingStatus = this.selectedPublishingStatus.name;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);

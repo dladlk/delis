@@ -115,12 +115,18 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     loadDocumentType() {
+        if (this.selectedDocumentType === null) {
+            this.selectedDocumentType = new EnumInfoModel();
+        }
         this.filter.documentType = this.selectedDocumentType.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadStatus() {
+        if (this.selectedStatus === null) {
+            this.selectedStatus = new EnumInfoModel();
+        }
         this.filter.documentStatus = this.selectedStatus.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);

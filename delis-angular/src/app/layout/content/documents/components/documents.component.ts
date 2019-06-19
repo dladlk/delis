@@ -196,24 +196,36 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadStatus() {
+        if (this.selectedStatus === null) {
+            this.selectedStatus = new EnumInfoModel();
+        }
         this.filter.status = this.selectedStatus.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadLastErrors() {
+        if (this.selectedLastError === null) {
+            this.selectedLastError = new EnumInfoModel();
+        }
         this.filter.lastError = this.selectedLastError.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadDocumentType() {
+        if (this.selectedDocumentType === null) {
+            this.selectedDocumentType = new EnumInfoModel();
+        }
         this.filter.documentType = this.selectedDocumentType.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIngoingFormat() {
+        if (this.selectedIngoingFormat === null) {
+            this.selectedIngoingFormat = new EnumInfoModel();
+        }
         this.filter.ingoingFormat = this.selectedIngoingFormat.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
