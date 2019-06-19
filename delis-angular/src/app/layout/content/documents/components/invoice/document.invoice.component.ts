@@ -10,7 +10,7 @@ import {InvoiceResponseGenerationModel} from '../../models/invoice.response.gene
 import {DocumentInvoiceResponseFormModel} from '../../models/document.invoice.response.form.model';
 import {FileSaverService} from '../../../../../service/file.saver.service';
 import {SuccessModel} from '../../../../../models/success.model';
-import {ErrorModel} from "../../../../../models/error.model";
+import {ErrorModel} from '../../../../../models/error.model';
 
 const BORDER_COLOR_GREY = '#ced4da';
 const BORDER_COLOR_GREEN = '#28a745';
@@ -423,7 +423,7 @@ export class DocumentInvoiceComponent implements OnInit {
         }
     }
 
-    sendInvoice() {
+    sendInvoice(element: any) {
         this.documentInvoiceResponseFormModel.documentId = this.documentId;
         this.documentInvoiceResponseFormModel.generateWithoutSending = this.onlyGeneratedEnabled;
         this.documentInvoiceResponseFormModel.validate = this.validateGeneratedEnabled;
@@ -478,5 +478,6 @@ export class DocumentInvoiceComponent implements OnInit {
                 }
             );
         }
+        element.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
 }

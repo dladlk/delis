@@ -1,4 +1,5 @@
 <div class="card-body">
+
     <div class="d-flex justify-content-start">
         <div class="p-2">
             <a class="btn sys-button"
@@ -10,16 +11,18 @@
         </div>
     </div>
 
-    <div *ngIf="success !== undefined" class="card">
-        <div class="card border-secondary m-1">
-            <div class="alert alert-success m-2" role="alert">
-                {{success.message}}
+    <div #invoiceResultStatus>
+        <div *ngIf="success !== undefined" class="card">
+            <div class="card border-secondary m-1" >
+                <div class="alert alert-success m-2" role="alert">
+                    {{success.message}}
+                </div>
             </div>
         </div>
-    </div>
 
-    <div *ngIf="errorDownload" class="card">
-        <app-error [errorModel]="errorDownloadModel"></app-error>
+        <div *ngIf="errorDownload" class="card">
+            <app-error [errorModel]="errorDownloadModel"></app-error>
+        </div>
     </div>
 
     <div class="collapse multi-collapse mt-2" id="DocumentInvoiceComponent">
@@ -38,7 +41,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -65,7 +68,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -89,7 +92,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -108,7 +111,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -141,7 +144,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -174,7 +177,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -205,7 +208,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="form-group col-8">
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -219,7 +222,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="form-group col-8">
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -235,7 +238,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="form-group col-8">
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -251,7 +254,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-3">
+                    <div class="row mt-2">
                         <div class="col-sm">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -277,7 +280,7 @@
 
                     <div class="d-flex justify-content-start">
                         <div class="p-2">
-                            <button type="submit" class="btn sys-button" (click)="sendInvoice()">Generate</button>
+                            <button type="submit" class="btn sys-button" (click)="sendInvoice(invoiceResultStatus)">Generate</button>
                         </div>
                     </div>
                 </div>
