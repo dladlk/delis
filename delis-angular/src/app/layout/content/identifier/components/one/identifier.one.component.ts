@@ -1,18 +1,19 @@
-import { Component } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { ActivatedRoute } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { ActivatedRoute } from '@angular/router';
 
-import { routerTransition } from "../../../../../router.animations";
-import { HeaderModel } from "../../../../components/header/header.model";
-import { IdentifierModel } from "../../models/identifier.model";
-import { LocaleService } from "../../../../../service/locale.service";
-import { ErrorService } from "../../../../../service/error.service";
-import { IdentifierService } from "../../services/identifier.service";
-import { SHOW_DATE_FORMAT } from "../../../../../app.constants";
-import { JournalIdentifierService } from "../../../journal/identifier/services/journal.identifier.service";
-import { TableHeaderSortModel } from "../../../../bs-component/components/table-header-sort/table.header.sort.model";
-import { JournalIdentifierFilterProcessResultModel } from "../../../journal/identifier/models/journal.identifier.filter.process.result.model";
-import { JournalIdentifierModel } from "../../../journal/identifier/models/journal.identifier.model";
+import { routerTransition } from '../../../../../router.animations';
+import { HeaderModel } from '../../../../components/header/header.model';
+import { IdentifierModel } from '../../models/identifier.model';
+import { LocaleService } from '../../../../../service/locale.service';
+import { ErrorService } from '../../../../../service/error.service';
+import { IdentifierService } from '../../services/identifier.service';
+import { SHOW_DATE_FORMAT } from '../../../../../app.constants';
+import { JournalIdentifierService } from '../../../journal/identifier/services/journal.identifier.service';
+import { TableHeaderSortModel } from '../../../../bs-component/components/table-header-sort/table.header.sort.model';
+import { JournalIdentifierFilterProcessResultModel } from '../../../journal/identifier/models/journal.identifier.filter.process.result.model';
+import { JournalIdentifierModel } from '../../../journal/identifier/models/journal.identifier.model';
+import { ErrorModel } from '../../../../../models/error.model';
 
 const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.identifier';
@@ -26,7 +27,7 @@ const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime'
     styleUrls: ['./identifier.one.component.scss'],
     animations: [routerTransition()]
 })
-export class IdentifierOneComponent {
+export class IdentifierOneComponent implements OnInit {
 
     id: number;
 
@@ -39,6 +40,12 @@ export class IdentifierOneComponent {
     journalIdentifiers: JournalIdentifierModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
     error = false;
+
+    errorOneIdentifier = false;
+    errorOneIdentifierModel: ErrorModel;
+
+    errorOneJournalIdentifiers = false;
+    errorOneJournalIdentifiersModel: ErrorModel;
 
     constructor(
         private translate: TranslateService,
@@ -55,20 +62,16 @@ export class IdentifierOneComponent {
     }
 
     ngOnInit(): void {
-        let id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+        const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.identifierService.getOneIdentifierById(id).subscribe((data: IdentifierModel) => {
             this.identifier = data;
+            this.errorOneIdentifier = false;
         }, error => {
-            this.errorService.errorProcess(error);
-            this.error = true;
+            this.errorOneIdentifierModel = this.errorService.errorProcess(error);
+            this.errorOneIdentifier = true;
         });
         this.id = id;
         this.initProcess();
-    }
-
-    resetData() {
-        this.identifier = new IdentifierModel();
-        this.journalIdentifiers = [];
     }
 
     clickFilter(target: string) {
@@ -83,7 +86,7 @@ export class IdentifierOneComponent {
 
     private initDefaultValues() {
         this.filter = new JournalIdentifierFilterProcessResultModel();
-        if (this.tableHeaderSortModels.length == 0) {
+        if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
@@ -107,7 +110,7 @@ export class IdentifierOneComponent {
     clickProcess(columnName: string) {
         let countClick = this.tableHeaderSortModels.find(k => k.columnName === columnName).columnClick;
         countClick++;
-        let columnEntity = columnName.split('.').reduce((first, last) => last);
+        const columnEntity = columnName.split('.').reduce((first, last) => last);
         if (countClick === 1) {
             this.filter.sortBy = 'orderBy_' + columnEntity + '_Asc';
         }
@@ -127,10 +130,11 @@ export class IdentifierOneComponent {
     private currentProdJournalIdentifier() {
         this.journalIdentifierService.getAllByIdentifierId(this.id, this.filter).subscribe(
             (data: {}) => {
-                this.journalIdentifiers = data["items"];
+                this.journalIdentifiers = data['items'];
+                this.errorOneJournalIdentifiers = false;
             }, error => {
-                this.errorService.errorProcess(error);
-                this.error = true;
+                this.errorOneJournalIdentifiersModel = this.errorService.errorProcess(error);
+                this.errorOneJournalIdentifiers = true;
             }
         );
     }
@@ -140,6 +144,6 @@ export class IdentifierOneComponent {
     }
 
     private clearFilter(columnName: string) {
-        this.tableHeaderSortModels.filter(cn => cn.columnName != columnName).forEach(cn => cn.columnClick = 0);
+        this.tableHeaderSortModels.filter(cn => cn.columnName !== columnName).forEach(cn => cn.columnClick = 0);
     }
 }

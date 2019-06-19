@@ -1,9 +1,11 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'identifier.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
-    <div *ngIf="error">{{resetData()}}</div>
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
+                <div *ngIf="errorOneIdentifier">
+                    <app-error [errorModel]="errorOneIdentifierModel"></app-error>
+                </div>
                 <div class="card">
                     <div class="card-header"><strong>{{ identifier.name }}</strong></div>
                     <br>
@@ -42,6 +44,9 @@
             </div>
 
             <div class="col-md-12 col-md-offset-0">
+                <div *ngIf="errorOneJournalIdentifiers">
+                    <app-error [errorModel]="errorOneJournalIdentifiersModel"></app-error>
+                </div>
                 <div class="card">
                     <div class="card-header"><span>{{ 'journal.identifier.table.header' | translate }}</span></div>
                     <br>
@@ -59,7 +64,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr *ngFor="let doc of journalIdentifiers" [routerLink]="['/journal-identifiers/', doc.id]">
+                            <tr *ngFor="let doc of journalIdentifiers">
                                 <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
                                 <td *ngIf="doc.organisation === null"></td>
                                 <td *ngIf="doc.organisation !== null">{{doc.identifier.name}}</td>

@@ -3,6 +3,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
+                <div *ngIf="errorJournalOneIdentifier">
+                    <app-error [errorModel]="errorJournalOneIdentifierModel"></app-error>
+                </div>
                 <div class="card">
                     <div class="card-header"><strong>{{ journalIdentifier.organisation.name }}</strong></div>
                     <br>
