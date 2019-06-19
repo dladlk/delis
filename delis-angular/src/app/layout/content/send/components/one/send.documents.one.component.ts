@@ -91,4 +91,8 @@ export class SendDocumentsOneComponent implements OnInit {
             }
         );
     }
+
+    reload() {
+        location.reload();
+    }
 }

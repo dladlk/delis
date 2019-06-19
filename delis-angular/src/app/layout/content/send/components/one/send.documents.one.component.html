@@ -5,6 +5,24 @@
     <div class="container">
         <div class="card">
 
+            <div class="card border-secondary m-1">
+                <div class="card-body">
+                    <h3 class="m-1 text-secondary">
+                        <div class="d-flex justify-content-start">
+                            <div class="p-1">
+                                <a class="btn btn-outline-secondary" title="Back" [routerLink]="['/send-documents/']"><i class="fas fa-chevron-left"></i></a>
+                            </div>
+                            <div class="p-1">
+                                <a class="btn btn-outline-secondary" title="Reload" (click)="reload()"><i class="fas fa-redo"></i></a>
+                            </div>
+                            <div class="p-1 m-1">
+                                {{ 'send.document.details' | translate}}
+                            </div>
+                        </div>
+                    </h3>
+                </div>
+            </div>
+
             <div *ngIf="errorOneDocument">
                 <app-error [errorModel]="errorOneDocumentModel"></app-error>
             </div>

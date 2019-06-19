@@ -168,5 +168,8 @@
     "placeholder.name": "Name",
     "placeholder.message": "Message",
     "placeholder.durationMs": "Duration, ms",
-    "placeholder.identifier": "Identifier"
+    "placeholder.identifier": "Identifier",
+
+    "received.document.details": "Received document details",
+    "send.document.details": "Sent document details"
 }

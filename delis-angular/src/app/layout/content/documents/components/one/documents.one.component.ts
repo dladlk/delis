@@ -109,4 +109,8 @@ export class DocumentsOneComponent implements OnInit {
             return err.map(value => value.errorDictionary);
         }
     }
+
+    reload() {
+        location.reload();
+    }
 }

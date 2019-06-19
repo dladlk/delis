@@ -168,5 +168,8 @@
   "placeholder.name": "Navn",
   "placeholder.message": "Tekst",
   "placeholder.durationMs": "Varighed, ms",
-  "placeholder.identifier": "Identifier"
+  "placeholder.identifier": "Identifier",
+
+  "received.document.details": "Modtagelse dokumentoplysninger",
+  "send.document.details": "Afsendelse dokumentoplysninger"
 }
