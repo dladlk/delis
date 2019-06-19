@@ -451,17 +451,18 @@ export class DocumentInvoiceComponent implements OnInit {
 
         this.documentInvoiceResponseFormModel.data = this.invoiceResponseGenerationModel;
 
+        this.errorDownload = false;
+        this.success = undefined;
+
         if (this.onlyGeneratedEnabled) {
             // getFile
             this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
                     const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
                     FileSaverService.saveFile(response.body, filename);
-                    this.errorDownload = false;
                 },
                 error => {
                     this.errorDownloadModel = this.errorService.errorProcess(error);
                     this.errorDownload = true;
-                    this.success = undefined;
                 }
             );
         } else {
@@ -470,11 +471,9 @@ export class DocumentInvoiceComponent implements OnInit {
                 (data: {}) => {
                     console.log(data);
                     this.success = data['data'];
-                    this.errorDownload = false;
                 }, error => {
                     this.errorDownloadModel = this.errorService.errorProcess(error);
                     this.errorDownload = true;
-                    this.success = undefined;
                 }
             );
         }
