@@ -77,7 +77,7 @@ export class DaterangeComponent implements OnInit {
         });
         this.alwaysShowCalendars = true;
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
-            if (pag.collectionSize === 0) {
+            if (pag === null || pag.collectionSize === 0) {
                 this.dateRange = null;
             }
         });

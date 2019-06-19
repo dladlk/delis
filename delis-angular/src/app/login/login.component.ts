@@ -59,9 +59,8 @@ export class LoginComponent implements OnInit {
                 this.tokenService.setToken(loginData.accessToken);
                 localStorage.setItem('username', loginData.username);
                 localStorage.setItem('refreshToken', loginData.refreshToken);
-                this.contentSelectInfoService.generateAllContentSelectInfo();
-                this.contentSelectInfoService.generateUniqueOrganizationNameInfo();
-                this.contentSelectInfoService.generateDateRangeInfo();
+                this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
+                this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
                 this.errorStatus = false;
                 this.router.navigate(['/dashboard']);
             }, error => {

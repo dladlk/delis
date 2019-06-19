@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
-@RequestMapping("/rest/open/table-info")
+@RequestMapping("/rest/table-info")
 public class TableInfoController {
 
     private final TableInfoService tableInfoService;
@@ -20,12 +22,14 @@ public class TableInfoController {
     }
 
     @GetMapping("/enums")
-    public ResponseEntity getTableInfoByAllEntities() {
-        return ResponseEntity.ok(tableInfoService.getTableInfoByAllEntities());
+    public ResponseEntity getTableInfoByAllEntities(HttpServletRequest httpServletRequest) {
+        String locale = httpServletRequest.getParameter("locale_lang");
+        return ResponseEntity.ok(tableInfoService.getTableInfoByAllEntities((locale != null) ? locale : "da"));
     }
 
     @GetMapping("/organizations")
-    public ResponseEntity getUniqueOrganizationNameData() {
-        return ResponseEntity.ok(tableInfoService.getUniqueOrganizationNameData());
+    public ResponseEntity getUniqueOrganizationNameData(HttpServletRequest httpServletRequest) {
+        String locale = httpServletRequest.getParameter("locale_lang");
+        return ResponseEntity.ok(tableInfoService.getUniqueOrganizationNameData((locale != null) ? locale : "da"));
     }
 }
