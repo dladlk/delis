@@ -81,7 +81,7 @@ export class SendDocumentsOneComponent implements OnInit {
 
     download(id: number) {
         this.sendDocumentsService.downloadFileBySendDocumentAndDocumentBytes(this.sendDocument.id, id).subscribe(response => {
-                const filename = response.headers.get('filename');
+                const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
                 FileSaverService.saveFile(response.body, filename);
                 this.errorDownload = false;
             },

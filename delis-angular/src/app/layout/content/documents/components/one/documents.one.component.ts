@@ -90,7 +90,7 @@ export class DocumentsOneComponent implements OnInit {
 
     download(id: number) {
         this.documentService.downloadFileByDocumentAndDocumentBytes(this.document.id, id).subscribe(response => {
-                const filename = response.headers.get('filename');
+                const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
                 FileSaverService.saveFile(response.body, filename);
                 this.errorDownload = false;
             },
