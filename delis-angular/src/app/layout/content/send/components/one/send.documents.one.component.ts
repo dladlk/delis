@@ -7,7 +7,7 @@ import {SendDocumentsBytesModel} from '../../models/send.documents.bytes.model';
 import {JournalSendDocumentModel} from '../../models/journal.send.document.model';
 import {TranslateService} from '@ngx-translate/core';
 import {LocaleService} from '../../../../../service/locale.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ErrorService} from '../../../../../service/error.service';
 import {SendDocumentsService} from '../../service/send.documents.service';
 import {FileSaverService} from '../../../../../service/file.saver.service';
@@ -40,10 +40,13 @@ export class SendDocumentsOneComponent implements OnInit {
     errorDownload = false;
     errorDownloadModel: ErrorModel;
 
+    documentId: number;
+
     constructor(
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
+        private router: Router,
         private errorService: ErrorService,
         private sendDocumentsService: SendDocumentsService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
@@ -54,6 +57,7 @@ export class SendDocumentsOneComponent implements OnInit {
 
     ngOnInit(): void {
         const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+        this.documentId = id;
         this.sendDocumentsService.getOneSendDocumentsById(id).subscribe((data: SendDocumentsModel) => {
             this.sendDocument = data;
             this.errorOneDocument = false;
@@ -92,7 +96,8 @@ export class SendDocumentsOneComponent implements OnInit {
         );
     }
 
-    reload() {
-        location.reload();
+    refreshData() {
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+            this.router.navigate(['/send-documents/details/', this.documentId]));
     }
 }

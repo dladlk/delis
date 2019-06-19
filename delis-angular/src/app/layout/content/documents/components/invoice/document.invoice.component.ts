@@ -11,6 +11,7 @@ import {DocumentInvoiceResponseFormModel} from '../../models/document.invoice.re
 import {FileSaverService} from '../../../../../service/file.saver.service';
 import {SuccessModel} from '../../../../../models/success.model';
 import {ErrorModel} from '../../../../../models/error.model';
+import {InvoiceErrorRecordModel} from "../../models/invoice.error.record.model";
 
 const BORDER_COLOR_GREY = '#ced4da';
 const BORDER_COLOR_GREEN = '#28a745';
@@ -59,6 +60,9 @@ export class DocumentInvoiceComponent implements OnInit {
 
     errorDownload = false;
     errorDownloadModel: ErrorModel;
+
+    errorList: InvoiceErrorRecordModel[] = [];
+    isErrorList = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -458,6 +462,7 @@ export class DocumentInvoiceComponent implements OnInit {
         this.documentInvoiceResponseFormModel.data = this.invoiceResponseGenerationModel;
 
         this.errorDownload = false;
+        this.isErrorList = false;
         this.success = undefined;
 
         if (this.onlyGeneratedEnabled) {
@@ -469,6 +474,10 @@ export class DocumentInvoiceComponent implements OnInit {
                 error => {
                     this.errorDownloadModel = this.errorService.errorProcess(error);
                     this.errorDownload = true;
+                    if (this.errorDownloadModel.details !== null) {
+                        this.errorList = this.errorDownloadModel.details;
+                        this.isErrorList = true;
+                    }
                 }
             );
         } else {
@@ -480,6 +489,12 @@ export class DocumentInvoiceComponent implements OnInit {
                 }, error => {
                     this.errorDownloadModel = this.errorService.errorProcess(error);
                     this.errorDownload = true;
+                    if (this.errorDownloadModel.details !== null) {
+                        this.errorList = this.errorDownloadModel.details;
+                        this.isErrorList = true;
+                    }
+
+                    console.log(this.errorDownloadModel);
                 }
             );
         }

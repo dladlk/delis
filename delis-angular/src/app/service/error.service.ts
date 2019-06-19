@@ -46,8 +46,10 @@ export class ErrorService {
                     let decodedString = String.fromCharCode.apply(null, new Uint8Array(error.error));
                     let obj = JSON.parse(decodedString);
                     errorModel.message = obj.fieldErrors[0].message;
+                    errorModel.details = obj.fieldErrors[0].details;
                 } else {
                     errorModel.message = error.error.fieldErrors[0].message;
+                    errorModel.details = error.error.fieldErrors[0].details;
                 }
             } break;
             default : {

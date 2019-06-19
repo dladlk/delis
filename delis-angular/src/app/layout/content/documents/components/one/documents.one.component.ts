@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 
 import {routerTransition} from '../../../../../router.animations';
@@ -44,10 +44,13 @@ export class DocumentsOneComponent implements OnInit {
     errorDownload = false;
     errorDownloadModel: ErrorModel;
 
+    documentId: number;
+
     constructor(
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
+        private router: Router,
         private errorService: ErrorService,
         private documentService: DocumentsService,
         private journalDocumentService: JournalDocumentService) {
@@ -59,6 +62,7 @@ export class DocumentsOneComponent implements OnInit {
 
     ngOnInit(): void {
         const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+        this.documentId = id;
         this.documentService.getOneDocumentById(id).subscribe((data: DocumentModel) => {
             this.document = data;
         }, error => {
@@ -110,7 +114,8 @@ export class DocumentsOneComponent implements OnInit {
         }
     }
 
-    reload() {
-        location.reload();
+    refreshData() {
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+            this.router.navigate(['/documents/details/', this.documentId]));
     }
 }

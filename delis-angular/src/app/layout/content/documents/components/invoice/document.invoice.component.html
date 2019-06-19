@@ -19,7 +19,7 @@
 
     <div #invoiceResultStatus>
         <div *ngIf="success !== undefined" class="card">
-            <div class="card border-secondary m-1" >
+            <div class="card border-secondary m-1">
                 <div class="alert alert-success m-2" role="alert">
                     {{success.message}}
                 </div>
@@ -28,6 +28,31 @@
 
         <div *ngIf="errorDownload" class="card">
             <app-error [errorModel]="errorDownloadModel"></app-error>
+        </div>
+    </div>
+
+    <div *ngIf="isErrorList" class="card mt-2">
+        <div class="card border-danger table-responsive">
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                    <tr>
+                        <th>{{ 'invoice.error.record.flag' | translate }}</th>
+                        <th>{{ 'invoice.error.record.code' | translate }}</th>
+                        <th>{{ 'invoice.error.record.location' | translate }}</th>
+                        <th>{{ 'invoice.error.record.message' | translate }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let err of errorList">
+                        <td>{{err.flag}}</td>
+                        <td>{{err.code}}</td>
+                        <td>{{err.location}}</td>
+                        <td>{{err.message}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -224,7 +249,9 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="font-italic"><small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small></div>
+                            <div class="font-italic">
+                                <small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small>
+                            </div>
                         </div>
                     </div>
 
@@ -240,7 +267,8 @@
                         <div class="col-4">
                             <small class="form-text text-muted">
                                 <span class="font-italic display-block">//DocumentResponse/Response/Status/Condition/AttributeID</span>
-                                <div>E.g. BT-48</div></small>
+                                <div>E.g. BT-48</div>
+                            </small>
                         </div>
                     </div>
 
@@ -256,7 +284,8 @@
                         <div class="col-4">
                             <small class="form-text text-muted">
                                 <div class="font-italic">//DocumentResponse/Response/Status/Condition/Description</div>
-                                <div>E.g. EU12345</div></small>
+                                <div>E.g. EU12345</div>
+                            </small>
                         </div>
                     </div>
 

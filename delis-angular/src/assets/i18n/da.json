@@ -171,5 +171,10 @@
   "placeholder.identifier": "Identifier",
 
   "received.document.details": "Modtagelse dokumentoplysninger",
-  "send.document.details": "Afsendelse dokumentoplysninger"
+  "send.document.details": "Afsendelse dokumentoplysninger",
+
+  "invoice.error.record.flag": "Flag",
+  "invoice.error.record.code": "Kode",
+  "invoice.error.record.location": "Sted",
+  "invoice.error.record.message": "Tekst"
 }

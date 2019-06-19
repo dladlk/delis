@@ -203,7 +203,7 @@ public class DocumentDelisWebApiServiceImpl implements DocumentDelisWebApiServic
                 sb.append(" errors");
                 log.error(sb.toString());
                 throw new RestConflictException(Collections.singletonList(
-                        new FieldErrorModel("ids", HttpStatus.CONFLICT.getReasonPhrase(), sb.toString())));
+                        new FieldErrorModel("ids", HttpStatus.CONFLICT.getReasonPhrase(), sb.toString(), errorList)));
             }
         }
 
