@@ -9,6 +9,7 @@ import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
 import dk.erst.delis.data.entities.journal.JournalOrganisation;
+import dk.erst.delis.data.entities.journal.JournalSendDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
 import lombok.experimental.UtilityClass;
@@ -91,6 +92,7 @@ public class SpecificationUtil {
                 SendDocument.class.isAssignableFrom(entityClass) ||
                 Identifier.class.isAssignableFrom(entityClass) ||
                 JournalDocument.class.isAssignableFrom(entityClass) ||
+                JournalSendDocument.class.isAssignableFrom(entityClass) ||
                 JournalIdentifier.class.isAssignableFrom(entityClass) ||
                 JournalOrganisation.class.isAssignableFrom(entityClass)) {
             for (Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass)) {
