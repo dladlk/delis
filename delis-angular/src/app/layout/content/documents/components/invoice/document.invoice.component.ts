@@ -424,6 +424,9 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     sendInvoice(element: any) {
+
+        document.getElementById('invoiceWaitSpinner').style.display = 'block';
+
         this.documentInvoiceResponseFormModel.documentId = this.documentId;
         this.documentInvoiceResponseFormModel.generateWithoutSending = this.onlyGeneratedEnabled;
         this.documentInvoiceResponseFormModel.validate = this.validateGeneratedEnabled;
@@ -477,6 +480,7 @@ export class DocumentInvoiceComponent implements OnInit {
                 }
             );
         }
+        document.getElementById('invoiceWaitSpinner').style.display = 'none';
         element.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
 }
