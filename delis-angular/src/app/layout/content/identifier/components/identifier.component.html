@@ -22,7 +22,7 @@
                                 <td>
                                     <ng-select [items]="organizations"
                                                [clearable]="clearableSelect"
-                                               placeholder="organizations: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
                                     </ng-select>
@@ -32,34 +32,34 @@
                                            type="search"
                                            (ngModelChange)="loadTextIdentifierGroup($event)"
                                            [(ngModel)]="textIdentifierGroup"
-                                           placeholder="{{'placeholder.identifierGroup' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
                                            type="search"
                                            (ngModelChange)="loadTextType($event)"
                                            [(ngModel)]="textType"
-                                           placeholder="{{'placeholder.type' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
                                            type="search"
                                            (ngModelChange)="loadTextValue($event)"
                                            [(ngModel)]="textValue"
-                                           placeholder="{{'placeholder.value' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
                                            type="search"
                                            (ngModelChange)="loadTextUniqueValueType($event)"
                                            [(ngModel)]="textUniqueValueType"
-                                           placeholder="{{'placeholder.uniqueValueType' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statusList"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="statuses: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
                                     </ng-select>
@@ -68,7 +68,7 @@
                                     <ng-select [items]="publishingStatusList"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="statuses: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedPublishingStatus"
                                                (change)="loadPublishingStatus()">
                                     </ng-select>
@@ -78,7 +78,7 @@
                                            type="search"
                                            (ngModelChange)="loadTextName($event)"
                                            [(ngModel)]="textName"
-                                           placeholder="{{'placeholder.name' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <app-daterange></app-daterange>

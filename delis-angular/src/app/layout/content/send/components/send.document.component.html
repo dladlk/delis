@@ -25,7 +25,7 @@
                                 <td>
                                     <ng-select [items]="organizations"
                                                [clearable]="clearableSelect"
-                                               placeholder="organizations: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
                                     </ng-select>
@@ -35,20 +35,20 @@
                                            type="search"
                                            (ngModelChange)="loadTextSender($event)"
                                            [(ngModel)]="textSender"
-                                           placeholder="{{'placeholder.identifier' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <input class="form-control"
                                            type="search"
                                            (ngModelChange)="loadTextReceiver($event)"
                                            [(ngModel)]="textReceiver"
-                                           placeholder="{{'placeholder.message' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statuses"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="statuses: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
                                     </ng-select>
@@ -57,7 +57,7 @@
                                     <ng-select [items]="documentTypes"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="documentTypes: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedDocumentType"
                                                (change)="loadDocumentType()">
                                     </ng-select>

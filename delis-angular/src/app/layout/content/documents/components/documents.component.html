@@ -22,7 +22,7 @@
                                 <td>
                                     <ng-select [items]="organizations"
                                                [clearable]="clearableSelect"
-                                               placeholder="organizations: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedOrganization"
                                                (change)="loadOrganisations()">
                                     </ng-select>
@@ -32,13 +32,13 @@
                                            type="search"
                                            (ngModelChange)="loadTextReceiver($event)"
                                            [(ngModel)]="textReceiver"
-                                           placeholder="{{'placeholder.receiver' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
                                     <ng-select [items]="statuses"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="statuses: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedStatus"
                                                (change)="loadStatus()">
                                     </ng-select>
@@ -47,7 +47,7 @@
                                     <ng-select [items]="lastErrors"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="lastErrors: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedLastError"
                                                (change)="loadLastErrors()">
                                     </ng-select>
@@ -56,7 +56,7 @@
                                     <ng-select [items]="documentTypes"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="documentTypes: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedDocumentType"
                                                (change)="loadDocumentType()">
                                     </ng-select>
@@ -65,7 +65,7 @@
                                     <ng-select [items]="ingoingFormats"
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
-                                               placeholder="ingoingFormats: "
+                                               placeholder="{{'placeholder.search' | translate}}"
                                                [(ngModel)]="selectedIngoingFormat"
                                                (change)="loadIngoingFormat()">
                                     </ng-select>
@@ -78,7 +78,7 @@
                                            type="search"
                                            [(ngModel)]="textSenderName"
                                            (ngModelChange)="loadTextSenderName($event)"
-                                           placeholder="{{'placeholder.sender' | translate}}"/>
+                                           placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                             </tr>
                             </thead>
