@@ -8,7 +8,9 @@ import dk.erst.delis.data.entities.identifier.Identifier
 import dk.erst.delis.data.entities.journal.JournalDocument
 import dk.erst.delis.data.entities.journal.JournalIdentifier
 import dk.erst.delis.data.entities.journal.JournalOrganisation
+import dk.erst.delis.rest.data.response.ListContainer
 import dk.erst.delis.rest.data.response.PageContainer
+import dk.erst.delis.rest.data.response.info.TableInfoData
 
 import org.junit.Test
 
@@ -18,11 +20,29 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 import kotlin.test.assertEquals
 
-/**
- * @author funtusthan, created by 25.03.19
- */
-
 class AllRestControllerTest : InitTokenTest() {
+
+    @Test
+    fun getTableInfoByAllEntitiesTest() {
+        val mvcResult: MvcResult = mvc.perform(MockMvcRequestBuilders
+                .get("/rest/table-info/enums")
+                .header("Authorization", "Bearer " + auth.accessToken))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
+        assertEquals(200, mvcResult.response.status)
+
+        val info: ListContainer<TableInfoData> = Gson().fromJson(mvcResult.response.contentAsString,
+                object : TypeToken<ListContainer<TableInfoData>>() {}.type)
+        assertEquals(true, info.items.isNotEmpty())
+    }
+
+    @Test
+    fun getUniqueOrganizationNameData() {
+        val mvcResult: MvcResult = mvc.perform (MockMvcRequestBuilders
+                .get("/rest/table-info/organizations")
+                .header("Authorization", "Bearer " + auth.accessToken))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
+        assertEquals(200, mvcResult.response.status)
+    }
 
     @Test
     fun generateDashboardDataTest() {
