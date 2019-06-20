@@ -76,13 +76,8 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let doc of journalIdentifiers">
-                        <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
-                        <td *ngIf="doc.organisation === null"></td>
-                        <td *ngIf="doc.organisation !== null">{{doc.identifier.name}}</td>
-                        <td *ngIf="doc.organisation === null"></td>
-                        <td>{{doc.message}}</td>
-                        <td>{{doc.durationMs}}</td>
                         <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{doc.message}}</td>
                     </tr>
                     </tbody>
                 </table>

@@ -14,12 +14,9 @@ import { TableHeaderSortModel } from '../../../../bs-component/components/table-
 import { JournalIdentifierFilterProcessResultModel } from '../../../journal/identifier/models/journal.identifier.filter.process.result.model';
 import { JournalIdentifierModel } from '../../../journal/identifier/models/journal.identifier.model';
 import { ErrorModel } from '../../../../../models/error.model';
-import {RefreshService} from "../../../../../service/refresh.service";
+import { RefreshService } from '../../../../../service/refresh.service';
 
-const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.organisation';
-const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.identifier';
 const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.message';
-const COLUMN_NAME_DURATIOM_MS = 'journal.identifier.table.columnName.durationMs';
 const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime';
 
 @Component({
@@ -97,19 +94,10 @@ export class IdentifierOneComponent implements OnInit {
         if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
-                    columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_IDENTIFIER, columnClick: 0
+                    columnName: COLUMN_NAME_CREATE_TIME, columnClick: 0
                 },
                 {
                     columnName: COLUMN_NAME_MESSAGE, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_DURATIOM_MS, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_CREATE_TIME, columnClick: 0
                 }
             );
         }
