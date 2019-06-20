@@ -97,7 +97,7 @@ export class SendDocumentsComponent implements OnInit {
         });
         this.refreshService.listen().subscribe(() => {
             this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-                this.router.navigate(['/documents']));
+                this.router.navigate(['/send-documents']));
         });
     }
 

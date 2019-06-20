@@ -180,6 +180,6 @@
   "invoice.error.record.message": "Tekst",
 
   "placeholder.search": "Søg",
-  "loading": "Indlæser"
-
+  "loading": "Indlæser",
+  "refresh": "Opfrisk"
 }

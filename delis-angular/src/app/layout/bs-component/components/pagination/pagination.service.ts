@@ -19,6 +19,10 @@ export class PaginationService {
         this._listeners.next(pagination);
     }
 
+    refresh(pagination: PaginationModel) {
+        this._listeners.next(pagination);
+    }
+
     clearFilter() {
         this._listeners.next(null);
     }

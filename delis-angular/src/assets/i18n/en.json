@@ -180,6 +180,6 @@
     "invoice.error.record.message": "Message",
 
     "placeholder.search": "Search",
-
-    "loading": "Loading"
+    "loading": "Loading",
+    "refresh": "Refresh"
 }
