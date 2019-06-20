@@ -178,5 +178,7 @@
   "invoice.error.record.location": "Sted",
   "invoice.error.record.message": "Tekst",
 
-  "placeholder.search": "Venligst søg"
+  "placeholder.search": "Søg",
+  "loading": "Indlæser"
+
 }

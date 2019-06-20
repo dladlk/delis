@@ -178,5 +178,7 @@
     "invoice.error.record.location": "Location",
     "invoice.error.record.message": "Message",
 
-    "placeholder.search": "Please search"
+    "placeholder.search": "Search",
+
+    "loading": "Loading"
 }

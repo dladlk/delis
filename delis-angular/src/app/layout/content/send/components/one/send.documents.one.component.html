@@ -2,125 +2,123 @@
 
     <app-page-header [heading]="'documents.send.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
 
-    <div class="container">
-        <div class="card">
+    <div class="card">
 
-            <div class="card border-secondary m-1">
-                <div class="card-body">
-                    <h3 class="m-1 text-secondary">
-                        <div class="d-flex justify-content-start">
-                            <div class="p-1">
-                                <a class="btn btn-outline-secondary" title="Back" [routerLink]="['/send-documents/']"><i class="fas fa-chevron-left"></i></a>
-                            </div>
-                            <div class="p-1">
-                                <a class="btn btn-outline-secondary" title="Reload" (click)="refreshData()"><i class="fas fa-redo"></i></a>
-                            </div>
-                            <div class="p-1 m-1">
-                                {{ 'send.document.details' | translate}}
-                            </div>
+        <div class="card border-secondary m-1">
+            <div class="card-body">
+                <h3 class="m-1 text-secondary">
+                    <div class="d-flex justify-content-start">
+                        <div class="p-1">
+                            <a class="btn btn-outline-secondary" title="Back" [routerLink]="['/send-documents/']"><i class="fas fa-chevron-left"></i></a>
                         </div>
-                    </h3>
-                </div>
-            </div>
-
-            <div *ngIf="errorOneDocument">
-                <app-error [errorModel]="errorOneDocumentModel"></app-error>
-            </div>
-
-            <div class="card border-secondary m-1">
-                <div class="card-body table-responsive">
-                    <table class="table table-sm table-borderless">
-                        <tr>
-                            <th>{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
-                            <th>{{ 'documents.table.send.one.columnName.sender' | translate }}</th>
-                            <th>{{ 'documents.table.send.one.columnName.receiver' | translate }}</th>
-                            <th>{{ 'documents.table.send.one.columnName.created' | translate }}</th>
-                        </tr>
-                        <tr >
-                            <td *ngIf="sendDocument.organisation !== null">{{sendDocument.organisation.name}}</td>
-                            <td *ngIf="sendDocument.organisation === null"></td>
-                            <td>{{sendDocument.senderIdRaw}}</td>
-                            <td>{{sendDocument.receiverIdRaw}}</td>
-                            <td>{{sendDocument.createTime | date: SHOW_DATE_FORMAT}}</td>
-                        </tr>
-                        <tr>
-                            <th>{{ 'documents.table.send.one.columnName.status' | translate }}</th>
-                            <th>{{ 'documents.table.send.one.columnName.documentType' | translate }}</th>
-                            <th>{{ 'documents.table.send.one.columnName.documentId' | translate }}</th>
-                            <th>{{ 'documents.table.send.one.columnName.documentDate' | translate }}</th>
-                        </tr>
-                        <tr >
-                            <td>{{sendDocument.documentStatus}}</td>
-                            <td>{{sendDocument.documentType}}</td>
-                            <td>{{sendDocument.documentId}}</td>
-                            <td>{{sendDocument.documentDate}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div *ngIf="errorJournalDocuments">
-                <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
-            </div>
-
-            <div class="card border-secondary m-1">
-                <div class="card-body table-responsive">
-                    <div class="card-title">
-                        {{ 'documents.table.one.columnName.journalRecords' | translate }}
+                        <div class="p-1">
+                            <a class="btn btn-outline-secondary" title="Reload" (click)="refreshData()"><i class="fas fa-redo"></i></a>
+                        </div>
+                        <div class="p-1 m-1">
+                            {{ 'send.document.details' | translate}}
+                        </div>
                     </div>
-                    <table class="table table-borderless table-sm">
-                        <tr>
-                            <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
-                            <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
-                            <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
-                            <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
-                            <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
-                        </tr>
-                        <tbody *ngFor="let doc of journalSendDocuments">
-                        <tr >
-                            <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
-                            <td>{{doc.type}}</td>
-                            <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
-                            <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>
-                            <td>{{doc.message}}</td>
-                            <td>{{doc.durationMs}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                </h3>
             </div>
-
-            <div *ngIf="errorDocumentBytes">
-                <app-error [errorModel]="errorDocumentBytesModel"></app-error>
-            </div>
-
-            <div *ngIf="errorDownload">
-                <app-error [errorModel]="errorDownloadModel"></app-error>
-            </div>
-
-            <div class="card border-secondary m-1">
-                <div class="card-body table-responsive">
-                    <div class="card-title">
-                        {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
-                    </div>
-                    <table class="table table-borderless table-sm">
-                        <tr>
-                            <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
-                            <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
-                            <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
-                            <th>Download</th>
-                        </tr>
-                        <tr *ngFor="let doc of sendDocumentsBytes" >
-                            <td>{{doc.id}}</td>
-                            <td>{{doc.type}}</td>
-                            <td>{{doc.size}}</td>
-                            <td class="btn-link text-muted" style="cursor: pointer" (click)="download(doc.id)">Download</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
         </div>
+
+        <div *ngIf="errorOneDocument">
+            <app-error [errorModel]="errorOneDocumentModel"></app-error>
+        </div>
+
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <th>{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
+                        <th>{{ 'documents.table.send.one.columnName.sender' | translate }}</th>
+                        <th>{{ 'documents.table.send.one.columnName.receiver' | translate }}</th>
+                        <th>{{ 'documents.table.send.one.columnName.created' | translate }}</th>
+                    </tr>
+                    <tr >
+                        <td *ngIf="sendDocument.organisation !== null">{{sendDocument.organisation.name}}</td>
+                        <td *ngIf="sendDocument.organisation === null"></td>
+                        <td>{{sendDocument.senderIdRaw}}</td>
+                        <td>{{sendDocument.receiverIdRaw}}</td>
+                        <td>{{sendDocument.createTime | date: SHOW_DATE_FORMAT}}</td>
+                    </tr>
+                    <tr>
+                        <th>{{ 'documents.table.send.one.columnName.status' | translate }}</th>
+                        <th>{{ 'documents.table.send.one.columnName.documentType' | translate }}</th>
+                        <th>{{ 'documents.table.send.one.columnName.documentId' | translate }}</th>
+                        <th>{{ 'documents.table.send.one.columnName.documentDate' | translate }}</th>
+                    </tr>
+                    <tr >
+                        <td>{{sendDocument.documentStatus}}</td>
+                        <td>{{sendDocument.documentType}}</td>
+                        <td>{{sendDocument.documentId}}</td>
+                        <td>{{sendDocument.documentDate}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="errorJournalDocuments">
+            <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
+        </div>
+
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <div class="card-title">
+                    {{ 'documents.table.one.columnName.journalRecords' | translate }}
+                </div>
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
+                    </tr>
+                    <tbody *ngFor="let doc of journalSendDocuments">
+                    <tr >
+                        <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{doc.type}}</td>
+                        <td *ngIf="doc.success"><i class="fa fa-check-circle text-success"></i></td>
+                        <td *ngIf="!doc.success"><i class="fa fa-exclamation-circle text-danger"></i></td>
+                        <td>{{doc.message}}</td>
+                        <td>{{doc.durationMs}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="errorDocumentBytes">
+            <app-error [errorModel]="errorDocumentBytesModel"></app-error>
+        </div>
+
+        <div *ngIf="errorDownload">
+            <app-error [errorModel]="errorDownloadModel"></app-error>
+        </div>
+
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <div class="card-title">
+                    {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
+                </div>
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+                        <th>Download</th>
+                    </tr>
+                    <tr *ngFor="let doc of sendDocumentsBytes" >
+                        <td>{{doc.id}}</td>
+                        <td>{{doc.type}}</td>
+                        <td>{{doc.size}}</td>
+                        <td class="btn-link text-muted" style="cursor: pointer" (click)="download(doc.id)">Download</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
     </div>
 
 </div>
