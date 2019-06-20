@@ -17,6 +17,7 @@ import { DaterangeService } from '../../../bs-component/components/daterange/dat
 import { DaterangeShowService } from '../../../bs-component/components/daterange/daterange.show.service';
 import { EnumInfoModel } from '../../../../models/enum.info.model';
 import { LocalStorageService } from '../../../../service/local.storage.service';
+import { RefreshService } from '../../../../service/refresh.service';
 
 const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
 const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
@@ -61,6 +62,7 @@ export class DocumentsComponent implements OnInit {
     show: boolean;
 
     constructor(
+        private refreshService: RefreshService,
         private router: Router,
         private storage: LocalStorageService,
         private translate: TranslateService,
@@ -99,6 +101,10 @@ export class DocumentsComponent implements OnInit {
         this.dtShowService.listen().subscribe((show: boolean) => {
             this.filter.dateReceived = null;
             this.loadPage(1, this.pagination.pageSize);
+        });
+        this.refreshService.listen().subscribe(() => {
+            this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+                this.router.navigate(['/documents']));
         });
     }
 

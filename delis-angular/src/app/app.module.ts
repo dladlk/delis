@@ -24,6 +24,7 @@ import {HttpEventInterceptor} from './service/http.event.interceptor';
 import {RefreshTokenService} from './service/refresh.token.service';
 import {FileSaverService} from './service/file.saver.service';
 import {LocalStorageService} from './service/local.storage.service';
+import {RefreshService} from './service/refresh.service';
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -66,7 +67,8 @@ export const createTranslateLoader = (http: HttpClient) => {
         ForwardingLanguageService,
         RefreshTokenService,
         FileSaverService,
-        LocalStorageService],
+        LocalStorageService,
+        RefreshService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

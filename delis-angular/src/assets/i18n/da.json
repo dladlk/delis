@@ -176,5 +176,7 @@
   "invoice.error.record.flag": "Flag",
   "invoice.error.record.code": "Kode",
   "invoice.error.record.location": "Sted",
-  "invoice.error.record.message": "Tekst"
+  "invoice.error.record.message": "Tekst",
+
+  "placeholder.search": "Venligst søg"
 }
