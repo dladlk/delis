@@ -7,15 +7,23 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import dk.erst.delis.data.enums.Named;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 
 @Configuration
 public class JacksonConfig {
+
+    private static String LOCALE;
+
+    static void setLOCALE(String LOCALE) {
+        JacksonConfig.LOCALE = LOCALE;
+    }
 
     public static class NamedSerializer extends StdSerializer<Named> {
 
@@ -26,7 +34,12 @@ public class JacksonConfig {
         }
 
         public void serialize(Named o, JsonGenerator generator, SerializerProvider provider) throws IOException, JsonProcessingException {
-            generator.writeString(o.getName());
+            if (StringUtils.equals(LOCALE, "en")) {
+                generator.writeString(o.getName());
+            } else {
+                generator.writeString(o.getNameDa());
+            }
+
         }
     }
 

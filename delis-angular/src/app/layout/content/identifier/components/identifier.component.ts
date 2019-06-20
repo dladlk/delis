@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
+import {Router} from '@angular/router';
 
 import {routerTransition} from '../../../../router.animations';
 import {PaginationModel} from '../../../bs-component/components/pagination/pagination.model';
@@ -15,6 +16,7 @@ import {SHOW_DATE_FORMAT} from '../../../../app.constants';
 import {DaterangeService} from '../../../bs-component/components/daterange/daterange.service';
 import {DaterangeShowService} from '../../../bs-component/components/daterange/daterange.show.service';
 import {EnumInfoModel} from '../../../../models/enum.info.model';
+import {LocalStorageService} from '../../../../service/local.storage.service';
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
@@ -42,7 +44,7 @@ export class IdentifierComponent implements OnInit {
     tableHeaderSortModels: TableHeaderSortModel[] = [];
     statusList: EnumInfoModel[];
     publishingStatusList: EnumInfoModel[];
-    organizations: [];
+    organizations: string[];
 
     textIdentifierGroup: string;
     textType: string;
@@ -50,35 +52,39 @@ export class IdentifierComponent implements OnInit {
     textUniqueValueType: string;
     textName: string;
 
-    selectedStatus: EnumInfoModel = new EnumInfoModel();
-    selectedPublishingStatus: EnumInfoModel = new EnumInfoModel();
-    selectedOrganization: any;
+    selectedStatus: EnumInfoModel;
+    selectedPublishingStatus: EnumInfoModel;
+    selectedOrganization: string;
 
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
     show: boolean;
 
     constructor(
+        private router: Router,
         private translate: TranslateService,
         private locale: LocaleService,
         private errorService: ErrorService,
         private paginationService: PaginationService,
         private identifierService: IdentifierService,
-        private dtService: DaterangeService, private dtShowService: DaterangeShowService) {
+        private dtService: DaterangeService,
+        private dtShowService: DaterangeShowService,
+        private storage: LocalStorageService) {
         this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
-            if (pag.collectionSize !== 0) {
+            this.pagination = new PaginationModel();
+            if (pag === null || pag.collectionSize === 0) {
+                this.clearAllFilter();
+                this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+                    this.router.navigate(['/identifiers']));
+            } else {
                 if (pag.collectionSize <= pag.pageSize) {
                     this.loadPage(1, this.pagination.pageSize);
                 } else {
                     this.loadPage(pag.currentPage, pag.pageSize);
                 }
-            } else {
-                this.initDefaultValues();
-                this.clearAllFilter();
-                this.loadPage(pag.currentPage, pag.pageSize);
+                this.pagination = pag;
             }
-            this.pagination = pag;
         });
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
             if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
@@ -96,29 +102,31 @@ export class IdentifierComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.initProcess();
         this.initSelected();
+        this.initProcess();
     }
 
     private initProcess() {
         this.pagination = new PaginationModel();
         this.initDefaultValues();
         this.currentProdIdentifiers(1, 10);
-        this.clearAllFilter();
     }
 
     initSelected() {
-        let select = JSON.parse(localStorage.getItem('Identifier'));
-        this.statusList = select.status;
-        this.publishingStatusList = select.publishingStatus;
-        select = JSON.parse(localStorage.getItem('organizations'));
-        this.organizations = select;
+        this.organizations = JSON.parse(localStorage.getItem('organizations'));
+        this.storage.select('Identifier', null).subscribe(enumInfo => {
+            this.statusList = enumInfo.status;
+            this.publishingStatusList = enumInfo.publishingStatus;
+            this.selectedStatus = this.statusList[0];
+            this.selectedPublishingStatus = this.publishingStatusList[0];
+        });
+        this.storage.select('organizations', null).subscribe(organizationsInfo => {
+            this.organizations = organizationsInfo;
+            this.selectedOrganization = this.organizations[0];
+        });
     }
 
     private initDefaultValues() {
-        this.selectedStatus = new EnumInfoModel();
-        this.selectedOrganization = 'ALL';
-        this.selectedPublishingStatus = new EnumInfoModel();
         this.filter = new IdentifierFilterProcessResult();
         if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
@@ -161,7 +169,7 @@ export class IdentifierComponent implements OnInit {
 
     loadStatus() {
         if (this.selectedStatus === null) {
-            this.selectedStatus = new EnumInfoModel();
+            this.selectedStatus = this.statusList[0];
         }
         this.pagination.currentPage = 1;
         this.filter.status = this.selectedStatus.name;
@@ -170,7 +178,7 @@ export class IdentifierComponent implements OnInit {
 
     loadPublishingStatus() {
         if (this.selectedPublishingStatus === null) {
-            this.selectedPublishingStatus = new EnumInfoModel();
+            this.selectedPublishingStatus = this.publishingStatusList[0];
         }
         this.pagination.currentPage = 1;
         this.filter.publishingStatus = this.selectedPublishingStatus.name;
@@ -179,9 +187,13 @@ export class IdentifierComponent implements OnInit {
 
     loadOrganisations() {
         if (this.selectedOrganization === null) {
-            this.selectedOrganization = 'ALL';
+            this.selectedOrganization = this.organizations[0];
         }
-        this.filter.organisation = this.selectedOrganization;
+        if (this.selectedOrganization === 'All' || this.selectedOrganization === 'Alle') {
+            this.filter.organisation = null;
+        } else {
+            this.filter.organisation = this.selectedOrganization;
+        }
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -276,9 +288,9 @@ export class IdentifierComponent implements OnInit {
 
     private clearAllFilter() {
         this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.selectedStatus = new EnumInfoModel();
-        this.selectedPublishingStatus = new EnumInfoModel();
-        this.selectedOrganization = 'ALL';
+        this.selectedStatus = null;
+        this.selectedPublishingStatus = null;
+        this.selectedOrganization = null;
         this.textIdentifierGroup = '';
         this.textType = '';
         this.textValue = '';

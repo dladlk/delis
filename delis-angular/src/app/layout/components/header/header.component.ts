@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthorizationService } from '../../../login/authorization.service';
-import { LocaleService } from "../../../service/locale.service";
-import { RuntimeConfigService } from "../../../service/runtime.config.service";
-import { LogoutService } from "../../../logout/logout.service";
-import {ForwardingLanguageService} from "../../../service/forwarding.language.service";
+import { LocaleService } from '../../../service/locale.service';
+import { RuntimeConfigService } from '../../../service/runtime.config.service';
+import { LogoutService } from '../../../logout/logout.service';
+import { ForwardingLanguageService } from '../../../service/forwarding.language.service';
+import { ContentSelectInfoService } from '../../../service/content.select.info.service';
+import { TokenService } from '../../../service/token.service';
 
 @Component({
   selector: 'app-header',
@@ -22,8 +24,10 @@ export class HeaderComponent implements OnInit {
     private auth: AuthorizationService,
     private translate: TranslateService,
     private locale: LocaleService,
+    private tokenService: TokenService,
     private configService: RuntimeConfigService,
     private logout: LogoutService,
+    private contentSelectInfoService: ContentSelectInfoService,
     private forwardingLanguageService: ForwardingLanguageService,
     public router: Router) {
 
@@ -66,5 +70,9 @@ export class HeaderComponent implements OnInit {
     this.locale.setLocale(language);
     this.lang = language;
     this.forwardingLanguageService.forwardLanguage(this.lang);
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+        this.router.navigate([location.pathname]));
+    this.contentSelectInfoService.generateAllContentSelectInfo(this.tokenService.getToken());
+    this.contentSelectInfoService.generateUniqueOrganizationNameInfo(this.tokenService.getToken());
   }
 }

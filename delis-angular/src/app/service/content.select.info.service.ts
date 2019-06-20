@@ -1,35 +1,37 @@
-import { Injectable } from "@angular/core";
-import { HttpRestService } from "./http.rest.service";
-import { TableInfoModel } from "../models/table.info.model";
-import { RuntimeConfigService } from "./runtime.config.service";
+import { Injectable } from '@angular/core';
+import { HttpRestService } from './http.rest.service';
+import { TableInfoModel } from '../models/table.info.model';
+import { RuntimeConfigService } from './runtime.config.service';
+import { LocalStorageService } from './local.storage.service';
 
 @Injectable()
 export class ContentSelectInfoService {
 
-    constructor(private http: HttpRestService, private configService: RuntimeConfigService) {}
+    constructor(
+        private http: HttpRestService, private configService: RuntimeConfigService, private storage: LocalStorageService) {}
 
-    generateAllContentSelectInfo() {
-        this.http.methodOpenGet(this.configService.getConfigUrl() + '/rest/open/table-info/enums').subscribe(
+    generateAllContentSelectInfo(token: string) {
+        this.http.methodGet(this.configService.getConfigUrl() + '/rest/table-info/enums', null, token).subscribe(
             (items: {}) => {
-                this.setContent(items["items"]);
+                this.setContent(items['items']);
             }
-        )
+        );
     }
 
-    generateUniqueOrganizationNameInfo() {
-        this.http.methodOpenGet(this.configService.getConfigUrl() + '/rest/open/table-info/organizations').subscribe(
+    generateUniqueOrganizationNameInfo(token: string) {
+        this.http.methodGet(this.configService.getConfigUrl() + '/rest/table-info/organizations', null, token).subscribe(
             (data: {}) => {
-                let organizations = data["data"];
-                localStorage.setItem("organizations", JSON.stringify(organizations.uniqueOrganizationNames))
+                const organizations = data['data'];
+                this.storage.set('organizations', organizations.uniqueOrganizationNames);
             }
-        )
+        );
     }
 
     generateDateRangeInfo() {
         this.http.methodInnerGet('assets/config/date_range.json').subscribe(
             (data: {}) => {
-                let dateRanges = data["range"];
-                localStorage.setItem("dateRanges", JSON.stringify(dateRanges))
+                const dateRanges = data['range'];
+                localStorage.setItem('dateRanges', JSON.stringify(dateRanges));
             }
         );
 
@@ -37,6 +39,8 @@ export class ContentSelectInfoService {
 
 
     setContent(infoContent: TableInfoModel[]) {
-        infoContent.forEach(info => localStorage.setItem(info.entityName, JSON.stringify(info.entityEnumInfo)));
+        infoContent.forEach(info => {
+            this.storage.set(info.entityName, info.entityEnumInfo);
+        });
     }
 }

@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
-import { PaginationModel } from "./pagination.model";
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { PaginationModel } from './pagination.model';
 
 @Injectable()
 export class PaginationService {
@@ -20,6 +20,6 @@ export class PaginationService {
     }
 
     clearFilter() {
-        this._listeners.next(new PaginationModel());
+        this._listeners.next(null);
     }
 }

@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { HttpRestService } from "./http.rest.service";
-import { environment } from "../../environments/environment";
+import { Injectable } from '@angular/core';
+import { HttpRestService } from './http.rest.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class RuntimeConfigService {
@@ -8,8 +8,8 @@ export class RuntimeConfigService {
     private env = environment;
     private url = this.env.api_url;
     private config: string;
-    private LOCALE_URL = "url";
-    private LOCALE_USERNAME = "username";
+    private LOCALE_URL = 'url';
+    private LOCALE_USERNAME = 'username';
 
     constructor( private http: HttpRestService ) {
     }
@@ -17,21 +17,21 @@ export class RuntimeConfigService {
     getUrl() {
         this.http.methodInnerGet('assets/config/runtime.json').subscribe(
             (data: {}) => {
-                localStorage.setItem(this.LOCALE_URL, data["PARAM_API_URL"]);
+                localStorage.setItem(this.LOCALE_URL, data['PARAM_API_URL']);
             }
         );
     }
 
-    getConfigUrl() : string {
+    getConfigUrl(): string {
         this.config = localStorage.getItem(this.LOCALE_URL);
-        if (this.config !== '${API_URL}') {
-            return this.config;
-        } else {
+        if (this.config === null || this.config === '${API_URL}') {
             return this.url;
+        } else {
+            return this.config;
         }
     }
 
-    getCurrentUser() : string {
+    getCurrentUser(): string {
          return localStorage.getItem(this.LOCALE_USERNAME);
     }
 

@@ -36,7 +36,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         } else {
             authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
         }
-        return new CustomUserDetails(user, authorities);
+        String organisation = user.getOrganisation() != null ? user.getOrganisation().getName() : null;
+        return new CustomUserDetails(user, authorities, organisation);
     }
 
     private enum Role {

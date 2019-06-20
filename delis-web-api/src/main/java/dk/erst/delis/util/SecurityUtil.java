@@ -17,6 +17,10 @@ public class SecurityUtil {
         return ((CustomUserDetails) SecurityUtil.getAuthentication().getPrincipal()).getId();
     }
 
+    public String getOrganisation() {
+        return ((CustomUserDetails) SecurityUtil.getAuthentication().getPrincipal()).getOrganisation();
+    }
+
     public String getUsername() {
         return SecurityUtil.getAuthentication().getName();
     }

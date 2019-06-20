@@ -1,7 +1,7 @@
 export class TableInfoModel {
 
     entityName: string;
-    entityEnumInfo : [];
+    entityEnumInfo: [];
 
     constructor(model: any) {
         if (model) {

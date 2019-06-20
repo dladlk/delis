@@ -16,10 +16,12 @@ public class CustomUserDetails extends User {
 
     private Long id;
     private String userName;
+    private String organisation;
 
-    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities) {
+    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities, String organisation) {
         super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
         this.id = user.getId();
         this.userName = StringUtils.isNotEmpty(user.getFullName()) ? user.getFullName() : user.getUsername();
+        this.organisation = organisation;
     }
 }
