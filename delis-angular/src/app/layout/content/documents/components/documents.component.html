@@ -20,6 +20,9 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <app-daterange drops="down" opens="right"></app-daterange>
+                                </td>
+                                <td>
                                     <ng-select [items]="organizations"
                                                [clearable]="clearableSelect"
                                                placeholder="{{'placeholder.search' | translate}}"
@@ -71,9 +74,6 @@
                                     </ng-select>
                                 </td>
                                 <td>
-                                    <app-daterange></app-daterange>
-                                </td>
-                                <td>
                                     <input class="form-control"
                                            type="search"
                                            [(ngModel)]="textSenderName"
@@ -84,6 +84,7 @@
                             </thead>
                             <tbody>
                             <tr *ngFor="let doc of documents" style="cursor: pointer" [routerLink]="['/documents/details/', doc.id]">
+                                <td>{{doc.createTime | date : SHOW_DATE_FORMAT}}</td>
                                 <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
                                 <td *ngIf="doc.organisation === null"></td>
                                 <td *ngIf="doc.receiverIdentifier !== null">{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
@@ -92,7 +93,6 @@
                                 <td>{{doc.lastError}}</td>
                                 <td>{{doc.documentType}}</td>
                                 <td>{{doc.ingoingDocumentFormat}}</td>
-                                <td>{{doc.createTime | date : SHOW_DATE_FORMAT}}</td>
                                 <td>{{doc.senderName}}</td>
                             </tr>
                             </tbody>

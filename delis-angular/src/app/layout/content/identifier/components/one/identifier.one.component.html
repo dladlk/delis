@@ -14,7 +14,7 @@
                             <a class="btn btn-outline-secondary" title="Reload" (click)="refreshData()"><i class="fas fa-redo"></i></a>
                         </div>
                         <div class="p-1 m-1">
-                            {{ 'identifier.document.details' | translate}}
+                            {{ 'identifier.header.details' | translate}}
                         </div>
                     </div>
                 </h3>
@@ -30,8 +30,8 @@
                 <table class="table table-sm table-borderless">
                     <tr>
                         <th>Organisation</th>
-                        <th>Oprettet</th>
-                        <th>Nummer</th>
+                        <th>{{ 'identifier.table.columnName.createTime' | translate }}</th>
+                        <th>{{ 'identifier.header' | translate }}</th>
                     </tr>
                     <tr>
                         <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>

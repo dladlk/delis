@@ -137,6 +137,9 @@ export class IdentifierComponent implements OnInit {
         if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
+                    columnName: COLUMN_NAME_CREATE_TIME, columnClick: 0
+                },
+                {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
                 },
                 {
@@ -159,9 +162,6 @@ export class IdentifierComponent implements OnInit {
                 },
                 {
                     columnName: COLUMN_NAME_NAME, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_CREATE_TIME, columnClick: 0
                 }
             );
         }

@@ -131,7 +131,7 @@
 
     "journal.identifier.header" : "Identifier history",
     "journal.identifier.header.details" : "Identifier history",
-    "journal.identifier.table.header" : "Identifier history",
+    "journal.identifier.table.header" : "History",
     "journal.identifier.table.columnName.organisation" : "Organisation",
     "journal.identifier.table.columnName.identifier" : "Identifier",
     "journal.identifier.table.columnName.message" : "Message",

@@ -142,6 +142,9 @@ export class DocumentsComponent implements OnInit {
         if (this.tableHeaderSortModels.length === 0) {
             this.tableHeaderSortModels.push(
                 {
+                    columnName: COLUMN_NAME_RECEIVED, columnClick: 0
+                },
+                {
                     columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
                 },
                 {
@@ -158,9 +161,6 @@ export class DocumentsComponent implements OnInit {
                 },
                 {
                     columnName: COLUMN_NAME_INGOING_FORMAT, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_RECEIVED, columnClick: 0
                 },
                 {
                     columnName: COLUMN_NAME_SENDER_NAME, columnClick: 0
