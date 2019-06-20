@@ -17,6 +17,7 @@ import {DaterangeService} from '../../../bs-component/components/daterange/dater
 import {DaterangeShowService} from '../../../bs-component/components/daterange/daterange.show.service';
 import {EnumInfoModel} from '../../../../models/enum.info.model';
 import {LocalStorageService} from '../../../../service/local.storage.service';
+import {RefreshService} from '../../../../service/refresh.service';
 
 const COLUMN_NAME_ORGANIZATION = 'identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER_GROUP = 'identifier.table.columnName.identifierGroup';
@@ -60,6 +61,7 @@ export class IdentifierComponent implements OnInit {
     show: boolean;
 
     constructor(
+        private refreshService: RefreshService,
         private router: Router,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -98,6 +100,10 @@ export class IdentifierComponent implements OnInit {
         this.dtShowService.listen().subscribe((show: boolean) => {
             this.filter.dateRange = null;
             this.loadPage(1, this.pagination.pageSize);
+        });
+        this.refreshService.listen().subscribe(() => {
+            this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+                this.router.navigate(['/identifiers']));
         });
     }
 

@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
-import { AuthorizationService } from '../../../login/authorization.service';
-import { LocaleService } from '../../../service/locale.service';
-import { RuntimeConfigService } from '../../../service/runtime.config.service';
-import { LogoutService } from '../../../logout/logout.service';
-import { ForwardingLanguageService } from '../../../service/forwarding.language.service';
-import { ContentSelectInfoService } from '../../../service/content.select.info.service';
-import { TokenService } from '../../../service/token.service';
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {AuthorizationService} from '../../../login/authorization.service';
+import {LocaleService} from '../../../service/locale.service';
+import {RuntimeConfigService} from '../../../service/runtime.config.service';
+import {LogoutService} from '../../../logout/logout.service';
+import {ForwardingLanguageService} from '../../../service/forwarding.language.service';
+import {ContentSelectInfoService} from '../../../service/content.select.info.service';
+import {TokenService} from '../../../service/token.service';
+import {RefreshService} from '../../../service/refresh.service';
 
 @Component({
   selector: 'app-header',
@@ -21,24 +22,25 @@ export class HeaderComponent implements OnInit {
   public username: string;
 
   constructor(
-    private auth: AuthorizationService,
-    private translate: TranslateService,
-    private locale: LocaleService,
-    private tokenService: TokenService,
-    private configService: RuntimeConfigService,
-    private logout: LogoutService,
-    private contentSelectInfoService: ContentSelectInfoService,
-    private forwardingLanguageService: ForwardingLanguageService,
-    public router: Router) {
+      private refreshService: RefreshService,
+      private auth: AuthorizationService,
+      private translate: TranslateService,
+      private locale: LocaleService,
+      private tokenService: TokenService,
+      private configService: RuntimeConfigService,
+      private logout: LogoutService,
+      private contentSelectInfoService: ContentSelectInfoService,
+      private forwardingLanguageService: ForwardingLanguageService,
+      public router: Router) {
 
     this.lang = locale.getlocale();
     this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
 
     this.router.events.subscribe(val => {
       if (
-        val instanceof NavigationEnd &&
-        window.innerWidth <= 992 &&
-        this.isToggled()
+          val instanceof NavigationEnd &&
+          window.innerWidth <= 992 &&
+          this.isToggled()
       ) {
         this.toggleSidebar();
       }
@@ -70,9 +72,8 @@ export class HeaderComponent implements OnInit {
     this.locale.setLocale(language);
     this.lang = language;
     this.forwardingLanguageService.forwardLanguage(this.lang);
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        this.router.navigate([location.pathname]));
     this.contentSelectInfoService.generateAllContentSelectInfo(this.tokenService.getToken());
     this.contentSelectInfoService.generateUniqueOrganizationNameInfo(this.tokenService.getToken());
+    this.refreshService.refreshPage();
   }
 }

@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
 import {routerTransition} from '../../../../router.animations';
 import {PaginationModel} from '../../../bs-component/components/pagination/pagination.model';
 import {TableHeaderSortModel} from '../../../bs-component/components/table-header-sort/table.header.sort.model';
 import {SendDocumentsModel} from '../models/send.documents.model';
 import {SendDocumentsFilterProcessResult} from '../models/send.documents.filter.process.result';
 import {SHOW_DATE_FORMAT} from '../../../../app.constants';
-import {TranslateService} from '@ngx-translate/core';
 import {LocaleService} from '../../../../service/locale.service';
 import {ErrorService} from '../../../../service/error.service';
 import {PaginationService} from '../../../bs-component/components/pagination/pagination.service';
@@ -14,8 +15,8 @@ import {DaterangeShowService} from '../../../bs-component/components/daterange/d
 import {DateRangeModel} from '../../../../models/date.range.model';
 import {SendDocumentsService} from '../service/send.documents.service';
 import {EnumInfoModel} from '../../../../models/enum.info.model';
-import {Router} from '@angular/router';
 import {LocalStorageService} from '../../../../service/local.storage.service';
+import {RefreshService} from '../../../../service/refresh.service';
 
 const COLUMN_NAME_CREATE_TIME = 'documents.table.send.columnName.createTime';
 const COLUMN_NAME_ORGANIZATION = 'documents.table.send.columnName.organisation';
@@ -54,6 +55,7 @@ export class SendDocumentsComponent implements OnInit {
     textSender: string;
 
     constructor(
+        private refreshService: RefreshService,
         private router: Router,
         private storage: LocalStorageService,
         private translate: TranslateService,
@@ -92,6 +94,10 @@ export class SendDocumentsComponent implements OnInit {
         this.dtShowService.listen().subscribe((show: boolean) => {
             this.filter.dateRange = null;
             this.loadPage(1, this.pagination.pageSize);
+        });
+        this.refreshService.listen().subscribe(() => {
+            this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+                this.router.navigate(['/documents']));
         });
     }
 
