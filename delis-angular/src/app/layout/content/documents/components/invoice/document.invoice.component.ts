@@ -11,7 +11,7 @@ import {DocumentInvoiceResponseFormModel} from '../../models/document.invoice.re
 import {FileSaverService} from '../../../../../service/file.saver.service';
 import {SuccessModel} from '../../../../../models/success.model';
 import {ErrorModel} from '../../../../../models/error.model';
-import {InvoiceErrorRecordModel} from "../../models/invoice.error.record.model";
+import {InvoiceErrorRecordModel} from '../../models/invoice.error.record.model';
 
 const BORDER_COLOR_GREY = '#ced4da';
 const BORDER_COLOR_GREEN = '#28a745';
@@ -73,6 +73,7 @@ export class DocumentInvoiceComponent implements OnInit {
         // tslint:disable-next-line:radix
         const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentInvoiceService.getInvoice(id).subscribe((data: DocumentModel) => {
+            console.log(data)
             this.documentInvoiceModel = data['data'];
             this.setDefaultConfig();
         }, error => {
@@ -214,6 +215,8 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusAction2').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
                             this.initUseCase(useCaseId);
+
+                            console.log(this.documentInvoiceResponseFormModel);
                         }
                     }
                 } break;
@@ -374,8 +377,10 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusReasonView(value: any) {
+        console.log(value)
         const reason = value.split(':');
         const reasonId = reason[0];
+        console.log(reasonId)
         this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === reasonId)[0];
     }
 
@@ -444,7 +449,7 @@ export class DocumentInvoiceComponent implements OnInit {
 
         this.invoiceResponseGenerationModel.reasonEnabled = this.statusReasonEnabled;
         if (this.statusReasonEnabled) {
-            this.invoiceResponseGenerationModel.reason = this.invoiceResponseUseCaseView[0];
+            this.invoiceResponseGenerationModel.reason = this.statusReasonView[0];
         }
         this.invoiceResponseGenerationModel.actionEnabled = this.statusActionEnabled;
         if (this.statusActionEnabled) {
@@ -466,6 +471,9 @@ export class DocumentInvoiceComponent implements OnInit {
         this.success = undefined;
 
         if (this.onlyGeneratedEnabled) {
+
+            console.log(this.documentInvoiceResponseFormModel);
+
             // getFile
             this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
                     const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
@@ -481,6 +489,8 @@ export class DocumentInvoiceComponent implements OnInit {
                 }
             );
         } else {
+
+            console.log(this.documentInvoiceResponseFormModel);
             // easy post
             this.documentInvoiceService.generateAndSend(this.documentInvoiceResponseFormModel).subscribe(
                 (data: {}) => {
