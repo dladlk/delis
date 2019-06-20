@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import { routerTransition } from '../../../../../router.animations';
 import { HeaderModel } from '../../../../components/header/header.model';
@@ -14,6 +14,7 @@ import { TableHeaderSortModel } from '../../../../bs-component/components/table-
 import { JournalIdentifierFilterProcessResultModel } from '../../../journal/identifier/models/journal.identifier.filter.process.result.model';
 import { JournalIdentifierModel } from '../../../journal/identifier/models/journal.identifier.model';
 import { ErrorModel } from '../../../../../models/error.model';
+import {RefreshService} from "../../../../../service/refresh.service";
 
 const COLUMN_NAME_ORGANIZATION = 'journal.identifier.table.columnName.organisation';
 const COLUMN_NAME_IDENTIFIER = 'journal.identifier.table.columnName.identifier';
@@ -47,22 +48,29 @@ export class IdentifierOneComponent implements OnInit {
     errorOneJournalIdentifiers = false;
     errorOneJournalIdentifiersModel: ErrorModel;
 
+    identifierId: number;
+
     constructor(
+        private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
+        private router: Router,
         private errorService: ErrorService,
         private identifierService: IdentifierService,
-        private journalIdentifierService: JournalIdentifierService
-    ) {
+        private journalIdentifierService: JournalIdentifierService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.pageHeaders.push(
             { routerLink : '/identifiers', heading: 'identifier.header', icon: 'fa fa-id-card'}
         );
+        this.refreshService.listen().subscribe(() => {
+            this.refreshData();
+        });
     }
 
     ngOnInit(): void {
         const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
+        this.identifierId = id;
         this.identifierService.getOneIdentifierById(id).subscribe((data: IdentifierModel) => {
             this.identifier = data;
             this.errorOneIdentifier = false;
@@ -145,5 +153,10 @@ export class IdentifierOneComponent implements OnInit {
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName !== columnName).forEach(cn => cn.columnClick = 0);
+    }
+
+    refreshData() {
+        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+            this.router.navigate(['/identifiers/details/', this.identifierId]));
     }
 }

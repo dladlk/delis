@@ -131,7 +131,7 @@
 
   "journal.identifier.header" : "Journal Identifier",
   "journal.identifier.header.details" : "Journal Identifier details",
-  "journal.identifier.table.header" : "Journal Identifier Overview",
+  "journal.identifier.table.header" : "Journal Identifier Oversigt",
   "journal.identifier.table.columnName.organisation" : "Organisation",
   "journal.identifier.table.columnName.identifier" : "Nummer",
   "journal.identifier.table.columnName.message" : "Tekst",
@@ -172,6 +172,7 @@
 
   "received.document.details": "Modtagelse dokumentoplysninger",
   "send.document.details": "Afsendelse dokumentoplysninger",
+  "identifier.document.details": "Identifier dokumentoplysninger",
 
   "invoice.error.record.flag": "Flag",
   "invoice.error.record.code": "Kode",

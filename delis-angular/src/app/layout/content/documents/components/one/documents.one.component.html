@@ -37,7 +37,7 @@
                     <tr >
                         <td *ngIf="document.organisation !== null">{{document.organisation.name}}</td>
                         <td *ngIf="document.organisation === null"></td>
-                        <td *ngIf="document.receiverIdentifier !== null" class="btn-link" style="cursor: pointer" [routerLink]="['/identifiers/', document.receiverIdentifier.id]">{{document.receiverIdentifier.name}}</td>
+                        <td *ngIf="document.receiverIdentifier !== null" class="btn-link" style="cursor: pointer" [routerLink]="['/identifiers/details', document.receiverIdentifier.id]">{{document.receiverIdentifier.name}}</td>
                         <td *ngIf="document.receiverIdentifier === null"></td>
                         <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
                         <td>{{document.documentStatus}}</td>

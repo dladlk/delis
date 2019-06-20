@@ -1,14 +1,14 @@
-import { RouterModule, Routes } from "@angular/router";
-import { NgModule } from "@angular/core";
-import { IdentifierOneComponent } from "./components/one/identifier.one.component";
-import { IdentifierComponent } from "./components/identifier.component";
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { IdentifierOneComponent } from './components/one/identifier.one.component';
+import { IdentifierComponent } from './components/identifier.component';
 
 const routes: Routes = [
     {
         path: '', component: IdentifierComponent
     },
     {
-        path: ':id', component: IdentifierOneComponent
+        path: 'details/:id', component: IdentifierOneComponent
     }
 ];
 

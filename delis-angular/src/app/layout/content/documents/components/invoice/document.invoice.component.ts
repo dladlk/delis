@@ -73,7 +73,6 @@ export class DocumentInvoiceComponent implements OnInit {
         // tslint:disable-next-line:radix
         const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
         this.documentInvoiceService.getInvoice(id).subscribe((data: DocumentModel) => {
-            console.log(data)
             this.documentInvoiceModel = data['data'];
             this.setDefaultConfig();
         }, error => {
@@ -377,10 +376,8 @@ export class DocumentInvoiceComponent implements OnInit {
     }
 
     selectStatusReasonView(value: any) {
-        console.log(value)
         const reason = value.split(':');
         const reasonId = reason[0];
-        console.log(reasonId)
         this.statusReasonView = this.documentInvoiceModel.statusReasonList.filter(sr => sr[0] === reasonId)[0];
     }
 
@@ -471,9 +468,6 @@ export class DocumentInvoiceComponent implements OnInit {
         this.success = undefined;
 
         if (this.onlyGeneratedEnabled) {
-
-            console.log(this.documentInvoiceResponseFormModel);
-
             // getFile
             this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
                     const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
@@ -489,12 +483,9 @@ export class DocumentInvoiceComponent implements OnInit {
                 }
             );
         } else {
-
-            console.log(this.documentInvoiceResponseFormModel);
             // easy post
             this.documentInvoiceService.generateAndSend(this.documentInvoiceResponseFormModel).subscribe(
                 (data: {}) => {
-                    console.log(data);
                     this.success = data['data'];
                 }, error => {
                     this.errorDownloadModel = this.errorService.errorProcess(error);
@@ -503,8 +494,6 @@ export class DocumentInvoiceComponent implements OnInit {
                         this.errorList = this.errorDownloadModel.details;
                         this.isErrorList = true;
                     }
-
-                    console.log(this.errorDownloadModel);
                 }
             );
         }

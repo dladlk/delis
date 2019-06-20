@@ -172,6 +172,7 @@
 
     "received.document.details": "Received document details",
     "send.document.details": "Sent document details",
+    "identifier.document.details": "Identifier document details",
 
     "invoice.error.record.flag": "Flag",
     "invoice.error.record.code": "Code",

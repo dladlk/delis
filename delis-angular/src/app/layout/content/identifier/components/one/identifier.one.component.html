@@ -1,84 +1,94 @@
 <div [@routerTransition]>
     <app-page-header [heading]="'identifier.header.details'" [icon]="'fa-file-text-o'" [headers]="pageHeaders"></app-page-header>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-md-offset-0">
-                <div *ngIf="errorOneIdentifier">
-                    <app-error [errorModel]="errorOneIdentifierModel"></app-error>
-                </div>
-                <div class="card">
-                    <div class="card-header"><strong>{{ identifier.name }}</strong></div>
-                    <br>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <tbody>
-                            <tr>
-                                <td>Organisation</td>
-                                <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>
-                                <td *ngIf="identifier.organisation === null"></td>
-                            </tr>
-                            <tr>
-                                <td>Oprettet</td>
-                                <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
-                            </tr>
-                            <tr>
-                                <td>Nummer</td>
-                                <td>{{identifier.type}} {{identifier.value}}</td>
-                            </tr>
-                            <tr>
-                                <td>Navn</td>
-                                <td>{{identifier.name}}</td>
-                            </tr>
-                            <tr>
-                                <td>Publicering</td>
-                                <td>{{identifier.publishingStatus}}</td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>{{identifier.status}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-md-12 col-md-offset-0">
-                <div *ngIf="errorOneJournalIdentifiers">
-                    <app-error [errorModel]="errorOneJournalIdentifiersModel"></app-error>
-                </div>
-                <div class="card">
-                    <div class="card-header"><span>{{ 'journal.identifier.table.header' | translate }}</span></div>
-                    <br>
-                    <div class="card-body table-responsive">
-                        <table class="table table-hover table-sm">
-                            <thead>
-                            <tr>
-                                <th *ngFor="let hed of tableHeaderSortModels">
-                                    <div class="text-center">
-                                        <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
-                                            <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
-                                        </button>
-                                    </div>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr *ngFor="let doc of journalIdentifiers">
-                                <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
-                                <td *ngIf="doc.organisation === null"></td>
-                                <td *ngIf="doc.organisation !== null">{{doc.identifier.name}}</td>
-                                <td *ngIf="doc.organisation === null"></td>
-                                <td>{{doc.message}}</td>
-                                <td>{{doc.durationMs}}</td>
-                                <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
 
+        <div class="card border-secondary m-1">
+            <div class="card-body">
+                <h3 class="m-1 text-secondary">
+                    <div class="d-flex justify-content-start">
+                        <div class="p-1">
+                            <a class="btn btn-outline-secondary" title="Back" [routerLink]="['/identifiers/']"><i class="fas fa-chevron-left"></i></a>
+                        </div>
+                        <div class="p-1">
+                            <a class="btn btn-outline-secondary" title="Reload" (click)="refreshData()"><i class="fas fa-redo"></i></a>
+                        </div>
+                        <div class="p-1 m-1">
+                            {{ 'identifier.document.details' | translate}}
+                        </div>
+                    </div>
+                </h3>
+            </div>
         </div>
+
+        <div *ngIf="errorOneIdentifier">
+            <app-error [errorModel]="errorOneIdentifierModel"></app-error>
+        </div>
+
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <th>Organisation</th>
+                        <th>Oprettet</th>
+                        <th>Nummer</th>
+                    </tr>
+                    <tr>
+                        <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>
+                        <td *ngIf="identifier.organisation === null"></td>
+                        <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{identifier.type}} {{identifier.value}}</td>
+                    </tr>
+                    <tr>
+                        <th>Navn</th>
+                        <th>Publicering</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr>
+                        <td>{{identifier.name}}</td>
+                        <td>{{identifier.publishingStatus}}</td>
+                        <td>{{identifier.status}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="errorOneJournalIdentifiers">
+            <app-error [errorModel]="errorOneJournalIdentifiersModel"></app-error>
+        </div>
+
+        <div class="card border-secondary m-1">
+            <div class="card-body table-responsive">
+                <div class="card-title">
+                    {{ 'journal.identifier.table.header' | translate }}
+                </div>
+                <table class="table table-borderless table-sm">
+                    <thead>
+                    <tr>
+                        <th *ngFor="let hed of tableHeaderSortModels">
+                            <div class="text-center">
+                                <button type="button" class="btn btn-sm" (click)="clickFilter(hed.columnName)" style="background-color: white">
+                                    <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+                                </button>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let doc of journalIdentifiers">
+                        <td *ngIf="doc.organisation !== null">{{doc.organisation.name}}</td>
+                        <td *ngIf="doc.organisation === null"></td>
+                        <td *ngIf="doc.organisation !== null">{{doc.identifier.name}}</td>
+                        <td *ngIf="doc.organisation === null"></td>
+                        <td>{{doc.message}}</td>
+                        <td>{{doc.durationMs}}</td>
+                        <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
+
 </div>
