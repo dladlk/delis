@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.aop.interceptor.SimpleTraceInterceptor;
 
@@ -27,6 +28,7 @@ import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 import no.difi.vefa.peppol.common.model.ProcessIdentifier;
 
 @Slf4j
+@Ignore
 public class DynamicTransmissionRequestBuilderTest {
 
 	@Test
