@@ -91,23 +91,8 @@ public class TableInfoService {
                                         .collect(Collectors.toList()));
                     } else {
                         boolean currentLocaleEN = StringUtils.equals(this.locale, "en");
-                        List<EnumInfo> enumInfoList = Arrays
-                                .stream(((Class<Enum>) field.getType()).getEnumConstants())
-                                .map(en -> {
-                                            EnumInfo enumInfo = new EnumInfo();
-                                            enumInfo.setName(en.name());
 
-                                            if (currentLocaleEN) {
-                                                enumInfo.setViewName(((Named) en).getName());
-                                            } else {
-                                                enumInfo.setViewName(((Named) en).getNameDa());
-                                            }
-
-                                            return enumInfo;
-                                        }
-                                )
-                                .collect(Collectors.toList());
-
+                        List<EnumInfo> enumInfoList = new ArrayList<>();
                         EnumInfo enumInfo = new EnumInfo();
                         enumInfo.setName("ALL");
                         if (currentLocaleEN) {
@@ -116,8 +101,20 @@ public class TableInfoService {
                             enumInfo.setViewName("Alle");
                         }
                         enumInfoList.add(enumInfo);
-                        enumInfoList = new ArrayList<>(Lists.reverse(enumInfoList));
-
+                        enumInfoList.addAll(Arrays
+                                .stream(((Class<Enum>) field.getType()).getEnumConstants())
+                                .map(en -> {
+                                            EnumInfo info = new EnumInfo();
+                                            info.setName(en.name());
+                                            if (currentLocaleEN) {
+                                                info.setViewName(((Named) en).getName());
+                                            } else {
+                                                info.setViewName(((Named) en).getNameDa());
+                                            }
+                                            return info;
+                                        }
+                                )
+                                .collect(Collectors.toList()));
                         entityEnumInfo.put(field.getName(), enumInfoList);
                     }
                 }
