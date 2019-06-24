@@ -1,14 +1,20 @@
 package dk.erst.delis.web.datatables.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.domain.Specification;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SpecificationUtil<T> {
