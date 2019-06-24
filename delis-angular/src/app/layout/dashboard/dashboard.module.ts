@@ -11,7 +11,6 @@ import { DashboardService } from "./dashboard.service";
 import { ChartDocumentService } from "./components/chart-document/services/chart.document.service";
 import { BsComponentModule } from "../bs-component/bs-component.module";
 import { DaterangeService } from "../bs-component/components/daterange/daterange.service";
-import { DaterangeShowService } from "../bs-component/components/daterange/daterange.show.service";
 
 @NgModule({
     imports: [
@@ -26,6 +25,6 @@ import { DaterangeShowService } from "../bs-component/components/daterange/dater
         DashboardComponent,
         ChartDocumentComponent
     ],
-    providers: [ChartDocumentService, DashboardService, DaterangeService, DaterangeShowService]
+    providers: [ChartDocumentService, DashboardService, DaterangeService]
 })
 export class DashboardModule {}

@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Location} from '@angular/common';
 import {routerTransition} from '../../../../../router.animations';
 import {HeaderModel} from '../../../../components/header/header.model';
 import {SHOW_DATE_FORMAT} from '../../../../../app.constants';
@@ -44,6 +45,7 @@ export class SendDocumentsOneComponent implements OnInit {
     documentId: number;
 
     constructor(
+        private location: Location,
         private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -99,6 +101,10 @@ export class SendDocumentsOneComponent implements OnInit {
                 this.errorDownload = true;
             }
         );
+    }
+
+    back() {
+        this.location.back();
     }
 
     refreshData() {

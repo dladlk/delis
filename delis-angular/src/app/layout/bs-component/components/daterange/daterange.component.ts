@@ -9,7 +9,6 @@ import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
 import { FIRST_DAY } from "../../../../app.constants";
 import { DaterangeService} from "./daterange.service";
-import { DaterangeShowService } from "./daterange.show.service";
 import { DateRangePicker } from "./date.range.picker";
 import { PaginationService } from "../pagination/pagination.service";
 import { PaginationModel } from "../pagination/pagination.model";
@@ -28,7 +27,7 @@ export class DaterangeComponent implements OnInit {
     @Input() opens: string;
 
     localeConfig: LocaleConfig;
-    dateRangeModel: DateRangeModel = new DateRangeModel();
+    dateRangeModel: DateRangeModel;
     dateRange: DateRangePicker;
     alwaysShowCalendars: boolean;
     lang: string;
@@ -65,11 +64,8 @@ export class DaterangeComponent implements OnInit {
         private localeService: LocaleService,
         private forwardingLanguageService: ForwardingLanguageService,
         private dtService: DaterangeService,
-        private dtShowService: DaterangeShowService,
         private paginationService: PaginationService) {
-
         this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
-
         this.forwardingLanguageService.listen().subscribe((lang: string) => {
             this.lang = lang;
             this.initLocale(this.lang);
@@ -79,6 +75,7 @@ export class DaterangeComponent implements OnInit {
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
             if (pag === null || pag.collectionSize === 0) {
                 this.dateRange = null;
+                this.dateRangeModel = undefined;
             }
         });
         this.initLocale(this.lang);
@@ -103,6 +100,7 @@ export class DaterangeComponent implements OnInit {
             daysOfWeek: moment.weekdaysMin(),
             monthNames: moment.monthsShort(),
             firstDay: FIRST_DAY,
+            clearLabel: 'Klar',
             applyLabel: this.applyButton,
             customRangeLabel: "Defineret"
         };
@@ -110,16 +108,16 @@ export class DaterangeComponent implements OnInit {
 
     change(dateRange: DateRangePicker) {
         if (dateRange.startDate !== null && dateRange.endDate !== null) {
+            this.dateRangeModel = new DateRangeModel();
             this.dateRangeModel.dateStart = new Date(dateRange.startDate);
             this.dateRangeModel.dateEnd = new Date(dateRange.endDate);
             this.dtService.loadDate(this.dateRangeModel);
-        } else {
-            if (this.dateRange !== null && this.dateRangeModel.dateStart !== undefined && this.dateRangeModel.dateEnd !== undefined) {
-                this.dtShowService.hide(true);
-            }
+        }
+        if (this.dateRangeModel !== undefined && dateRange.startDate === null && dateRange.endDate === null) {
+            this.dateRangeModel = undefined;
+            this.dtService.loadDate(null);
         }
     }
 
-    ngOnInit(): void {
-    }
+    ngOnInit(): void { }
 }

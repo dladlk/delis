@@ -7,7 +7,6 @@ import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
 import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
-import {DaterangeShowService} from "../../../bs-component/components/daterange/daterange.show.service";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -34,20 +33,16 @@ export class ChartDocumentComponent implements OnInit {
         private locale: LocaleService,
         private errorService: ErrorService,
         private dtService: DaterangeService,
-        private dtShowService: DaterangeShowService,
         private chartDocumentService: ChartDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.updateLineChart(false);
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+            if (dtRange !== null) {
                 this.drm = dtRange;
                 this.updateLineChart(true);
             } else {
                 this.updateLineChart(false);
             }
-        });
-        this.dtShowService.listen().subscribe((show: boolean) => {
-            this.updateLineChart(false);
         });
     }
 

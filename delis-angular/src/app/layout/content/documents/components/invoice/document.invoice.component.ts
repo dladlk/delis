@@ -214,8 +214,6 @@ export class DocumentInvoiceComponent implements OnInit {
                             document.getElementById('inputGroupStatusAction2').style.borderColor = BORDER_COLOR_GREEN;
                             document.getElementById('inputGroupStatusReason').style.borderColor = BORDER_COLOR_GREEN;
                             this.initUseCase(useCaseId);
-
-                            console.log(this.documentInvoiceResponseFormModel);
                         }
                     }
                 } break;

@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12 col-md-offset-0">
-                <div class="card">
+                <div class="card" style="min-height: 768px">
                     <div class="card-header"><span>{{ 'documents.table.header' | translate }}</span></div>
                     <div class="card-body table-responsive">
                         <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
@@ -26,7 +26,7 @@
                                     <ng-select [items]="organizations"
                                                [clearable]="clearableSelect"
                                                placeholder="{{'placeholder.search' | translate}}"
-                                               [(ngModel)]="selectedOrganization"
+                                               [(ngModel)]="currentState.selectedOrganization"
                                                (change)="loadOrganisations()">
                                     </ng-select>
                                 </td>
@@ -34,7 +34,7 @@
                                     <input class="form-control"
                                            type="search"
                                            (ngModelChange)="loadTextReceiver($event)"
-                                           [(ngModel)]="textReceiver"
+                                           [(ngModel)]="currentState.textReceiver"
                                            placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>
                                 <td>
@@ -42,7 +42,7 @@
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
                                                placeholder="{{'placeholder.search' | translate}}"
-                                               [(ngModel)]="selectedStatus"
+                                               [(ngModel)]="currentState.selectedStatus"
                                                (change)="loadStatus()">
                                     </ng-select>
                                 </td>
@@ -51,7 +51,7 @@
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
                                                placeholder="{{'placeholder.search' | translate}}"
-                                               [(ngModel)]="selectedLastError"
+                                               [(ngModel)]="currentState.selectedLastError"
                                                (change)="loadLastErrors()">
                                     </ng-select>
                                 </td>
@@ -60,7 +60,7 @@
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
                                                placeholder="{{'placeholder.search' | translate}}"
-                                               [(ngModel)]="selectedDocumentType"
+                                               [(ngModel)]="currentState.selectedDocumentType"
                                                (change)="loadDocumentType()">
                                     </ng-select>
                                 </td>
@@ -69,14 +69,14 @@
                                                [clearable]="clearableSelect"
                                                bindLabel="viewName"
                                                placeholder="{{'placeholder.search' | translate}}"
-                                               [(ngModel)]="selectedIngoingFormat"
+                                               [(ngModel)]="currentState.selectedIngoingFormat"
                                                (change)="loadIngoingFormat()">
                                     </ng-select>
                                 </td>
                                 <td>
                                     <input class="form-control"
                                            type="search"
-                                           [(ngModel)]="textSenderName"
+                                           [(ngModel)]="currentState.textSenderName"
                                            (ngModelChange)="loadTextSenderName($event)"
                                            placeholder="{{'placeholder.search' | translate}}"/>
                                 </td>

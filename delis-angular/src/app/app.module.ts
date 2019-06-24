@@ -25,6 +25,7 @@ import {RefreshTokenService} from './service/refresh.token.service';
 import {FileSaverService} from './service/file.saver.service';
 import {LocalStorageService} from './service/local.storage.service';
 import {RefreshService} from './service/refresh.service';
+import {AppStateService} from "./service/app.state.service";
 
 export const createTranslateLoader = (http: HttpClient) => {
 
@@ -68,7 +69,8 @@ export const createTranslateLoader = (http: HttpClient) => {
         RefreshTokenService,
         FileSaverService,
         LocalStorageService,
-        RefreshService],
+        RefreshService,
+        AppStateService],
     bootstrap: [AppComponent]
 })
 export class AppModule {

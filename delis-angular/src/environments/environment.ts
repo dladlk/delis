@@ -8,7 +8,7 @@ export const environment = {
   credentials: 'test:test',
   base_url: 'http://localhost:8080',
   api_url: 'http://localhost:8080',
-  version: '2.1.0'
+  version: '2.2.0'
 };
 
 /*

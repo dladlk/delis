@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { routerTransition } from '../../../../router.animations';
@@ -12,7 +12,7 @@ import { PaginationModel } from './pagination.model';
     styleUrls: ['./pagination.component.scss'],
     animations: [routerTransition()]
 })
-export class PaginationComponent {
+export class PaginationComponent implements OnInit {
 
     @Input() public pagination: PaginationModel;
     @Input() public dropdownPosition: string;
@@ -30,7 +30,10 @@ export class PaginationComponent {
         private locale: LocaleService,
         private paginationService: PaginationService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
-        this.pagination = new PaginationModel();
+    }
+
+    ngOnInit(): void {
+
     }
 
     loadPage(page: number) {

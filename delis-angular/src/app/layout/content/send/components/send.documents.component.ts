@@ -1,29 +1,24 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
-import {TranslateService} from '@ngx-translate/core';
-import {routerTransition} from '../../../../router.animations';
-import {PaginationModel} from '../../../bs-component/components/pagination/pagination.model';
-import {TableHeaderSortModel} from '../../../bs-component/components/table-header-sort/table.header.sort.model';
-import {SendDocumentsModel} from '../models/send.documents.model';
-import {SendDocumentsFilterProcessResult} from '../models/send.documents.filter.process.result';
-import {SHOW_DATE_FORMAT} from '../../../../app.constants';
-import {LocaleService} from '../../../../service/locale.service';
-import {ErrorService} from '../../../../service/error.service';
-import {PaginationService} from '../../../bs-component/components/pagination/pagination.service';
-import {DaterangeService} from '../../../bs-component/components/daterange/daterange.service';
-import {DaterangeShowService} from '../../../bs-component/components/daterange/daterange.show.service';
-import {DateRangeModel} from '../../../../models/date.range.model';
-import {SendDocumentsService} from '../service/send.documents.service';
-import {EnumInfoModel} from '../../../../models/enum.info.model';
-import {LocalStorageService} from '../../../../service/local.storage.service';
-import {RefreshService} from '../../../../service/refresh.service';
+import { Component, OnInit} from '@angular/core';
+import { Router} from '@angular/router';
+import { TranslateService} from '@ngx-translate/core';
 
-const COLUMN_NAME_CREATE_TIME = 'documents.table.send.columnName.createTime';
-const COLUMN_NAME_ORGANIZATION = 'documents.table.send.columnName.organisation';
-const COLUMN_NAME_STATUS = 'documents.table.send.columnName.documentStatus';
-const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.send.columnName.documentType';
-const COLUMN_NAME_RECEINER = 'documents.table.send.columnName.receiverIdRaw';
-const COLUMN_NAME_SENDER = 'documents.table.send.columnName.senderIdRaw';
+import { routerTransition } from '../../../../router.animations';
+import { PaginationModel } from '../../../bs-component/components/pagination/pagination.model';
+import { TableHeaderSortModel } from '../../../bs-component/components/table-header-sort/table.header.sort.model';
+import { SendDocumentsModel } from '../models/send.documents.model';
+import { SendDocumentsFilterProcessResult } from '../models/send.documents.filter.process.result';
+import { SHOW_DATE_FORMAT } from '../../../../app.constants';
+import { LocaleService } from '../../../../service/locale.service';
+import { ErrorService } from '../../../../service/error.service';
+import { PaginationService } from '../../../bs-component/components/pagination/pagination.service';
+import { DaterangeService } from '../../../bs-component/components/daterange/daterange.service';
+import { DateRangeModel } from '../../../../models/date.range.model';
+import { SendDocumentsService } from '../service/send.documents.service';
+import { EnumInfoModel } from '../../../../models/enum.info.model';
+import { LocalStorageService } from '../../../../service/local.storage.service';
+import { RefreshService } from '../../../../service/refresh.service';
+import { AppStateService } from "../../../../service/app.state.service";
+import { StateSendDocumentsModel } from "../models/state.send.documents.model";
 
 @Component({
     selector: 'app-send-document',
@@ -47,12 +42,7 @@ export class SendDocumentsComponent implements OnInit {
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
     show: boolean;
 
-    selectedOrganization: string;
-    selectedStatus: EnumInfoModel;
-    selectedDocumentType: EnumInfoModel;
-
-    textReceiver: string;
-    textSender: string;
+    currentState: StateSendDocumentsModel;
 
     constructor(
         private refreshService: RefreshService,
@@ -64,36 +54,31 @@ export class SendDocumentsComponent implements OnInit {
         private errorService: ErrorService,
         private paginationService: PaginationService,
         private dtService: DaterangeService,
-        private dtShowService: DaterangeShowService) {
+        private stateService: AppStateService) {
         this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
-            this.pagination = new PaginationModel();
             if (pag === null || pag.collectionSize === 0) {
                 this.clearAllFilter();
                 this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
                     this.router.navigate(['/send-documents']));
             } else {
+                this.pagination = pag;
                 if (pag.collectionSize <= pag.pageSize) {
                     this.loadPage(1, this.pagination.pageSize);
                 } else {
                     this.loadPage(pag.currentPage, pag.pageSize);
                 }
-                this.pagination = pag;
             }
         });
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+            if (dtRange !== null) {
                 this.filter.dateRange = dtRange;
             } else {
                 this.filter.dateRange = null;
             }
             this.pagination.currentPage = 1;
             this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-        });
-        this.dtShowService.listen().subscribe((show: boolean) => {
-            this.filter.dateRange = null;
-            this.loadPage(1, this.pagination.pageSize);
         });
         this.refreshService.listen().subscribe(() => {
             this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
@@ -102,53 +87,39 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.initSelected();
         this.initProcess();
+        this.initSelected();
     }
 
     private initProcess() {
-        this.pagination = new PaginationModel();
         this.initDefaultValues();
-        this.currentProdSendDocuments(1, 10);
+        this.currentProdSendDocuments(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     initSelected() {
         this.storage.select('SendDocument', null).subscribe(enumInfo => {
             this.statuses = enumInfo.documentStatus;
             this.documentTypes = enumInfo.documentType;
-            this.selectedStatus = this.statuses[0];
-            this.selectedDocumentType = this.documentTypes[0];
+            if (this.currentState.selectedStatus === undefined) {
+                this.currentState.selectedStatus = this.statuses[0];
+            }
+            if (this.currentState.selectedDocumentType === undefined) {
+                this.currentState.selectedDocumentType = this.documentTypes[0];
+            }
         });
         this.storage.select('organizations', null).subscribe(organizationsInfo => {
             this.organizations = organizationsInfo;
-            this.selectedOrganization = this.organizations[0];
+            if (this.currentState.selectedOrganization === undefined) {
+                this.currentState.selectedOrganization = this.organizations[0];
+            }
         });
     }
 
     private initDefaultValues() {
-        this.filter = new SendDocumentsFilterProcessResult();
-        if (this.tableHeaderSortModels.length === 0) {
-            this.tableHeaderSortModels.push(
-                {
-                    columnName: COLUMN_NAME_CREATE_TIME, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_RECEINER, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_SENDER, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_STATUS, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_DOCUMENT_TYPE, columnClick: 0
-                }
-            );
-        }
+        this.currentState = this.stateService.getFilterDocumentSendState();
+        this.filter = this.currentState.filter;
+        this.pagination = this.currentState.pagination;
+        this.tableHeaderSortModels = this.currentState.tableHeaderSortModels;
     }
 
     private loadPage(page: number, pageSize: number) {
@@ -156,25 +127,25 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     loadDocumentType() {
-        if (this.selectedDocumentType === null) {
-            this.selectedDocumentType = this.documentTypes[0];
+        if (this.currentState.selectedDocumentType === null) {
+            this.currentState.selectedDocumentType = this.documentTypes[0];
         }
-        this.filter.documentType = this.selectedDocumentType.name;
+        this.filter.documentType = this.currentState.selectedDocumentType.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadStatus() {
-        if (this.selectedStatus === null) {
-            this.selectedStatus = this.statuses[0];
+        if (this.currentState.selectedStatus === null) {
+            this.currentState.selectedStatus = this.statuses[0];
         }
-        this.filter.documentStatus = this.selectedStatus.name;
+        this.filter.documentStatus = this.currentState.selectedStatus.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadTextSender(text: string) {
-        if (text.length === 0 || text === null) {
+        if (text.length === 0) {
             this.filter.senderIdRaw = null;
         } else {
             this.filter.senderIdRaw = text;
@@ -184,7 +155,7 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     loadTextReceiver(text: string) {
-        if (text.length === 0 || text === null) {
+        if (text.length === 0) {
             this.filter.receiverIdRaw = null;
         } else {
             this.filter.receiverIdRaw = text;
@@ -200,13 +171,13 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     loadOrganisations() {
-        if (this.selectedOrganization === null) {
-            this.selectedOrganization = this.organizations[0];
+        if (this.currentState.selectedOrganization === null) {
+            this.currentState.selectedOrganization = this.organizations[0];
         }
-        if (this.selectedOrganization === 'All' || this.selectedOrganization === 'Alle') {
+        if (this.currentState.selectedOrganization === 'All' || this.currentState.selectedOrganization === 'Alle') {
             this.filter.organisation = null;
         } else {
-            this.filter.organisation = this.selectedOrganization;
+            this.filter.organisation = this.currentState.selectedOrganization;
         }
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
@@ -220,6 +191,10 @@ export class SendDocumentsComponent implements OnInit {
                 this.pagination.pageSize = data['pageSize'];
                 this.sendDocuments = data['items'];
                 this.show = true;
+                this.currentState.filter = this.filter;
+                this.currentState.pagination = this.pagination;
+                this.currentState.tableHeaderSortModels = this.tableHeaderSortModels;
+                this.stateService.setFilterDocumentSendState(this.currentState);
             }, error => {
                 this.errorService.errorProcess(error);
                 this.show = false;
@@ -247,11 +222,7 @@ export class SendDocumentsComponent implements OnInit {
     }
 
     private clearAllFilter() {
-        this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.selectedOrganization = null;
-        this.selectedStatus = null;
-        this.selectedDocumentType = null;
-        this.filter.dateRange = null;
+        this.stateService.clearFilterDocumentSendState();
     }
 
     private clearFilter(columnName: string) {

@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from "@angular/common";
 
 import { routerTransition } from '../../../../../router.animations';
 import { HeaderModel } from '../../../../components/header/header.model';
@@ -15,6 +16,7 @@ import { JournalIdentifierFilterProcessResultModel } from '../../../journal/iden
 import { JournalIdentifierModel } from '../../../journal/identifier/models/journal.identifier.model';
 import { ErrorModel } from '../../../../../models/error.model';
 import { RefreshService } from '../../../../../service/refresh.service';
+
 
 const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.message';
 const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime';
@@ -48,6 +50,7 @@ export class IdentifierOneComponent implements OnInit {
     identifierId: number;
 
     constructor(
+        private location: Location,
         private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -141,6 +144,10 @@ export class IdentifierOneComponent implements OnInit {
 
     private clearFilter(columnName: string) {
         this.tableHeaderSortModels.filter(cn => cn.columnName !== columnName).forEach(cn => cn.columnClick = 0);
+    }
+
+    back() {
+        this.location.back();
     }
 
     refreshData() {

@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Location} from "@angular/common";
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 
@@ -48,6 +49,7 @@ export class DocumentsOneComponent implements OnInit {
     documentId: number;
 
     constructor(
+        private location: Location,
         private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -117,6 +119,10 @@ export class DocumentsOneComponent implements OnInit {
         } else {
             return err.map(value => value.errorDictionary);
         }
+    }
+
+    back() {
+        this.location.back();
     }
 
     refreshData() {

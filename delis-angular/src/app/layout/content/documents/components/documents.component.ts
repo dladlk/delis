@@ -14,19 +14,11 @@ import { DocumentModel } from '../models/document.model';
 import { ErrorService } from '../../../../service/error.service';
 import { SHOW_DATE_FORMAT } from 'src/app/app.constants';
 import { DaterangeService } from '../../../bs-component/components/daterange/daterange.service';
-import { DaterangeShowService } from '../../../bs-component/components/daterange/daterange.show.service';
 import { EnumInfoModel } from '../../../../models/enum.info.model';
 import { LocalStorageService } from '../../../../service/local.storage.service';
 import { RefreshService } from '../../../../service/refresh.service';
-
-const COLUMN_NAME_ORGANIZATION = 'documents.table.columnName.organisation';
-const COLUMN_NAME_RECEIVER = 'documents.table.columnName.receiverIdentifier';
-const COLUMN_NAME_STATUS = 'documents.table.columnName.documentStatus';
-const COLUMN_NAME_LAST_ERROR = 'documents.table.columnName.lastError';
-const COLUMN_NAME_DOCUMENT_TYPE = 'documents.table.columnName.documentType';
-const COLUMN_NAME_INGOING_FORMAT = 'documents.table.columnName.ingoingDocumentFormat';
-const COLUMN_NAME_RECEIVED = 'documents.table.columnName.createTime';
-const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
+import { StateDocumentsModel } from "../models/state.documents.model";
+import { AppStateService } from "../../../../service/app.state.service";
 
 @Component({
     selector: 'app-documents',
@@ -37,16 +29,6 @@ const COLUMN_NAME_SENDER_NAME = 'documents.table.columnName.senderName';
 export class DocumentsComponent implements OnInit {
 
     clearableSelect = true;
-
-    selectedStatus: EnumInfoModel;
-    selectedLastError: EnumInfoModel;
-    selectedDocumentType: EnumInfoModel;
-    selectedIngoingFormat: EnumInfoModel;
-    selectedOrganization: string;
-
-    textReceiver: string;
-    textSenderName: string;
-    textPlaceholderReceivedDate: string;
 
     documents: DocumentModel[];
     tableHeaderSortModels: TableHeaderSortModel[] = [];
@@ -61,6 +43,8 @@ export class DocumentsComponent implements OnInit {
     SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
     show: boolean;
 
+    currentState: StateDocumentsModel;
+
     constructor(
         private refreshService: RefreshService,
         private router: Router,
@@ -71,11 +55,10 @@ export class DocumentsComponent implements OnInit {
         private errorService: ErrorService,
         private paginationService: PaginationService,
         private dtService: DaterangeService,
-        private dtShowService: DaterangeShowService) {
+        private stateService: AppStateService) {
         this.show = false;
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.paginationService.listen().subscribe((pag: PaginationModel) => {
-            this.pagination = new PaginationModel();
             if (pag === null || pag.collectionSize === 0) {
                 this.clearAllFilter();
                 this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
@@ -90,17 +73,13 @@ export class DocumentsComponent implements OnInit {
             }
         });
         this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange.dateStart !== null && dtRange.dateEnd !== null) {
+            if (dtRange !== null) {
                 this.filter.dateReceived = dtRange;
             } else {
                 this.filter.dateReceived = null;
             }
             this.pagination.currentPage = 1;
             this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
-        });
-        this.dtShowService.listen().subscribe((show: boolean) => {
-            this.filter.dateReceived = null;
-            this.loadPage(1, this.pagination.pageSize);
         });
         this.refreshService.listen().subscribe(() => {
             this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
@@ -109,8 +88,8 @@ export class DocumentsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.initSelected();
         this.initProcess();
+        this.initSelected();
     }
 
     initSelected() {
@@ -119,54 +98,37 @@ export class DocumentsComponent implements OnInit {
             this.documentTypes = enumInfo.documentType;
             this.ingoingFormats = enumInfo.ingoingDocumentFormat;
             this.lastErrors = enumInfo.lastError;
-            this.selectedStatus = this.statuses[0];
-            this.selectedDocumentType = this.documentTypes[0];
-            this.selectedIngoingFormat = this.ingoingFormats[0];
-            this.selectedLastError = this.lastErrors[0];
+            if (this.currentState.selectedStatus === undefined) {
+                this.currentState.selectedStatus = this.statuses[0];
+            }
+            if (this.currentState.selectedDocumentType === undefined) {
+                this.currentState.selectedDocumentType = this.documentTypes[0];
+            }
+            if (this.currentState.selectedIngoingFormat === undefined) {
+                this.currentState.selectedIngoingFormat = this.ingoingFormats[0];
+            }
+            if (this.currentState.selectedLastError === undefined) {
+                this.currentState.selectedLastError = this.lastErrors[0];
+            }
         });
         this.storage.select('organizations', null).subscribe(organizationsInfo => {
             this.organizations = organizationsInfo;
-            this.selectedOrganization = this.organizations[0];
+            if (this.currentState.selectedOrganization === null) {
+                this.currentState.selectedOrganization = this.organizations[0];
+            }
         });
     }
 
     protected initProcess() {
-        this.pagination = new PaginationModel();
         this.initDefaultValues();
-        this.currentProdDocuments(1, 10);
+        this.currentProdDocuments(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     protected initDefaultValues() {
-        this.textPlaceholderReceivedDate = 'Received Date';
-        this.filter = new FilterProcessResult();
-        if (this.tableHeaderSortModels.length === 0) {
-            this.tableHeaderSortModels.push(
-                {
-                    columnName: COLUMN_NAME_RECEIVED, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_ORGANIZATION, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_RECEIVER, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_STATUS, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_LAST_ERROR, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_DOCUMENT_TYPE, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_INGOING_FORMAT, columnClick: 0
-                },
-                {
-                    columnName: COLUMN_NAME_SENDER_NAME, columnClick: 0
-                }
-            );
-        }
+        this.currentState = this.stateService.getFilterDocumentState();
+        this.filter = this.currentState.filter;
+        this.pagination = this.currentState.pagination;
+        this.tableHeaderSortModels = this.currentState.tableHeaderSortModels;
     }
 
     protected currentProdDocuments(currentPage: number, sizeElement: number) {
@@ -177,6 +139,10 @@ export class DocumentsComponent implements OnInit {
                 this.pagination.pageSize = data['pageSize'];
                 this.documents = data['items'];
                 this.show = true;
+                this.currentState.filter = this.filter;
+                this.currentState.pagination = this.pagination;
+                this.currentState.tableHeaderSortModels = this.tableHeaderSortModels;
+                this.stateService.setFilterDocumentState(this.currentState);
             }, error => {
                 this.errorService.errorProcess(error);
                 this.show = false;
@@ -189,13 +155,13 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadOrganisations() {
-        if (this.selectedOrganization === null) {
-            this.selectedOrganization = this.organizations[0];
+        if (this.currentState.selectedOrganization === null) {
+            this.currentState.selectedOrganization = this.organizations[0];
         }
-        if (this.selectedOrganization === 'All' || this.selectedOrganization === 'Alle') {
+        if (this.currentState.selectedOrganization === 'All' || this.currentState.selectedOrganization === 'Alle') {
             this.filter.organisation = null;
         } else {
-            this.filter.organisation = this.selectedOrganization;
+            this.filter.organisation = this.currentState.selectedOrganization;
         }
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
@@ -212,37 +178,37 @@ export class DocumentsComponent implements OnInit {
     }
 
     loadStatus() {
-        if (this.selectedStatus === null) {
-            this.selectedStatus = this.statuses[0];
+        if (this.currentState.selectedStatus === null) {
+            this.currentState.selectedStatus = this.statuses[0];
         }
-        this.filter.status = this.selectedStatus.name;
+        this.filter.status = this.currentState.selectedStatus.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadLastErrors() {
-        if (this.selectedLastError === null) {
-            this.selectedLastError = this.lastErrors[0];
+        if (this.currentState.selectedLastError === null) {
+            this.currentState.selectedLastError = this.lastErrors[0];
         }
-        this.filter.lastError = this.selectedLastError.name;
+        this.filter.lastError = this.currentState.selectedLastError.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadDocumentType() {
-        if (this.selectedDocumentType === null) {
-            this.selectedDocumentType = this.documentTypes[0];
+        if (this.currentState.selectedDocumentType === null) {
+            this.currentState.selectedDocumentType = this.documentTypes[0];
         }
-        this.filter.documentType = this.selectedDocumentType.name;
+        this.filter.documentType = this.currentState.selectedDocumentType.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
 
     loadIngoingFormat() {
-        if (this.selectedIngoingFormat === null) {
-            this.selectedIngoingFormat = this.ingoingFormats[0];
+        if (this.currentState.selectedIngoingFormat === null) {
+            this.currentState.selectedIngoingFormat = this.ingoingFormats[0];
         }
-        this.filter.ingoingFormat = this.selectedIngoingFormat.name;
+        this.filter.ingoingFormat = this.currentState.selectedIngoingFormat.name;
         this.pagination.currentPage = 1;
         this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
     }
@@ -287,15 +253,6 @@ export class DocumentsComponent implements OnInit {
     }
 
     protected clearAllFilter() {
-        this.tableHeaderSortModels.forEach(cn => cn.columnClick = 0);
-        this.selectedStatus = null;
-        this.selectedDocumentType = null;
-        this.selectedIngoingFormat = null;
-        this.selectedLastError = null;
-        this.selectedOrganization = null;
-        this.textReceiver = '';
-        this.textSenderName = '';
-        this.filter.dateReceived = null;
-        this.filter.sortBy = 'orderBy_Id_Desc';
+        this.stateService.clearFilterDocumentState();
     }
 }
