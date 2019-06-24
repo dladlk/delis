@@ -1,21 +1,30 @@
 package dk.erst.delis.web.datatables.web;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.datatables.mapping.Column;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Order;
+import org.springframework.data.jpa.datatables.mapping.Search;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.ui.Model;
+import org.springframework.web.context.request.WebRequest;
+
 import dk.erst.delis.web.datatables.data.DataTablesData;
 import dk.erst.delis.web.datatables.data.PageData;
 import dk.erst.delis.web.datatables.data.SessionData;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.util.DataTablesUtil;
 import dk.erst.delis.web.datatables.util.SpecificationUtil;
-import org.springframework.data.jpa.datatables.mapping.*;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.ui.Model;
-import org.springframework.web.context.request.WebRequest;
-
-import java.lang.reflect.ParameterizedType;
-import java.util.*;
 
 public abstract class EasyDatatablesListController<T> {
 
@@ -28,6 +37,7 @@ public abstract class EasyDatatablesListController<T> {
 	protected abstract String getListCode();
 
 	protected abstract DataTablesRepository<T, Long> getDataTableRepository();
+
 	protected abstract EasyDatatablesListService<T> getEasyDatatablesListService();
 
 	protected String list(Model model, WebRequest webRequest) {
@@ -42,7 +52,7 @@ public abstract class EasyDatatablesListController<T> {
 		}
 
 		DataTablesUtil.updatePageData(pageData, dto.getRecordsFiltered());
-		
+
 		model.addAttribute(getListCode() + "List", dto.getData());
 		model.addAttribute(getListCode() + "Page", pageData);
 
