@@ -13,9 +13,9 @@ export class AppStateService {
     private STATE_IDENTIFIER = 'stateIdentifier';
 
     getFilterDocumentState(): StateDocumentsModel {
-        this.clearFilterDocumentSendState();
-        this.clearFilterDocumentSErrorState();
-        this.clearFilterIdentifierState();
+        // this.clearFilterDocumentSendState();
+        // this.clearFilterDocumentSErrorState();
+        // this.clearFilterIdentifierState();
         let filter = localStorage.getItem(this.STATE_DOCUMENT);
         if (filter === null) {
             return new StateDocumentsModel();
@@ -25,9 +25,9 @@ export class AppStateService {
     }
 
     getFilterDocumentErrorState(): StateDocumentsErrorModel {
-        this.clearFilterDocumentState();
-        this.clearFilterDocumentSendState();
-        this.clearFilterIdentifierState();
+        // this.clearFilterDocumentState();
+        // this.clearFilterDocumentSendState();
+        // this.clearFilterIdentifierState();
         let filter = localStorage.getItem(this.STATE_DOCUMENT_ERROR);
         if (filter === null) {
             return new StateDocumentsErrorModel();
@@ -37,9 +37,9 @@ export class AppStateService {
     }
 
     getFilterDocumentSendState(): StateSendDocumentsModel {
-        this.clearFilterDocumentState();
-        this.clearFilterIdentifierState();
-        this.clearFilterDocumentSErrorState();
+        // this.clearFilterDocumentState();
+        // this.clearFilterIdentifierState();
+        // this.clearFilterDocumentSErrorState();
         let filter = localStorage.getItem(this.STATE_DOCUMENT_SEND);
         if (filter === null) {
             return new StateSendDocumentsModel();
@@ -49,9 +49,9 @@ export class AppStateService {
     }
 
     getFilterIdentifierState(): StateIdentifierModel {
-        this.clearFilterDocumentState();
-        this.clearFilterDocumentSendState();
-        this.clearFilterDocumentSErrorState();
+        // this.clearFilterDocumentState();
+        // this.clearFilterDocumentSendState();
+        // this.clearFilterDocumentSErrorState();
         let filter = localStorage.getItem(this.STATE_IDENTIFIER);
         if (filter === null) {
             return new StateIdentifierModel();
