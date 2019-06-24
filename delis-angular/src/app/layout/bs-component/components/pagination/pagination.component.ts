@@ -5,6 +5,7 @@ import { routerTransition } from '../../../../router.animations';
 import { LocaleService } from '../../../../service/locale.service';
 import { PaginationService } from './pagination.service';
 import { PaginationModel } from './pagination.model';
+import { RefreshService } from "../../../../service/refresh.service";
 
 @Component({
     selector: 'app-pagination',
@@ -26,6 +27,7 @@ export class PaginationComponent implements OnInit {
     ];
 
     constructor(
+        private refresh: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
         private paginationService: PaginationService) {
@@ -72,6 +74,6 @@ export class PaginationComponent implements OnInit {
     }
 
     refreshData() {
-        this.paginationService.refresh(this.pagination);
+        this.refresh.refreshPage();
     }
 }
