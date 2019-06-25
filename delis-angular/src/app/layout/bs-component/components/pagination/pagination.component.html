@@ -5,7 +5,7 @@
                          {{ 'pagination.status.of' | translate }} {{pagination.collectionSize}} {{ 'pagination.status.end' | translate }}
                 </span>
     </div>
-    <div class="p-3" *ngIf="pagination.collectionSize > pagination.pageSize">
+    <div class="p-3">
         <ngb-pagination
                 [collectionSize]="pagination.collectionSize"
                 [pageSize]="pagination.pageSize"
@@ -17,10 +17,10 @@
                 (pageChange)="loadPage($event)">
         </ngb-pagination>
     </div>
-    <div class="p-3 mt-4" *ngIf="pagination.collectionSize > pagination.pageSize">
+    <div class="p-3 mt-4">
         {{ 'pagination.page-size' | translate }}:
     </div>
-    <div class="p-3 mt-3" *ngIf="pagination.collectionSize > pagination.pageSize">
+    <div class="p-3 mt-3">
         <ng-select [items]="pageSizes"
                    bindLabel="pageSize"
                    placeholder="&#8721;"

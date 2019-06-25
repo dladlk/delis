@@ -23,7 +23,7 @@ export class DocumentsService {
     getListDocuments(currentPage: number, sizeElement: number, filter: FilterProcessResult): Observable<any> {
         let params = this.generateParams(currentPage, sizeElement, filter);
         if (filter.dateReceived !== null) {
-            params = params.append('createTime', String(new Date(filter.dateReceived.dateStart).getTime()) + ':' + String(new Date(filter.dateReceived.dateEnd).getTime()));
+            params = params.append('createTime', String(new Date(filter.dateReceived.startDate).getTime()) + ':' + String(new Date(filter.dateReceived.endDate).getTime()));
         }
         return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
     }
@@ -39,7 +39,7 @@ export class DocumentsService {
 
         } else {
             if (filter.dateReceived !== null) {
-                params = params.append('createTime', String(new Date(filter.dateReceived.dateStart).getTime()) + ':' + String(new Date(filter.dateReceived.dateEnd).getTime()));
+                params = params.append('createTime', String(new Date(filter.dateReceived.startDate).getTime()) + ':' + String(new Date(filter.dateReceived.endDate).getTime()));
             }
         }
 

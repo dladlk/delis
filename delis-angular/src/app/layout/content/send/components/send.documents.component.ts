@@ -12,13 +12,13 @@ import { LocaleService } from '../../../../service/locale.service';
 import { ErrorService } from '../../../../service/error.service';
 import { PaginationService } from '../../../bs-component/components/pagination/pagination.service';
 import { DaterangeService } from '../../../bs-component/components/daterange/daterange.service';
-import { DateRangeModel } from '../../../../models/date.range.model';
 import { SendDocumentsService } from '../service/send.documents.service';
 import { EnumInfoModel } from '../../../../models/enum.info.model';
 import { LocalStorageService } from '../../../../service/local.storage.service';
 import { RefreshService } from '../../../../service/refresh.service';
 import { AppStateService } from "../../../../service/app.state.service";
 import { StateSendDocumentsModel } from "../models/state.send.documents.model";
+import { DateRangePicker } from "../../../bs-component/components/daterange/date.range.picker";
 
 @Component({
     selector: 'app-send-document',
@@ -65,14 +65,15 @@ export class SendDocumentsComponent implements OnInit {
             } else {
                 this.pagination = pag;
                 if (pag.collectionSize <= pag.pageSize) {
-                    this.loadPage(1, this.pagination.pageSize);
+                    this.pagination.currentPage = 1;
+                    this.loadPage(this.pagination.currentPage, this.pagination.pageSize);
                 } else {
                     this.loadPage(pag.currentPage, pag.pageSize);
                 }
             }
         });
-        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange !== null) {
+        this.dtService.listen().subscribe((dtRange: DateRangePicker) => {
+            if (dtRange.startDate !== null && dtRange.endDate !== null) {
                 this.filter.dateRange = dtRange;
             } else {
                 this.filter.dateRange = null;

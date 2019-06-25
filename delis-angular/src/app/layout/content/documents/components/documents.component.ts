@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { routerTransition } from '../../../../router.animations';
 import { DocumentsService } from '../services/documents.service';
 import { FilterProcessResult } from '../models/filter.process.result';
-import { DateRangeModel } from '../../../../models/date.range.model';
 import { LocaleService } from '../../../../service/locale.service';
 import { TableHeaderSortModel } from '../../../bs-component/components/table-header-sort/table.header.sort.model';
 import { PaginationService } from '../../../bs-component/components/pagination/pagination.service';
@@ -19,6 +18,7 @@ import { LocalStorageService } from '../../../../service/local.storage.service';
 import { RefreshService } from '../../../../service/refresh.service';
 import { StateDocumentsModel } from "../models/state.documents.model";
 import { AppStateService } from "../../../../service/app.state.service";
+import { DateRangePicker } from "../../../bs-component/components/daterange/date.range.picker";
 
 @Component({
     selector: 'app-documents',
@@ -72,8 +72,8 @@ export class DocumentsComponent implements OnInit {
                 this.pagination = pag;
             }
         });
-        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange !== null) {
+        this.dtService.listen().subscribe((dtRange: DateRangePicker) => {
+            if (dtRange.startDate !== null && dtRange.endDate !== null) {
                 this.filter.dateReceived = dtRange;
             } else {
                 this.filter.dateReceived = null;

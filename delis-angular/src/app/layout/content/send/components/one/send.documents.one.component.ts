@@ -13,7 +13,6 @@ import {ErrorService} from '../../../../../service/error.service';
 import {SendDocumentsService} from '../../service/send.documents.service';
 import {FileSaverService} from '../../../../../service/file.saver.service';
 import {ErrorModel} from '../../../../../models/error.model';
-import {RefreshService} from '../../../../../service/refresh.service';
 
 @Component({
     selector: 'app-documents-send-one',
@@ -46,7 +45,6 @@ export class SendDocumentsOneComponent implements OnInit {
 
     constructor(
         private location: Location,
-        private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
@@ -57,9 +55,6 @@ export class SendDocumentsOneComponent implements OnInit {
         this.pageHeaders.push(
             {routerLink: '/send-documents', heading: 'documents.send.header', icon: 'fa fa-book'}
         );
-        this.refreshService.listen().subscribe(() => {
-            this.refreshData();
-        });
     }
 
     ngOnInit(): void {

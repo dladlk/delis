@@ -1,4 +1,4 @@
-import { DateRangeModel } from "../../../../models/date.range.model";
+import { DateRangePicker } from "../../../bs-component/components/daterange/date.range.picker";
 
 export class IdentifierFilterProcessResult {
 
@@ -10,7 +10,7 @@ export class IdentifierFilterProcessResult {
     status: string;
     name: string;
     publishingStatus: string;
-    dateRange: DateRangeModel;
+    dateRange: DateRangePicker;
     sortBy: string;
 
     constructor() {

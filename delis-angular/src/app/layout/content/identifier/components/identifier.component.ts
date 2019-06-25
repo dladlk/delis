@@ -11,7 +11,6 @@ import { LocaleService } from '../../../../service/locale.service';
 import { ErrorService } from '../../../../service/error.service';
 import { PaginationService } from '../../../bs-component/components/pagination/pagination.service';
 import { IdentifierService } from '../services/identifier.service';
-import { DateRangeModel } from '../../../../models/date.range.model';
 import { SHOW_DATE_FORMAT } from '../../../../app.constants';
 import { DaterangeService } from '../../../bs-component/components/daterange/daterange.service';
 import { EnumInfoModel } from '../../../../models/enum.info.model';
@@ -19,6 +18,7 @@ import { LocalStorageService } from '../../../../service/local.storage.service';
 import { RefreshService } from '../../../../service/refresh.service';
 import { StateIdentifierModel } from "../models/state.identifier.model";
 import { AppStateService } from "../../../../service/app.state.service";
+import { DateRangePicker } from "../../../bs-component/components/daterange/date.range.picker";
 
 @Component({
     selector: 'app-identifiers',
@@ -70,8 +70,8 @@ export class IdentifierComponent implements OnInit {
                 this.pagination = pag;
             }
         });
-        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange !== null) {
+        this.dtService.listen().subscribe((dtRange: DateRangePicker) => {
+            if (dtRange.startDate !== null && dtRange.endDate !== null) {
                 this.filter.dateRange = dtRange;
             } else {
                 this.filter.dateRange = null;

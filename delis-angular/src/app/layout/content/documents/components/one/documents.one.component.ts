@@ -17,7 +17,6 @@ import {DocumentBytesModel} from '../../models/document.bytes.model';
 import {JournalDocumentErrorModel} from '../../../journal/document/models/journal.document.error.model';
 import {FileSaverService} from '../../../../../service/file.saver.service';
 import {ErrorModel} from '../../../../../models/error.model';
-import {RefreshService} from '../../../../../service/refresh.service';
 
 @Component({
     selector: 'app-documents-one',
@@ -50,7 +49,6 @@ export class DocumentsOneComponent implements OnInit {
 
     constructor(
         private location: Location,
-        private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
@@ -62,9 +60,6 @@ export class DocumentsOneComponent implements OnInit {
         this.pageHeaders.push(
             {routerLink: '/documents', heading: 'documents.header', icon: 'fa fa-book'}
         );
-        this.refreshService.listen().subscribe(() => {
-            this.refreshData();
-        });
     }
 
     ngOnInit(): void {

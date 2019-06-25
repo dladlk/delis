@@ -7,6 +7,7 @@ import { ChartDocumentService } from "./services/chart.document.service";
 import { ErrorService } from "../../../../service/error.service";
 import { DaterangeService } from "../../../bs-component/components/daterange/daterange.service";
 import { DateRangeModel } from "../../../../models/date.range.model";
+import {DateRangePicker} from "../../../bs-component/components/daterange/date.range.picker";
 
 @Component({
     selector: 'app-dashboard-chart-document',
@@ -24,9 +25,7 @@ export class ChartDocumentComponent implements OnInit {
     lineChartLegend: boolean;
     lineChartType: string;
 
-    startDate: Date;
-
-    drm: DateRangeModel = new DateRangeModel();
+    drm: DateRangePicker;
 
     constructor(
         private translate: TranslateService,
@@ -36,8 +35,8 @@ export class ChartDocumentComponent implements OnInit {
         private chartDocumentService: ChartDocumentService) {
         this.translate.use(locale.getlocale().match(/en|da/) ? locale.getlocale() : 'en');
         this.updateLineChart(false);
-        this.dtService.listen().subscribe((dtRange: DateRangeModel) => {
-            if (dtRange !== null) {
+        this.dtService.listen().subscribe((dtRange: DateRangePicker) => {
+            if (dtRange.startDate !== null && dtRange.endDate !== null) {
                 this.drm = dtRange;
                 this.updateLineChart(true);
             } else {
@@ -47,7 +46,7 @@ export class ChartDocumentComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.startDate = new Date();
+        this.drm = null;
         this.lineChartLegend = false;
         this.lineChartOptions = {
             responsive: true
@@ -85,11 +84,12 @@ export class ChartDocumentComponent implements OnInit {
                 }
             );
         } else {
-            this.drm = new DateRangeModel();
-            this.drm.dateStart = new Date();
-            this.drm.dateStart.setHours(0,0,0,0);
-            this.drm.dateEnd = new Date();
-            this.chartDocumentService.getChartCustomData(this.drm, true).subscribe(
+            this.drm = null;
+            var dateStart = new Date();
+            dateStart.setHours(0,0,0,0);
+            var dateEnd = new Date();
+            dateEnd.setHours(23,59,59,999);
+            this.chartDocumentService.getChartDefaultData(dateStart, dateEnd, true).subscribe(
                 (data: {}) => {
                     this.generateLineChart(data);
                 }, error => {

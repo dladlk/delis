@@ -20,7 +20,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <app-daterange drops="down" opens="right"></app-daterange>
+                                    <app-daterange drops="down" opens="right" [dateRangeModel]="filter.dateRange" [isCanInit]="false"></app-daterange>
                                 </td>
                                 <td>
                                     <ng-select [items]="organizations"

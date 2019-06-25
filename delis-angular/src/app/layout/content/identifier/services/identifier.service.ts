@@ -51,7 +51,7 @@ export class IdentifierService {
             params = params.append('name', filter.name);
         }
         if (filter.dateRange !== null) {
-            params = params.append('createTime', String(new Date(filter.dateRange.dateStart).getTime()) + ':' + String(new Date(filter.dateRange.dateEnd).getTime()));
+            params = params.append('createTime', String(new Date(filter.dateRange.startDate).getTime()) + ':' + String(new Date(filter.dateRange.endDate).getTime()));
 
         }
 

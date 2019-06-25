@@ -48,7 +48,7 @@ export class SendDocumentsService {
             params = params.append('sentMessageId', filter.sentMessageId);
         }
         if (filter.dateRange !== null) {
-            params = params.append('createTime', String(new Date(filter.dateRange.dateStart).getTime()) + ':' + String(new Date(filter.dateRange.dateEnd).getTime()));
+            params = params.append('createTime', String(new Date(filter.dateRange.startDate).getTime()) + ':' + String(new Date(filter.dateRange.endDate).getTime()));
         }
 
         return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());

@@ -5,13 +5,10 @@ import moment from 'moment';
 moment.locale('da');
 
 import { routerTransition } from "../../../../router.animations";
-import { DateRangeModel } from "../../../../models/date.range.model";
 import { DATE_FORMAT } from "../../../../app.constants";
 import { FIRST_DAY } from "../../../../app.constants";
 import { DaterangeService} from "./daterange.service";
 import { DateRangePicker } from "./date.range.picker";
-import { PaginationService } from "../pagination/pagination.service";
-import { PaginationModel } from "../pagination/pagination.model";
 import { ForwardingLanguageService } from "../../../../service/forwarding.language.service";
 import { LocaleService } from "../../../../service/locale.service";
 
@@ -25,10 +22,11 @@ export class DaterangeComponent implements OnInit {
 
     @Input() drops: string;
     @Input() opens: string;
+    @Input() dateRangeModel: DateRangePicker;
+    @Input() isCanInit = false;
 
     localeConfig: LocaleConfig;
-    dateRangeModel: DateRangeModel;
-    dateRange: DateRangePicker;
+    dateRange: any;
     alwaysShowCalendars: boolean;
     lang: string;
 
@@ -63,8 +61,7 @@ export class DaterangeComponent implements OnInit {
     constructor(
         private localeService: LocaleService,
         private forwardingLanguageService: ForwardingLanguageService,
-        private dtService: DaterangeService,
-        private paginationService: PaginationService) {
+        private dtService: DaterangeService) {
         this.lang = localeService.getlocale().match(/en|da/) ? localeService.getlocale() : 'en';
         this.forwardingLanguageService.listen().subscribe((lang: string) => {
             this.lang = lang;
@@ -72,12 +69,6 @@ export class DaterangeComponent implements OnInit {
             this.initLocaleConfig();
         });
         this.alwaysShowCalendars = true;
-        this.paginationService.listen().subscribe((pag: PaginationModel) => {
-            if (pag === null || pag.collectionSize === 0) {
-                this.dateRange = null;
-                this.dateRangeModel = undefined;
-            }
-        });
         this.initLocale(this.lang);
         this.initLocaleConfig();
     }
@@ -106,18 +97,25 @@ export class DaterangeComponent implements OnInit {
         };
     }
 
-    change(dateRange: DateRangePicker) {
-        if (dateRange.startDate !== null && dateRange.endDate !== null) {
-            this.dateRangeModel = new DateRangeModel();
-            this.dateRangeModel.dateStart = new Date(dateRange.startDate);
-            this.dateRangeModel.dateEnd = new Date(dateRange.endDate);
+    change() {
+        if (this.dateRange !== undefined && this.isCanInit) {
+            this.dateRangeModel = this.dateRange;
             this.dtService.loadDate(this.dateRangeModel);
-        }
-        if (this.dateRangeModel !== undefined && dateRange.startDate === null && dateRange.endDate === null) {
-            this.dateRangeModel = undefined;
-            this.dtService.loadDate(null);
         }
     }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        if (this.dateRangeModel !== null) {
+            var start = new Date(this.dateRangeModel.startDate);
+            var end = new Date(this.dateRangeModel.endDate);
+            this.dateRange = {
+                startDate: moment(start),
+                endDate: moment(end),
+            }
+        }
+    }
+
+    canInit() {
+        this.isCanInit = true;
+    }
 }

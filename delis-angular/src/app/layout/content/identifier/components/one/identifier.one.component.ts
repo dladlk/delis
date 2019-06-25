@@ -15,8 +15,6 @@ import { TableHeaderSortModel } from '../../../../bs-component/components/table-
 import { JournalIdentifierFilterProcessResultModel } from '../../../journal/identifier/models/journal.identifier.filter.process.result.model';
 import { JournalIdentifierModel } from '../../../journal/identifier/models/journal.identifier.model';
 import { ErrorModel } from '../../../../../models/error.model';
-import { RefreshService } from '../../../../../service/refresh.service';
-
 
 const COLUMN_NAME_MESSAGE = 'journal.identifier.table.columnName.message';
 const COLUMN_NAME_CREATE_TIME = 'journal.identifier.table.columnName.createTime';
@@ -51,7 +49,6 @@ export class IdentifierOneComponent implements OnInit {
 
     constructor(
         private location: Location,
-        private refreshService: RefreshService,
         private translate: TranslateService,
         private locale: LocaleService,
         private route: ActivatedRoute,
@@ -63,9 +60,6 @@ export class IdentifierOneComponent implements OnInit {
         this.pageHeaders.push(
             { routerLink : '/identifiers', heading: 'identifier.header', icon: 'fa fa-id-card'}
         );
-        this.refreshService.listen().subscribe(() => {
-            this.refreshData();
-        });
     }
 
     ngOnInit(): void {
