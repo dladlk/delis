@@ -19,7 +19,7 @@ The main goal of the project is to simplify implementation of [eDelivery](https:
 
 ## <a id="functionality">Functionality</a>
 
-Key functionality of the project is registration of Danish organisations in OpenPEPPOL network and implementation of corner three in [4 corner model](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Message+exchange) (documnets receiving) and corner two for message responses (documents sending). To simplify integration with OpenPEPPOL, documents can be converted to OIOUBL format, already supported by all public Danish orgianisations.
+Key functionality of the project is registration of Danish organisations in OpenPEPPOL network and implementation of corner three in [4 corner model](https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/Message+exchange) (documents receiving) and corner two for message responses (documents sending). To simplify integration with OpenPEPPOL, documents can be converted to OIOUBL format, already supported by all public Danish organisations.
 
 This includes:
 
