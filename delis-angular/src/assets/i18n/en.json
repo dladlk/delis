@@ -9,7 +9,7 @@
     "sidebar.documents": "Documents",
     "sidebar.received.documents": "Received",
     "sidebar.send.documents": "Send",
-    "sidebar.identifier": "Identifiers",
+    "sidebar.identifier": "Identifier",
     "sidebar.journal": "Journal",
     "sidebar.journal.document": "Document",
     "sidebar.journal.identifier": "Identifier",
@@ -30,6 +30,7 @@
     "dashboard.identifier" : "Identifiers last hour",
     "dashboard.documents" : "Received documents last hour / average",
     "dashboard.errors" : "Errors last hour",
+    "dashboard.send" : "Send documents last hour / average",
     "dashboard.details" : "View Details",
     "dashboard.charts.header" : "Count of loaded documents",
 
@@ -97,9 +98,9 @@
     "documents.table.one.columnName.documentBytesModels.size" : "Size, bytes",
     "documents.table.one.columnName.documentBytesModels.format" : "Format",
 
-    "identifier.header" : "Identifiers",
+    "identifier.header" : "Identifier",
     "identifier.header.details" : "Identifier details",
-    "identifier.table.header" : "Identifiers Overview",
+    "identifier.table.header" : "Identifier Overview",
     "identifier.table.columnName.organisation" : "Organisation",
     "identifier.table.columnName.identifierGroup" : "Identifier Group",
     "identifier.table.columnName.value" : "Value",

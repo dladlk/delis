@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-xl-4">
+    <app-stat
+      [bgClass]="'primary'"
+      [icon]="'fas fa-address-card'"
+      [count]="dashboardModel.identifierLastHour"
+      [label]="'dashboard.identifier'"
+      [router]="'/identifier'"
+      [rotate]="false"></app-stat>
+  </div>
+  <div class="col-xl-4">
+    <app-stat
+      [bgClass]="'warning'"
+      [icon]="'fas fa-paper-plane'"
+      [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+      [label]="'dashboard.documents'"
+      [router]="'/document'"
+      [rotate]="true"></app-stat>
+  </div>
+  <div class="col-xl-4">
+    <app-stat
+      [bgClass]="'info'"
+      [icon]="'fas fa-paper-plane'"
+      [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+      [label]="'dashboard.send'"
+      [router]="'/send-document'"
+      [rotate]="false"></app-stat>
+  </div>
+</div>
+
+<div class="m-1 mt-2">
+  <app-chart-document></app-chart-document>
+</div>

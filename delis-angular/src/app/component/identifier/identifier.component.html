@@ -1,0 +1,102 @@
+<div class="card" style="min-height: 768px">
+  <div class="card-header"><span>{{ 'identifier.table.header' | translate }}</span></div>
+  <div class="card-body table-responsive">
+    <app-pagination [pagination]="pagination" [dropdownPosition]="'bottom'"></app-pagination>
+    <table class="table table-hover table-sm">
+      <thead>
+      <tr>
+        <th *ngFor="let hed of tableHeaderSortModels">
+          <div class="text-center">
+            <button type="button" class="btn btn-sm btn-sort" (click)="clickFilter(hed.columnName)" style="background-color: white">
+              <app-table-header-sort [countClick]="hed.columnClick" [headerName]="hed.columnName"></app-table-header-sort>
+            </button>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          <app-daterange drops="down" opens="right" [dateRangeModel]="currentState.filter.dateRange" [isCanInit]="false"></app-daterange>
+        </td>
+        <td>
+          <ng-select [items]="organizations"
+                     [clearable]="true"
+                     placeholder="{{'placeholder.search' | translate}}"
+                     [(ngModel)]="currentState.selectedOrganization"
+                     (change)="loadOrganisations()">
+          </ng-select>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="search"
+                 (ngModelChange)="loadTextIdentifierGroup($event)"
+                 [(ngModel)]="currentState.textIdentifierGroup"
+                 placeholder="{{'placeholder.search' | translate}}"/>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="search"
+                 (ngModelChange)="loadTextType($event)"
+                 [(ngModel)]="currentState.textType"
+                 placeholder="{{'placeholder.search' | translate}}"/>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="search"
+                 (ngModelChange)="loadTextValue($event)"
+                 [(ngModel)]="currentState.textValue"
+                 placeholder="{{'placeholder.search' | translate}}"/>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="search"
+                 (ngModelChange)="loadTextUniqueValueType($event)"
+                 [(ngModel)]="currentState.textUniqueValueType"
+                 placeholder="{{'placeholder.search' | translate}}"/>
+        </td>
+        <td>
+          <ng-select [items]="statusList"
+                     [clearable]="true"
+                     bindLabel="viewName"
+                     placeholder="{{'placeholder.search' | translate}}"
+                     [(ngModel)]="currentState.selectedStatus"
+                     (change)="loadStatus()">
+          </ng-select>
+        </td>
+        <td>
+          <ng-select [items]="publishingStatusList"
+                     [clearable]="true"
+                     bindLabel="viewName"
+                     placeholder="{{'placeholder.search' | translate}}"
+                     [(ngModel)]="currentState.selectedPublishingStatus"
+                     (change)="loadPublishingStatus()">
+          </ng-select>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="search"
+                 (ngModelChange)="loadTextName($event)"
+                 [(ngModel)]="currentState.textName"
+                 placeholder="{{'placeholder.search' | translate}}"/>
+        </td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let identifier of identifiers" style="cursor: pointer" [routerLink]="['/identifier/', identifier.id]">
+        <td>{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
+        <td *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</td>
+        <td *ngIf="identifier.organisation === null"></td>
+        <td *ngIf="identifier.identifierGroup !== null">{{identifier.identifierGroup.name}}</td>
+        <td *ngIf="identifier.identifierGroup === null"></td>
+        <td>{{identifier.type}}</td>
+        <td>{{identifier.value}}</td>
+        <td>{{identifier.uniqueValueType}}</td>
+        <td>{{identifier.status}}</td>
+        <td>{{identifier.publishingStatus}}</td>
+        <td>{{identifier.name}}</td>
+      </tr>
+      </tbody>
+    </table>
+    <hr>
+    <app-pagination [pagination]="pagination" [dropdownPosition]="'top'"></app-pagination>
+  </div>
+</div>

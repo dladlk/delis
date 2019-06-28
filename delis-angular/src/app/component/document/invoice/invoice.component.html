@@ -1,0 +1,320 @@
+<div class="d-flex justify-content-start">
+  <div class="p-2">
+    <a class="btn btn-primary"
+       data-toggle="collapse"
+       href="#DocumentInvoiceComponent"
+       role="button"
+       aria-expanded="false"
+       aria-controls="DocumentInvoiceComponent">Invoice Response 3.0 Form</a>
+  </div>
+</div>
+
+<div #invoiceResultStatus>
+  <div *ngIf="success !== undefined">
+    <div class="card border-secondary m-1">
+      <div class="alert alert-success m-2" role="alert">
+        {{success.message}}
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="errorDownload">
+    <app-error [errorModel]="errorDownloadModel"></app-error>
+  </div>
+</div>
+
+<div *ngIf="isErrorList" class="mt-2">
+  <div class="card border-danger table-responsive m-1">
+    <div class="card-body">
+      <table class="table table-sm">
+        <thead>
+        <tr>
+          <th>{{ 'invoice.error.record.flag' | translate }}</th>
+          <th>{{ 'invoice.error.record.code' | translate }}</th>
+          <th>{{ 'invoice.error.record.location' | translate }}</th>
+          <th>{{ 'invoice.error.record.message' | translate }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let err of errorList">
+          <td>{{err.flag}}</td>
+          <td>{{err.code}}</td>
+          <td>{{err.location}}</td>
+          <td>{{err.message}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="collapse multi-collapse mt-2" id="DocumentInvoiceComponent">
+
+    <div class="card border-secondary m-1">
+      <div class="card card-body">
+
+        <div class="row">
+          <div class="col-sm">
+            <h2>
+              Invoice Response BIS 3.0
+            </h2>
+          </div>
+          <div class="col-sm">
+            <small class="form-text text-muted"> See <a href="http://docs.peppol.eu/poacc/upgrade-3/profiles/63-invoiceresponse/" target="_blank">PEPPOL BIS Invoice Response 3.0 documentation</a> for details</small>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text invoice-input-group" for="inputGroupUseCase">Use case</label>
+              </div>
+              <select class="custom-select" id="inputGroupUseCase" (change)="selectInvoiceResponseUseCaseView($event.target.value)">
+                <option *ngFor="let useCase of documentInvoiceModel.invoiceResponseUseCaseList; index as i">
+                  <div *ngIf="i === 0; else elseBlock">{{useCase[1]}}</div>
+                  <ng-template #elseBlock>{{useCase[0]}}: {{useCase[1]}}</ng-template>
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm">
+            <section id="ucl">
+              <strong *ngIf="invoiceResponseUseCaseView.length !== 0">
+                {{invoiceResponseUseCaseView[0]}}: {{invoiceResponseUseCaseView[2]}}
+                <br>
+              </strong>
+              <small>See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
+                Invoice Response use cases</a> for details
+              </small>
+            </section>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text invoice-input-group" for="inputGroupStatusCode">Status</label>
+              </div>
+              <select class="custom-select" id="inputGroupStatusCode" (change)="selectInvoiceStatusCodeView($event.target.value)">
+                <option *ngFor="let statusCode of documentInvoiceModel.invoiceStatusCodeList" [selected]="invoiceStatusCodeView === statusCode">{{statusCode[0]}}: {{statusCode[1]}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm">
+            <section id="irs">
+              {{invoiceStatusCodeView[0]}}: {{invoiceStatusCodeView[2]}}
+              <br>
+              <small>
+                <div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
+                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
+                Invoice status code (UNCL4343 Subset)</a> for details
+              </small>
+            </section>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupEffectiveDate">
+                  <input class="mr-2" type="checkbox" [checked]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled()" id="inputGroupEffectiveDate">
+                  Effective date
+                </label>
+              </div>
+              <input #inputGroupEffectiveDate [disabled]="!effectiveDateEnabled" [(ngModel)]="effectiveDate" type="date" class="form-control" size="10" style="max-width: 11em" lang="en"/>
+            </div>
+          </div>
+          <div class="col-sm">
+            <small>
+              <div class="font-italic">//DocumentResponse/Response/EffectiveDate</div>
+            </small>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text invoice-input-group" for="inputGroupStatusReason">
+                      <input class="mr-2" type="checkbox" [checked]="statusReasonEnabled" (change)="checkStatusReasonEnabled()" id="inputGroupStatusReason">
+                      Reason
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <select #inputGroupStatusReason class="custom-select" (change)="selectStatusReasonView($event.target.value)" [disabled]="!statusReasonEnabled">
+                <option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [selected]="statusReasonView === statusReason">{{statusReason[0]}}: {{statusReason[1]}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm">
+            <section id="scr">
+              <div *ngIf="statusReasonView !== undefined">
+                {{statusReasonView[0]}}: {{statusReasonView[2]}}
+              </div>
+              <br>
+              <small>
+                <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
+                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
+                Status Clarification Reason (OpenPEPPOL)</a> for details
+              </small>
+            </section>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text invoice-input-group" for="inputGroupStatusAction">
+                      <input class="mr-2" type="checkbox" [checked]="statusActionEnabled" id="inputGroupStatusAction" (change)="checkStatusActionEnabled()">
+                      Action
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <select #inputGroupStatusAction class="custom-select" (change)="selectStatusActionView($event.target.value)" [disabled]="!statusActionEnabled">
+                <option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [selected]="statusActionView === statusAction">{{statusAction[0]}}: {{statusAction[1]}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm">
+            <section id="sca">
+              <div *ngIf="statusActionView !== undefined">
+                {{statusActionView[0]}}: {{statusActionView[2]}}
+              </div>
+              <br>
+              <small>
+                <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
+                See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
+                Status Clarification Action (OpenPEPPOL)</a> for details
+              </small>
+            </section>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text invoice-input-group" for="inputGroupStatusAction2">
+                      <input class="mr-2" type="checkbox" [checked]="statusAction2Enabled" id="inputGroupStatusAction2" (change)="checkStatusAction2Enabled()">
+                      Action 2
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <select #inputGroupStatusAction2 class="custom-select" (change)="selectStatusAction2View($event.target.value)" [disabled]="!statusAction2Enabled">
+                <option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [selected]="statusAction2View === statusAction2">{{statusAction2[0]}}: {{statusAction2[1]}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm">
+            <section id="sca2">
+              <div *ngIf="statusAction2View !== undefined">
+                {{statusAction2View[0]}}: {{statusAction2View[2]}}
+              </div>
+              <br>
+              <small>
+                Some use cases suppose 2 actions
+              </small>
+            </section>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="form-group col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text invoice-input-group">Reason text</span>
+              </div>
+              <input [(ngModel)]="statusReasonText" id="statusReasonText" type="text" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="font-italic">
+              <small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="form-group col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text invoice-input-group">Detail type</span>
+              </div>
+              <input [(ngModel)]="detailType" type="text" name="invoiceResponseDetailTypeCode" id="invoiceResponseDetailTypeCode" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-4">
+            <small class="form-text text-muted">
+              <span class="font-italic display-block">//DocumentResponse/Response/Status/Condition/AttributeID</span>
+              <div>E.g. BT-48</div>
+            </small>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="form-group col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text invoice-input-group">Detail value</span>
+              </div>
+              <input [(ngModel)]="detailValue" type="text" name="invoiceResponseDetailValue" id="invoiceResponseDetailValue" class="form-control"/>
+            </div>
+          </div>
+          <div class="col-4">
+            <small class="form-text text-muted">
+              <div class="font-italic">//DocumentResponse/Response/Status/Condition/Description</div>
+              <div>E.g. EU12345</div>
+            </small>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="validateGenerated">
+                  <input class="mr-2" type="checkbox" [checked]="validateGeneratedEnabled" (change)="checkValidateGeneratedEnabled()">
+                </label>
+              </div>
+              <label id="validateGenerated" class="form-control" (click)="checkValidateGeneratedEnabled()" lang="en">{{validateGenerated}}</label>
+            </div>
+          </div>
+          <div class="col-sm">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="onlyGenerated">
+                  <input class="mr-2" type="checkbox" [checked]="onlyGeneratedEnabled" (change)="checkOnlyGeneratedEnabled()">
+                </label>
+              </div>
+              <label id="onlyGenerated" class="form-control" (click)="checkOnlyGeneratedEnabled()" lang="en">{{onlyGenerated}}</label>
+            </div>
+          </div>
+        </div>
+        <hr>
+
+        <div class="d-flex justify-content-start">
+          <div class="p-2">
+            <button type="submit" class="btn btn-primary" (click)="sendInvoice(invoiceResultStatus)">Generate</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+</div>
+
+
+

@@ -1,0 +1,28 @@
+<div class="card text-white bg-{{bgClass}}" style="margin: 1%">
+  <div class="card-header">
+    <div class="row">
+      <div class="col col-xl-2">
+        <div class="fa-4x">
+          <div *ngIf="rotate; else elseBlock"><i class="{{icon}} fa-rotate-180"></i></div>
+          <ng-template #elseBlock><i class="{{icon}}"></i></ng-template>
+        </div>
+      </div>
+      <div class="col col-xl-10 text-sm-right">
+        <div class="d-block huge">{{count}}</div>
+        <div class="d-block">{{ label | translate }}</div>
+      </div>
+    </div>
+  </div>
+  <a [routerLink]="[router]" routerLinkActive="active-link" class="float-right card-inverse" style="color: white !important;">
+    <div class="card-footer">
+      <div class="row">
+        <div class="col col-xl-6">
+          <span class="float-left">{{ 'dashboard.details' | translate }}</span>
+        </div>
+        <div class="col col-xl-6 text-right">
+          <span><i class="fa fa-arrow-circle-right"></i></span>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
