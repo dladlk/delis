@@ -4,6 +4,7 @@ import { LocaleService } from './locale.service';
 import { TokenService } from './token.service';
 import { RuntimeConfigService } from './runtime-config.service';
 import { Observable } from 'rxjs';
+import {HttpParams} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,10 @@ export class AuthorizationService {
 
   login(login: string, password: string): Observable<any> {
     this.url = this.configService.getConfigUrl();
-    return this.http.methodPost(this.url + '/oauth/token?grant_type=password&username=' + login + '&password=' + password);
+    let params = new HttpParams();
+    params = params.append("username", login);
+    params = params.append("password", password);
+    params = params.append("grant_type", 'password');
+    return this.http.methodLogin(this.url + '/oauth/token', params);
   }
 }
