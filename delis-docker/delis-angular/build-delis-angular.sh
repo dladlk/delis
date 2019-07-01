@@ -17,7 +17,7 @@ ng build --prod --configuration=production --base-href=/delis-gui-context-name/
 popd
 
 rm -R -f ./docker/dist
-cp -R ${PROJECT_PATH}/dist ./docker/dist
+cp -R ${PROJECT_PATH}/dist/delis-web-angular ./docker/dist
 
 docker image \
        build \
