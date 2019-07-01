@@ -5,6 +5,7 @@
     "login.error.unauthorized": "invalid username or password",
     "login.error.disconnect": "server disconnect",
 
+    "sidebar.home": "DELIS",
     "sidebar.dashboard": "Dashboard",
     "sidebar.documents": "Documents",
     "sidebar.received.documents": "Received",
