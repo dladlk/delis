@@ -51,9 +51,6 @@ export class StateIdentifierModel {
         columnName: COLUMN_NAME_STATUS, columnClick: 0
       },
       {
-        columnName: COLUMN_NAME_PUBLISHING_STATUS, columnClick: 0
-      },
-      {
         columnName: COLUMN_NAME_NAME, columnClick: 0
       }
     );
