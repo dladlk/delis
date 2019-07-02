@@ -1,29 +1,28 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light border">
-  <a class="navbar-brand" [routerLink]="['/dashboard']" [routerLinkActive]="['router-link-active']"><img src="assets/images/delis.png" width="90" height="30" class="d-inline-block align-top" alt=""/>
-    <h5 class="navbar-text ml-3">Delis</h5>
-  </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto justify-content-end">
       <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/dashboard']">
+          {{ 'sidebar.home' | translate }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/document']">
+          {{ 'sidebar.documents' | translate }} {{ 'sidebar.received.documents' | translate }}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/send-document']">
+          {{ 'sidebar.documents' | translate }} {{ 'sidebar.send.documents' | translate }}
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" [routerLink]="['/identifier']">
           {{ 'sidebar.identifier' | translate }}
         </a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {{ 'sidebar.documents' | translate }}
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a [routerLink]="['/document']" class="dropdown-item">
-            {{ 'sidebar.received.documents' | translate }}
-          </a>
-          <a [routerLink]="['/send-document']" class="dropdown-item">
-            {{ 'sidebar.send.documents' | translate }}
-          </a>
-        </div>
       </li>
     </ul>
     <ul class="navbar-nav ml-auto">

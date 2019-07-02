@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -57,23 +57,26 @@ export class HttpRestService {
     return this.http.get(url).pipe(map(HttpRestService.extractData));
   }
 
-  methodPost(url: string): Observable<any> {
-    this.headers = new HttpHeaders({
+  methodLogin(url: string, params: HttpParams): Observable<any> {
+    let headersMap = {
       'Content-Type': `application/json`,
-      Authorization: `Basic dGVzdDp0ZXN0`
-    });
+      'Authorization': 'Basic dGVzdDp0ZXN0'
+    };
+    let headers = new HttpHeaders(headersMap);
     return this.http.post(url, null, {
-      headers: this.headers
+      headers: headers,
+      params: params
     }).pipe(map(HttpRestService.extractData));
   }
 
   methodPostModel(url: string, model: any, token: any): Observable<any> {
-    this.headers = new HttpHeaders({
-      'Content-Type': `application/json`,
-      Authorization: 'Bearer ' + token
-    });
+    let headersMap = {
+      'Content-Type': `application/json`
+    };
+     headersMap['Authorization'] = 'Bearer ' + token;
+    let headers = new HttpHeaders(headersMap);
     return this.http.post(url, model, {
-      headers: this.headers
+      headers: headers
     }).pipe(map(HttpRestService.extractData));
   }
 

@@ -42,15 +42,6 @@
           </ng-select>
         </td>
         <td>
-          <ng-select [items]="lastErrors"
-                     [clearable]="true"
-                     bindLabel="viewName"
-                     placeholder="{{'placeholder.search' | translate}}"
-                     [(ngModel)]="currentState.selectedLastError"
-                     (change)="loadLastErrors()">
-          </ng-select>
-        </td>
-        <td>
           <ng-select [items]="documentTypes"
                      [clearable]="true"
                      bindLabel="viewName"
@@ -85,7 +76,6 @@
         <td *ngIf="doc.receiverIdentifier !== null">{{doc.receiverIdentifier.name}} {{doc.receiverIdentifier.uniqueValueType}}</td>
         <td *ngIf="doc.receiverIdentifier === null"></td>
         <td>{{doc.documentStatus}}</td>
-        <td>{{doc.lastError}}</td>
         <td>{{doc.documentType}}</td>
         <td>{{doc.ingoingDocumentFormat}}</td>
         <td>{{doc.senderName}}</td>

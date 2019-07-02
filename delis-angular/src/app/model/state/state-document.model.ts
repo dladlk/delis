@@ -40,9 +40,6 @@ export class StateDocumentModel {
         columnName: COLUMN_NAME_STATUS, columnClick: 0
       },
       {
-        columnName: COLUMN_NAME_LAST_ERROR, columnClick: 0
-      },
-      {
         columnName: COLUMN_NAME_DOCUMENT_TYPE, columnClick: 0
       },
       {

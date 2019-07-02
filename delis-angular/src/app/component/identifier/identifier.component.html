@@ -63,15 +63,6 @@
           </ng-select>
         </td>
         <td>
-          <ng-select [items]="publishingStatusList"
-                     [clearable]="true"
-                     bindLabel="viewName"
-                     placeholder="{{'placeholder.search' | translate}}"
-                     [(ngModel)]="currentState.selectedPublishingStatus"
-                     (change)="loadPublishingStatus()">
-          </ng-select>
-        </td>
-        <td>
           <input class="form-control"
                  type="search"
                  (ngModelChange)="loadTextName($event)"
@@ -91,7 +82,6 @@
         <td>{{identifier.value}}</td>
         <td>{{identifier.uniqueValueType}}</td>
         <td>{{identifier.status}}</td>
-        <td>{{identifier.publishingStatus}}</td>
         <td>{{identifier.name}}</td>
       </tr>
       </tbody>

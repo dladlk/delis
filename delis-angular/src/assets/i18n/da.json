@@ -5,6 +5,7 @@
   "login.error.unauthorized": "ugyldigt brugernavn eller kodeord",
   "login.error.disconnect": "server frakobles",
 
+  "sidebar.home": "DELIS",
   "sidebar.dashboard": "Oversigt",
   "sidebar.documents": "Dokumenter",
   "sidebar.received.documents": "Modtagelse",
