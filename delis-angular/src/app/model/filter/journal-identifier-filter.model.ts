@@ -16,6 +16,6 @@ export class JournalIdentifierFilterModel {
     this.message = null;
     this.durationMs = null;
     this.dateRange = null;
-    this.sortBy = 'orderBy_Id_Desc';
+    this.sortBy = 'orderBy_createTime_Asc';
   }
 }

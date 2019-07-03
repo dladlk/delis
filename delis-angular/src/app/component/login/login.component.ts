@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-
+import { LoginModel } from '../../model/system/login.model';
 import { TokenService } from '../../service/system/token.service';
 import { AuthorizationService } from '../../service/system/authorization.service';
 import { LocaleService } from '../../service/system/locale.service';
-import { ContentSelectInfoService } from '../../service/system/content-select.info.service';
-import { LoginModel } from '../../model/system/login.model';
+import { ContentSelectInfoService } from '../../service/system/content-select-info.service';
 
 @Component({
   selector: 'app-login',
@@ -15,11 +14,12 @@ import { LoginModel } from '../../model/system/login.model';
 })
 export class LoginComponent implements OnInit {
 
-  login = '';
-  password = '';
+  // @ViewChild('username', {static: true}) username: ElementRef;
 
-  message: string;
+  form: any = {};
+
   errorStatus: boolean;
+  message: string;
 
   constructor(
     private tokenService: TokenService,
@@ -29,46 +29,34 @@ export class LoginComponent implements OnInit {
     private contentSelectInfoService: ContentSelectInfoService,
     public router: Router) {
     this.translate.use(locale.getLocale().match(/en|da/) ? locale.getLocale() : 'en');
-    this.errorStatus = false;
+    // this.errorStatus = false;
+    // setTimeout(() => {
+    //   this.username.nativeElement.focus();
+    // }, 0);
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
-  onLoggedIn() {
-    if (this.login.length === 0 && this.password.length === 0) {
-      this.message = 'login.error.username-or-password';
-      this.errorStatus = true;
-      return;
-    }
-    if (this.login.length === 0) {
-      this.message = 'login.error.username';
-      this.errorStatus = true;
-      return;
-    }
-    if (this.password.length === 0) {
-      this.message = 'login.error.password';
-      this.errorStatus = true;
-      return;
-    }
-    this.auth.login(this.login, this.password).subscribe(
+  login() {
+    this.auth.login(this.form.username, this.form.password).subscribe(
       (data: {}) => {
-        var loginModel: LoginModel = data['data'];
-        this.tokenService.setToken(loginModel.accessToken);
-        localStorage.setItem('username', loginModel.username);
-        localStorage.setItem('refreshToken', loginModel.refreshToken);
-        this.contentSelectInfoService.generateAllContentSelectInfo(loginModel.accessToken);
-        this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginModel.accessToken);
+        const loginData: LoginModel = data['data'];
+        this.tokenService.setToken(loginData.accessToken);
+        localStorage.setItem('username', loginData.username);
+        localStorage.setItem('refreshToken', loginData.refreshToken);
+        this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
+        this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
         this.errorStatus = false;
-        this.router.navigate(['']);
+        this.router.navigate(['/dashboard']);
       }, error => {
-        this.errorStatus = true;
-        if (error.status === 0) {
-          this.message = 'login.error.disconnect';
-        }
-        if (error.status === 401) {
-          this.message = 'login.error.unauthorized';
-        }
-        this.router.navigate(['login']);
+            this.errorStatus = true;
+            if (error.status === 0) {
+                this.message = 'login.error.disconnect';
+            }
+            if (error.status === 401) {
+                this.message = 'login.error.unauthorized';
+            }
+        this.router.navigate(['/login']);
       }
     );
   }

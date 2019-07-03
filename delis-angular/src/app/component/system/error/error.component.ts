@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ErrorModel } from '../../../model/system/error.model';
-import { LocaleService } from '../../../service/system/locale.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {LocaleService} from '../../../service/system/locale.service';
+import {ErrorModel} from '../../../model/system/error.model';
 
 @Component({
   selector: 'app-error',

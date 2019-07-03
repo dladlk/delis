@@ -23,27 +23,9 @@ export class DocumentService {
 
   getListDocuments(currentPage: number, sizeElement: number, filter: DocumentFilterModel): Observable<any> {
     let params = this.generateParams(currentPage, sizeElement, filter);
-    if (filter.dateReceived !== null) {
-      params = params.append('createTime', String(new Date(filter.dateReceived.startDate).getTime()) + ':' + String(new Date(filter.dateReceived.endDate).getTime()));
+    if (filter.createTime !== null) {
+      params = params.append('createTime', String(new Date(filter.createTime.fromDate).getTime()) + ':' + String(new Date(filter.createTime.toDate).getTime()));
     }
-    return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
-  }
-
-  getErrorListDocuments(currentPage: number, sizeElement: number, filter: DocumentFilterModel, errors: boolean): Observable<any> {
-    let params = this.generateParams(currentPage, sizeElement, filter);
-    params = params.append('flagParamErrorsDocument', 'FLAG_ERRORS_DOCUMENT');
-    if (!errors) {
-      let end = new Date();
-      let start = new Date();
-      start.setHours(end.getHours() - 1);
-      params = params.append('createTime', String(start.getTime()) + ':' + String(end.getTime()));
-
-    } else {
-      if (filter.dateReceived !== null) {
-        params = params.append('createTime', String(new Date(filter.dateReceived.startDate).getTime()) + ':' + String(new Date(filter.dateReceived.endDate).getTime()));
-      }
-    }
-
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 
@@ -65,14 +47,14 @@ export class DocumentService {
     params = params.append('size', String(sizeElement));
     params = params.append('sort', filter.sortBy);
 
-    if (filter.status !== 'ALL') {
-      params = params.append('documentStatus', filter.status);
+    if (filter.documentStatus !== 'ALL') {
+      params = params.append('documentStatus', filter.documentStatus);
     }
     if (filter.lastError !== 'ALL') {
       params = params.append('lastError', filter.lastError);
     }
-    if (filter.ingoingFormat !== 'ALL') {
-      params = params.append('ingoingDocumentFormat', filter.ingoingFormat);
+    if (filter.ingoingDocumentFormat !== 'ALL') {
+      params = params.append('ingoingDocumentFormat', filter.ingoingDocumentFormat);
     }
     if (filter.documentType !== 'ALL') {
       params = params.append('documentType', filter.documentType);
@@ -80,8 +62,8 @@ export class DocumentService {
     if (filter.organisation !== 'ALL') {
       params = params.append('organisation', filter.organisation);
     }
-    if (filter.receiver !== null) {
-      params = params.append('receiverIdentifier', filter.receiver);
+    if (filter.receiverIdentifier !== null) {
+      params = params.append('receiverIdentifier', filter.receiverIdentifier);
     }
     if (filter.senderName !== null) {
       params = params.append('senderName', filter.senderName);

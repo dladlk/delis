@@ -1,0 +1,182 @@
+<mat-card>
+  <div class="example-container mat-elevation-z8">
+
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <mat-table #table [dataSource]="dataSource" matSort matSortActive="createTime" matSortDirection="desc" matSortDisableClear>
+
+      <ng-container matColumnDef="createTime">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.createTime' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <app-date-range [placeholder]="'identifier.table.columnName.createTime'"></app-date-range>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier" style="cursor: pointer" class="systemColor" [routerLink]="['/identifier/', identifier.id]"> {{identifier.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="organisation">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.organisation' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <mat-select [(value)]="selectedOrganisation" (selectionChange)="applyFilter('organisation', $event.value)">
+                  <mat-option *ngFor="let organisation of organizations" [value]="organisation">
+                    {{organisation}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"><span *ngIf="identifier.organisation !== null">{{identifier.organisation.name}} </span></mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="identifierGroup">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.identifierGroup' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input type="text" class="filter-input" matInput (keyup.enter)="applyFilter('identifierGroup', $event.target.value)" placeholder="{{ 'identifier.table.columnName.identifierGroup' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"><span *ngIf="identifier.identifierGroup !== null">{{identifier.identifierGroup.name}} </span></mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.type' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input class="filter-input" matInput (keyup.enter)="applyFilter('type', $event.target.value)" placeholder="{{ 'identifier.table.columnName.type' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"> {{identifier.type}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.value' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input class="filter-input" matInput (keyup.enter)="applyFilter('value', $event.target.value)" placeholder="{{ 'identifier.table.columnName.value' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"> {{identifier.value}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="uniqueValueType">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.uniqueValueType' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input class="filter-input" matInput (keyup.enter)="applyFilter('value', $event.target.value)" placeholder="{{ 'identifier.table.columnName.uniqueValueType' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"> {{identifier.uniqueValueType}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.status' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <mat-select [(value)]="selectedStatusList.name" (selectionChange)="applyFilter('status', $event.value)">
+                  <mat-option *ngFor="let status of statusList" [value]="status.name">
+                    {{status.viewName}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"> {{identifier.status}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'identifier.table.columnName.name' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input class="filter-input" matInput (keyup)="applyFilter('name', $event.target.value)" placeholder="{{ 'identifier.table.columnName.name' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let identifier"> {{identifier.name}} </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: selectedDisplayedColumns" (click)="onRowClicked(row)"></mat-row>
+    </mat-table>
+
+    <mat-card-content>
+
+      <mat-grid-list cols="8" rowHeight="70px">
+        <mat-grid-tile [colspan]="3" [rowspan]="1">
+          <mat-form-field>
+            <mat-label>show / hide:</mat-label>
+            <mat-select (selectionChange)="showHideColumns($event.value)" multiple>
+              <mat-option *ngFor="let col of allDisplayedColumns" [value]="col">{{col}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <button mat-mini-fab color="primary" (click)="clear()"><mat-icon>layers_clear</mat-icon></button>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <button mat-mini-fab color="primary" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="3" [rowspan]="1">
+          <mat-paginator [length]="dataSource.totalElements$ | async" [pageSize]="10"
+                         [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+    </mat-card-content>
+
+  </div>
+</mat-card>

@@ -66,7 +66,7 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
         for ( Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass) ) {
             if (Modifier.isPrivate(field.getModifiers())) {
                 if (Objects.equals(strings[1].toUpperCase(), field.getName().toUpperCase())) {
-                    if (Objects.equals(strings[2], "Asc")) {
+                    if (StringUtils.equalsIgnoreCase(strings[2], "Asc")) {
                         return getAscendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);
                     } else {
                         return getDescendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);
@@ -79,16 +79,16 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
 
     private PageContainer<E> getDefaultDataPageContainerWithoutSorting(int page, int size, long collectionSize, R repository, Specification<E> specification) {
         return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(specification, PageRequest.of(page - 1, size, Sort.by("id").descending())).getContent());
+                .findAll(specification, PageRequest.of(page, size, Sort.by("id").descending())).getContent());
     }
 
     private PageContainer<E> getDescendingDataPageContainer(int page, int size, long collectionSize, String param, R repository, Specification<E> specification) {
         return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(specification, PageRequest.of(page - 1, size, Sort.by(param).descending())).getContent());
+                .findAll(specification, PageRequest.of(page, size, Sort.by(param).descending())).getContent());
     }
 
     private PageContainer<E> getAscendingDataPageContainer(int page, int size, long collectionSize, String param, R repository, Specification<E> specification) {
         return new PageContainer<E>(page, size, collectionSize, repository
-                .findAll(specification, PageRequest.of(page - 1, size, Sort.by(param).ascending())).getContent());
+                .findAll(specification, PageRequest.of(page, size, Sort.by(param).ascending())).getContent());
     }
 }

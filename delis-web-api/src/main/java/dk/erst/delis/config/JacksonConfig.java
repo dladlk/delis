@@ -6,13 +6,14 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import dk.erst.delis.data.enums.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -69,5 +70,16 @@ public class JacksonConfig {
         return Jackson2ObjectMapperBuilder.json()
                 .modules(modules)
                 .build();
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter jacksonMessageConverter(){
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper mapper = jsonObjectMapper();
+        Hibernate5Module module = new Hibernate5Module();
+        module.enable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
+        mapper.registerModule(module);
+        messageConverter.setObjectMapper(mapper);
+        return messageConverter;
     }
 }

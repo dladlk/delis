@@ -1,36 +1,43 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { FormsModule } from '@angular/forms';
-import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { NgSelectModule } from '@ng-select/ng-select';
-import { NgbDropdownModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { ChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
+import { DelisMaterialModule } from './core/delis-material.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './component/header/header.component';
-import { LoginComponent } from './component/login/login.component';
 import { LayoutComponent } from './component/layout/layout.component';
-import { HttpEventInterceptor } from './interceptor/http-event.interceptor';
-import { StatComponent } from './component/stat/stat.component';
-import { DashboardComponent } from './component/dashboard/dashboard.component';
-import { DocumentComponent } from './component/document/document.component';
-import { SendDocumentComponent } from './component/send-document/send-document.component';
-import { SendDocumentDetailsComponent } from './component/send-document/send-document-details/send-document-details.component';
-import { DocumentDetailsComponent } from './component/document/document-details/document-details.component';
-import { IdentifierComponent } from './component/identifier/identifier.component';
-import { IdentifierDetailsComponent } from './component/identifier/identifier-details/identifier-details.component';
+import { HeaderComponent } from './component/navigation/header/header.component';
+import { DashboardComponent } from './component/content/dashboard/dashboard.component';
+import { LoginComponent } from './component/login/login.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
+import { IdentifierComponent } from './component/content/identifier/identifier.component';
+import { DocumentComponent } from './component/content/document/document.component';
+import { SendDocumentComponent } from './component/content/send-document/send-document.component';
+import { IdentifierDetailsComponent } from './component/content/identifier/identifier-details/identifier-details.component';
+import { DocumentDetailsComponent } from './component/content/document/document-details/document-details.component';
+import { SendDocumentDetailsComponent } from './component/content/send-document/send-document-details/send-document-details.component';
+import { SidenavListComponent } from './component/navigation/sidenav-list/sidenav-list.component';
+import { DateRangeComponent } from './component/system/date-range/date-range.component';
+import { CalendarWrapperComponent } from './component/system/date-range/calendar-wrapper/calendar-wrapper.component';
+import { NgxMatDrpComponent } from './component/system/date-range/ngx-mat-drp/ngx-mat-drp.component';
+import { PickerOverlayComponent } from './component/system/date-range/picker-overlay/picker-overlay.component';
+import { MatDrpPresetsComponent } from './component/system/date-range/mat-drp-presets/mat-drp-presets.component';
+import { HttpEventInterceptor } from './component/interceptor/HttpEventInterceptor';
+import { DATE } from './component/system/date-range/service/range-store.service';
 import { ErrorComponent } from './component/system/error/error.component';
-import { DaterangeComponent } from './component/system/daterange/daterange.component';
-import { PaginationComponent } from './component/system/pagination/pagination.component';
-import { TableHeaderSortComponent } from './component/system/table-header-sort/table-header-sort.component';
-import { InvoiceComponent } from './component/document/invoice/invoice.component';
-import { ChartDocumentComponent } from './component/chart-document/chart-document.component';
+import { InvoiceComponent } from './component/content/document/invoice/invoice.component';
+import { AutofocusDirective } from './directive/autofocus.directive';
+import { LogoutComponent } from './component/logout/logout.component';
+import { StatComponent } from './component/system/stat/stat.component';
+import { ChartDocumentComponent } from './component/system/chart-document/chart-document.component';
 
 export const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -39,30 +46,42 @@ export const createTranslateLoader = (http: HttpClient) => {
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    LoginComponent,
     LayoutComponent,
-    StatComponent,
+    HeaderComponent,
     DashboardComponent,
+    LoginComponent,
+    NotFoundComponent,
+    IdentifierComponent,
     DocumentComponent,
     SendDocumentComponent,
-    SendDocumentDetailsComponent,
-    DocumentDetailsComponent,
-    IdentifierComponent,
     IdentifierDetailsComponent,
-    NotFoundComponent,
+    DocumentDetailsComponent,
+    SendDocumentDetailsComponent,
+    SidenavListComponent,
+    DateRangeComponent,
+    CalendarWrapperComponent,
+    NgxMatDrpComponent,
+    PickerOverlayComponent,
+    MatDrpPresetsComponent,
     ErrorComponent,
-    DaterangeComponent,
-    PaginationComponent,
-    TableHeaderSortComponent,
     InvoiceComponent,
-    ChartDocumentComponent,
+    AutofocusDirective,
+    LogoutComponent,
+    StatComponent,
+    ChartDocumentComponent
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
-    BrowserModule,
-    AppRoutingModule,
     HttpClientModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    FlexLayoutModule,
+    DelisMaterialModule,
+    OverlayModule,
+    ChartsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -70,14 +89,12 @@ export const createTranslateLoader = (http: HttpClient) => {
         deps: [HttpClient]
       }
     }),
-    NgxDaterangepickerMd.forRoot(),
-    FormsModule,
-    NgbDropdownModule,
-    NgbModule,
-    NgSelectModule,
-    ChartsModule
   ],
+  entryComponents: [PickerOverlayComponent],
   providers: [
+    {
+      provide: DATE, useValue: new Date()
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpEventInterceptor,
@@ -86,4 +103,5 @@ export const createTranslateLoader = (http: HttpClient) => {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

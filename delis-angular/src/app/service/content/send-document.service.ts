@@ -29,6 +29,9 @@ export class SendDocumentService {
     params = params.append('page', String(currentPage));
     params = params.append('size', String(sizeElement));
     params = params.append('sort', filter.sortBy);
+    if (filter.organisation !== 'ALL') {
+      params = params.append('organisation', filter.organisation);
+    }
     if (filter.documentStatus !== 'ALL') {
       params = params.append('documentStatus', filter.documentStatus);
     }
@@ -51,7 +54,7 @@ export class SendDocumentService {
       params = params.append('sentMessageId', filter.sentMessageId);
     }
     if (filter.dateRange !== null) {
-      params = params.append('createTime', String(new Date(filter.dateRange.startDate).getTime()) + ':' + String(new Date(filter.dateRange.endDate).getTime()));
+      params = params.append('createTime', String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime()));
     }
 
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());

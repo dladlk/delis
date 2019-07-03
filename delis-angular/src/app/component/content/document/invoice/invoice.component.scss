@@ -1,0 +1,17 @@
+@import "../../../../../styles";
+
+mat-form-field.mat-form-field {
+  width: 100%;
+}
+
+mat-checkbox {
+  margin-right: 1em !important;
+}
+
+strong {
+  margin-right: 1em !important;
+}
+
+a {
+  color: mat-color($primary) !important;
+}

@@ -35,7 +35,7 @@ export class IdentifierService {
     if (filter.publishingStatus !== 'ALL') {
       params = params.append('publishingStatus', filter.publishingStatus);
     }
-    if (filter.organisation !== null) {
+    if (filter.organisation !== 'ALL') {
       params = params.append('organisation', filter.organisation);
     }
     if (filter.identifierGroup !== null) {
@@ -54,7 +54,7 @@ export class IdentifierService {
       params = params.append('name', filter.name);
     }
     if (filter.dateRange !== null) {
-      params = params.append('createTime', String(new Date(filter.dateRange.startDate).getTime()) + ':' + String(new Date(filter.dateRange.endDate).getTime()));
+      params = params.append('createTime', String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime()));
     }
 
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());

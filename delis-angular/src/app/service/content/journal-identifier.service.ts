@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { HttpRestService } from '../system/http-rest.service';
 import { TokenService } from '../system/token.service';
-import { JournalIdentifierFilterModel } from '../../model/filter/journal-identifier-filter.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +18,9 @@ export class JournalIdentifierService {
     this.url = this.url + '/rest/journal/identifier';
   }
 
-  getAllByIdentifierId(identifierId: any, filter: JournalIdentifierFilterModel): Observable<any> {
+  getAllByIdentifierId(identifierId: any): Observable<any> {
     let params = new HttpParams();
-    params = params.append('sort', filter.sortBy);
+    params = params.append('sort', 'orderBy_createTime_Desc');
     return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), identifierId);
   }
 }

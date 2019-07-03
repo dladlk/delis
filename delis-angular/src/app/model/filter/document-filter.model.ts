@@ -1,26 +1,26 @@
-import { DateRangePickerModel } from '../system/date-range-picker.model';
+import {Range} from '../../component/system/date-range/model/model';
 
 export class DocumentFilterModel {
 
-  status: string;
+  documentStatus: string;
   lastError: string;
-  ingoingFormat: string;
+  ingoingDocumentFormat: string;
   organisation: string;
-  receiver: string;
+  receiverIdentifier: string;
   documentType: string;
   senderName: string;
-  dateReceived: DateRangePickerModel;
+  createTime: Range;
   sortBy: string;
 
   constructor() {
-    this.status = 'ALL';
+    this.documentStatus = 'ALL';
     this.lastError = 'ALL';
-    this.ingoingFormat = 'ALL';
+    this.ingoingDocumentFormat = 'ALL';
     this.organisation = 'ALL';
-    this.receiver = null;
+    this.receiverIdentifier = null;
     this.documentType = 'ALL';
     this.senderName = null;
-    this.dateReceived = null;
-    this.sortBy = 'orderBy_Id_Desc';
+    this.createTime = null;
+    this.sortBy = 'orderBy_createTime_Desc';
   }
 }

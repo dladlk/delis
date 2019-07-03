@@ -56,9 +56,15 @@ public class SpecificationUtil {
                             List<Predicate> innerEntitiesPredicates = new ArrayList<>();
                             for (Field innerField : ClassLoaderUtil.getAllFieldsByEntity(field.getType())) {
                                 if (Modifier.isPrivate(innerField.getModifiers())) {
-                                    if (innerField.getType().isAssignableFrom(String.class)) {
-                                        containsLikePattern = StringPatternUtil.getContainsLikePattern(parameter);
-                                        innerEntitiesPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(field.getName()).get(innerField.getName())), containsLikePattern));
+                                    if (field.getType().isAssignableFrom(Organisation.class)) {
+                                        if (innerField.getType().isAssignableFrom(String.class)) {
+                                            innerEntitiesPredicates.add(criteriaBuilder.equal(root.get(field.getName()).get(innerField.getName()), parameter));
+                                        }
+                                    } else {
+                                        if (innerField.getType().isAssignableFrom(String.class)) {
+                                            containsLikePattern = StringPatternUtil.getContainsLikePattern(parameter);
+                                            innerEntitiesPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(field.getName()).get(innerField.getName())), containsLikePattern));
+                                        }
                                     }
                                 }
                             }

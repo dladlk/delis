@@ -1,0 +1,26 @@
+
+  <h2 class="table-details-header" style="margin-left: 2em">
+    {{ 'dashboard.charts.header' | translate }} {{': ' + lineChartLabels[0] + ' - ' + lineChartLabels[lineChartLabels.length - 1]}}
+  </h2>
+  <table class="mat-table">
+    <tbody>
+    <tr class="mat-row">
+      <td class="mat-cell table-details-td">
+        <div *ngIf="lineChartData.length > 0">
+          <canvas baseChart height="100"
+                  [datasets]="lineChartData"
+                  [labels]="lineChartLabels"
+                  [options]="lineChartOptions"
+                  [colors]="lineChartColors"
+                  [legend]="lineChartLegend"
+                  [chartType]="lineChartType"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)">
+          </canvas>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <app-date-range></app-date-range>
+  <br>

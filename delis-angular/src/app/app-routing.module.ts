@@ -4,14 +4,15 @@ import { RouterModule, Routes} from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
 import { LayoutComponent } from './component/layout/layout.component';
 import { LoginComponent } from './component/login/login.component';
-import { DashboardComponent } from './component/dashboard/dashboard.component';
-import { IdentifierComponent } from './component/identifier/identifier.component';
-import { IdentifierDetailsComponent } from './component/identifier/identifier-details/identifier-details.component';
-import { DocumentComponent } from './component/document/document.component';
-import { DocumentDetailsComponent } from './component/document/document-details/document-details.component';
-import { SendDocumentComponent } from './component/send-document/send-document.component';
-import { SendDocumentDetailsComponent } from './component/send-document/send-document-details/send-document-details.component';
+import { DashboardComponent } from './component/content/dashboard/dashboard.component';
+import { IdentifierComponent } from './component/content/identifier/identifier.component';
+import { IdentifierDetailsComponent } from './component/content/identifier/identifier-details/identifier-details.component';
+import { DocumentComponent } from './component/content/document/document.component';
+import { DocumentDetailsComponent } from './component/content/document/document-details/document-details.component';
+import { SendDocumentComponent } from './component/content/send-document/send-document.component';
+import { SendDocumentDetailsComponent } from './component/content/send-document/send-document-details/send-document-details.component';
 import { NotFoundComponent } from './component/not-found/not-found.component';
+import { LogoutComponent } from './component/logout/logout.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,9 @@ const routes: Routes = [
       },
       {
         path: 'send-document/:id', component: SendDocumentDetailsComponent
+      },
+      {
+        path: 'logout', component: LogoutComponent
       }
     ]
   },
@@ -57,5 +61,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule { }

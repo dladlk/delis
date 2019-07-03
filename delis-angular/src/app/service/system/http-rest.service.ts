@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as constants  from "../../app.constants";
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { map } from 'rxjs/operators';
 export class HttpRestService {
 
   private headers: HttpHeaders;
+  private creds = constants.CREDENTIALS;
 
   constructor(private http: HttpClient) { }
 
@@ -58,25 +60,24 @@ export class HttpRestService {
   }
 
   methodLogin(url: string, params: HttpParams): Observable<any> {
-    let headersMap = {
+    const headersMap = {
       'Content-Type': `application/json`,
-      'Authorization': 'Basic dGVzdDp0ZXN0'
+      Authorization: 'Basic ' + btoa(this.creds)
     };
-    let headers = new HttpHeaders(headersMap);
+    const headers = new HttpHeaders(headersMap);
     return this.http.post(url, null, {
-      headers: headers,
-      params: params
+      headers,
+      params
     }).pipe(map(HttpRestService.extractData));
   }
 
   methodPostModel(url: string, model: any, token: any): Observable<any> {
-    let headersMap = {
-      'Content-Type': `application/json`
-    };
-     headersMap['Authorization'] = 'Bearer ' + token;
-    let headers = new HttpHeaders(headersMap);
+    this.headers = new HttpHeaders({
+      'Content-Type': `application/json`,
+      Authorization: 'Bearer ' + token
+    });
     return this.http.post(url, model, {
-      headers: headers
+      headers: this.headers
     }).pipe(map(HttpRestService.extractData));
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { DateRangePickerModel } from '../model/system/date-range-picker.model';
+import { Range } from '../component/system/date-range/model/model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class DaterangeObservable {
     return this._listeners.asObservable();
   }
 
-  loadDate(dateRangeModel: DateRangePickerModel) {
-    this._listeners.next(dateRangeModel);
+  loadDate(range: Range) {
+    this._listeners.next(range);
   }
 }

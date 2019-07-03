@@ -1,0 +1,131 @@
+<mat-card>
+  <div class="example-container mat-elevation-z8">
+
+    <mat-grid-list cols="2" rowHeight="70px">
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <button mat-mini-fab color="primary" (click)="back()"><mat-icon>keyboard_backspace</mat-icon></button>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <button mat-mini-fab color="primary" (click)="refreshData()"><mat-icon>refresh</mat-icon></button>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <div class="table-details">
+      <mat-card-content>
+        <div *ngIf="errorOneDocument" class="table-details-error">
+          <app-error [errorModel]="errorOneDocumentModel"></app-error>
+        </div>
+      </mat-card-content>
+
+      <mat-card-content>
+        <h2 class="table-details-header">{{ 'documents.send.header.details' | translate}}</h2>
+        <table>
+          <thead>
+          <tr>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.sender' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.receiver' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.created' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="table-details-td">
+              <span *ngIf="sendDocument.organisation !== null">{{sendDocument.organisation.name}}</span></td>
+            <td class="table-details-td">{{sendDocument.senderIdRaw}}</td>
+            <td class="table-details-td">{{sendDocument.receiverIdRaw}}</td>
+            <td class="table-details-td">{{sendDocument.createTime | date: SHOW_DATE_FORMAT}}</td>
+          </tr>
+          </tbody>
+          <thead>
+          <tr>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.status' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.documentType' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.documentId' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.documentDate' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="table-details-td">{{sendDocument.documentStatus}}</td>
+            <td class="table-details-td">{{sendDocument.documentType}}</td>
+            <td class="table-details-td">{{sendDocument.documentId}}</td>
+            <td class="table-details-td">{{sendDocument.documentDate}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+
+      <mat-card-content>
+        <div *ngIf="errorJournalDocuments" class="table-details-error">
+          <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
+        </div>
+      </mat-card-content>
+
+      <mat-card-content>
+        <h2 class="table-details-header">{{ 'documents.table.one.columnName.journalRecords' | translate }}</h2>
+        <table>
+          <thead>
+          <tr>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody *ngFor="let doc of journalSendDocuments">
+          <tr>
+            <td class="table-details-td">{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+            <td class="table-details-td">{{doc.type}}</td>
+            <td class="table-details-td" *ngIf="doc.success" style="color: green"><mat-icon>check_circle</mat-icon></td>
+            <td class="table-details-td" *ngIf="!doc.success" style="color: red"><mat-icon>error</mat-icon></td>
+            <td class="table-details-td">{{doc.message}}</td>
+            <td class="table-details-td">{{doc.durationMs}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+
+      <mat-card-content>
+        <div *ngIf="errorDocumentBytes" class="table-details-error">
+          <app-error [errorModel]="errorDocumentBytesModel"></app-error>
+        </div>
+      </mat-card-content>
+
+      <mat-card-content>
+        <div *ngIf="errorDownload" class="table-details-error">
+          <app-error [errorModel]="errorDownloadModel"></app-error>
+        </div>
+      </mat-card-content>
+
+      <mat-card-content>
+
+        <h2 class="table-details-header">{{ 'documents.table.one.columnName.documentBytesModels' | translate }}</h2>
+
+        <table>
+          <thead>
+          <tr>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+            <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+            <th class="table-details-th">Download</th>
+          </tr>
+          </thead>
+          <tbody *ngFor="let doc of sendDocumentsBytes">
+          <tr>
+            <td class="table-details-td">{{doc.id}}</td>
+            <td class="table-details-td">{{doc.type}}</td>
+            <td class="table-details-td">{{doc.size}}</td>
+            <td class="table-details-td text-muted" style="cursor: pointer" (click)="download(doc.id)">Download</td>
+          </tr>
+          </tbody>
+        </table>
+
+      </mat-card-content>
+    </div>
+
+  </div>
+</mat-card>
+
+

@@ -1,0 +1,45 @@
+<mat-card>
+  <div class="example-container mat-elevation-z8">
+
+    <mat-card-content>
+      <mat-grid-list cols="3" rowHeight="15em">
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <app-stat
+            [bgClass]="'matDocument'"
+            [icon]="'send'"
+            [count]="dashboardModel.identifierLastHour"
+            [label]="'dashboard.identifier'"
+            [router]="'/identifier'"
+            [rotate]="false">
+          </app-stat>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <app-stat
+            [bgClass]="'matSendDocument'"
+            [icon]="'send'"
+            [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+            [label]="'dashboard.documents'"
+            [router]="'/document'"
+            [rotate]="true">
+
+          </app-stat>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <app-stat
+            [bgClass]="'matIdentifier'"
+            [icon]="'perm_identity'"
+            [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+            [label]="'dashboard.send'"
+            [router]="'/send-document'"
+            [rotate]="false">
+          </app-stat>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-card-content>
+
+    <mat-card-content style="margin: 2em">
+      <app-chart-document></app-chart-document>
+    </mat-card-content>
+
+  </div>
+</mat-card>

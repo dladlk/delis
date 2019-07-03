@@ -1,4 +1,4 @@
-import { DateRangePickerModel } from '../system/date-range-picker.model';
+import { Range } from '../../component/system/date-range/model/model';
 
 export class IdentifierFilterModel {
 
@@ -10,19 +10,19 @@ export class IdentifierFilterModel {
   status: string;
   name: string;
   publishingStatus: string;
-  dateRange: DateRangePickerModel;
+  dateRange: Range;
   sortBy: string;
 
   constructor() {
     this.type = null;
     this.value = null;
-    this.organisation = null;
+    this.organisation = 'ALL';
     this.identifierGroup = null;
     this.uniqueValueType = null;
     this.name = null;
     this.status = 'ALL';
     this.publishingStatus = 'ALL';
     this.dateRange = null;
-    this.sortBy = 'orderBy_Id_Desc';
+    this.sortBy = 'orderBy_createTime_Desc';
   }
 }

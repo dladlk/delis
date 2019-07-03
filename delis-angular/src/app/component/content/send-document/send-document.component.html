@@ -1,0 +1,156 @@
+<mat-card>
+  <div class="example-container mat-elevation-z8">
+
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <mat-table #table [dataSource]="dataSource" matSort matSortActive="createTime" matSortDirection="desc" matSortDisableClear>
+
+      <ng-container matColumnDef="createTime">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'documents.table.send.columnName.createTime' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <app-date-range [placeholder]="'documents.table.send.columnName.createTime'"></app-date-range>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let senDocument" style="cursor: pointer" class="systemColor" [routerLink]="['/send-document/', senDocument.id]"> {{senDocument.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="organisation">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'documents.table.send.columnName.organisation' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <mat-select [(value)]="selectedOrganisation" (selectionChange)="applyFilter('organisation', $event.value)">
+                  <mat-option *ngFor="let organisation of organizations" [value]="organisation">
+                    {{organisation}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let senDocument"><span *ngIf="senDocument.organisation !== null">{{senDocument.organisation.name}} </span></mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="receiverIdRaw">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'documents.table.send.columnName.receiverIdRaw' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input class="filter-input" matInput (keyup.enter)="applyFilter('receiverIdRaw', $event.target.value)" placeholder="{{ 'documents.table.send.columnName.receiverIdRaw' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let senDocument"> {{senDocument.receiverIdRaw}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="senderIdRaw">
+        <mat-header-cell *matHeaderCellDef>
+
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'documents.table.send.columnName.senderIdRaw' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <input class="filter-input" matInput (keyup.enter)="applyFilter('senderIdRaw', $event.target.value)" placeholder="{{ 'documents.table.send.columnName.senderIdRaw' | translate }}"/>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+
+        </mat-header-cell>
+        <mat-cell *matCellDef="let senDocument"> {{senDocument.senderIdRaw}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="documentStatus">
+        <mat-header-cell *matHeaderCellDef>
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'documents.table.send.columnName.documentStatus' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <mat-select [(value)]="selectedStatus.name" (selectionChange)="applyFilter('documentStatus', $event.value)">
+                  <mat-option *ngFor="let status of statuses" [value]="status.name">
+                    {{status.viewName}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let senDocument"> {{senDocument.documentStatus}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="documentType">
+        <mat-header-cell *matHeaderCellDef>
+
+          <mat-list>
+            <mat-list-item>
+              <span mat-sort-header> {{ 'documents.table.send.columnName.documentType' | translate }} </span>
+            </mat-list-item>
+            <mat-divider [inset]="true"></mat-divider>
+            <mat-list-item>
+              <mat-form-field>
+                <mat-select [(value)]="selectedDocumentType.name" (selectionChange)="applyFilter('documentType', $event.value)">
+                  <mat-option *ngFor="let type of documentTypes" [value]="type.name">
+                    {{type.viewName}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-list-item>
+          </mat-list>
+
+        </mat-header-cell>
+        <mat-cell *matCellDef="let senDocument"> {{senDocument.documentType}} </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: selectedDisplayedColumns" (click)="onRowClicked(row)"></mat-row>
+    </mat-table>
+
+    <mat-card-content>
+
+      <mat-grid-list cols="8" rowHeight="70px">
+        <mat-grid-tile [colspan]="3" [rowspan]="1">
+          <mat-form-field>
+            <mat-label>show / hide:</mat-label>
+            <mat-select (selectionChange)="showHideColumns($event.value)" multiple>
+              <mat-option *ngFor="let col of allDisplayedColumns" [value]="col">{{col}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <button mat-mini-fab color="primary" (click)="clear()"><mat-icon>layers_clear</mat-icon></button>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+          <button mat-mini-fab color="primary" (click)="refresh()"><mat-icon>refresh</mat-icon></button>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="3" [rowspan]="1">
+          <mat-paginator [length]="dataSource.totalElements$ | async" [pageSize]="10"
+                         [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+    </mat-card-content>
+
+  </div>
+</mat-card>

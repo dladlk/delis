@@ -1,0 +1,76 @@
+<mat-card>
+  <div class="example-container mat-elevation-z8">
+    <mat-grid-list cols="2" rowHeight="70px">
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <button mat-mini-fab color="primary" (click)="back()"><mat-icon>keyboard_backspace</mat-icon></button>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <button mat-mini-fab color="primary" (click)="refreshData()"><mat-icon>refresh</mat-icon></button>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+    <div class="table-details">
+      <mat-card-content>
+        <div *ngIf="errorOneIdentifier">
+          <app-error [errorModel]="errorOneIdentifierModel"></app-error>
+        </div>
+      </mat-card-content>
+      <mat-card-content>
+        <h2 class="table-details-header">{{ 'identifier.header.details' | translate}}</h2>
+        <table>
+          <thead>
+          <tr>
+            <th class="table-details-th">{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
+            <th class="table-details-th">{{ 'identifier.table.columnName.createTime' | translate }}</th>
+            <th class="table-details-th">{{ 'identifier.header' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="table-details-td">
+              <span *ngIf="identifier.organisation !== null">{{identifier.organisation.name}}</span></td>
+            <td class="table-details-td">{{identifier.createTime | date: SHOW_DATE_FORMAT}}</td>
+            <td class="table-details-td">{{identifier.type}} {{identifier.value}}</td>
+          </tr>
+          </tbody>
+          <thead>
+          <tr>
+            <th class="table-details-th">Navn</th>
+            <th class="table-details-th">Publicering</th>
+            <th class="table-details-th">Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="table-details-td">{{identifier.name}}</td>
+            <td class="table-details-td">{{identifier.publishingStatus}}</td>
+            <td class="table-details-td">{{identifier.status}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+      <mat-card-content>
+        <div *ngIf="errorOneJournalIdentifiers">
+          <app-error [errorModel]="errorOneJournalIdentifiersModel"></app-error>
+        </div>
+      </mat-card-content>
+      <mat-card-content>
+        <h2 class="table-details-header">{{ 'journal.identifier.table.header' | translate }}</h2>
+        <table>
+          <thead>
+          <tr>
+            <th class="table-details-th">{{ 'journal.identifier.table.columnName.createTime' | translate }}</th>
+            <th class="table-details-th">{{ 'journal.identifier.table.columnName.message' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody *ngFor="let doc of journalIdentifiers">
+          <tr>
+            <td class="table-details-td">{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+            <td class="table-details-td">{{doc.message}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </div>
+  </div>
+</mat-card>

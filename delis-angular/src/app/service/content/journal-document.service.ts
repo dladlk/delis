@@ -21,11 +21,13 @@ export class JournalDocumentService {
 
   getAllByDocumentId(documentId: any): Observable<any> {
     let params = new HttpParams();
-    params = params.append('sort', 'orderBy_Id_Desc');
+    params = params.append('sort', 'orderBy_createTime_Asc');
     return this.httpRestService.methodGetOneById(this.url + '/one', params, this.tokenService.getToken(), documentId);
   }
 
   getByJournalDocumentDocumentId(documentId: any): Observable<any> {
-    return this.httpRestService.methodGetOneById(this.url + '/one/error', null, this.tokenService.getToken(), documentId);
+    let params = new HttpParams();
+    params = params.append('sort', 'orderBy_createTime_Asc');
+    return this.httpRestService.methodGetOneById(this.url + '/one/error', params, this.tokenService.getToken(), documentId);
   }
 }
