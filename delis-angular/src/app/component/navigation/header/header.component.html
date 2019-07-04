@@ -12,21 +12,20 @@
     <a [routerLink]="['/send-document']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'sidebar.send.documents' | translate }}</a>
     <a [routerLink]="['/identifier']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'sidebar.identifier' | translate }}</a>
   </div>
-  <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs style="margin-right: 1em; font-size: 1em">
-    <ul fxLayout fxLayoutGap="2em" class="navigation-items">
+  <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
+    <ul fxLayout fxLayoutGap="1em" class="navigation-items">
       <li>
         <mat-menu #langMenu="matMenu" xPosition="before">
           <button mat-menu-item (click)="changeLang('en')">
             <span>{{ 'header.language.english' | translate }}</span>
             <mat-icon *ngIf="lang == 'en'" class="checkCircleHeaderLanguage">check_circle</mat-icon>
-
           </button>
           <button mat-menu-item (click)="changeLang('da')">
             <span>{{ 'header.language.danish' | translate }}</span>
             <mat-icon *ngIf="lang == 'da'" class="checkCircleHeaderLanguage">check_circle</mat-icon>
           </button>
         </mat-menu>
-        <button mat-icon-button [matMenuTriggerFor]="langMenu">
+        <button mat-button [matMenuTriggerFor]="langMenu">
           {{ 'header.language' | translate }}
         </button>
       </li>
@@ -34,7 +33,7 @@
         <mat-menu #userMenu="matMenu" xPosition="before">
           <button mat-menu-item [routerLink]="['/login']" (click)="onLoggedOut()">{{ 'header.account.logout' | translate }}</button>
         </mat-menu>
-        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+        <button mat-button [matMenuTriggerFor]="userMenu">
           {{ username | translate }}
         </button>
       </li>
