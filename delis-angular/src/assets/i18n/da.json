@@ -85,7 +85,7 @@
   "documents.table.one.columnName.journalDocumentErrors.code": "Kode",
   "documents.table.one.columnName.journalDocumentErrors.message": "Besked",
   "documents.table.one.columnName.journalDocumentErrors.location": "Beliggenhed",
-  "documents.table.one.columnName.documentBytesModels": "Dokumentbyte",
+  "documents.table.one.columnName.documentBytesModels": "Filer",
   "documents.table.one.columnName.documentBytesModels.id": "Id",
   "documents.table.one.columnName.documentBytesModels.type": "Type",
   "documents.table.one.columnName.documentBytesModels.size": "Størrelse, bytes",

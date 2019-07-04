@@ -85,7 +85,7 @@
   "documents.table.one.columnName.journalDocumentErrors.code": "Code",
   "documents.table.one.columnName.journalDocumentErrors.message": "Message",
   "documents.table.one.columnName.journalDocumentErrors.location": "Location",
-  "documents.table.one.columnName.documentBytesModels": "Document Bytes",
+  "documents.table.one.columnName.documentBytesModels": "Files",
   "documents.table.one.columnName.documentBytesModels.id": "Id",
   "documents.table.one.columnName.documentBytesModels.type": "Type",
   "documents.table.one.columnName.documentBytesModels.size": "Size, bytes",
