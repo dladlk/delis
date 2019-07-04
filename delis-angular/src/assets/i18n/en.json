@@ -1,9 +1,9 @@
 {
-  "login.error.username-or-password": "login and password can not be empty",
-  "login.error.username": "login can not be empty",
-  "login.error.password": "password can not be empty",
-  "login.error.unauthorized": "invalid username or password",
-  "login.error.disconnect": "server disconnect",
+  "login.error.username-or-password": "Login and password cannot be empty",
+  "login.error.username": "Login cannot be empty",
+  "login.error.password": "Password cannot be empty",
+  "login.error.unauthorized": "Invalid username or password",
+  "login.error.disconnect": "Server is disconnected",
   "sidebar.home": "DELIS",
   "sidebar.dashboard": "Dashboard",
   "sidebar.documents": "Documents",
@@ -173,5 +173,7 @@
   "td.picker.lastMonth": "Last Month",
 
   "td.picker.from": "FROM",
-  "td.picker.to": "TO"
+  "td.picker.to": "TO",
+
+  "column.hide": "Hide"
 }

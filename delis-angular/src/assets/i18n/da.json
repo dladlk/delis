@@ -1,9 +1,9 @@
 {
-  "login.error.username-or-password": "login og adgangskode kan ikke være tomme",
-  "login.error.username": "login kan ikke være tomt",
-  "login.error.password": "adgangskoden kan ikke være tom",
-  "login.error.unauthorized": "ugyldigt brugernavn eller kodeord",
-  "login.error.disconnect": "server frakobles",
+  "login.error.username-or-password": "Login og adgangskode skal udfuldes",
+  "login.error.username": "Login kan skal udfuldes",
+  "login.error.password": "Adgangskoden skal udfuldes",
+  "login.error.unauthorized": "Brugernavn eller kodeord er ugyldigt",
+  "login.error.disconnect": "Server frakobles",
   "sidebar.home": "DELIS",
   "sidebar.dashboard": "Oversigt",
   "sidebar.documents": "Dokumenter",
@@ -173,5 +173,7 @@
   "td.picker.lastMonth": "Sidste måned",
 
   "td.picker.from": "TIL",
-  "td.picker.to": "FRA"
+  "td.picker.to": "FRA",
+
+  "column.hide": "Skjule"
 }
