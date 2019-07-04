@@ -1,40 +1,46 @@
 <mat-card>
   <div class="example-container mat-elevation-z8">
 
-    <mat-card-content>
-      <mat-grid-list cols="3" rowHeight="15em">
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <app-stat
-            [bgClass]="'matDocument'"
-            [icon]="'send'"
-            [count]="dashboardModel.identifierLastHour"
-            [label]="'dashboard.identifier'"
-            [router]="'/identifier'"
-            [rotate]="false">
-          </app-stat>
-        </mat-grid-tile>
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <app-stat
-            [bgClass]="'matSendDocument'"
-            [icon]="'send'"
-            [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
-            [label]="'dashboard.documents'"
-            [router]="'/document'"
-            [rotate]="true">
-
-          </app-stat>
-        </mat-grid-tile>
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-          <app-stat
-            [bgClass]="'matIdentifier'"
-            [icon]="'perm_identity'"
-            [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
-            [label]="'dashboard.send'"
-            [router]="'/send-document'"
-            [rotate]="false">
-          </app-stat>
-        </mat-grid-tile>
-      </mat-grid-list>
+    <mat-card-content class="dashboard-flex">
+      <div class="bounds">
+        <div class="content"
+             fxLayout="row"
+             fxLayout.xs="column"
+             fxLayoutAlign="center"
+             fxLayoutGap="1em"
+             fxFlexFill>
+          <div fxFlex="30" class="sec1" fxFlex.xs="55">
+            <app-stat
+                    [bgClass]="'matDocument'"
+                    [icon]="'send'"
+                    [count]="dashboardModel.identifierLastHour"
+                    [label]="'dashboard.identifier'"
+                    [router]="'/identifier'"
+                    [rotate]="false">
+            </app-stat>
+          </div>
+          <div fxFlex="30" class="sec2" >
+            <app-stat
+                    [bgClass]="'matSendDocument'"
+                    [icon]="'send'"
+                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+                    [label]="'dashboard.documents'"
+                    [router]="'/document'"
+                    [rotate]="true">
+            </app-stat>
+          </div>
+          <div fxFlex="30" class="sec3" fxFlex.xs="15">
+            <app-stat
+                    [bgClass]="'matIdentifier'"
+                    [icon]="'perm_identity'"
+                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+                    [label]="'dashboard.send'"
+                    [router]="'/send-document'"
+                    [rotate]="false">
+            </app-stat>
+          </div>
+        </div>
+      </div>
     </mat-card-content>
 
     <mat-card-content style="margin: 2em">

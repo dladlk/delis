@@ -27,6 +27,11 @@ $theme: mat-light-theme($primary, $accent);
   cursor: pointer;
 }
 
+.dashboard-flex {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
 /* for sidenav to take whole page */
 html, body {
   margin: 0;
