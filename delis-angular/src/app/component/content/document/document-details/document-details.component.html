@@ -171,7 +171,6 @@
                 <table>
                     <thead>
                     <tr>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
                         <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
                         <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
                         <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
@@ -180,10 +179,9 @@
                     </thead>
                     <tbody *ngFor="let doc of documentBytesModels">
                     <tr>
-                        <td class="table-details-td">{{doc.id}}</td>
                         <td class="table-details-td">{{doc.type}}</td>
                         <td class="table-details-td">{{doc.format}}</td>
-                        <td class="table-details-td" style="text-align: right !important">{{doc.size}}</td>
+                        <td class="table-details-td text-right">{{doc.size}}</td>
                         <td class="table-details-td text-muted" style="cursor: pointer" (click)="download(doc.id)">Download</td>
                     </tr>
                     </tbody>
