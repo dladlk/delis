@@ -54,6 +54,8 @@ export class DocumentComponent implements OnInit, AfterViewInit {
   selectedLastError: any;
   selectedOrganisation: any;
 
+  runSpinner = false;
+
   constructor(
     private router: Router,
     private storage: LocalStorageService,

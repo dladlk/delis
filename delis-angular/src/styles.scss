@@ -15,6 +15,14 @@ $theme: mat-light-theme($primary, $accent);
   color: mat-color($primary) !important;
 }
 
+.systemColorError {
+  color: red !important;
+}
+
+.systemColorSuccess {
+  color: green !important;
+}
+
 /* for sidenav to take whole page */
 html, body {
   margin: 0;
@@ -64,15 +72,15 @@ mat-cell {
 
 .table-details-th-error {
   color: red !important;
-  height: 2ex !important;
-  font-size: 2ex !important;
+  //height: 2ex !important;
+  //font-size: 2ex !important;
   text-align: left !important;
 }
 
 .table-details-td-error {
   color: brown !important;
-  height: 2ex !important;
-  font-size: 2ex !important;
+  //height: 2ex !important;
+  //font-size: 2ex !important;
   text-align: left !important;
 }
 
@@ -83,8 +91,8 @@ mat-cell {
 }
 
 .table-details-error {
-  height: 2ex !important;
-  font-size: 2ex !important;
+  //height: 2ex !important;
+  //font-size: 2ex !important;
   text-align: left !important;
   color: red !important;
 }

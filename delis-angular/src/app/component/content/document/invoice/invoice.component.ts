@@ -384,7 +384,9 @@ export class InvoiceComponent implements OnInit {
 
   sendProcess(element: any) {
 
-    this.loading = true;
+    setTimeout(() => {
+      this.loading = true;
+    }, 500);
 
     this.documentInvoiceResponseFormModel.documentId = this.documentId;
     this.documentInvoiceResponseFormModel.generateWithoutSending = this.onlyGeneratedEnabled;
@@ -421,11 +423,9 @@ export class InvoiceComponent implements OnInit {
       // getFile
       this.documentInvoiceService.generateAndDownloadFileByDocument(this.documentInvoiceResponseFormModel).subscribe(response => {
           const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
-          this.loading = false;
           FileSaverService.saveFile(response.body, filename);
         },
         error => {
-          this.loading = false;
           this.errorDownloadModel = this.errorService.errorProcess(error);
           this.errorDownload = true;
           if (this.errorDownloadModel.details !== null) {
@@ -439,9 +439,7 @@ export class InvoiceComponent implements OnInit {
       this.documentInvoiceService.generateAndSend(this.documentInvoiceResponseFormModel).subscribe(
         (data: {}) => {
           this.success = data['data'];
-          this.loading = false;
         }, error => {
-          this.loading = false;
           this.errorDownloadModel = this.errorService.errorProcess(error);
           this.errorDownload = true;
           if (this.errorDownloadModel.details !== null) {
@@ -451,6 +449,9 @@ export class InvoiceComponent implements OnInit {
         }
       );
     }
+    setTimeout(() => {
+      this.loading = false;
+    }, 500);
     element.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 }

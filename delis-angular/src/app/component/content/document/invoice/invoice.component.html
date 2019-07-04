@@ -6,7 +6,7 @@
   </mat-expansion-panel-header>
 
   <div *ngIf="loading">
-    loading ...
+    <mat-spinner></mat-spinner>
   </div>
 
   <hr class="systemColor">
@@ -15,7 +15,9 @@
     <div *ngIf="success !== undefined">
       <mat-card>
         <mat-card-content>
-          {{success.message}}
+          <span class="systemColorSuccess">
+            {{success.message}}
+          </span>
         </mat-card-content>
       </mat-card>
     </div>

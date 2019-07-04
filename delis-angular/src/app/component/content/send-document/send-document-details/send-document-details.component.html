@@ -78,8 +78,8 @@
           <tr>
             <td class="table-details-td">{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
             <td class="table-details-td">{{doc.type}}</td>
-            <td class="table-details-td" *ngIf="doc.success" style="color: green"><mat-icon>check_circle</mat-icon></td>
-            <td class="table-details-td" *ngIf="!doc.success" style="color: red"><mat-icon>error</mat-icon></td>
+            <td class="table-details-td systemColorSuccess" *ngIf="doc.success"><mat-icon>check_circle</mat-icon></td>
+            <td class="table-details-td systemColorError" *ngIf="!doc.success"><mat-icon>error</mat-icon></td>
             <td class="table-details-td">{{doc.message}}</td>
             <td class="table-details-td">{{doc.durationMs}}</td>
           </tr>
