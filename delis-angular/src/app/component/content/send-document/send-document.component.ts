@@ -12,8 +12,11 @@ import { LocalStorageService } from '../../../service/system/local-storage.servi
 import { SendDocumentFilterModel } from '../../../model/filter/send-document-filter.model';
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
 import { Range } from '../../system/date-range/model/model';
+import { HideColumnModel } from "../../../model/content/hide-column.model";
 import { RefreshObservable } from '../../../observable/refresh.observable';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
+
+const BUNDLE_PREFIX = 'documents.table.send.columnName.';
 
 @Component({
   selector: 'app-send-document',
@@ -43,6 +46,10 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
   selectedStatus: any;
   selectedOrganisation: any;
 
+  allDisplayedColumnsData: Array<HideColumnModel>;
+  breakpointCols: number;
+  breakpointColspan: number;
+
   constructor(
     private router: Router,
     private storage: LocalStorageService,
@@ -66,14 +73,22 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
         this.loadPage();
       }
     });
+    this.displayedColumnsDataInit();
   }
 
   ngOnInit() {
+    this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
+    this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
     this.selectedDisplayedColumns = Object.assign([], this.allDisplayedColumns);
     this.initSelected();
     this.filter = new SendDocumentFilterModel();
     this.dataSource = new SendDocumentDataSource(this.sendDocumentService);
     this.dataSource.load(0, 10, this.filter);
+  }
+
+  onResize(event) {
+    this.breakpointCols = (event.target.innerWidth <= 500) ? 1 : 8;
+    this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
   }
 
   initSelected() {
@@ -87,6 +102,16 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
       this.organizations = organizationsInfo;
       this.selectedOrganisation = this.organizations[0];
     });
+  }
+
+  displayedColumnsDataInit() {
+    this.allDisplayedColumnsData = new Array<HideColumnModel>();
+    for (const col of this.allDisplayedColumns) {
+      let hcm: HideColumnModel = new HideColumnModel();
+      hcm.columnName = col;
+      hcm.columnBundle = BUNDLE_PREFIX + col;
+      this.allDisplayedColumnsData.push(hcm);
+    }
   }
 
   ngAfterViewInit() {

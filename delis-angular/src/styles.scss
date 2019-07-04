@@ -97,8 +97,6 @@ mat-cell {
 
 .table-details-td-error {
   color: brown !important;
-  //height: 2ex !important;
-  //font-size: 2ex !important;
   text-align: left !important;
 }
 
@@ -109,8 +107,6 @@ mat-cell {
 }
 
 .table-details-error {
-  //height: 2ex !important;
-  //font-size: 2ex !important;
   text-align: left !important;
   color: red !important;
 }
@@ -159,24 +155,6 @@ mat-cell {
 
 app-stat {
   min-width: 80%;
-}
-
-@media(max-width: 600px) {
-  .mobile-label {
-    width: 80px;
-    display: inline-block;
-    font-weight: bold;
-  }
-
-  .mat-header-row {
-    display: none;
-  }
-
-  .mat-row {
-    flex-direction: column;
-    align-items: start;
-    padding: 8px 24px;
-  }
 }
 
 .ml2 {

@@ -1,18 +1,22 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MatPaginator, MatSort} from '@angular/material';
-import {Router} from '@angular/router';
-import {merge} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, MatSort } from '@angular/material';
+import { Router } from '@angular/router';
+import { merge } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
-import {DocumentFilterModel} from '../../../model/filter/document-filter.model';
-import {DocumentDataSource} from './document-data-source';
-import {SHOW_DATE_FORMAT} from '../../../app.constants';
-import {EnumInfoModel} from '../../../model/system/enum-info.model';
-import {LocalStorageService} from '../../../service/system/local-storage.service';
-import {DaterangeObservable} from '../../../observable/daterange.observable';
-import {RefreshObservable} from '../../../observable/refresh.observable';
-import {Range} from '../../system/date-range/model/model';
-import {DocumentService} from '../../../service/content/document.service';
+import { SHOW_DATE_FORMAT } from '../../../app.constants';
+
+import { DocumentFilterModel } from '../../../model/filter/document-filter.model';
+import { DocumentDataSource } from './document-data-source';
+import { EnumInfoModel } from '../../../model/system/enum-info.model';
+import { LocalStorageService } from '../../../service/system/local-storage.service';
+import { DocumentService } from '../../../service/content/document.service';
+import { DaterangeObservable } from '../../../observable/daterange.observable';
+import { RefreshObservable} from '../../../observable/refresh.observable';
+import { Range } from '../../system/date-range/model/model';
+import { HideColumnModel } from "../../../model/content/hide-column.model";
+
+const BUNDLE_PREFIX = 'documents.table.columnName.';
 
 @Component({
   selector: 'app-document',
@@ -37,6 +41,8 @@ export class DocumentComponent implements OnInit, AfterViewInit {
     'senderName'];
   selectedDisplayedColumns: string[] = [];
 
+  allDisplayedColumnsData: Array<HideColumnModel>;
+
   private pageIndex = 0;
   private pageSize = 10;
 
@@ -55,6 +61,9 @@ export class DocumentComponent implements OnInit, AfterViewInit {
   selectedOrganisation: any;
 
   runSpinner = false;
+
+  breakpointCols: number;
+  breakpointColspan: number;
 
   constructor(
     private router: Router,
@@ -79,9 +88,22 @@ export class DocumentComponent implements OnInit, AfterViewInit {
         this.loadPage();
       }
     });
+    this.displayedColumnsDataInit();
+  }
+
+  displayedColumnsDataInit() {
+    this.allDisplayedColumnsData = new Array<HideColumnModel>();
+    for (const col of this.allDisplayedColumns) {
+      let hcm: HideColumnModel = new HideColumnModel();
+      hcm.columnName = col;
+      hcm.columnBundle = BUNDLE_PREFIX + col;
+      this.allDisplayedColumnsData.push(hcm);
+    }
   }
 
   ngOnInit() {
+    this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
+    this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
     this.selectedDisplayedColumns = Object.assign([], this.allDisplayedColumns);
     this.initSelected();
     this.filter = new DocumentFilterModel();
@@ -147,6 +169,11 @@ export class DocumentComponent implements OnInit, AfterViewInit {
 
   refresh() {
     this.loadPage();
+  }
+
+  onResize(event) {
+    this.breakpointCols = (event.target.innerWidth <= 500) ? 1 : 8;
+    this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
   }
 
   applyFilter(col: string, event: any) {

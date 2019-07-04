@@ -2,14 +2,28 @@
 
     <div class="example-container mat-elevation-z8">
 
-        <div class="app-button-row">
-            <div class="example-button-row">
-                <button mat-mini-fab color="primary" (click)="back()">
-                    <mat-icon>keyboard_backspace</mat-icon>
-                </button>
-                <button mat-mini-fab color="primary" (click)="refreshData()">
-                    <mat-icon>refresh</mat-icon>
-                </button>
+        <div class="bounds">
+            <div class="content"
+                 fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutAlign="left"
+                 fxLayoutGap="1em"
+                 fxFlexFill>
+                <div fxFlex="30" class="sec1" fxFlex.xs="55">
+                    <div class="app-button-row">
+                        <div class="example-button-row">
+                            <button mat-mini-fab color="primary" (click)="back()">
+                                <mat-icon>keyboard_backspace</mat-icon>
+                            </button>
+                            <button mat-mini-fab color="primary" (click)="refreshData()">
+                                <mat-icon>refresh</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div fxFlex="30" class="sec2" fxFlex.xs="55">
+                    <h2 class="table-details-header">{{ 'documents.header.details' | translate}}</h2>
+                </div>
             </div>
         </div>
 
@@ -20,7 +34,6 @@
                 </div>
             </mat-card-content>
             <mat-card-content>
-                <h2 class="table-details-header">{{ 'documents.header.details' | translate}}</h2>
                 <table>
                     <thead>
                     <tr>

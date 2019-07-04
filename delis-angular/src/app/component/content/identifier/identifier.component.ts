@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { merge} from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import {SHOW_DATE_FORMAT} from '../../../app.constants';
+
 import { IdentifierService } from '../../../service/content/identifier.service';
 import { IdentifierFilterModel } from '../../../model/filter/identifier-filter.model';
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
@@ -11,10 +13,10 @@ import { LocalStorageService } from '../../../service/system/local-storage.servi
 import { DaterangeObservable } from '../../../observable/daterange.observable';
 import { RefreshObservable } from '../../../observable/refresh.observable';
 import { Range } from '../../system/date-range/model/model';
+import { HideColumnModel } from "../../../model/content/hide-column.model";
+import { IdentifierDataSource } from './identifier-data-source';
 
-import {IdentifierDataSource} from './identifier-data-source';
-
-import {SHOW_DATE_FORMAT} from '../../../app.constants';
+const BUNDLE_PREFIX = 'identifier.table.columnName.';
 
 @Component({
   selector: 'app-identifier',
@@ -42,6 +44,11 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
   selectedStatusList: any;
   selectedOrganisation: any;
 
+  allDisplayedColumnsData: Array<HideColumnModel>;
+
+  breakpointCols: number;
+  breakpointColspan: number;
+
   constructor(
     private router: Router,
     private storage: LocalStorageService,
@@ -65,9 +72,12 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
         this.loadPage();
       }
     });
+    this.displayedColumnsDataInit();
   }
 
   ngOnInit() {
+    this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
+    this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
     this.selectedDisplayedColumns = Object.assign([], this.allDisplayedColumns);
     this.initSelected();
     this.filter = new IdentifierFilterModel();
@@ -84,6 +94,16 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
       this.organizations = organizationsInfo;
       this.selectedOrganisation = this.organizations[0];
     });
+  }
+
+  displayedColumnsDataInit() {
+    this.allDisplayedColumnsData = new Array<HideColumnModel>();
+    for (const col of this.allDisplayedColumns) {
+      let hcm: HideColumnModel = new HideColumnModel();
+      hcm.columnName = col;
+      hcm.columnBundle = BUNDLE_PREFIX + col;
+      this.allDisplayedColumnsData.push(hcm);
+    }
   }
 
   ngAfterViewInit() {
@@ -118,6 +138,11 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
         this.selectedDisplayedColumns.splice(indexSelectedDisplayedColumns, 1);
       }
     }
+  }
+
+  onResize(event) {
+    this.breakpointCols = (event.target.innerWidth <= 500) ? 1 : 8;
+    this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
   }
 
   clear() {
