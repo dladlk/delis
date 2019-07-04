@@ -1,13 +1,16 @@
 <mat-card>
   <div class="example-container mat-elevation-z8">
-    <mat-grid-list cols="2" rowHeight="70px">
-      <mat-grid-tile [colspan]="1" [rowspan]="1">
-        <button mat-mini-fab color="primary" (click)="back()"><mat-icon>keyboard_backspace</mat-icon></button>
-      </mat-grid-tile>
-      <mat-grid-tile [colspan]="1" [rowspan]="1">
-        <button mat-mini-fab color="primary" (click)="refreshData()"><mat-icon>refresh</mat-icon></button>
-      </mat-grid-tile>
-    </mat-grid-list>
+
+    <div class="app-button-row">
+      <div class="example-button-row">
+        <button mat-mini-fab color="primary" (click)="back()">
+          <mat-icon>keyboard_backspace</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" (click)="refreshData()">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
 
     <div class="table-details">
       <mat-card-content>
