@@ -19,7 +19,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier" style="cursor: pointer" class="systemColor" [routerLink]="['/identifier/', identifier.id]"> {{identifier.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"> {{identifier.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="organisation">
@@ -40,7 +40,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"><span *ngIf="identifier.organisation !== null">{{identifier.organisation.name}} </span></mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"><span *ngIf="identifier.organisation !== null">{{identifier.organisation.name}} </span></mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="identifierGroup">
@@ -57,7 +57,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"><span *ngIf="identifier.identifierGroup !== null">{{identifier.identifierGroup.name}} </span></mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"><span *ngIf="identifier.identifierGroup !== null">{{identifier.identifierGroup.name}} </span></mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="type">
@@ -74,7 +74,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"> {{identifier.type}} </mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"> {{identifier.type}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="value">
@@ -91,7 +91,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"> {{identifier.value}} </mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"> {{identifier.value}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="uniqueValueType">
@@ -108,7 +108,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"> {{identifier.uniqueValueType}} </mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"> {{identifier.uniqueValueType}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="status">
@@ -129,7 +129,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"> {{identifier.status}} </mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"> {{identifier.status}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="name">
@@ -141,12 +141,12 @@
             <mat-divider [inset]="true"></mat-divider>
             <mat-list-item>
               <mat-form-field>
-                <input class="filter-input" matInput (keyup)="applyFilter('name', $event.target.value)" placeholder="{{ 'identifier.table.columnName.name' | translate }}"/>
+                <input class="filter-input" matInput (keyup.enter)="applyFilter('name', $event.target.value)" placeholder="{{ 'identifier.table.columnName.name' | translate }}"/>
               </mat-form-field>
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let identifier"> {{identifier.name}} </mat-cell>
+        <mat-cell *matCellDef="let identifier" class="systemLink"> {{identifier.name}} </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>

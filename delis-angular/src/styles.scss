@@ -23,6 +23,10 @@ $theme: mat-light-theme($primary, $accent);
   color: green !important;
 }
 
+.systemLink {
+  cursor: pointer;
+}
+
 /* for sidenav to take whole page */
 html, body {
   margin: 0;

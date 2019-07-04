@@ -135,6 +135,11 @@ export class DocumentComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onRowClicked(row) {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+        this.router.navigate(['/document', row.id]));
+  }
+
   clear() {
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
       this.router.navigate(['/document']));

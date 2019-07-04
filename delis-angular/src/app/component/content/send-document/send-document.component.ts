@@ -109,7 +109,8 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
   }
 
   onRowClicked(row) {
-    console.log('Row clicked: ', row);
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+        this.router.navigate(['/send-document', row.id]));
   }
 
   showHideColumns(columns: []) {

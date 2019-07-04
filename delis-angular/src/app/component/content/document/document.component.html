@@ -19,7 +19,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document" style="cursor: pointer" class="systemColor" [routerLink]="['/document/', document.id]">
+        <mat-cell *matCellDef="let document" class="systemLink">
           {{document.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
       </ng-container>
 
@@ -41,7 +41,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document"><span *ngIf="document.organisation !== null">{{document.organisation.name}} </span></mat-cell>
+        <mat-cell *matCellDef="let document" class="systemLink"><span *ngIf="document.organisation !== null">{{document.organisation.name}} </span></mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="receiverIdentifier">
@@ -59,7 +59,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document"><span *ngIf="document.receiverIdentifier !== null">{{document.receiverIdentifier.name}} </span></mat-cell>
+        <mat-cell *matCellDef="let document" class="systemLink"><span *ngIf="document.receiverIdentifier !== null">{{document.receiverIdentifier.name}} </span></mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="documentStatus">
@@ -80,7 +80,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document"> {{document.documentStatus}} </mat-cell>
+        <mat-cell *matCellDef="let document" class="systemLink"> {{document.documentStatus}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="documentType">
@@ -101,7 +101,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document"> {{document.documentType}} </mat-cell>
+        <mat-cell *matCellDef="let document" class="systemLink"> {{document.documentType}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="ingoingDocumentFormat">
@@ -122,7 +122,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document"> {{document.ingoingDocumentFormat}} </mat-cell>
+        <mat-cell *matCellDef="let document" class="systemLink"> {{document.ingoingDocumentFormat}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="senderName">
@@ -140,11 +140,11 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let document">{{document.senderName}}</mat-cell>
+        <mat-cell *matCellDef="let document" class="systemLink">{{document.senderName}}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: selectedDisplayedColumns"></mat-row>
+      <mat-row *matRowDef="let row; columns: selectedDisplayedColumns" (click)="onRowClicked(row)"></mat-row>
     </mat-table>
 
     <mat-card-content>

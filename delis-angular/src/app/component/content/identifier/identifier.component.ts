@@ -29,7 +29,7 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
   private filter: IdentifierFilterModel;
 
   public dataSource: IdentifierDataSource;
-  allDisplayedColumns: string[] = ['createTime', 'organisation', 'identifierGroup', 'type', 'value', 'uniqueValueType', 'status'];
+  allDisplayedColumns: string[] = ['createTime', 'organisation', 'identifierGroup', 'type', 'value', 'uniqueValueType', 'status', 'name'];
   selectedDisplayedColumns: string[] = [];
 
   private pageIndex = 0;
@@ -106,7 +106,8 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
   }
 
   onRowClicked(row) {
-    console.log('Row clicked: ', row);
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+        this.router.navigate(['/identifier', row.id]));
   }
 
   showHideColumns(columns: []) {

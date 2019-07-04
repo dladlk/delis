@@ -19,7 +19,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let senDocument" style="cursor: pointer" class="systemColor" [routerLink]="['/send-document/', senDocument.id]"> {{senDocument.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
+        <mat-cell *matCellDef="let senDocument" class="systemLink"> {{senDocument.createTime | date: SHOW_DATE_FORMAT }} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="organisation">
@@ -40,7 +40,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let senDocument"><span *ngIf="senDocument.organisation !== null">{{senDocument.organisation.name}} </span></mat-cell>
+        <mat-cell *matCellDef="let senDocument" class="systemLink"><span *ngIf="senDocument.organisation !== null">{{senDocument.organisation.name}} </span></mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="receiverIdRaw">
@@ -57,7 +57,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let senDocument"> {{senDocument.receiverIdRaw}} </mat-cell>
+        <mat-cell *matCellDef="let senDocument" class="systemLink"> {{senDocument.receiverIdRaw}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="senderIdRaw">
@@ -76,7 +76,7 @@
           </mat-list>
 
         </mat-header-cell>
-        <mat-cell *matCellDef="let senDocument"> {{senDocument.senderIdRaw}} </mat-cell>
+        <mat-cell *matCellDef="let senDocument" class="systemLink"> {{senDocument.senderIdRaw}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="documentStatus">
@@ -97,7 +97,7 @@
             </mat-list-item>
           </mat-list>
         </mat-header-cell>
-        <mat-cell *matCellDef="let senDocument"> {{senDocument.documentStatus}} </mat-cell>
+        <mat-cell *matCellDef="let senDocument" class="systemLink"> {{senDocument.documentStatus}} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="documentType">
@@ -120,7 +120,7 @@
           </mat-list>
 
         </mat-header-cell>
-        <mat-cell *matCellDef="let senDocument"> {{senDocument.documentType}} </mat-cell>
+        <mat-cell *matCellDef="let senDocument" class="systemLink"> {{senDocument.documentType}} </mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
