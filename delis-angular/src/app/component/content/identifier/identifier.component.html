@@ -1,6 +1,19 @@
 <mat-card>
     <div class="example-container mat-elevation-z8">
 
+        <div class="bounds">
+            <div class="content"
+                 fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutAlign="center"
+                 fxLayoutGap="1em"
+                 fxFlexFill>
+                <div>
+                    <h2 class="table-details-header">{{ 'sidebar.identifier' | translate}}</h2>
+                </div>
+            </div>
+        </div>
+
         <div class="spinner-container" *ngIf="dataSource.loading$ | async">
             <!--      <mat-spinner></mat-spinner>-->
         </div>
