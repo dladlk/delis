@@ -1,26 +1,29 @@
-﻿<mat-card>
-  <mat-card *ngIf="errorStatus">
-    <strong class="systemColorError">{{ message | translate }}</strong>
-  </mat-card>
-  <br>
-  <mat-card-title>{{ 'sidebar.home' | translate }}</mat-card-title>
-  <mat-card-content>
-    <form name="loginForm" #loginForm="ngForm" (ngSubmit)="login()">
-      <p>
-        <mat-form-field>
-          <input matInput placeholder="{{ 'auth.username' | translate }}" name="username" [(ngModel)]="form.username" #username="ngModel" appAutofocus>
-        </mat-form-field>
-      </p>
-      <p>
-        <mat-form-field>
-          <input type="password" matInput placeholder="{{ 'auth.password' | translate }}" name="password" [(ngModel)]="form.password">
-        </mat-form-field>
-      </p>
-      <div class="button">
-        <button mat-raised-button color="primary" [disabled]="!loginForm.form.valid">
-          <span> {{ 'auth.login' | translate }}</span>
-        </button>
-      </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+﻿<div fxLayout="row wrap" fxLayoutAlign="center center">
+    <mat-card fxFlex="400px" fxFlex.xs="100%" fxLayout="column wrap">
+        <strong *ngIf="errorStatus" class="systemColorError text-center mb2">{{ message | translate }}</strong>
+        <mat-card-title>
+      <span class="mt1">
+        {{ 'sidebar.home' | translate }}
+      </span>
+        </mat-card-title>
+        <form [formGroup]="loginForm" novalidate (ngSubmit)="login(loginForm.value)" fxLayout="column wrap"
+              fxLayoutAlign="center end">
+            <mat-card-content>
+
+                <mat-form-field>
+                    <input matInput type="text" placeholder="{{ 'auth.username' | translate }}" formControlName="username" id="username" appAutofocus>
+                    <mat-error *ngIf="hasError('username', 'required')">{{ 'login.error.username' | translate }}</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <input matInput type="password" placeholder="{{ 'auth.password' | translate }}" formControlName="password">
+                    <mat-error *ngIf="hasError('password', 'required')">{{ 'login.error.password' | translate }}</mat-error>
+                </mat-form-field>
+
+            </mat-card-content>
+            <mat-card-actions>
+                <button class="login-button" mat-raised-button color="primary" [disabled]="!loginForm.valid">{{ 'auth.login' | translate }}</button>
+            </mat-card-actions>
+        </form>
+    </mat-card>
+</div>

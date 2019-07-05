@@ -161,6 +161,18 @@ app-stat {
   margin-left: 2em !important;
 }
 
+.mb2 {
+  margin-bottom: 2em;
+}
+
+.mt2 {
+  margin-top: 2em;
+}
+
+.mt1 {
+  margin-top: 1em;
+}
+
 .download-muted {
   cursor: pointer;
   text-decoration: underline;
@@ -170,4 +182,8 @@ app-stat {
 .download {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.text-center {
+  text-align: center;
 }
