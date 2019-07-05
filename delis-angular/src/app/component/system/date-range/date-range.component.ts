@@ -43,7 +43,7 @@ export class DateRangeComponent implements OnInit {
 
     const today = new Date();
     const todayStart = new Date();
-    todayStart.setHours(0,0,0,0)
+    todayStart.setHours(0,0,0,0);
     const yesterday = backDate(1);
     const minus7 = backDate(7);
     const minus30 = backDate(30);
@@ -53,6 +53,7 @@ export class DateRangeComponent implements OnInit {
     const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
 
     this.presets =  [
+      {presetLabel: 'td.picker.all', range: { fromDate: null, toDate: today }},
       {presetLabel: 'td.picker.today', range: { fromDate: todayStart, toDate: today }},
       {presetLabel: 'td.picker.yesterday', range: { fromDate: yesterday, toDate: today }},
       {presetLabel: 'td.picker.last7Days', range: { fromDate: minus7, toDate: today }},

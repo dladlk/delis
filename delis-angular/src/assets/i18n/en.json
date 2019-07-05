@@ -166,6 +166,7 @@
   "loading": "Loading",
   "refresh": "Refresh",
 
+  "td.picker.all": "All",
   "td.picker.today": "Today",
   "td.picker.yesterday": "Yesterday",
   "td.picker.last7Days": "Last 7 Days",

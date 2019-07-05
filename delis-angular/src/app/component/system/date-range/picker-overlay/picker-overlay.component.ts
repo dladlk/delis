@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
 import { PresetItem } from '../model/model';
@@ -32,8 +32,7 @@ export class PickerOverlayComponent implements OnInit {
   constructor(
     private rangeStoreService: RangeStoreService,
     private configStoreService: ConfigStoreService,
-    private overlayRef: OverlayRef
-  ) {}
+    private overlayRef: OverlayRef) { }
 
   ngOnInit() {
     this.fromDate = this.rangeStoreService.fromDate;
@@ -66,11 +65,16 @@ export class PickerOverlayComponent implements OnInit {
   }
 
   updateRangeByPreset(presetItem: PresetItem) {
-    this.updateFromDate(presetItem.range.fromDate);
-    this.updateToDate(presetItem.range.toDate);
+    if (presetItem.range.fromDate === null) {
+      this.clearDates();
+    } else {
+      this.updateFromDate(presetItem.range.fromDate);
+      this.updateToDate(presetItem.range.toDate);
+      this.applyNewDates();
+    }
   }
 
-  applyNewDates(e) {
+  applyNewDates() {
     this.rangeStoreService.updateRange(this.fromDate, this.toDate);
     this.disposeOverLay();
   }
@@ -80,11 +84,18 @@ export class PickerOverlayComponent implements OnInit {
     this.disposeOverLay();
   }
 
-  discardNewDates(e) {
+  discardNewDates() {
     this.disposeOverLay();
   }
 
   private disposeOverLay() {
     this.overlayRef.dispose();
+  }
+
+  autoClose(event) {
+    var target = event.target;
+    if (!target.closest(".ngx-mat-drp-calendar-container")) {
+      this.disposeOverLay();
+    }
   }
 }

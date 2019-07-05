@@ -166,6 +166,7 @@
   "loading": "Indlæser",
   "refresh": "Opfrisk",
 
+  "td.picker.all": "Alle",
   "td.picker.today": "I dag",
   "td.picker.yesterday": "I går",
   "td.picker.last7Days": "Sidste 7 dage",
