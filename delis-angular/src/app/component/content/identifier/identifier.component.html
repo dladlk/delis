@@ -150,8 +150,8 @@
                             <mat-divider [inset]="true"></mat-divider>
                             <mat-list-item>
                                 <mat-form-field>
-                                    <mat-select [(value)]="selectedStatusList.name" (selectionChange)="applyFilter('status', $event.value)">
-                                        <mat-option *ngFor="let status of statusList" [value]="status.name">
+                                    <mat-select [(value)]="selectedStatusList" (selectionChange)="applyFilter('status', $event.value)">
+                                        <mat-option *ngFor="let status of statusList" [value]="status">
                                             {{status.viewName}}
                                         </mat-option>
                                     </mat-select>

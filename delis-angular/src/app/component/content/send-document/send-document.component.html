@@ -103,8 +103,8 @@
                         <mat-divider [inset]="true"></mat-divider>
                         <mat-list-item>
                             <mat-form-field>
-                                <mat-select [(value)]="selectedStatus.name" (selectionChange)="applyFilter('documentStatus', $event.value)">
-                                    <mat-option *ngFor="let status of statuses" [value]="status.name">
+                                <mat-select [(value)]="selectedStatus" (selectionChange)="applyFilter('documentStatus', $event.value)">
+                                    <mat-option *ngFor="let status of statuses" [value]="status">
                                         {{status.viewName}}
                                     </mat-option>
                                 </mat-select>
@@ -125,8 +125,8 @@
                         <mat-divider [inset]="true"></mat-divider>
                         <mat-list-item>
                             <mat-form-field>
-                                <mat-select [(value)]="selectedDocumentType.name" (selectionChange)="applyFilter('documentType', $event.value)">
-                                    <mat-option *ngFor="let type of documentTypes" [value]="type.name">
+                                <mat-select [(value)]="selectedDocumentType" (selectionChange)="applyFilter('documentType', $event.value)">
+                                    <mat-option *ngFor="let type of documentTypes" [value]="type">
                                         {{type.viewName}}
                                     </mat-option>
                                 </mat-select>

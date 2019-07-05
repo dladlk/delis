@@ -165,8 +165,9 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
         this.filter[col] = event;
       }
     } else {
-      this.filter[col] = event;
+      this.filter[col] = event.name;
     }
+    this.paginator.pageIndex = 0;
     this.loadPage();
   }
 }
