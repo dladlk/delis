@@ -33,14 +33,13 @@ $theme: mat-light-theme($primary, $accent);
 }
 
 /* for sidenav to take whole page */
-html, body {
-  margin: 0;
+body {
+  //margin: 0;
   height: 100%;
 }
 
 table {
   width: 100%;
-  /*table-layout: fixed !important;*/
 }
 
 .example-container {

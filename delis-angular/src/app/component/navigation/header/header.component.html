@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <div fxHide.gt-xs>
+  <div fxShow="true" fxHide.gt-sm="true">
     <button mat-icon-button (click)="onToggleSidenav()">
       <mat-icon>menu</mat-icon>
     </button>
@@ -25,18 +25,22 @@
             <mat-icon *ngIf="lang == 'da'" class="checkCircleHeaderLanguage">check_circle</mat-icon>
           </button>
         </mat-menu>
-        <button mat-button [matMenuTriggerFor]="langMenu">
+        <a class="systemLink" [matMenuTriggerFor]="langMenu">
           {{ 'header.language' | translate }}
-        </button>
+        </a>
       </li>
       <li>
         <mat-menu #userMenu="matMenu" xPosition="before">
-          <button mat-menu-item [routerLink]="['/login']" (click)="onLoggedOut()">{{ 'header.account.logout' | translate }}</button>
+          <button mat-menu-item [routerLink]="['/']">{{ 'header.account.profile' | translate }}</button>
         </mat-menu>
-        <button mat-button [matMenuTriggerFor]="userMenu">
+        <a class="systemLink" [matMenuTriggerFor]="userMenu">
           {{ username | translate }}
-        </button>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/logout']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'header.account.logout' | translate }}</a>
       </li>
     </ul>
   </div>
+
 </mat-toolbar>

@@ -184,7 +184,11 @@ export class DocumentComponent implements OnInit, AfterViewInit {
         this.filter[col] = event;
       }
     } else {
-      this.filter[col] = event.name;
+      if (event.name === undefined) {
+        this.filter[col] = event;
+      } else {
+        this.filter[col] = event.name;
+      }
     }
     this.paginator.pageIndex = 0;
     this.loadPage();
