@@ -132,7 +132,8 @@
             <td class="table-details-td">{{doc.id}}</td>
             <td class="table-details-td">{{doc.type}}</td>
             <td class="table-details-td">{{doc.size}}</td>
-            <td class="table-details-td download" (click)="download(doc.id)">Download</td>
+            <td *ngIf="doc.type === 'RECEIPT'" class="table-details-td download" (click)="download(doc.id)">Download</td>
+            <td *ngIf="doc.type !== 'RECEIPT'" class="table-details-td download-muted" (click)="download(doc.id)">Download</td>
           </tr>
           </tbody>
         </table>
