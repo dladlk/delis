@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -240,9 +241,15 @@ public class CustomTokenStore implements TokenStore {
     public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
         long startTime = System.nanoTime();
         long currentTime = startTime;
-        OAuth2AccessToken accessToken = null;
+        OAuth2AccessToken accessToken;
 
         String key = this.authenticationKeyGenerator.extractKey(authentication);
+        if (StringUtils.isBlank(key)) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Failed to find access token for authentication key " + key);
+            }
+            return null;
+        }
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findTopByAuthenticationKeyOrderByIdDesc(key);
         currentTime = logDuration(currentTime, "getAccessToken. Step 1. findByAuthenticationKey took: ");
         if (Objects.isNull(oAuthAccessToken)) {
@@ -253,8 +260,9 @@ public class CustomTokenStore implements TokenStore {
         }
         try {
             accessToken = this.deserializeAccessToken(oAuthAccessToken.getOAuth2AccessToken());
-        } catch (IllegalArgumentException var5) {
-            LOG.warn("Failed to deserialize authentication for " + key, var5);
+        } catch (Exception e) {
+            LOG.warn("Failed to deserialize authentication for " + key, e);
+            return null;
         }
 
         if (Objects.nonNull(accessToken) && !key.equals(this.authenticationKeyGenerator.extractKey(this.readAuthentication(accessToken.getValue())))) {
