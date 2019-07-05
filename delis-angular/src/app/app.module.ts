@@ -5,9 +5,10 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { MatPaginatorIntl } from "@angular/material";
 import { ChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,6 +39,7 @@ import { AutofocusDirective } from './directive/autofocus.directive';
 import { LogoutComponent } from './component/logout/logout.component';
 import { StatComponent } from './component/system/stat/stat.component';
 import { ChartDocumentComponent } from './component/system/chart-document/chart-document.component';
+import { PaginatorI18n } from "./i18n/paginator-I18n";
 
 export const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -99,9 +101,17 @@ export const createTranslateLoader = (http: HttpClient) => {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpEventInterceptor,
       multi: true
+    },
+    {
+      provide: MatPaginatorIntl,
+      useFactory: (translate) => {
+        const service = new PaginatorI18n();
+        service.injectTranslateService(translate);
+        return service;
+      },
+      deps: [TranslateService]
     }
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }
