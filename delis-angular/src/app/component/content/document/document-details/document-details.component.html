@@ -70,7 +70,8 @@
                         <td class="table-details-td">{{document.documentId}}</td>
                         <td class="table-details-td">{{document.documentDate}}</td>
                     </tr>
-                    </tbody>
+					</tbody>
+					<!--
                     <thead>
                     <tr>
                         <th class="table-details-th">{{ 'documents.table.one.columnName.name' | translate }}</th>
@@ -82,7 +83,8 @@
                         <td class="table-details-td">{{document.name}}</td>
                         <td class="table-details-td">{{document.messageId}}</td>
                     </tr>
-                    </tbody>
+					</tbody>
+					-->
                 </table>
             </mat-card-content>
             <mat-card-content>
@@ -155,14 +157,13 @@
                                         <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
                                         <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
                                         <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
-                                        <th></th>
                                     </tr>
                                     <tr *ngFor="let err of getErrorDictionaryModel(doc.id)">
                                         <td class="table-details-td-error">{{err.flag}}</td>
                                         <td class="table-details-td-error">{{err.code}}</td>
                                         <td class="table-details-td-error">{{err.message}}</td>
                                         <td class="table-details-td-error">{{err.location}}</td>
-                                        <td></td>
+									</tr>
                                 </table>
                             </mat-card>
                         </td>
