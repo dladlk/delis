@@ -48,3 +48,6 @@ node_modules
 # Skip all folders like
 dist/
 log/
+
+# Skip VisualStudio Code folders
+.vscode/
