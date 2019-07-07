@@ -48,7 +48,7 @@ class AllRestControllerTest : InitTokenTest() {
     fun generateDashboardDataTest() {
         val mvcResult: MvcResult = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/rest/dashboard")
+                        .get("/rest/dashboard/document")
                         .header("Authorization", "Bearer " + auth.accessToken))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
         assertEquals(200, mvcResult.response.status)
