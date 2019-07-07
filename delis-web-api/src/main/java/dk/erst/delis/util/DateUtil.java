@@ -24,7 +24,7 @@ public class DateUtil {
     }
 
     public int getHoursBetween(Date start, Date end) {
-        return (int) ChronoUnit.HOURS.between(end.toInstant(), start.toInstant());
+        return (int) ChronoUnit.HOURS.between(start.toInstant(), end.toInstant());
     }
 
     public DateRangeModel generateDateRangeByLastHour() {

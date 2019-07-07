@@ -9,10 +9,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.Date;
 
-/**
- * @author funtusthan, created by 13.01.19
- */
-
 @NoRepositoryBean
 public interface AbstractRepository<T extends AbstractEntity> extends JpaRepository<T, Long>, JpaSpecificationExecutor<T> {
 

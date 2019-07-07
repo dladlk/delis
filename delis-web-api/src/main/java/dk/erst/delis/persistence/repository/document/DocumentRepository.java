@@ -12,7 +12,12 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends AbstractRepository<Document> {
 
+    Long countByCreateTimeBetweenAndOrganisationAndLastErrorIsNull(Date start, Date end, Organisation organisation);
+    Long countByCreateTimeBetweenAndOrganisationAndLastErrorIsNotNull(Date start, Date end, Organisation organisation);
     Long countByCreateTimeBetweenAndOrganisation(Date start, Date end, Organisation organisation);
+
+    Long countByCreateTimeBetweenAndLastErrorIsNull(Date start, Date end);
+    Long countByCreateTimeBetweenAndLastErrorIsNotNull(Date start, Date end);
 
     List<Document> findAllByOrganisationAndCreateTimeBetweenAndLastErrorIsNull(Organisation organisation, Date start, Date end);
     List<Document> findAllByOrganisationAndLastErrorIsNull(Organisation organisation);

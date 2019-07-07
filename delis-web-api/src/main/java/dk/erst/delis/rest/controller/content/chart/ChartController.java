@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author funtusthan, created by 23.01.19
- */
-
 @RestController
 @RequestMapping("/rest/chart")
 public class ChartController {

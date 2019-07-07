@@ -14,4 +14,7 @@ public interface SendDocumentRepository extends AbstractRepository<SendDocument>
     List<SendDocument> findAllByOrganisationAndCreateTimeBetween(Organisation organisation, Date start, Date end);
     List<SendDocument> findAllByOrganisation(Organisation organisation);
     List<SendDocument> findAllByCreateTimeBetween(Date start, Date end);
+
+    Long countByCreateTimeBetween(Date start, Date end);
+    Long countByCreateTimeBetweenAndOrganisation(Date start, Date end, Organisation organisation);
 }

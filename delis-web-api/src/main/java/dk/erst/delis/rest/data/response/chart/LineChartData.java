@@ -5,10 +5,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * @author funtusthan, created by 23.01.19
- */
-
 @Getter
 @Setter
 public class LineChartData {

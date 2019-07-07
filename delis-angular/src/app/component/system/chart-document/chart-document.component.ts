@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -16,6 +16,8 @@ import { DaterangeObservable } from '../../../observable/daterange.observable';
 })
 export class ChartDocumentComponent implements OnInit {
 
+  @Input('chartIndex') chartIndex: any;
+
   private readonly url: string;
 
   lineChartData: Array<any> = [];
@@ -24,7 +26,7 @@ export class ChartDocumentComponent implements OnInit {
   lineChartOptions: any;
   lineChartColors: Array<any>;
   lineChartLegend: boolean;
-  lineChartType: string;
+  lineChartType: any;
 
   drm: RangeModel;
 
@@ -35,7 +37,6 @@ export class ChartDocumentComponent implements OnInit {
               private daterangeObservable: DaterangeObservable) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/chart';
-    this.updateLineChart(false);
     this.daterangeObservable.listen().subscribe((dtRange: Range) => {
       if (dtRange.fromDate !== null && dtRange.toDate !== null) {
         this.drm = dtRange;
@@ -49,8 +50,26 @@ export class ChartDocumentComponent implements OnInit {
   ngOnInit() {
     this.lineChartLegend = false;
     this.lineChartOptions = {
-      responsive: true
-    };
+      responsive: true,
+      scales: {
+        xAxes: [{
+          gridLines: {
+            color: 'rgba(171,171,171,1)',
+            lineWidth: 1
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            min: 0
+          },
+          gridLines: {
+            color: 'rgba(171,171,171,1)',
+            lineWidth: 0.5
+          }
+        }]
+      }
+      };
     this.lineChartType = 'line';
     this.lineChartColors = [
       {
@@ -62,6 +81,7 @@ export class ChartDocumentComponent implements OnInit {
         pointHoverBorderColor: 'rgba(77,83,96,1)'
       }
     ];
+    this.updateLineChart(false);
   }
 
   public chartClicked(e: any): void {
@@ -72,17 +92,16 @@ export class ChartDocumentComponent implements OnInit {
     }
   }
 
-  public chartHovered(e: any): void {
-  }
+  public chartHovered(e: any): void { }
 
   private updateLineChart(custom: boolean) {
     if (custom) {
       this.getChartCustomData(this.drm, false).subscribe(
-        (data: {}) => {
-          this.generateLineChart(data);
-        }, error => {
-          this.errorService.errorProcess(error);
-        }
+          (data: {}) => {
+            this.generateLineChart(data);
+          }, error => {
+            this.errorService.errorProcess(error);
+          }
       );
     } else {
       this.drm = new RangeModel();
@@ -92,11 +111,11 @@ export class ChartDocumentComponent implements OnInit {
       this.drm.fromDate = dateStart;
       this.drm.toDate = dateEnd;
       this.getChartDefaultData(dateStart, dateEnd, true).subscribe(
-        (data: {}) => {
-          this.generateLineChart(data);
-        }, error => {
-          this.errorService.errorProcess(error);
-        }
+          (data: {}) => {
+            this.generateLineChart(data);
+          }, error => {
+            this.errorService.errorProcess(error);
+          }
       );
     }
   }
@@ -104,6 +123,7 @@ export class ChartDocumentComponent implements OnInit {
   generateLineChart(data: {}) {
     let lineChart = Object.assign({}, data['data']);
     this.lineChartData = lineChart.lineChartData;
+    // this.maxValueOfY = Math.max(...this.lineChartData[0].data.map(o => o), 0);
     if (this.lineChartLabels.length !== 0) {
       this.lineChartLabels.length = 0;
       this.lineChartLabels.push(...lineChart.lineChartLabels);
@@ -121,6 +141,9 @@ export class ChartDocumentComponent implements OnInit {
 
     params = params.append('timeZone', Intl.DateTimeFormat().resolvedOptions().timeZone);
     params = params.append('defaultChart', String(defaultChart));
+    if (this.chartIndex !== undefined) {
+      params = params.append('chartIndex', String(this.chartIndex));
+    }
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 
@@ -130,6 +153,9 @@ export class ChartDocumentComponent implements OnInit {
     params = params.append('endDate', String(end.getTime()));
     params = params.append('timeZone', Intl.DateTimeFormat().resolvedOptions().timeZone);
     params = params.append('defaultChart', String(defaultChart));
+    if (this.chartIndex !== undefined) {
+      params = params.append('chartIndex', String(this.chartIndex));
+    }
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 }

@@ -28,6 +28,10 @@ export class DashboardComponent implements OnInit {
 
     role: string;
 
+    selected = 0;
+
+    labels = ['dashboard.charts.document', 'dashboard.charts.error', 'dashboard.charts.send'];
+
     constructor(private router: Router,
                 private tokenService: TokenService,
                 private configService: RuntimeConfigService,
@@ -88,5 +92,9 @@ export class DashboardComponent implements OnInit {
     refreshData() {
         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
             this.router.navigate(['/dashboard']));
+    }
+
+    selectedIndexChange(event: number) {
+        this.selected = event;
     }
 }
