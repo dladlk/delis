@@ -1,20 +1,17 @@
 package dk.erst.delis.persistence.repository.identifier;
 
 import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.persistence.AbstractRepository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
-
-/**
- * @author Iehor Funtusov, created by 04.01.19
- */
 
 @Repository
 public interface IdentifierRepository extends AbstractRepository<Identifier> {
 
-    List<Identifier> findByPublishingStatusAndCreateTimeBetween(IdentifierPublishingStatus publishingStatus, Date start, Date End);
+    @Query("select distinct (o.name) from Identifier o where o.organisation.id = :organisationId")
+    List<String> findDistinctNameByOrganisation(@Param("organisationId") Long organisationId);
 }

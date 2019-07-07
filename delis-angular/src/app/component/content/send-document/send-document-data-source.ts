@@ -26,9 +26,9 @@ export class SendDocumentDataSource implements DataSource<SendDocumentModel> {
     this.loadingTotalElements.complete();
   }
 
-  load(pageIndex: number, pageSize: number, filter: SendDocumentFilterModel) {
+  load(pageIndex: number, pageSize: number, filter: SendDocumentFilterModel, lastHour: boolean) {
     this.loadingSubject.next(true);
-    this.sendDocumentService.getListSendDocuments(pageIndex, pageSize, filter).pipe(
+    this.sendDocumentService.getListSendDocuments(pageIndex, pageSize, filter, lastHour).pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false)))
       .subscribe(res => {

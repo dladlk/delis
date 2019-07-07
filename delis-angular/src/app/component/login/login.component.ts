@@ -53,6 +53,7 @@ export class LoginComponent implements OnInit {
                 this.tokenService.setToken(loginData.accessToken);
                 localStorage.setItem('username', loginData.username);
                 localStorage.setItem('refreshToken', loginData.refreshToken);
+                localStorage.setItem('role', loginData.role);
                 this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
                 this.errorStatus = false;

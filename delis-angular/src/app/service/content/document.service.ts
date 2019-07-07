@@ -21,8 +21,8 @@ export class DocumentService {
     this.url = this.url + '/rest/document';
   }
 
-  getListDocuments(currentPage: number, sizeElement: number, filter: DocumentFilterModel): Observable<any> {
-    let params = this.generateParams(currentPage, sizeElement, filter);
+  getListDocuments(currentPage: number, sizeElement: number, filter: DocumentFilterModel, lastHour: boolean): Observable<any> {
+    let params = this.generateParams(currentPage, sizeElement, filter, lastHour);
     if (filter.createTime !== null) {
       params = params.append('createTime', String(new Date(filter.createTime.fromDate).getTime()) + ':' + String(new Date(filter.createTime.toDate).getTime()));
     }
@@ -41,11 +41,12 @@ export class DocumentService {
     return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
   }
 
-  private generateParams(currentPage: number, sizeElement: number, filter: DocumentFilterModel): HttpParams {
+  private generateParams(currentPage: number, sizeElement: number, filter: DocumentFilterModel, lastHour: boolean): HttpParams {
     let params = new HttpParams();
     params = params.append('page', String(currentPage));
     params = params.append('size', String(sizeElement));
     params = params.append('sort', filter.sortBy);
+    params = params.append('lastHour', String(lastHour));
 
     if (filter.documentStatus !== 'ALL') {
       params = params.append('documentStatus', filter.documentStatus);

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { merge } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { MatPaginator, MatSort } from '@angular/material';
@@ -13,7 +13,6 @@ import { SendDocumentFilterModel } from '../../../model/filter/send-document-fil
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
 import { Range } from '../../system/date-range/model/model';
 import { HideColumnModel } from "../../../model/content/hide-column.model";
-import { RefreshObservable } from '../../../observable/refresh.observable';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
 
 const BUNDLE_PREFIX = 'documents.table.send.columnName.';
@@ -45,17 +44,21 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
   selectedDocumentType: any;
   selectedStatus: any;
   selectedOrganisation: any;
+  receiverIdRaw: string;
+  senderIdRaw: string;
 
   allDisplayedColumnsData: Array<HideColumnModel>;
   breakpointCols: number;
   breakpointColspan: number;
 
+  lastHour = false;
+
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private storage: LocalStorageService,
     private sendDocumentService: SendDocumentService,
-    private daterangeObservable: DaterangeObservable,
-    private refreshObservable: RefreshObservable) {
+    private daterangeObservable: DaterangeObservable) {
     this.daterangeObservable.listen().subscribe((range: Range) => {
       if (location.href.endsWith('/send-document')) {
         if (range.fromDate !== null && range.toDate !== null) {
@@ -64,12 +67,6 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
           this.filter.dateRange = null;
         }
         this.paginator.pageIndex = 0;
-        this.loadPage();
-      }
-    });
-    this.refreshObservable.listen().subscribe(() => {
-      if (location.href.endsWith('/send-document')) {
-        this.initSelected();
         this.loadPage();
       }
     });
@@ -83,7 +80,45 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
     this.initSelected();
     this.filter = new SendDocumentFilterModel();
     this.dataSource = new SendDocumentDataSource(this.sendDocumentService);
-    this.dataSource.load(0, 10, this.filter);
+    this.route.queryParamMap.subscribe(params => {
+      const queryParamMap = {...params.keys, ...params};
+      let queryParams = queryParamMap['params'];
+      if (queryParams.lastHour !== undefined) {
+        if (queryParams.lastHour) {
+          this.lastHour = true;
+          for (let field of Object.getOwnPropertyNames(queryParams)) {
+            if (this.filter.hasOwnProperty(field)) {
+              let status = this.statuses.find(el => el.viewName === queryParams[field]);
+              let documentType = this.documentTypes.find(el => el.viewName === queryParams[field]);
+              let organisation = this.organizations.find(el => el === queryParams[field]);
+              this.filter[field] = queryParams[field];
+              if (status !== undefined) {
+                this.filter[field] = status.name;
+                this.selectedStatus = status;
+              }
+              if (documentType !== undefined) {
+                this.filter[field] = documentType.name;
+                this.selectedDocumentType = documentType;
+              }
+              if (organisation !== undefined) {
+                this.filter[field] = organisation;
+                this.selectedOrganisation = organisation;
+              }
+              if (field === 'receiverIdRaw') {
+                this.receiverIdRaw = queryParams[field];
+              }
+              if (field === 'senderIdRaw') {
+                this.senderIdRaw = queryParams[field];
+              }
+            }
+          }
+        } else {
+          this.lastHour = false;
+        }
+      }
+    });
+
+    this.dataSource.load(0, 10, this.filter, this.lastHour);
   }
 
   onResize(event) {
@@ -128,7 +163,7 @@ export class SendDocumentComponent implements OnInit, AfterViewInit {
       this.paginator.pageIndex = 0;
     }
     this.filter.sortBy = 'orderBy_' + this.sort.active + '_' + this.sort.direction;
-    this.dataSource.load(this.paginator.pageIndex, this.paginator.pageSize, this.filter);
+    this.dataSource.load(this.paginator.pageIndex, this.paginator.pageSize, this.filter, this.lastHour);
     this.pageIndex = this.paginator.pageIndex;
     this.pageSize = this.paginator.pageSize;
   }

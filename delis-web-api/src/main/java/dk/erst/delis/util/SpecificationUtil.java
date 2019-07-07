@@ -29,6 +29,9 @@ import java.util.Objects;
 @UtilityClass
 public class SpecificationUtil {
 
+    private static final String LAST_HOUR = "lastHour";
+    private static final String CREATE_TIME = "createTime";
+
     public List<Predicate> generateSpecificationPredicates(
             WebRequest request,
             Class<? extends AbstractEntity> entityClass,
@@ -39,6 +42,14 @@ public class SpecificationUtil {
         for (Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass)) {
             if (Modifier.isPrivate(field.getModifiers())) {
                 String parameter = request.getParameter(field.getName());
+                String lastHour = request.getParameter(LAST_HOUR);
+                if (Objects.nonNull(lastHour)) {
+                    boolean last = Boolean.parseBoolean(lastHour);
+                    if (last) {
+                        DateRangeModel range = DateUtil.generateDateRangeByLastHour();
+                        predicates.add(criteriaBuilder.between(root.get(CREATE_TIME), range.getStart(), range.getEnd()));
+                    }
+                }
                 if (Objects.nonNull(parameter)) {
                     if (field.getType().isPrimitive()) {
                         if (field.getType().isAssignableFrom(boolean.class)) {
@@ -110,22 +121,6 @@ public class SpecificationUtil {
                             }
                         }
                     }
-                }
-            }
-        }
-        return predicates;
-    }
-
-    public List<Predicate> generateSpecificationPredicatesByEntityId(
-            Long entityId,
-            Class<? extends AbstractEntity> entityClass,
-            Root<? extends AbstractEntity> root,
-            CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
-        for (Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass)) {
-            if (Modifier.isPrivate(field.getModifiers())) {
-                if (Objects.equals(field.getName(), "id")) {
-                    predicates.add(criteriaBuilder.equal(root.get(field.getName()), entityId));
                 }
             }
         }

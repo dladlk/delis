@@ -11,7 +11,6 @@ import { IdentifierFilterModel } from '../../../model/filter/identifier-filter.m
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
 import { LocalStorageService } from '../../../service/system/local-storage.service';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
-import { RefreshObservable } from '../../../observable/refresh.observable';
 import { Range } from '../../system/date-range/model/model';
 import { HideColumnModel } from "../../../model/content/hide-column.model";
 import { IdentifierDataSource } from './identifier-data-source';
@@ -53,8 +52,7 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
     private router: Router,
     private storage: LocalStorageService,
     private identifierService: IdentifierService,
-    private daterangeObservable: DaterangeObservable,
-    private refreshObservable: RefreshObservable) {
+    private daterangeObservable: DaterangeObservable) {
     this.daterangeObservable.listen().subscribe((range: Range) => {
       if (location.href.endsWith('/identifier')) {
         if (range.fromDate !== null && range.toDate !== null) {
@@ -63,12 +61,6 @@ export class IdentifierComponent implements OnInit, AfterViewInit {
           this.filter.dateRange = null;
         }
         this.paginator.pageIndex = 0;
-        this.loadPage();
-      }
-    });
-    this.refreshObservable.listen().subscribe(() => {
-      if (location.href.endsWith('/identifier')) {
-        this.initSelected();
         this.loadPage();
       }
     });

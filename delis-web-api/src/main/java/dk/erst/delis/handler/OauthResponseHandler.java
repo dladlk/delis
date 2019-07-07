@@ -16,10 +16,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
+@SuppressWarnings("ALL")
 @ControllerAdvice
 public class OauthResponseHandler implements ResponseBodyAdvice<Object> {
 
@@ -49,6 +46,7 @@ public class OauthResponseHandler implements ResponseBodyAdvice<Object> {
             OAuth2Authentication oAuth2Authentication = tokenStore.readAuthentication(tokenStore.readAccessToken(defaultOAuth2AccessToken.getValue()));
             CustomUserDetails userDetails = (CustomUserDetails) oAuth2Authentication.getUserAuthentication().getPrincipal();
             AuthData authData = new AuthData();
+            authData.setRole(userDetails.getRole());
             authData.setUsername(userDetails.getUserName());
             authData.setAccessToken(defaultOAuth2AccessToken.getValue());
             authData.setRefreshToken(defaultOAuth2AccessToken.getRefreshToken().getValue());

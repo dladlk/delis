@@ -12,6 +12,7 @@ export class RuntimeConfigService {
   private config: string;
   private LOCALE_URL = 'url';
   private LOCALE_USERNAME = 'username';
+  private ROLE = 'role';
 
   constructor(private http: HttpRestService) { }
 
@@ -36,7 +37,12 @@ export class RuntimeConfigService {
     return localStorage.getItem(this.LOCALE_USERNAME);
   }
 
+  getRole(): string {
+    return localStorage.getItem(this.ROLE);
+  }
+
   resetCurrentUser() {
     localStorage.removeItem(this.LOCALE_USERNAME);
+    localStorage.removeItem(this.ROLE);
   }
 }

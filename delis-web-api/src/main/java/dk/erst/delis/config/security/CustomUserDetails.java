@@ -15,13 +15,15 @@ public class CustomUserDetails extends User {
     private static final long serialVersionUID = 7085909667165639569L;
 
     private Long id;
+    private String role;
     private String userName;
     private String organisation;
 
-    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities, String organisation) {
+    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities, String organisation, String role) {
         super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
         this.id = user.getId();
         this.userName = StringUtils.isNotEmpty(user.getFullName()) ? user.getFullName() : user.getUsername();
         this.organisation = organisation;
+        this.role = role;
     }
 }

@@ -246,7 +246,7 @@ public class CustomTokenStore implements TokenStore {
         String key = this.authenticationKeyGenerator.extractKey(authentication);
         if (StringUtils.isBlank(key)) {
             if (LOG.isInfoEnabled()) {
-                LOG.info("Failed to find access token for authentication key " + key);
+                LOG.info("Failed to find access token for authentication key " + authentication.toString());
             }
             return null;
         }
@@ -254,7 +254,7 @@ public class CustomTokenStore implements TokenStore {
         currentTime = logDuration(currentTime, "getAccessToken. Step 1. findByAuthenticationKey took: ");
         if (Objects.isNull(oAuthAccessToken)) {
             if (LOG.isInfoEnabled()) {
-                LOG.info("Failed to find access token for authentication key " + key);
+                LOG.info("Failed to find OAuthAccessToken for authentication key " + key);
             }
             return null;
         }
@@ -265,7 +265,21 @@ public class CustomTokenStore implements TokenStore {
             return null;
         }
 
-        if (Objects.nonNull(accessToken) && !key.equals(this.authenticationKeyGenerator.extractKey(this.readAuthentication(accessToken.getValue())))) {
+        OAuth2Authentication oAuth2Authentication = this.readAuthentication(accessToken.getValue());
+        if (Objects.isNull(oAuth2Authentication)) {
+            LOG.warn("Failed to read authentication key" + accessToken.getValue());
+            return null;
+        }
+
+        String extractKey =  this.authenticationKeyGenerator.extractKey(oAuth2Authentication);
+        if (StringUtils.isBlank(extractKey)) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Failed to extract key for authentication  " + oAuth2Authentication.toString());
+            }
+            return null;
+        }
+
+        if (!key.equals(extractKey)) {
             this.removeAccessToken(accessToken.getValue());
             this.storeAccessToken(accessToken, authentication);
         }

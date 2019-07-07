@@ -1,12 +1,14 @@
 package dk.erst.delis.service.content.dashboard;
 
-import dk.erst.delis.rest.data.response.dashboard.DashboardData;
+import dk.erst.delis.rest.data.response.dashboard.DashboardDocumentData;
+import dk.erst.delis.rest.data.response.dashboard.DashboardSendDocumentData;
+import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author funtusthan, created by 22.01.19
- */
+import java.util.List;
 
 public interface DashboardService {
 
-    DashboardData generateDashboardData();
+    List<DashboardDocumentData> generateDashboardDocumentDataList(WebRequest request);
+    List<DashboardDocumentData> generateDashboardDocumentErrorDataList(WebRequest request);
+    List<DashboardSendDocumentData> generateSendDashboardDocumentDataList(WebRequest request);
 }

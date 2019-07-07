@@ -2,9 +2,9 @@ import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
-import {DocumentModel} from '../../../model/content/document/document.model';
-import {DocumentService} from '../../../service/content/document.service';
-import {DocumentFilterModel} from '../../../model/filter/document-filter.model';
+import { DocumentModel } from '../../../model/content/document/document.model';
+import { DocumentService } from '../../../service/content/document.service';
+import { DocumentFilterModel } from '../../../model/filter/document-filter.model';
 
 export class DocumentDataSource implements DataSource<DocumentModel> {
 
@@ -26,9 +26,9 @@ export class DocumentDataSource implements DataSource<DocumentModel> {
     this.loadingTotalElements.complete();
   }
 
-  load(pageIndex: number, pageSize: number, filter: DocumentFilterModel) {
+  load(pageIndex: number, pageSize: number, filter: DocumentFilterModel, lastHour: boolean) {
     this.loadingSubject.next(true);
-    this.documentService.getListDocuments(pageIndex, pageSize, filter).pipe(
+    this.documentService.getListDocuments(pageIndex, pageSize, filter, lastHour).pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false)))
       .subscribe(res => {

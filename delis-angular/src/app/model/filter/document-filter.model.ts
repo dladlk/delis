@@ -10,6 +10,10 @@ export class DocumentFilterModel {
   documentType: string;
   senderName: string;
   createTime: Range;
+  receiverIdRaw: string;
+  receiverName: string;
+  receiverCountry: string;
+  senderIdRaw: string;
   sortBy: string;
 
   constructor() {
@@ -21,6 +25,10 @@ export class DocumentFilterModel {
     this.documentType = 'ALL';
     this.senderName = null;
     this.createTime = null;
+    this.receiverIdRaw = null;
+    this.receiverName = null;
+    this.receiverCountry = null;
+    this.senderIdRaw = null;
     this.sortBy = 'orderBy_createTime_Desc';
   }
 }

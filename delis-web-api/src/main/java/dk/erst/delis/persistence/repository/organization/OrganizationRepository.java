@@ -8,10 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 04.01.19
- */
-
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organisation, Long> {
 

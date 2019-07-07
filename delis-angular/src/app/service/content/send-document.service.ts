@@ -22,13 +22,14 @@ export class SendDocumentService {
     this.url = this.url + '/rest/document/send';
   }
 
-  getListSendDocuments(currentPage: number, sizeElement: number, filter: SendDocumentFilterModel): Observable<any> {
+  getListSendDocuments(currentPage: number, sizeElement: number, filter: SendDocumentFilterModel, lastHour: boolean): Observable<any> {
 
     let params = new HttpParams();
 
     params = params.append('page', String(currentPage));
     params = params.append('size', String(sizeElement));
     params = params.append('sort', filter.sortBy);
+    params = params.append('lastHour', String(lastHour));
     if (filter.organisation !== 'ALL') {
       params = params.append('organisation', filter.organisation);
     }

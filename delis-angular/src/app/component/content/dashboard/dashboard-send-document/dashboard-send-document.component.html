@@ -1,0 +1,252 @@
+<div
+        fxLayout="row wrap"
+        fxLayout.lt-sm="column"
+        fxLayoutGap="32px"
+        fxLayoutAlign="flex-start">
+    <mat-card
+            fxFlex="0 1 calc(33.3% - 32px)"
+            fxFlex.lt-md="0 1 calc(50% - 32px)"
+            fxFlex.lt-sm="100%">
+        <mat-card-header class="table-details-th">{{ 'count locked' | translate }}</mat-card-header>
+        <mat-card-content><div class="table-dashboard-td mt1">{{ data.locked }}</div></mat-card-content>
+    </mat-card>
+    <mat-card
+            fxFlex="0 1 calc(33.3% - 32px)"
+            fxFlex.lt-md="0 1 calc(50% - 32px)"
+            fxFlex.lt-sm="100%">
+        <mat-card-header class="table-details-th">{{ 'count not locked' | translate }}</mat-card-header>
+        <mat-card-content><div class="table-dashboard-td mt1">{{ data.notLocked }}</div></mat-card-content>
+    </mat-card>
+    <mat-card
+            fxFlex="0 1 calc(33.3% - 32px)"
+            fxFlex.lt-md="0 1 calc(50% - 32px)"
+            fxFlex.lt-sm="100%">
+        <mat-card-header class="table-details-th">{{ 'documents.table.send.columnName.documentType' | translate }}</mat-card-header>
+        <mat-card-content>
+            <table class="mt1">
+                <tr *ngFor="let documentType of data.documentTypes">
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ documentType: documentType, lastHour: true }">{{ documentType }}</a></td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<div
+        class="mt1"
+        fxLayout="row wrap"
+        fxLayout.lt-sm="column"
+        fxLayoutGap="32px"
+        fxLayoutAlign="flex-start">
+    <mat-card
+            fxFlex="0 1 calc(33.3% - 32px)"
+            fxFlex.lt-md="0 1 calc(50% - 32px)"
+            fxFlex.lt-sm="100%">
+        <mat-card-header class="table-details-th">{{ 'senderIdRaws' | translate }}</mat-card-header>
+        <mat-card-content>
+            <table class="mt1">
+                <tr *ngFor="let senderIdRaw of data.senderIdRaws">
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ senderIdRaw: senderIdRaw, lastHour: true }">{{ senderIdRaw }}</a></td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+    <mat-card
+            fxFlex="0 1 calc(33.3% - 32px)"
+            fxFlex.lt-md="0 1 calc(50% - 32px)"
+            fxFlex.lt-sm="100%">
+        <mat-card-header class="table-details-th">{{ 'documents.table.send.columnName.senderIdRaw' | translate }}</mat-card-header>
+        <mat-card-content>
+            <table class="mt1">
+                <tr *ngFor="let receiverIdRaw of data.receiverIdRaws">
+                    <td class="table-dashboard-td system-link" data-label="First Name"><a [routerLink]="['/send-document']" [queryParams]="{ receiverIdRaw: receiverIdRaw, lastHour: true }">{{ receiverIdRaw }}</a></td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+    <mat-card
+            fxFlex="0 1 calc(33.3% - 32px)"
+            fxFlex.lt-md="0 1 calc(50% - 32px)"
+            fxFlex.lt-sm="100%">
+        <mat-card-header class="table-details-th">{{ 'documents.table.send.columnName.documentStatus' | translate }}</mat-card-header>
+        <mat-card-content>
+            <table class="mt1">
+                <tr *ngFor="let documentStatus of data.documentStatuses">
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ documentStatus: documentStatus, lastHour: true }">{{ documentStatus }}</a></td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+
+<!--<mat-card>-->
+<!--    <table>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th class="table-details-th">{{ 'count locked' | translate }}</th>-->
+<!--            <th class="table-details-th">{{ 'count not locked' | translate }}</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            <td class="table-details-td" data-label="First Name">{{ data.locked }}</td>-->
+<!--            <td class="table-details-td" data-label="First Name">{{ data.notLocked }}</td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th class="table-details-th" data-label="First Name">{{ 'documentStatuses' | translate }}</th>-->
+<!--            <th class="table-details-th" data-label="First Name">{{ 'documentTypes' | translate }}</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr *ngFor="let documentStatus of data.documentStatuses">-->
+<!--                        <td class="table-details-td system-link" data-label="First Name"><a [routerLink]="['/send-document']" [queryParams]="{ documentStatus: documentStatus, lastHour: true }">{{ documentStatus }}</a></td>-->
+
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr *ngFor="let documentType of data.documentTypes">-->
+<!--                        <td class="table-details-td system-link" data-label="First Name"><a [routerLink]="['/send-document']" [queryParams]="{ documentType: documentType, lastHour: true }">{{ documentType }}</a></td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th class="table-details-th">{{ 'receiverIdRaws' | translate }}</th>-->
+<!--            <th class="table-details-th">{{ 'senderIdRaws' | translate }}</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr *ngFor="let receiverIdRaw of data.receiverIdRaws">-->
+<!--                        <td class="table-details-td system-link" data-label="First Name"><a [routerLink]="['/send-document']" [queryParams]="{ receiverIdRaw: receiverIdRaw, lastHour: true }">{{ receiverIdRaw }}</a></td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--                <table>-->
+<!--                    <tr *ngFor="let senderIdRaw of data.senderIdRaws">-->
+<!--                        <td class="table-details-td system-link" data-label="First Name"><a [routerLink]="['/send-document']" [queryParams]="{ senderIdRaw: senderIdRaw, lastHour: true }">{{ senderIdRaw }}</a></td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</mat-card>-->
+<!--<div class="bounds">-->
+<!--    <div class="content"-->
+<!--         fxLayout="row"-->
+<!--         fxLayout.xs="column"-->
+<!--         fxLayoutAlign="center"-->
+<!--         fxLayoutGap="1em"-->
+<!--         fxFlexFill>-->
+<!--        <div fxFlex="30" class="sec1" fxFlex.xs="55">-->
+<!--            <mat-card>-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="table-details-th">{{ 'count locked' | translate }}</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td class="table-details-td">{{ data.locked }}</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </mat-card>-->
+<!--        </div>-->
+<!--        <div fxFlex="30" class="sec2" fxFlex.xs="55">-->
+<!--            <mat-card>-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="table-details-th">{{ 'count not locked' | translate }}</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr>-->
+<!--                        <td class="table-details-td">{{ data.notLocked }}</td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </mat-card>-->
+<!--        </div>-->
+<!--        <div fxFlex="30" class="sec3" fxFlex.xs="55">-->
+<!--            <mat-card>-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="table-details-th">{{ 'documentStatuses' | translate }}</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr *ngFor="let documentType of data.documentTypes">-->
+<!--                        <td class="table-details-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ documentType: documentType, lastHour: true }">{{ documentType }}</a></td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </mat-card>-->
+<!--        </div>-->
+<!--        <div fxFlex="30" class="sec4" fxFlex.xs="55">-->
+<!--            <mat-card>-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="table-details-th">{{ 'documentTypes' | translate }}</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr *ngFor="let documentType of data.documentTypes">-->
+<!--                        <td class="table-details-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ documentType: documentType, lastHour: true }">{{ documentType }}</a></td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </mat-card>-->
+<!--        </div>-->
+<!--        <div fxFlex="30" class="sec5" fxFlex.xs="55">-->
+<!--            <mat-card>-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="table-details-th">{{ 'receiverIdRaws' | translate }}</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr *ngFor="let receiverIdRaw of data.receiverIdRaws">-->
+<!--                        <td class="table-details-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ receiverIdRaw: receiverIdRaw, lastHour: true }">{{ receiverIdRaw }}</a></td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </mat-card>-->
+<!--        </div>-->
+<!--        <div fxFlex="30" class="sec6" fxFlex.xs="55">-->
+<!--            <mat-card>-->
+<!--                <table>-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th class="table-details-th">{{ 'senderIdRaws' | translate }}</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                    <tr *ngFor="let senderIdRaw of data.senderIdRaws">-->
+<!--                        <td class="table-details-td system-link"><a [routerLink]="['/send-document']" [queryParams]="{ senderIdRaw: senderIdRaw, lastHour: true }">{{ senderIdRaw }}</a></td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </mat-card>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->

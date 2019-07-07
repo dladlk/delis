@@ -1,51 +1,123 @@
 <mat-card>
-  <div class="example-container mat-elevation-z8">
+    <div class="example-container mat-elevation-z8">
+        <mat-card-content class="dashboard-dynamic-height">
+            <mat-tab-group dynamicHeight>
+                <mat-tab label="{{ 'dashboard.documents' | translate }}">
+                    <mat-accordion *ngIf="isUser(); else elseBlockAdmin">
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngFor="let document of dashboardDocumentUserDataList">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Receiver: {{ document.receiverIdentifierName }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Count: {{ document.countDocuments }}
+                                </mat-panel-description>
+                                <mat-panel-description>
+                                    Average: {{ document.countDocuments / 6 | number:'.1-2' }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
 
-    <mat-card-content class="dashboard-flex">
-      <div class="bounds">
-        <div class="content"
-             fxLayout="row"
-             fxLayout.xs="column"
-             fxLayoutAlign="center"
-             fxLayoutGap="1em"
-             fxFlexFill>
-          <div fxFlex="30" class="sec1" fxFlex.xs="55">
-            <app-stat
-                    [bgClass]="'matDocument'"
-                    [icon]="'send'"
-                    [count]="dashboardModel.identifierLastHour"
-                    [label]="'dashboard.identifier'"
-                    [router]="'/identifier'"
-                    [rotate]="false">
-            </app-stat>
-          </div>
-          <div fxFlex="30" class="sec2" >
-            <app-stat
-                    [bgClass]="'matSendDocument'"
-                    [icon]="'send'"
-                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
-                    [label]="'dashboard.documents'"
-                    [router]="'/document'"
-                    [rotate]="true">
-            </app-stat>
-          </div>
-          <div fxFlex="30" class="sec3" fxFlex.xs="15">
-            <app-stat
-                    [bgClass]="'matIdentifier'"
-                    [icon]="'perm_identity'"
-                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
-                    [label]="'dashboard.send'"
-                    [router]="'/send-document'"
-                    [rotate]="false">
-            </app-stat>
-          </div>
-        </div>
-      </div>
-    </mat-card-content>
+                            <div *ngIf="document.countDocuments !== 0">
+                                <app-dashboard-document-user [data]="document"></app-dashboard-document-user>
+                            </div>
 
-    <mat-card-content style="margin: 2em">
-      <app-chart-document></app-chart-document>
-    </mat-card-content>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
 
-  </div>
+                <ng-template #elseBlockAdmin>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngFor="let document of dashboardDocumentAdminDataList">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Organisation: {{ document.organisation }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Count: {{ document.countDocuments }}
+                            </mat-panel-description>
+                            <mat-panel-description>
+                                Average: {{ document.countDocuments / 6 | number:'.1-2' }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div *ngIf="document.countDocuments !== 0">
+                            <app-dashboard-document-admin [data]="document"></app-dashboard-document-admin>
+                        </div>
+
+                    </mat-expansion-panel>
+                </ng-template>
+
+                <mat-tab label="{{ 'dashboard.errors' | translate }}">
+                    <mat-accordion *ngIf="isUser(); else elseBlockAdminError">
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngFor="let document of dashboardDocumentUserErrorDataList">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Organisation: {{ document.receiverIdentifierName }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Count: {{ document.countDocuments }}
+                                </mat-panel-description>
+                                <mat-panel-description>
+                                    Average: {{ document.countDocuments / 6 | number:'.1-2' }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div *ngIf="document.countDocuments !== 0">
+                                <app-dashboard-document-user [data]="document"></app-dashboard-document-user>
+                            </div>
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+
+                <ng-template #elseBlockAdminError>
+                    <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngFor="let document of dashboardDocumentAdminErrorDataList">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Organisation: {{ document.organisation }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Count: {{ document.countDocuments }}
+                            </mat-panel-description>
+                            <mat-panel-description>
+                                Average: {{ document.countDocuments / 6 | number:'.1-2' }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <div *ngIf="document.countDocuments !== 0">
+                            <app-dashboard-document-admin [data]="document"></app-dashboard-document-admin>
+                        </div>
+
+                    </mat-expansion-panel>
+                </ng-template>
+
+                <mat-tab label="{{ 'dashboard.send' | translate }}">
+                    <mat-accordion>
+                        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false" *ngFor="let document of dashboardSendDocumentDataList">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    Organisation: {{ document.organisation }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Count: {{ document.countSendDocuments }}
+                                </mat-panel-description>
+                                <mat-panel-description>
+                                    Average: {{ document.countSendDocuments / 6 | number:'.1-2' }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <div *ngIf="document.countSendDocuments !== 0">
+                                <app-dashboard-send-document [data]="document"></app-dashboard-send-document>
+                            </div>
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card-content>
+
+        <mat-card-content style="margin: 2em">
+            <app-chart-document></app-chart-document>
+        </mat-card-content>
+
+    </div>
 </mat-card>

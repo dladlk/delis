@@ -1,0 +1,11 @@
+@import "./styles";
+
+a {
+  cursor: pointer !important;
+  color: black !important;
+  text-decoration: none !important;
+}
+
+a:hover {
+  color:  mat-color($primary) !important;
+}

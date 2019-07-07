@@ -89,8 +89,6 @@ mat-cell {
 
 .table-details-th-error {
   color: red !important;
-  //height: 2ex !important;
-  //font-size: 2ex !important;
   text-align: left !important;
 }
 
@@ -185,4 +183,19 @@ app-stat {
 
 .text-center {
   text-align: center;
+}
+
+.dashboard-component-table {
+  align-items: center;
+  justify-content: center;
+  margin: 16px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.table-dashboard-td {
+  padding-left: 2em !important;
+  height: 2ex !important;
+  font-size: 2ex !important;
+  text-align: left !important;
 }

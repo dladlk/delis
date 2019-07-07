@@ -40,6 +40,9 @@ import { LogoutComponent } from './component/logout/logout.component';
 import { StatComponent } from './component/system/stat/stat.component';
 import { ChartDocumentComponent } from './component/system/chart-document/chart-document.component';
 import { PaginatorI18n } from "./i18n/paginator-I18n";
+import { DashboardDocumentAdminComponent } from './component/content/dashboard/dashboard-document-admin/dashboard-document-admin.component';
+import { DashboardDocumentUserComponent } from './component/content/dashboard/dashboard-document-user/dashboard-document-user.component';
+import { DashboardSendDocumentComponent } from './component/content/dashboard/dashboard-send-document/dashboard-send-document.component';
 
 export const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -70,7 +73,10 @@ export const createTranslateLoader = (http: HttpClient) => {
     AutofocusDirective,
     LogoutComponent,
     StatComponent,
-    ChartDocumentComponent
+    ChartDocumentComponent,
+    DashboardDocumentAdminComponent,
+    DashboardSendDocumentComponent,
+    DashboardDocumentUserComponent
   ],
   imports: [
     FormsModule,
