@@ -30,15 +30,15 @@
         </a>
       </li>
       <li>
+        <a [routerLink]="['/logout']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'header.account.logout' | translate }}</a>
+      </li>
+      <li>
         <mat-menu #userMenu="matMenu" xPosition="before">
           <button mat-menu-item [routerLink]="['./']">{{ 'header.account.profile' | translate }}</button>
         </mat-menu>
         <a class="systemLink" [matMenuTriggerFor]="userMenu">
           {{ username | translate }}
         </a>
-      </li>
-      <li>
-        <a [routerLink]="['/logout']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'header.account.logout' | translate }}</a>
       </li>
     </ul>
   </div>
