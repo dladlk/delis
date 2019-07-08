@@ -48,9 +48,7 @@ export class SendDocumentDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private errorService: ErrorService,
-    private sendDocumentService: SendDocumentService) {
-    this.translate.use(locale.getLocale().match(/en|da/) ? locale.getLocale() : 'en');
-  }
+    private sendDocumentService: SendDocumentService) { }
 
   ngOnInit() {
     const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
@@ -64,6 +62,7 @@ export class SendDocumentDetailsComponent implements OnInit {
     });
     this.sendDocumentService.getListSendDocumentBytesBySendDocumentId(id).subscribe((data: {}) => {
       this.sendDocumentsBytes = data['items'];
+      console.log(data);
       this.errorDocumentBytes = false;
     }, error => {
       this.errorDocumentBytesModel = this.errorService.errorProcess(error);
@@ -78,6 +77,7 @@ export class SendDocumentDetailsComponent implements OnInit {
         this.errorJournalDocuments = true;
       }
     );
+    // Receipt Kvittering
   }
 
   download(id: number) {
@@ -102,4 +102,11 @@ export class SendDocumentDetailsComponent implements OnInit {
       this.router.navigate(['/send-document/', this.documentId]));
   }
 
+  isReceipt(type: string) {
+    if(this.locale.getLocale() === 'da') {
+      return type === 'Kvittering';
+    } else {
+      return type === 'Receipt';
+    }
+  }
 }
