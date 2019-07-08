@@ -18,7 +18,7 @@
                             </mat-expansion-panel-header>
 
                             <div *ngIf="document.countDocuments !== 0">
-                                <app-dashboard-document-user [data]="document"></app-dashboard-document-user>
+                                <app-dashboard-document-user [data]="document" [statusError]="false"></app-dashboard-document-user>
                             </div>
 
                         </mat-expansion-panel>
@@ -40,7 +40,7 @@
                         </mat-expansion-panel-header>
 
                         <div *ngIf="document.countDocuments !== 0">
-                            <app-dashboard-document-admin [data]="document"></app-dashboard-document-admin>
+                            <app-dashboard-document-admin [data]="document" [statusError]="false"></app-dashboard-document-admin>
                         </div>
 
                     </mat-expansion-panel>
@@ -62,7 +62,7 @@
                             </mat-expansion-panel-header>
 
                             <div *ngIf="document.countDocuments !== 0">
-                                <app-dashboard-document-user [data]="document"></app-dashboard-document-user>
+                                <app-dashboard-document-user [data]="document" [statusError]="true"></app-dashboard-document-user>
                             </div>
 
                         </mat-expansion-panel>
@@ -84,7 +84,7 @@
                         </mat-expansion-panel-header>
 
                         <div *ngIf="document.countDocuments !== 0">
-                            <app-dashboard-document-admin [data]="document"></app-dashboard-document-admin>
+                            <app-dashboard-document-admin [data]="document" [statusError]="true"></app-dashboard-document-admin>
                         </div>
 
                     </mat-expansion-panel>

@@ -84,7 +84,7 @@ public class ChartServiceImpl implements ChartService {
         LineChartData lineChartDataContent = new LineChartData();
         Date start = DateUtil.generateBeginningOfDay(new Date());
         Date end = new Date();
-        long hours = DateUtil.getHoursBetween(start, end);
+        long hours = DateUtil.getHoursBetween(start, end) + 1;
         lineChartDataContent.setLabel("chart data default");
         List<Long> dataGraph = new ArrayList<>();
         for (int h = 0; h <= hours; ++h) {

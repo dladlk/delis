@@ -47,6 +47,7 @@ export class DocumentService {
     params = params.append('size', String(sizeElement));
     params = params.append('sort', filter.sortBy);
     params = params.append('lastHour', String(lastHour));
+    params = params.append('statusError', String(filter.statusError));
 
     if (filter.documentStatus !== 'ALL') {
       params = params.append('documentStatus', filter.documentStatus);

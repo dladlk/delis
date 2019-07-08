@@ -9,6 +9,7 @@ import { DashboardDocumentAdminData } from "../../../../model/content/dashboard/
 export class DashboardDocumentAdminComponent implements OnInit {
 
   @Input() data: DashboardDocumentAdminData;
+  @Input() statusError: boolean;
 
   constructor() { }
 

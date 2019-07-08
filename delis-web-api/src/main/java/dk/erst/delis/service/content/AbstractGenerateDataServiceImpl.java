@@ -39,11 +39,11 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
             orgId = securityService.getOrganisation().getId();
         }
         PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(request);
-        String specificFlag = WebRequestUtil.existFlagParameter(request);
+        boolean statusError = WebRequestUtil.existErrorFlagParameter(request);
         EntitySpecification entitySpecification;
         Specification<E> specification;
-        if (StringUtils.isNotBlank(specificFlag)) {
-            entitySpecification = EntitySpecification.valueOf(request.getParameter(specificFlag));
+        if (statusError) {
+            entitySpecification = EntitySpecification.FLAG_ERRORS_DOCUMENT;
             specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, orgId);
         } else {
             entitySpecification = EntitySpecification.DEFAULT;

@@ -15,6 +15,7 @@ export class DocumentFilterModel {
   receiverCountry: string;
   senderIdRaw: string;
   sortBy: string;
+  statusError: boolean;
 
   constructor() {
     this.documentStatus = 'ALL';
@@ -30,5 +31,6 @@ export class DocumentFilterModel {
     this.receiverCountry = null;
     this.senderIdRaw = null;
     this.sortBy = 'orderBy_createTime_Desc';
+    this.statusError = false;
   }
 }

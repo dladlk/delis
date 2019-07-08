@@ -9,6 +9,7 @@ import { DashboardDocumentUserData } from "../../../../model/content/dashboard/d
 export class DashboardDocumentUserComponent implements OnInit {
 
   @Input() data: DashboardDocumentUserData;
+  @Input() statusError: boolean;
 
   constructor() { }
 

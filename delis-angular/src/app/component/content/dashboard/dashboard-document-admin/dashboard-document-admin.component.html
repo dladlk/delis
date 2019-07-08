@@ -12,7 +12,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let receiverIdentifier of data.receiverIdentifierNames">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ receiverIdentifier: receiverIdentifier, lastHour: true }">{{ receiverIdentifier }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ receiverIdentifier: receiverIdentifier, lastHour: true, statusError: statusError }">{{ receiverIdentifier }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -25,7 +25,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let documentStatus of data.documentStatuses">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ documentStatus: documentStatus, lastHour: true }">{{ documentStatus }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ documentStatus: documentStatus, lastHour: true, statusError: statusError }">{{ documentStatus }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -38,7 +38,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let ingoingDocumentFormat of data.ingoingDocumentFormats">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ ingoingDocumentFormat: ingoingDocumentFormat, lastHour: true }">{{ ingoingDocumentFormat }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ ingoingDocumentFormat: ingoingDocumentFormat, lastHour: true, statusError: statusError }">{{ ingoingDocumentFormat }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -51,7 +51,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let documentType of data.documentTypes">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ documentType: documentType, lastHour: true }">{{ documentType }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ documentType: documentType, lastHour: true, statusError: statusError }">{{ documentType }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -73,7 +73,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let receiverIdRaw of data.receiverIdRaws">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ receiverIdRaw: receiverIdRaw, lastHour: true }">{{ receiverIdRaw }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ receiverIdRaw: receiverIdRaw, lastHour: true, statusError: statusError }">{{ receiverIdRaw }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -86,7 +86,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let receiverName of data.receiverNames">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ receiverIdentifier: receiverName, lastHour: true }">{{ receiverName }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ receiverIdentifier: receiverName, lastHour: true, statusError: statusError }">{{ receiverName }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -121,7 +121,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let senderIdRaw of data.senderIdRaws">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ senderIdRaw: senderIdRaw, lastHour: true }">{{ senderIdRaw }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ senderIdRaw: senderIdRaw, lastHour: true, statusError: statusError }">{{ senderIdRaw }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
@@ -134,7 +134,7 @@
         <mat-card-content>
             <table class="mt1">
                 <tr *ngFor="let senderName of data.senderNames">
-                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ senderName: senderName, lastHour: true }">{{ senderName }}</a></td>
+                    <td class="table-dashboard-td system-link"><a [routerLink]="['/document']" [queryParams]="{ senderName: senderName, lastHour: true, statusError: statusError }">{{ senderName }}</a></td>
                 </tr>
             </table>
         </mat-card-content>
