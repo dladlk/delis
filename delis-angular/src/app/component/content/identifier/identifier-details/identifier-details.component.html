@@ -11,10 +11,10 @@
         <div fxFlex="30" class="sec1" fxFlex.xs="55">
           <div class="app-button-row">
             <div class="example-button-row">
-              <button mat-mini-fab color="primary" (click)="back()">
+              <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
                 <mat-icon>keyboard_backspace</mat-icon>
               </button>
-              <button mat-mini-fab color="primary" (click)="refreshData()">
+              <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
                 <mat-icon>refresh</mat-icon>
               </button>
             </div>
