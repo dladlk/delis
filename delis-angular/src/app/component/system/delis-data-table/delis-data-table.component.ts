@@ -189,6 +189,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
 
   handleSortChange(event: any) {
     this.sort = event;
+    this.paginator.pageIndex = 0;
     this.loadPage();
   }
 
