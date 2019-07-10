@@ -72,7 +72,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
         this.loadPage();
       }
     });
-    this.daterangeObservable.listen().subscribe((range: Range) => {
+    this.refreshObservable.listen().subscribe(() => {
       if (location.href.endsWith('/' + this.path)) {
         this.refresh();
       }
@@ -181,9 +181,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
 
   clear() {
     this.initDefaultFilter();
-    // window.location.replace(this.path)
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        this.router.navigate(['/' + this.path]));
+    window.location.replace(this.path)
+    // this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+    //     this.router.navigate(['/' + this.path]));
   }
 
   refresh() {
