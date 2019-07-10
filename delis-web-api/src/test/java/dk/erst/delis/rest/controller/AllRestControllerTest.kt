@@ -72,7 +72,7 @@ class AllRestControllerTest : InitTokenTest() {
     fun selectDocuments() {
         var mvcResult: MvcResult = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/rest/document?page=1&size=10&sort=orderBy_Id_Desc")
+                        .get("/rest/document?page=1&size=10&sort=id&order=desc")
                         .header("Authorization", "Bearer " + auth.accessToken))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
         assertEquals(200, mvcResult.response.status)
@@ -123,7 +123,7 @@ class AllRestControllerTest : InitTokenTest() {
     fun selectIdentifiers() {
         var mvcResult: MvcResult = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/rest/identifier?page=1&size=10&sort=orderBy_Id_Desc")
+                        .get("/rest/identifier?page=1&size=10&sort=id&order=desc")
                         .header("Authorization", "Bearer " + auth.accessToken))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful).andReturn()
         assertEquals(200, mvcResult.response.status)

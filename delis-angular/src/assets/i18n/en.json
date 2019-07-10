@@ -185,6 +185,7 @@
   "ROLE_USER": "user",
   "ROLE_ADMIN": "admin",
 
+  "profile.menu.systemName": "System Name",
   "profile.menu.firstName": "First Name",
   "profile.menu.lastName": "Last Name",
   "profile.menu.loginTime": "Login time",

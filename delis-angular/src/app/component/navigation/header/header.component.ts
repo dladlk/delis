@@ -20,17 +20,19 @@ export class HeaderComponent implements OnInit {
 
   public lang: string;
   public currentUser: CurrentUserModel;
+  public headerUserName: string;
 
   SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
   constructor(
-    private changeLangService: ChangeLangService,
-    private translate: TranslateService,
-    private locale: LocaleService,
-    private configService: RuntimeConfigService) {
+      private changeLangService: ChangeLangService,
+      private translate: TranslateService,
+      private locale: LocaleService,
+      private configService: RuntimeConfigService) {
     this.lang = locale.getLocale();
     this.translate.use(locale.getLocale().match(/en|da/) ? locale.getLocale() : 'en');
     this.currentUser = this.configService.getCurrentUser();
+    this.headerUserName = this.currentUser.firstName + this.currentUser.lastName;
   }
 
   ngOnInit() { }

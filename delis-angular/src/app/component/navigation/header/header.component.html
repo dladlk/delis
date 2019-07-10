@@ -36,6 +36,10 @@
                             <td class="profile-info-target">{{ 'profile.menu.role' | translate }}</td>
                             <td>{{ currentUser.role | translate }}</td>
                         </tr>
+                        <tr>
+                            <td class="profile-info-target">{{ 'profile.menu.systemName' | translate }}</td>
+                            <td>{{ currentUser.username }}</td>
+                        </tr>
                         <tr *ngIf="currentUser.firstName !== null">
                             <td class="profile-info-target">{{ 'profile.menu.firstName' | translate }}</td>
                             <td>{{ currentUser.firstName }}</td>
@@ -55,7 +59,7 @@
                     </table>
                 </mat-menu>
                 <a class="systemLink" [matMenuTriggerFor]="userMenu">
-                    {{ currentUser.username }}
+                    {{ headerUserName }}
                 </a>
             </li>
             <li>

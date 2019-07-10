@@ -50,7 +50,7 @@ public class OauthResponseHandler implements ResponseBodyAdvice<Object> {
             authData.setFirstName(userDetails.getFirstName());
             authData.setLastName(userDetails.getLastName());
             authData.setOrganisation(userDetails.getOrganisation());
-            authData.setLastLoginTime(userDetails.getLastLoginTime());
+            authData.setLastLoginTime(userDetails.getLastLoginTime().getTime());
             authData.setAccessToken(defaultOAuth2AccessToken.getValue());
             authData.setRefreshToken(defaultOAuth2AccessToken.getRefreshToken().getValue());
             return new DataContainer<>(authData);

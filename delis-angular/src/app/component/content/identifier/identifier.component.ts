@@ -30,8 +30,8 @@ export class IdentifierComponent implements OnInit {
   constructor(
     private router: Router,
     private storage: LocalStorageService,
-    private identifierService: IdentifierService,
-    private identifierStateService: IdentifierStateService) { }
+    public identifierService: IdentifierService,
+    public identifierStateService: IdentifierStateService) { }
 
   ngOnInit() {
     this.initSelected();

@@ -8,5 +8,7 @@ export interface DelisDataSource<T extends AbstractEntityModel, S extends TableS
 
     connect(collectionViewer: CollectionViewer): Observable<T[] | ReadonlyArray<T>>;
     disconnect(collectionViewer: CollectionViewer): void;
+    getLoading(): Observable<boolean>;
+    getTotalElements(): Observable<number>;
     load(filter: S);
 }

@@ -39,8 +39,8 @@ export class DocumentComponent implements OnInit {
   constructor(
     private router: Router,
     private storage: LocalStorageService,
-    private documentService: DocumentService,
-    private documentStateService: DocumentStateService) { }
+    public documentService: DocumentService,
+    public documentStateService: DocumentStateService) { }
 
   ngOnInit() {
     this.initSelected();

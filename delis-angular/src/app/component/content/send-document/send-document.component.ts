@@ -34,8 +34,8 @@ export class SendDocumentComponent implements OnInit {
   constructor(
     private router: Router,
     private storage: LocalStorageService,
-    private sendDocumentService: SendDocumentService,
-    private sendDocumentStateService: SendDocumentStateService) { }
+    public sendDocumentService: SendDocumentService,
+    public sendDocumentStateService: SendDocumentStateService) { }
 
   ngOnInit() {
     this.initSelected();

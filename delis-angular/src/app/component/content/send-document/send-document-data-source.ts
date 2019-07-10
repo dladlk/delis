@@ -14,8 +14,6 @@ export class SendDocumentDataSource implements DelisDataSource<SendDocumentModel
   private sendDocumentSubject = new BehaviorSubject<SendDocumentModel[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private loadingTotalElements = new BehaviorSubject<number>(0);
-  public loading$ = this.loadingSubject.asObservable();
-  public totalElements$ = this.loadingTotalElements.asObservable();
 
   constructor(private sendDocumentService: DelisService<AbstractEntityModel, TableStateModel>) {}
 
@@ -38,5 +36,13 @@ export class SendDocumentDataSource implements DelisDataSource<SendDocumentModel
         this.sendDocumentSubject.next(res.items);
         this.loadingTotalElements.next(res.collectionSize);
       });
+  }
+
+  public getLoading(): Observable<boolean> {
+    return this.loadingSubject.asObservable();
+  }
+
+  public getTotalElements(): Observable<number> {
+    return this.loadingTotalElements.asObservable();
   }
 }
