@@ -23,7 +23,7 @@ import { DelisDataSource } from "../../content/delis-data-source";
 import { DocumentDataSource } from "../../content/document/document-data-source";
 import { IdentifierDataSource } from "../../content/identifier/identifier-data-source";
 import { SendDocumentDataSource } from "../../content/send-document/send-document-data-source";
-import { DataTableConfig } from "../../../model/content/data-table-config";
+import { DataTableConfig } from "../../content/data-table-config";
 import { DaterangeObservable } from "../../../observable/daterange.observable";
 import { RefreshObservable } from "../../../observable/refresh.observable";
 
@@ -127,6 +127,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
       this.paginator.pageIndex = this.filter.pageIndex;
       this.paginator.pageSize = this.filter.pageSize;
       this.sort = this.filter.sort;
+      for (const field in this.filter) {
+        this.textFilterModel[field] = this.filter[field];
+      }
     }
   }
 

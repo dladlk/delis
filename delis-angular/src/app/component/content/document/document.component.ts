@@ -1,21 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { merge } from 'rxjs';
-import { tap } from 'rxjs/operators';
 
-import {DOCUMENT_PATH, SHOW_DATE_FORMAT} from '../../../app.constants';
+import { DOCUMENT_PATH } from '../../../app.constants';
 
-import { DocumentFilterModel } from '../../../model/filter/document-filter.model';
 import { DocumentDataSource } from './document-data-source';
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
 import { LocalStorageService } from '../../../service/system/local-storage.service';
 import { DocumentService } from '../../../service/content/document.service';
-import { DaterangeObservable } from '../../../observable/daterange.observable';
-import { RefreshObservable} from '../../../observable/refresh.observable';
-import { Range } from '../../system/date-range/model/model';
-import { HideColumnModel } from "../../../model/content/hide-column.model";
-import {DocumentStateService} from "../../../service/state/document-state.service";
+import { DocumentStateService } from "../../../service/state/document-state.service";
 
 @Component({
   selector: 'app-document',
@@ -40,6 +32,7 @@ export class DocumentComponent implements OnInit {
   selectedOrganisation: any;
 
   enumFilterModel: any;
+  textFilterModel: any;
 
   BUNDLE_PREFIX = 'documents.table.columnName.';
 
@@ -52,6 +45,7 @@ export class DocumentComponent implements OnInit {
   ngOnInit() {
     this.initSelected();
     this.initEnumFilterModel();
+    this.initTextFilterModel();
   }
 
   initSelected() {
@@ -89,6 +83,13 @@ export class DocumentComponent implements OnInit {
         value: this.selectedIngoingFormats,
         list: this.ingoingFormats
       }
+    }
+  }
+
+  initTextFilterModel() {
+    this.textFilterModel = {
+      receiverIdentifier: null,
+      senderName: null
     }
   }
 }

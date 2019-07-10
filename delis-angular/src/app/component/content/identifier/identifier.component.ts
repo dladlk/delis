@@ -22,6 +22,7 @@ export class IdentifierComponent implements OnInit {
   selectedOrganisation: any;
   selectedStatusList: any;
   enumFilterModel: any;
+  textFilterModel: any;
   BUNDLE_PREFIX = 'identifier.table.columnName.';
   IDENTIFIER_PATH = IDENTIFIER_PATH;
 
@@ -35,6 +36,7 @@ export class IdentifierComponent implements OnInit {
   ngOnInit() {
     this.initSelected();
     this.initEnumFilterModel();
+    this.initTextFilterModel();
   }
 
   initSelected() {
@@ -58,6 +60,16 @@ export class IdentifierComponent implements OnInit {
         value: this.selectedStatusList,
         list: this.statusList
       }
+    }
+  }
+
+  initTextFilterModel() {
+    this.textFilterModel = {
+      identifierGroup: null,
+      type: null,
+      value: null,
+      uniqueValueType: null,
+      name: null
     }
   }
 }

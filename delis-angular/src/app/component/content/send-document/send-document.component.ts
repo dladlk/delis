@@ -75,8 +75,8 @@ export class SendDocumentComponent implements OnInit {
 
   initTextFilterModel() {
     this.textFilterModel = {
-      receiverIdRaw: "",
-      senderIdRaw: "",
+      receiverIdRaw: null,
+      senderIdRaw: null
     }
   }
 }
