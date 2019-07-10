@@ -5,11 +5,13 @@ import { TokenService } from '../system/token.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { HttpRestService } from '../system/http-rest.service';
 import { DocumentFilterModel } from '../../model/filter/document-filter.model';
+import { DelisService } from "./delis-service";
+import { DocumentModel } from "../../model/content/document/document.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentService {
+export class DocumentService implements DelisService<DocumentModel, DocumentFilterModel>{
 
   private readonly url: string;
 
@@ -21,8 +23,8 @@ export class DocumentService {
     this.url = this.url + '/rest/document';
   }
 
-  getListDocuments(currentPage: number, sizeElement: number, filter: DocumentFilterModel): Observable<any> {
-    let params = this.generateParams(currentPage, sizeElement, filter);
+  getAll(filter: DocumentFilterModel): Observable<any> {
+    let params = this.generateParams(filter);
     if (filter.createTime !== null) {
       params = params.append('createTime', String(new Date(filter.createTime.fromDate).getTime()) + ':' + String(new Date(filter.createTime.toDate).getTime()));
     }
@@ -41,11 +43,12 @@ export class DocumentService {
     return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
   }
 
-  private generateParams(currentPage: number, sizeElement: number, filter: DocumentFilterModel): HttpParams {
+  private generateParams(filter: DocumentFilterModel): HttpParams {
     let params = new HttpParams();
-    params = params.append('page', String(currentPage));
-    params = params.append('size', String(sizeElement));
-    params = params.append('sort', filter.sortBy);
+    params = params.append('page', String(filter.pageIndex));
+    params = params.append('size', String(filter.pageSize));
+    params = params.append('sort', filter.sort.active);
+    params = params.append('order', filter.sort.direction);
 
     if (filter.documentStatus !== 'ALL') {
       params = params.append('documentStatus', filter.documentStatus);

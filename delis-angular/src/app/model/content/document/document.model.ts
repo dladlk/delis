@@ -1,10 +1,9 @@
 import { OrganisationModel } from '../organisation/organisation.model';
 import { IdentifierModel } from '../identifier/identifier.model';
+import { AbstractEntityModel } from "../abstract-entity.model";
 
-export class DocumentModel {
+export class DocumentModel extends AbstractEntityModel {
 
-  id: number;
-  createTime: string;
   updateTime: string;
   name: string;
   documentStatus: string;

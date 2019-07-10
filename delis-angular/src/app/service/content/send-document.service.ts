@@ -6,11 +6,13 @@ import { HttpRestService } from '../system/http-rest.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { TokenService } from '../system/token.service';
 import { SendDocumentFilterModel } from '../../model/filter/send-document-filter.model';
+import { DelisService } from "./delis-service";
+import { SendDocumentModel } from "../../model/content/send-document/send-document.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SendDocumentService {
+export class SendDocumentService implements DelisService<SendDocumentModel, SendDocumentFilterModel> {
 
   private readonly url: string;
 
@@ -22,13 +24,14 @@ export class SendDocumentService {
     this.url = this.url + '/rest/document/send';
   }
 
-  getListSendDocuments(currentPage: number, sizeElement: number, filter: SendDocumentFilterModel): Observable<any> {
+  getAll(filter: SendDocumentFilterModel): Observable<any> {
 
     let params = new HttpParams();
 
-    params = params.append('page', String(currentPage));
-    params = params.append('size', String(sizeElement));
-    params = params.append('sort', filter.sortBy);
+    params = params.append('page', String(filter.pageIndex));
+    params = params.append('size', String(filter.pageSize));
+    params = params.append('sort', filter.sort.active);
+    params = params.append('order', filter.sort.direction);
     if (filter.organisation !== 'ALL') {
       params = params.append('organisation', filter.organisation);
     }

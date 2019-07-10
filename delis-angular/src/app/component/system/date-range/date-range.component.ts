@@ -10,6 +10,7 @@ export class DateRangeComponent implements OnInit {
 
   @ViewChild('dateRangePicker', {static: true}) dateRangePicker;
   @Input() placeholder: string;
+  @Input() appearance: string;
 
   range: Range = {fromDate: new Date(), toDate: new Date()};
   options: NgxDrpOptions;

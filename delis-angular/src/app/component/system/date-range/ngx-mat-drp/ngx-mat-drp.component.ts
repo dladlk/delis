@@ -36,6 +36,7 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
   @ViewChild('calendarInput', {static: true}) calendarInput;
   @Output() readonly selectedDateRangeChanged: EventEmitter<Range> = new EventEmitter<Range>();
   @Input() options: NgxDrpOptions;
+  @Input() appearance: string;
   private rangeUpdate$: Subscription;
   selectedDateRange = null;
 

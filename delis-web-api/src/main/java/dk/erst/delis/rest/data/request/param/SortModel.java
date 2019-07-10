@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageAndSizeModel {
+public class SortModel {
 
-    int page;
-    int size;
+    private String sort;
+    private String order;
 }

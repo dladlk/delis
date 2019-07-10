@@ -6,11 +6,13 @@ import { TokenService } from '../system/token.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { HttpRestService } from '../system/http-rest.service';
 import { IdentifierFilterModel } from '../../model/filter/identifier-filter.model';
+import { DelisService } from "./delis-service";
+import { IdentifierModel } from "../../model/content/identifier/identifier.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class IdentifierService {
+export class IdentifierService implements DelisService<IdentifierModel, IdentifierFilterModel> {
 
   private readonly url: string;
 
@@ -22,13 +24,14 @@ export class IdentifierService {
     this.url = this.url + '/rest/identifier';
   }
 
-  getListIdentifiers(currentPage: number, sizeElement: number, filter: IdentifierFilterModel): Observable<any> {
+  getAll(filter: IdentifierFilterModel): Observable<any> {
 
     let params = new HttpParams();
 
-    params = params.append('page', String(currentPage));
-    params = params.append('size', String(sizeElement));
-    params = params.append('sort', filter.sortBy);
+    params = params.append('page', String(filter.pageIndex));
+    params = params.append('size', String(filter.pageSize));
+    params = params.append('sort', filter.sort.active);
+    params = params.append('order', filter.sort.direction);
     if (filter.status !== 'ALL') {
       params = params.append('status', filter.status);
     }

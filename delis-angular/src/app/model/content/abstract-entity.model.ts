@@ -1,4 +1,4 @@
-export interface AbstractEntityModel {
+export class AbstractEntityModel {
 
   id: number;
   createTime: string;

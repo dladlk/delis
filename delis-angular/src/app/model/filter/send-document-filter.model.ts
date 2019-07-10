@@ -1,7 +1,8 @@
+import { MatSort } from "@angular/material";
 import { Range } from '../../component/system/date-range/model/model';
-import { AbstractFilterModel } from './abstract-filter.model';
+import { TableStateModel } from "./table-state.model";
 
-export class SendDocumentFilterModel implements AbstractFilterModel{
+export class SendDocumentFilterModel extends TableStateModel {
 
   organisation: string;
   documentStatus: string;
@@ -12,9 +13,9 @@ export class SendDocumentFilterModel implements AbstractFilterModel{
   documentId: string;
   documentDate: string;
   dateRange: Range;
-  sortBy: string;
 
-  constructor() {
+  constructor(sort: MatSort) {
+    super(sort);
     this.documentStatus = 'ALL';
     this.documentType = 'ALL';
     this.organisation = 'ALL';
@@ -24,6 +25,5 @@ export class SendDocumentFilterModel implements AbstractFilterModel{
     this.documentId = null;
     this.documentDate = null;
     this.dateRange = null;
-    this.sortBy = 'orderBy_createTime_Desc';
   }
 }

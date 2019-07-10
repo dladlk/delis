@@ -1,12 +1,15 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { CollectionViewer } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
 import { SendDocumentModel } from '../../../model/content/send-document/send-document.model';
-import { SendDocumentService } from '../../../service/content/send-document.service';
 import { SendDocumentFilterModel } from '../../../model/filter/send-document-filter.model';
+import { DelisDataSource } from "../delis-data-source";
+import { DelisService } from "../../../service/content/delis-service";
+import { AbstractEntityModel } from "../../../model/content/abstract-entity.model";
+import { TableStateModel } from "../../../model/filter/table-state.model";
 
-export class SendDocumentDataSource implements DataSource<SendDocumentModel> {
+export class SendDocumentDataSource implements DelisDataSource<SendDocumentModel, SendDocumentFilterModel> {
 
   private sendDocumentSubject = new BehaviorSubject<SendDocumentModel[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -14,7 +17,7 @@ export class SendDocumentDataSource implements DataSource<SendDocumentModel> {
   public loading$ = this.loadingSubject.asObservable();
   public totalElements$ = this.loadingTotalElements.asObservable();
 
-  constructor(private sendDocumentService: SendDocumentService) {}
+  constructor(private sendDocumentService: DelisService<AbstractEntityModel, TableStateModel>) {}
 
   connect(collectionViewer: CollectionViewer): Observable<SendDocumentModel[] | ReadonlyArray<SendDocumentModel>> {
     return this.sendDocumentSubject.asObservable();
@@ -26,9 +29,9 @@ export class SendDocumentDataSource implements DataSource<SendDocumentModel> {
     this.loadingTotalElements.complete();
   }
 
-  load(pageIndex: number, pageSize: number, filter: SendDocumentFilterModel) {
+  load(filter: SendDocumentFilterModel) {
     this.loadingSubject.next(true);
-    this.sendDocumentService.getListSendDocuments(pageIndex, pageSize, filter).pipe(
+    this.sendDocumentService.getAll(filter).pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false)))
       .subscribe(res => {

@@ -1,10 +1,8 @@
 import { OrganisationModel } from '../organisation/organisation.model';
 import { AbstractEntityModel } from '../abstract-entity.model';
 
-export class SendDocumentModel implements AbstractEntityModel {
+export class SendDocumentModel extends AbstractEntityModel {
 
-  id: number;
-  createTime: string;
   updateTime: string;
   documentStatus: string;
   documentType: string;

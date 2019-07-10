@@ -5,6 +5,7 @@ import dk.erst.delis.persistence.*;
 import dk.erst.delis.persistence.specification.EntitySpecificationFactory;
 import dk.erst.delis.persistence.specification.EntitySpecification;
 import dk.erst.delis.rest.data.request.param.PageAndSizeModel;
+import dk.erst.delis.rest.data.request.param.SortModel;
 import dk.erst.delis.rest.data.response.PageContainer;
 import dk.erst.delis.service.security.SecurityService;
 import dk.erst.delis.util.ClassLoaderUtil;
@@ -21,7 +22,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
 
 @Service
 public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E extends AbstractEntity> implements AbstractGenerateDataService<R, E> {
@@ -62,11 +62,11 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
             int page, int size, long collectionSize,
             R repository,
             Specification<E> specification) {
-        String[] strings = Objects.requireNonNull(request.getParameter("sort")).split("_");
+        SortModel sortModel = WebRequestUtil.generateSortModel(request);
         for ( Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass) ) {
             if (Modifier.isPrivate(field.getModifiers())) {
-                if (Objects.equals(strings[1].toUpperCase(), field.getName().toUpperCase())) {
-                    if (StringUtils.equalsIgnoreCase(strings[2], "Asc")) {
+                if (StringUtils.equals(sortModel.getSort().toUpperCase(), field.getName().toUpperCase())) {
+                    if (StringUtils.equalsIgnoreCase(sortModel.getOrder(), "asc")) {
                         return getAscendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);
                     } else {
                         return getDescendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);

@@ -1,6 +1,8 @@
-import {Range} from '../../component/system/date-range/model/model';
+import { MatSort } from "@angular/material";
+import { Range } from '../../component/system/date-range/model/model';
+import { TableStateModel } from "./table-state.model";
 
-export class DocumentFilterModel {
+export class DocumentFilterModel extends TableStateModel {
 
   documentStatus: string;
   lastError: string;
@@ -10,9 +12,9 @@ export class DocumentFilterModel {
   documentType: string;
   senderName: string;
   createTime: Range;
-  sortBy: string;
 
-  constructor() {
+  constructor(sort: MatSort) {
+    super(sort);
     this.documentStatus = 'ALL';
     this.lastError = 'ALL';
     this.ingoingDocumentFormat = 'ALL';
@@ -21,6 +23,5 @@ export class DocumentFilterModel {
     this.documentType = 'ALL';
     this.senderName = null;
     this.createTime = null;
-    this.sortBy = 'orderBy_createTime_Desc';
   }
 }

@@ -2,6 +2,7 @@
 @import '~@angular/material/_theming.scss';
 @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
 @import "styles/design_system_dk";
+@import "styles/delis_data_table";
 
 @include mat-core();
 
@@ -54,31 +55,28 @@ body {
   height: 100%;
 }
 
-table {
-  width: 100%;
-}
+//table {
+//  width: 100%;
+//}
 
 .example-container {
-  /*display: flex;*/
-  flex-direction: column;
-  /*max-height: 500px;*/
-  min-width: 300px;
-}
-
-.mat-tab {
+  //display: flex !important;
+  //flex-direction: column!important;
+  //flex-basis: 300px !important;
   overflow: auto;
 }
 
-mat-footer-row, mat-header-row, mat-row {
-  border-right-width: 1em !important;
-  border-left-width: 1em !important;
-  border-left: #ffffff;
-  border-right: #ffffff;
-}
+//.mat-tab {
+//  overflow: auto;
+//}
 
-mat-cell {
-  margin-left: 1em;
-}
+//mat-footer-row, mat-header-row, mat-row {
+//  border-right-width: 1em !important;
+//  border-left-width: 1em !important;
+//  border-left: #ffffff;
+//  border-right: #ffffff;
+//}
+//
 
 .app-button-row {
   margin-left: 5em;

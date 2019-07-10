@@ -1,12 +1,15 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { CollectionViewer } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
 import {DocumentModel} from '../../../model/content/document/document.model';
-import {DocumentService} from '../../../service/content/document.service';
 import {DocumentFilterModel} from '../../../model/filter/document-filter.model';
+import {DelisDataSource} from "../delis-data-source";
+import {DelisService} from "../../../service/content/delis-service";
+import {AbstractEntityModel} from "../../../model/content/abstract-entity.model";
+import {TableStateModel} from "../../../model/filter/table-state.model";
 
-export class DocumentDataSource implements DataSource<DocumentModel> {
+export class DocumentDataSource implements DelisDataSource<DocumentModel, DocumentFilterModel> {
 
   private documentSubject = new BehaviorSubject<DocumentModel[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
@@ -14,7 +17,7 @@ export class DocumentDataSource implements DataSource<DocumentModel> {
   public loading$ = this.loadingSubject.asObservable();
   public totalElements$ = this.loadingTotalElements.asObservable();
 
-  constructor(private documentService: DocumentService) {}
+  constructor(private documentService: DelisService<AbstractEntityModel, TableStateModel>) {}
 
   connect(collectionViewer: CollectionViewer): Observable<DocumentModel[] | ReadonlyArray<DocumentModel>> {
     return this.documentSubject.asObservable();
@@ -26,9 +29,9 @@ export class DocumentDataSource implements DataSource<DocumentModel> {
     this.loadingTotalElements.complete();
   }
 
-  load(pageIndex: number, pageSize: number, filter: DocumentFilterModel) {
+  load(filter: DocumentFilterModel) {
     this.loadingSubject.next(true);
-    this.documentService.getListDocuments(pageIndex, pageSize, filter).pipe(
+    this.documentService.getAll(filter).pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false)))
       .subscribe(res => {

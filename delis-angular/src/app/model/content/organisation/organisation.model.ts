@@ -1,7 +1,7 @@
-export class OrganisationModel {
+import { AbstractEntityModel } from "../abstract-entity.model";
 
-  id: number;
-  createTime: string;
+export class OrganisationModel extends AbstractEntityModel {
+
   updateTime: string;
   name: string;
   code: string;

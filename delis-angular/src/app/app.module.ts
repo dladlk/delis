@@ -40,6 +40,7 @@ import { LogoutComponent } from './component/logout/logout.component';
 import { StatComponent } from './component/system/stat/stat.component';
 import { ChartDocumentComponent } from './component/system/chart-document/chart-document.component';
 import { PaginatorI18n } from "./i18n/paginator-I18n";
+import { DelisDataTableComponent } from './component/system/delis-data-table/delis-data-table.component';
 
 export const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -70,7 +71,8 @@ export const createTranslateLoader = (http: HttpClient) => {
     AutofocusDirective,
     LogoutComponent,
     StatComponent,
-    ChartDocumentComponent
+    ChartDocumentComponent,
+    DelisDataTableComponent
   ],
   imports: [
     FormsModule,

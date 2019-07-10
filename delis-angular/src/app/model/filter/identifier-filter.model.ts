@@ -1,6 +1,8 @@
+import { MatSort } from "@angular/material";
 import { Range } from '../../component/system/date-range/model/model';
+import { TableStateModel } from "./table-state.model";
 
-export class IdentifierFilterModel {
+export class IdentifierFilterModel extends TableStateModel {
 
   organisation: string;
   identifierGroup: string;
@@ -11,9 +13,9 @@ export class IdentifierFilterModel {
   name: string;
   publishingStatus: string;
   dateRange: Range;
-  sortBy: string;
 
-  constructor() {
+  constructor(sort: MatSort) {
+    super(sort);
     this.type = null;
     this.value = null;
     this.organisation = 'ALL';
@@ -22,7 +24,5 @@ export class IdentifierFilterModel {
     this.name = null;
     this.status = 'ALL';
     this.publishingStatus = 'ALL';
-    this.dateRange = null;
-    this.sortBy = 'orderBy_createTime_Desc';
   }
 }
