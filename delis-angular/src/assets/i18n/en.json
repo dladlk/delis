@@ -180,5 +180,14 @@
   "td.picker.from": "FROM",
   "td.picker.to": "TO",
 
-  "column.hide": "Hide"
+  "column.hide": "Hide",
+
+  "ROLE_USER": "user",
+  "ROLE_ADMIN": "admin",
+
+  "profile.menu.firstName": "First Name",
+  "profile.menu.lastName": "Last Name",
+  "profile.menu.loginTime": "Login time",
+  "profile.menu.role": "Role",
+  "profile.menu.organisation": "Organisation"
 }

@@ -2,12 +2,11 @@ package dk.erst.delis.config.security;
 
 import lombok.Getter;
 
-import org.apache.commons.lang3.StringUtils;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.Date;
 
 @Getter
 public class CustomUserDetails extends User {
@@ -16,12 +15,20 @@ public class CustomUserDetails extends User {
 
     private Long id;
     private String userName;
+    private String firstName;
+    private String lastName;
     private String organisation;
+    private String role;
+    private Date lastLoginTime;
 
-    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities, String organisation) {
+    CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities, String organisation, String role) {
         super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
         this.id = user.getId();
-        this.userName = StringUtils.isNotEmpty(user.getFullName()) ? user.getFullName() : user.getUsername();
+        this.userName = user.getUsername();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
         this.organisation = organisation;
+        this.role = role;
+        this.lastLoginTime = new Date();
     }
 }

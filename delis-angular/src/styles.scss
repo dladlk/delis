@@ -78,6 +78,15 @@ body {
 //}
 //
 
+.profile-info {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+.profile-info-target {
+  color: mat-color($primary) !important;
+}
+
 .app-button-row {
   margin-left: 5em;
 }

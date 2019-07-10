@@ -180,5 +180,14 @@
   "td.picker.from": "TIL",
   "td.picker.to": "FRA",
 
-  "column.hide": "Skjule"
+  "column.hide": "Skjule",
+
+  "ROLE_USER": "user",
+  "ROLE_ADMIN": "admin",
+
+  "profile.menu.firstName": "Fornavn",
+  "profile.menu.lastName": "Efternavn",
+  "profile.menu.loginTime": "Login tid",
+  "profile.menu.role": "Rolle",
+  "profile.menu.organisation": "Organisation"
 }

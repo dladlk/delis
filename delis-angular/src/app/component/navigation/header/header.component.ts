@@ -5,6 +5,8 @@ import { MatMenuTrigger } from '@angular/material';
 import { LocaleService } from '../../../service/system/locale.service';
 import { RuntimeConfigService } from '../../../service/system/runtime-config.service';
 import { ChangeLangService } from '../../../service/system/change-lang.service';
+import { CurrentUserModel } from "../../../model/system/current-user.model";
+import { SHOW_DATE_FORMAT } from "../../../app.constants";
 
 @Component({
   selector: 'app-header',
@@ -17,7 +19,9 @@ export class HeaderComponent implements OnInit {
   @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
 
   public lang: string;
-  public username: string;
+  public currentUser: CurrentUserModel;
+
+  SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
   constructor(
     private changeLangService: ChangeLangService,
@@ -26,7 +30,7 @@ export class HeaderComponent implements OnInit {
     private configService: RuntimeConfigService) {
     this.lang = locale.getLocale();
     this.translate.use(locale.getLocale().match(/en|da/) ? locale.getLocale() : 'en');
-    this.username = this.configService.getCurrentUser();
+    this.currentUser = this.configService.getCurrentUser();
   }
 
   ngOnInit() { }

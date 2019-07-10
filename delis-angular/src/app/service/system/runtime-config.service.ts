@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpRestService } from './http-rest.service';
+import { LoginModel } from "../../model/system/login.model";
+import { CurrentUserModel } from "../../model/system/current-user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class RuntimeConfigService {
   private url = this.env.api_url;
   private config: string;
   private LOCALE_URL = 'url';
-  private LOCALE_USERNAME = 'username';
+  private CURRENT_USER = 'current_user';
 
   constructor(private http: HttpRestService) { }
 
@@ -32,11 +34,15 @@ export class RuntimeConfigService {
     }
   }
 
-  getCurrentUser(): string {
-    return localStorage.getItem(this.LOCALE_USERNAME);
+  setCurrentUser(loginData: LoginModel) {
+    localStorage.setItem(this.CURRENT_USER, JSON.stringify(new CurrentUserModel(loginData)));
+  }
+
+  getCurrentUser(): CurrentUserModel {
+    return JSON.parse(localStorage.getItem(this.CURRENT_USER));
   }
 
   resetCurrentUser() {
-    localStorage.removeItem(this.LOCALE_USERNAME);
+    localStorage.removeItem(this.CURRENT_USER);
   }
 }

@@ -7,6 +7,7 @@ import { TokenService } from '../../service/system/token.service';
 import { AuthorizationService } from '../../service/system/authorization.service';
 import { LocaleService } from '../../service/system/locale.service';
 import { ContentSelectInfoService } from '../../service/system/content-select-info.service';
+import { RuntimeConfigService } from "../../service/system/runtime-config.service";
 
 @Component({
     selector: 'app-login',
@@ -25,6 +26,7 @@ export class LoginComponent implements OnInit {
         private auth: AuthorizationService,
         private translate: TranslateService,
         private locale: LocaleService,
+        private runtimeConfigService: RuntimeConfigService,
         private contentSelectInfoService: ContentSelectInfoService,
         public router: Router) {
     }
@@ -51,8 +53,8 @@ export class LoginComponent implements OnInit {
             (data: {}) => {
                 const loginData: LoginModel = data['data'];
                 this.tokenService.setToken(loginData.accessToken);
-                localStorage.setItem('username', loginData.username);
                 localStorage.setItem('refreshToken', loginData.refreshToken);
+                this.runtimeConfigService.setCurrentUser(loginData);
                 this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
                 this.errorStatus = false;
