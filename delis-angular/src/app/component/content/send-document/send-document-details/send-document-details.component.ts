@@ -12,7 +12,7 @@ import { LocaleService } from '../../../../service/system/locale.service';
 import { ErrorService } from '../../../../service/system/error.service';
 import { SendDocumentService } from '../../../../service/content/send-document.service';
 
-import { SHOW_DATE_FORMAT } from '../../../../app.constants';
+import { SHOW_DATE_FORMAT, SEND_DOCUMENT_PATH } from '../../../../app.constants';
 
 @Component({
   selector: 'app-send-document-details',
@@ -77,7 +77,6 @@ export class SendDocumentDetailsComponent implements OnInit {
         this.errorJournalDocuments = true;
       }
     );
-    // Receipt Kvittering
   }
 
   download(id: number) {
@@ -94,12 +93,13 @@ export class SendDocumentDetailsComponent implements OnInit {
   }
 
   back() {
+    this.router.navigate(['/' + SEND_DOCUMENT_PATH], { queryParams: { skip: false } });
     this.location.back();
   }
 
   refreshData() {
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/send-document/', this.documentId]));
+      this.router.navigate(['/' + SEND_DOCUMENT_PATH, this.documentId]));
   }
 
   isReceipt(type: string) {

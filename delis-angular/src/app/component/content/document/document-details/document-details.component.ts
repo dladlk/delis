@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Location} from '@angular/common';
-import {TranslateService} from '@ngx-translate/core';
-import {ErrorModel} from '../../../../model/system/error.model';
-import {DocumentBytesModel} from '../../../../model/content/document/document-bytes.model';
-import {JournalDocumentErrorModel} from '../../../../model/content/document/journal-document-error.model';
-import {JournalDocumentModel} from '../../../../model/content/document/journal-document.model';
-import {DocumentModel} from '../../../../model/content/document/document.model';
-import {LocaleService} from '../../../../service/system/locale.service';
-import {ErrorService} from '../../../../service/system/error.service';
-import {DocumentService} from '../../../../service/content/document.service';
-import {JournalDocumentService} from '../../../../service/content/journal-document.service';
-import {FileSaverService} from '../../../../service/system/file-saver.service';
-import {ErrorDictionaryModel} from '../../../../model/content/document/error-dictionary.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import { ErrorModel } from '../../../../model/system/error.model';
+import { DocumentBytesModel } from '../../../../model/content/document/document-bytes.model';
+import { JournalDocumentErrorModel } from '../../../../model/content/document/journal-document-error.model';
+import { JournalDocumentModel } from '../../../../model/content/document/journal-document.model';
+import { DocumentModel } from '../../../../model/content/document/document.model';
+import { LocaleService } from '../../../../service/system/locale.service';
+import { ErrorService } from '../../../../service/system/error.service';
+import { DocumentService } from '../../../../service/content/document.service';
+import { JournalDocumentService } from '../../../../service/content/journal-document.service';
+import { FileSaverService } from '../../../../service/system/file-saver.service';
+import { ErrorDictionaryModel } from '../../../../model/content/document/error-dictionary.model';
 
-import {SHOW_DATE_FORMAT} from '../../../../app.constants';
+import { DOCUMENT_PATH, SHOW_DATE_FORMAT } from '../../../../app.constants';
 
 @Component({
   selector: 'app-document-details',
@@ -77,7 +77,6 @@ export class DocumentDetailsComponent implements OnInit {
     );
     this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe(
       (data: {}) => {
-        console.log(data);
         this.journalDocumentErrors = data['items'];
       }, error => {
         this.errorService.errorProcess(error);
@@ -108,11 +107,13 @@ export class DocumentDetailsComponent implements OnInit {
   }
 
   back() {
-    this.location.back();
+    this.router.navigate(['/' + DOCUMENT_PATH], { queryParams: { skip: false } });
+
+    // this.location.back();
   }
 
   refreshData() {
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/document/', this.documentId]));
+      this.router.navigate(['/' + DOCUMENT_PATH, this.documentId]));
   }
 }

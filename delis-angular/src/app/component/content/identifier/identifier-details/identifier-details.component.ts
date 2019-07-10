@@ -8,7 +8,7 @@ import { ErrorModel } from '../../../../model/system/error.model';
 import { JournalIdentifierService } from '../../../../service/content/journal-identifier.service';
 import { JournalIdentifierModel } from '../../../../model/content/identifier/journal-identifier.model';
 
-import { SHOW_DATE_FORMAT } from '../../../../app.constants';
+import { SHOW_DATE_FORMAT, IDENTIFIER_PATH } from '../../../../app.constants';
 
 @Component({
   selector: 'app-identifier-details',
@@ -66,11 +66,11 @@ export class IdentifierDetailsComponent implements OnInit {
   }
 
   back() {
-    this.location.back();
+    this.router.navigate(['/' + IDENTIFIER_PATH], { queryParams: { skip: false } });
   }
 
   refreshData() {
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/identifier/', this.identifierId]));
+      this.router.navigate(['/' + IDENTIFIER_PATH, this.identifierId]));
   }
 }

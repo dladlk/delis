@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort} from "@angular/material";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {tap} from "rxjs/operators";
 
 import {DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT} from "../../../app.constants";
@@ -57,7 +57,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
 
     delisDataTableColumnModel: DelisDataTableColumnModel[];
 
-    constructor(private router: Router, private daterangeObservable: DaterangeObservable, private refreshObservable: RefreshObservable) {
+    skip: boolean;
+
+    constructor(private router: Router, private route: ActivatedRoute, private daterangeObservable: DaterangeObservable, private refreshObservable: RefreshObservable) {
         this.daterangeObservable.listen().subscribe((range: Range) => {
             if (location.href.endsWith('/' + this.path)) {
                 if (range.fromDate !== null && range.toDate !== null) {
@@ -77,6 +79,17 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+
+        this.route.queryParamMap.subscribe(params => {
+            const queryParamMap = {...params.keys, ...params};
+            let queryParams = queryParamMap['params'];
+            if (queryParams.skip !== undefined) {
+                this.skip = JSON.parse(queryParams.skip);
+            } else {
+                this.skip = true;
+            }
+        });
+
         this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
         this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
         if (this.path === SEND_DOCUMENT_PATH) {
@@ -119,24 +132,29 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
     }
 
     initFilter() {
-        this.filter = this.stateService.getFilter();
-        if (this.filter === undefined) {
+        if (this.skip) {
             this.initDefaultFilter();
         } else {
-            this.paginator.pageIndex = this.filter.pageIndex;
-            this.paginator.pageSize = this.filter.pageSize;
-            this.sort = this.filter.sort;
-            for (const field in this.filter) {
-                this.textFilterModel[field] = this.filter[field];
-                if (this.enumFilterModel[field] !== undefined) {
-                    if (this.enumFilterModel[field].value.name === undefined) {
-                        if (this.filter[field] === 'ALL') {
-                            this.enumFilterModel[field].value = this.enumFilterModel[field].list[0];
+            this.filter = this.stateService.getFilter();
+            console.log(this.filter);
+            if (this.filter === undefined) {
+                this.initDefaultFilter();
+            } else {
+                this.paginator.pageIndex = this.filter.pageIndex;
+                this.paginator.pageSize = this.filter.pageSize;
+                this.sort = this.filter.sort;
+                for (const field in this.filter) {
+                    this.textFilterModel[field] = this.filter[field];
+                    if (this.enumFilterModel[field] !== undefined) {
+                        if (this.enumFilterModel[field].value.name === undefined) {
+                            if (this.filter[field] === 'ALL') {
+                                this.enumFilterModel[field].value = this.enumFilterModel[field].list[0];
+                            } else {
+                                this.enumFilterModel[field].value = this.filter[field];
+                            }
                         } else {
-                            this.enumFilterModel[field].value = this.filter[field];
+                            this.enumFilterModel[field].value = this.enumFilterModel[field].list.find(value => value.name === this.filter[field]);
                         }
-                    } else {
-                        this.enumFilterModel[field].value = this.enumFilterModel[field].list.find(value => value.name === this.filter[field]);
                     }
                 }
             }
