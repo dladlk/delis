@@ -1,3 +1,5 @@
+@import "../../../../../styles";
+
 .ngx-mat-drp-date-label {
   background: #fafafa;
   margin: 15px;
@@ -5,9 +7,11 @@
   width: 100%;
   font-size: 14px;
   font-weight: 500;
+  font-family: "IBMPlexSans", "system", serif !important;
 }
 
 .ngx-mat-drp-selected-date-label {
   color: rgba(0,0,0,.38);
   padding-left: 5%;
+  font-family: "IBMPlexSans", "system", serif !important;
 }
