@@ -25,7 +25,32 @@ export class SendDocumentService implements DelisService<SendDocumentModel, Send
   }
 
   getAll(filter: SendDocumentFilterModel): Observable<any> {
+    let params = this.generateParams(filter);
+    return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
+  }
 
+  getAllIds(filter: SendDocumentFilterModel): Observable<any> {
+    let params = this.generateParams(filter);
+    return this.httpRestService.methodGet(this.url + '/next', params, this.tokenService.getToken());
+  }
+
+  getOneSendDocumentsById(id: any): Observable<any> {
+    return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
+  }
+
+  getListSendDocumentBytesBySendDocumentId(id: any): Observable<any> {
+    return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
+  }
+
+  getListJournalSendDocumentBySendDocumentId(id: any): Observable<any> {
+    return this.httpRestService.methodGet(this.url + '/' + id + '/journal', null, this.tokenService.getToken());
+  }
+
+  downloadFileBySendDocumentAndDocumentBytes(id: number, bytesId): Observable<any> {
+    return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
+  }
+
+  private generateParams(filter: SendDocumentFilterModel): HttpParams {
     let params = new HttpParams();
 
     params = params.append('page', String(filter.pageIndex));
@@ -59,23 +84,6 @@ export class SendDocumentService implements DelisService<SendDocumentModel, Send
     if (filter.dateRange !== null) {
       params = params.append('createTime', String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime()));
     }
-
-    return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
-  }
-
-  getOneSendDocumentsById(id: any): Observable<any> {
-    return this.httpRestService.methodGetOne(this.url, id, this.tokenService.getToken());
-  }
-
-  getListSendDocumentBytesBySendDocumentId(id: any): Observable<any> {
-    return this.httpRestService.methodGet(this.url + '/' + id + '/bytes', null, this.tokenService.getToken());
-  }
-
-  getListJournalSendDocumentBySendDocumentId(id: any): Observable<any> {
-    return this.httpRestService.methodGet(this.url + '/' + id + '/journal', null, this.tokenService.getToken());
-  }
-
-  downloadFileBySendDocumentAndDocumentBytes(id: number, bytesId): Observable<any> {
-    return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
+    return params;
   }
 }

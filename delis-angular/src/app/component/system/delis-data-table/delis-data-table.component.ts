@@ -3,7 +3,7 @@ import {MatPaginator, MatSort} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {tap} from "rxjs/operators";
 
-import {DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT} from "../../../app.constants";
+import {DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT, LAST_ACTIVE_MAT_ROW} from "../../../app.constants";
 
 import {DelisDataTableColumnModel} from "../../../model/content/delis-data-table-column.model";
 import {TableStateModel} from "../../../model/filter/table-state.model";
@@ -58,6 +58,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
     delisDataTableColumnModel: DelisDataTableColumnModel[];
 
     skip: boolean;
+    lastVisitedId: number;
+
+    LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
 
     constructor(private router: Router, private route: ActivatedRoute, private daterangeObservable: DaterangeObservable, private refreshObservable: RefreshObservable) {
         this.daterangeObservable.listen().subscribe((range: Range) => {
@@ -105,7 +108,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
             this.delisDataTableColumnModel = DataTableConfig.INIT_IDENTIFIER_COLUMNS_CONFIG();
         }
         this.initData();
-        this.dataSource.load(this.filter);
+        this.dataSource.load(this.stateService);
     }
 
     ngAfterViewInit() {
@@ -136,13 +139,13 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
             this.initDefaultFilter();
         } else {
             this.filter = this.stateService.getFilter();
-            console.log(this.filter);
             if (this.filter === undefined) {
                 this.initDefaultFilter();
             } else {
                 this.paginator.pageIndex = this.filter.pageIndex;
                 this.paginator.pageSize = this.filter.pageSize;
                 this.sort = this.filter.sort;
+                this.lastVisitedId = this.filter.detailsState.currentId;
                 for (const field in this.filter) {
                     this.textFilterModel[field] = this.filter[field];
                     if (this.enumFilterModel[field] !== undefined) {
@@ -184,7 +187,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
         this.filter.pageSize = this.paginator.pageSize;
         this.filter.pageIndex = this.paginator.pageIndex;
         this.stateService.setFilter(this.filter);
-        this.dataSource.load(this.filter);
+        this.dataSource.load(this.stateService);
     }
 
     onRowClicked(row) {

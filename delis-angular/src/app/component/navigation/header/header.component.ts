@@ -32,7 +32,11 @@ export class HeaderComponent implements OnInit {
     this.lang = locale.getLocale();
     this.translate.use(locale.getLocale().match(/en|da/) ? locale.getLocale() : 'en');
     this.currentUser = this.configService.getCurrentUser();
-    this.headerUserName = this.currentUser.firstName + this.currentUser.lastName;
+    if (this.currentUser.firstName === null && this.currentUser.lastName === null) {
+      this.headerUserName = this.currentUser.username;
+    } else {
+      this.headerUserName = this.currentUser.firstName + this.currentUser.lastName;
+    }
   }
 
   ngOnInit() { }

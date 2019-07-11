@@ -1,30 +1,14 @@
 <mat-card>
   <div class="example-container mat-elevation-z8">
 
-    <div class="bounds">
-      <div class="content"
-           fxLayout="row"
-           fxLayout.xs="column"
-           fxLayoutAlign="left"
-           fxLayoutGap="1em"
-           fxFlexFill>
-        <div fxFlex="30" class="sec1" fxFlex.xs="55">
-          <div class="app-button-row">
-            <div class="example-button-row">
-              <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
-                <mat-icon>keyboard_backspace</mat-icon>
-              </button>
-              <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
-                <mat-icon>refresh</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div fxFlex="30" class="sec2" fxFlex.xs="55">
-          <h5 class="table-details-header">{{ 'identifier.header.details' | translate}}</h5>
-        </div>
-      </div>
-    </div>
+    <app-delis-table-details-header
+            [currentIds]="currentIds"
+            [id]="id"
+            [isNextDown]="isNextDown"
+            [isNextUp]="isNextUp"
+            [path]="IDENTIFIER_PATH"
+            [stateService]="stateService">
+    </app-delis-table-details-header>
 
     <div class="table-details">
       <mat-card-content>
@@ -33,6 +17,7 @@
         </div>
       </mat-card-content>
       <mat-card-content>
+        <h5 class="table-details-header">{{ 'identifier.header.details' | translate}}</h5>
         <table>
           <thead>
           <tr>

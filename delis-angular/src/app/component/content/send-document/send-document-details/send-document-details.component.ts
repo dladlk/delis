@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { FileSaverService } from '../../../../service/system/file-saver.service';
+import { SendDocumentStateService } from "../../../../service/state/send-document-state.service";
 import { SendDocumentModel } from '../../../../model/content/send-document/send-document.model';
 import { SendDocumentsBytesModel } from '../../../../model/content/send-document/send-documents-bytes.model';
 import { JournalSendDocumentModel } from '../../../../model/content/send-document/journal-send-document.model';
@@ -22,6 +23,7 @@ import { SHOW_DATE_FORMAT, SEND_DOCUMENT_PATH } from '../../../../app.constants'
 export class SendDocumentDetailsComponent implements OnInit {
 
   SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+  SEND_DOCUMENT_PATH = SEND_DOCUMENT_PATH;
 
   sendDocument: SendDocumentModel = new SendDocumentModel();
   sendDocumentsBytes: SendDocumentsBytesModel[] = [];
@@ -41,6 +43,10 @@ export class SendDocumentDetailsComponent implements OnInit {
 
   documentId: number;
 
+  isNextUp: boolean;
+  isNextDown: boolean;
+  currentIds: number[];
+
   constructor(
     private location: Location,
     private translate: TranslateService,
@@ -48,7 +54,8 @@ export class SendDocumentDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private errorService: ErrorService,
-    private sendDocumentService: SendDocumentService) { }
+    private sendDocumentService: SendDocumentService,
+    public stateService: SendDocumentStateService) { }
 
   ngOnInit() {
     const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
@@ -62,7 +69,6 @@ export class SendDocumentDetailsComponent implements OnInit {
     });
     this.sendDocumentService.getListSendDocumentBytesBySendDocumentId(id).subscribe((data: {}) => {
       this.sendDocumentsBytes = data['items'];
-      console.log(data);
       this.errorDocumentBytes = false;
     }, error => {
       this.errorDocumentBytesModel = this.errorService.errorProcess(error);
@@ -77,6 +83,20 @@ export class SendDocumentDetailsComponent implements OnInit {
         this.errorJournalDocuments = true;
       }
     );
+    this.initStateDetails(id);
+  }
+
+  private initStateDetails(id: number) {
+    if (this.stateService.getFilter() !== undefined) {
+      let stateDetails = this.stateService.getFilter().detailsState;
+      this.currentIds = stateDetails.currentIds;
+      if (this.currentIds.length !== 0) {
+        this.isNextUp = id !== this.currentIds[0];
+        this.isNextDown = id !== this.currentIds[this.currentIds.length - 1];
+      }
+    } else {
+      this.router.navigate(['/' + SEND_DOCUMENT_PATH], { queryParams: { skip: false } });
+    }
   }
 
   download(id: number) {
@@ -90,16 +110,6 @@ export class SendDocumentDetailsComponent implements OnInit {
         this.errorDownload = true;
       }
     );
-  }
-
-  back() {
-    this.router.navigate(['/' + SEND_DOCUMENT_PATH], { queryParams: { skip: false } });
-    this.location.back();
-  }
-
-  refreshData() {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/' + SEND_DOCUMENT_PATH, this.documentId]));
   }
 
   isReceipt(type: string) {

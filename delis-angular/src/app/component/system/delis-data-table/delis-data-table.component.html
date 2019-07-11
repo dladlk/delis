@@ -98,7 +98,7 @@
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: selectedDisplayedColumns" (click)="onRowClicked(row)"></mat-row>
+            <mat-row *matRowDef="let row; index as i; columns: selectedDisplayedColumns" (click)="onRowClicked(row)" [ngStyle]="{ backgroundColor : row.id === lastVisitedId ? LAST_ACTIVE_MAT_ROW : 'inherit !important' }"></mat-row>
         </mat-table>
 
         <mat-card-content>

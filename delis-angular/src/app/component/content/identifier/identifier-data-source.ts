@@ -8,6 +8,7 @@ import { DelisDataSource } from "../delis-data-source";
 import { DelisService } from "../../../service/content/delis-service";
 import { AbstractEntityModel } from "../../../model/content/abstract-entity.model";
 import { TableStateModel } from "../../../model/filter/table-state.model";
+import { StateService } from "../../../service/state/state-service";
 
 export class IdentifierDataSource implements DelisDataSource<IdentifierModel, IdentifierFilterModel> {
 
@@ -27,12 +28,13 @@ export class IdentifierDataSource implements DelisDataSource<IdentifierModel, Id
     this.loadingTotalElements.complete();
   }
 
-  load(filter: IdentifierFilterModel) {
+  load(stateService: StateService<IdentifierFilterModel>) {
     this.loadingSubject.next(true);
-    this.identifierService.getAll(filter).pipe(
+    this.identifierService.getAll(stateService.getFilter()).pipe(
       catchError(() => of([])),
       finalize(() => this.loadingSubject.next(false)))
       .subscribe(res => {
+        this.setStateDetails(stateService, res);
         this.identifierSubject.next(res.items);
         this.loadingTotalElements.next(res.collectionSize);
       });
@@ -44,5 +46,14 @@ export class IdentifierDataSource implements DelisDataSource<IdentifierModel, Id
 
   public getTotalElements(): Observable<number> {
     return this.loadingTotalElements.asObservable();
+  }
+
+  private setStateDetails(stateService: StateService<IdentifierFilterModel>, res: any) {
+    if (res.items.length !== 0) {
+      let ids = res.items.map(value => value.id);
+      let filter = stateService.getFilter();
+      filter.detailsState.currentIds = ids;
+      stateService.setFilter(filter);
+    }
   }
 }

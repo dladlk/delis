@@ -10,6 +10,7 @@ import { DocumentModel } from '../../../../model/content/document/document.model
 import { LocaleService } from '../../../../service/system/locale.service';
 import { ErrorService } from '../../../../service/system/error.service';
 import { DocumentService } from '../../../../service/content/document.service';
+import { DocumentStateService} from "../../../../service/state/document-state.service";
 import { JournalDocumentService } from '../../../../service/content/journal-document.service';
 import { FileSaverService } from '../../../../service/system/file-saver.service';
 import { ErrorDictionaryModel } from '../../../../model/content/document/error-dictionary.model';
@@ -25,6 +26,7 @@ export class DocumentDetailsComponent implements OnInit {
 
   document: DocumentModel = new DocumentModel();
   SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
+  DOCUMENT_PATH = DOCUMENT_PATH;
   journalDocuments: JournalDocumentModel[] = [];
   journalDocumentErrors: JournalDocumentErrorModel[] = [];
   documentBytesModels: DocumentBytesModel[] = [];
@@ -43,6 +45,10 @@ export class DocumentDetailsComponent implements OnInit {
 
   documentId: number;
 
+  isNextUp: boolean;
+  isNextDown: boolean;
+  currentIds: number[];
+
   constructor(private location: Location,
               private translate: TranslateService,
               private locale: LocaleService,
@@ -50,6 +56,7 @@ export class DocumentDetailsComponent implements OnInit {
               private router: Router,
               private errorService: ErrorService,
               private documentService: DocumentService,
+              public stateService: DocumentStateService,
               private journalDocumentService: JournalDocumentService) { }
 
   ngOnInit() {
@@ -82,6 +89,20 @@ export class DocumentDetailsComponent implements OnInit {
         this.errorService.errorProcess(error);
       }
     );
+    this.initStateDetails(id);
+  }
+
+  private initStateDetails(id: number) {
+    if (this.stateService.getFilter() !== undefined) {
+      let stateDetails = this.stateService.getFilter().detailsState;
+      this.currentIds = stateDetails.currentIds;
+      if (this.currentIds.length !== 0) {
+        this.isNextUp = id !== this.currentIds[0];
+        this.isNextDown = id !== this.currentIds[this.currentIds.length - 1];
+      }
+    } else {
+      this.router.navigate(['/' + DOCUMENT_PATH], { queryParams: { skip: false } });
+    }
   }
 
   download(id: number) {
@@ -104,16 +125,5 @@ export class DocumentDetailsComponent implements OnInit {
     } else {
       return err.map(value => value.errorDictionary);
     }
-  }
-
-  back() {
-    this.router.navigate(['/' + DOCUMENT_PATH], { queryParams: { skip: false } });
-
-    // this.location.back();
-  }
-
-  refreshData() {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/' + DOCUMENT_PATH, this.documentId]));
   }
 }

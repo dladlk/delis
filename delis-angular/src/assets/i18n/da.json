@@ -168,6 +168,8 @@
   "apply": "Anvend",
   "cancel": "Skjul",
   "back": "Tilbage",
+  "next": "Vis naeste",
+  "previous": "Vis tidligere",
 
   "td.picker.all": "Alle",
   "td.picker.today": "I dag",

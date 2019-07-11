@@ -3,6 +3,7 @@ import { CollectionViewer } from "@angular/cdk/collections";
 import { Observable } from "rxjs";
 import { TableStateModel } from "../../model/filter/table-state.model";
 import { AbstractEntityModel } from "../../model/content/abstract-entity.model";
+import { StateService } from "../../service/state/state-service";
 
 export interface DelisDataSource<T extends AbstractEntityModel, S extends TableStateModel> extends DataSource<T> {
 
@@ -10,5 +11,5 @@ export interface DelisDataSource<T extends AbstractEntityModel, S extends TableS
     disconnect(collectionViewer: CollectionViewer): void;
     getLoading(): Observable<boolean>;
     getTotalElements(): Observable<number>;
-    load(filter: S);
+    load(stateService: StateService<S>);
 }

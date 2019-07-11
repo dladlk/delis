@@ -41,6 +41,7 @@ import { StatComponent } from './component/system/stat/stat.component';
 import { ChartDocumentComponent } from './component/system/chart-document/chart-document.component';
 import { PaginatorI18n } from "./i18n/paginator-I18n";
 import { DelisDataTableComponent } from './component/system/delis-data-table/delis-data-table.component';
+import { DelisTableDetailsHeaderComponent } from './component/system/delis-table-details-header/delis-table-details-header.component';
 
 export const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -72,7 +73,8 @@ export const createTranslateLoader = (http: HttpClient) => {
     LogoutComponent,
     StatComponent,
     ChartDocumentComponent,
-    DelisDataTableComponent
+    DelisDataTableComponent,
+    DelisTableDetailsHeaderComponent
   ],
   imports: [
     FormsModule,

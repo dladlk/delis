@@ -166,6 +166,8 @@
   "loading": "Loading",
   "refresh": "Refresh",
   "back": "Back",
+  "next": "View next",
+  "previous": "View previous",
   "apply": "Apply",
   "cancel": "Cancel",
 

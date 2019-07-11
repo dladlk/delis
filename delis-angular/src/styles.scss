@@ -2,6 +2,7 @@
 @import '~@angular/material/_theming.scss';
 @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
 @import "styles/design_system_dk";
+@import "styles/design_icons";
 @import "styles/delis_data_table";
 
 @include mat-core();
@@ -135,6 +136,7 @@ table {
 
 .table-details-header {
   color: mat-color($primary) !important;
+  text-align: center !important;
 }
 
 .delisHeader {
@@ -145,14 +147,6 @@ table {
 .checkCircleHeaderLanguage {
   color: mat-color($primary) !important;
   margin-left: 1em;
-}
-
-.rotate-180 {
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
 }
 
 .matDocument {
