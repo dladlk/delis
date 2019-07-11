@@ -2,10 +2,10 @@
   <h5 class="table-details-header" style="margin-left: 2em">
     {{ 'dashboard.charts.header' | translate }} {{': ' + lineChartLabels[0] + ' - ' + lineChartLabels[lineChartLabels.length - 1]}}
   </h5>
-  <table class="mat-table">
+  <table>
     <tbody>
-    <tr class="mat-row">
-      <td class="mat-cell table-details-td">
+    <tr>
+      <td class="table-details-td">
         <div *ngIf="lineChartData.length > 0">
           <canvas baseChart height="100"
                   [datasets]="lineChartData"
