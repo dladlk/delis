@@ -1,6 +1,6 @@
 {
   "login.error.username-or-password": "Login og adgangskode skal udfuldes",
-  "login.error.username": "Login kan skal udfuldes",
+  "login.error.username": "Brugernavn skal udfuldes",
   "login.error.password": "Adgangskoden skal udfuldes",
   "login.error.unauthorized": "Brugernavn eller kodeord er ugyldigt",
   "login.error.disconnect": "Server frakobles",
@@ -29,7 +29,7 @@
   "dashboard.errors": "Fejl sidste tid",
   "dashboard.send": "Afsendelse den sidste time / gennemsnit",
   "dashboard.details": "Se detaljer",
-  "dashboard.charts.header": "Antallet af indlæste dokumenter",
+  "dashboard.charts.header": "Modtagelse",
   "documents.header": "Dokumenter",
   "documents.header.details": "Modtagelse detaljer",
   "documents.table.header": "Modtagelse Oversigt",
@@ -184,10 +184,10 @@
 
   "column.hide": "Skjule",
 
-  "ROLE_USER": "user",
-  "ROLE_ADMIN": "admin",
+  "ROLE_USER": "Bruger",
+  "ROLE_ADMIN": "Administrator",
 
-  "profile.menu.systemName": "Systemnavn",
+  "profile.menu.loginName": "Brugernavn",
   "profile.menu.firstName": "Fornavn",
   "profile.menu.lastName": "Efternavn",
   "profile.menu.loginTime": "Login tid",

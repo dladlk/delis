@@ -29,7 +29,7 @@
   "dashboard.errors": "Errors last hour",
   "dashboard.send": "Send documents last hour / average",
   "dashboard.details": "View Details",
-  "dashboard.charts.header": "Count of loaded documents",
+  "dashboard.charts.header": "Receiving",
   "documents.header": "Documents",
   "documents.header.details": "Document details",
   "documents.table.header": "Documents Overview",
@@ -184,12 +184,12 @@
 
   "column.hide": "Hide",
 
-  "ROLE_USER": "user",
-  "ROLE_ADMIN": "admin",
+  "ROLE_USER": "User",
+  "ROLE_ADMIN": "Administrator",
 
-  "profile.menu.systemName": "System Name",
-  "profile.menu.firstName": "First Name",
-  "profile.menu.lastName": "Last Name",
+  "profile.menu.loginName": "Login name",
+  "profile.menu.firstName": "First name",
+  "profile.menu.lastName": "Last name",
   "profile.menu.loginTime": "Login time",
   "profile.menu.role": "Role",
   "profile.menu.organisation": "Organisation"

@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit {
     if (this.currentUser.firstName === null && this.currentUser.lastName === null) {
       this.headerUserName = this.currentUser.username;
     } else {
-      this.headerUserName = this.currentUser.firstName + this.currentUser.lastName;
+      this.headerUserName = this.currentUser.firstName + ' ' + this.currentUser.lastName;
     }
   }
 
