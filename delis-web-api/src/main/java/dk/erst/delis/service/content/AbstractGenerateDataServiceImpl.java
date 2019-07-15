@@ -65,7 +65,7 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
         SortModel sortModel = WebRequestUtil.generateSortModel(request);
         for ( Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass) ) {
             if (Modifier.isPrivate(field.getModifiers())) {
-                if (StringUtils.equals(sortModel.getSort().toUpperCase(), field.getName().toUpperCase())) {
+                if (StringUtils.equalsIgnoreCase(sortModel.getSort(), field.getName())) {
                     if (StringUtils.equalsIgnoreCase(sortModel.getOrder(), "asc")) {
                         return getAscendingDataPageContainer(page, size, collectionSize, field.getName(), repository, specification);
                     } else {
