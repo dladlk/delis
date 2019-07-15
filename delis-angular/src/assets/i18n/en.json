@@ -182,7 +182,7 @@
   "td.picker.from": "FROM",
   "td.picker.to": "TO",
 
-  "column.hide": "Hide",
+  "column.hide": "Hide columns",
 
   "ROLE_USER": "User",
   "ROLE_ADMIN": "Administrator",
