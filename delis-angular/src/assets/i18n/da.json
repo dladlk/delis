@@ -1,7 +1,7 @@
 {
-  "login.error.username-or-password": "Login og adgangskode skal udfuldes",
-  "login.error.username": "Brugernavn skal udfuldes",
-  "login.error.password": "Adgangskoden skal udfuldes",
+  "login.error.username-or-password": "Login og adgangskode skal udfyldes",
+  "login.error.username": "Brugernavn skal udfyldes",
+  "login.error.password": "Adgangskoden skal udfyldes",
   "login.error.unauthorized": "Brugernavn eller kodeord er ugyldigt",
   "login.error.disconnect": "Server frakobles",
   "sidebar.home": "DELIS",
