@@ -105,7 +105,7 @@
             <mat-grid-list [cols]="breakpointCols" rowHeight="70px" (window:resize)="onResize($event)">
                 <mat-grid-tile [colspan]="breakpointColspan" [rowspan]="1">
                     <mat-form-field>
-                        <mat-label>{{ 'column.hide' | translate }}:</mat-label>
+                        <mat-label>{{ 'column.hide' | translate }}</mat-label>
                         <mat-select (selectionChange)="showHideColumns($event.value)" multiple>
                             <mat-option *ngFor="let col of allDisplayedColumnsData" [value]="col.columnName">{{ col.columnBundle | translate }}</mat-option>
                         </mat-select>
