@@ -16,7 +16,7 @@
                     [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
                     [label]="'dashboard.documents'"
                     [router]="'/document'"
-                    [rotate]="true">
+                    [rotate]="false">
             </app-stat>
           </div>
           <div fxFlex="30" class="sec3" fxFlex.xs="15">
@@ -26,7 +26,7 @@
                     [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
                     [label]="'dashboard.send'"
                     [router]="'/send-document'"
-                    [rotate]="false">
+                    [rotate]="true">
             </app-stat>
           </div>
           <div fxFlex="30" class="sec1" fxFlex.xs="55">
