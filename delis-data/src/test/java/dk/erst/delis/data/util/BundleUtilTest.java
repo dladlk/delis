@@ -15,6 +15,7 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import dk.erst.delis.data.enums.Named;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.data.enums.document.DocumentStatus;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,6 +29,8 @@ public class BundleUtilTest {
 	public void checkDanishName() {
 		assertEquals("Ukendt", DocumentFormatFamily.UNSUPPORTED.getNameDa());
 		assertEquals("Unsupported", DocumentFormatFamily.UNSUPPORTED.getName());
+		
+		assertEquals("Indlæst", DocumentStatus.LOAD_OK.getNameDa());
 	}
 	
 	@SuppressWarnings("unchecked")
