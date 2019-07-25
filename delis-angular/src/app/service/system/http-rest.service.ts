@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as constants  from "../../app.constants";
@@ -60,10 +60,10 @@ export class HttpRestService {
   }
 
   methodLogin(url: string, login: string, password: string): Observable<any> {
-    let params = new URLSearchParams();
-    params.append("username", login);
-    params.append("password", password);
-    params.append("grant_type", 'password');
+    let params = new HttpParams()
+    .set("username", login)
+    .set("password", password)
+    .set("grant_type", 'password');
     let headersMap = {
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': 'Basic ' + btoa(this.creds)
