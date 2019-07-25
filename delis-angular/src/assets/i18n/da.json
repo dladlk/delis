@@ -71,7 +71,7 @@
   "documents.table.one.columnName.messageId": "Besked ID",
   "documents.table.one.columnName.sender": "Afsender",
   "documents.table.one.columnName.receiver": "Modtager",
-  "documents.table.one.columnName.senderIdRaw": "Modtager",
+  "documents.table.one.columnName.senderIdRaw": "Nummer",
   "documents.table.one.columnName.senderName": "Navn",
   "documents.table.one.columnName.senderCountry": "Land",
   "documents.table.one.columnName.journalRecords": "Tidsskrift optegnelser",
