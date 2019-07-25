@@ -147,6 +147,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
                 this.sort = this.filter.sort;
                 this.lastVisitedId = this.filter.detailsState.currentId;
                 for (const field in this.filter) {
+                    if (!this.filter.hasOwnProperty(field)) {
+                        continue;
+                    }
                     this.textFilterModel[field] = this.filter[field];
                     if (this.enumFilterModel[field] !== undefined) {
                         if (this.enumFilterModel[field].value.name === undefined) {
