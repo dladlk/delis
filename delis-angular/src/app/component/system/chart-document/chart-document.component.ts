@@ -118,8 +118,6 @@ export class ChartDocumentComponent implements OnInit {
       params = params.append('startDate', String(new Date(drm.fromDate).getTime()));
       params = params.append('endDate', String(new Date(drm.toDate).getTime()));
     }
-
-    params = params.append('timeZone', Intl.DateTimeFormat().resolvedOptions().timeZone);
     params = params.append('defaultChart', String(defaultChart));
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
@@ -128,7 +126,6 @@ export class ChartDocumentComponent implements OnInit {
     let params = new HttpParams();
     params = params.append('startDate', String(start.getTime()));
     params = params.append('endDate', String(end.getTime()));
-    params = params.append('timeZone', Intl.DateTimeFormat().resolvedOptions().timeZone);
     params = params.append('defaultChart', String(defaultChart));
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
