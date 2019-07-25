@@ -25,7 +25,7 @@
                         <mat-icon *ngIf="lang == 'da'" class="checkCircleHeaderLanguage">check_circle</mat-icon>
                     </button>
                 </mat-menu>
-                <a class="systemLink" [matMenuTriggerFor]="langMenu">
+                <a class="systemLink" [matMenuTriggerFor]="langMenu" [routerLink]="">
                     {{ 'header.language' | translate }}
                 </a>
             </li>
@@ -58,7 +58,7 @@
                         </tr>
                     </table>
                 </mat-menu>
-                <a class="systemLink" [matMenuTriggerFor]="userMenu">
+                <a  class="systemLink" [matMenuTriggerFor]="userMenu" [routerLink]="">
                     {{ headerUserName }}
                 </a>
             </li>
