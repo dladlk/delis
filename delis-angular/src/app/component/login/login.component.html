@@ -1,13 +1,10 @@
-﻿<div fxLayout="row wrap" fxLayoutAlign="center center">
+﻿<div fxLayout="row wrap" fxLayoutAlign="center center" class="mat-elevation-z8">
     <mat-card fxFlex="400px" fxFlex.xs="100%" fxLayout="column wrap">
         <strong *ngIf="errorStatus" class="systemColorError text-center mb2">{{ message | translate }}</strong>
         <mat-card-title>
-      <span class="mt1">
-        {{ 'sidebar.home' | translate }}
-      </span>
+            <span>{{ 'sidebar.home' | translate }}</span>
         </mat-card-title>
-        <form [formGroup]="loginForm" novalidate (ngSubmit)="login(loginForm.value)" fxLayout="column wrap"
-              fxLayoutAlign="center end">
+        <form [formGroup]="loginForm" novalidate (ngSubmit)="login(loginForm.value)" fxLayout="column wrap" fxLayoutAlign="center end">
             <mat-card-content>
 
                 <mat-form-field>
