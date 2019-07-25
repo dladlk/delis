@@ -1,6 +1,6 @@
 {
-  "login.error.username-or-password": "Login and password cannot be empty",
-  "login.error.username": "Login cannot be empty",
+  "login.error.username-or-password": "User name and password cannot be empty",
+  "login.error.username": "User name cannot be empty",
   "login.error.password": "Password cannot be empty",
   "login.error.unauthorized": "Invalid username or password",
   "login.error.disconnect": "Server is disconnected",
@@ -134,7 +134,7 @@
   "pagination.status.to": "to",
   "pagination.status.of": "of",
   "pagination.status.end": "entries",
-  "auth.username": "Username",
+  "auth.username": "User name",
   "auth.password": "Password",
   "auth.login": "Log in",
   "auth.register": "Register",
