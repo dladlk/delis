@@ -5,7 +5,9 @@
 @import "styles/design_icons";
 @import "styles/delis_data_table";
 
-@include mat-core();
+// !!! Remember to only ever include the @mat-core mixin only once; it should not be included for each theme.
+// It is already included with custom font-family!
+//@include mat-core();
 
 $mat-delis: (
 	100: #0B78D0,
@@ -22,12 +24,17 @@ $theme: mat-light-theme($primary, $accent);
 
 @include angular-material-theme($theme);
 
+$delis-font-family: 'IBM Plex Sans';
+
 // default font-family:
 $delis-typography: mat-typography-config(
-        $font-family: 'IBM Plex Sans'
+  $font-family: $delis-font-family
 );
 @include mat-core($delis-typography);
 
+.cdk-overlay-container {
+  font-family: $delis-font-family;
+}
 
 .systemColor {
   color: mat-color($primary) !important;
@@ -61,23 +68,8 @@ table {
 }
 
 .example-container {
-  //display: flex !important;
-  //flex-direction: column!important;
-  //flex-basis: 300px !important;
   overflow: auto;
 }
-
-//.mat-tab {
-//  overflow: auto;
-//}
-
-//mat-footer-row, mat-header-row, mat-row {
-//  border-right-width: 1em !important;
-//  border-left-width: 1em !important;
-//  border-left: #ffffff;
-//  border-right: #ffffff;
-//}
-//
 
 .profile-info {
   padding: 1em 1em 2em 1em;
