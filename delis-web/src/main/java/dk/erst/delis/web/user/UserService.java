@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 02.01.19
- */
-
 @Service
 public class UserService {
 

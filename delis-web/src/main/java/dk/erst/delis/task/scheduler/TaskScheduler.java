@@ -21,10 +21,6 @@ import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
 import dk.erst.delis.web.document.SendDocumentService;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author funtusthan, created by 05.02.19
- */
-
 @Slf4j
 @Service
 public class TaskScheduler {

@@ -13,10 +13,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.constraints.Min;
 
-/**
- * @author funtusthan, created by 14.01.19
- */
-
 @Validated
 @RestController
 @RequestMapping("/rest/journal/identifier")

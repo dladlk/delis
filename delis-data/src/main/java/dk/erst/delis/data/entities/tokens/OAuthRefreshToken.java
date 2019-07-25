@@ -5,10 +5,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @Getter
 @Setter
 @Entity

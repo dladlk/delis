@@ -7,10 +7,6 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
 
 import javax.validation.Validator;
 
-/**
- * @author Iehor Funtusov, created by 09.01.19
- */
-
 @Configuration
 public class ValidationConfig {
 

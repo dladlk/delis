@@ -24,10 +24,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
-/**
- * @author funtusthan, created by 25.01.19
- */
-
 @Slf4j
 @UtilityClass
 public class ClassLoaderUtil {

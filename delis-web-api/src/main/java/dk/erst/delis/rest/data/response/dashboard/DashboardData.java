@@ -3,10 +3,6 @@ package dk.erst.delis.rest.data.response.dashboard;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author funtusthan, created by 22.01.19
- */
-
 @Getter
 @Setter
 public class DashboardData {

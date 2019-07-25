@@ -9,10 +9,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 04.01.19
- */
-
 @Repository
 public interface IdentifierRepository extends AbstractRepository<Identifier> {
 

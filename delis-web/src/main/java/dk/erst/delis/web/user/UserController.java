@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * @author Iehor Funtusov, created by 02.01.19
- */
-
 @Controller
 @RequestMapping("/users")
 public class UserController {

@@ -29,10 +29,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
-/**
- * @author funtusthan, created by 12.03.19
- */
-
 @Api
 @Slf4j
 @RestController

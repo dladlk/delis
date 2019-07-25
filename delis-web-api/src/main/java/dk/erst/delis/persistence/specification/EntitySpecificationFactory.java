@@ -5,10 +5,6 @@ import dk.erst.delis.persistence.AbstractSpecification;
 
 import java.util.Objects;
 
-/**
- * @author funtusthan, created by 31.01.19
- */
-
 public class EntitySpecificationFactory<E extends AbstractEntity> {
 
     public AbstractSpecification<? extends AbstractEntity> generateSpecification(EntitySpecification entitySpecification) {

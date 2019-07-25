@@ -7,10 +7,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 09.01.19
- */
-
 @Getter
 @Setter
 public class RestException extends RuntimeException {

@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @RestController
 @RequestMapping("/rest/logout")
 public class RestLogoutController {

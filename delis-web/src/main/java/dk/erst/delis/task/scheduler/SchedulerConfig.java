@@ -12,10 +12,6 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author funtusthan, created by 08.02.19
- */
-
 @Configuration
 @Slf4j
 public class SchedulerConfig implements SchedulingConfigurer {

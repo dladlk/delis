@@ -6,10 +6,6 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * @author funtusthan, created by 19.01.19
- */
-
 @Getter
 @Setter
 @AllArgsConstructor

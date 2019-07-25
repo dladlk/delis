@@ -13,10 +13,6 @@ import org.springframework.security.oauth2.provider.token.UserAuthenticationConv
 
 import java.util.*;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 public class CustomAccessTokenConverter implements AccessTokenConverter {
 
     private UserAuthenticationConverter userTokenConverter = new DefaultUserAuthenticationConverter();

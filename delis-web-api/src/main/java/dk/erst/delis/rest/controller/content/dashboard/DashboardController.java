@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author funtusthan, created by 22.01.19
- */
-
 @RestController
 @RequestMapping("/rest/dashboard")
 public class DashboardController {

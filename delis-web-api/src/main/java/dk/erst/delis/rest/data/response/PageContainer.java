@@ -7,10 +7,6 @@ import lombok.Setter;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 18.12.18
- */
-
 @Getter
 @Setter
 @AllArgsConstructor

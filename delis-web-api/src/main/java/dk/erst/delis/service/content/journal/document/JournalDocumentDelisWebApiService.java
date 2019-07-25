@@ -7,10 +7,6 @@ import dk.erst.delis.service.content.AbstractService;
 
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author funtusthan, created by 13.01.19
- */
-
 public interface JournalDocumentDelisWebApiService extends AbstractService<JournalDocument> {
 
 	ListContainer<JournalDocument> getByDocument(WebRequest webRequest, long documentId);

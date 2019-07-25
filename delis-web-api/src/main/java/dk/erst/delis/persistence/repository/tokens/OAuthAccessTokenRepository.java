@@ -7,10 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @Repository
 public interface OAuthAccessTokenRepository extends JpaRepository<OAuthAccessToken, Long> {
 
