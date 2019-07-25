@@ -24,7 +24,7 @@
                             </mat-list-item>
                         </mat-list>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="systemLink">{{ column.cell(row) | date: SHOW_DATE_FORMAT }}</mat-cell>
+                    <mat-cell *matCellDef="let row" class="ptr">{{ column.cell(row) | date: SHOW_DATE_FORMAT }}</mat-cell>
                 </section>
 
                 <section *ngIf="column.typeColumn === 'enumString'">
@@ -42,7 +42,7 @@
                             </mat-list-item>
                         </mat-list>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="systemLink">{{ column.cell(row) }} </mat-cell>
+                    <mat-cell *matCellDef="let row" class="ptr">{{ column.cell(row) }} </mat-cell>
                 </section>
 
                 <section *ngIf="column.typeColumn === 'text'">
@@ -60,7 +60,7 @@
                             </mat-list-item>
                         </mat-list>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="systemLink">{{ column.cell(row) }} </mat-cell>
+                    <mat-cell *matCellDef="let row" class="ptr">{{ column.cell(row) }} </mat-cell>
                 </section>
 
                 <section *ngIf="column.typeColumn === 'enumInfo'">
@@ -78,7 +78,7 @@
                             </mat-list-item>
                         </mat-list>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="systemLink">{{ column.cell(row) }} </mat-cell>
+                    <mat-cell *matCellDef="let row" class="ptr">{{ column.cell(row) }} </mat-cell>
                 </section>
 
             </ng-container>

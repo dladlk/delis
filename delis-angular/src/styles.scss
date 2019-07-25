@@ -48,7 +48,7 @@ $delis-typography: mat-typography-config(
   color: green !important;
 }
 
-.systemLink {
+.ptr {
   cursor: pointer;
 }
 
@@ -126,18 +126,8 @@ table {
   color: red !important;
 }
 
-.table-details-header {
-  //color: mat-color($primary) !important;
-  //text-align: center !important;
-}
-
-.delisHeader {
-  margin-right: 1em !important;
-  margin-left: 1em !important;
-}
-
 .checkCircleHeaderLanguage {
-//  color: mat-color($primary) !important;
+  color: mat-color($primary) !important;
   margin-left: 1em;
 }
 

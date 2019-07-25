@@ -8,9 +8,11 @@
         <a [routerLink]="['/dashboard']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.home' | translate}}</a>
     </div>
     <div fxFlex fxLayout dir="ltr" fxFlexOffset="5" fxHide.xs>
-        <a [routerLink]="['/document']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'sidebar.received.documents' | translate }}</a>
-        <a [routerLink]="['/send-document']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'sidebar.send.documents' | translate }}</a>
-        <a [routerLink]="['/identifier']" [routerLinkActive]="['router-link-active']" class="delisHeader">{{ 'sidebar.identifier' | translate }}</a>
+        <ul fxLayout fxLayoutGap="1em" class="navigation-items">
+        <li><a [routerLink]="['/document']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.received.documents' | translate }}</a></li>
+        <li><a [routerLink]="['/send-document']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.send.documents' | translate }}</a></li>
+        <li><a [routerLink]="['/identifier']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.identifier' | translate }}</a></li>
+        </ul>
     </div>
     <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
         <ul fxLayout fxLayoutGap="1em" class="navigation-items">
@@ -25,7 +27,7 @@
                         <mat-icon *ngIf="lang == 'da'" class="checkCircleHeaderLanguage">check_circle</mat-icon>
                     </button>
                 </mat-menu>
-                <a class="systemLink" [matMenuTriggerFor]="langMenu" [routerLink]="">
+                <a [matMenuTriggerFor]="langMenu" [routerLink]="">
                     {{ 'header.language' | translate }}
                 </a>
             </li>
@@ -58,7 +60,7 @@
                         </tr>
                     </table>
                 </mat-menu>
-                <a  class="systemLink" [matMenuTriggerFor]="userMenu" [routerLink]="">
+                <a [matMenuTriggerFor]="userMenu" [routerLink]="">
                     {{ headerUserName }}
                 </a>
             </li>
