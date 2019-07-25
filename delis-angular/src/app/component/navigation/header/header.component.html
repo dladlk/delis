@@ -33,27 +33,27 @@
                 <mat-menu #userMenu="matMenu" xPosition="before">
                     <table class="profile-info">
                         <tr>
-                            <td class="profile-info-target">{{ 'profile.menu.role' | translate }}</td>
+                            <td>{{ 'profile.menu.role' | translate }}</td>
                             <td>{{ currentUser.role | translate }}</td>
                         </tr>
                         <tr>
-                            <td class="profile-info-target">{{ 'profile.menu.loginName' | translate }}</td>
+                            <td>{{ 'profile.menu.loginName' | translate }}</td>
                             <td>{{ currentUser.username }}</td>
                         </tr>
                         <tr *ngIf="currentUser.firstName !== null">
-                            <td class="profile-info-target">{{ 'profile.menu.firstName' | translate }}</td>
+                            <td>{{ 'profile.menu.firstName' | translate }}</td>
                             <td>{{ currentUser.firstName }}</td>
                         </tr>
                         <tr *ngIf="currentUser.lastName !== null">
-                            <td class="profile-info-target">{{ 'profile.menu.lastName' | translate }}</td>
+                            <td>{{ 'profile.menu.lastName' | translate }}</td>
                             <td>{{ currentUser.lastName }}</td>
                         </tr>
                         <tr *ngIf="currentUser.role === 'ROLE_USER'">
-                            <td class="profile-info-target">{{ 'profile.menu.organisation' | translate }}</td>
+                            <td>{{ 'profile.menu.organisation' | translate }}</td>
                             <td>{{ currentUser.organisation }}</td>
                         </tr>
                         <tr>
-                            <td class="profile-info-target">{{ 'profile.menu.loginTime' | translate }}</td>
+                            <td>{{ 'profile.menu.loginTime' | translate }}</td>
                             <td>{{ currentUser.lastLoginTime | date: SHOW_DATE_FORMAT }}</td>
                         </tr>
                     </table>

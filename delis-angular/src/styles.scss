@@ -72,12 +72,13 @@ table {
 }
 
 .profile-info {
-  padding: 1em 1em 2em 1em;
+  padding: 1em;
 }
 
-.profile-info-target {
-  color: mat-color($primary) !important;
+.profile-info>tr>td:first-child {
+  font-weight: bold;
 }
+
 
 .app-button-row {
   margin-left: 5em;
@@ -96,7 +97,7 @@ table {
 }
 
 .table-details-th {
-  color: mat-color($primary) !important;
+  //color: mat-color($primary) !important;
   height: 2ex !important;
   font-size: 2ex !important;
   text-align: left !important;
@@ -126,8 +127,8 @@ table {
 }
 
 .table-details-header {
-  color: mat-color($primary) !important;
-  text-align: center !important;
+  //color: mat-color($primary) !important;
+  //text-align: center !important;
 }
 
 .delisHeader {
@@ -136,7 +137,7 @@ table {
 }
 
 .checkCircleHeaderLanguage {
-  color: mat-color($primary) !important;
+//  color: mat-color($primary) !important;
   margin-left: 1em;
 }
 

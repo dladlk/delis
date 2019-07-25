@@ -1,15 +1,8 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" class="layout-wrapper" >
   <div fxFlex="70%" fxFlex.lt-md="100%" class="flex-wrapper">
-    <mat-sidenav-container fxFlexFill>
-      <mat-sidenav #sidenav role="navigation" fxLayout="column" mode="over"  opened="false" fxHide.gt-sm="true">
-        <app-sidenav-list (sidenavClose)="sidenav.close()"></app-sidenav-list>
-      </mat-sidenav>
-      <mat-sidenav-content>
         <app-header (sidenavToggle)="sidenav.toggle()"></app-header>
         <main>
           <router-outlet></router-outlet>
         </main>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
   </div>
 </div>
