@@ -5,13 +5,13 @@
         </button>
     </div>
     <div>
-        <a [routerLink]="['/dashboard']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.home' | translate}}</a>
+        <a [routerLink]="['/dashboard']">{{ 'sidebar.home' | translate}}</a>
     </div>
     <div fxFlex fxLayout dir="ltr" fxFlexOffset="5" fxHide.xs>
         <ul fxLayout fxLayoutGap="1em" class="navigation-items">
-        <li><a [routerLink]="['/document']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.received.documents' | translate }}</a></li>
-        <li><a [routerLink]="['/send-document']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.send.documents' | translate }}</a></li>
-        <li><a [routerLink]="['/identifier']" [routerLinkActive]="['router-link-active']">{{ 'sidebar.identifier' | translate }}</a></li>
+        <li><a [routerLink]="['/document']" [routerLinkActive]="['active']">{{ 'sidebar.received.documents' | translate }}</a></li>
+        <li><a [routerLink]="['/send-document']" [routerLinkActive]="['active']">{{ 'sidebar.send.documents' | translate }}</a></li>
+        <li><a [routerLink]="['/identifier']" [routerLinkActive]="['active']">{{ 'sidebar.identifier' | translate }}</a></li>
         </ul>
     </div>
     <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs>
@@ -27,7 +27,7 @@
                         <mat-icon *ngIf="lang == 'da'" class="checkCircleHeaderLanguage">check_circle</mat-icon>
                     </button>
                 </mat-menu>
-                <a [matMenuTriggerFor]="langMenu" [routerLink]="">
+                <a [routerLink]="" [matMenuTriggerFor]="langMenu">
                     {{ 'header.language' | translate }}
                 </a>
             </li>
@@ -60,12 +60,12 @@
                         </tr>
                     </table>
                 </mat-menu>
-                <a [matMenuTriggerFor]="userMenu" [routerLink]="">
+                <a [routerLink]="" [matMenuTriggerFor]="userMenu">
                     {{ headerUserName }}
                 </a>
             </li>
             <li>
-                <a [routerLink]="['/logout']" [routerLinkActive]="['router-link-active']">{{ 'header.account.logout' | translate }}</a>
+                <a [routerLink]="['/logout']">{{ 'header.account.logout' | translate }}</a>
             </li>
         </ul>
     </div>

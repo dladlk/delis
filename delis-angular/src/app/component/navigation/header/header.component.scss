@@ -3,7 +3,11 @@ a {
   color: white;
 }
 
-a:hover, a:active{
+a.active {
+  color: lightgray;
+}
+
+a:hover, a:active {
   color: lightgray;
 }
 
