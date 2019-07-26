@@ -74,7 +74,7 @@
   "documents.table.one.columnName.senderIdRaw": "Nummer",
   "documents.table.one.columnName.senderName": "Navn",
   "documents.table.one.columnName.senderCountry": "Land",
-  "documents.table.one.columnName.journalRecords": "Tidsskrift optegnelser",
+  "documents.table.one.columnName.journalRecords": "Journal optegnelser",
   "documents.table.one.columnName.journalRecords.createTime": "Dato",
   "documents.table.one.columnName.journalRecords.type": "Type",
   "documents.table.one.columnName.journalRecords.success": "Status",
