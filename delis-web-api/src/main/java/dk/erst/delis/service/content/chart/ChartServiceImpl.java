@@ -83,7 +83,7 @@ public class ChartServiceImpl implements ChartService {
 		long days = DateUtil.getMinutesBetween(startSearchDate, endSearchDate) / 60;
 		if (days > 24) {
 			days /= 24;
-			lineChartDataContent.setLabel("chart data custom");
+			lineChartDataContent.setLabel("Modtagelse");
 			List<Long> dataGraph = new ArrayList<>();
 			endSearchDate = DateUtil.addDay(startSearchDate, 1);
 			for (int d = 0; d <= days; ++d) {
@@ -110,7 +110,7 @@ public class ChartServiceImpl implements ChartService {
 		LineChartData lineChartDataContent = new LineChartData();
 		Date end = DateUtil.addHour(startSearchDate, 1);
 		long hours = DateUtil.getHoursBetween(endSearchDate, startSearchDate);
-		lineChartDataContent.setLabel("chart data default");
+		lineChartDataContent.setLabel("Modtagelse");
 		List<Long> dataGraph = new ArrayList<>();
 		for (int h = 0; h <= hours; ++h) {
 			lineChartLabels.add(DateUtil.DATE_FORMAT_BY_DAY.format(clientDate));
