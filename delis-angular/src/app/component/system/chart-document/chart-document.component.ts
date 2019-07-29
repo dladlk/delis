@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { DASHBOARD_PATH } from '../../../app.constants';
+
 import { Range, RangeModel } from '../date-range/model/model';
 import { ErrorService } from '../../../service/system/error.service';
 import { TokenService } from '../../../service/system/token.service';
@@ -41,11 +43,13 @@ export class ChartDocumentComponent implements OnInit {
     this.url = this.url + '/rest/chart';
     this.updateLineChart(false);
     this.daterangeObservable.listen().subscribe((dtRange: Range) => {
-      if (dtRange.fromDate !== null && dtRange.toDate !== null) {
-        this.drm = dtRange;
-        this.updateLineChart(true);
-      } else {
-        this.updateLineChart(false);
+      if (location.href.endsWith('/' + DASHBOARD_PATH)) {
+        if (dtRange.fromDate !== null && dtRange.toDate !== null) {
+          this.drm = dtRange;
+          this.updateLineChart(true);
+        } else {
+          this.updateLineChart(false);
+        }
       }
     });
   }
