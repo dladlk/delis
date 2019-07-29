@@ -8,6 +8,7 @@ import { TokenService } from '../../../service/system/token.service';
 import { RuntimeConfigService } from '../../../service/system/runtime-config.service';
 import { HttpRestService } from '../../../service/system/http-rest.service';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chart-document',
@@ -26,12 +27,15 @@ export class ChartDocumentComponent implements OnInit {
   lineChartLegend: boolean;
   lineChartType: string;
 
+  chartName: string;
+
   drm: RangeModel;
 
   constructor(private errorService: ErrorService,
               private tokenService: TokenService,
               private configService: RuntimeConfigService,
               private httpRestService: HttpRestService,
+              private translate: TranslateService,
               private daterangeObservable: DaterangeObservable) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/chart';
@@ -51,7 +55,10 @@ export class ChartDocumentComponent implements OnInit {
     this.lineChartOptions = {
       responsive: true
     };
+    
     this.lineChartType = 'line';
+    this.translate.get('td.picker.today').subscribe(val => this.chartName = val);
+
     this.lineChartColors = [
       {
         backgroundColor: 'rgba(33, 150, 243,0.2)',
@@ -101,7 +108,7 @@ export class ChartDocumentComponent implements OnInit {
     }
   }
 
-  generateLineChart(data: {}) {
+  private generateLineChart(data: {}) {
     let lineChart = Object.assign({}, data['data']);
     this.lineChartData = lineChart.lineChartData;
     if (this.lineChartLabels.length !== 0) {
@@ -112,7 +119,7 @@ export class ChartDocumentComponent implements OnInit {
     }
   }
 
-  getChartCustomData(drm: Range, defaultChart: boolean): Observable<any> {
+  private getChartCustomData(drm: Range, defaultChart: boolean): Observable<any> {
     let params = new HttpParams();
     if (this.drm.fromDate !== null && this.drm.toDate) {
       params = params.append('startDate', String(new Date(drm.fromDate).getTime()));
@@ -122,7 +129,7 @@ export class ChartDocumentComponent implements OnInit {
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 
-  getChartDefaultData(start: Date, end: Date, defaultChart: boolean): Observable<any> {
+  private getChartDefaultData(start: Date, end: Date, defaultChart: boolean): Observable<any> {
     let params = new HttpParams();
     params = params.append('startDate', String(start.getTime()));
     params = params.append('endDate', String(end.getTime()));

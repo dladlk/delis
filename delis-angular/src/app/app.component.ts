@@ -18,7 +18,12 @@ export class AppComponent implements OnInit {
     private configService: RuntimeConfigService,
     private translate: TranslateService,
     private locale: LocaleService) {
-    this.translate.use(locale.getLocale().match(/en|da/) ? locale.getLocale() : 'en');
+      this.translate.setDefaultLang('en');
+      let currentLang = 'en';
+      if (locale.getLocale().match(/en|da/)) {
+        currentLang = locale.getLocale();
+      }
+      this.translate.use(currentLang);
   }
 
   ngOnInit() {

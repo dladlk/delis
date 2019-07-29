@@ -52,17 +52,22 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
     this.configStoreService.ngxDrpOptions = this.options;
     this.rangeUpdate$ = this.rangeStoreService.rangeUpdate$.subscribe(range => {
       if (range.fromDate !== null && range.toDate !== null) {
-        const from: string = this.formatToDateString(
-          range.fromDate,
-          this.options.format
-        );
-        const to: string = this.formatToDateString(
-          range.toDate,
-          this.options.format
-        );
-        this.selectedDateRange = `${from} - ${to}`;
+        const from: string = this.formatToDateString(range.fromDate,this.options.format);
+        const to: string = this.formatToDateString(range.toDate,this.options.format);
+
+        let rangeTitle = `${from} - ${to}`;
+        if (from === to) {
+          rangeTitle = from;
+
+          const todayFormat = this.formatToDateString(new Date(),this.options.format);
+          if (from === todayFormat) {
+            rangeTitle = 'I dag';
+          }
+        }
+        
+        this.selectedDateRange = rangeTitle;
       } else {
-        this.selectedDateRange = '';
+        this.selectedDateRange = 'Alle';
       }
       this.selectedDateRangeChanged.emit(range);
       this.daterangeObservable.loadDate(range);
