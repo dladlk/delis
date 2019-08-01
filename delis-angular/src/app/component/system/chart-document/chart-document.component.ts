@@ -122,9 +122,10 @@ export class ChartDocumentComponent implements OnInit {
   }
 
   private getChartData(start: string, end: string): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('from', start);
-    params = params.append('to', end);
+    let params = new HttpParams()
+    .append('from', start)
+    .append('to', end)
+    .append('now', this.datePipe.transform(new Date(), "yyyy-MM-dd HH:mm:ss"));
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 }
