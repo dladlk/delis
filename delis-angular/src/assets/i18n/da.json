@@ -179,8 +179,8 @@
   "td.picker.thisMonth": "Denne måned",
   "td.picker.lastMonth": "Sidste måned",
 
-  "td.picker.from": "TIL",
-  "td.picker.to": "FRA",
+  "td.picker.from": "FRA",
+  "td.picker.to": "TIL",
 
   "column.hide": "Skjul kolonner",
 
