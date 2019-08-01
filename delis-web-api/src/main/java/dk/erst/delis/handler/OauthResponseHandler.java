@@ -44,15 +44,12 @@ public class OauthResponseHandler implements ResponseBodyAdvice<Object> {
             DefaultOAuth2AccessToken defaultOAuth2AccessToken = (DefaultOAuth2AccessToken) body;
             OAuth2Authentication oAuth2Authentication = tokenStore.readAuthentication(tokenStore.readAccessToken(defaultOAuth2AccessToken.getValue()));
             CustomUserDetails userDetails = (CustomUserDetails) oAuth2Authentication.getUserAuthentication().getPrincipal();
-            AuthData authData = new AuthData();
-            authData.setRole(userDetails.getRole());
-            authData.setUsername(userDetails.getUserName());
-            authData.setFirstName(userDetails.getFirstName());
-            authData.setLastName(userDetails.getLastName());
-            authData.setOrganisation(userDetails.getOrganisation());
-            authData.setLastLoginTime(userDetails.getLastLoginTime().getTime());
+            
+            AuthData authData = userDetails.buildAuthData();
+            
             authData.setAccessToken(defaultOAuth2AccessToken.getValue());
             authData.setRefreshToken(defaultOAuth2AccessToken.getRefreshToken().getValue());
+            
             return new DataContainer<>(authData);
         } else {
             return body;

@@ -8,4 +8,5 @@ export class LoginModel {
   role: string;
   organisation: string;
   lastLoginTime: Date;
+  disabledIrForm: boolean;
 }

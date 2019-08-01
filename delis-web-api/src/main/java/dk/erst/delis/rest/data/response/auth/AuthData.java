@@ -15,4 +15,6 @@ public class AuthData {
     private String accessToken;
     private String refreshToken;
     private long lastLoginTime;
+    private boolean disabledIrForm;
+    
 }

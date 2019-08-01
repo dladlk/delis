@@ -73,7 +73,7 @@
                 </table>
             </mat-card-content>
             <mat-card-content>
-                <div *ngIf="!errorOneDocument">
+                <div *ngIf="!errorOneDocument && !hideForm">
                     <app-invoice [documentId]="document.id" [effectiveDate]="document.documentDate"></app-invoice>
                 </div>
             </mat-card-content>

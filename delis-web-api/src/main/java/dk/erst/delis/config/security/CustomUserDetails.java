@@ -5,6 +5,8 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import dk.erst.delis.rest.data.response.auth.AuthData;
+
 import java.util.Collection;
 import java.util.Date;
 
@@ -20,6 +22,7 @@ public class CustomUserDetails extends User {
     private String organisation;
     private String role;
     private Date lastLoginTime;
+    private boolean disabledIrForm;
 
     CustomUserDetails(dk.erst.delis.data.entities.user.User user, Collection<? extends GrantedAuthority> authorities, String organisation, String role) {
         super(user.getUsername(), user.getPassword(), true, true, true, true, authorities);
@@ -30,5 +33,21 @@ public class CustomUserDetails extends User {
         this.organisation = organisation;
         this.role = role;
         this.lastLoginTime = new Date();
+        this.disabledIrForm = user.getDisabledIrForm() != null && user.getDisabledIrForm().booleanValue();
+    }
+    
+    public AuthData buildAuthData () {
+    	
+    	 AuthData authData = new AuthData();
+    	 
+         authData.setRole(this.getRole());
+         authData.setUsername(this.getUserName());
+         authData.setFirstName(this.getFirstName());
+         authData.setLastName(this.getLastName());
+         authData.setOrganisation(this.getOrganisation());
+         authData.setLastLoginTime(this.getLastLoginTime().getTime());
+         authData.setDisabledIrForm(this.isDisabledIrForm());
+         
+         return authData;
     }
 }

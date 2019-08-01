@@ -16,6 +16,7 @@ import { FileSaverService } from '../../../../service/system/file-saver.service'
 import { ErrorDictionaryModel } from '../../../../model/content/document/error-dictionary.model';
 
 import { DOCUMENT_PATH, SHOW_DATE_FORMAT } from '../../../../app.constants';
+import { RuntimeConfigService } from 'src/app/service/system/runtime-config.service';
 
 @Component({
   selector: 'app-document-details',
@@ -45,6 +46,8 @@ export class DocumentDetailsComponent implements OnInit {
 
   documentId: number;
 
+  hideForm: boolean;
+
   isNextUp: boolean;
   isNextDown: boolean;
   currentIds: number[];
@@ -57,6 +60,7 @@ export class DocumentDetailsComponent implements OnInit {
               private errorService: ErrorService,
               private documentService: DocumentService,
               public stateService: DocumentStateService,
+              private configService: RuntimeConfigService,
               private journalDocumentService: JournalDocumentService) { }
 
   ngOnInit() {
@@ -89,6 +93,9 @@ export class DocumentDetailsComponent implements OnInit {
         this.errorService.errorProcess(error);
       }
     );
+                
+    this.hideForm = this.configService.getCurrentUser().disabledIrForm;
+
     this.initStateDetails(id);
   }
 

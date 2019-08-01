@@ -8,6 +8,7 @@ export class CurrentUserModel {
     role: string;
     organisation: string;
     lastLoginTime: Date;
+    disabledIrForm: boolean;
 
     constructor(loginData: LoginModel) {
         this.username = loginData.username;
@@ -16,5 +17,6 @@ export class CurrentUserModel {
         this.role = loginData.role;
         this.organisation = loginData.organisation;
         this.lastLoginTime = loginData.lastLoginTime;
+        this.disabledIrForm = loginData.disabledIrForm;
     }
 }
