@@ -9,25 +9,27 @@ import { RuntimeConfigService } from '../../../service/system/runtime-config.ser
 import { HttpRestService } from '../../../service/system/http-rest.service';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
 import { TranslateService } from '@ngx-translate/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chart-document',
   templateUrl: './chart-document.component.html',
-  styleUrls: ['./chart-document.component.scss']
+  styleUrls: ['./chart-document.component.scss'],
+  providers:[
+    DatePipe
+  ]
 })
 export class ChartDocumentComponent implements OnInit {
 
   private readonly url: string;
 
   lineChartData: Array<any> = [];
-  lineChartLabels: Array<any> = [];
+  lineChartLabels: Array<string> = [];
 
   lineChartOptions: any;
   lineChartColors: Array<any>;
   lineChartLegend: boolean;
   lineChartType: string;
-
-  chartName: string;
 
   drm: RangeModel;
 
@@ -36,17 +38,16 @@ export class ChartDocumentComponent implements OnInit {
               private configService: RuntimeConfigService,
               private httpRestService: HttpRestService,
               private translate: TranslateService,
+              private datePipe: DatePipe,
               private daterangeObservable: DaterangeObservable) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/chart';
-    this.updateLineChart(false);
+
+    let today = new Date();
+    let range: Range = {fromDate: today, toDate: today};
+    this.updateLineChart(range);
     this.daterangeObservable.listen().subscribe((dtRange: Range) => {
-      if (dtRange.fromDate !== null && dtRange.toDate !== null) {
-        this.drm = dtRange;
-        this.updateLineChart(true);
-      } else {
-        this.updateLineChart(false);
-      }
+        this.updateLineChart(dtRange);
     });
   }
 
@@ -57,7 +58,6 @@ export class ChartDocumentComponent implements OnInit {
     };
     
     this.lineChartType = 'line';
-    this.translate.get('td.picker.today').subscribe(val => this.chartName = val);
 
     this.lineChartColors = [
       {
@@ -82,35 +82,33 @@ export class ChartDocumentComponent implements OnInit {
   public chartHovered(e: any): void {
   }
 
-  private updateLineChart(custom: boolean) {
-    if (custom) {
-      this.getChartCustomData(this.drm, false).subscribe(
+  private updateLineChart(range: Range) {
+      const formatDate = (d: Date) => {
+        let res = '';
+        if (d) {
+          res = this.datePipe.transform(d, "yyyy-MM-dd");
+        }
+        return res;
+      };
+      var dateStart = formatDate(range.fromDate);
+      var dateEnd = formatDate(range.toDate);
+      this.getChartData(dateStart, dateEnd).subscribe(
         (data: {}) => {
           this.generateLineChart(data);
         }, error => {
           this.errorService.errorProcess(error);
         }
       );
-    } else {
-      this.drm = new RangeModel();
-      var dateStart = new Date();
-      dateStart.setHours(0, 0, 0, 0);
-      var dateEnd = new Date();
-      this.drm.fromDate = dateStart;
-      this.drm.toDate = dateEnd;
-      this.getChartDefaultData(dateStart, dateEnd, true).subscribe(
-        (data: {}) => {
-          this.generateLineChart(data);
-        }, error => {
-          this.errorService.errorProcess(error);
-        }
-      );
-    }
   }
 
   private generateLineChart(data: {}) {
     let lineChart = Object.assign({}, data['data']);
     this.lineChartData = lineChart.lineChartData;
+    this.lineChartData.forEach(d => {
+      this.translate.get("dashboard."+d.label).subscribe(s => {
+        d.label = s; 
+      });
+    });
     if (this.lineChartLabels.length !== 0) {
       this.lineChartLabels.length = 0;
       this.lineChartLabels.push(...lineChart.lineChartLabels);
@@ -119,21 +117,10 @@ export class ChartDocumentComponent implements OnInit {
     }
   }
 
-  private getChartCustomData(drm: Range, defaultChart: boolean): Observable<any> {
+  private getChartData(start: string, end: string): Observable<any> {
     let params = new HttpParams();
-    if (this.drm.fromDate !== null && this.drm.toDate) {
-      params = params.append('startDate', String(new Date(drm.fromDate).getTime()));
-      params = params.append('endDate', String(new Date(drm.toDate).getTime()));
-    }
-    params = params.append('defaultChart', String(defaultChart));
-    return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
-  }
-
-  private getChartDefaultData(start: Date, end: Date, defaultChart: boolean): Observable<any> {
-    let params = new HttpParams();
-    params = params.append('startDate', String(start.getTime()));
-    params = params.append('endDate', String(end.getTime()));
-    params = params.append('defaultChart', String(defaultChart));
+    params = params.append('from', start);
+    params = params.append('to', end);
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 }
