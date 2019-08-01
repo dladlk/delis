@@ -16,8 +16,8 @@
 					<th>Email</th>
 					<th>First name</th>
 					<th>Last name</th>
-					<th>Update</th>
-					<th>Delete</th>
+					<th>IR Form</th>
+					<th></th>
 				</tr>
 				<tr th:each="user,iter : ${users}">
 					<td th:text="${user.id}"></td>
@@ -28,8 +28,13 @@
 					<td th:text="${user.email}"></td>
 					<td th:text="${user.firstName}"></td>
 					<td th:text="${user.lastName}"></td>
-					<td><a href="#" th:href="@{|/users/update/${user.id}|}" th:text="update"></a></td>
-					<td><a href="#" th:href="@{|/users/delete/${user.id}|}" th:text="delete"></a></td>
+
+					<td th:text="${user.disabledIrForm != null && user.disabledIrForm ? '': 'Yes'}"></td>
+					
+					<td>
+						<a href="#" th:href="@{|/users/update/${user.id}|}" th:text="Update"></a>
+						<a href="#" th:href="@{|/users/delete/${user.id}|}" th:text="Delete"></a>
+					</td>
 				</tr>
 			</table>
 		</div>
