@@ -1,8 +1,9 @@
 package dk.erst.delis.service.content.chart;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,13 +38,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ChartServiceImpl implements ChartService {
 
+	protected static final String INPUT_NOW_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
 	private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final DateTimeFormatter OUTPUT_DAILY_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
 	private static final DateTimeFormatter OUTPUT_HOURLY_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
-	private static final DateTimeFormatter DB_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-	private static final ZoneId UI_ZONE = ZoneId.of("Europe/Copenhagen");
-	private static final ZoneId DB_ZONE = ZoneOffset.UTC;
+	private static final DateTimeFormatter DB_FORMAT = DateTimeFormatter.ofPattern(INPUT_NOW_FORMAT);
 
 	private StatDao statDao;
 	private final SecurityService securityService;
@@ -60,66 +59,40 @@ public class ChartServiceImpl implements ChartService {
 	public ChartData generateChartData(WebRequest request) {
 		String start = request.getParameter("from");
 		String end = request.getParameter("to");
-		return generateChartData(start, end);
+		String nowUI = request.getParameter("now");
+		return generateChartData(start, end, nowUI);
 	}
 
 	@Transactional(readOnly = true)
-	protected ChartData generateChartData(String startStr, String endStr) {
+	protected ChartData generateChartData(String startStr, String endStr, String nowUI) {
 		long start = System.currentTimeMillis();
 
 		Long organisationId = loadOrganisationId();
-		log.debug("Start chart loading for " + startStr + " - " + endStr + ", orgId " + organisationId);
-		/*
-		 * We assume, that input dates are defined in DK time zone - Europe/Copenhagen.
-		 * 
-		 * But DB time is expressed in UTC - so we should convert it there.
-		 */
-		/*
-		 * See https://stackoverflow.com/a/56508200/11862370 for an overview of LocalDateTime vs ZonedDateTime
-		 */
-		ZonedDateTime startDate = null;
-		if (!StringUtils.isEmpty(startStr)) {
-			startDate = LocalDate.parse(startStr, INPUT_DATE_FORMAT).atTime(0, 0).atZone(UI_ZONE);
+		log.debug("Start chart loading for " + startStr + " - " + endStr + ", orgId " + organisationId+", now "+nowUI);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(INPUT_NOW_FORMAT);
+		Date uiTimeNow;
+		try {
+			uiTimeNow = sdf.parse(nowUI);
+		} catch (ParseException e) {
+			log.error("Failed to parse "+nowUI, e);
+			e.printStackTrace();
+			uiTimeNow = new Date();
 		}
-
-		ZonedDateTime endDate = null;
-		if (!StringUtils.isEmpty(endStr)) {
-			endDate = LocalDate.parse(endStr, INPUT_DATE_FORMAT).atTime(0, 0).atZone(UI_ZONE);
-		}
-
-		final boolean groupHourNotDate = !StringUtils.isEmpty(startStr) && !StringUtils.isEmpty(endStr) && startStr.equals(endStr);
-		log.debug("groupHourNotDate: " + groupHourNotDate);
-
-		final boolean today = groupHourNotDate && startStr.equals(ZonedDateTime.now(UI_ZONE).format(INPUT_DATE_FORMAT));
-		log.debug("today: " + today);
-
-		if (startDate == null || endDate == null) {
-			/*
-			 * Loaded in UTC
-			 */
-			StatRange fullRange = statDao.loadFullRange(organisationId);
-			log.debug("Loaded full range " + fullRange);
-			if (fullRange != null) {
-				if (startDate == null) {
-					startDate = ZonedDateTime.ofInstant(fullRange.getFrom().toInstant(), DB_ZONE);
-				}
-				if (endDate == null) {
-					endDate = ZonedDateTime.ofInstant(fullRange.getTo().toInstant(), DB_ZONE);
-				}
-			}
-		}
-
-		Date loadDbTimeNow = statDao.loadDbTimeNow();
-		ZonedDateTime nowDB = ZonedDateTime.ofInstant(loadDbTimeNow.toInstant(), DB_ZONE).withZoneSameLocal(UI_ZONE);
-		ZonedDateTime nowUI = ZonedDateTime.now(UI_ZONE);
-
-		int hoursDiff = (int) ChronoUnit.HOURS.between(nowDB, nowUI);
-
+		
+		Date dbTimeNow = statDao.loadDbTimeNow();
+		int hoursDiff = calculateHoursDiff(uiTimeNow, dbTimeNow);
 		if (log.isDebugEnabled()) {
 			log.debug("Hours diff between UI and DB: " + hoursDiff);
 		}
 
-		StatRange statRange = StatRange.of(startDate, endDate);
+		StatRange statRange = StatRange.of(startStr, endStr);
+		final boolean groupHourNotDate = statRange.isSingleDay();
+		log.debug("groupHourNotDate: " + groupHourNotDate);
+
+		final boolean today = statRange.isSingleDay() && nowUI.startsWith(startStr);
+		log.debug("today: " + today);
+
 		List<KeyValue> list = statDao.loadStat(statRange, groupHourNotDate, hoursDiff, organisationId);
 
 		if (log.isDebugEnabled()) {
@@ -139,7 +112,7 @@ public class ChartServiceImpl implements ChartService {
 			}, KeyValue::getValue));
 
 			if (groupHourNotDate) {
-				int lastChartHour = today ? nowUI.getHour() : 23;
+				int lastChartHour = today ? uiTimeNow.getHours() : 23;
 				for (int i = 0; i <= lastChartHour; i++) {
 					String outputLabel = (i < 10 ? "0" : "") + i + ":00";
 					long outputValue = 0;
@@ -152,8 +125,8 @@ public class ChartServiceImpl implements ChartService {
 					dataGraph.add(outputValue);
 				}
 			} else {
-				LocalDate first = statRange.getFrom() != null ? LocalDate.from(statRange.getFrom().toInstant().atZone(UI_ZONE)) : parseKey(list.get(0)).toLocalDate();
-				LocalDate last = statRange.getTo() != null ? LocalDate.from(statRange.getTo().toInstant().atZone(UI_ZONE)) : parseKey(list.get(list.size() - 1)).toLocalDate();
+				LocalDate first = statRange.getFrom() != null ? LocalDate.parse(statRange.getFrom()) : parseKey(list.get(0)).toLocalDate();
+				LocalDate last = statRange.getTo() != null ? LocalDate.parse(statRange.getTo()) : parseKey(list.get(list.size() - 1)).toLocalDate();
 
 				LocalDate cur = first;
 
@@ -181,6 +154,13 @@ public class ChartServiceImpl implements ChartService {
 		log.debug("Done chart data in " + (System.currentTimeMillis() - start) + " with: " + chartData);
 
 		return chartData;
+	}
+
+	protected int calculateHoursDiff(Date uiTimeNow, Date dbTimeNow) {
+		ZonedDateTime nowDB = ZonedDateTime.ofInstant(dbTimeNow.toInstant(), ZoneOffset.UTC);
+		ZonedDateTime nowUI = ZonedDateTime.ofInstant(uiTimeNow.toInstant(), ZoneOffset.UTC);
+
+		return (int) ChronoUnit.HOURS.between(nowDB, nowUI);
 	}
 
 	private static String formatKeyValue(KeyValue k, boolean groupHourNotDate) {

@@ -1,6 +1,5 @@
 package dk.erst.delis.persistence.stat.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,14 +58,12 @@ public class StatDaoImpl implements StatDao {
 			q.setParameter("organisationId", organisationId);
 		}
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
 		if (range.getFrom() != null) {
-			q.setParameter("from", sdf.format(range.getFrom()) + " 00:00:00");
+			q.setParameter("from", range.getFrom() + " 00:00:00");
 		}
 
 		if (range.getTo() != null) {
-			q.setParameter("to", sdf.format(range.getTo()) + " 23:59:59");
+			q.setParameter("to", range.getTo() + " 23:59:59");
 		}
 
 		List<Object[]> list = q.getResultList();
@@ -104,19 +101,7 @@ public class StatDaoImpl implements StatDao {
 
 	@Override
 	public StatRange loadFullRange(Long organisationId) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("select min(d.create_time), max(d.create_time) from Document d");
-		if (organisationId != null) {
-			sb.append(" where d.organisation_id = :organisationId ");
-		}
-		String sqlString = sb.toString();
-		Query q = entityManager.createNativeQuery(sqlString);
-		if (organisationId != null) {
-			q.setParameter("organisationId", organisationId);
-		}
-
-		Object[] minMax = (Object[]) q.getSingleResult();
-		return StatRange.of((Date) minMax[0], (Date) minMax[1]);
+		return null;
 	}
 
 }

@@ -1,7 +1,6 @@
 package dk.erst.delis.persistence.stat;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -25,20 +24,31 @@ public interface StatDao {
 	public static class StatRange implements Serializable {
 		private static final long serialVersionUID = 493729743470091098L;
 
-		private Date from;
-		private Date to;
+		private String from;
+		private String to;
 
-		public static StatRange of(Date from, Date to) {
+		public boolean isSingleDay() {
+			return from != null && to != null && from.equals(to);
+		}
+
+		public static StatRange of(String from, String to) {
 			StatRange sr = new StatRange();
-			sr.from = from;
-			sr.to = to;
+			sr.from = cleanDate(from);
+			sr.to = cleanDate(to);
 			return sr;
 		}
 
-		public static StatRange of(ZonedDateTime startDate, ZonedDateTime endDate) {
-			return of(toDate(startDate), toDate(endDate));
+		private static String cleanDate(String str) {
+			if (str != null) {
+				str = str.trim();
+				if (str.length() == 0) {
+					return null;
+				}
+				return str;
+			}
+			return null;
 		}
-		
+
 		public boolean isAnyDefined() {
 			return this.from != null || this.to != null; 
 		}
@@ -53,14 +63,6 @@ public interface StatDao {
 			sb.append(to);
 			return sb.toString();
 		}
-		
-		private static Date toDate(ZonedDateTime dt) {
-			if (dt != null) {
-				return Date.from(dt.toInstant());
-			}
-			return null;
-		}
-
 	}
 
 	@Getter

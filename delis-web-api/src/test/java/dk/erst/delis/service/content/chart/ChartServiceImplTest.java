@@ -7,9 +7,11 @@ import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,15 +38,11 @@ public class ChartServiceImplTest {
 
 	@Test
 	public void testGenerateChartDataStringString() {
-		String pattern = "yyyy-MM-dd HH:mm";
-
 		List<String> testListStr = new ArrayList<String>();
 		for (int i = 0; i < TEST_DATA.length; i++) {
 			String factDate = TEST_DATA[i];
 			testListStr.add(factDate);
 		}
-
-		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 
 		StatDao statDao = mock(StatDao.class);
 		when(statDao.loadDbTimeNow()).thenReturn(calculateDbNow());
@@ -55,8 +53,8 @@ public class ChartServiceImplTest {
 			StatRange range = (StatRange) d.getArgument(0);
 			boolean groupHourNotDays = (Boolean) d.getArgument(1);
 
-			final String fromStr = range.getFrom() != null ? sdf.format(range.getFrom()) : "";
-			final String toStr = range.getTo() != null ? sdf.format(range.getTo()).substring(0, 10) + "23:59" : "ZZZ";
+			final String fromStr = range.getFrom() != null ? range.getFrom() : "";
+			final String toStr = range.getTo() != null ? range.getTo().substring(0, 10) + "23:59" : "ZZZ";
 
 			List<String> filtered = testListStr.stream().filter(v -> {
 				return fromStr.compareTo(v) <= 0 && toStr.compareTo(v) >= 0;
@@ -108,12 +106,41 @@ public class ChartServiceImplTest {
 	}
 
 	private void assertChartData(int totalResult, int blocks, String start, String end) {
-		ChartData r = service.generateChartData(start, end);
+		ChartData r = service.generateChartData(start, end, new SimpleDateFormat(ChartServiceImpl.INPUT_NOW_FORMAT).format(Calendar.getInstance().getTime()));
 		for (LineChartData d : r.getLineChartData()) {
 			List<Long> data = d.getData();
 			assertEquals("Wrong number of blocks for a case " + start + "-" + end, blocks, data.size());
 			assertEquals("Wrong number of total result for a case " + start + "-" + end, totalResult, data.stream().mapToInt(Long::intValue).sum());
 		}
+	}
+
+	@Test
+	public void testCalculateHoursDiff() throws ParseException {
+		ChartServiceImpl s = new ChartServiceImpl(null, null);
+
+		String[] TEST_HOURS_DIFF = new String[] {
+
+				"2019-01-01 12:00_2019-01-01 09:00_3",
+
+				"2019-01-01 12:00_2019-01-01 15:00_-3",
+
+				"2019-01-01 00:01_2018-12-31 23:01_1",
+
+				"2020-02-29 21:01_2020-03-01 01:01_-4",
+
+		};
+
+		SimpleDateFormat sdf = new SimpleDateFormat(ChartServiceImpl.INPUT_NOW_FORMAT);
+
+		for (String testCase : TEST_HOURS_DIFF) {
+			String[] spl = testCase.split("_");
+			Date ui = sdf.parse(spl[0] + ":00");
+			Date db = sdf.parse(spl[1] + ":00");
+			int expected = Integer.parseInt(spl[2]);
+
+			assertEquals("Failed on test case " + testCase, expected, s.calculateHoursDiff(ui, db));
+		}
+
 	}
 
 }

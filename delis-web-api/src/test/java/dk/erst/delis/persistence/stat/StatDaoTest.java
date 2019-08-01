@@ -2,9 +2,6 @@ package dk.erst.delis.persistence.stat;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,11 +25,6 @@ public class StatDaoTest {
 
 	@Test
 	public void testLoadStat() {
-		LocalDateTime from = LocalDate.now().atStartOfDay();
-
-		Date today = Date.valueOf(from.toLocalDate());
-		Date tomorrow = Date.valueOf(LocalDate.now().plusDays(1).atStartOfDay().toLocalDate());
-
 		List<KeyValue> stat;
 
 		for (int h = 0; h < 2; h++) {
@@ -42,13 +34,7 @@ public class StatDaoTest {
 					boolean loadHourNotDate = i == 0;
 					Long organisationId = j == 0 ? null : 1L;
 
-					StatRange fullRange = statDao.loadFullRange(organisationId);
-					assertMy(fullRange);
-
-					stat = statDao.loadStat(fullRange, loadHourNotDate, diffHours, organisationId);
-					assertMy(stat);
-
-					stat = statDao.loadStat(StatRange.of(today, tomorrow), loadHourNotDate, diffHours, organisationId);
+					stat = statDao.loadStat(StatRange.of("2019-01-01", "2019-01-06"), loadHourNotDate, diffHours, organisationId);
 					assertMy(stat);
 				}
 			}
