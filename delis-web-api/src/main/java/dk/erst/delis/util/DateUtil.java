@@ -1,6 +1,5 @@
 package dk.erst.delis.util;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,10 +13,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class DateUtil {
-
-	public final SimpleDateFormat DATE_FORMAT_BY_DAY = new SimpleDateFormat("HH:mm");
-	public final SimpleDateFormat DATE_FORMAT_BY_CUSTOM_PERIOD = new SimpleDateFormat("dd.MM");
-	public static final String DEFAULT_TIME_ZONE = "Europe/Copenhagen";
 
 	public long getMinutesBetween(Date start, Date end) {
 		return ChronoUnit.MINUTES.between(start.toInstant(), end.toInstant());

@@ -1,12 +1,18 @@
 package dk.erst.delis.service.content.chart;
 
-import static dk.erst.delis.util.DateUtil.DEFAULT_TIME_ZONE;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,127 +25,188 @@ import org.springframework.web.context.request.WebRequest;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.exception.model.FieldErrorModel;
 import dk.erst.delis.exception.statuses.RestConflictException;
-import dk.erst.delis.persistence.repository.document.DocumentRepository;
-import dk.erst.delis.persistence.repository.organization.OrganizationRepository;
+import dk.erst.delis.persistence.stat.StatDao;
+import dk.erst.delis.persistence.stat.StatDao.KeyValue;
+import dk.erst.delis.persistence.stat.StatDao.StatRange;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;
 import dk.erst.delis.service.security.SecurityService;
-import dk.erst.delis.util.DateUtil;
 import dk.erst.delis.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ChartServiceImpl implements ChartService {
 
-	private final DocumentRepository documentRepository;
-	private final OrganizationRepository organizationRepository;
+	private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static final DateTimeFormatter OUTPUT_DAILY_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
+	private static final DateTimeFormatter OUTPUT_HOURLY_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+	private static final DateTimeFormatter DB_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+	private static final ZoneId UI_ZONE = ZoneId.of("Europe/Copenhagen");
+	private static final ZoneId DB_ZONE = ZoneOffset.UTC;
+
+	private StatDao statDao;
 	private final SecurityService securityService;
 
 	@Autowired
-	public ChartServiceImpl(DocumentRepository documentRepository, OrganizationRepository organizationRepository, SecurityService securityService) {
-		this.documentRepository = documentRepository;
-		this.organizationRepository = organizationRepository;
+	public ChartServiceImpl(StatDao statDao, SecurityService securityService) {
+		this.statDao = statDao;
 		this.securityService = securityService;
 	}
 
 	@Override
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-	@Transactional(readOnly = true)
 	public ChartData generateChartData(WebRequest request) {
-
-		String timeZone = DEFAULT_TIME_ZONE;
-
-		boolean defaultChart = false;
-		String defaultChartParameter = request.getParameter("defaultChart");
-		if (StringUtils.isNotBlank(defaultChartParameter)) {
-			defaultChart = Boolean.parseBoolean(defaultChartParameter);
-		}
-
-		Date start = null, end = null;
-		String endDateParameter = request.getParameter("endDate");
-		if (Objects.nonNull(endDateParameter)) {
-			end = new Date(Long.parseLong(endDateParameter));
-		}
-		String startDateParameter = request.getParameter("startDate");
-		if (Objects.nonNull(startDateParameter)) {
-			start = new Date(Long.parseLong(startDateParameter));
-		}
-
-		if (defaultChart) {
-			return generateDefaultChartData(start, DateUtil.convertClientTimeToServerTime(timeZone, null, true), end);
-		} else {
-			return generateCustomChartData(start, end, timeZone);
-		}
+		String start = request.getParameter("from");
+		String end = request.getParameter("to");
+		return generateChartData(start, end);
 	}
 
-	private ChartData generateCustomChartData(Date start, Date end, String timeZone) {
+	@Transactional(readOnly = true)
+	protected ChartData generateChartData(String startStr, String endStr) {
+		long start = System.currentTimeMillis();
 
-		Date startSearchDate = DateUtil.convertClientTimeToServerTime(timeZone, start, true);
-		Date endSearchDate = DateUtil.convertClientTimeToServerTime(timeZone, end, false);
+		Long organisationId = loadOrganisationId();
+		log.debug("Start chart loading for " + startStr + " - " + endStr + ", orgId " + organisationId);
+		/*
+		 * We assume, that input dates are defined in DK time zone - Europe/Copenhagen.
+		 * 
+		 * But DB time is expressed in UTC - so we should convert it there.
+		 */
+		/*
+		 * See https://stackoverflow.com/a/56508200/11862370 for an overview of LocalDateTime vs ZonedDateTime
+		 */
+		ZonedDateTime startDate = null;
+		if (!StringUtils.isEmpty(startStr)) {
+			startDate = LocalDate.parse(startStr, INPUT_DATE_FORMAT).atTime(0, 0).atZone(UI_ZONE);
+		}
 
-		ChartData chartData = new ChartData();
-		List<LineChartData> lineChartData = new ArrayList<>();
-		List<String> lineChartLabels = new ArrayList<>();
-		LineChartData lineChartDataContent = new LineChartData();
-		long days = DateUtil.getMinutesBetween(startSearchDate, endSearchDate) / 60;
-		if (days > 24) {
-			days /= 24;
-			lineChartDataContent.setLabel("Modtagelse");
-			List<Long> dataGraph = new ArrayList<>();
-			endSearchDate = DateUtil.addDay(startSearchDate, 1);
-			for (int d = 0; d <= days; ++d) {
-				lineChartLabels.add(DateUtil.DATE_FORMAT_BY_CUSTOM_PERIOD.format(start));
-				dataGraph.add(generateDataGraphCount(startSearchDate, endSearchDate));
-				start = DateUtil.addDay(start, 1);
-				startSearchDate = new Date(endSearchDate.getTime());
-				endSearchDate = DateUtil.addDay(startSearchDate, 1);
+		ZonedDateTime endDate = null;
+		if (!StringUtils.isEmpty(endStr)) {
+			endDate = LocalDate.parse(endStr, INPUT_DATE_FORMAT).atTime(0, 0).atZone(UI_ZONE);
+		}
+
+		final boolean groupHourNotDate = !StringUtils.isEmpty(startStr) && !StringUtils.isEmpty(endStr) && startStr.equals(endStr);
+		log.debug("groupHourNotDate: " + groupHourNotDate);
+
+		final boolean today = groupHourNotDate && startStr.equals(ZonedDateTime.now(UI_ZONE).format(INPUT_DATE_FORMAT));
+		log.debug("today: " + today);
+
+		if (startDate == null || endDate == null) {
+			/*
+			 * Loaded in UTC
+			 */
+			StatRange fullRange = statDao.loadFullRange(organisationId);
+			log.debug("Loaded full range " + fullRange);
+			if (fullRange != null) {
+				if (startDate == null) {
+					startDate = ZonedDateTime.ofInstant(fullRange.getFrom().toInstant(), DB_ZONE);
+				}
+				if (endDate == null) {
+					endDate = ZonedDateTime.ofInstant(fullRange.getTo().toInstant(), DB_ZONE);
+				}
 			}
-			lineChartDataContent.setData(dataGraph);
-			lineChartData.add(lineChartDataContent);
-			chartData.setLineChartData(lineChartData);
-			chartData.setLineChartLabels(lineChartLabels);
-			return chartData;
-		} else {
-			return generateDefaultChartData(start, startSearchDate, endSearchDate);
 		}
-	}
 
-	private ChartData generateDefaultChartData(Date clientDate, Date startSearchDate, Date endSearchDate) {
+		Date loadDbTimeNow = statDao.loadDbTimeNow();
+		ZonedDateTime nowDB = ZonedDateTime.ofInstant(loadDbTimeNow.toInstant(), DB_ZONE).withZoneSameLocal(UI_ZONE);
+		ZonedDateTime nowUI = ZonedDateTime.now(UI_ZONE);
+
+		int hoursDiff = (int) ChronoUnit.HOURS.between(nowDB, nowUI);
+
+		if (log.isDebugEnabled()) {
+			log.debug("Hours diff between UI and DB: " + hoursDiff);
+		}
+
+		StatRange statRange = StatRange.of(startDate, endDate);
+		List<KeyValue> list = statDao.loadStat(statRange, groupHourNotDate, hoursDiff, organisationId);
+
+		if (log.isDebugEnabled()) {
+			log.debug("Loaded stat: " + list);
+		}
+
 		ChartData chartData = new ChartData();
 		List<LineChartData> lineChartData = new ArrayList<>();
 		List<String> lineChartLabels = new ArrayList<>();
 		LineChartData lineChartDataContent = new LineChartData();
-		Date end = DateUtil.addHour(startSearchDate, 1);
-		long hours = DateUtil.getHoursBetween(endSearchDate, startSearchDate);
-		lineChartDataContent.setLabel("Modtagelse");
+		lineChartDataContent.setLabel("chart.receiving");
 		List<Long> dataGraph = new ArrayList<>();
-		for (int h = 0; h <= hours; ++h) {
-			lineChartLabels.add(DateUtil.DATE_FORMAT_BY_DAY.format(clientDate));
-			dataGraph.add(generateDataGraphCount(startSearchDate, endSearchDate));
-			startSearchDate = new Date(end.getTime());
-			clientDate = DateUtil.addHour(clientDate, 1);
-			end = DateUtil.addHour(startSearchDate, 1);
+
+		if (!list.isEmpty()) {
+			Map<String, Long> mappedList = list.stream().collect(Collectors.toMap(k -> {
+				return formatKeyValue(k, groupHourNotDate);
+			}, KeyValue::getValue));
+
+			if (groupHourNotDate) {
+				int lastChartHour = today ? nowUI.getHour() : 23;
+				for (int i = 0; i <= lastChartHour; i++) {
+					String outputLabel = (i < 10 ? "0" : "") + i + ":00";
+					long outputValue = 0;
+
+					if (mappedList.containsKey(outputLabel)) {
+						outputValue = mappedList.get(outputLabel);
+					}
+
+					lineChartLabels.add(outputLabel);
+					dataGraph.add(outputValue);
+				}
+			} else {
+				LocalDate first = statRange.getFrom() != null ? LocalDate.from(statRange.getFrom().toInstant().atZone(UI_ZONE)) : parseKey(list.get(0)).toLocalDate();
+				LocalDate last = statRange.getTo() != null ? LocalDate.from(statRange.getTo().toInstant().atZone(UI_ZONE)) : parseKey(list.get(list.size() - 1)).toLocalDate();
+
+				LocalDate cur = first;
+
+				while (!cur.isAfter(last)) {
+					String outputLabel = cur.format(OUTPUT_DAILY_FORMAT);
+					cur = cur.plusDays(1);
+
+					long outputValue = 0;
+
+					if (mappedList.containsKey(outputLabel)) {
+						outputValue = mappedList.get(outputLabel);
+					}
+
+					lineChartLabels.add(outputLabel);
+					dataGraph.add(outputValue);
+				}
+			}
 		}
+
 		lineChartDataContent.setData(dataGraph);
 		lineChartData.add(lineChartDataContent);
 		chartData.setLineChartData(lineChartData);
 		chartData.setLineChartLabels(lineChartLabels);
+
+		log.debug("Done chart data in " + (System.currentTimeMillis() - start) + " with: " + chartData);
+
 		return chartData;
 	}
 
-	private Long generateDataGraphCount(Date startSearchDate, Date endSearchDate) {
+	private static String formatKeyValue(KeyValue k, boolean groupHourNotDate) {
+		LocalDateTime dateTime = parseKey(k);
+		DateTimeFormatter outputFormat = getFormat(groupHourNotDate);
+		return dateTime.format(outputFormat);
+	}
+
+	protected static DateTimeFormatter getFormat(boolean groupHourNotDate) {
+		return groupHourNotDate ? OUTPUT_HOURLY_FORMAT : OUTPUT_DAILY_FORMAT;
+	}
+
+	private static LocalDateTime parseKey(KeyValue k) {
+		return LocalDateTime.parse(k.getKey(), DB_FORMAT);
+	}
+
+	private Long loadOrganisationId() {
 		if (SecurityUtil.hasRole("ROLE_USER")) {
-			Long orgId = securityService.getOrganisation().getId();
+			Organisation organisation = securityService.getOrganisation();
+			Long orgId = organisation.getId();
 			if (orgId == null) {
 				conflictProcess();
 			}
-			Organisation organisation = organizationRepository.findById(orgId).orElse(null);
-			if (organisation == null) {
-				conflictProcess();
-			}
-			return documentRepository.countByCreateTimeBetweenAndOrganisation(startSearchDate, endSearchDate, organisation);
-		} else {
-			return documentRepository.countByCreateTimeBetween(startSearchDate, endSearchDate);
+			return organisation.getId();
 		}
+		return null;
 	}
 
 	private void conflictProcess() {

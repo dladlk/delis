@@ -29,7 +29,7 @@
   "dashboard.errors": "Fejl sidste tid",
   "dashboard.send": "Afsendelse den sidste time / gennemsnit",
   "dashboard.details": "Se detaljer",
-  "dashboard.charts.header": "Modtagelse",
+  "dashboard.chart.receiving": "Modtagelse",
   "documents.header": "Dokumenter",
   "documents.header.details": "Modtagelse detaljer",
   "documents.table.header": "Modtagelse Oversigt",
