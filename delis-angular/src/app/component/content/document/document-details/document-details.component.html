@@ -19,54 +19,50 @@
             </mat-card-content>
             <mat-card-content>
                 <h5 class="table-details-header">{{ 'documents.header.details' | translate}}</h5>
-                <table>
+                <table class="delis-table-data">
                     <thead>
                     <tr>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.organisation' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.identifier' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.createTime' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.status' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.organisation' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.identifier' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.createTime' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.status' | translate }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="table-details-td">
+                        <td>
                             <span *ngIf="document.organisation !== null">{{document.organisation.name}}</span>
                         </td>
-                        <td class="table-details-td">
+                        <td>
                             <span *ngIf="document.receiverIdentifier !== null">{{document.receiverIdentifier.name}}</span>
                         </td>
-                        <td class="table-details-td">{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
-                        <td class="table-details-td">{{document.documentStatus}}</td>
+                        <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{document.documentStatus}}</td>
                     </tr>
-                    </tbody>
-                    <thead>
                     <tr>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentType' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.ingoingDocumentFormat' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentId' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentType' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.ingoingDocumentFormat' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentId' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
                     </tr>
-                    </thead>
-                    <tbody>
                     <tr>
-                        <td class="table-details-td">{{document.documentType}}</td>
-                        <td class="table-details-td">{{document.ingoingDocumentFormat}}</td>
-                        <td class="table-details-td">{{document.documentId}}</td>
-                        <td class="table-details-td">{{document.documentDate}}</td>
+                        <td>{{document.documentType}}</td>
+                        <td>{{document.ingoingDocumentFormat}}</td>
+                        <td>{{document.documentId}}</td>
+                        <td>{{document.documentDate}}</td>
                     </tr>
 					</tbody>
 					<!--
                     <thead>
                     <tr>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.name' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.messageId' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.name' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.messageId' | translate }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="table-details-td">{{document.name}}</td>
-                        <td class="table-details-td">{{document.messageId}}</td>
+                        <td>{{document.name}}</td>
+                        <td>{{document.messageId}}</td>
                     </tr>
 					</tbody>
 					-->
@@ -78,27 +74,27 @@
                 </div>
             </mat-card-content>
             <mat-card-content>
-                <table>
+                <table class="delis-table-data">
                     <thead>
                     <tr>
                         <th></th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.senderName' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.senderName' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <th class="table-details-td">{{ 'documents.table.one.columnName.sender' | translate }}</th>
-                        <td class="table-details-td">{{document.senderIdRaw}}</td>
-                        <td class="table-details-td">{{document.senderName}}</td>
-                        <td class="table-details-td">{{document.senderCountry}}</td>
+                        <th>{{ 'documents.table.one.columnName.sender' | translate }}</th>
+                        <td>{{document.senderIdRaw}}</td>
+                        <td>{{document.senderName}}</td>
+                        <td>{{document.senderCountry}}</td>
                     </tr>
                     <tr>
-                        <th class="table-details-td">{{ 'documents.table.one.columnName.receiver' | translate }}</th>
-                        <td class="table-details-td">{{document.receiverIdRaw}}</td>
-                        <td class="table-details-td">{{document.receiverName}}</td>
-                        <td class="table-details-td">{{document.receiverCountry}}</td>
+                        <th>{{ 'documents.table.one.columnName.receiver' | translate }}</th>
+                        <td>{{document.receiverIdRaw}}</td>
+                        <td>{{document.receiverName}}</td>
+                        <td>{{document.receiverCountry}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -110,28 +106,28 @@
             </mat-card-content>
             <mat-card-content>
                 <h5 class="table-details-header">{{ 'documents.table.one.columnName.journalRecords' | translate }}</h5>
-                <table>
+                <table class="delis-table-data">
                     <thead>
                     <tr>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
                     </tr>
                     </thead>
                     <tbody *ngFor="let doc of journalDocuments">
                     <tr>
-                        <td class="table-details-td">{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
-                        <td class="table-details-td">{{doc.type}}</td>
-                        <td class="table-details-td systemColorSuccess" *ngIf="doc.success">
+                        <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
+                        <td>{{doc.type}}</td>
+                        <td class="systemColorSuccess" *ngIf="doc.success">
                             <mat-icon>check_circle</mat-icon>
                         </td>
-                        <td class="table-details-td systemColorError" *ngIf="!doc.success">
+                        <td class="systemColorError" *ngIf="!doc.success">
                             <mat-icon>error</mat-icon>
                         </td>
-                        <td class="table-details-td">{{doc.message}}</td>
-                        <td class="table-details-td" style="text-align: right !important;">{{doc.durationMs}}</td>
+                        <td>{{doc.message}}</td>
+                        <td style="text-align: right !important;">{{doc.durationMs}}</td>
                     </tr>
                     <tr *ngIf="getErrorDictionaryModel(doc.id).length !== 0">
                         <td colspan="5">
@@ -168,21 +164,21 @@
             </mat-card-content>
             <mat-card-content>
                 <h5 class="table-details-header">{{ 'documents.table.one.columnName.documentBytesModels' | translate }}</h5>
-                <table>
+                <table class="delis-table-data">
                     <thead>
                     <tr>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
-                        <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
-                        <th class="table-details-th">Download</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
+                        <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+                        <th>Download</th>
                     </tr>
                     </thead>
                     <tbody *ngFor="let doc of documentBytesModels">
                     <tr>
-                        <td class="table-details-td">{{doc.type}}</td>
-                        <td class="table-details-td">{{doc.format}}</td>
-                        <td class="table-details-td text-right">{{doc.size}}</td>
-                        <td class="table-details-td download-muted" (click)="download(doc.id)">Download</td>
+                        <td>{{doc.type}}</td>
+                        <td>{{doc.format}}</td>
+                        <td class="text-right">{{doc.size}}</td>
+                        <td class="download-muted" (click)="download(doc.id)">Download</td>
                     </tr>
                     </tbody>
                 </table>

@@ -63,10 +63,6 @@ body {
   height: 100%;
 }
 
-table {
-  width: 100%;
-}
-
 .example-container {
   overflow: auto;
 }
@@ -184,4 +180,10 @@ app-stat {
 
 .text-center {
   text-align: center;
+}
+.delis-table-data th, .delis-table-data td {
+  padding-right: 2em;
+  height: 2ex !important;
+  font-size: 2ex !important;
+  text-align: left !important;
 }
