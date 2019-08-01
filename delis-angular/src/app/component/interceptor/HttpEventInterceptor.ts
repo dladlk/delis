@@ -1,33 +1,31 @@
-import { Injectable } from '@angular/core';
-import { tap } from 'rxjs/operators';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-  HttpResponse,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from '@angular/common/http';
+import {tap} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {LogoutService} from "../../service/system/logout.service";
 
 @Injectable()
 export class HttpEventInterceptor implements HttpInterceptor {
 
-  constructor() { }
+    constructor(private logoutService: LogoutService) {
+    }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    request = request.clone({ params: request.params.set('locale_lang', localStorage.getItem('locale_lang')) });
-    return next.handle(request).pipe(
-      tap(
-        event => {
-          if (event instanceof HttpResponse) {
-          }
-        },
-        error => {
-          if (error instanceof HttpErrorResponse) {
-          }
-        }
-      )
-    );
-  }
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        request = request.clone({params: request.params.set('locale_lang', localStorage.getItem('locale_lang'))});
+        return next.handle(request).pipe(
+            tap(
+                event => {
+                    if (event instanceof HttpResponse) {
+                    }
+                },
+                error => {
+                    if (error instanceof HttpErrorResponse) {
+                        if (String(error['status']) === '401') {
+                            this.logoutService.logout();
+                        }
+                    }
+                }
+            )
+        );
+    }
 }

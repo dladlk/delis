@@ -49,7 +49,7 @@ export class SendDocumentDataSource implements DelisDataSource<SendDocumentModel
   }
 
   private setStateDetails(stateService: StateService<SendDocumentFilterModel>, res: any) {
-    if (res.items.length !== 0) {
+    if (res.items !== undefined && res.items.length !== 0) {
       let ids = res.items.map(value => value.id);
       let filter = stateService.getFilter();
       filter.detailsState.currentIds = ids;

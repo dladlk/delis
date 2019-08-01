@@ -18,8 +18,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
@@ -43,7 +41,7 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
-        return this.readAuthentication(token.getValue());
+        return (token != null) ? this.readAuthentication(token.getValue()) : null;
     }
 
     @Override
@@ -68,7 +66,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
         long startTime = System.nanoTime();
         long currentTime = startTime;
@@ -127,7 +124,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessToken(OAuth2AccessToken token) {
         this.removeAccessToken(token.getValue());
     }
@@ -137,6 +133,10 @@ public class CustomTokenStore implements TokenStore {
         try {
             OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(tokenValue);
             if (Objects.nonNull(oAuthAccessToken)) {
+                OAuth2RefreshToken oAuth2RefreshToken = this.readRefreshToken(oAuthAccessToken.getRefreshToken());
+                if (oAuth2RefreshToken != null) {
+                    this.removeRefreshToken(oAuth2RefreshToken);
+                }
                 oAuthAccessTokenRepository.delete(oAuthAccessToken);
             }
         } catch (Exception e) {
@@ -147,7 +147,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
         long startTime = System.nanoTime();
         OAuthRefreshToken oAuthRefreshToken = new OAuthRefreshToken();
@@ -209,7 +208,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeRefreshToken(OAuth2RefreshToken refreshToken) {
         long startTime = System.nanoTime();
         OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(refreshToken.getValue());
@@ -223,7 +221,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken oAuth2RefreshToken) {
         long startTime = System.nanoTime();
         try {

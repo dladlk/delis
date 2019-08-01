@@ -1,9 +1,9 @@
 import { Component, OnInit} from '@angular/core';
-import { Router } from '@angular/router';
 
 import { TokenService } from '../../service/system/token.service';
 import { HttpRestService } from '../../service/system/http-rest.service';
 import { RuntimeConfigService } from '../../service/system/runtime-config.service';
+import { LogoutService } from "../../service/system/logout.service";
 
 @Component({
   selector: 'app-logout',
@@ -14,16 +14,14 @@ export class LogoutComponent implements OnInit {
 
   constructor(private tokenService: TokenService,
               private http: HttpRestService,
-              private router: Router, private configService: RuntimeConfigService) { }
+              private configService: RuntimeConfigService,
+              private logoutService: LogoutService) { }
 
   ngOnInit() {
     this.http.methodDelete(this.configService.getConfigUrl() + '/rest/logout', this.tokenService.getToken()).subscribe(
       (data: {}) => {
-        console.log('logout : ' + data['data']);
+        this.logoutService.logout();
       }
     );
-    this.tokenService.resetToken();
-    this.configService.resetCurrentUser();
-    this.router.navigate(['/login']);
   }
 }

@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit {
             (data: {}) => {
                 const loginData: LoginModel = data['data'];
                 this.tokenService.setToken(loginData.accessToken);
-                localStorage.setItem('refreshToken', loginData.refreshToken);
                 this.runtimeConfigService.setCurrentUser(loginData);
                 this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
