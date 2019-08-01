@@ -48,11 +48,11 @@ public class TokenService {
     public void removeAccessToken(OAuth2AccessToken token) {
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByUserId(SecurityUtil.getUserId());
         if (oAuthAccessToken != null) {
+            OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(oAuthAccessToken.getRefreshToken());
+            if (oAuthRefreshToken != null) {
+                oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
+            }
         	oAuthAccessTokenRepository.delete(oAuthAccessToken);
-        }
-        OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(oAuthAccessToken.getRefreshToken());
-        if (oAuthRefreshToken != null) {
-        	oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
         }
         clearToken(token);
     }
