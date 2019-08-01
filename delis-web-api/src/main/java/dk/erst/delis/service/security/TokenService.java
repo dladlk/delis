@@ -48,9 +48,13 @@ public class TokenService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessToken(OAuth2AccessToken token) {
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByUserId(SecurityUtil.getUserId());
+        if (oAuthAccessToken != null) {
+        	oAuthAccessTokenRepository.delete(oAuthAccessToken);
+        }
         OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(oAuthAccessToken.getRefreshToken());
-        oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
-        oAuthAccessTokenRepository.delete(oAuthAccessToken);
+        if (oAuthRefreshToken != null) {
+        	oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
+        }
         clearToken(token);
     }
 
