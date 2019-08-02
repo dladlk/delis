@@ -20,6 +20,21 @@ export class ErrorService {
 
   errorProcess(error: any): ErrorModel {
     let errorModel = new ErrorModel();
+
+    try {
+
+    const getErrorMessages = (error: any) => {
+      if (error && error.error) {
+        if (error.error.hasOwnProperty('fieldErrors')) {
+          return error.error.fieldErrors;
+        }
+      }
+      return null;
+    };
+
+    console.log('ErrorService.errorProcess is invoked with error status '+ error['status'] + ':');
+    console.log(error);
+
     switch (String(error['status'])) {
       case '401' : {
         this.logoutService.logout();
@@ -27,7 +42,10 @@ export class ErrorService {
       }
       case '403' : {
         errorModel.status = String(error['status']);
-        errorModel.message = error.error.fieldErrors[0].message;
+        let errorMessages = getErrorMessages(error);
+        if (errorMessages && errorMessages.length) {
+          errorModel.message = errorMessages[0].message;
+        }
         break;
       }
       case '409' : {
@@ -38,16 +56,34 @@ export class ErrorService {
           errorModel.message = obj.fieldErrors[0].message;
           errorModel.details = obj.fieldErrors[0].details;
         } else {
-          errorModel.message = error.error.fieldErrors[0].message;
-          errorModel.details = error.error.fieldErrors[0].details;
+          let errorMessages = getErrorMessages(error);
+          if (errorMessages && errorMessages.length) {
+            errorModel.message = errorMessages.message;
+            errorModel.details = errorMessages.details;
+          }
         }
         break;
       }
       default : {
         errorModel.status = String(error['status']);
-        errorModel.message = error.error.fieldErrors[0].message;
+        let errorMessages = getErrorMessages(error);
+        if (errorMessages && errorMessages.length) {
+          errorModel.message = errorMessages.message;
+        }
       }
     }
+
+    console.log('Result of conversion to error model:');
+    console.log(errorModel);
+
+  } catch (unexpectedError) {
+    console.log('Unexpected error occured during error processing of:');
+    console.log(error);
+
+    console.log('Occured error: ');
+    console.log(unexpectedError);
+  }
+
     return errorModel;
   }
 }
