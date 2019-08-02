@@ -8,10 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * @author funtusthan, created by 12.02.19
- */
-
 @Repository
 public interface JournalDocumentErrorRepository extends AbstractRepository<JournalDocumentError> {
 

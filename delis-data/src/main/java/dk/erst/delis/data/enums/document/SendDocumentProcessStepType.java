@@ -1,9 +1,11 @@
 package dk.erst.delis.data.enums.document;
 
+import dk.erst.delis.data.enums.Named;
+
 /*
  * Max length of name 25
  */
-public enum SendDocumentProcessStepType {
+public enum SendDocumentProcessStepType implements Named {
 
 	CREATE,
 

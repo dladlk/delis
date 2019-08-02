@@ -3,10 +3,6 @@ package dk.erst.delis.web.user;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author Iehor Funtusov, created by 03.01.19
- */
-
 @Getter
 @Setter
 class UserData {
@@ -18,4 +14,5 @@ class UserData {
     private String lastName;
     private String email;
     private String organisationCode;
+    private boolean disabledIrForm;
 }

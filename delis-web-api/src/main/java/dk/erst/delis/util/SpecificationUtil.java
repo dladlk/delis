@@ -4,10 +4,12 @@ import dk.erst.delis.data.entities.AbstractCreateEntity;
 import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
 import dk.erst.delis.data.entities.journal.JournalOrganisation;
+import dk.erst.delis.data.entities.journal.JournalSendDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.rest.data.request.param.DateRangeModel;
 import lombok.experimental.UtilityClass;
@@ -54,9 +56,15 @@ public class SpecificationUtil {
                             List<Predicate> innerEntitiesPredicates = new ArrayList<>();
                             for (Field innerField : ClassLoaderUtil.getAllFieldsByEntity(field.getType())) {
                                 if (Modifier.isPrivate(innerField.getModifiers())) {
-                                    if (innerField.getType().isAssignableFrom(String.class)) {
-                                        containsLikePattern = StringPatternUtil.getContainsLikePattern(parameter);
-                                        innerEntitiesPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(field.getName()).get(innerField.getName())), containsLikePattern));
+                                    if (field.getType().isAssignableFrom(Organisation.class)) {
+                                        if (innerField.getType().isAssignableFrom(String.class)) {
+                                            innerEntitiesPredicates.add(criteriaBuilder.equal(root.get(field.getName()).get(innerField.getName()), parameter));
+                                        }
+                                    } else {
+                                        if (innerField.getType().isAssignableFrom(String.class)) {
+                                            containsLikePattern = StringPatternUtil.getContainsLikePattern(parameter);
+                                            innerEntitiesPredicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(field.getName()).get(innerField.getName())), containsLikePattern));
+                                        }
                                     }
                                 }
                             }
@@ -86,8 +94,11 @@ public class SpecificationUtil {
             Root<? extends AbstractEntity> root,
             CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
-        if (Document.class.isAssignableFrom(entityClass) || Identifier.class.isAssignableFrom(entityClass) ||
+        if (Document.class.isAssignableFrom(entityClass) ||
+                SendDocument.class.isAssignableFrom(entityClass) ||
+                Identifier.class.isAssignableFrom(entityClass) ||
                 JournalDocument.class.isAssignableFrom(entityClass) ||
+                JournalSendDocument.class.isAssignableFrom(entityClass) ||
                 JournalIdentifier.class.isAssignableFrom(entityClass) ||
                 JournalOrganisation.class.isAssignableFrom(entityClass)) {
             for (Field field : ClassLoaderUtil.getAllFieldsByEntity(entityClass)) {

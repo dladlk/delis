@@ -1,6 +1,6 @@
 package dk.erst.delis.rest.controller.content.journal;
 
-import dk.erst.delis.service.content.journal.organisation.JournalOrganisationService;
+import dk.erst.delis.service.content.journal.organisation.JournalOrganisationDelisWebApiService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,29 +13,25 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.constraints.Min;
 
-/**
- * @author funtusthan, created by 14.01.19
- */
-
 @Validated
 @RestController
 @RequestMapping("/rest/journal/organisation")
 public class JournalOrganisationController {
 
-    private final JournalOrganisationService journalOrganisationService;
+    private final JournalOrganisationDelisWebApiService journalOrganisationDelisWebApiService;
 
     @Autowired
-    public JournalOrganisationController(JournalOrganisationService journalOrganisationService) {
-        this.journalOrganisationService = journalOrganisationService;
+    public JournalOrganisationController(JournalOrganisationDelisWebApiService journalOrganisationDelisWebApiService) {
+        this.journalOrganisationDelisWebApiService = journalOrganisationDelisWebApiService;
     }
 
     @GetMapping
     public ResponseEntity getAll(WebRequest webRequest) {
-        return ResponseEntity.ok(journalOrganisationService.getAll(webRequest));
+        return ResponseEntity.ok(journalOrganisationDelisWebApiService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(journalOrganisationService.getOneById(id));
+        return ResponseEntity.ok(journalOrganisationDelisWebApiService.getOneById(id));
     }
 }

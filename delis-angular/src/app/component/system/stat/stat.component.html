@@ -1,0 +1,22 @@
+<button mat-button class="{{ bgClass }} button appStat" style="margin-top: 1em" [routerLink]="[router]">
+  <mat-grid-list cols="4" rowHeight="7em">
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <div *ngIf="rotate; else elseBlock">
+        <mat-icon class="rotate-180">{{ icon }}</mat-icon>
+      </div>
+      <ng-template #elseBlock>
+        <mat-icon>{{ icon }}</mat-icon>
+      </ng-template>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="3" [rowspan]="1">
+      <table>
+        <tr>
+          <td class="app-stat-text">{{ count }}</td>
+        </tr>
+        <tr>
+          <td class="app-stat-text"><strong>{{ label | translate }}</strong></td>
+        </tr>
+      </table>
+    </mat-grid-tile>
+  </mat-grid-list>
+</button>

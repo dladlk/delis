@@ -8,10 +8,6 @@ import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 
-/**
- * @author funtusthan, created by 22.01.19
- */
-
 public class FullNameGenerationListener {
 
     @PostLoad

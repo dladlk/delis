@@ -1,0 +1,17 @@
+:host {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0px;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.login-button {
+  margin-right: 1em !important;
+}

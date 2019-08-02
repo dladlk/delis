@@ -2,10 +2,6 @@ package dk.erst.delis.util;
 
 import lombok.experimental.UtilityClass;
 
-/**
- * @author funtusthan, created by 13.01.19
- */
-
 @UtilityClass
 class StringPatternUtil {
 

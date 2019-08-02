@@ -1,42 +1,30 @@
 package dk.erst.delis.service.content.dashboard;
 
-import dk.erst.delis.data.enums.document.DocumentStatus;
-import dk.erst.delis.persistence.repository.document.DocumentRepository;
-import dk.erst.delis.persistence.repository.identifier.IdentifierRepository;
-import dk.erst.delis.persistence.repository.journal.document.JournalDocumentRepository;
-import dk.erst.delis.persistence.repository.journal.identifier.JournalIdentifierRepository;
-import dk.erst.delis.persistence.repository.journal.organisation.JournalOrganisationRepository;
-import dk.erst.delis.rest.data.request.param.DateRangeModel;
-import dk.erst.delis.rest.data.response.dashboard.DashboardData;
-import dk.erst.delis.util.DateUtil;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.persistence.repository.document.DocumentRepository;
+import dk.erst.delis.persistence.repository.identifier.IdentifierRepository;
+import dk.erst.delis.rest.data.request.param.DateRangeModel;
+import dk.erst.delis.rest.data.response.dashboard.DashboardData;
+import dk.erst.delis.util.DateUtil;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
 
     private final DocumentRepository documentRepository;
     private final IdentifierRepository identifierRepository;
-    private final JournalDocumentRepository journalDocumentRepository;
-    private final JournalIdentifierRepository journalIdentifierRepository;
-    private final JournalOrganisationRepository journalOrganisationRepository;
 
     @Autowired
     public DashboardServiceImpl(
             DocumentRepository documentRepository,
-            JournalDocumentRepository journalDocumentRepository,
-            JournalIdentifierRepository journalIdentifierRepository,
-            JournalOrganisationRepository journalOrganisationRepository,
             IdentifierRepository identifierRepository) {
         this.documentRepository = documentRepository;
-        this.journalDocumentRepository = journalDocumentRepository;
-        this.journalIdentifierRepository = journalIdentifierRepository;
-        this.journalOrganisationRepository = journalOrganisationRepository;
         this.identifierRepository = identifierRepository;
     }
 
@@ -48,9 +36,6 @@ public class DashboardServiceImpl implements DashboardService {
         DateRangeModel dateRange = DateUtil.generateDateRangeByLastHour();
         DashboardData data = new DashboardData();
 
-        data.setJournalDocument(journalDocumentRepository.count());
-        data.setJournalIdentifier(journalIdentifierRepository.count());
-        data.setJournalOrganisation(journalOrganisationRepository.count());
         data.setIdentifierLastHour(identifierRepository.countByCreateTimeBetween(dateRange.getStart(), dateRange.getEnd()));
 
         long errors = documentRepository.countByLastErrorNotNullAndCreateTimeBetween(dateRange.getStart(), dateRange.getEnd());

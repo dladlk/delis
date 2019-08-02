@@ -4,8 +4,6 @@
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
 
-	<h3 class="my-3">Welcome to Delis <sup>1.0</sup></h3>
-	
 	<div class="row">
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/document/list', ${documentStat.documentLoadedCount}, 'Documents Loaded', 'oi-comment-square', 'bg-warning')}"></div>
 		<div th:replace="~{fragments/card-counter :: card-counter (~{::body}, '/document/list', ${documentStat.documentDeliveredCount}, 'Documents Delivered', 'oi-comment-square', 'bg-success')}"></div>

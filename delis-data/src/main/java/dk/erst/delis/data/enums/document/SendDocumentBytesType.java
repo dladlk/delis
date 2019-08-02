@@ -1,6 +1,8 @@
 package dk.erst.delis.data.enums.document;
 
-public enum SendDocumentBytesType {
+import dk.erst.delis.data.enums.Named;
+
+public enum SendDocumentBytesType implements Named {
 
 	ORIGINAL("Original format"), 
 	

@@ -6,10 +6,6 @@ import lombok.Setter;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author funtusthan, created by 23.01.19
- */
-
 @Getter
 @Setter
 public class ChartData {
@@ -20,5 +16,13 @@ public class ChartData {
     public ChartData() {
         this.lineChartData = Collections.emptyList();
         this.lineChartLabels = Collections.emptyList();
+    }
+    
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+		sb.append(lineChartLabels);
+		sb.append("\t");
+		sb.append(lineChartData);
+		return sb.toString();
     }
 }

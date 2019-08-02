@@ -4,6 +4,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
@@ -20,6 +21,7 @@ import no.difi.oxalis.as4.inbound.As4InboundModule;
 import no.difi.oxalis.as4.outbound.As4OutboundModule;
 import no.difi.oxalis.commons.guice.GuiceModuleLoader;
 
+@Ignore
 public class LookupTransmissionRequestBuilderTest {
 
 	@Test

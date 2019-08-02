@@ -12,5 +12,9 @@ public interface Named {
 	public default String getName() {
 		return BundleUtil.getName(this);
 	}
+	
+	public default String getNameDa() {
+		return BundleUtil.getNameDa(this);
+	}
 
 }

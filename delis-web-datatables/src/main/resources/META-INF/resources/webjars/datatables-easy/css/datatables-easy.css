@@ -1,0 +1,38 @@
+:root {
+    /* Bootstrap primary color */
+    --daterangepicker-active-bg-color: #007bff;
+}
+
+div.dom_wrapper {
+    position: sticky !important;
+    top: 0;
+    padding: 5px;
+    z-index: 100;
+}
+
+card {
+    word-break: break-all !important;
+}
+
+table {
+    border-radius: 0.25rem !important;
+}
+
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+    border-radius: 0.25rem !important;
+}
+
+tfoot {
+    display: table-header-group;
+}
+
+.daterangepicker .ranges li.active {
+    background-color: var(--daterangepicker-active-bg-color) !important;
+}
+
+.daterangepicker td.active, .daterangepicker td.active:hover {
+    background-color: var(--daterangepicker-active-bg-color) !important;
+}

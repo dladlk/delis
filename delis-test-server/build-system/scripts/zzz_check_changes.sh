@@ -40,8 +40,8 @@ PROJECT_SCAN_PATH_ARRAY=(${PROJECT_SCAN_PATH_LIST//;/ })
 echo '' > ${GIT_LOG_FILE}
 for PROJECT_SCAN_PATH in "${PROJECT_SCAN_PATH_ARRAY[@]}"; do
 	echo Checking git logs for ${PROJECT_ROOT}${PROJECT_SCAN_PATH}
-        echo git -C ${PROJECT_ROOT} log --after="${DOCKER_CREATE_TIME}" --no-merges --max-count=10 ${PROJECT_ROOT}${PROJECT_SCAN_PATH}
-    git -C ${PROJECT_ROOT} log --after="${DOCKER_CREATE_TIME}" --no-merges --max-count=10 ${PROJECT_ROOT}${PROJECT_SCAN_PATH} >> ${GIT_LOG_FILE}
+        echo git -C ${PROJECT_ROOT} log --after="${DOCKER_CREATE_TIME}" --max-count=10 ${PROJECT_ROOT}${PROJECT_SCAN_PATH}
+    git -C ${PROJECT_ROOT} log --after="${DOCKER_CREATE_TIME}" --max-count=10 ${PROJECT_ROOT}${PROJECT_SCAN_PATH} >> ${GIT_LOG_FILE}
 done
 
 echo 'Remove empty lines in generated log file'

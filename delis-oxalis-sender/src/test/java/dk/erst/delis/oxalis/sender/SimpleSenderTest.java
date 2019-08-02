@@ -34,6 +34,7 @@ import no.difi.vefa.peppol.common.model.TransportProfile;
 import no.difi.vefa.peppol.mode.Mode;
 
 @Slf4j
+@Ignore
 public class SimpleSenderTest {
 
 	private static Injector injector;
@@ -124,7 +125,6 @@ public class SimpleSenderTest {
 	}
 
 	@Test
-	@Ignore
 	public void testSendFileStaticMany() throws Exception {
 		byte[] payload = loadTestPayload();
 		ISender sender = new SimpleSender(injector, staticBuilder);

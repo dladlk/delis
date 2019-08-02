@@ -1,0 +1,48 @@
+/**
+Fonte og typografi omhandler de valgte fonte, samt formatering og brug af tekst og overskrifter.
+link: https://designsystem.dk/design/typography/?s=virkdk
+*/
+
+h1 {
+  font-weight:700 !important;
+  font-size:4rem !important;
+  color:#1a1a1a !important;
+  line-height:4.8rem !important;
+  margin:4rem 0 1.6rem 0 !important;
+}
+h2 {
+  font-weight:600 !important;
+  font-size:3rem !important;
+  color:#1a1a1a !important;
+  line-height:4rem !important;
+  margin:4rem 0 1.6rem 0 !important;
+}
+h3 {
+  font-weight:600 !important;
+  font-size:2.4rem !important;
+  color:#1a1a1a !important;
+  line-height:3.2rem !important;
+  margin:4rem 0 1.6rem 0 !important;
+}
+h4 {
+  font-weight:600 !important;
+  font-size:2rem !important;
+  color:#1a1a1a !important;
+  line-height:3.2rem !important;
+  margin:3.2rem 0 1.6rem 0 !important;
+}
+h5 {
+  font-weight:600 !important;
+  font-size:1.6rem !important;
+  color:#1a1a1a !important;
+  line-height:2.4rem !important;
+  margin:2.4rem 0 1.6rem 0 !important;
+}
+h6 {
+  font-weight:600 !important;
+  font-size:1.3rem !important;
+  text-transform: uppercase !important;
+  color:#1a1a1a !important;
+  line-height:2.4rem !important;
+  margin:2.4rem 0 1.6rem 0 !important;
+}

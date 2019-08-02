@@ -45,12 +45,15 @@ public class TokenService {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessToken(OAuth2AccessToken token) {
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByUserId(SecurityUtil.getUserId());
-        OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(oAuthAccessToken.getRefreshToken());
-        oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
-        oAuthAccessTokenRepository.delete(oAuthAccessToken);
+        if (oAuthAccessToken != null) {
+            OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(oAuthAccessToken.getRefreshToken());
+            if (oAuthRefreshToken != null) {
+                oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
+            }
+        	oAuthAccessTokenRepository.delete(oAuthAccessToken);
+        }
         clearToken(token);
     }
 

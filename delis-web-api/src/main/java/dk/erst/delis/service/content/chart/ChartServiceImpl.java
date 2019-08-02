@@ -1,16 +1,20 @@
 package dk.erst.delis.service.content.chart;
 
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.exception.model.FieldErrorModel;
-import dk.erst.delis.exception.statuses.RestConflictException;
-import dk.erst.delis.persistence.repository.document.DocumentRepository;
-import dk.erst.delis.persistence.repository.organization.OrganizationRepository;
-import dk.erst.delis.rest.data.response.chart.ChartData;
-import dk.erst.delis.rest.data.response.chart.LineChartData;
-import dk.erst.delis.service.security.SecurityService;
-import dk.erst.delis.util.DateUtil;
-import dk.erst.delis.util.SecurityUtil;
-import org.apache.commons.lang3.StringUtils;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,130 +22,174 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.*;
-
-import static dk.erst.delis.util.DateUtil.DEFAULT_TIME_ZONE;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.exception.model.FieldErrorModel;
+import dk.erst.delis.exception.statuses.RestConflictException;
+import dk.erst.delis.persistence.stat.StatDao;
+import dk.erst.delis.persistence.stat.StatDao.KeyValue;
+import dk.erst.delis.persistence.stat.StatDao.StatRange;
+import dk.erst.delis.rest.data.response.chart.ChartData;
+import dk.erst.delis.rest.data.response.chart.LineChartData;
+import dk.erst.delis.service.security.SecurityService;
+import dk.erst.delis.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ChartServiceImpl implements ChartService {
 
-    private final DocumentRepository documentRepository;
-    private final OrganizationRepository organizationRepository;
-    private final SecurityService securityService;
+	protected static final String INPUT_NOW_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	private static final DateTimeFormatter OUTPUT_DAILY_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
+	private static final DateTimeFormatter OUTPUT_HOURLY_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
+	private static final DateTimeFormatter DB_FORMAT = DateTimeFormatter.ofPattern(INPUT_NOW_FORMAT);
 
-    @Autowired
-    public ChartServiceImpl(DocumentRepository documentRepository, OrganizationRepository organizationRepository, SecurityService securityService) {
-        this.documentRepository = documentRepository;
-        this.organizationRepository = organizationRepository;
-        this.securityService = securityService;
-    }
+	private StatDao statDao;
+	private final SecurityService securityService;
 
-    @Override
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    @Transactional(readOnly = true)
-    public ChartData generateChartData(WebRequest request) {
+	@Autowired
+	public ChartServiceImpl(StatDao statDao, SecurityService securityService) {
+		this.statDao = statDao;
+		this.securityService = securityService;
+	}
 
-        String timeZone = request.getParameter("timeZone");
-        if (StringUtils.isBlank(timeZone)) {
-            timeZone = DEFAULT_TIME_ZONE;
-        }
+	@Override
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+	public ChartData generateChartData(WebRequest request) {
+		String start = request.getParameter("from");
+		String end = request.getParameter("to");
+		String nowUI = request.getParameter("now");
+		return generateChartData(start, end, nowUI);
+	}
 
-        boolean defaultChart = false;
-        String defaultChartParameter = request.getParameter("defaultChart");
-        if (StringUtils.isNotBlank(defaultChartParameter)) {
-            defaultChart = Boolean.parseBoolean(defaultChartParameter);
-        }
+	@Transactional(readOnly = true)
+	protected ChartData generateChartData(String startStr, String endStr, String nowUI) {
+		long start = System.currentTimeMillis();
 
-        Date start = null, end = null;
-        String endDateParameter = request.getParameter("endDate");
-        if (Objects.nonNull(endDateParameter)) {
-            end = new Date(Long.parseLong(endDateParameter));
-        }
-        String startDateParameter = request.getParameter("startDate");
-        if (Objects.nonNull(startDateParameter)) {
-            start = new Date(Long.parseLong(startDateParameter));
-        }
+		Long organisationId = loadOrganisationId();
+		log.debug("Start chart loading for " + startStr + " - " + endStr + ", orgId " + organisationId+", now "+nowUI);
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(INPUT_NOW_FORMAT);
+		Date uiTimeNow;
+		try {
+			uiTimeNow = sdf.parse(nowUI);
+		} catch (ParseException e) {
+			log.error("Failed to parse "+nowUI, e);
+			e.printStackTrace();
+			uiTimeNow = new Date();
+		}
+		
+		Date dbTimeNow = statDao.loadDbTimeNow();
+		int hoursDiff = calculateHoursDiff(uiTimeNow, dbTimeNow);
+		if (log.isDebugEnabled()) {
+			log.debug("Hours diff between UI and DB: " + hoursDiff);
+		}
 
-        if (defaultChart) {
-            return generateDefaultChartData(start, DateUtil.convertClientTimeToServerTime(timeZone, null, true), end);
-        } else {
-            return generateCustomChartData(start, end, timeZone);
-        }
-    }
+		StatRange statRange = StatRange.of(startStr, endStr);
+		final boolean groupHourNotDate = statRange.isSingleDay();
+		log.debug("groupHourNotDate: " + groupHourNotDate);
 
-    private ChartData generateCustomChartData(Date start, Date end, String timeZone) {
+		final boolean today = statRange.isSingleDay() && nowUI.startsWith(startStr);
+		log.debug("today: " + today);
 
-        Date startSearchDate = DateUtil.convertClientTimeToServerTime(timeZone, start, true);
-        Date endSearchDate = DateUtil.convertClientTimeToServerTime(timeZone, end, false);
+		List<KeyValue> list = statDao.loadStat(statRange, groupHourNotDate, hoursDiff, organisationId);
 
-        ChartData chartData = new ChartData();
-        List<LineChartData> lineChartData = new ArrayList<>();
-        List<String> lineChartLabels = new ArrayList<>();
-        LineChartData lineChartDataContent = new LineChartData();
-        long days = DateUtil.getMinutesBetween(startSearchDate, endSearchDate) / 60;
-        if (days > 24) {
-            days /= 24;
-            lineChartDataContent.setLabel("chart data custom");
-            List<Long> dataGraph = new ArrayList<>();
-            endSearchDate = DateUtil.addDay(startSearchDate, 1);
-            for (int d = 0 ; d <= days ; ++d) {
-                lineChartLabels.add(DateUtil.DATE_FORMAT_BY_CUSTOM_PERIOD.format(start));
-                dataGraph.add(generateDataGraphCount(startSearchDate, endSearchDate));
-                start = DateUtil.addDay(start, 1);
-                startSearchDate = new Date(endSearchDate.getTime());
-                endSearchDate = DateUtil.addDay(startSearchDate, 1);
-            }
-            lineChartDataContent.setData(dataGraph);
-            lineChartData.add(lineChartDataContent);
-            chartData.setLineChartData(lineChartData);
-            chartData.setLineChartLabels(lineChartLabels);
-            return chartData;
-        } else {
-            return generateDefaultChartData(start, startSearchDate, endSearchDate);
-        }
-    }
+		if (log.isDebugEnabled()) {
+			log.debug("Loaded stat: " + list);
+		}
 
-    private ChartData generateDefaultChartData(Date clientDate, Date startSearchDate, Date endSearchDate) {
-        ChartData chartData = new ChartData();
-        List<LineChartData> lineChartData = new ArrayList<>();
-        List<String> lineChartLabels = new ArrayList<>();
-        LineChartData lineChartDataContent = new LineChartData();
-        Date end = DateUtil.addHour(startSearchDate, 1);
-        long hours = DateUtil.getHoursBetween(endSearchDate, startSearchDate);
-        lineChartDataContent.setLabel("chart data default");
-        List<Long> dataGraph = new ArrayList<>();
-        for (int h = 0 ; h <= hours ; ++h) {
-            lineChartLabels.add(DateUtil.DATE_FORMAT_BY_DAY.format(clientDate));
-            dataGraph.add(generateDataGraphCount(startSearchDate, endSearchDate));
-            startSearchDate = new Date(end.getTime());
-            clientDate = DateUtil.addHour(clientDate, 1);
-            end = DateUtil.addHour(startSearchDate, 1);
-        }
-        lineChartDataContent.setData(dataGraph);
-        lineChartData.add(lineChartDataContent);
-        chartData.setLineChartData(lineChartData);
-        chartData.setLineChartLabels(lineChartLabels);
-        return chartData;
-    }
+		ChartData chartData = new ChartData();
+		List<LineChartData> lineChartData = new ArrayList<>();
+		List<String> lineChartLabels = new ArrayList<>();
+		LineChartData lineChartDataContent = new LineChartData();
+		lineChartDataContent.setLabel("chart.receiving");
+		List<Long> dataGraph = new ArrayList<>();
 
-    private Long generateDataGraphCount(Date startSearchDate, Date endSearchDate) {
-        if (SecurityUtil.hasRole("ROLE_USER")) {
-            Long orgId = securityService.getOrganisation().getId();
-            if (orgId == null) {
-                conflictProcess();
-            }
-            Organisation organisation = organizationRepository.findById(orgId).orElse(null);
-            if (organisation == null) {
-                conflictProcess();
-            }
-            return documentRepository.countByCreateTimeBetweenAndOrganisation(startSearchDate, endSearchDate, organisation);
-        } else {
-            return documentRepository.countByCreateTimeBetween(startSearchDate, endSearchDate);
-        }
-    }
+		if (!list.isEmpty()) {
+			Map<String, Long> mappedList = list.stream().collect(Collectors.toMap(k -> {
+				return formatKeyValue(k, groupHourNotDate);
+			}, KeyValue::getValue));
 
-    private void conflictProcess() {
-        throw new RestConflictException(Collections.singletonList(
-                new FieldErrorModel("organization", HttpStatus.CONFLICT.getReasonPhrase(), "there was a problem reading your organization")));
-    }
+			if (groupHourNotDate) {
+				int lastChartHour = today ? uiTimeNow.getHours() : 23;
+				for (int i = 0; i <= lastChartHour; i++) {
+					String outputLabel = (i < 10 ? "0" : "") + i + ":00";
+					long outputValue = 0;
+
+					if (mappedList.containsKey(outputLabel)) {
+						outputValue = mappedList.get(outputLabel);
+					}
+
+					lineChartLabels.add(outputLabel);
+					dataGraph.add(outputValue);
+				}
+			} else {
+				LocalDate first = statRange.getFrom() != null ? LocalDate.parse(statRange.getFrom()) : parseKey(list.get(0)).toLocalDate();
+				LocalDate last = statRange.getTo() != null ? LocalDate.parse(statRange.getTo()) : parseKey(list.get(list.size() - 1)).toLocalDate();
+
+				LocalDate cur = first;
+
+				while (!cur.isAfter(last)) {
+					String outputLabel = cur.format(OUTPUT_DAILY_FORMAT);
+					cur = cur.plusDays(1);
+
+					long outputValue = 0;
+
+					if (mappedList.containsKey(outputLabel)) {
+						outputValue = mappedList.get(outputLabel);
+					}
+
+					lineChartLabels.add(outputLabel);
+					dataGraph.add(outputValue);
+				}
+			}
+		}
+
+		lineChartDataContent.setData(dataGraph);
+		lineChartData.add(lineChartDataContent);
+		chartData.setLineChartData(lineChartData);
+		chartData.setLineChartLabels(lineChartLabels);
+
+		log.debug("Done chart data in " + (System.currentTimeMillis() - start) + " with: " + chartData);
+
+		return chartData;
+	}
+
+	protected int calculateHoursDiff(Date uiTimeNow, Date dbTimeNow) {
+		ZonedDateTime nowDB = ZonedDateTime.ofInstant(dbTimeNow.toInstant(), ZoneOffset.UTC);
+		ZonedDateTime nowUI = ZonedDateTime.ofInstant(uiTimeNow.toInstant(), ZoneOffset.UTC);
+
+		return (int) ChronoUnit.HOURS.between(nowDB, nowUI);
+	}
+
+	private static String formatKeyValue(KeyValue k, boolean groupHourNotDate) {
+		LocalDateTime dateTime = parseKey(k);
+		DateTimeFormatter outputFormat = getFormat(groupHourNotDate);
+		return dateTime.format(outputFormat);
+	}
+
+	protected static DateTimeFormatter getFormat(boolean groupHourNotDate) {
+		return groupHourNotDate ? OUTPUT_HOURLY_FORMAT : OUTPUT_DAILY_FORMAT;
+	}
+
+	private static LocalDateTime parseKey(KeyValue k) {
+		return LocalDateTime.parse(k.getKey(), DB_FORMAT);
+	}
+
+	private Long loadOrganisationId() {
+		if (SecurityUtil.hasRole("ROLE_USER")) {
+			Organisation organisation = securityService.getOrganisation();
+			Long orgId = organisation.getId();
+			if (orgId == null) {
+				conflictProcess();
+			}
+			return organisation.getId();
+		}
+		return null;
+	}
+
+	private void conflictProcess() {
+		throw new RestConflictException(Collections.singletonList(new FieldErrorModel("organization", HttpStatus.CONFLICT.getReasonPhrase(), "there was a problem reading your organization")));
+	}
 }

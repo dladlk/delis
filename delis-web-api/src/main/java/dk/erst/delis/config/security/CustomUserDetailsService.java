@@ -31,12 +31,16 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(login + " not found");
         }
         List<GrantedAuthority> authorities;
+        String role;
         if (user.getOrganisation() == null) {
-            authorities = AuthorityUtils.createAuthorityList(Role.ROLE_ADMIN.name());
+            role = Role.ROLE_ADMIN.name();
+            authorities = AuthorityUtils.createAuthorityList(role);
         } else {
-            authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.name());
+            role = Role.ROLE_USER.name();
+            authorities = AuthorityUtils.createAuthorityList(role);
         }
-        return new CustomUserDetails(user, authorities);
+        String organisation = user.getOrganisation() != null ? user.getOrganisation().getName() : null;
+        return new CustomUserDetails(user, authorities, organisation, role);
     }
 
     private enum Role {

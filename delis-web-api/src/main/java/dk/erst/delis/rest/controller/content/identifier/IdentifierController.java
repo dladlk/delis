@@ -1,6 +1,6 @@
 package dk.erst.delis.rest.controller.content.identifier;
 
-import dk.erst.delis.service.content.identifier.IdentifierService;
+import dk.erst.delis.service.content.identifier.IdentifierDelisWebApiService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,29 +13,25 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.validation.constraints.Min;
 
-/**
- * @author funtusthan, created by 17.01.19
- */
-
 @Validated
 @RestController
 @RequestMapping("/rest/identifier")
 public class IdentifierController {
 
-    private final IdentifierService identifierService;
+    private final IdentifierDelisWebApiService identifierDelisWebApiService;
 
     @Autowired
-    public IdentifierController(IdentifierService identifierService) {
-        this.identifierService = identifierService;
+    public IdentifierController(IdentifierDelisWebApiService identifierDelisWebApiService) {
+        this.identifierDelisWebApiService = identifierDelisWebApiService;
     }
 
     @GetMapping
     public ResponseEntity getAll(WebRequest webRequest) {
-        return ResponseEntity.ok(identifierService.getAll(webRequest));
+        return ResponseEntity.ok(identifierDelisWebApiService.getAll(webRequest));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getOneById(@PathVariable @Min(1) long id) {
-        return ResponseEntity.ok(identifierService.getOneById(id));
+        return ResponseEntity.ok(identifierDelisWebApiService.getOneById(id));
     }
 }

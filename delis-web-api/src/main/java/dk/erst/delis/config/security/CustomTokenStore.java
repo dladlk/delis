@@ -1,13 +1,16 @@
 package dk.erst.delis.config.security;
 
-import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
-import dk.erst.delis.data.entities.tokens.OAuthRefreshToken;
-import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
-import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
+import static java.util.stream.Collectors.toList;
 
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.util.SerializationUtils;
@@ -15,22 +18,12 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.DefaultAuthenticationKeyGenerator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
-
-/**
- * @author funtusthan, created by 22.03.19
- */
+import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
+import dk.erst.delis.data.entities.tokens.OAuthRefreshToken;
+import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
+import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
 
 @Transactional
 public class CustomTokenStore implements TokenStore {
@@ -39,18 +32,16 @@ public class CustomTokenStore implements TokenStore {
 
     private OAuthAccessTokenRepository oAuthAccessTokenRepository;
     private OAuthRefreshTokenRepository oAuthRefreshTokenRepository;
-    private HttpServletRequest httpServletRequest;
     private AuthenticationKeyGenerator authenticationKeyGenerator = new DefaultAuthenticationKeyGenerator();
 
-    CustomTokenStore(OAuthAccessTokenRepository oAuthAccessTokenRepository, OAuthRefreshTokenRepository oAuthRefreshTokenRepository, HttpServletRequest httpServletRequest) {
+    CustomTokenStore(OAuthAccessTokenRepository oAuthAccessTokenRepository, OAuthRefreshTokenRepository oAuthRefreshTokenRepository) {
         this.oAuthAccessTokenRepository = oAuthAccessTokenRepository;
         this.oAuthRefreshTokenRepository = oAuthRefreshTokenRepository;
-        this.httpServletRequest = httpServletRequest;
     }
 
     @Override
     public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
-        return this.readAuthentication(token.getValue());
+        return (token != null) ? this.readAuthentication(token.getValue()) : null;
     }
 
     @Override
@@ -75,7 +66,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
         long startTime = System.nanoTime();
         long currentTime = startTime;
@@ -134,7 +124,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessToken(OAuth2AccessToken token) {
         this.removeAccessToken(token.getValue());
     }
@@ -144,6 +133,10 @@ public class CustomTokenStore implements TokenStore {
         try {
             OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(tokenValue);
             if (Objects.nonNull(oAuthAccessToken)) {
+                OAuth2RefreshToken oAuth2RefreshToken = this.readRefreshToken(oAuthAccessToken.getRefreshToken());
+                if (oAuth2RefreshToken != null) {
+                    this.removeRefreshToken(oAuth2RefreshToken);
+                }
                 oAuthAccessTokenRepository.delete(oAuthAccessToken);
             }
         } catch (Exception e) {
@@ -154,7 +147,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
         long startTime = System.nanoTime();
         OAuthRefreshToken oAuthRefreshToken = new OAuthRefreshToken();
@@ -216,7 +208,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeRefreshToken(OAuth2RefreshToken refreshToken) {
         long startTime = System.nanoTime();
         OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(refreshToken.getValue());
@@ -230,7 +221,6 @@ public class CustomTokenStore implements TokenStore {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken oAuth2RefreshToken) {
         long startTime = System.nanoTime();
         try {
@@ -248,9 +238,15 @@ public class CustomTokenStore implements TokenStore {
     public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
         long startTime = System.nanoTime();
         long currentTime = startTime;
-        OAuth2AccessToken accessToken = null;
+        OAuth2AccessToken accessToken;
 
         String key = this.authenticationKeyGenerator.extractKey(authentication);
+        if (StringUtils.isBlank(key)) {
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Failed to find access token for authentication key " + key);
+            }
+            return null;
+        }
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findTopByAuthenticationKeyOrderByIdDesc(key);
         currentTime = logDuration(currentTime, "getAccessToken. Step 1. findByAuthenticationKey took: ");
         if (Objects.isNull(oAuthAccessToken)) {
@@ -261,8 +257,9 @@ public class CustomTokenStore implements TokenStore {
         }
         try {
             accessToken = this.deserializeAccessToken(oAuthAccessToken.getOAuth2AccessToken());
-        } catch (IllegalArgumentException var5) {
-            LOG.warn("Failed to deserialize authentication for " + key, var5);
+        } catch (Exception e) {
+            LOG.warn("Failed to deserialize authentication for " + key, e);
+            return null;
         }
 
         if (Objects.nonNull(accessToken) && !key.equals(this.authenticationKeyGenerator.extractKey(this.readAuthentication(accessToken.getValue())))) {

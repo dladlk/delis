@@ -5,10 +5,6 @@ import dk.erst.delis.rest.data.response.PageContainer;
 
 import org.springframework.web.context.request.WebRequest;
 
-/**
- * @author funtusthan, created by 13.01.19
- */
-
 public interface AbstractService<E extends AbstractEntity> {
 
     PageContainer<E> getAll(WebRequest request);

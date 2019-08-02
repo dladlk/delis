@@ -11,10 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author Iehor Funtusov, created by 02.01.19
- */
-
 @Service
 public class UserService {
 
@@ -64,6 +60,12 @@ public class UserService {
         user.setUsername(userData.getUsername());
         user.setLastName(userData.getLastName());
         user.setFirstName(userData.getFirstName());
+        
+        if (userData.isDisabledIrForm()) {
+        	user.setDisabledIrForm(Boolean.TRUE);
+        } else {
+        	user.setDisabledIrForm(Boolean.FALSE);
+        }
 
         userRepository.save(user);
     }

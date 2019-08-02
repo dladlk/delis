@@ -4,10 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author funtusthan, created by 12.01.19
- */
-
 @Getter
 @Setter
 @AllArgsConstructor

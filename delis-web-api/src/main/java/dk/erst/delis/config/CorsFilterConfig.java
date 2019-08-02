@@ -10,10 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * @author Iehor Funtusov, created by 21.12.18
- */
-
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilterConfig implements Filter {

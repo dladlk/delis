@@ -1,0 +1,51 @@
+<mat-card>
+  <div class="example-container mat-elevation-z8">
+
+    <mat-card-content class="dashboard-flex">
+      <div class="bounds">
+        <div class="content"
+             fxLayout="row"
+             fxLayout.xs="column"
+             fxLayoutAlign="center"
+             fxLayoutGap="1em"
+             fxFlexFill>
+          <div fxFlex="30" class="sec2" >
+            <app-stat
+                    [bgClass]="'matDocument'"
+                    [icon]="'send'"
+                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+                    [label]="'dashboard.documents'"
+                    [router]="'/document'"
+                    [rotate]="false">
+            </app-stat>
+          </div>
+          <div fxFlex="30" class="sec3" fxFlex.xs="15">
+            <app-stat
+                    [bgClass]="'matSendDocument'"
+                    [icon]="'send'"
+                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
+                    [label]="'dashboard.send'"
+                    [router]="'/send-document'"
+                    [rotate]="true">
+            </app-stat>
+          </div>
+          <div fxFlex="30" class="sec1" fxFlex.xs="55">
+            <app-stat
+                    [bgClass]="'matIdentifier'"
+                    [icon]="'perm_identity'"
+                    [count]="dashboardModel.identifierLastHour"
+                    [label]="'dashboard.identifier'"
+                    [router]="'/identifier'"
+                    [rotate]="false">
+            </app-stat>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-content style="margin: 2em">
+      <app-chart-document></app-chart-document>
+    </mat-card-content>
+
+  </div>
+</mat-card>

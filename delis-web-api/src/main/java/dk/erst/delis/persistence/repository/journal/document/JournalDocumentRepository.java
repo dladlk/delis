@@ -8,10 +8,6 @@ import dk.erst.delis.persistence.AbstractRepository;
 
 import java.util.List;
 
-/**
- * @author funtusthan, created by 13.01.19
- */
-
 @Repository
 public interface JournalDocumentRepository extends AbstractRepository<JournalDocument> {
 

@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListService;
-import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListServiceImpl;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

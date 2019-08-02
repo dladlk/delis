@@ -1,0 +1,35 @@
+<div class="bounds">
+    <div class="content"
+         fxLayout="row"
+         fxLayout.xs="column"
+         fxLayoutAlign="left"
+         fxLayoutGap="1em"
+         fxFlexFill>
+        <div fxFlex="100" class="sec1" fxFlex.xs="55">
+            <div class="app-button-row">
+                <div class="example-button-row">
+                    <ng-container>
+                        <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+                            <mat-icon>keyboard_backspace</mat-icon>
+                        </button>
+                    </ng-container>
+                    <ng-container>
+                        <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                    </ng-container>
+                    <ng-container>
+                        <button mat-mini-fab color="primary" (click)="nextUp()" title="{{ 'previous' | translate }}" aria-label="Previous" [disabled]="!isNextUp">
+                            <mat-icon class="rotate-90">keyboard_backspace</mat-icon>
+                        </button>
+                    </ng-container>
+                    <ng-container>
+                        <button mat-mini-fab color="primary" (click)="nextDown()" title="{{ 'next' | translate }}" aria-label="Next" [disabled]="!isNextDown">
+                            <mat-icon class="rotate-270">keyboard_backspace</mat-icon>
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

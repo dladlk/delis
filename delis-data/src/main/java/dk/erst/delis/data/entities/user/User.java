@@ -43,4 +43,7 @@ public class User extends AbstractCreateUpdateEntity {
 
 	@Transient
 	private String fullName;
+	
+	@Column(nullable = true)
+	private Boolean disabledIrForm;
 }

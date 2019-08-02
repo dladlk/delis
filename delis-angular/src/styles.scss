@@ -1,0 +1,189 @@
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/_theming.scss';
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
+@import "styles/design_system_dk";
+@import "styles/design_icons";
+@import "styles/delis_data_table";
+
+// !!! Remember to only ever include the @mat-core mixin only once; it should not be included for each theme.
+// It is already included with custom font-family!
+//@include mat-core();
+
+$mat-delis: (
+	100: #0B78D0,
+
+	contrast: (
+		100: #FFFFFF
+	)
+) ;
+
+// default theme:
+$primary: mat-palette($mat-delis, 100);
+$accent: mat-palette($mat-teal);
+$theme: mat-light-theme($primary, $accent);
+
+@include angular-material-theme($theme);
+
+$delis-font-family: 'IBM Plex Sans';
+
+// default font-family:
+$delis-typography: mat-typography-config(
+  $font-family: $delis-font-family
+);
+@include mat-core($delis-typography);
+
+.cdk-overlay-container {
+  font-family: $delis-font-family;
+}
+
+.systemColor {
+  color: mat-color($primary) !important;
+}
+
+.systemColorError {
+  color: red !important;
+}
+
+.systemColorSuccess {
+  color: green !important;
+}
+
+.ptr {
+  cursor: pointer;
+}
+
+.dashboard-flex {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
+/* for sidenav to take whole page */
+body {
+  //margin: 0;
+  height: 100%;
+}
+
+.example-container {
+  overflow: auto;
+}
+
+.profile-info {
+  padding: 1em;
+}
+
+.profile-info>tr>td:first-child {
+  font-weight: bold;
+}
+
+
+.app-button-row {
+  margin-left: 5em;
+}
+.example-button-row button,
+.example-button-row a {
+  margin-right: 2em;
+  margin-top: 1em;
+}
+
+.table-details {
+  margin-top: 2em !important;
+  padding-left: 5em !important;
+  padding-right: 5em !important;
+  padding-bottom: 3em !important;
+}
+
+.table-details-th {
+  //color: mat-color($primary) !important;
+  height: 2ex !important;
+  font-size: 2ex !important;
+  text-align: left !important;
+}
+
+.table-details-th-error {
+  color: red !important;
+  //height: 2ex !important;
+  //font-size: 2ex !important;
+  text-align: left !important;
+}
+
+.table-details-td-error {
+  color: brown !important;
+  text-align: left !important;
+}
+
+.table-details-td {
+  height: 2ex !important;
+  font-size: 2ex !important;
+  text-align: left !important;
+}
+
+.table-details-error {
+  text-align: left !important;
+  color: red !important;
+}
+
+.checkCircleHeaderLanguage {
+  color: mat-color($primary) !important;
+  margin-left: 1em;
+}
+
+.matDocument {
+  color: #007bff !important;
+}
+
+.matSendDocument {
+  color: #ffc107 !important;
+}
+
+.matIdentifier {
+  color: #17a2b8 !important;
+}
+
+.appStat {
+  min-width: 100% !important;
+  min-height: 10em !important;
+  border-radius: 1ex;
+  background: white;
+  font-size: 2ex;
+}
+
+app-stat {
+  min-width: 80%;
+}
+
+.ml2 {
+  margin-left: 2em !important;
+}
+
+.mb2 {
+  margin-bottom: 2em;
+}
+
+.mt2 {
+  margin-top: 2em;
+}
+
+.mt1 {
+  margin-top: 1em;
+}
+
+.download-muted {
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.5;
+}
+
+.download {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.text-center {
+  text-align: center;
+}
+.delis-table-data th, .delis-table-data td {
+  padding-right: 2em;
+  height: 2ex !important;
+  font-size: 2ex !important;
+  text-align: left !important;
+}

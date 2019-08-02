@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
-/**
- * @author funtusthan, created by 22.03.19
- */
-
 @RestController
 @RequestMapping("/rest/logout")
 public class RestLogoutController {
@@ -37,7 +33,9 @@ public class RestLogoutController {
     public ResponseEntity<DataContainer<Boolean>> logout(HttpSession session) {
         OAuth2Authentication authentication = (OAuth2Authentication) SecurityUtil.getAuthentication();
         OAuth2AccessToken token = ((DefaultTokenServices) consumerTokenServices).getAccessToken(authentication);
-        tokenService.removeAccessToken(token);
+        if (token != null) {
+        	tokenService.removeAccessToken(token);
+        }
         session.invalidate();
         return ResponseEntity.ok(new DataContainer<>(true));
     }

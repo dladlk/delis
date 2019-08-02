@@ -11,8 +11,8 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListService;
-import org.springframework.data.jpa.datatables.easy.service.EasyDatatablesListServiceImpl;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -60,12 +60,8 @@ public class DocumentController extends AbstractEasyListController<Document> {
 	@Autowired
 	private ApplicationResponseFormController applicationResponseFormController;
 	
-    @Value("${servletContext?.contextPath:}")
-    private String servletContextPath;
-    
 	@Value("${delis.download.allow.all:#{false}}")
 	private boolean downloadAllowAll;
-	
 	
 	/*
 	 * START EasyDatatables block
@@ -214,11 +210,11 @@ public class DocumentController extends AbstractEasyListController<Document> {
 		DocumentBytes documentBytes = documentService.findDocumentBytes(documentId, bytesId);
 		if (documentBytes == null) {
 			ra.addFlashAttribute("errorMessage", "Data not found");
-			return RedirectUtil.redirectEntity(servletContextPath, "/document/view/" + documentId);
+			return RedirectUtil.redirectEntity("/document/view/" + documentId);
 		}
 		if (!isDownloadAllowed(documentBytes)) {
 			ra.addFlashAttribute("errorMessage", "Only RECEIPT bytes are allowed for download, but " + documentBytes.getType() + " is requested");
-			return RedirectUtil.redirectEntity(servletContextPath, "/document/view/" + documentId);
+			return RedirectUtil.redirectEntity("/document/view/" + documentId);
 		}
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

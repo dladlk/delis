@@ -1,18 +1,22 @@
 package dk.erst.delis.rest.data.response.chart;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 
-/**
- * @author funtusthan, created by 23.01.19
- */
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 public class LineChartData {
 
-    private List<Long> data;
-    private String label;
+	private List<Long> data;
+	private String label;
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(label);
+		sb.append(": ");
+		sb.append(data);
+		return sb.toString();
+	}
 }

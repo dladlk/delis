@@ -10,11 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * @author funtusthan, created by 12.01.19
- */
-
-
 @Getter
 @Setter
 @ToString
