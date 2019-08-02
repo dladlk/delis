@@ -33,7 +33,7 @@ public class StatDaoImpl implements StatDao {
 		sb.append("		count(*) ");
 		sb.append("	from document d ");
 
-		if (range.isAnyDefined()) {
+		if (range.isAnyDefined() || organisationId != null) {
 			sb.append("	where ");
 		}
 		if (range.getFrom() != null) {
@@ -47,7 +47,10 @@ public class StatDaoImpl implements StatDao {
 		}
 
 		if (organisationId != null) {
-			sb.append(" AND	 d.organisation_id = :organisationId ");
+			if (range.isAnyDefined()) {
+				sb.append(" AND	");
+			}
+			sb.append(" d.organisation_id = :organisationId ");
 		}
 		sb.append("	group by " + keyExpression);
 		sb.append("	order by " + keyExpression);
