@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { DASHBOARD_PATH } from '../../../app.constants';
 
@@ -21,7 +21,7 @@ import { DatePipe } from '@angular/common';
     DatePipe
   ]
 })
-export class ChartDocumentComponent implements OnInit {
+export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   private readonly url: string;
 
@@ -34,6 +34,7 @@ export class ChartDocumentComponent implements OnInit {
   lineChartType: string;
 
   drm: RangeModel;
+  subscription: Subscription;
 
   constructor(private errorService: ErrorService,
               private tokenService: TokenService,
@@ -48,7 +49,7 @@ export class ChartDocumentComponent implements OnInit {
     let today = new Date();
     let range: Range = {fromDate: today, toDate: today};
     this.updateLineChart(range);
-    this.daterangeObservable.listen().subscribe((dtRange: Range) => {
+    this.subscription = this.daterangeObservable.listen().subscribe((dtRange: Range) => {
       if (location.href.endsWith('/' + DASHBOARD_PATH)) {
         this.updateLineChart(dtRange);
       }
@@ -74,6 +75,11 @@ export class ChartDocumentComponent implements OnInit {
       }
     ];
   }
+
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.subscription.unsubscribe();
+  }  
 
   public chartClicked(e: any): void {
     if (e.active.length > 0) {
