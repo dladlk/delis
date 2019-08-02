@@ -29,6 +29,7 @@
                 </mat-menu>
                 <a [routerLink]="" [matMenuTriggerFor]="langMenu">
                     {{ 'header.language' | translate }}
+                    <mat-icon aria-hidden="false" aria-label="Drop-down" style="vertical-align: middle">arrow_drop_down</mat-icon>
                 </a>
             </li>
             <li>
@@ -62,6 +63,7 @@
                 </mat-menu>
                 <a [routerLink]="" [matMenuTriggerFor]="userMenu">
                     {{ headerUserName }}
+                    <mat-icon aria-hidden="false" aria-label="Drop-down" style="vertical-align: middle">arrow_drop_down</mat-icon>
                 </a>
             </li>
             <li>

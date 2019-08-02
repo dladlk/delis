@@ -22,7 +22,7 @@
   "header.account.settings": "Settings",
   "header.account.profile": "Profile",
   "header.account.inbox": "Inbox",
-  "header.account.logout": "Log Out",
+  "header.account.logout": "Logout",
   "page-header.dashboard": "Dashboard",
   "dashboard.identifier": "Identifiers last hour",
   "dashboard.documents": "Received documents last hour / average",
