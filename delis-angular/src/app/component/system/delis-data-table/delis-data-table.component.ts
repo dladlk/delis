@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {MatPaginator, MatSort} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {tap} from "rxjs/operators";
@@ -23,13 +23,14 @@ import {SendDocumentDataSource} from "../../content/send-document/send-document-
 import {DataTableConfig} from "../../content/data-table-config";
 import {DaterangeObservable} from "../../../observable/daterange.observable";
 import {RefreshObservable} from "../../../observable/refresh.observable";
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-delis-data-table',
     templateUrl: './delis-data-table.component.html',
     styleUrls: ['./delis-data-table.component.scss']
 })
-export class DelisDataTableComponent implements OnInit, AfterViewInit {
+export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @Input() header: string;
     @Input() path: string;
@@ -43,6 +44,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
     @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
     @ViewChild(MatSort, {static: true}) sort: MatSort;
 
+    private rangeUpdate$: Subscription;
     private filter: TableStateModel;
 
     allDisplayedColumns: Array<string> = new Array<string>();
@@ -63,7 +65,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
     LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
 
     constructor(private router: Router, private route: ActivatedRoute, private daterangeObservable: DaterangeObservable, private refreshObservable: RefreshObservable) {
-        this.daterangeObservable.listen().subscribe((range: Range) => {
+        this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((range: Range) => {
             if (location.href.endsWith('/' + this.path)) {
                 if (range.fromDate !== null && range.toDate !== null) {
                     this.filter.dateRange = range;
@@ -110,6 +112,12 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit {
         this.initData();
         this.dataSource.load(this.stateService);
     }
+
+    ngOnDestroy() {
+        if (this.rangeUpdate$) {
+          this.rangeUpdate$.unsubscribe();
+        }
+      }      
 
     ngAfterViewInit() {
         this.paginator.page.pipe(tap(() => this.loadPage())).subscribe();

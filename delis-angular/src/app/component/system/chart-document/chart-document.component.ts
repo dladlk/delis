@@ -34,7 +34,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
   lineChartType: string;
 
   drm: RangeModel;
-  subscription: Subscription;
+  private rangeUpdate$: Subscription;
 
   constructor(private errorService: ErrorService,
               private tokenService: TokenService,
@@ -49,7 +49,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     let today = new Date();
     let range: Range = {fromDate: today, toDate: today};
     this.updateLineChart(range);
-    this.subscription = this.daterangeObservable.listen().subscribe((dtRange: Range) => {
+    this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((dtRange: Range) => {
       if (location.href.endsWith('/' + DASHBOARD_PATH)) {
         this.updateLineChart(dtRange);
       }
@@ -77,8 +77,9 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // prevent memory leak when component destroyed
-    this.subscription.unsubscribe();
+    if (this.rangeUpdate$) {
+      this.rangeUpdate$.unsubscribe();
+    }
   }  
 
   public chartClicked(e: any): void {
