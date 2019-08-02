@@ -14,4 +14,5 @@ class UserData {
     private String lastName;
     private String email;
     private String organisationCode;
+    private boolean disabledIrForm;
 }

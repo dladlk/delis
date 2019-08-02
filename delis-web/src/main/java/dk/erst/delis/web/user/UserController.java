@@ -45,9 +45,12 @@ public class UserController {
     public String updateUser(@PathVariable long id, Model model) {
         User user = userService.findById(id);
         UserData userData = new UserData();
-        BeanUtils.copyProperties(user, userData);
+        BeanUtils.copyProperties(user, userData, "disabledIrForm");
         if (user.getOrganisation() != null) {
         	userData.setOrganisationCode(user.getOrganisation().getCode());
+        }
+        if (user.getDisabledIrForm() != null && user.getDisabledIrForm().booleanValue()) {
+        	userData.setDisabledIrForm(true);
         }
         model.addAttribute("user", userData);
         return "user/update";

@@ -60,6 +60,12 @@ public class UserService {
         user.setUsername(userData.getUsername());
         user.setLastName(userData.getLastName());
         user.setFirstName(userData.getFirstName());
+        
+        if (userData.isDisabledIrForm()) {
+        	user.setDisabledIrForm(Boolean.TRUE);
+        } else {
+        	user.setDisabledIrForm(Boolean.FALSE);
+        }
 
         userRepository.save(user);
     }
