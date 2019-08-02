@@ -68,7 +68,6 @@ export class IdentifierComponent implements OnInit {
       identifierGroup: null,
       type: null,
       value: null,
-      uniqueValueType: null,
       name: null
     }
   }

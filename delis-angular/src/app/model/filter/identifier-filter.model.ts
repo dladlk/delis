@@ -8,7 +8,6 @@ export class IdentifierFilterModel extends TableStateModel {
   identifierGroup: string;
   type: string;
   value: string;
-  uniqueValueType: string;
   status: string;
   name: string;
   publishingStatus: string;
@@ -20,7 +19,6 @@ export class IdentifierFilterModel extends TableStateModel {
     this.value = null;
     this.organisation = 'ALL';
     this.identifierGroup = null;
-    this.uniqueValueType = null;
     this.name = null;
     this.status = 'ALL';
     this.publishingStatus = 'ALL';

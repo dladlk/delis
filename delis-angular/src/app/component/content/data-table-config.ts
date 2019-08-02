@@ -123,12 +123,6 @@ export class DataTableConfig {
                 cell: (row: any) => `${row.value}`
             },
             {
-                displayedColumn: 'uniqueValueType',
-                typeColumn: 'text',
-                headerColumn: 'identifier.table.columnName.uniqueValueType',
-                cell: (row: any) => `${row.uniqueValueType}`
-            },
-            {
                 displayedColumn: 'status',
                 typeColumn: 'enumInfo',
                 headerColumn: 'identifier.table.columnName.status',

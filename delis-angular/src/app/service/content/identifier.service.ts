@@ -50,9 +50,6 @@ export class IdentifierService implements DelisService<IdentifierModel, Identifi
     if (filter.value !== null) {
       params = params.append('value', filter.value);
     }
-    if (filter.uniqueValueType !== null) {
-      params = params.append('uniqueValueType', filter.uniqueValueType);
-    }
     if (filter.name !== null) {
       params = params.append('name', filter.name);
     }
