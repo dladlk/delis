@@ -56,7 +56,7 @@ public class JournalDocumentService {
                         String message = cutString(errorRecord.getMessage(), 1024);
 
                         ErrorDictionary errorDictionary = new ErrorDictionary();
-                        errorDictionary.setErrorType(errorType);
+                        errorDictionary.setErrorType(errorRecord.getErrorType());
                         errorDictionary.setCode(code);
                         errorDictionary.setFlag(flag);
                         errorDictionary.setLocation(location);
