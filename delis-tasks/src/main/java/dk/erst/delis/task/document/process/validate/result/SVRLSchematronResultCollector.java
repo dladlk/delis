@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
+import dk.erst.delis.data.enums.document.DocumentFormat;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -16,14 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class BIS3SchematronResultCollector implements ISchematronResultCollector {
+public class SVRLSchematronResultCollector implements ISchematronResultCollector {
 
 	public static boolean DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE = false;
 	public static boolean DUMP_LOCATION = false;
+	
+	private DocumentFormat documentFormat;
 
-	protected static BIS3SchematronResultCollector INSTANCE = new BIS3SchematronResultCollector();
-
-	private BIS3SchematronResultCollector() {
+	protected SVRLSchematronResultCollector(DocumentFormat documentFormat) {
+		this.documentFormat = documentFormat;
 	}
 
 	public List<ErrorRecord> collectErrorList(Document result) {
@@ -35,7 +37,7 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 			String id = getAttribute(item, "id");
 			String flag = getAttribute(item, "flag");
 			String location = getAttribute(item, "location");
-
+			
 			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
 				String nodeToString = nodeToString(item);
 				System.out.println(nodeToString);
@@ -73,7 +75,8 @@ public class BIS3SchematronResultCollector implements ISchematronResultCollector
 				log.debug(String.format("%d) [%s] %s\n\tlocation = %s", i, flag, message, location));
 			}
 			
-			errorList.add(new ErrorRecord(DocumentErrorCode.BIS3_SCH, id, message, flag, location));
+			DocumentErrorCode errorCode = documentFormat.isCII() ? DocumentErrorCode.CII_SCH : DocumentErrorCode.BIS3_SCH;
+			errorList.add(new ErrorRecord(errorCode, id, message, flag, location));
 		}
 		return errorList;
 	}

@@ -9,6 +9,6 @@ public class SchematronResultCollectorFactory {
 		if (df.getDocumentFormatFamily() == DocumentFormatFamily.OIOUBL) {
 			return OIOUBLSchematronResultCollector.INSTANCE;
 		}
-		return BIS3SchematronResultCollector.INSTANCE;
+		return new SVRLSchematronResultCollector(df);
 	}
 }
