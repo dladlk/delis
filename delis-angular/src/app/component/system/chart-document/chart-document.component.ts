@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
-
-import { DASHBOARD_PATH } from '../../../app.constants';
+import { TranslateService } from '@ngx-translate/core';
+import { DatePipe } from '@angular/common';
 
 import { Range, RangeModel } from '../date-range/model/model';
 import { ErrorService } from '../../../service/system/error.service';
@@ -10,8 +10,6 @@ import { TokenService } from '../../../service/system/token.service';
 import { RuntimeConfigService } from '../../../service/system/runtime-config.service';
 import { HttpRestService } from '../../../service/system/http-rest.service';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
-import { TranslateService } from '@ngx-translate/core';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chart-document',
@@ -45,18 +43,13 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
               private daterangeObservable: DaterangeObservable) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/chart';
-
-    let today = new Date();
-    let range: Range = {fromDate: today, toDate: today};
-    this.updateLineChart(range);
-    this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((dtRange: Range) => {
-      if (location.href.endsWith('/' + DASHBOARD_PATH)) {
-        this.updateLineChart(dtRange);
-      }
-    });
+    this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((dtRange: Range) => this.updateLineChart(dtRange));
   }
 
   ngOnInit() {
+    let today = new Date();
+    let range: Range = {fromDate: today, toDate: today};
+    this.updateLineChart(range);
     this.lineChartLegend = false;
     this.lineChartOptions = {
       responsive: true
