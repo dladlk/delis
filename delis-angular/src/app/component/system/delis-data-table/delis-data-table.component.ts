@@ -1,29 +1,28 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild, OnDestroy} from '@angular/core';
-import {MatPaginator, MatSort} from "@angular/material";
-import {ActivatedRoute, Router} from "@angular/router";
-import {tap} from "rxjs/operators";
-
-import {DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT, LAST_ACTIVE_MAT_ROW} from "../../../app.constants";
-
-import {DelisDataTableColumnModel} from "../../../model/content/delis-data-table-column.model";
-import {TableStateModel} from "../../../model/filter/table-state.model";
-import {HideColumnModel} from "../../../model/content/hide-column.model";
-import {AbstractEntityModel} from "../../../model/content/abstract-entity.model";
-import {SendDocumentFilterModel} from "../../../model/filter/send-document-filter.model";
-import {DocumentFilterModel} from "../../../model/filter/document-filter.model";
-import {IdentifierFilterModel} from "../../../model/filter/identifier-filter.model";
-import {Range} from '../date-range/model/model';
-import {StateService} from "../../../service/state/state-service";
-import {DelisService} from "../../../service/content/delis-service";
-
-import {DelisDataSource} from "../../content/delis-data-source";
-import {DocumentDataSource} from "../../content/document/document-data-source";
-import {IdentifierDataSource} from "../../content/identifier/identifier-data-source";
-import {SendDocumentDataSource} from "../../content/send-document/send-document-data-source";
-import {DataTableConfig} from "../../content/data-table-config";
-import {DaterangeObservable} from "../../../observable/daterange.observable";
-import {RefreshObservable} from "../../../observable/refresh.observable";
+import { AfterViewInit, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { MatPaginator, MatSort } from "@angular/material";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from 'rxjs';
+import { tap } from "rxjs/operators";
+
+import { DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT, LAST_ACTIVE_MAT_ROW } from "../../../app.constants";
+
+import { DelisDataTableColumnModel } from "../../../model/content/delis-data-table-column.model";
+import { TableStateModel } from "../../../model/filter/table-state.model";
+import { HideColumnModel } from "../../../model/content/hide-column.model";
+import { AbstractEntityModel } from "../../../model/content/abstract-entity.model";
+import { SendDocumentFilterModel } from "../../../model/filter/send-document-filter.model";
+import { DocumentFilterModel } from "../../../model/filter/document-filter.model";
+import { IdentifierFilterModel } from "../../../model/filter/identifier-filter.model";
+import { Range } from '../date-range/model/model';
+import { StateService } from "../../../service/state/state-service";
+import { DelisService } from "../../../service/content/delis-service";
+import { DelisDataSource } from "../../content/delis-data-source";
+import { DocumentDataSource } from "../../content/document/document-data-source";
+import { IdentifierDataSource } from "../../content/identifier/identifier-data-source";
+import { SendDocumentDataSource } from "../../content/send-document/send-document-data-source";
+import { DataTableConfig } from "../../content/data-table-config";
+import { DaterangeObservable } from "../../../observable/daterange.observable";
+import { RefreshObservable } from "../../../observable/refresh.observable";
 
 @Component({
     selector: 'app-delis-data-table',
@@ -45,6 +44,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild(MatSort, {static: true}) sort: MatSort;
 
     private rangeUpdate$: Subscription;
+    private refreshUpdate$: Subscription;
     private filter: TableStateModel;
 
     allDisplayedColumns: Array<string> = new Array<string>();
@@ -66,21 +66,15 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
     constructor(private router: Router, private route: ActivatedRoute, private daterangeObservable: DaterangeObservable, private refreshObservable: RefreshObservable) {
         this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((range: Range) => {
-            if (location.href.endsWith('/' + this.path)) {
-                if (range.fromDate !== null && range.toDate !== null) {
-                    this.filter.dateRange = range;
-                } else {
-                    this.filter.dateRange = null;
-                }
-                this.paginator.pageIndex = 0;
-                this.loadPage();
+            if (range.fromDate !== null && range.toDate !== null) {
+                this.filter.dateRange = range;
+            } else {
+                this.filter.dateRange = null;
             }
+            this.paginator.pageIndex = 0;
+            this.loadPage();
         });
-        this.refreshObservable.listen().subscribe(() => {
-            if (location.href.endsWith('/' + this.path)) {
-                this.refresh();
-            }
-        });
+        this.refreshUpdate$ = this.refreshObservable.listen().subscribe(() => this.refresh());
     }
 
     ngOnInit() {
@@ -116,6 +110,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnDestroy() {
         if (this.rangeUpdate$) {
           this.rangeUpdate$.unsubscribe();
+        }
+        if (this.refreshUpdate$) {
+            this.refreshUpdate$.unsubscribe();
         }
       }      
 

@@ -24,14 +24,13 @@ export class AppComponent implements OnInit {
         currentLang = locale.getLocale();
       }
       this.translate.use(currentLang);
+      const currentVersion = localStorage.getItem('appVersion');
+      if (currentVersion === null || currentVersion !== this.version) {
+          localStorage.clear();
+          localStorage.setItem('appVersion', this.version);
+      }
+      this.configService.getUrl();
   }
 
-  ngOnInit() {
-    const currentVersion = localStorage.getItem('appVersion');
-    if (currentVersion === null || currentVersion !== this.version) {
-      localStorage.clear();
-      localStorage.setItem('appVersion', this.version);
-    }
-    this.configService.getUrl();
-  }
+  ngOnInit() { }
 }
