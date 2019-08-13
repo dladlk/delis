@@ -6,7 +6,8 @@ echo "CONTEXT_NAME = ${CONTEXT_NAME}"
 echo "SERVER_PORT = ${SERVER_PORT}"
 MARKER_CONTEXT_NAME=delis-gui-context-name
 
-envsubst < "/usr/share/nginx/html/assets/config/runtime.json" > "/usr/share/nginx/html/assets/config/runtime.json"
+envsubst < /usr/share/nginx/html/assets/config/runtime_template.json > /usr/share/nginx/html/assets/config/runtime.json
+
 sed -i "s/${MARKER_CONTEXT_NAME}/${CONTEXT_NAME}/g" /etc/nginx/nginx.conf
 sed -i "s/${MARKER_CONTEXT_NAME}/${CONTEXT_NAME}/g" /usr/share/nginx/html/index.html
 
