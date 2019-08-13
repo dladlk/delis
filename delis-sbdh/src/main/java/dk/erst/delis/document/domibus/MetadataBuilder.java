@@ -46,7 +46,7 @@ public class MetadataBuilder {
 		finalRecipient.setValue(receiver.getIdentifier());
 
 		Property mimeType = new Property();
-		mimeType.setName("mimeType");
+		mimeType.setName("MimeType");
 		mimeType.setValue("text/xml");
 
 		MessageProperties messageProperties = new MessageProperties();
