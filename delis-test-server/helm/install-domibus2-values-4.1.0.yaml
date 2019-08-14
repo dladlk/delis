@@ -1,0 +1,4 @@
+dtx:
+  imageTag: 4.1.0.0
+  env:
+    unsecureLoginAllowed: 'true'

@@ -109,9 +109,14 @@ spec:
 
         - name: DOMIBUS_PROPERTY_fsplugin_validation_endpoint
           value: "{{.Values.dtx.env.fsplugin_validation_endpoint}}"
-          
-          
-          
+
+        - name: MERGE_FS_PROPERTIES_ENV_PREFIX
+          value: 'FS_PROPERTY_'
+        - name: FS_PROPERTY_fsplugin_authentication_user
+          value: "fsplugin"
+        - name: FS_PROPERTY_fsplugin_authentication_password
+          value: "Systest1_"
+
         - name: CONTEXT_NAME
           value: domibus{{.Values.partyIndex}}
 
