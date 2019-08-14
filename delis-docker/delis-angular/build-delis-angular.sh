@@ -12,7 +12,7 @@ pushd ${PROJECT_PATH}
 
 npm install
 
-ng build --prod --configuration=production --base-href=/delis-gui-context-name/
+ng build --prod --configuration=production --base-href=/delis-gui-context-name/ && npm run post-build
 
 popd
 
