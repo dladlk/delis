@@ -121,6 +121,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     initData() {
+        if (!this.paginator.pageSize) {
+            this.paginator.pageSize = 10;
+        }
         this.initDisplayedColumnsData();
         this.initFilter();
     }
