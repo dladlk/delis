@@ -3,7 +3,7 @@
         <h5>{{ header | translate}}</h5>
     </mat-card-header>
 
-    <mat-card-content>
+    <mat-card-content class="responsive-table">
         <mat-table [dataSource]="dataSource"
                    matSort
                    matSortActive="{{ sort.active }}"
