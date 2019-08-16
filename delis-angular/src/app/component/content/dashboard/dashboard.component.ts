@@ -1,12 +1,13 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from "rxjs";
+
 import { RefreshObservable } from '../../../observable/refresh.observable';
 import { DashboardModel } from '../../../model/content/dashboard.model';
 import { HttpRestService } from '../../../service/system/http-rest.service';
 import { RuntimeConfigService } from '../../../service/system/runtime-config.service';
 import { TokenService } from '../../../service/system/token.service';
 import { ErrorService } from '../../../service/system/error.service';
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-dashboard',

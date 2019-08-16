@@ -17,8 +17,8 @@ export class AppComponent implements OnInit {
     private translate: TranslateService,
     private locale: LocaleService,
     private versionCheckService: VersionCheckService) {
-      this.translate.setDefaultLang('en');
-      let currentLang = 'en';
+      this.translate.setDefaultLang('da');
+      let currentLang = 'da';
       if (locale.getLocale().match(/en|da/)) {
         currentLang = locale.getLocale();
       }
