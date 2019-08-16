@@ -182,8 +182,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     initDefaultFilter() {
-        this.sort.active = 'createTime';
-        this.sort.direction = 'desc';
+        this.sort.active = 'createTime'; // TODO https://github.com/angular/components/issues/12754#issuecomment-419461502
+        this.sort.direction = 'desc'; // TODO It looks like the sort header UI only updates when interacted with via user interaction. If the update comes from either a property binding or from a method call it updates the state, but the UI is not reflected.
         this.paginator.pageIndex = 0;
         this.paginator.pageSize = 10;
         if (this.path === SEND_DOCUMENT_PATH) {
