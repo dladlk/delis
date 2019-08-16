@@ -181,6 +181,9 @@
 
   "td.picker.from": "FROM",
   "td.picker.to": "TO",
+  "td.picker.from.date": "From Date",
+  "td.picker.to.date": "To Date",
+  "td.picker.presets": "Presets",
 
   "column.hide": "Hide columns",
 

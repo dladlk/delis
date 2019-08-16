@@ -29,12 +29,17 @@ export class PickerOverlayComponent implements OnInit {
   cancelLabel: string;
   shouldAnimate: string;
 
+  panelOpenState = false;
+  minScreen = false;
+  minScreenSize = 800;
+
   constructor(
     private rangeStoreService: RangeStoreService,
     private configStoreService: ConfigStoreService,
     private overlayRef: OverlayRef) { }
 
   ngOnInit() {
+    this.minScreen = (window.innerWidth <= this.minScreenSize);
     this.fromDate = this.rangeStoreService.fromDate;
     this.toDate = this.rangeStoreService.toDate;
     this.startDatePrefix = this.configStoreService.ngxDrpOptions.startDatePrefix || 'td.picker.from';
@@ -92,10 +97,25 @@ export class PickerOverlayComponent implements OnInit {
     this.overlayRef.dispose();
   }
 
+  onResize(event) {
+    this.minScreen = (event.target.innerWidth <= this.minScreenSize);
+  }
+
   autoClose(event) {
-    var target = event.target;
-    if (!target.closest(".ngx-mat-drp-calendar-container")) {
-      this.disposeOverLay();
+    if (!this.minScreen) {
+      var target = event.target;
+      if (!target.closest(".ngx-mat-drp-calendar-container")) {
+        this.disposeOverLay();
+      }
+    }
+  }
+
+  autoCloseMin(event) {
+    if (this.minScreen) {
+      var target = event.target;
+      if (!target.closest(".ngx-mat-drp-calendar-min-container")) {
+        this.disposeOverLay();
+      }
     }
   }
 }

@@ -8,7 +8,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { MatPaginatorIntl } from "@angular/material";
+import { DateAdapter, MatPaginatorIntl } from "@angular/material";
 import { ChartsModule } from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -42,6 +42,7 @@ import { ChartDocumentComponent } from './component/system/chart-document/chart-
 import { PaginatorI18n } from "./i18n/paginator-I18n";
 import { DelisDataTableComponent } from './component/system/delis-data-table/delis-data-table.component';
 import { DelisTableDetailsHeaderComponent } from './component/system/delis-table-details-header/delis-table-details-header.component';
+import { CustomDateAdapter } from "./component/system/date-range/calendar-wrapper/custom-date-adapter";
 
 export const createTranslateLoader = (http: HttpClient) => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -100,6 +101,9 @@ export const createTranslateLoader = (http: HttpClient) => {
   providers: [
     {
       provide: DATE, useValue: new Date()
+    },
+    {
+      provide: DateAdapter, useClass: CustomDateAdapter
     },
     {
       provide: HTTP_INTERCEPTORS,

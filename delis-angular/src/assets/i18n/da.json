@@ -181,6 +181,9 @@
 
   "td.picker.from": "FRA",
   "td.picker.to": "TIL",
+  "td.picker.from.date": "Fra Dato",
+  "td.picker.to.date": "Til Dato",
+  "td.picker.presets": "Forudindstillinger",
 
   "column.hide": "Skjul kolonner",
 
