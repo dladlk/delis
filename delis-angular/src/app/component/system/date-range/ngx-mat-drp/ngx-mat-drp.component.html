@@ -3,7 +3,7 @@
     <mat-icon matPrefix [inline]="true">search</mat-icon>
     <input class="ngx-mat-drp-date-input"
            matInput placeholder="{{ options.placeholder | translate }}"
-           [value]="selectedDateRange"
+           [value]="selectedDateRange | translate"
            [matTooltip]="selectedDateRange"
            (click)="openCalendar($event)"
            readonly

@@ -1,5 +1,5 @@
 import { Injectable, Inject, InjectionToken } from '@angular/core';
-import { Range } from '../model/model';
+import { RangeUpdate } from '../model/model';
 import { Subject } from 'rxjs';
 
 export const DATE = new InjectionToken<Date>('date');
@@ -9,7 +9,7 @@ export const DATE = new InjectionToken<Date>('date');
 })
 export class RangeStoreService {
 
-  rangeUpdate$: Subject<Range> = new Subject<Range>();
+  rangeUpdate$: Subject<RangeUpdate> = new Subject<RangeUpdate>();
 
   constructor(@Inject(DATE) private _fromDate: Date, @Inject(DATE) private _toDate: Date) { }
 
@@ -21,9 +21,9 @@ export class RangeStoreService {
     return this._toDate;
   }
 
-  updateRange(fromDate: Date = this._fromDate, toDate: Date = this._toDate) {
-    this._fromDate = fromDate;
-    this._toDate = toDate;
-    this.rangeUpdate$.next({ fromDate: this._fromDate, toDate: this._toDate });
+  updateRange(rangeUpdate: RangeUpdate) {
+    this._fromDate = rangeUpdate.range.fromDate;
+    this._toDate = rangeUpdate.range.toDate;
+    this.rangeUpdate$.next(rangeUpdate);
   }
 }

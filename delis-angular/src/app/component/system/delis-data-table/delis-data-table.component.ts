@@ -23,6 +23,7 @@ import { SendDocumentDataSource } from "../../content/send-document/send-documen
 import { DataTableConfig } from "../../content/data-table-config";
 import { DaterangeObservable } from "../../../observable/daterange.observable";
 import { RefreshObservable } from "../../../observable/refresh.observable";
+import { ResetDaterangeObservable } from "../../../observable/reset-daterange.observable";
 
 @Component({
     selector: 'app-delis-data-table',
@@ -64,7 +65,12 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
     LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
 
-    constructor(private router: Router, private route: ActivatedRoute, private daterangeObservable: DaterangeObservable, private refreshObservable: RefreshObservable) {
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private daterangeObservable: DaterangeObservable,
+        private refreshObservable: RefreshObservable,
+        private resetDaterangeObservable: ResetDaterangeObservable) {
         this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((range: Range) => {
             if (range.fromDate !== null && range.toDate !== null) {
                 this.filter.dateRange = range;
@@ -178,6 +184,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     initDefaultFilter() {
         this.sort.active = 'createTime';
         this.sort.direction = 'desc';
+        this.paginator.pageIndex = 0;
+        this.paginator.pageSize = 10;
         if (this.path === SEND_DOCUMENT_PATH) {
             this.filter = new SendDocumentFilterModel(this.sort);
         }
@@ -223,9 +231,20 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
     clear() {
         this.initDefaultFilter();
-        window.location.replace(this.path)
-        // this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        //     this.router.navigate(['/' + this.path]));
+        for (const filterParam in this.enumFilterModel) {
+            if (!this.enumFilterModel.hasOwnProperty(filterParam)) {
+                continue;
+            }
+            this.enumFilterModel[filterParam].value = this.enumFilterModel[filterParam].list[0];
+        }
+        for (const filterParam in this.textFilterModel) {
+            if (!this.textFilterModel.hasOwnProperty(filterParam)) {
+                continue;
+            }
+            this.textFilterModel[filterParam] = null;
+        }
+        this.resetDaterangeObservable.reset();
+        this.loadPage();
     }
 
     refresh() {

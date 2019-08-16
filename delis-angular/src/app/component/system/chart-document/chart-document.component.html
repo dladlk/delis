@@ -1,24 +1,21 @@
-
-  
-  <app-date-range></app-date-range>
-  <table>
+<app-date-range [range]="range"></app-date-range>
+<table>
     <tbody>
     <tr>
-      <td class="table-details-td">
-        <div *ngIf="lineChartData.length > 0">
-          <canvas baseChart height="100"
-                  [datasets]="lineChartData"
-                  [labels]="lineChartLabels"
-                  [options]="lineChartOptions"
-                  [colors]="lineChartColors"
-                  [legend]="lineChartLegend"
-                  [chartType]="lineChartType"
-                  (chartHover)="chartHovered($event)"
-                  (chartClick)="chartClicked($event)">
-          </canvas>
-        </div>
-      </td>
+        <td class="table-details-td">
+            <div *ngIf="lineChartData.length > 0">
+                <canvas baseChart height="100"
+                        [datasets]="lineChartData"
+                        [labels]="lineChartLabels"
+                        [options]="lineChartOptions"
+                        [colors]="lineChartColors"
+                        [legend]="lineChartLegend"
+                        [chartType]="lineChartType"
+                        (chartHover)="chartHovered($event)"
+                        (chartClick)="chartClicked($event)">
+                </canvas>
+            </div>
+        </td>
     </tr>
     </tbody>
-  </table>
-  
+</table>

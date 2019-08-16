@@ -33,6 +33,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   drm: RangeModel;
   private rangeUpdate$: Subscription;
+  range: Range;
 
   constructor(private errorService: ErrorService,
               private tokenService: TokenService,
@@ -48,8 +49,8 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     let today = new Date();
-    let range: Range = {fromDate: today, toDate: today};
-    this.updateLineChart(range);
+    this.range = {fromDate: today, toDate: today};
+    this.updateLineChart(this.range);
     this.lineChartLegend = false;
     this.lineChartOptions = {
       responsive: true

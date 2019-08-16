@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
-import { PresetItem } from '../model/model';
+import { PresetItem, RangeUpdate } from '../model/model';
 import { RangeStoreService } from '../service/range-store.service';
 import { ConfigStoreService } from '../service/config-store.service';
 import { pickerOverlayAnimations } from './picker-overlay.animations';
@@ -80,12 +80,18 @@ export class PickerOverlayComponent implements OnInit {
   }
 
   applyNewDates() {
-    this.rangeStoreService.updateRange(this.fromDate, this.toDate);
+    const rangeUpdate = new RangeUpdate();
+    rangeUpdate.range = {fromDate: this.fromDate, toDate: this.toDate};
+    rangeUpdate.update = true;
+    this.rangeStoreService.updateRange(rangeUpdate);
     this.disposeOverLay();
   }
 
   clearDates() {
-    this.rangeStoreService.updateRange(null, null);
+    const rangeUpdate = new RangeUpdate();
+    rangeUpdate.range = {fromDate: null, toDate: null};
+    rangeUpdate.update = true;
+    this.rangeStoreService.updateRange(rangeUpdate);
     this.disposeOverLay();
   }
 
