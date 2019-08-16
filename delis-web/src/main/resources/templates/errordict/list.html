@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<div class="card border-primary">
+		<div class="card-header bg-primary text-white">
+			Document Validation Errors
+		</div>
+		<div class="card-body">
+			<form action="#" th:action="@{/errordict/list}" method="post">
+            <table class="table table-striped table-bordered table-sm datatables-easy"
+                	th:attr="dt-page=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(errordictPage)}"
+                	>
+                <thead>
+				<tr>
+                    <th dt-field="errorType">Error Type</th>
+                    <th dt-field="code">Code</th>
+                    <th dt-field="message">Message</th>
+                    <th dt-field="falg">Flag</th>
+                    <th dt-field="location">Location</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr th:each="r,iter : ${errordictList}">
+                    <td>
+                        <a href="#" th:href="@{/errordict/view/__${r.id}__}" th:text="${r.errorType?.name}"></a>
+                    </td>
+                    <td>
+                        <a href="#" th:href="@{/errordict/view/__${r.id}__}" th:text="${r.code}"></a>
+                    </td>
+                    <td th:text="${r.message}"></td>
+                    <td th:text="${r.flag}"></td>
+                    <td style="word-wrap: break-word; max-width: 300px;" th:text="${r.location}"></td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+	</div>
+	
+</body>
+</html>
