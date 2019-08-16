@@ -1,6 +1,27 @@
 <mat-card>
+
     <mat-card-header>
-        <h5>{{ header | translate}}</h5>
+        <div class="bounds">
+            <div class="content"
+                 fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutAlign="left"
+                 fxLayoutGap="1em"
+                 fxFlexFill>
+                <div fxFlex="100">
+                    <div class="example-button-row">
+                        <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                        <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
+                            <mat-icon>autorenew</mat-icon>
+                        </button>
+                        <h5>{{ header | translate}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </mat-card-header>
 
     <mat-card-content class="responsive-table">
@@ -55,7 +76,6 @@
                                 <mat-form-field>
                                     <mat-icon matPrefix [inline]="true">search</mat-icon>
                                     <input class="filter-input" matInput [(ngModel)]="textFilterModel[column.displayedColumn]" (keyup.enter)="applyFilter(column.displayedColumn, $event.target.value, column.typeColumn)" placeholder="{{ column.headerColumn | translate }}"/>
-<!--                                    <input class="filter-input" matInput (keyup.enter)="applyFilter(column.displayedColumn, $event.target.value, column.typeColumn)" placeholder="{{ column.headerColumn | translate }}"/>-->
                                 </mat-form-field>
                             </mat-list-item>
                         </mat-list>
@@ -88,29 +108,34 @@
         </mat-table>
 
     </mat-card-content>
+
     <mat-card-actions>
-        <mat-grid-list [cols]="breakpointCols" rowHeight="70px" (window:resize)="onResize($event)">
-            <mat-grid-tile [colspan]="breakpointColspan" [rowspan]="1">
-                <mat-form-field>
-                    <mat-label>{{ 'column.hide' | translate }}</mat-label>
-                    <mat-select (selectionChange)="showHideColumns($event.value)" multiple>
-                        <mat-option *ngFor="let col of allDisplayedColumnsData" [value]="col.columnName">{{ col.columnBundle | translate }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile [colspan]="1" [rowspan]="1">
-                <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
-                    <mat-icon>autorenew</mat-icon>
-                </button>
-            </mat-grid-tile>
-            <mat-grid-tile [colspan]="1" [rowspan]="1">
-                <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
-                    <mat-icon>refresh</mat-icon>
-                </button>
-            </mat-grid-tile>
-            <mat-grid-tile [colspan]="breakpointColspan" [rowspan]="1">
-                <mat-paginator [length]="dataSource.getTotalElements() | async" [pageSize]="paginator.pageSize" [pageSizeOptions]="[1, 5, 10, 25, 50, 100]"></mat-paginator>
-            </mat-grid-tile>
-        </mat-grid-list>
+        <mat-paginator [length]="dataSource.getTotalElements() | async" [pageSize]="paginator.pageSize" [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
     </mat-card-actions>
+
+<!--    <mat-card-actions>-->
+<!--        <mat-grid-list [cols]="breakpointCols" rowHeight="70px" (window:resize)="onResize($event)">-->
+<!--            <mat-grid-tile [colspan]="breakpointColspan" [rowspan]="1">-->
+<!--                <mat-form-field>-->
+<!--                    <mat-label>{{ 'column.hide' | translate }}</mat-label>-->
+<!--                    <mat-select (selectionChange)="showHideColumns($event.value)" multiple>-->
+<!--                        <mat-option *ngFor="let col of allDisplayedColumnsData" [value]="col.columnName">{{ col.columnBundle | translate }}</mat-option>-->
+<!--                    </mat-select>-->
+<!--                </mat-form-field>-->
+<!--            </mat-grid-tile>-->
+<!--            <mat-grid-tile [colspan]="1" [rowspan]="1">-->
+<!--                <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">-->
+<!--                    <mat-icon>autorenew</mat-icon>-->
+<!--                </button>-->
+<!--            </mat-grid-tile>-->
+<!--            <mat-grid-tile [colspan]="1" [rowspan]="1">-->
+<!--                <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">-->
+<!--                    <mat-icon>refresh</mat-icon>-->
+<!--                </button>-->
+<!--            </mat-grid-tile>-->
+<!--            <mat-grid-tile [colspan]="breakpointColspan" [rowspan]="1">-->
+<!--                <mat-paginator [length]="dataSource.getTotalElements() | async" [pageSize]="paginator.pageSize" [pageSizeOptions]="[1, 5, 10, 25, 50, 100]"></mat-paginator>-->
+<!--            </mat-grid-tile>-->
+<!--        </mat-grid-list>-->
+<!--    </mat-card-actions>-->
 </mat-card>
