@@ -28,7 +28,6 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
     @RequestMapping("/errordict/view/{id}")
     public String list(@PathVariable Long id, Model model) {
         ErrorDictionaryData errorDictionaryWithStats = service.getErrorDictionaryWithStats(id);
-        model.addAttribute("header", "Back to list");
         model.addAttribute("errorDictionary", errorDictionaryWithStats);
         return "/errordict/view";
     }

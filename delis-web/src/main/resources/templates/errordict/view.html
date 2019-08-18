@@ -4,8 +4,9 @@
       th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
 
-<h3 class="m-2 text-secondary"><a href="#" th:href="@{/errordict/list}" class="btn btn-outline-secondary"><i
-        class="fas fa-chevron-left"></i></a><label th:text="${header}"></label></h3>
+<h3 class="m-2 text-secondary"><a href="#" th:href="@{/errordict/list}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
+	<a href="#" th:href="@{/errordict/view/__${errorDictionary.id}__}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+	Error details</h3>        
 
 <div class="">
 
@@ -23,9 +24,9 @@
                     <td th:text="${errorDictionary.flag}"></td>
                 </tr>
                 <tr>
-                    <th>Count</th>
-                    <th>From</th>
-                    <th>To</th>
+                    <th>Occured times</th>
+                    <th>First</th>
+                    <th>Last</th>
                 </tr>
                 <tr>
                     <td th:text="${errorDictionary.count}">XXX</td>
@@ -57,16 +58,9 @@
             </table>
         </div>
     </div>
-
-</div>
-
-<div class="card border-secondary m-1">
-    <div class="card-body pb-1">
-        <div class="d-flex justify-content-end">
-            <a href="#" th:href="@{|/errordict/listdocument/${errorDictionary.id}|}" class="m-2 btn btn-primary btn-sm">See
-                documents</a>
-        </div>
-    </div>
+    
+    <a href="#" th:href="@{|/errordict/listdocument/${errorDictionary.id}|}" class="m-2 btn btn-primary btn-sm">View documents</a>
+    
 </div>
 
 </body>
