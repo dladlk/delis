@@ -12,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
+import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
@@ -65,6 +66,7 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
 
 	@RequestMapping("/errordict/list")
 	public String list(Model model, WebRequest webRequest) {
+		model.addAttribute("errorTypeList", DocumentErrorCode.values());
 		return super.list(model, webRequest);
 	}
 	/*

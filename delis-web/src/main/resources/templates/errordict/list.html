@@ -14,10 +14,10 @@
                 	>
                 <thead>
 				<tr>
-                    <th dt-field="errorType">Error Type</th>
+                    <th dt-field="errorType" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(errorTypeList)}">Error Type</th>
                     <th dt-field="code">Code</th>
                     <th dt-field="message">Message</th>
-                    <th dt-field="falg">Flag</th>
+                    <th dt-field="flag">Flag</th>
                     <th dt-field="location">Location</th>
 				</tr>
 				</thead>
