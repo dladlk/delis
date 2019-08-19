@@ -10,6 +10,7 @@ import { TokenService } from '../../../service/system/token.service';
 import { RuntimeConfigService } from '../../../service/system/runtime-config.service';
 import { HttpRestService } from '../../../service/system/http-rest.service';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
+import { ChartDocumentService } from "./chart-document.service";
 
 @Component({
   selector: 'app-chart-document',
@@ -40,16 +41,23 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
               private configService: RuntimeConfigService,
               private httpRestService: HttpRestService,
               private translate: TranslateService,
+              private chartDocumentService: ChartDocumentService,
               private datePipe: DatePipe,
               private daterangeObservable: DaterangeObservable) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/chart';
-    this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((dtRange: Range) => this.updateLineChart(dtRange));
+    this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((dtRange: Range) => {
+      this.chartDocumentService.updateRange(dtRange);
+      this.updateLineChart(dtRange);
+    });
   }
 
   ngOnInit() {
-    let today = new Date();
-    this.range = {fromDate: today, toDate: today};
+    this.range = this.chartDocumentService.range;
+    if (!this.range) {
+      let today = new Date();
+      this.range = {fromDate: today, toDate: today};
+    }
     this.updateLineChart(this.range);
     this.lineChartLegend = false;
     this.lineChartOptions = {
