@@ -32,6 +32,7 @@
   "dashboard.chart.receiving": "Receiving",
   "dashboard.chart.sending": "Sending",
   "dashboard.chart.receiving_error": "Receiving Error",
+  "dashboard.chart.default_message": "No documents for the selected period",
   "documents.header": "Documents",
   "documents.header.details": "Document details",
   "documents.table.header": "Documents Overview",

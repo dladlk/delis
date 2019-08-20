@@ -32,6 +32,7 @@
   "dashboard.chart.receiving": "Modtagelse",
   "dashboard.chart.sending": "Afsendelse",
   "dashboard.chart.receiving_error": "Modtagelse Fejl",
+  "dashboard.chart.default_message": "Ingen dokumenter for den valgte periode",
   "documents.header": "Dokumenter",
   "documents.header.details": "Modtagelse detaljer",
   "documents.table.header": "Modtagelse Oversigt",

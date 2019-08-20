@@ -3,7 +3,7 @@
     <tbody>
     <tr>
         <td class="table-details-td">
-            <div *ngIf="showing">
+            <div *ngIf="showing; else elseBlock">
                 <canvas baseChart height="100"
                         [datasets]="lineChartData"
                         [labels]="lineChartLabels"
@@ -15,6 +15,12 @@
                         (chartClick)="chartClicked($event)">
                 </canvas>
             </div>
+
+            <ng-template #elseBlock>
+                <span>
+                    {{ 'dashboard.chart.default_message' | translate }}
+                </span>
+            </ng-template>
         </td>
     </tr>
     </tbody>
