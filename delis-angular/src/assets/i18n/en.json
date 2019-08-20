@@ -30,6 +30,8 @@
   "dashboard.send": "Send documents last hour / average",
   "dashboard.details": "View Details",
   "dashboard.chart.receiving": "Receiving",
+  "dashboard.chart.sending": "Sending",
+  "dashboard.chart.receiving_error": "Receiving Error",
   "documents.header": "Documents",
   "documents.header.details": "Document details",
   "documents.table.header": "Documents Overview",

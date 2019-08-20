@@ -30,6 +30,8 @@
   "dashboard.send": "Afsendelse den sidste time / gennemsnit",
   "dashboard.details": "Se detaljer",
   "dashboard.chart.receiving": "Modtagelse",
+  "dashboard.chart.sending": "Afsendelse",
+  "dashboard.chart.receiving_error": "Modtagelse Fejl",
   "documents.header": "Dokumenter",
   "documents.header.details": "Modtagelse detaljer",
   "documents.table.header": "Modtagelse Oversigt",

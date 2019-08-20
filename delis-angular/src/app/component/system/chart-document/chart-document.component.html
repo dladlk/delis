@@ -3,7 +3,7 @@
     <tbody>
     <tr>
         <td class="table-details-td">
-            <div *ngIf="lineChartData.length > 0">
+            <div *ngIf="showing">
                 <canvas baseChart height="100"
                         [datasets]="lineChartData"
                         [labels]="lineChartLabels"

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import dk.erst.delis.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -94,6 +95,7 @@ public class ChartServiceImpl implements ChartService {
 		log.debug("today: " + today);
 		ChartData chartData = new ChartData();
 
+		uiTimeNow = DateUtil.addHour(uiTimeNow, 1);
 		for (StatType statType : StatType.values()) {
 			processStatType(statType, organisationId, uiTimeNow, hoursDiff, statRange, groupHourNotDate, today, chartData);
 		}

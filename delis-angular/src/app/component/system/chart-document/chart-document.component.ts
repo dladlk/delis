@@ -24,6 +24,8 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   private readonly url: string;
 
+  showing = false;
+
   lineChartData: Array<any> = [];
   lineChartLabels: Array<string> = [];
 
@@ -59,21 +61,46 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       this.range = {fromDate: today, toDate: today};
     }
     this.updateLineChart(this.range);
-    this.lineChartLegend = false;
-    this.lineChartOptions = {
-      responsive: true
-    };
-    
+    this.lineChartLegend = true;
     this.lineChartType = 'line';
-
+    this.lineChartOptions = {
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            stepSize: 1
+          }
+        }]
+      },
+    };
+    const backgroundColor = 'rgba(11, 120, 208, 0.2)';
     this.lineChartColors = [
       {
-        backgroundColor: 'rgba(33, 150, 243,0.2)',
-        borderColor: 'rgba(33, 150, 243,1)',
-        pointBackgroundColor: 'rgba(33, 150, 243,1)',
+        // document color
+        borderColor: 'rgba(0, 255, 0, 1)',
+        pointBackgroundColor: 'rgba(0, 255, 0, 1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(77,83,96,1)'
+        pointHoverBorderColor: 'rgba(0, 255, 0, 0.8)',
+        backgroundColor: backgroundColor,
+      },
+      {
+        // send document color
+        borderColor: 'rgba(0, 0, 255, 1)',
+        pointBackgroundColor: 'rgba(0, 0, 255, 1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(0, 0, 255, 0.8)',
+        backgroundColor: backgroundColor,
+      },
+      {
+        // error document color
+        borderColor: 'rgba(255, 0, 0, 1)',
+        pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(255, 0, 0, 0.8)',
+        backgroundColor: backgroundColor,
       }
     ];
   }
@@ -92,8 +119,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     }
   }
 
-  public chartHovered(e: any): void {
-  }
+  public chartHovered(e: any): void { }
 
   private updateLineChart(range: Range) {
       const formatDate = (d: Date) => {
@@ -117,11 +143,16 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
   private generateLineChart(data: {}) {
     let lineChart = Object.assign({}, data['data']);
     this.lineChartData = lineChart.lineChartData;
+    let totalSum = 0;
     this.lineChartData.forEach(d => {
       this.translate.get("dashboard."+d.label).subscribe(s => {
         d.label = s; 
       });
+      if (d.data.length > 0 && d.data.reduce((sum, current) => sum + current) > 0) {
+        ++totalSum;
+      }
     });
+    this.showing = totalSum !== 0;
     if (this.lineChartLabels.length !== 0) {
       this.lineChartLabels.length = 0;
       this.lineChartLabels.push(...lineChart.lineChartLabels);
