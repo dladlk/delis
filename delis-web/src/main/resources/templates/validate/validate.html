@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body})}"
+>
+<body>
+
+	<style>
+tr.error-flag-warning:first-child {
+	background-color: #fff3cd;
+	color: #856404;
+}
+	</style>
+
+	<div class="card border-secondary m-1" th:each="result,iter: ${resultList}">
+		<div class="card-body pb-0">
+			<div class="card-title">
+				<span class="badge badge-primary" th:text="${iter.index + 1}">9</span> file 
+				<span class="font-weight-bold" th:text="${result.fileName}"></span> (<span th:text="${result.fileSize}"></span> bytes) 
+				as <span th:text="${result.documentFormat}"></span>
+			</div>
+			<table class="table table-borderless table-sm">
+				<tr>
+					<th>Type</th>
+					<th>Status</th>
+					<th>Description</th>
+					<th>Duration, ms</th>
+				</tr>
+				<th:block th:each="r,iter : ${result.processLog.stepList}">
+				<tr>
+					<td th:text="${r.stepType?.name}"></td>
+					<td>
+						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
+						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
+					</td>
+					<td th:text="${r.description}"/>
+					<td th:text="${r.duration}"/>
+				</tr>
+				<tr th:unless="${#lists.isEmpty(r.errorRecords)}">
+					<td colspan="5">
+						
+						<div class="alert alert-primary">Found <span class="badge badge-danger" th:text="${r.errorRecords.size()}">9</span> validation error(s)
+							<div class="btn btn-sm btn-warning" onclick="$('tr.error-flag-warning').toggle();">Toggle warnings</div>
+						</div>
+					
+						<table class="table table-sm">
+							<tr>
+								<th>Flag</th>
+								<th>Code</th>
+								<th>Message</th>
+								<th>Location</th>
+							</tr>
+							<tr th:each="errorDictionary : ${r.errorRecords}" th:attr="class='error-flag-'+${errorDictionary.flag}">
+								<td th:text="${errorDictionary.flag}"></td>
+								<td th:text="${errorDictionary.code}"></td>
+								<td th:text="${errorDictionary.message}"></td>
+								<td th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 100)}"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				</th:block>
+			</table>
+		</div>
+	</div>    
+
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Validate XML files
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" action="/validate/upload" th:action="@{/validate/upload}" target="_blank">
+                <div class="form-group row">
+                    <label for="files1" class="col-sm-2">Files:</label>
+                    <div class="col-sm-10">
+                    	<input type="file" name="files" class="form-control-file" id="files1" multiple="multiple" accept=".xml"/>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						  You can select more than one XML file by holding SHIFT or CTRL. 
+						</small>                    	
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="validateFormat" class="col-sm-2">Validate as format *:</label>
+                    <div class="col-sm-10">
+	                    <select name="validateFormat" class="form-control">
+	                    	<!-- <option value="">Autodetect</option> -->
+	                    	<option value="">Select ingoing format</option>
+	                    	<option th:each="f: ${formatList}" th:value="${f.name()}" th:text="${f.name}">BIS3 UBL</option>
+	                    </select>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						  Validation results will be opened in a new tab, so you can change the format to another one without need to select files again. 
+						</small>                    	
+                    </div>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Upload"/>
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>

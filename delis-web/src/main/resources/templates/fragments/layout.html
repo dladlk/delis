@@ -46,9 +46,10 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent" th:if="${loggedIn}">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/organisation/list}">Organisations</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Documents Received</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/send/list}">Documents Sent</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Docs Received</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/send/list}">Docs Sent</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/errordict/list}" th:if="${admin}">Errors</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/validate/index}" th:if="${admin}">Validate</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/identifier/list}">Identifiers</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/task/index}" th:if="${admin}">Tasks</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/setup/index}" th:if="${admin}">Setup</a></li>
