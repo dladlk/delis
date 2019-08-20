@@ -23,6 +23,7 @@ import org.junit.Test;
 import dk.erst.delis.persistence.stat.StatDao;
 import dk.erst.delis.persistence.stat.StatDao.KeyValue;
 import dk.erst.delis.persistence.stat.StatDao.StatRange;
+import dk.erst.delis.persistence.stat.StatDao.StatType;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;
 import dk.erst.delis.service.security.SecurityService;
@@ -49,7 +50,7 @@ public class ChartServiceImplTest {
 		when(statDao.loadFullRange(nullable(Long.class))).then(d -> {
 			return dbStatRange;
 		});
-		when(statDao.loadStat(nullable(StatRange.class), anyBoolean(), anyInt(), nullable(Long.class))).then(d -> {
+		when(statDao.loadStat(StatType.RECEIVE, nullable(StatRange.class), anyBoolean(), anyInt(), nullable(Long.class))).then(d -> {
 			StatRange range = (StatRange) d.getArgument(0);
 			boolean groupHourNotDays = (Boolean) d.getArgument(1);
 

@@ -28,6 +28,7 @@ import dk.erst.delis.exception.statuses.RestConflictException;
 import dk.erst.delis.persistence.stat.StatDao;
 import dk.erst.delis.persistence.stat.StatDao.KeyValue;
 import dk.erst.delis.persistence.stat.StatDao.StatRange;
+import dk.erst.delis.persistence.stat.StatDao.StatType;
 import dk.erst.delis.rest.data.response.chart.ChartData;
 import dk.erst.delis.rest.data.response.chart.LineChartData;
 import dk.erst.delis.service.security.SecurityService;
@@ -93,7 +94,7 @@ public class ChartServiceImpl implements ChartService {
 		final boolean today = statRange.isSingleDay() && nowUI.startsWith(startStr);
 		log.debug("today: " + today);
 
-		List<KeyValue> list = statDao.loadStat(statRange, groupHourNotDate, hoursDiff, organisationId);
+		List<KeyValue> list = statDao.loadStat(StatType.RECEIVE, statRange, groupHourNotDate, hoursDiff, organisationId);
 
 		if (log.isDebugEnabled()) {
 			log.debug("Loaded stat: " + list);

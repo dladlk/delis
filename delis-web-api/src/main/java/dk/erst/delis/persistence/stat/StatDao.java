@@ -13,7 +13,30 @@ import lombok.Setter;
 @Transactional
 public interface StatDao {
 
-	List<KeyValue> loadStat(StatRange range, boolean groupHourNotDate, int addHours, Long organisationId);
+	public static enum StatType {
+		
+		RECEIVE ("document"), 
+		
+		SEND ("send_document"), 
+		
+		RECEIVE_ERROR ("document");
+		
+		private String tableName;
+
+		private StatType (String tableName) {
+			this.tableName = tableName;
+		}
+		
+		public boolean isLimitError() {
+			return this == RECEIVE_ERROR;
+		}
+
+		public String getTableName() {
+			return tableName;
+		}
+	}
+	
+	List<KeyValue> loadStat(StatType statType, StatRange range, boolean groupHourNotDate, int addHours, Long organisationId);
 
 	StatRange loadFullRange(Long organisationId);
 
