@@ -74,32 +74,34 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       },
     };
     const backgroundColor = 'rgba(11, 120, 208, 0.2)';
+
+    // recommended https://color.adobe.com/ru/create
     this.lineChartColors = [
       {
         // document color
-        borderColor: 'rgba(0, 255, 0, 1)',
-        pointBackgroundColor: 'rgba(0, 255, 0, 1)',
+        borderColor: 'rgba(204, 182, 31, 1)',
+        pointBackgroundColor: 'rgba(204, 182, 31, 1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(0, 255, 0, 0.8)',
+        pointHoverBorderColor: 'rgba(204, 182, 31, 0.8)',
         backgroundColor: backgroundColor,
       },
       {
         // send document color
-        borderColor: 'rgba(0, 0, 255, 1)',
-        pointBackgroundColor: 'rgba(0, 0, 255, 1)',
+        borderColor: 'rgba(13, 146, 255, 1)',
+        pointBackgroundColor: 'rgba(13, 146, 255, 1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(0, 0, 255, 0.8)',
+        pointHoverBorderColor: 'rgba(13, 146, 255, 0.8)',
         backgroundColor: backgroundColor,
       },
       {
         // error document color
-        borderColor: 'rgba(255, 0, 0, 1)',
-        pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+        borderColor: 'rgba(255, 46, 38, 1)',
+        pointBackgroundColor: 'rgba(255, 46, 38, 1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(255, 0, 0, 0.8)',
+        pointHoverBorderColor: 'rgba(255, 46, 38, 0.8)',
         backgroundColor: backgroundColor,
       }
     ];
