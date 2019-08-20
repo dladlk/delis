@@ -85,6 +85,8 @@ public class ValidateController {
 		}
 
 		List<ValidateResult> resultList = new ArrayList<ValidateResult>();
+		
+		List<String> fileNames = new ArrayList<String>();
 
 		for (MultipartFile file : files) {
 
@@ -93,6 +95,8 @@ public class ValidateController {
 			File tempFile = null;
 			try {
 				result.setFileName(file.getOriginalFilename());
+				fileNames.add(file.getOriginalFilename());
+				
 				tempFile = File.createTempFile("manual_upload_" + file.getName() + "_", ".xml");
 				try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 					IOUtils.copy(file.getInputStream(), fos);
@@ -112,16 +116,18 @@ public class ValidateController {
 
 						result.setDocumentFormat(documentFormat);
 						result.setDocumentFormatDetected(true);
+						
+						tempFile = infoData.getFile();
 					} else {
 						result.setDocumentFormat(ingoingDocumentFormat);
 					}
 
-					result.setFileSize(infoData.getFile().length());
+					result.setFileSize(tempFile.length());
 					Document document = new Document();
 					document.setIngoingDocumentFormat(result.getDocumentFormat());
 
 					OrganisationReceivingFormatRule receivingFormatRule = OrganisationReceivingFormatRule.OIOUBL;
-					Path xmlLoadedPath = infoData.getFile().toPath();
+					Path xmlLoadedPath = tempFile.toPath();
 					TransformationResultListener transformationResultListener = new TransformationResultListener(null, null) {
 						@Override
 						public void notify(DocumentProcessLog plog, DocumentFormat resultFormat, File file) {
@@ -137,6 +143,8 @@ public class ValidateController {
 					if (infoData != null) {
 						deleteFile(infoData.getFile());
 						deleteFile(infoData.getFileSbd());
+					} else {
+						deleteFile(tempFile);
 					}
 				}
 			}
@@ -145,6 +153,14 @@ public class ValidateController {
 		model.addAttribute("resultList", resultList);
 		model.addAttribute("message", "Done validation of " + files.length + " uploaded XML files");
 		fillModel(model);
+		
+		String customTitle = "";
+		if (fileNames.size() > 1) {
+			customTitle += fileNames.size() + " files: ";
+		}
+		customTitle += fileNames.stream().collect(Collectors.joining(", "));
+		
+		model.addAttribute("customTitle", customTitle);
 
 		return "/validate/validate";
 	}

@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout (~{::body})}"
+      th:replace="~{fragments/layout :: layout (template=~{::body}, customTitle = ${customTitle})}"
 >
 <body>
-
-	<style>
-tr.error-flag-warning:first-child {
-	background-color: #fff3cd;
-	color: #856404;
-}
-	</style>
 
 	<div class="card border-secondary m-1" th:each="result,iter: ${resultList}">
 		<div class="card-body pb-0">
 			<div class="card-title">
-				<span class="badge badge-primary" th:text="${iter.index + 1}">9</span> file 
+				<span class="badge badge-primary" th:text="${iter.index + 1}">9</span>  
 				<span class="font-weight-bold" th:text="${result.fileName}"></span> (<span th:text="${result.fileSize}"></span> bytes)
 				<span class="font-weight-bold" th:if="${result.documentFormatDetected}">detected</span> 
 				as <span th:text="${result.documentFormat}"></span>
@@ -52,8 +45,8 @@ tr.error-flag-warning:first-child {
 								<th>Location</th>
 							</tr>
 							<tr th:each="errorDictionary : ${r.errorRecords}" th:attr="class='error-flag-'+${errorDictionary.flag}">
-								<td th:text="${errorDictionary.flag}"></td>
-								<td th:text="${errorDictionary.code}"></td>
+								<td> <span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>  </td>
+								<td style="white-space: nowrap;" th:text="${errorDictionary.code}"></td>
 								<td th:text="${errorDictionary.message}"></td>
 								<td th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 100)}"></td>
 							</tr>
