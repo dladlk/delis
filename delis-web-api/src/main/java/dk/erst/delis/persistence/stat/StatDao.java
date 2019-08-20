@@ -15,16 +15,18 @@ public interface StatDao {
 
 	public static enum StatType {
 		
-		RECEIVE ("document"), 
+		RECEIVE ("document", "chart.receiving"), 
 		
-		SEND ("send_document"), 
+		SEND ("send_document", "chart.sending"), 
 		
-		RECEIVE_ERROR ("document");
+		RECEIVE_ERROR ("document", "chart.receiving_error");
 		
 		private String tableName;
+		private String chartLabel;
 
-		private StatType (String tableName) {
+		private StatType (String tableName, String chartLabel) {
 			this.tableName = tableName;
+			this.chartLabel = chartLabel;
 		}
 		
 		public boolean isLimitError() {
@@ -33,6 +35,10 @@ public interface StatDao {
 
 		public String getTableName() {
 			return tableName;
+		}
+
+		public String getChartLabel() {
+			return chartLabel;
 		}
 	}
 	

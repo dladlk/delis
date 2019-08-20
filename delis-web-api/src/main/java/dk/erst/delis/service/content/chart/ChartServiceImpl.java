@@ -41,7 +41,6 @@ public class ChartServiceImpl implements ChartService {
 
 	protected static final String INPUT_NOW_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
-	private static final DateTimeFormatter INPUT_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	private static final DateTimeFormatter OUTPUT_DAILY_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
 	private static final DateTimeFormatter OUTPUT_HOURLY_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 	private static final DateTimeFormatter DB_FORMAT = DateTimeFormatter.ofPattern(INPUT_NOW_FORMAT);
@@ -93,18 +92,28 @@ public class ChartServiceImpl implements ChartService {
 
 		final boolean today = statRange.isSingleDay() && nowUI.startsWith(startStr);
 		log.debug("today: " + today);
+		ChartData chartData = new ChartData();
 
-		List<KeyValue> list = statDao.loadStat(StatType.RECEIVE, statRange, groupHourNotDate, hoursDiff, organisationId);
-
-		if (log.isDebugEnabled()) {
-			log.debug("Loaded stat: " + list);
+		for (StatType statType : StatType.values()) {
+			processStatType(statType, organisationId, uiTimeNow, hoursDiff, statRange, groupHourNotDate, today, chartData);
 		}
 
-		ChartData chartData = new ChartData();
-		List<LineChartData> lineChartData = new ArrayList<>();
-		List<String> lineChartLabels = new ArrayList<>();
+		log.debug("Done chart data in " + (System.currentTimeMillis() - start) + " with: " + chartData);
+
+		return chartData;
+	}
+
+	private void processStatType(StatType statType, Long organisationId, Date uiTimeNow, int hoursDiff, StatRange statRange, final boolean groupHourNotDate, final boolean today, ChartData chartData) {
+		long start = System.currentTimeMillis();
+		List<KeyValue> list = statDao.loadStat(statType, statRange, groupHourNotDate, hoursDiff, organisationId);
+
+		if (log.isDebugEnabled()) {
+			log.debug("Loaded stat by "+statType+": " + list+" in "+(System.currentTimeMillis() - start)+" ms");
+		}
+
+		boolean noLabels = chartData.getLineChartLabels().isEmpty();
 		LineChartData lineChartDataContent = new LineChartData();
-		lineChartDataContent.setLabel("chart.receiving");
+		lineChartDataContent.setLabel(statType.getChartLabel());
 		List<Long> dataGraph = new ArrayList<>();
 
 		if (!list.isEmpty()) {
@@ -122,7 +131,10 @@ public class ChartServiceImpl implements ChartService {
 						outputValue = mappedList.get(outputLabel);
 					}
 
-					lineChartLabels.add(outputLabel);
+					if (noLabels) {
+						chartData.addLineChartLabel(outputLabel);
+					}
+					
 					dataGraph.add(outputValue);
 				}
 			} else {
@@ -141,20 +153,17 @@ public class ChartServiceImpl implements ChartService {
 						outputValue = mappedList.get(outputLabel);
 					}
 
-					lineChartLabels.add(outputLabel);
+					if (noLabels) {
+						chartData.addLineChartLabel(outputLabel);
+					}
+
 					dataGraph.add(outputValue);
 				}
 			}
 		}
 
 		lineChartDataContent.setData(dataGraph);
-		lineChartData.add(lineChartDataContent);
-		chartData.setLineChartData(lineChartData);
-		chartData.setLineChartLabels(lineChartLabels);
-
-		log.debug("Done chart data in " + (System.currentTimeMillis() - start) + " with: " + chartData);
-
-		return chartData;
+		chartData.addLineChart(lineChartDataContent);
 	}
 
 	protected int calculateHoursDiff(Date uiTimeNow, Date dbTimeNow) {

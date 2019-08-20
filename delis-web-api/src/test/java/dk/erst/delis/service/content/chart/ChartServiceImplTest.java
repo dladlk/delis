@@ -50,9 +50,10 @@ public class ChartServiceImplTest {
 		when(statDao.loadFullRange(nullable(Long.class))).then(d -> {
 			return dbStatRange;
 		});
-		when(statDao.loadStat(StatType.RECEIVE, nullable(StatRange.class), anyBoolean(), anyInt(), nullable(Long.class))).then(d -> {
-			StatRange range = (StatRange) d.getArgument(0);
-			boolean groupHourNotDays = (Boolean) d.getArgument(1);
+		when(statDao.loadStat(nullable(StatType.class), nullable(StatRange.class), anyBoolean(), anyInt(), nullable(Long.class))).then(d -> {
+			StatType type = (StatType) d.getArgument(0);
+			StatRange range = (StatRange) d.getArgument(1);
+			boolean groupHourNotDays = (Boolean) d.getArgument(2);
 
 			final String fromStr = range.getFrom() != null ? range.getFrom() : "";
 			final String toStr = range.getTo() != null ? range.getTo().substring(0, 10) + "23:59" : "ZZZ";
@@ -61,7 +62,7 @@ public class ChartServiceImplTest {
 				return fromStr.compareTo(v) <= 0 && toStr.compareTo(v) >= 0;
 			}).collect(Collectors.toList());
 
-			System.out.println("Filtered: " + filtered);
+			System.out.println("Filtered for " + type + ": " + filtered);
 
 			List<String> transformed = filtered.stream().map(v -> {
 				if (groupHourNotDays) {

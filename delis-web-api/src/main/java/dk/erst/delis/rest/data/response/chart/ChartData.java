@@ -1,21 +1,19 @@
 package dk.erst.delis.rest.data.response.chart;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 @Getter
-@Setter
 public class ChartData {
 
     private List<LineChartData> lineChartData;
     private List<String> lineChartLabels;
 
     public ChartData() {
-        this.lineChartData = Collections.emptyList();
-        this.lineChartLabels = Collections.emptyList();
+        this.lineChartData = new ArrayList<LineChartData>();
+        this.lineChartLabels = new ArrayList<String>();
     }
     
     public String toString() {
@@ -25,4 +23,13 @@ public class ChartData {
 		sb.append(lineChartData);
 		return sb.toString();
     }
+    
+    public void addLineChart(LineChartData lcd) {
+    	this.lineChartData.add(lcd);
+    }
+    public void addLineChartLabel(String dataLabel) {
+    	this.lineChartLabels.add(dataLabel);
+    }
+    
+
 }
