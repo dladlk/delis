@@ -79,20 +79,20 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     this.lineChartColors = [
       {
         // document color
-        borderColor: 'rgba(204, 182, 31, 1)',
-        pointBackgroundColor: 'rgba(204, 182, 31, 1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(204, 182, 31, 0.8)',
-        backgroundColor: backgroundColor,
-      },
-      {
-        // send document color
         borderColor: 'rgba(13, 146, 255, 1)',
         pointBackgroundColor: 'rgba(13, 146, 255, 1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(13, 146, 255, 0.8)',
+        backgroundColor: backgroundColor,
+      },
+      {
+        // send document color
+        borderColor: 'rgba(204, 182, 31, 1)',
+        pointBackgroundColor: 'rgba(204, 182, 31, 1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(204, 182, 31, 0.8)',
         backgroundColor: backgroundColor,
       },
       {

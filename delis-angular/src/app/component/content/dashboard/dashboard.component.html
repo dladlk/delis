@@ -1,15 +1,14 @@
 <mat-card>
   <div class="example-container mat-elevation-z8">
 
-    <mat-card-content class="dashboard-flex">
-      <div class="bounds">
+    <mat-card-content class="dashboard-flex mt1">
         <div class="content"
              fxLayout="row"
              fxLayout.xs="column"
              fxLayoutAlign="center"
              fxLayoutGap="1em"
              fxFlexFill>
-          <div fxFlex="30" class="sec2" >
+          <div fxFlex>
             <app-stat
                     [bgClass]="'matDocument'"
                     [icon]="'send'"
@@ -19,7 +18,7 @@
                     [rotate]="false">
             </app-stat>
           </div>
-          <div fxFlex="30" class="sec3" fxFlex.xs="15">
+          <div fxFlex>
             <app-stat
                     [bgClass]="'matSendDocument'"
                     [icon]="'send'"
@@ -29,7 +28,7 @@
                     [rotate]="true">
             </app-stat>
           </div>
-          <div fxFlex="30" class="sec1" fxFlex.xs="55">
+          <div fxFlex>
             <app-stat
                     [bgClass]="'matIdentifier'"
                     [icon]="'perm_identity'"
@@ -40,7 +39,6 @@
             </app-stat>
           </div>
         </div>
-      </div>
     </mat-card-content>
 
     <mat-card-content style="margin: 2em">
