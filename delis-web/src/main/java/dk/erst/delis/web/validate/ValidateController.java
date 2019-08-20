@@ -134,8 +134,10 @@ public class ValidateController {
 					resultList.add(result);
 
 				} finally {
-					deleteFile(infoData.getFile());
-					deleteFile(infoData.getFileSbd());
+					if (infoData != null) {
+						deleteFile(infoData.getFile());
+						deleteFile(infoData.getFileSbd());
+					}
 				}
 			}
 		}
