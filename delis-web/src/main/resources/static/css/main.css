@@ -13,3 +13,6 @@ ul.org-smp-setup li ul li {
 	word-break: break-all
 }	
 /* END Organisation setup */
+.cursor-pointer {
+  cursor: pointer;
+}

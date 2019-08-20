@@ -5,14 +5,19 @@
 >
 <body>
 
+<th:block th:if="${resultList}">
+<div id="accordion">
 	<div class="card border-secondary m-1" th:each="result,iter: ${resultList}">
-		<div class="card-body pb-0">
-			<div class="card-title">
+		<div class="card-header" th:classappend="${'bg-'+ (result.processLog.success?'success':'light')}">
+			<div class="cursor-pointer" data-toggle="collapse" th:attr="data-target=${'#result-'+iter.index},aria-controls=${'result-'+iter.index},id=${'result-header-'+iter.index}" aria-expanded="false"
+			>
 				<span class="badge badge-primary" th:text="${iter.index + 1}">9</span>  
 				<span class="font-weight-bold" th:text="${result.fileName}"></span> (<span th:text="${result.fileSize}"></span> bytes)
 				<span class="font-weight-bold" th:if="${result.documentFormatDetected}">detected</span> 
 				as <span th:text="${result.documentFormat}"></span>
 			</div>
+		</div>
+		<div class="card-body pb-0 collapse show" th:attr="id=${'result-'+iter.index}">
 			<table class="table table-borderless table-sm">
 				<tr>
 					<th>Type</th>
@@ -56,8 +61,11 @@
 				</th:block>
 			</table>
 		</div>
-	</div>    
+	</div>
+	
+</div>    
 
+</th:block>
 
     <div class="card">
         <div class="card-header bg-primary text-white">
