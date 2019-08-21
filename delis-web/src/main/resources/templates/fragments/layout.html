@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:fragment="layout (template)" th:with="customTitle=${customTitle} ?: ''" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<meta charset="utf-8">
@@ -27,7 +27,7 @@
     <!-- <link rel="stylesheet" type="text/css" th:href="@{/css/datatables-easy.css?v=__${'1.03'}__}"> -->
 
 
-	<title>DELIS Setup Cockpit</title>
+	<title th:text="${#strings.isEmpty(customTitle)? 'DELIS Setup Cockpit' : customTitle}">DELIS Setup Cockpit</title>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://unpkg.com/moment"></script>

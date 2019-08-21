@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -21,6 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentFormat;
+import dk.erst.delis.task.document.parse.DocumentInfoService;
+import dk.erst.delis.task.document.parse.DocumentInfoService.DocumentInfoData;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.TransformationResultListener;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
@@ -33,8 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ValidateController {
 
+	private static final List<DocumentFormat> FORMAT_LIST = filterOut(DocumentFormat.values(), DocumentFormat.UNSUPPORTED);
+
 	@Autowired
 	private DocumentValidationTransformationService documentValidationTransformationService;
+
+	@Autowired
+	private DocumentInfoService documentInfoService;
 
 	@RequestMapping("/validate/index")
 	public String index(Model model, WebRequest webRequest) {
@@ -44,8 +53,12 @@ public class ValidateController {
 		return "/validate/validate";
 	}
 
+	private static List<DocumentFormat> filterOut(DocumentFormat[] values, DocumentFormat exceptFormat) {
+		return Arrays.asList(values).stream().filter(f -> f != exceptFormat).collect(Collectors.toList());
+	}
+
 	private void fillModel(Model model) {
-		model.addAttribute("formatList", DocumentFormat.values());
+		model.addAttribute("formatList", FORMAT_LIST);
 	}
 
 	@PostMapping("/validate/upload")
@@ -66,17 +79,14 @@ public class ValidateController {
 			ingoingDocumentFormat = DocumentFormat.valueOf(validateFormatName);
 		}
 
-		if (ingoingDocumentFormat == null) {
-			redirectAttributes.addFlashAttribute("errorMessage", "Please select document format. Autodetection of format will be added later.");
-			return "redirect:/validate/index";
-		}
-
 		if (files == null || files.length == 0) {
 			redirectAttributes.addFlashAttribute("errorMessage", "Please select at least one XML file");
 			return "redirect:/validate/index";
 		}
 
 		List<ValidateResult> resultList = new ArrayList<ValidateResult>();
+		
+		List<String> fileNames = new ArrayList<String>();
 
 		for (MultipartFile file : files) {
 
@@ -85,19 +95,33 @@ public class ValidateController {
 			File tempFile = null;
 			try {
 				result.setFileName(file.getOriginalFilename());
+				fileNames.add(file.getOriginalFilename());
+				
 				tempFile = File.createTempFile("manual_upload_" + file.getName() + "_", ".xml");
 				try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 					IOUtils.copy(file.getInputStream(), fos);
 				}
+				log.info("Saved file " + file.getOriginalFilename() + " as test file " + tempFile);
 			} catch (IOException e) {
 				log.error("Failed to save uploaded file to temp for " + file.getName(), e);
 			}
 
-			result.setDocumentFormat(ingoingDocumentFormat);
+			DocumentInfoData infoData = null;
 
-			try {
-				if (tempFile != null) {
-					log.info("Created test file " + tempFile);
+			if (tempFile != null) {
+				try {
+					if (ingoingDocumentFormat == null) {
+						infoData = documentInfoService.documentInfoData(tempFile.toPath(), tempFile);
+						DocumentFormat documentFormat = documentInfoService.defineDocumentFormat(infoData.getDocumentInfo());
+
+						result.setDocumentFormat(documentFormat);
+						result.setDocumentFormatDetected(true);
+						
+						tempFile = infoData.getFile();
+					} else {
+						result.setDocumentFormat(ingoingDocumentFormat);
+					}
+
 					result.setFileSize(tempFile.length());
 					Document document = new Document();
 					document.setIngoingDocumentFormat(result.getDocumentFormat());
@@ -115,17 +139,41 @@ public class ValidateController {
 
 					resultList.add(result);
 
+				} finally {
+					if (infoData != null) {
+						deleteFile(infoData.getFile());
+						deleteFile(infoData.getFileSbd());
+					} else {
+						deleteFile(tempFile);
+					}
 				}
-			} finally {
-				tempFile.delete();
 			}
 		}
 
 		model.addAttribute("resultList", resultList);
 		model.addAttribute("message", "Done validation of " + files.length + " uploaded XML files");
 		fillModel(model);
+		
+		String customTitle = "";
+		if (fileNames.size() > 1) {
+			customTitle += fileNames.size() + " files: ";
+		}
+		customTitle += fileNames.stream().collect(Collectors.joining(", "));
+		
+		model.addAttribute("customTitle", customTitle);
 
 		return "/validate/validate";
+	}
+
+	private void deleteFile(File f) {
+		if (f != null) {
+			if (!f.delete()) {
+				f.deleteOnExit();
+				log.info("Cannot delete file " + f + ", requested to delete on exit");
+			} else {
+				log.info("Successfully deleted file " + f);
+			}
+		}
 	}
 
 	@Getter
@@ -135,6 +183,7 @@ public class ValidateController {
 		private String fileName;
 		private long fileSize;
 		private DocumentFormat documentFormat;
+		private boolean documentFormatDetected;
 		private DocumentProcessLog processLog;
 
 	}

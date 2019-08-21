@@ -20,6 +20,7 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
+import dk.erst.delis.task.document.parse.DocumentInfoService;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
@@ -63,7 +64,7 @@ public class DocumentLoadServiceSpringBootTestIT {
 		ilsTest.loadTestIdentifiers();
 		
 		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository,
-				new DocumentParseService(), documentBytesStorageService, identifierResolverService);
+				new DocumentInfoService(new DocumentParseService()), documentBytesStorageService, identifierResolverService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);
