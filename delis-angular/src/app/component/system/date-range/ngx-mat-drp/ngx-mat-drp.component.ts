@@ -19,6 +19,7 @@ import { CalendarOverlayService } from '../service/calendar-overlay.service';
 import { Range, NgxDrpOptions, RangeUpdate } from '../model/model';
 import { DaterangeObservable } from '../../../../observable/daterange.observable';
 import { ResetDaterangeObservable } from "../../../../observable/reset-daterange.observable";
+import { ResetDaterangeForTodayObservable } from "../../../../observable/reset-daterange-for-today.observable";
 
 @Component({
   selector: 'app-ngx-mat-drp',
@@ -40,6 +41,7 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
   @Input() appearance: string;
   private rangeUpdate$: Subscription;
   private rangeReset$: Subscription;
+  private rangeResetForToday$: Subscription;
   selectedDateRange = null;
 
   constructor(
@@ -49,11 +51,13 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
     public configStoreService: ConfigStoreService,
     private datePipe: DatePipe,
     private daterangeObservable: DaterangeObservable,
-    private resetDaterangeObservable: ResetDaterangeObservable) {}
+    private resetDaterangeObservable: ResetDaterangeObservable,
+    private resetDaterangeForTodayObservable: ResetDaterangeForTodayObservable) {}
 
   ngOnInit() {
     this.configStoreService.ngxDrpOptions = this.options;
     this.rangeReset$ = this.resetDaterangeObservable.listen().subscribe(() =>  this.resetDates());
+    this.rangeResetForToday$ = this.resetDaterangeForTodayObservable.listen().subscribe(() =>  this.resetDatesForToday());
     this.rangeUpdate$ = this.rangeStoreService.rangeUpdate$.subscribe(range => {
       this.formatSelectedDateRange(range.range);
       this.selectedDateRangeChanged.emit(range.range);
@@ -95,6 +99,9 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
     if (this.rangeReset$) {
       this.rangeReset$.unsubscribe();
     }
+    if (this.rangeResetForToday$) {
+      this.rangeResetForToday$.unsubscribe();
+    }
   }
 
   private formatToDateString(date: Date, format: string): string {
@@ -111,6 +118,13 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
   public resetDates() {
     const rangeUpdate = new RangeUpdate();
     rangeUpdate.range = {fromDate: null, toDate: null};
+    rangeUpdate.update = false;
+    this.rangeStoreService.updateRange(rangeUpdate);
+  }
+
+  public resetDatesForToday() {
+    const rangeUpdate = new RangeUpdate();
+    rangeUpdate.range = {fromDate: new Date(), toDate: new Date()};
     rangeUpdate.update = false;
     this.rangeStoreService.updateRange(rangeUpdate);
   }

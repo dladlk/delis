@@ -4,7 +4,7 @@
     <input class="ngx-mat-drp-date-input"
            matInput placeholder="{{ options.placeholder | translate }}"
            [value]="selectedDateRange | translate"
-           [matTooltip]="selectedDateRange"
+           [matTooltip]="selectedDateRange | translate"
            (click)="openCalendar($event)"
            readonly
            #calendarInput >

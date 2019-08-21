@@ -14,5 +14,9 @@ export class ChartDocumentService {
         this._range = value;
     }
 
+    resetRange() {
+        this._range = undefined;
+    }
+
     private _range: Range;
 }

@@ -28,17 +28,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
               private refreshObservable: RefreshObservable) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/dashboard';
-    this.refreshUpdate$ = this.refreshObservable.listen().subscribe(() => this.refreshData());
+    this.refreshUpdate$ = this.refreshObservable.listen().subscribe(() => this.loadData());
   }
 
   ngOnInit() {
-    this.httpRestService.methodGet(this.url, null, this.tokenService.getToken()).subscribe(
-        (data: {}) => {
-          this.dashboardModel = data['data'];
-        }, error => {
-          this.errorService.errorProcess(error);
-        }
-    );
+    this.loadData();
   }
 
   ngOnDestroy() {
@@ -47,8 +41,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  refreshData() {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/dashboard']));
+  loadData() {
+    this.httpRestService.methodGet(this.url, null, this.tokenService.getToken()).subscribe(
+        (data: {}) => {
+          this.dashboardModel = data['data'];
+        }, error => {
+          this.errorService.errorProcess(error);
+        }
+    );
   }
 }
