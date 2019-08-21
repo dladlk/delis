@@ -24,15 +24,17 @@
   "header.account.inbox": "Inbox",
   "header.account.logout": "Logout",
   "page-header.dashboard": "Dashboard",
-  "dashboard.identifier": "Identifiers last hour",
-  "dashboard.documents": "Received documents last hour",
-  "dashboard.errors": "Errors last hour",
-  "dashboard.send": "Send documents last hour",
-  "dashboard.details": "View Details",
-  "dashboard.chart.receiving": "Receiving",
-  "dashboard.chart.sending": "Sending",
-  "dashboard.chart.receiving_error": "Receiving Error",
-  "dashboard.chart.default_message": "No documents for the selected period",
+
+  "dashboard.documents": "Received today",
+  "dashboard.errors": "Received with error today",
+  "dashboard.send": "Sent today",
+
+  "dashboard.chart.receiving": "Received",
+  "dashboard.chart.sending": "Sent",
+  "dashboard.chart.receiving_error": "Received error",
+
+  "dashboard.chart.default_message": "No data for the selected period.",
+
   "documents.header": "Documents",
   "documents.header.details": "Document details",
   "documents.table.header": "Documents Overview",
