@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+
 import { ErrorModel } from '../../../../model/system/error.model';
 import { DocumentBytesModel } from '../../../../model/content/document/document-bytes.model';
 import { JournalDocumentErrorModel } from '../../../../model/content/document/journal-document-error.model';
@@ -14,9 +15,9 @@ import { DocumentStateService} from "../../../../service/state/document-state.se
 import { JournalDocumentService } from '../../../../service/content/journal-document.service';
 import { FileSaverService } from '../../../../service/system/file-saver.service';
 import { ErrorDictionaryModel } from '../../../../model/content/document/error-dictionary.model';
-
 import { DOCUMENT_PATH, SHOW_DATE_FORMAT } from '../../../../app.constants';
 import { RuntimeConfigService } from 'src/app/service/system/runtime-config.service';
+import { DocumentErrorService } from "../document-error.service";
 
 @Component({
   selector: 'app-document-details',
@@ -52,6 +53,8 @@ export class DocumentDetailsComponent implements OnInit {
   isNextDown: boolean;
   currentIds: number[];
 
+  statusErrors: string[] = [];
+
   constructor(private location: Location,
               private translate: TranslateService,
               private locale: LocaleService,
@@ -60,6 +63,7 @@ export class DocumentDetailsComponent implements OnInit {
               private errorService: ErrorService,
               private documentService: DocumentService,
               public stateService: DocumentStateService,
+              private documentErrorService: DocumentErrorService,
               private configService: RuntimeConfigService,
               private journalDocumentService: JournalDocumentService) { }
 
@@ -93,7 +97,7 @@ export class DocumentDetailsComponent implements OnInit {
         this.errorService.errorProcess(error);
       }
     );
-                
+    this.statusErrors = this.documentErrorService.statusErrors;
     this.hideForm = this.configService.getCurrentUser().disabledIrForm;
 
     this.initStateDetails(id);

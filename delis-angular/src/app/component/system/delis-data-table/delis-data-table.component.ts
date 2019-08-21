@@ -24,6 +24,7 @@ import { DataTableConfig } from "../../content/data-table-config";
 import { DaterangeObservable } from "../../../observable/daterange.observable";
 import { RefreshObservable } from "../../../observable/refresh.observable";
 import { ResetDaterangeObservable } from "../../../observable/reset-daterange.observable";
+import { DocumentErrorService } from "../../content/document/document-error.service";
 
 @Component({
     selector: 'app-delis-data-table',
@@ -48,6 +49,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     private refreshUpdate$: Subscription;
     private filter: TableStateModel;
 
+    statusErrors: string[] = [];
+
     allDisplayedColumns: Array<string> = new Array<string>();
     allDisplayedColumnsData: Array<HideColumnModel>;
 
@@ -70,6 +73,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     constructor(
         private router: Router,
         private route: ActivatedRoute,
+        private documentErrorService: DocumentErrorService,
         private daterangeObservable: DaterangeObservable,
         private refreshObservable: RefreshObservable,
         private resetDaterangeObservable: ResetDaterangeObservable) {
@@ -87,6 +91,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnInit() {
 
+        this.statusErrors = this.documentErrorService.statusErrors;
         this.route.queryParamMap.subscribe(params => {
             const queryParamMap = {...params.keys, ...params};
             let queryParams = queryParamMap['params'];
