@@ -1,46 +1,46 @@
 <mat-card>
-  <div class="example-container mat-elevation-z8">
+    <div class="example-container mat-elevation-z8">
 
-    <mat-card-content class="dashboard-flex mt1">
-        <div fxLayout="row"
-             fxLayout.xs="column"
-             fxLayoutGap="1em">
-          <div fxFlex>
-            <app-stat
-                    [bgClass]="'info'"
-                    [icon]="'cloud_download'"
-                    [count]="dashboardModel.receivedDocumentsLastHour"
-                    [label]="'dashboard.documents'"
-                    [router]="'/document'"
-                    [statusError]="false">
-            </app-stat>
-          </div>
-          <div fxFlex>
-            <app-stat
-                    [bgClass]="'warn'"
-                    [icon]="'cloud_upload'"
-                    [count]="dashboardModel.sendDocumentsLastHour"
-                    [label]="'dashboard.send'"
-                    [router]="'/send-document'"
-                    [statusError]="false">
-            </app-stat>
-          </div>
-          <div fxFlex>
-            <app-stat
-                    [bgClass]="'danger'"
-                    [icon]="'warning'"
-                    [count]="dashboardModel.errorLastHour"
-                    [label]="'dashboard.errors'"
-                    [router]="'/document'"
-                    [statusError]="true">
-            </app-stat>
-          </div>
-        </div>
-    </mat-card-content>
+        <mat-card-content class="dashboard-flex mt1">
+            <div fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutGap="1em">
+                <div fxFlex>
+                    <app-stat
+                            [bgClass]="'danger'"
+                            [icon]="'warning'"
+                            [count]="dashboardModel.errorLastHour"
+                            [label]="'dashboard.errors'"
+                            [router]="'/document'"
+                            [statusError]="true">
+                    </app-stat>
+                </div>
+                <div fxFlex>
+                    <app-stat
+                            [bgClass]="'info'"
+                            [icon]="'cloud_download'"
+                            [count]="dashboardModel.receivedDocumentsLastHour"
+                            [label]="'dashboard.documents'"
+                            [router]="'/document'"
+                            [statusError]="false">
+                    </app-stat>
+                </div>
+                <div fxFlex>
+                    <app-stat
+                            [bgClass]="'warn'"
+                            [icon]="'cloud_upload'"
+                            [count]="dashboardModel.sendDocumentsLastHour"
+                            [label]="'dashboard.send'"
+                            [router]="'/send-document'"
+                            [statusError]="false">
+                    </app-stat>
+                </div>
+            </div>
+        </mat-card-content>
 
-    <mat-card-content style="margin: 2em">
-      <app-chart-document></app-chart-document>
-    </mat-card-content>
+        <mat-card-content style="margin: 2em">
+            <app-chart-document></app-chart-document>
+        </mat-card-content>
 
-  </div>
+    </div>
 </mat-card>

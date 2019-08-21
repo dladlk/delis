@@ -14,13 +14,13 @@ import lombok.Setter;
 public interface StatDao {
 
 	public static enum StatType {
+
+		RECEIVE_ERROR ("document", "chart.receiving_error"),
 		
 		RECEIVE ("document", "chart.receiving"), 
 		
-		SEND ("send_document", "chart.sending"), 
-		
-		RECEIVE_ERROR ("document", "chart.receiving_error");
-		
+		SEND ("send_document", "chart.sending");
+
 		private String tableName;
 		private String chartLabel;
 

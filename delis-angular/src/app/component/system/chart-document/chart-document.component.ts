@@ -78,6 +78,15 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     // recommended https://color.adobe.com/ru/create
     this.lineChartColors = [
       {
+        // error document color
+        borderColor: 'rgba(255, 46, 38, 1)',
+        pointBackgroundColor: 'rgba(255, 46, 38, 1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(255, 46, 38, 0.8)',
+        backgroundColor: backgroundColor,
+      },
+      {
         // document color
         borderColor: 'rgba(13, 146, 255, 1)',
         pointBackgroundColor: 'rgba(13, 146, 255, 1)',
@@ -93,15 +102,6 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(251, 140, 0, 0.8)',
-        backgroundColor: backgroundColor,
-      },
-      {
-        // error document color
-        borderColor: 'rgba(255, 46, 38, 1)',
-        pointBackgroundColor: 'rgba(255, 46, 38, 1)',
-        pointBorderColor: '#fff',
-        pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(255, 46, 38, 0.8)',
         backgroundColor: backgroundColor,
       }
     ];
