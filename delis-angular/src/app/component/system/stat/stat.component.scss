@@ -25,12 +25,20 @@
 
 .mat-card.danger {
   background: linear-gradient(60deg, #ff2e26, #ff7773);
+  padding-bottom: 0px;
 }
 
 .mat-card.warn {
   background: linear-gradient(60deg, #fb8c00, #ffc107);
+  padding-bottom: 0px;
 }
 
 .mat-card.info {
   background: linear-gradient(60deg, #007bff, #00acc1);
+  padding-bottom: 0px;
+}
+
+.mat-card.light {
+  background: linear-gradient(60deg, #CAD6E0, #E6F4FF);
+  padding-bottom: 0px;
 }

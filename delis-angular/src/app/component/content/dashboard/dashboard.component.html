@@ -7,7 +7,7 @@
                  fxLayoutGap="1em">
                 <div fxFlex>
                     <app-stat
-                            [bgClass]="'danger'"
+                            [bgClass]="dashboardModel.errorLastHour !== 0 ?'danger' : 'light'"
                             [icon]="'warning'"
                             [count]="dashboardModel.errorLastHour"
                             [label]="'dashboard.errors'"
@@ -17,7 +17,7 @@
                 </div>
                 <div fxFlex>
                     <app-stat
-                            [bgClass]="'info'"
+                            [bgClass]="dashboardModel.receivedDocumentsLastHour !== 0 ?'info' : 'light'"
                             [icon]="'cloud_download'"
                             [count]="dashboardModel.receivedDocumentsLastHour"
                             [label]="'dashboard.documents'"
@@ -27,7 +27,7 @@
                 </div>
                 <div fxFlex>
                     <app-stat
-                            [bgClass]="'warn'"
+                            [bgClass]="dashboardModel.sendDocumentsLastHour !== 0 ?'warn' : 'light'"
                             [icon]="'cloud_upload'"
                             [count]="dashboardModel.sendDocumentsLastHour"
                             [label]="'dashboard.send'"
