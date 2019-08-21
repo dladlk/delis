@@ -15,6 +15,8 @@ public interface DocumentRepository extends AbstractRepository<Document> {
     Long countByLastErrorNotNullAndCreateTimeBetween(Date start, Date end);
     Long countByDocumentStatusInAndCreateTimeBetween(List<DocumentStatus> statuses, Date start, Date end);
     Long countByCreateTimeBetweenAndOrganisationId(Date start, Date end, Long organisationId);
+    Long countByCreateTimeBetweenAndOrganisationIdAndDocumentStatusIn(Date start, Date end, Long organisationId, List<DocumentStatus> documentStatuses);
+    Long countByCreateTimeBetweenAndDocumentStatusIn(Date start, Date end, List<DocumentStatus> documentStatuses);
 
     List<Document> findByCreateTimeBetween(Date start, Date end);
     List<Document> findByIdIn(List<Long> longs);

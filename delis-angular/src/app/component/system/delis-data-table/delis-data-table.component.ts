@@ -61,6 +61,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     delisDataTableColumnModel: DelisDataTableColumnModel[];
 
     skip: boolean;
+    lastHour: boolean;
+    statusError: boolean;
     lastVisitedId: number;
 
     LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
@@ -92,6 +94,16 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
                 this.skip = JSON.parse(queryParams.skip);
             } else {
                 this.skip = true;
+            }
+            if (queryParams.statusError !== undefined) {
+                this.statusError = JSON.parse(queryParams.statusError);
+            } else {
+                this.statusError = false;
+            }
+            if (queryParams.lastHour !== undefined) {
+                this.lastHour = JSON.parse(queryParams.lastHour);
+            } else {
+                this.lastHour = false;
             }
         });
 

@@ -88,11 +88,11 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       },
       {
         // send document color
-        borderColor: 'rgba(204, 182, 31, 1)',
-        pointBackgroundColor: 'rgba(204, 182, 31, 1)',
+        borderColor: 'rgba(251, 140, 0, 1)',
+        pointBackgroundColor: 'rgba(251, 140, 0, 1)',
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
-        pointHoverBorderColor: 'rgba(204, 182, 31, 0.8)',
+        pointHoverBorderColor: 'rgba(251, 140, 0, 0.8)',
         backgroundColor: backgroundColor,
       },
       {

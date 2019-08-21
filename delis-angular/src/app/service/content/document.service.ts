@@ -49,6 +49,7 @@ export class DocumentService implements DelisService<DocumentModel, DocumentFilt
     params = params.append('size', String(filter.pageSize));
     params = params.append('sort', filter.sort.active);
     params = params.append('order', filter.sort.direction);
+    params = params.append('lastHour', String(filter.lastHour));
 
     if (filter.documentStatus !== 'ALL') {
       params = params.append('documentStatus', filter.documentStatus);
