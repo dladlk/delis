@@ -98,13 +98,31 @@
                             </mat-list-item>
                         </mat-list>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="ptr">{{ column.cell(row) }} </mat-cell>
+                    <div *ngIf="column.displayedColumn === 'documentStatus'; else elseBlock">
+                        <mat-cell *matCellDef="let row" class="ptr">
+                            <div *ngIf="statusErrors.indexOf(column.cell(row)) >= 0; else elseSuccessBlock" class="delis-error">
+                                {{ column.cell(row) }}
+                            </div>
+                            <ng-template #elseSuccessBlock>
+                                {{ column.cell(row) }}
+                            </ng-template>
+                        </mat-cell>
+                    </div>
+                    <ng-template #elseBlock>
+                        <mat-cell *matCellDef="let row" class="ptr">{{ column.cell(row) }}</mat-cell>
+                    </ng-template>
                 </section>
 
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
-            <mat-row tabindex="0" *matRowDef="let row; index as i; columns: selectedDisplayedColumns" (keyup.enter)="onRowClicked(row)" (click)="onRowClicked(row)" [ngStyle]="{ backgroundColor : row.id === lastVisitedId ? LAST_ACTIVE_MAT_ROW : 'inherit !important' }"></mat-row>
+            <mat-row
+                    tabindex="0"
+                    *matRowDef="let row; index as i; columns: selectedDisplayedColumns"
+                    (keyup.enter)="onRowClicked(row)"
+                    (click)="onRowClicked(row)"
+                    [ngStyle]="{ backgroundColor : row.id === lastVisitedId ? LAST_ACTIVE_MAT_ROW : 'inherit !important' }">
+            </mat-row>
         </mat-table>
 
     </mat-card-content>

@@ -37,7 +37,14 @@
                             <span *ngIf="document.receiverIdentifier !== null">{{document.receiverIdentifier.name}}</span>
                         </td>
                         <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
-                        <td>{{document.documentStatus}}</td>
+                        <td>
+                            <div *ngIf="statusErrors.indexOf(document.documentStatus) >= 0; else elseSuccessBlock" class="delis-error">
+                                {{ document.documentStatus }}
+                            </div>
+                            <ng-template #elseSuccessBlock>
+                                {{ document.documentStatus }}
+                            </ng-template>
+                        </td>
                     </tr>
                     <tr>
                         <th>{{ 'documents.table.one.columnName.documentType' | translate }}</th>

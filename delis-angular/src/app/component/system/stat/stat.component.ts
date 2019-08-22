@@ -10,7 +10,7 @@ export class StatComponent implements OnInit {
 
   @Input() bgClass: string;
   @Input() icon: string;
-  @Input() count: string;
+  @Input() count: number;
   @Input() label: string;
   @Input() statusError: boolean;
   @Input() router: RouterLink;
