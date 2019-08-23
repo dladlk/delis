@@ -8,6 +8,7 @@ import { AuthorizationService } from '../../service/system/authorization.service
 import { LocaleService } from '../../service/system/locale.service';
 import { ContentSelectInfoService } from '../../service/system/content-select-info.service';
 import { RuntimeConfigService } from "../../service/system/runtime-config.service";
+import { CheckExpirationService } from "../../service/system/check-expiration.service";
 
 @Component({
     selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private tokenService: TokenService,
+        private checkExpirationService: CheckExpirationService,
         private auth: AuthorizationService,
         private translate: TranslateService,
         private locale: LocaleService,
@@ -51,8 +53,10 @@ export class LoginComponent implements OnInit {
     private executeLogin = (loginValue) => {
         this.auth.login(loginValue.username, loginValue.password).subscribe(
             (data: {}) => {
+                const now = new Date();
                 const loginData: LoginModel = data['data'];
                 this.tokenService.setToken(loginData.accessToken);
+                this.checkExpirationService.setExpiration(new Date(now.getTime() + (1000 * (loginData.expiration))));
                 this.runtimeConfigService.setCurrentUser(loginData);
                 this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
                 this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
@@ -73,5 +77,4 @@ export class LoginComponent implements OnInit {
             }
         );
     }
-
 }

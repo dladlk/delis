@@ -9,4 +9,5 @@ export class LoginModel {
   organisation: string;
   lastLoginTime: Date;
   disabledIrForm: boolean;
+  expiration: number;
 }
