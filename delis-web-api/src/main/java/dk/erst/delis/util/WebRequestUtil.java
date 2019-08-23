@@ -21,7 +21,7 @@ public class WebRequestUtil {
     private static final int DEFAULT_SIZE_PARAM_VALUE = 10;
     private static final String DEFAULT_SORT_PARAM_VALUE = "createTime";
     private static final String DEFAULT_ORDER_PARAM_VALUE = "desc";
-    private static final String FLAG_PARAM_START_WITH = "flagParam";
+    private static final String ERROR_PARAM_VALUE = "statusError";
 
     public PageAndSizeModel generatePageAndSizeModel(WebRequest webRequest) {
         int page = webRequest.getParameter(PAGE_PARAM) != null ? Integer.valueOf(Objects.requireNonNull(webRequest.getParameter(PAGE_PARAM))) : DEFAULT_PAGE_PARAM_VALUE;
@@ -46,12 +46,12 @@ public class WebRequestUtil {
         }
     }
 
-    public String existFlagParameter(WebRequest webRequest) {
+    public String existFlagErrorParameter(WebRequest webRequest) {
         return webRequest
                 .getParameterMap()
                 .keySet()
                 .stream()
-                .filter(key -> key.startsWith(FLAG_PARAM_START_WITH))
+                .filter(key -> key.startsWith(ERROR_PARAM_VALUE))
                 .findFirst().orElse(null);
     }
 }

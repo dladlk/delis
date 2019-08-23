@@ -8,8 +8,7 @@ export class TableStateModel {
     sort: MatSort;
     pageIndex: number;
     pageSize: number;
-    lastHour: boolean;
-
+    statusError: boolean;
     detailsState: DetailsStateModel;
 
     constructor(sort: MatSort) {
@@ -18,6 +17,6 @@ export class TableStateModel {
         this.pageIndex = 0;
         this.pageSize = 10;
         this.detailsState = new DetailsStateModel();
-        this.lastHour = false;
+        this.statusError = false;
     }
 }

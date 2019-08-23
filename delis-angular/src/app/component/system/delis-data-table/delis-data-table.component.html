@@ -10,6 +10,9 @@
                  fxFlexFill>
                 <div fxFlex="100">
                     <div class="example-button-row">
+                        <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+                            <mat-icon>keyboard_backspace</mat-icon>
+                        </button>
                         <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
                             <mat-icon>refresh</mat-icon>
                         </button>
@@ -117,10 +120,8 @@
 
             <mat-header-row *matHeaderRowDef="selectedDisplayedColumns"></mat-header-row>
             <mat-row
-                    tabindex="0"
+                    tabindex="0" [routerLink]="['/' + path, row.id]"
                     *matRowDef="let row; index as i; columns: selectedDisplayedColumns"
-                    (keyup.enter)="onRowClicked(row)"
-                    (click)="onRowClicked(row)"
                     [ngStyle]="{ backgroundColor : row.id === lastVisitedId ? LAST_ACTIVE_MAT_ROW : 'inherit !important' }">
             </mat-row>
         </mat-table>

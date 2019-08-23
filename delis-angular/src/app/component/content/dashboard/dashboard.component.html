@@ -12,6 +12,8 @@
                             [count]="dashboardModel.errorLastHour"
                             [label]="'dashboard.errors'"
                             [router]="'/document'"
+                            [dateStart]="dateStart"
+                            [dateEnd]="dateEnd"
                             [statusError]="true">
                     </app-stat>
                 </div>
@@ -22,6 +24,8 @@
                             [count]="dashboardModel.receivedDocumentsLastHour"
                             [label]="'dashboard.documents'"
                             [router]="'/document'"
+                            [dateStart]="dateStart"
+                            [dateEnd]="dateEnd"
                             [statusError]="false">
                     </app-stat>
                 </div>
@@ -32,6 +36,8 @@
                             [count]="dashboardModel.sendDocumentsLastHour"
                             [label]="'dashboard.send'"
                             [router]="'/send-document'"
+                            [dateStart]="dateStart"
+                            [dateEnd]="dateEnd"
                             [statusError]="false">
                     </app-stat>
                 </div>

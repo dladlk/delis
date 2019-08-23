@@ -14,6 +14,8 @@ export class StatComponent implements OnInit {
   @Input() label: string;
   @Input() statusError: boolean;
   @Input() router: RouterLink;
+  @Input() dateStart: string;
+  @Input() dateEnd: string;
   @Output() event: EventEmitter<any> = new EventEmitter();
 
   constructor() { }

@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import { StateService } from "../../../service/state/state-service";
 import { TableStateModel } from "../../../model/filter/table-state.model";
+import { RoutingStateService } from "../../../service/state/routing-state.service";
 
 @Component({
   selector: 'app-delis-table-details-header',
@@ -17,9 +18,12 @@ export class DelisTableDetailsHeaderComponent implements OnInit {
   @Input() path: string;
   @Input() stateService: StateService<TableStateModel>;
 
-  constructor(private router: Router) { }
+  previousRoute: string;
+
+  constructor(private router: Router, private route: ActivatedRoute, private routingState: RoutingStateService) { }
 
   ngOnInit() {
+    this.previousRoute = this.routingState.getPreviousUrl();
     if (this.stateService !== undefined) {
       let filter = this.stateService.getFilter();
       if (filter !== undefined) {
@@ -32,7 +36,40 @@ export class DelisTableDetailsHeaderComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/' + this.path], { queryParams: { skip: false } });
+    // let url;
+    // console.log(this.previousRoute);
+    // if (this.previousRoute.indexOf('skip') <=0) {
+    //   url = this.previousRoute + '?skip=false';
+    // } else {
+    //   url = this.previousRoute;
+    // }
+    // console.log(url);
+
+    // const firstParam: string = this.route.snapshot.queryParamMap.getAll();
+
+      const queryParams: Params = { skip: false };
+    console.log(this.previousRoute);
+    let params = this.previousRoute.substring(this.previousRoute.indexOf('?') + 1, this.previousRoute.length);
+    console.log(params);
+    let listParams = params.split('&');
+    console.log(listParams);
+    for (let param of listParams) {
+      console.log(param);
+      let currentParams = param.split('=');
+
+    }
+
+    this.router.navigate(
+        ['/' + this.path],
+        {
+          relativeTo: this.route,
+          queryParams: queryParams,
+          queryParamsHandling: 'merge'
+        });
+
+
+
+    // this.router.navigateByUrl(url);
   }
 
   nextUp() {

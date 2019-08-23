@@ -1,10 +1,12 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from "@angular/material";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Location } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { tap } from "rxjs/operators";
+import * as moment from 'moment';
 
-import { DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT, LAST_ACTIVE_MAT_ROW } from "../../../app.constants";
+import { DOCUMENT_PATH, IDENTIFIER_PATH, LAST_ACTIVE_MAT_ROW, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT } from "../../../app.constants";
 
 import { DelisDataTableColumnModel } from "../../../model/content/delis-data-table-column.model";
 import { TableStateModel } from "../../../model/filter/table-state.model";
@@ -13,7 +15,7 @@ import { AbstractEntityModel } from "../../../model/content/abstract-entity.mode
 import { SendDocumentFilterModel } from "../../../model/filter/send-document-filter.model";
 import { DocumentFilterModel } from "../../../model/filter/document-filter.model";
 import { IdentifierFilterModel } from "../../../model/filter/identifier-filter.model";
-import { Range } from '../date-range/model/model';
+import { Range, RangeUpdate } from '../date-range/model/model';
 import { StateService } from "../../../service/state/state-service";
 import { DelisService } from "../../../service/content/delis-service";
 import { DelisDataSource } from "../../content/delis-data-source";
@@ -25,6 +27,8 @@ import { DaterangeObservable } from "../../../observable/daterange.observable";
 import { RefreshObservable } from "../../../observable/refresh.observable";
 import { ResetDaterangeObservable } from "../../../observable/reset-daterange.observable";
 import { DocumentErrorService } from "../../content/document/document-error.service";
+import { RangeStoreService } from "../date-range/service/range-store.service";
+import { RoutingStateService } from "../../../service/state/routing-state.service";
 
 @Component({
     selector: 'app-delis-data-table',
@@ -47,6 +51,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
     private rangeUpdate$: Subscription;
     private refreshUpdate$: Subscription;
+    private queryParamMapSubscription$: Subscription;
     private filter: TableStateModel;
 
     statusErrors: string[] = [];
@@ -64,35 +69,59 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     delisDataTableColumnModel: DelisDataTableColumnModel[];
 
     skip: boolean;
-    lastHour: boolean;
     statusError: boolean;
     lastVisitedId: number;
+    dateStart: Date;
+    dateEnd: Date;
+    range: Range = null;
 
     LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
+
+    previousRoute: string;
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
+        private location: Location,
         private documentErrorService: DocumentErrorService,
         private daterangeObservable: DaterangeObservable,
         private refreshObservable: RefreshObservable,
-        private resetDaterangeObservable: ResetDaterangeObservable) {
+        private resetDaterangeObservable: ResetDaterangeObservable,
+        private rangeStoreService: RangeStoreService,
+        private routingState: RoutingStateService) { }
+
+    ngOnInit() {
+        this.previousRoute = this.routingState.getPreviousUrl();
         this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((range: Range) => {
+            this.paginator.pageIndex = 0;
             if (range.fromDate !== null && range.toDate !== null) {
                 this.filter.dateRange = range;
+                const start = moment(range.fromDate).format('YYYY-MM-DD');
+                this.dateStart = new Date(start);
+                const end = moment(range.toDate).format('YYYY-MM-DD');
+                this.dateEnd = new Date(end);
+                const queryParams: Params = { dateStart: start, dateEnd: end };
+                this.router.navigate(
+                    ['/' + this.path],
+                    {
+                        relativeTo: this.route,
+                        queryParams: queryParams,
+                        queryParamsHandling: 'merge'
+                    });
             } else {
                 this.filter.dateRange = null;
             }
-            this.paginator.pageIndex = 0;
-            this.loadPage();
         });
         this.refreshUpdate$ = this.refreshObservable.listen().subscribe(() => this.refresh());
+        this.obtainQueryParamsAndFetchData();
+        // this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
+        // this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
     }
 
-    ngOnInit() {
-
-        this.statusErrors = this.documentErrorService.statusErrors;
-        this.route.queryParamMap.subscribe(params => {
+    obtainQueryParamsAndFetchData() {
+        this.queryParamMapSubscription$ = this.route.queryParamMap.subscribe(params => {
+            this.statusErrors = this.documentErrorService.statusErrors;
+            this.statusError = false;
             const queryParamMap = {...params.keys, ...params};
             let queryParams = queryParamMap['params'];
             if (queryParams.skip !== undefined) {
@@ -105,39 +134,53 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
             } else {
                 this.statusError = false;
             }
-            if (queryParams.lastHour !== undefined) {
-                this.lastHour = JSON.parse(queryParams.lastHour);
+            if (queryParams.dateStart !== undefined) {
+                const start = moment(queryParams.dateStart).format('YYYY-MM-DD 00:00:01');
+                this.dateStart = new Date(start);
             } else {
-                this.lastHour = false;
+                this.dateStart = null;
             }
+            if (queryParams.dateEnd !== undefined) {
+                const end = moment(queryParams.dateEnd).format('YYYY-MM-DD 23:59:59');
+                this.dateEnd = new Date(end);
+            } else {
+                this.dateEnd = null;
+            }
+            if (this.dateStart !== null && this.dateEnd !== null) {
+                const rangeUpdate = new RangeUpdate();
+                rangeUpdate.range = {fromDate: this.dateStart, toDate: this.dateEnd};
+                rangeUpdate.update = false;
+                this.range = rangeUpdate.range;
+                this.rangeStoreService.updateRange(rangeUpdate);
+            }
+            if (this.path === SEND_DOCUMENT_PATH) {
+                this.dataSource = new SendDocumentDataSource(this.delisService);
+                this.delisDataTableColumnModel = DataTableConfig.INIT_SEND_DOCUMENT_COLUMNS_CONFIG();
+            }
+            if (this.path === DOCUMENT_PATH) {
+                this.dataSource = new DocumentDataSource(this.delisService);
+                this.delisDataTableColumnModel = DataTableConfig.INIT_DOCUMENT_COLUMNS_CONFIG();
+            }
+            if (this.path === IDENTIFIER_PATH) {
+                this.dataSource = new IdentifierDataSource(this.delisService);
+                this.delisDataTableColumnModel = DataTableConfig.INIT_IDENTIFIER_COLUMNS_CONFIG();
+            }
+            this.initData();
+            this.dataSource.load(this.stateService);
         });
-
-        this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
-        this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
-        if (this.path === SEND_DOCUMENT_PATH) {
-            this.dataSource = new SendDocumentDataSource(this.delisService);
-            this.delisDataTableColumnModel = DataTableConfig.INIT_SEND_DOCUMENT_COLUMNS_CONFIG();
-        }
-        if (this.path === DOCUMENT_PATH) {
-            this.dataSource = new DocumentDataSource(this.delisService);
-            this.delisDataTableColumnModel = DataTableConfig.INIT_DOCUMENT_COLUMNS_CONFIG();
-        }
-        if (this.path === IDENTIFIER_PATH) {
-            this.dataSource = new IdentifierDataSource(this.delisService);
-            this.delisDataTableColumnModel = DataTableConfig.INIT_IDENTIFIER_COLUMNS_CONFIG();
-        }
-        this.initData();
-        this.dataSource.load(this.stateService);
     }
 
     ngOnDestroy() {
         if (this.rangeUpdate$) {
-          this.rangeUpdate$.unsubscribe();
+            this.rangeUpdate$.unsubscribe();
         }
         if (this.refreshUpdate$) {
             this.refreshUpdate$.unsubscribe();
         }
-      }      
+        if (this.queryParamMapSubscription$) {
+            this.queryParamMapSubscription$.unsubscribe();
+        }
+    }
 
     ngAfterViewInit() {
         this.paginator.page.pipe(tap(() => this.loadPage())).subscribe();
@@ -196,6 +239,10 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
                 }
             }
         }
+        if (this.range !== null) {
+            this.filter.dateRange = this.range;
+        }
+        this.filter.statusError = this.statusError;
     }
 
     initDefaultFilter() {
@@ -261,11 +308,19 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
             this.textFilterModel[filterParam] = null;
         }
         this.resetDaterangeObservable.reset();
-        this.loadPage();
+        if (this.router.url.indexOf("?") >= 0) {
+            let url: string = this.router.url.substring(0, this.router.url.indexOf("?"));
+            this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+                this.router.navigate([url]));
+        }
     }
 
     refresh() {
         this.loadPage();
+    }
+
+    back() {
+        this.location.back();
     }
 
     handleSortChange(event: any) {
