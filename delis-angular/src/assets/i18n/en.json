@@ -25,9 +25,9 @@
   "header.account.logout": "Logout",
   "page-header.dashboard": "Dashboard",
 
-  "dashboard.documents": "Received today",
-  "dashboard.errors": "Received with error today",
-  "dashboard.send": "Sent today",
+  "dashboard.documents": "Received",
+  "dashboard.errors": "Received with error",
+  "dashboard.send": "Sent",
 
   "dashboard.chart.receiving": "Received",
   "dashboard.chart.sending": "Sent",

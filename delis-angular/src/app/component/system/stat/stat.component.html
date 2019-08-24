@@ -1,4 +1,4 @@
-<mat-card [ngClass]="bgClass" [routerLink]="[router]" [queryParams]="{ lastHour: true, statusError: statusError }">
+<mat-card [ngClass]="bgClass" (click)="redirectDelisContent()">
   <mat-card-header>
     <div mat-card-avatar>
       <mat-icon class="icon-lg">{{ icon }}</mat-icon>

@@ -3,6 +3,7 @@ import { MatPaginator, MatSort } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from 'rxjs';
 import { tap } from "rxjs/operators";
+import * as moment from 'moment';
 
 import { DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT, LAST_ACTIVE_MAT_ROW } from "../../../app.constants";
 
@@ -25,6 +26,9 @@ import { DaterangeObservable } from "../../../observable/daterange.observable";
 import { RefreshObservable } from "../../../observable/refresh.observable";
 import { ResetDaterangeObservable } from "../../../observable/reset-daterange.observable";
 import { DocumentErrorService } from "../../content/document/document-error.service";
+import { RedirectContentService } from "../../../service/content/redirect-content.service";
+
+const DOCUMENT_STATUS = 'documentStatus';
 
 @Component({
     selector: 'app-delis-data-table',
@@ -64,8 +68,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     delisDataTableColumnModel: DelisDataTableColumnModel[];
 
     skip: boolean;
-    lastHour: boolean;
-    statusError: boolean;
+    // statusError: boolean;
     lastVisitedId: number;
 
     LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
@@ -75,6 +78,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
         private route: ActivatedRoute,
         private documentErrorService: DocumentErrorService,
         private daterangeObservable: DaterangeObservable,
+        private redirectService: RedirectContentService,
         private refreshObservable: RefreshObservable,
         private resetDaterangeObservable: ResetDaterangeObservable) {
         this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((range: Range) => {
@@ -100,20 +104,10 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
             } else {
                 this.skip = true;
             }
-            if (queryParams.statusError !== undefined) {
-                this.statusError = JSON.parse(queryParams.statusError);
-            } else {
-                this.statusError = false;
-            }
-            if (queryParams.lastHour !== undefined) {
-                this.lastHour = JSON.parse(queryParams.lastHour);
-            } else {
-                this.lastHour = false;
-            }
         });
 
-        this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
-        this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
+        // this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
+        // this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
         if (this.path === SEND_DOCUMENT_PATH) {
             this.dataSource = new SendDocumentDataSource(this.delisService);
             this.delisDataTableColumnModel = DataTableConfig.INIT_SEND_DOCUMENT_COLUMNS_CONFIG();
@@ -212,6 +206,24 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
         if (this.path === IDENTIFIER_PATH) {
             this.filter = new IdentifierFilterModel(this.sort);
         }
+        let redirectData = this.redirectService.redirectData;
+        if (redirectData) {
+            if (redirectData.path === this.path) {
+                let start = moment(redirectData.dateStart).format('YYYY-MM-DD 00:00:01');
+                let end = moment(redirectData.dateEnd).format('YYYY-MM-DD 23:59:59');
+                let fromDate = new Date(start);
+                let toDate = new Date(end);
+                this.filter.dateRange = { fromDate: fromDate, toDate: toDate };
+                if (redirectData.path === DOCUMENT_PATH) {
+                    if (redirectData.statusError) {
+                        this.enumFilterModel[DOCUMENT_STATUS].value = this.enumFilterModel[DOCUMENT_STATUS].list[1];
+                        this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
+                    }
+                }
+            } else {
+                this.redirectService.resetRedirectData();
+            }
+        }
         this.stateService.setFilter(this.filter);
     }
 
@@ -247,6 +259,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     clear() {
+        this.redirectService.resetRedirectData();
         this.initDefaultFilter();
         for (const filterParam in this.enumFilterModel) {
             if (!this.enumFilterModel.hasOwnProperty(filterParam)) {

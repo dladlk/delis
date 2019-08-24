@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Range } from "../date-range/model/model";
+import { Range } from "../../component/system/date-range/model/model";
 
 @Injectable({
     providedIn: 'root'

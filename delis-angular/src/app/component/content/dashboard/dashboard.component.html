@@ -11,7 +11,9 @@
                             [icon]="'warning'"
                             [count]="dashboardModel.errorLastHour"
                             [label]="'dashboard.errors'"
-                            [router]="'/document'"
+                            [path]="'document'"
+                            [dateStart]="dateStart"
+                            [dateEnd]="dateEnd"
                             [statusError]="true">
                     </app-stat>
                 </div>
@@ -21,7 +23,9 @@
                             [icon]="'cloud_download'"
                             [count]="dashboardModel.receivedDocumentsLastHour"
                             [label]="'dashboard.documents'"
-                            [router]="'/document'"
+                            [path]="'document'"
+                            [dateStart]="dateStart"
+                            [dateEnd]="dateEnd"
                             [statusError]="false">
                     </app-stat>
                 </div>
@@ -31,8 +35,9 @@
                             [icon]="'cloud_upload'"
                             [count]="dashboardModel.sendDocumentsLastHour"
                             [label]="'dashboard.send'"
-                            [router]="'/send-document'"
-                            [statusError]="false">
+                            [path]="'send-document'"
+                            [dateStart]="dateStart"
+                            [dateEnd]="dateEnd">
                     </app-stat>
                 </div>
             </div>

@@ -14,6 +14,8 @@ import { SendDocumentDetailsComponent } from './component/content/send-document/
 import { NotFoundComponent } from './component/not-found/not-found.component';
 import { LogoutComponent } from './component/logout/logout.component';
 
+import { DOCUMENT_PATH, SEND_DOCUMENT_PATH, IDENTIFIER_PATH } from './app.constants';
+
 const routes: Routes = [
   {
     path: '', component: LayoutComponent, canActivateChild: [AuthGuard], children: [
@@ -24,22 +26,22 @@ const routes: Routes = [
         path: 'dashboard', component: DashboardComponent
       },
       {
-        path: 'identifier', component: IdentifierComponent
+        path: IDENTIFIER_PATH, component: IdentifierComponent
       },
       {
-        path: 'identifier/:id', component: IdentifierDetailsComponent
+        path: IDENTIFIER_PATH + '/:id', component: IdentifierDetailsComponent
       },
       {
-        path: 'document', component: DocumentComponent
+        path: DOCUMENT_PATH, component: DocumentComponent
       },
       {
-        path: 'document/:id', component: DocumentDetailsComponent
+        path: DOCUMENT_PATH +'/:id', component: DocumentDetailsComponent
       },
       {
-        path: 'send-document', component: SendDocumentComponent
+        path: SEND_DOCUMENT_PATH, component: SendDocumentComponent
       },
       {
-        path: 'send-document/:id', component: SendDocumentDetailsComponent
+        path: SEND_DOCUMENT_PATH + '/:id', component: SendDocumentDetailsComponent
       },
       {
         path: 'logout', component: LogoutComponent

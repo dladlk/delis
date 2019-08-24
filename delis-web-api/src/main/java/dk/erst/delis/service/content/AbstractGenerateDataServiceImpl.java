@@ -39,14 +39,17 @@ public class AbstractGenerateDataServiceImpl<R extends AbstractRepository, E ext
             orgId = securityService.getOrganisation().getId();
         }
         PageAndSizeModel pageAndSizeModel = WebRequestUtil.generatePageAndSizeModel(request);
-        String specificFlag = WebRequestUtil.existFlagParameter(request);
-        EntitySpecification entitySpecification;
+        String errorStatus = WebRequestUtil.existFlagErrorParameter(request);
+        EntitySpecification entitySpecification = EntitySpecification.DEFAULT;
         Specification<E> specification;
-        if (StringUtils.isNotBlank(specificFlag)) {
-            entitySpecification = EntitySpecification.valueOf(request.getParameter(specificFlag));
-            specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, orgId);
+        if (StringUtils.isNotBlank(errorStatus)) {
+            if (Boolean.parseBoolean(request.getParameter(errorStatus))) {
+                entitySpecification = EntitySpecification.FLAG_ERRORS_DOCUMENT;
+                specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, orgId);
+            } else {
+                specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass, orgId);
+            }
         } else {
-            entitySpecification = EntitySpecification.DEFAULT;
             specification = new EntitySpecificationFactory().generateSpecification(entitySpecification).generateCriteriaPredicate(request, entityClass, orgId);
         }
         long collectionSize = repository.count(specification);

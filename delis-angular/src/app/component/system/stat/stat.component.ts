@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { RedirectContentService } from "../../../service/content/redirect-content.service";
 
 @Component({
   selector: 'app-stat',
@@ -13,12 +14,23 @@ export class StatComponent implements OnInit {
   @Input() count: number;
   @Input() label: string;
   @Input() statusError: boolean;
-  @Input() router: RouterLink;
-  @Output() event: EventEmitter<any> = new EventEmitter();
+  @Input() path: string;
+  @Input() dateStart: string;
+  @Input() dateEnd: string;
 
-  constructor() { }
+  constructor(private router: Router, private redirectService: RedirectContentService) { }
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  redirectDelisContent() {
+    let data = {
+      dateStart: this.dateStart,
+      dateEnd: this.dateEnd,
+      statusError: this.statusError,
+      path: this.path
+    };
+    this.redirectService.updateRedirectData(data);
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+        this.router.navigate(['/' + this.path]));
   }
-
 }

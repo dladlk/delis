@@ -101,6 +101,16 @@ public class TableInfoService {
                             enumInfo.setViewName("Alle");
                         }
                         enumInfoList.add(enumInfo);
+                        if (Objects.equals("documentStatus", field.getName()) && Objects.equals("Document", entity.getSimpleName())) {
+                            enumInfo = new EnumInfo();
+                            enumInfo.setName("ALL FAILED");
+                            if (currentLocaleEN) {
+                                enumInfo.setViewName("All failed");
+                            } else {
+                                enumInfo.setViewName("Alle fejl");
+                            }
+                            enumInfoList.add(enumInfo);
+                        }
                         enumInfoList.addAll(Arrays
                                 .stream(((Class<Enum>) field.getType()).getEnumConstants())
                                 .map(en -> {
