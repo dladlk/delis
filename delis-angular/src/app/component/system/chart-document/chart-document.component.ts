@@ -19,7 +19,7 @@ import { ResetDaterangeForTodayObservable } from "../../../observable/reset-date
 import { DashboardObservable } from "../../../observable/dashboard.observable";
 import { DashboardModel } from "../../../model/content/dashboard.model";
 
-import { DOCUMENT_PATH, SEND_DOCUMENT_PATH } from '../../../app.constants';
+import { DOCUMENT_PATH, SEND_DOCUMENT_PATH, CHART_DATE_FORMAT } from '../../../app.constants';
 
 @Component({
   selector: 'app-chart-document',
@@ -81,6 +81,14 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
           }
         }]
       },
+      elements: {
+            point: {
+                  radius: 6,
+                  hitRadius: 5,
+                  hoverRadius: 10,
+                  hoverBorderWidth: 3
+                }
+          }
     };
     const backgroundColor = 'rgba(11, 120, 208, 0.2)';
 
@@ -166,15 +174,15 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       let start;
       let end;
       if (label.indexOf(':') >= 0) {
-        start = moment(this.range.fromDate).format('YYYY-MM-DD');
-        end = moment(this.range.toDate).format('YYYY-MM-DD');
+        start = moment(this.range.fromDate).format(CHART_DATE_FORMAT);
+        end = moment(this.range.toDate).format(CHART_DATE_FORMAT);
       } else {
         let year = this.range.fromDate.getFullYear();
         let date = label.split('.');
         let day = date[0];
         let month = date[1];
-        start = moment(year + "-" + month + "-" + day).format('YYYY-MM-DD');
-        end = moment(year + "-" + month + "-" + day).format('YYYY-MM-DD');
+        start = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT);
+        end = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT);
       }
 
       let data = {
@@ -262,13 +270,13 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     let start;
     let end;
     if (range.fromDate !== null && range.toDate !== null) {
-      start = moment(range.fromDate).format('YYYY-MM-DD');
-      end = moment(range.toDate).format('YYYY-MM-DD');
+      start = moment(range.fromDate).format(CHART_DATE_FORMAT);
+      end = moment(range.toDate).format(CHART_DATE_FORMAT);
       range.fromDate = new Date(start);
       range.toDate = new Date(end);
     } else {
-      start = moment(range.fromDate).format('YYYY-MM-DD');
-      end = moment(range.toDate).format('YYYY-MM-DD');
+      start = moment(range.fromDate).format(CHART_DATE_FORMAT);
+      end = moment(range.toDate).format(CHART_DATE_FORMAT);
     }
 
     let data = {

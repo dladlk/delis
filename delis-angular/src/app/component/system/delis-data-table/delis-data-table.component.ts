@@ -5,7 +5,15 @@ import { Subscription } from 'rxjs';
 import { tap } from "rxjs/operators";
 import * as moment from 'moment';
 
-import { DOCUMENT_PATH, IDENTIFIER_PATH, SEND_DOCUMENT_PATH, SHOW_DATE_FORMAT, LAST_ACTIVE_MAT_ROW } from "../../../app.constants";
+import {
+    DOCUMENT_PATH,
+    IDENTIFIER_PATH,
+    SEND_DOCUMENT_PATH,
+    SHOW_DATE_FORMAT,
+    LAST_ACTIVE_MAT_ROW,
+    CHART_DATE_FORMAT_START,
+    CHART_DATE_FORMAT_END
+} from "../../../app.constants";
 
 import { DelisDataTableColumnModel } from "../../../model/content/delis-data-table-column.model";
 import { TableStateModel } from "../../../model/filter/table-state.model";
@@ -209,8 +217,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
         let redirectData = this.redirectService.redirectData;
         if (redirectData) {
             if (redirectData.path === this.path) {
-                let start = moment(redirectData.dateStart).format('YYYY-MM-DD 00:00:01');
-                let end = moment(redirectData.dateEnd).format('YYYY-MM-DD 23:59:59');
+                let start = moment(redirectData.dateStart).format(CHART_DATE_FORMAT_START);
+                let end = moment(redirectData.dateEnd).format(CHART_DATE_FORMAT_END);
                 let fromDate = new Date(start);
                 let toDate = new Date(end);
                 this.filter.dateRange = { fromDate: fromDate, toDate: toDate };
