@@ -276,7 +276,6 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
         dashboardModel.sendDocumentsLastHour = arr.length !== 0 ? arr.reduce((a,b) => a + b, 0) : 0;
       }
     }
-
     let range = this.chartDocumentService.range;
     let start;
     let end;
@@ -286,16 +285,14 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       range.fromDate = new Date(start);
       range.toDate = new Date(end);
     } else {
-      start = moment(range.fromDate).format(CHART_DATE_FORMAT);
-      end = moment(range.toDate).format(CHART_DATE_FORMAT);
+      start = null;
+      end = null;
     }
-
     let data = {
       dashboardModel: dashboardModel,
       dateStart: start,
       dateEnd: end
     };
-
     this.dashboardObservable.setDashboard(data);
   }
 }

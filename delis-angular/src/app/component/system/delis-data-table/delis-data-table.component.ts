@@ -215,22 +215,27 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
         if (this.path === IDENTIFIER_PATH) {
             this.filter = new IdentifierFilterModel(this.sort);
         }
+
         let redirectData = this.redirectService.redirectData;
         if (redirectData) {
             if (redirectData.path === this.path) {
-                let fromDate;
-                let toDate;
-                let regexConst = new RegExp(DATE_PATTERN);
-                if (regexConst.test(redirectData.dateStart)) {
-                    let start = moment(redirectData.dateStart).format(CHART_DATE_FORMAT_START);
-                    let end = moment(redirectData.dateEnd).format(CHART_DATE_FORMAT_END);
-                    fromDate = new Date(start);
-                    toDate = new Date(end);
+                if (redirectData.dateStart !== null && redirectData.dateEnd !== null) {
+                    let fromDate;
+                    let toDate;
+                    let regexConst = new RegExp(DATE_PATTERN);
+                    if (regexConst.test(redirectData.dateStart)) {
+                        let start = moment(redirectData.dateStart).format(CHART_DATE_FORMAT_START);
+                        let end = moment(redirectData.dateEnd).format(CHART_DATE_FORMAT_END);
+                        fromDate = new Date(start);
+                        toDate = new Date(end);
+                    } else {
+                        fromDate = new Date(redirectData.dateStart);
+                        toDate = new Date(redirectData.dateEnd);
+                    }
+                    this.filter.dateRange = { fromDate: fromDate, toDate: toDate };
                 } else {
-                    fromDate = new Date(redirectData.dateStart);
-                    toDate = new Date(redirectData.dateEnd);
+                    this.filter.dateRange = null;
                 }
-                this.filter.dateRange = { fromDate: fromDate, toDate: toDate };
                 if (redirectData.path === DOCUMENT_PATH) {
                     if (redirectData.statusError) {
                         this.enumFilterModel[DOCUMENT_STATUS].value = this.enumFilterModel[DOCUMENT_STATUS].list[1];
