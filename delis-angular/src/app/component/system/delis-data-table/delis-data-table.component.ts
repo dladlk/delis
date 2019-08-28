@@ -37,6 +37,7 @@ import { DocumentErrorService } from "../../content/document/document-error.serv
 import { RedirectContentService } from "../../../service/content/redirect-content.service";
 
 const DOCUMENT_STATUS = 'documentStatus';
+const DATE_PATTERN = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/;
 
 @Component({
     selector: 'app-delis-data-table',
@@ -217,10 +218,18 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
         let redirectData = this.redirectService.redirectData;
         if (redirectData) {
             if (redirectData.path === this.path) {
-                let start = moment(redirectData.dateStart).format(CHART_DATE_FORMAT_START);
-                let end = moment(redirectData.dateEnd).format(CHART_DATE_FORMAT_END);
-                let fromDate = new Date(start);
-                let toDate = new Date(end);
+                let fromDate;
+                let toDate;
+                let regexConst = new RegExp(DATE_PATTERN);
+                if (regexConst.test(redirectData.dateStart)) {
+                    let start = moment(redirectData.dateStart).format(CHART_DATE_FORMAT_START);
+                    let end = moment(redirectData.dateEnd).format(CHART_DATE_FORMAT_END);
+                    fromDate = new Date(start);
+                    toDate = new Date(end);
+                } else {
+                    fromDate = new Date(redirectData.dateStart);
+                    toDate = new Date(redirectData.dateEnd);
+                }
                 this.filter.dateRange = { fromDate: fromDate, toDate: toDate };
                 if (redirectData.path === DOCUMENT_PATH) {
                     if (redirectData.statusError) {

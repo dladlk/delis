@@ -19,7 +19,13 @@ import { ResetDaterangeForTodayObservable } from "../../../observable/reset-date
 import { DashboardObservable } from "../../../observable/dashboard.observable";
 import { DashboardModel } from "../../../model/content/dashboard.model";
 
-import { DOCUMENT_PATH, SEND_DOCUMENT_PATH, CHART_DATE_FORMAT } from '../../../app.constants';
+import {
+  DOCUMENT_PATH,
+  SEND_DOCUMENT_PATH,
+  CHART_DATE_FORMAT,
+  CHART_DATE_FORMAT_START,
+  CHART_DATE_FORMAT_END
+} from '../../../app.constants';
 
 @Component({
   selector: 'app-chart-document',
@@ -174,15 +180,20 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       let start;
       let end;
       if (label.indexOf(':') >= 0) {
-        start = moment(this.range.fromDate).format(CHART_DATE_FORMAT);
-        end = moment(this.range.toDate).format(CHART_DATE_FORMAT);
+        if (labelIndex + 1 === this.lineChartLabels.length) {
+          start = moment(this.range.fromDate).format(CHART_DATE_FORMAT + ' ' + label + ':00');
+          end = moment(new Date()).format(CHART_DATE_FORMAT_END);
+        } else {
+          start = moment(this.range.fromDate).format(CHART_DATE_FORMAT + ' ' + label + ':00');
+          end = moment(this.range.toDate).format(CHART_DATE_FORMAT + ' ' + this.lineChartLabels[labelIndex + 1] + ':00');
+        }
       } else {
         let year = this.range.fromDate.getFullYear();
         let date = label.split('.');
         let day = date[0];
         let month = date[1];
-        start = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT);
-        end = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT);
+        start = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT_START);
+        end = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT_END);
       }
 
       let data = {
