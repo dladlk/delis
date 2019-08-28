@@ -140,6 +140,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
         if (this.refreshUpdate$) {
             this.refreshUpdate$.unsubscribe();
         }
+        this.redirectService.resetRedirectData();
       }      
 
     ngAfterViewInit() {
