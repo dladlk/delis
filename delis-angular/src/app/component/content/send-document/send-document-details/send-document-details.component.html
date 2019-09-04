@@ -1,132 +1,132 @@
-<mat-card>
-  <div class="example-container mat-elevation-z8">
+<app-delis-table-details-header
+  [currentIds]="currentIds"
+  [id]="documentId"
+  [isNextDown]="isNextDown"
+  [isNextUp]="isNextUp"
+  [path]="SEND_DOCUMENT_PATH"
+  [stateService]="stateService"
+  [header]="'documents.send.header.details'">
+</app-delis-table-details-header>
 
-    <app-delis-table-details-header
-            [currentIds]="currentIds"
-            [id]="documentId"
-            [isNextDown]="isNextDown"
-            [isNextUp]="isNextUp"
-            [path]="SEND_DOCUMENT_PATH"
-            [stateService]="stateService">
-    </app-delis-table-details-header>
+<div *ngIf="errorOneDocument" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorOneDocumentModel"></app-error>
+  </mat-card>
+</div>
 
-    <div class="table-details">
-      <mat-card-content>
-        <div *ngIf="errorOneDocument" class="table-details-error">
-          <app-error [errorModel]="errorOneDocumentModel"></app-error>
-        </div>
-      </mat-card-content>
-
-      <mat-card-content>
-        <h5 class="table-details-header">{{ 'documents.send.header.details' | translate}}</h5>
-        <table>
-          <thead>
-          <tr>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.sender' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.receiver' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.created' | translate }}</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td class="table-details-td">
-              <span *ngIf="sendDocument.organisation !== null">{{sendDocument.organisation.name}}</span></td>
-            <td class="table-details-td">{{sendDocument.senderIdRaw}}</td>
-            <td class="table-details-td">{{sendDocument.receiverIdRaw}}</td>
-            <td class="table-details-td">{{sendDocument.createTime | date: SHOW_DATE_FORMAT}}</td>
-          </tr>
-          </tbody>
-          <thead>
-          <tr>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.status' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.documentType' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.documentId' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.send.one.columnName.documentDate' | translate }}</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td class="table-details-td">{{sendDocument.documentStatus}}</td>
-            <td class="table-details-td">{{sendDocument.documentType}}</td>
-            <td class="table-details-td">{{sendDocument.documentId}}</td>
-            <td class="table-details-td">{{sendDocument.documentDate}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </mat-card-content>
-
-      <mat-card-content>
-        <div *ngIf="errorJournalDocuments" class="table-details-error">
-          <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
-        </div>
-      </mat-card-content>
-
-      <mat-card-content>
-        <h5 class="table-details-header">{{ 'documents.table.one.columnName.journalRecords' | translate }}</h5>
-        <table>
-          <thead>
-          <tr>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
-          </tr>
-          </thead>
-          <tbody *ngFor="let doc of journalSendDocuments">
-          <tr>
-            <td class="table-details-td">{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
-            <td class="table-details-td">{{doc.type}}</td>
-            <td class="table-details-td systemColorSuccess" *ngIf="doc.success"><mat-icon>check_circle</mat-icon></td>
-            <td class="table-details-td systemColorError" *ngIf="!doc.success"><mat-icon>error</mat-icon></td>
-            <td class="table-details-td">{{doc.message}}</td>
-            <td class="table-details-td">{{doc.durationMs}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </mat-card-content>
-
-      <mat-card-content>
-        <div *ngIf="errorDocumentBytes" class="table-details-error">
-          <app-error [errorModel]="errorDocumentBytesModel"></app-error>
-        </div>
-      </mat-card-content>
-
-      <mat-card-content>
-        <div *ngIf="errorDownload" class="table-details-error">
-          <app-error [errorModel]="errorDownloadModel"></app-error>
-        </div>
-      </mat-card-content>
-
-      <mat-card-content>
-
-        <h5 class="table-details-header">{{ 'documents.table.one.columnName.documentBytesModels' | translate }}</h5>
-
-        <table>
-          <thead>
-          <tr>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
-            <th class="table-details-th">{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
-            <th class="table-details-th">Download</th>
-          </tr>
-          </thead>
-          <tbody *ngFor="let doc of sendDocumentsBytes">
-          <tr>
-            <td class="table-details-td">{{doc.id}}</td>
-            <td class="table-details-td">{{doc.type}}</td>
-            <td class="table-details-td">{{doc.size}}</td>
-            <td *ngIf="isReceipt(doc.type)" class="table-details-td download" (click)="download(doc.id)">Download</td>
-            <td *ngIf="!isReceipt(doc.type)" class="table-details-td download-muted" (click)="download(doc.id)">Download</td>
-          </tr>
-          </tbody>
-        </table>
-
-      </mat-card-content>
-    </div>
-
-  </div>
+<mat-card class="mb-20">
+  <table class="delis-table-data delis-table-details">
+    <thead>
+    <tr>
+      <th>{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
+      <th>{{ 'documents.table.send.one.columnName.sender' | translate }}</th>
+      <th>{{ 'documents.table.send.one.columnName.receiver' | translate }}</th>
+      <th>{{ 'documents.table.send.one.columnName.created' | translate }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <span *ngIf="sendDocument.organisation !== null">{{sendDocument.organisation.name }}</span></td>
+      <td>{{ sendDocument.senderIdRaw }}</td>
+      <td>{{ sendDocument.receiverIdRaw }}</td>
+      <td>{{ sendDocument.createTime | date: SHOW_DATE_FORMAT }}</td>
+    </tr>
+    </tbody>
+    <thead>
+    <tr>
+      <th>{{ 'documents.table.send.one.columnName.status' | translate }}</th>
+      <th>{{ 'documents.table.send.one.columnName.documentType' | translate }}</th>
+      <th>{{ 'documents.table.send.one.columnName.documentId' | translate }}</th>
+      <th>{{ 'documents.table.send.one.columnName.documentDate' | translate }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{ sendDocument.documentStatus }}</td>
+      <td>{{ sendDocument.documentType }}</td>
+      <td>{{ sendDocument.documentId }}</td>
+      <td>{{ sendDocument.documentDate }}</td>
+    </tr>
+    </tbody>
+  </table>
 </mat-card>
 
+<div *ngIf="errorJournalDocuments" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
+  </mat-card>
+</div>
 
+<mat-card class="mb-20">
+  <mat-card-title>
+    {{ 'documents.table.one.columnName.journalRecords' | translate }}
+  </mat-card-title>
+  <table class="delis-table-data table-easy">
+    <thead>
+    <tr>
+      <th style="width: 15% !important;">{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+      <th style="width: 10% !important;">{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+      <th style="width: 10% !important;">{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+      <th style="width: 50% !important;">{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+      <th style="text-align: right !important;">{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
+    </tr>
+    </thead>
+    <tbody *ngFor="let doc of journalSendDocuments">
+    <tr>
+      <td>{{ doc.createTime | date: SHOW_DATE_FORMAT }}</td>
+      <td>{{ doc.type }}</td>
+      <td class="table-details-td system-color-success" *ngIf="doc.success"><mat-icon>check_circle</mat-icon></td>
+      <td class="table-details-td system-color-error" *ngIf="!doc.success"><mat-icon>error</mat-icon></td>
+      <td>{{ doc.message }}</td>
+      <td style="text-align: right !important;">{{ doc.durationMs }}</td>
+    </tr>
+    </tbody>
+  </table>
+</mat-card>
+
+<div *ngIf="errorDocumentBytes" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorDocumentBytesModel"></app-error>
+  </mat-card>
+</div>
+
+<div *ngIf="errorDownload" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorDownloadModel"></app-error>
+  </mat-card>
+</div>
+
+<mat-card class="mb-80">
+  <mat-card-title>
+    {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
+  </mat-card-title>
+  <table class="delis-table-data delis-table-details">
+    <thead>
+    <tr>
+      <th>{{ 'documents.table.one.columnName.documentBytesModels.id' | translate }}</th>
+      <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+      <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+      <th>Download</th>
+    </tr>
+    </thead>
+    <tbody *ngFor="let doc of sendDocumentsBytes">
+    <tr>
+      <td>{{ doc.id }}</td>
+      <td>{{ doc.type }}</td>
+      <td>{{ doc.size }}</td>
+      <td *ngIf="isReceipt(doc.type)" class="download" (click)="download(doc.id)">Download</td>
+      <td *ngIf="!isReceipt(doc.type)" class="download-muted" (click)="download(doc.id)">Download</td>
+    </tr>
+    </tbody>
+  </table>
+</mat-card>
+
+<app-delis-table-details-footer *ngIf="isShowFooter"
+                                [currentIds]="currentIds"
+                                [id]="documentId"
+                                [isNextDown]="isNextDown"
+                                [isNextUp]="isNextUp"
+                                [path]="SEND_DOCUMENT_PATH"
+                                [stateService]="stateService">
+</app-delis-table-details-footer>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateChild, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from "rxjs";
-import { CheckExpirationService } from "../service/system/check-expiration.service";
+import { Observable } from 'rxjs';
+import { CheckExpirationService } from '../service/system/check-expiration.service';
 
 @Injectable({
   providedIn: 'root'

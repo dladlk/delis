@@ -3,21 +3,25 @@ import { HttpParams } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 import * as moment from 'moment';
 
-import { Range, RangeModel } from '../date-range/model/model';
+import { Range } from '../date-range/model/model';
+import { DashboardModel } from '../../../model/content/dashboard.model';
 import { ErrorService } from '../../../service/system/error.service';
 import { TokenService } from '../../../service/system/token.service';
 import { RuntimeConfigService } from '../../../service/system/runtime-config.service';
 import { HttpRestService } from '../../../service/system/http-rest.service';
+import { SpinnerService } from '../../../service/system/spinner.service';
 import { DaterangeObservable } from '../../../observable/daterange.observable';
-import { ChartDocumentService } from "../../../service/content/chart-document.service";
-import { RedirectContentService } from "../../../service/content/redirect-content.service";
-import { RefreshObservable } from "../../../observable/refresh.observable";
-import { ResetDaterangeForTodayObservable } from "../../../observable/reset-daterange-for-today.observable";
-import { DashboardObservable } from "../../../observable/dashboard.observable";
-import { DashboardModel } from "../../../model/content/dashboard.model";
+import { ChartDocumentService } from '../../../service/content/chart-document.service';
+import { RedirectContentService } from '../../../service/content/redirect-content.service';
+import { RefreshObservable } from '../../../observable/refresh.observable';
+import { ResetDaterangeForTodayObservable } from '../../../observable/reset-daterange-for-today.observable';
+import { DashboardObservable } from '../../../observable/dashboard.observable';
+
+const LINE_CHART_TYPE = 'line';
+const BAR_CHART_TYPE = 'bar';
 
 import {
   DOCUMENT_PATH,
@@ -31,7 +35,7 @@ import {
   selector: 'app-chart-document',
   templateUrl: './chart-document.component.html',
   styleUrls: ['./chart-document.component.scss'],
-  providers:[
+  providers: [
     DatePipe
   ]
 })
@@ -45,13 +49,16 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
   lineChartLabels: Array<string> = [];
 
   lineChartOptions: any;
+  barChartOptions: any;
   lineChartColors: Array<any>;
+  barChartColors: Array<any>;
   lineChartLegend: boolean;
-  lineChartType: any;
 
-  drm: RangeModel;
   private rangeUpdate$: Subscription;
   range: Range;
+
+  isLineChart: boolean;
+  isBarChart: boolean;
 
   constructor(private router: Router,
               private errorService: ErrorService,
@@ -65,7 +72,8 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
               private daterangeObservable: DaterangeObservable,
               private refreshObservable: RefreshObservable,
               private resetDaterangeForTodayObservable: ResetDaterangeForTodayObservable,
-              private dashboardObservable: DashboardObservable) {
+              private dashboardObservable: DashboardObservable,
+              public spinnerService: SpinnerService) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/chart';
     this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((dtRange: Range) => {
@@ -75,9 +83,9 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.initRange();
+    this.initChartType();
     this.updateLineChart(this.range);
     this.lineChartLegend = true;
-    this.lineChartType = 'line';
     this.lineChartOptions = {
       responsive: true,
       scales: {
@@ -96,9 +104,32 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
                 }
           }
     };
-    const backgroundColor = 'rgba(11, 120, 208, 0.2)';
-
+    this.barChartOptions = {
+      scaleShowVerticalLines: false,
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            stepSize: 1
+          }
+        }]
+      }
+    };
     // recommended https://color.adobe.com/ru/create
+    this.barChartColors = [
+      {
+        // error document color
+        backgroundColor: 'rgba(255, 46, 38)',
+      },
+      {
+        // document color
+        backgroundColor: 'rgba(13, 146, 255)',
+      },
+      {
+        // send document color
+        backgroundColor: 'rgba(251, 140, 0)',
+      }
+    ];
     this.lineChartColors = [
       {
         // error document color
@@ -107,7 +138,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(255, 46, 38, 0.8)',
-        backgroundColor: backgroundColor,
+        backgroundColor: 'rgba(255, 46, 38, 0.2)',
       },
       {
         // document color
@@ -116,7 +147,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(13, 146, 255, 0.8)',
-        backgroundColor: backgroundColor,
+        backgroundColor: 'rgba(13, 146, 255, 0.2)',
       },
       {
         // send document color
@@ -125,7 +156,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: 'rgba(251, 140, 0, 0.8)',
-        backgroundColor: backgroundColor,
+        backgroundColor: 'rgba(251, 140, 0, 0.2)',
       }
     ];
   }
@@ -136,24 +167,37 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkLineChart() {
+    this.isLineChart = true;
+    this.isBarChart = false;
+    this.chartDocumentService.updateChartType(LINE_CHART_TYPE);
+  }
+
+  checkBarChart() {
+    this.isLineChart = false;
+    this.isBarChart = true;
+    this.chartDocumentService.updateChartType(BAR_CHART_TYPE);
+  }
+
   initRange() {
     this.range = this.chartDocumentService.range;
     if (!this.range) {
-      let today = new Date();
+      const today = new Date();
       this.range = {fromDate: today, toDate: today};
     }
   }
 
-  refresh() {
-    this.refreshObservable.refreshPage();
-    this.updateLineChart(this.range);
-  }
-
-  clear() {
-    this.chartDocumentService.resetRange();
-    this.resetDaterangeForTodayObservable.resetForToday();
-    this.initRange();
-    this.refresh();
+  initChartType() {
+    const chartType = this.chartDocumentService.chartType;
+    if (chartType) {
+      if (chartType === LINE_CHART_TYPE) {
+        this.checkLineChart();
+      } else {
+        this.checkBarChart();
+      }
+    } else {
+      this.checkLineChart();
+    }
   }
 
   public chartClicked(e: any): void {
@@ -162,7 +206,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       const datasetIndex = activePoint._datasetIndex; // current line
       const labelIndex = activePoint._index; // current label
       const label = this.lineChartLabels[labelIndex];
-      let path = datasetIndex > 1 ? SEND_DOCUMENT_PATH : DOCUMENT_PATH;
+      const path = datasetIndex > 1 ? SEND_DOCUMENT_PATH : DOCUMENT_PATH;
       let statusError;
       switch (datasetIndex) {
         case 0 : {
@@ -188,19 +232,19 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
           end = moment(this.range.toDate).format(CHART_DATE_FORMAT + ' ' + this.lineChartLabels[labelIndex + 1] + ':00');
         }
       } else {
-        let year = this.range.fromDate.getFullYear();
-        let date = label.split('.');
-        let day = date[0];
-        let month = date[1];
-        start = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT_START);
-        end = moment(year + "-" + month + "-" + day).format(CHART_DATE_FORMAT_END);
+        const date = label.split('.');
+        const day = date[0];
+        const month = date[1];
+        const year = date[2];
+        start = moment(year + '-' + month + '-' + day).format(CHART_DATE_FORMAT_START);
+        end = moment(year + '-' + month + '-' + day).format(CHART_DATE_FORMAT_END);
       }
 
-      let data = {
+      const data = {
         dateStart: start,
         dateEnd: end,
-        statusError: statusError,
-        path: path
+        statusError,
+        path
       };
       this.redirectService.updateRedirectData(data);
       this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
@@ -216,12 +260,12 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     const formatDate = (d: Date) => {
       let res = '';
       if (d) {
-        res = this.datePipe.transform(d, "yyyy-MM-dd");
+        res = this.datePipe.transform(d, 'yyyy-MM-dd');
       }
       return res;
     };
-    var dateStart = formatDate(range.fromDate);
-    var dateEnd = formatDate(range.toDate);
+    const dateStart = formatDate(range.fromDate);
+    const dateEnd = formatDate(range.toDate);
     this.getChartData(dateStart, dateEnd).subscribe(
         (data: {}) => {
           this.generateLineChart(data);
@@ -232,12 +276,12 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     );
   }
 
-  private generateLineChart(data: {}) {
-    let lineChart = Object.assign({}, data['data']);
+  private generateLineChart(data: any) {
+    const lineChart = Object.assign({}, data.data);
     this.lineChartData = lineChart.lineChartData;
     let totalSum = 0;
     this.lineChartData.forEach(d => {
-      this.translate.get("dashboard."+d.label).subscribe(s => {
+      this.translate.get('dashboard.' + d.label).subscribe(s => {
         d.label = s;
       });
       if (d.data.length > 0 && d.data.reduce((sum, current) => sum + current) > 0) {
@@ -254,29 +298,29 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
   }
 
   private getChartData(start: string, end: string): Observable<any> {
-    let params = new HttpParams()
+    const params = new HttpParams()
         .append('from', start)
         .append('to', end)
-        .append('now', this.datePipe.transform(new Date(), "yyyy-MM-dd HH:mm:ss"));
+        .append('now', this.datePipe.transform(new Date(), 'yyyy-MM-dd HH:mm:ss'));
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 
   generateDashboardData() {
-    let dashboardModel = new DashboardModel();
-    for (const data of this.lineChartData) {
-      let label = data.label;
-      let arr = data.data;
+    const dashboardModel = new DashboardModel();
+    for (const line of this.lineChartData) {
+      const label = line.label;
+      const arr = line.data;
       if (label === 'Received error' || label === 'Modtaget med fejl') {
-        dashboardModel.errorLastHour = arr.length !== 0 ? arr.reduce((a,b) => a + b, 0) : 0;
+        dashboardModel.errorLastHour = arr.length !== 0 ? arr.reduce((a, b) => a + b, 0) : 0;
       }
       if (label === 'Received' || label === 'Modtaget') {
-        dashboardModel.receivedDocumentsLastHour = arr.length !== 0 ? arr.reduce((a,b) => a + b, 0) : 0;
+        dashboardModel.receivedDocumentsLastHour = arr.length !== 0 ? arr.reduce((a, b) => a + b, 0) : 0;
       }
       if (label === 'Sent' || label === 'Afsendt') {
-        dashboardModel.sendDocumentsLastHour = arr.length !== 0 ? arr.reduce((a,b) => a + b, 0) : 0;
+        dashboardModel.sendDocumentsLastHour = arr.length !== 0 ? arr.reduce((a, b) => a + b, 0) : 0;
       }
     }
-    let range = this.chartDocumentService.range;
+    const range = this.chartDocumentService.range;
     let start;
     let end;
     if (range.fromDate !== null && range.toDate !== null) {
@@ -288,11 +332,24 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
       start = null;
       end = null;
     }
-    let data = {
-      dashboardModel: dashboardModel,
+    const data = {
+      dashboardModel,
       dateStart: start,
       dateEnd: end
     };
     this.dashboardObservable.setDashboard(data);
+  }
+
+  refresh() {
+    this.refreshObservable.refreshPage();
+    this.updateLineChart(this.range);
+  }
+
+  clear() {
+    this.chartDocumentService.resetRange();
+    this.chartDocumentService.resetChartType();
+    this.resetDaterangeForTodayObservable.resetForToday();
+    this.initRange();
+    this.refresh();
   }
 }

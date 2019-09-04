@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 
 import { DashboardModel } from '../../../model/content/dashboard.model';
-import { DashboardObservable } from "../../../observable/dashboard.observable";
+import { DashboardObservable } from '../../../observable/dashboard.observable';
 
 @Component({
   selector: 'app-dashboard',

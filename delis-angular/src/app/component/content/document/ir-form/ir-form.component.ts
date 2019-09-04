@@ -1,28 +1,25 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {InvoiceErrorRecordModel} from '../../../../model/content/document/invoice-error-record.model';
-import {ErrorModel} from '../../../../model/system/error.model';
-import {InvoiceResponseGenerationModel} from '../../../../model/content/document/invoice-response-generation.model';
-import {DocumentInvoiceResponseFormModel} from '../../../../model/content/document/document-invoice-response-form.model';
-import {DocumentInvoiceModel} from '../../../../model/content/document/document-invoice.model';
-import {SuccessModel} from '../../../../model/system/success.model';
-import {ErrorService} from '../../../../service/system/error.service';
-import {DocumentInvoiceService} from '../../../../service/content/document-invoice.service';
-import {DocumentModel} from '../../../../model/content/document/document.model';
-import {FileSaverService} from '../../../../service/system/file-saver.service';
 import {MatCheckboxChange, MatSelect} from '@angular/material';
-
-const BORDER_COLOR_GREY = '#ced4da';
-const BORDER_COLOR_GREEN = '#28a745';
+import {SuccessModel} from '../../../../model/system/success.model';
+import {DocumentInvoiceModel} from '../../../../model/content/document/document-invoice.model';
+import {DocumentInvoiceResponseFormModel} from '../../../../model/content/document/document-invoice-response-form.model';
+import {InvoiceResponseGenerationModel} from '../../../../model/content/document/invoice-response-generation.model';
+import {ErrorModel} from '../../../../model/system/error.model';
+import {InvoiceErrorRecordModel} from '../../../../model/content/document/invoice-error-record.model';
+import {ActivatedRoute} from '@angular/router';
+import {DocumentInvoiceService} from '../../../../service/content/document-invoice.service';
+import {ErrorService} from '../../../../service/system/error.service';
+import {FileSaverService} from '../../../../service/system/file-saver.service';
+import {SpinnerService} from '../../../../service/system/spinner.service';
 
 @Component({
-  selector: 'app-invoice',
-  templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.scss']
+  selector: 'app-ir-form',
+  templateUrl: './ir-form.component.html',
+  styleUrls: ['./ir-form.component.scss']
 })
-export class InvoiceComponent implements OnInit {
+export class IrFormComponent implements OnInit {
 
-  @Input() documentId: number;
+  documentId: number;
   @Input() effectiveDate: string;
 
   @ViewChild('inputGroupStatusReason', {static: true}) inputGroupStatusReason: MatSelect;
@@ -65,12 +62,14 @@ export class InvoiceComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private documentInvoiceService: DocumentInvoiceService,
-              private errorService: ErrorService) { }
+              private errorService: ErrorService,
+              public spinnerService: SpinnerService) { }
 
   ngOnInit() {
     const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
-    this.documentInvoiceService.getInvoice(id).subscribe((data: DocumentModel) => {
-      this.documentInvoiceModel = data['data'];
+    this.documentId = id;
+    this.documentInvoiceService.getInvoice(id).subscribe((data: any) => {
+      this.documentInvoiceModel = data.data;
       this.setDefaultConfig();
     }, error => {
       this.errorService.errorProcess(error);
@@ -102,7 +101,6 @@ export class InvoiceComponent implements OnInit {
       const useCaseId = value[0];
       switch (useCaseId) {
         case '1': {
-          // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
             if (this.isIP(uCase)) {
               this.setDefaultConfig();
@@ -110,9 +108,9 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '2a': {
-          // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
             if (this.isIP(uCase)) {
               this.setDefaultConfig();
@@ -125,9 +123,9 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '2b': {
-          // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
             if (this.isIP(uCase)) {
               this.setDefaultConfig();
@@ -137,9 +135,9 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '3': {
-          // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
             if (this.isAP(uCase)) {
               this.setDefaultConfig();
@@ -147,9 +145,9 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '4a': {
-          // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
             if (this.isRE(uCase)) {
               this.setDefaultConfig();
@@ -158,7 +156,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '4b': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -172,7 +171,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '4c': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -188,7 +188,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '5': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -203,7 +204,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '6a': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -221,7 +223,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '6b': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -239,7 +242,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '6c': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -256,7 +260,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '7': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -268,7 +273,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         case '8': {
           // tslint:disable-next-line:forin
           for (const uCase in this.documentInvoiceModel.invoiceStatusCodeList) {
@@ -279,7 +285,8 @@ export class InvoiceComponent implements OnInit {
               this.initUseCase(useCaseId);
             }
           }
-        } break;
+          break;
+        }
         default : {
           this.setDefaultConfig();
         }
@@ -384,10 +391,6 @@ export class InvoiceComponent implements OnInit {
 
   sendProcess(element: any) {
 
-    setTimeout(() => {
-      this.loading = true;
-    }, 500);
-
     this.documentInvoiceResponseFormModel.documentId = this.documentId;
     this.documentInvoiceResponseFormModel.generateWithoutSending = this.onlyGeneratedEnabled;
     this.documentInvoiceResponseFormModel.validate = this.validateGeneratedEnabled;
@@ -425,7 +428,7 @@ export class InvoiceComponent implements OnInit {
           const filename = FileSaverService.getFileNameFromResponseContentDisposition(response);
           FileSaverService.saveFile(response.body, filename);
         },
-        error => {
+        (error) => {
           this.errorDownloadModel = this.errorService.errorProcess(error);
           this.errorDownload = true;
           if (this.errorDownloadModel.details !== null) {
@@ -436,10 +439,9 @@ export class InvoiceComponent implements OnInit {
       );
     } else {
       // easy post
-      this.documentInvoiceService.generateAndSend(this.documentInvoiceResponseFormModel).subscribe(
-        (data: {}) => {
-          this.success = data['data'];
-        }, error => {
+      this.documentInvoiceService.generateAndSend(this.documentInvoiceResponseFormModel).subscribe((data: any) => {
+          this.success = data.data;
+        }, (error) => {
           this.errorDownloadModel = this.errorService.errorProcess(error);
           this.errorDownload = true;
           if (this.errorDownloadModel.details !== null) {
@@ -449,9 +451,8 @@ export class InvoiceComponent implements OnInit {
         }
       );
     }
-    setTimeout(() => {
-      this.loading = false;
-    }, 500);
+
     element.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
+
 }

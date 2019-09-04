@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RedirectContentService } from "../../../service/content/redirect-content.service";
+import { RedirectContentService } from '../../../service/content/redirect-content.service';
 
 @Component({
   selector: 'app-stat',
@@ -31,6 +31,6 @@ export class StatComponent implements OnInit {
     };
     this.redirectService.updateRedirectData(data);
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        this.router.navigate(['/' + this.path]));
+      this.router.navigate(['/' + this.path]));
   }
 }

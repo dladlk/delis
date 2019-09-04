@@ -1,0 +1,12 @@
+@import 'delis_material';
+@import 'delis_main';
+@import "delis_data_table";
+@import '_utils';
+@import '_responsive';
+@import "design_system_dk";
+@import "design_icons";
+
+html, body {
+  height: 100%;
+  margin: 0;
+}

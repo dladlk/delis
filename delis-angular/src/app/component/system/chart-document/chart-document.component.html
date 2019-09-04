@@ -1,32 +1,87 @@
-<div fxLayout="row"
-     fxLayout.xs="column">
-    <app-date-range [range]="range"></app-date-range>
-    <div class="app-button-row example-button-row">
-        <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
-            <mat-icon>refresh</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
-            <mat-icon>autorenew</mat-icon>
-        </button>
-    </div>
-</div>
-<div class="mt2">
-    <div *ngIf="showing; else elseBlock">
-        <canvas baseChart height="100"
-                [datasets]="lineChartData"
-                [labels]="lineChartLabels"
-                [options]="lineChartOptions"
-                [colors]="lineChartColors"
-                [legend]="lineChartLegend"
-                [chartType]="lineChartType"
-                (chartHover)="chartHovered($event)"
-                (chartClick)="chartClicked($event)">
-        </canvas>
-    </div>
+<mat-card>
 
-    <ng-template #elseBlock>
+  <div class="ml20">
+    <div fxLayout="row">
+      <div fxFlex>
+        <app-date-range [range]="range"></app-date-range>
+      </div>
+      <div fxFlex fxLayoutAlign="end">
+
+        <div class="delis-button-row">
+          <button mat-mini-fab color="primary" (click)="checkLineChart()" title="{{ 'lineChart' | translate }}" aria-label="Line Chart">
+            <mat-icon>show_chart</mat-icon>
+          </button>
+          <button mat-mini-fab color="primary" (click)="checkBarChart()" title="{{ 'barChart' | translate }}" aria-label="Bar Chart">
+            <mat-icon>bar_chart</mat-icon>
+          </button>
+          <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
+            <mat-icon>refresh</mat-icon>
+          </button>
+          <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
+            <mat-icon>autorenew</mat-icon>
+          </button>
+        </div>
+
+<!--        <div fxFlex fxLayoutAlign="end" style="height: 75%">-->
+<!--        <mat-button-toggle-group>-->
+<!--          <mat-button-toggle (click)="checkLineChart()" title="{{ 'lineChart' | translate }}" aria-label="Line Chart">-->
+<!--            <mat-icon color="primary">show_chart</mat-icon>-->
+<!--          </mat-button-toggle>-->
+<!--          <mat-button-toggle (click)="checkBarChart()" title="{{ 'barChart' | translate }}" aria-label="Bar Chart">-->
+<!--            <mat-icon color="primary">bar_chart</mat-icon>-->
+<!--          </mat-button-toggle>-->
+<!--          <mat-button-toggle (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">-->
+<!--            <mat-icon color="primary">refresh</mat-icon>-->
+<!--          </mat-button-toggle>-->
+<!--          <mat-button-toggle (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">-->
+<!--            <mat-icon color="primary">autorenew</mat-icon>-->
+<!--          </mat-button-toggle>-->
+<!--        </mat-button-toggle-group>-->
+      </div>
+    </div>
+  </div>
+
+  <mat-progress-bar color="primary" mode="buffer" *ngIf="spinnerService.visibility | async; else drawChart"></mat-progress-bar>
+
+  <ng-template #drawChart>
+    <table>
+      <tbody>
+      <tr>
+        <td *ngIf="showing; else elseBlock">
+          <div *ngIf="isLineChart">
+            <canvas baseChart height="100"
+                    [datasets]="lineChartData"
+                    [labels]="lineChartLabels"
+                    [options]="lineChartOptions"
+                    [colors]="lineChartColors"
+                    [legend]="lineChartLegend"
+                    [chartType]="'line'"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)">
+            </canvas>
+          </div>
+          <div *ngIf="isBarChart">
+            <canvas baseChart height="100"
+                    [datasets]="lineChartData"
+                    [labels]="lineChartLabels"
+                    [options]="barChartOptions"
+                    [colors]="barChartColors"
+                    [legend]="lineChartLegend"
+                    [chartType]="'bar'"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)">
+            </canvas>
+          </div>
+        </td>
+        <ng-template #elseBlock>
                 <span>
                     {{ 'dashboard.chart.default_message' | translate }}
                 </span>
-    </ng-template>
-</div>
+        </ng-template>
+      </tr>
+      </tbody>
+    </table>
+  </ng-template>
+
+</mat-card>
+

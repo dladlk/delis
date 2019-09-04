@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { FileSaverService } from '../../../../service/system/file-saver.service';
-import { SendDocumentStateService } from "../../../../service/state/send-document-state.service";
+import { SendDocumentStateService } from '../../../../service/state/send-document-state.service';
 import { SendDocumentModel } from '../../../../model/content/send-document/send-document.model';
 import { SendDocumentsBytesModel } from '../../../../model/content/send-document/send-documents-bytes.model';
 import { JournalSendDocumentModel } from '../../../../model/content/send-document/journal-send-document.model';
@@ -47,6 +47,15 @@ export class SendDocumentDetailsComponent implements OnInit {
   isNextDown: boolean;
   currentIds: number[];
 
+  isShowFooter: boolean;
+  topPosToStartShowing = 100;
+
+  @HostListener('window:scroll')
+  checkScroll() {
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    this.isShowFooter = scrollPosition >= this.topPosToStartShowing;
+  }
+
   constructor(
     private location: Location,
     private translate: TranslateService,
@@ -67,16 +76,15 @@ export class SendDocumentDetailsComponent implements OnInit {
       this.errorOneDocumentModel = this.errorService.errorProcess(error);
       this.errorOneDocument = true;
     });
-    this.sendDocumentService.getListSendDocumentBytesBySendDocumentId(id).subscribe((data: {}) => {
-      this.sendDocumentsBytes = data['items'];
+    this.sendDocumentService.getListSendDocumentBytesBySendDocumentId(id).subscribe((data: any) => {
+      this.sendDocumentsBytes = data.items;
       this.errorDocumentBytes = false;
     }, error => {
       this.errorDocumentBytesModel = this.errorService.errorProcess(error);
       this.errorDocumentBytes = true;
     });
-    this.sendDocumentService.getListJournalSendDocumentBySendDocumentId(id).subscribe(
-      (data: {}) => {
-        this.journalSendDocuments = data['items'];
+    this.sendDocumentService.getListJournalSendDocumentBySendDocumentId(id).subscribe((data: any) => {
+        this.journalSendDocuments = data.items;
         this.errorJournalDocuments = false;
       }, error => {
         this.errorJournalDocumentsModel = this.errorService.errorProcess(error);
@@ -88,7 +96,7 @@ export class SendDocumentDetailsComponent implements OnInit {
 
   private initStateDetails(id: number) {
     if (this.stateService.getFilter() !== undefined) {
-      let stateDetails = this.stateService.getFilter().detailsState;
+      const stateDetails = this.stateService.getFilter().detailsState;
       this.currentIds = stateDetails.currentIds;
       if (this.currentIds.length !== 0) {
         this.isNextUp = id !== this.currentIds[0];
@@ -113,7 +121,7 @@ export class SendDocumentDetailsComponent implements OnInit {
   }
 
   isReceipt(type: string) {
-    if(this.locale.getLocale() === 'da') {
+    if (this.locale.getLocale() === 'da') {
       return type === 'Kvittering';
     } else {
       return type === 'Receipt';

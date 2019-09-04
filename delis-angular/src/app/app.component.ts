@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
 import { RuntimeConfigService } from './service/system/runtime-config.service';
 import { LocaleService } from './service/system/locale.service';
-import { VersionCheckService } from "./service/system/version-check.service";
+import { VersionCheckService } from './service/system/version-check.service';
 
 @Component({
   selector: 'app-root',
@@ -12,21 +11,20 @@ import { VersionCheckService } from "./service/system/version-check.service";
 })
 export class AppComponent implements OnInit {
 
-  constructor(
-    private configService: RuntimeConfigService,
-    private translate: TranslateService,
-    private locale: LocaleService,
-    private versionCheckService: VersionCheckService) {
-      this.translate.setDefaultLang('da');
-      let currentLang = 'da';
-      if (locale.getLocale().match(/en|da/)) {
-        currentLang = locale.getLocale();
-      }
-      this.translate.use(currentLang);
-      this.configService.getUrl();
+  constructor(private configService: RuntimeConfigService,
+              private translate: TranslateService,
+              private locale: LocaleService,
+              private versionCheckService: VersionCheckService) {
+    this.translate.setDefaultLang('da');
+    let currentLang = 'da';
+    if (locale.getLocale().match(/en|da/)) {
+      currentLang = locale.getLocale();
+    }
+    this.translate.use(currentLang);
+    this.configService.getUrl();
   }
 
   ngOnInit() {
-      this.versionCheckService.initVersionCheck();
+    this.versionCheckService.initVersionCheck();
   }
 }

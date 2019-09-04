@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { LoginModel } from '../../model/system/login.model';
+import { CurrentUserModel } from '../../model/system/current-user.model';
 import { HttpRestService } from './http-rest.service';
-import { LoginModel } from "../../model/system/login.model";
-import { CurrentUserModel } from "../../model/system/current-user.model";
 
 @Injectable({
   providedIn: 'root'

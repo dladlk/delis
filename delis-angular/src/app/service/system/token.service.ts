@@ -20,12 +20,4 @@ export class TokenService {
   resetToken() {
     localStorage.removeItem(this.TOKEN_KEY);
   }
-
-  isAuthenticated(): boolean {
-    let token = this.getToken();
-    if (token === null) {
-      return false;
-    }
-    return !!this.getToken();
-  }
 }

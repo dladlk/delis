@@ -3,7 +3,7 @@ import { Component, OnInit} from '@angular/core';
 import { TokenService } from '../../service/system/token.service';
 import { HttpRestService } from '../../service/system/http-rest.service';
 import { RuntimeConfigService } from '../../service/system/runtime-config.service';
-import { LogoutService } from "../../service/system/logout.service";
+import { LogoutService } from '../../service/system/logout.service';
 
 @Component({
   selector: 'app-logout',

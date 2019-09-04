@@ -1,22 +1,35 @@
-import { Injectable } from "@angular/core";
-import { Range } from "../../component/system/date-range/model/model";
+import { Injectable } from '@angular/core';
+import { Range } from '../../component/system/date-range/model/model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class ChartDocumentService {
 
-    get range(): Range {
-        return this._range;
-    }
+  get chartType(): string {
+    return this._chartType;
+  }
 
-    updateRange(value: Range) {
-        this._range = value;
-    }
+  get range(): Range {
+    return this._range;
+  }
 
-    resetRange() {
-        this._range = undefined;
-    }
+  private _range: Range;
+  private _chartType: string;
 
-    private _range: Range;
+  updateRange(value: Range) {
+    this._range = value;
+  }
+
+  updateChartType(chartType: string) {
+    this._chartType = chartType;
+  }
+
+  resetRange() {
+    this._range = undefined;
+  }
+
+  resetChartType() {
+    this._chartType = undefined;
+  }
 }

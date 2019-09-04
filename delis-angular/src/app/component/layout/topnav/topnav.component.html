@@ -1,0 +1,62 @@
+<mat-toolbar color="primary" class="fix-nav">
+  <button type="button" mat-icon-button class="visible-md" (click)="toggleSidebar()">
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  <div class="nav-brand" >
+    <a [routerLinkActive]="'active'" [routerLink]="['']"
+       class="topnav-main-link"
+       matRipple [matRippleRadius]="250" [matRippleCentered]="true">
+      DELIS
+    </a>
+  </div>
+
+  <span class="nav-spacer"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="language">
+    <mat-icon>language</mat-icon>
+  </button>
+  <mat-menu #language="matMenu" xPosition="before">
+    <button mat-menu-item (click)="changeLang('en')">
+      <span>{{ 'header.language.english' | translate }}</span>
+      <mat-icon *ngIf="lang == 'en'" class="check-header-language">check_circle</mat-icon>
+    </button>
+    <button mat-menu-item (click)="changeLang('da')">
+      <span>{{ 'header.language.danish' | translate }}</span>
+      <mat-icon *ngIf="lang == 'da'" class="check-header-language">check_circle</mat-icon>
+    </button>
+  </mat-menu>
+  <button mat-icon-button [matMenuTriggerFor]="profile">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+  <mat-menu #profile="matMenu" xPosition="before">
+    <table class="profile-info">
+      <tr>
+        <td>{{ 'profile.menu.role' | translate }}</td>
+        <td>{{ currentUser.role | translate }}</td>
+      </tr>
+      <tr>
+        <td>{{ 'profile.menu.loginName' | translate }}</td>
+        <td>{{ currentUser.username }}</td>
+      </tr>
+      <tr *ngIf="currentUser.firstName !== null">
+        <td>{{ 'profile.menu.firstName' | translate }}</td>
+        <td>{{ currentUser.firstName }}</td>
+      </tr>
+      <tr *ngIf="currentUser.lastName !== null">
+        <td>{{ 'profile.menu.lastName' | translate }}</td>
+        <td>{{ currentUser.lastName }}</td>
+      </tr>
+      <tr *ngIf="currentUser.role === 'ROLE_USER'">
+        <td>{{ 'profile.menu.organisation' | translate }}</td>
+        <td>{{ currentUser.organisation }}</td>
+      </tr>
+      <tr>
+        <td>{{ 'profile.menu.loginTime' | translate }}</td>
+        <td>{{ currentUser.lastLoginTime | date: SHOW_DATE_FORMAT }}</td>
+      </tr>
+    </table>
+  </mat-menu>
+  <button mat-icon-button (click)="onLoggedout()">
+    <mat-icon>exit_to_app</mat-icon>
+  </button>
+</mat-toolbar>

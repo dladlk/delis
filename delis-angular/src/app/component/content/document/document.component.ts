@@ -7,7 +7,7 @@ import { DocumentDataSource } from './document-data-source';
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
 import { LocalStorageService } from '../../../service/system/local-storage.service';
 import { DocumentService } from '../../../service/content/document.service';
-import { DocumentStateService } from "../../../service/state/document-state.service";
+import { DocumentStateService } from '../../../service/state/document-state.service';
 
 @Component({
   selector: 'app-document',
@@ -83,13 +83,13 @@ export class DocumentComponent implements OnInit {
         value: this.selectedIngoingFormats,
         list: this.ingoingFormats
       }
-    }
+    };
   }
 
   initTextFilterModel() {
     this.textFilterModel = {
       receiverIdentifier: null,
       senderName: null
-    }
+    };
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,13 +11,13 @@ import { DocumentModel } from '../../../../model/content/document/document.model
 import { LocaleService } from '../../../../service/system/locale.service';
 import { ErrorService } from '../../../../service/system/error.service';
 import { DocumentService } from '../../../../service/content/document.service';
-import { DocumentStateService} from "../../../../service/state/document-state.service";
+import { DocumentStateService} from '../../../../service/state/document-state.service';
 import { JournalDocumentService } from '../../../../service/content/journal-document.service';
 import { FileSaverService } from '../../../../service/system/file-saver.service';
 import { ErrorDictionaryModel } from '../../../../model/content/document/error-dictionary.model';
 import { DOCUMENT_PATH, SHOW_DATE_FORMAT } from '../../../../app.constants';
 import { RuntimeConfigService } from 'src/app/service/system/runtime-config.service';
-import { DocumentErrorService } from "../document-error.service";
+import { DocumentErrorService } from '../document-error.service';
 
 @Component({
   selector: 'app-document-details',
@@ -55,6 +55,15 @@ export class DocumentDetailsComponent implements OnInit {
 
   statusErrors: string[] = [];
 
+  isShowFooter: boolean;
+  topPosToStartShowing = 100;
+
+  @HostListener('window:scroll')
+  checkScroll() {
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    this.isShowFooter = scrollPosition >= this.topPosToStartShowing;
+  }
+
   constructor(private location: Location,
               private translate: TranslateService,
               private locale: LocaleService,
@@ -76,23 +85,21 @@ export class DocumentDetailsComponent implements OnInit {
       this.errorOneDocumentModel = this.errorService.errorProcess(error);
       this.errorOneDocument = true;
     });
-    this.documentService.getListDocumentBytesByDocumentId(id).subscribe((data: {}) => {
-      this.documentBytesModels = data['items'];
+    this.documentService.getListDocumentBytesByDocumentId(id).subscribe((data: any) => {
+      this.documentBytesModels = data.items;
     }, error => {
       this.errorDocumentBytesModel = this.errorService.errorProcess(error);
       this.errorDocumentBytes = true;
     });
-    this.journalDocumentService.getAllByDocumentId(id).subscribe(
-      (data: {}) => {
-        this.journalDocuments = data['items'];
+    this.journalDocumentService.getAllByDocumentId(id).subscribe((data: any) => {
+        this.journalDocuments = data.items;
       }, error => {
         this.errorJournalDocumentsModel = this.errorService.errorProcess(error);
         this.errorJournalDocuments = true;
       }
     );
-    this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe(
-      (data: {}) => {
-        this.journalDocumentErrors = data['items'];
+    this.journalDocumentService.getByJournalDocumentDocumentId(id).subscribe((data: any) => {
+        this.journalDocumentErrors = data.items;
       }, error => {
         this.errorService.errorProcess(error);
       }
@@ -105,7 +112,7 @@ export class DocumentDetailsComponent implements OnInit {
 
   private initStateDetails(id: number) {
     if (this.stateService.getFilter() !== undefined) {
-      let stateDetails = this.stateService.getFilter().detailsState;
+      const stateDetails = this.stateService.getFilter().detailsState;
       this.currentIds = stateDetails.currentIds;
       if (this.currentIds.length !== 0) {
         this.isNextUp = id !== this.currentIds[0];

@@ -1,26 +1,26 @@
-﻿<div fxLayout="row wrap" fxLayoutAlign="center center" class="mat-elevation-z8">
-    <mat-card fxFlex="400px" fxFlex.xs="100%" fxLayout="column wrap">
-        <strong *ngIf="errorStatus" class="systemColorError text-center mb2">{{ message | translate }}</strong>
-        <mat-card-title>
-            <span>{{ 'sidebar.home' | translate }}</span>
-        </mat-card-title>
-        <form [formGroup]="loginForm" novalidate (ngSubmit)="login(loginForm.value)" fxLayout="column wrap" fxLayoutAlign="center end">
-            <mat-card-content>
+<div fxLayout="row wrap" fxLayoutAlign="center center" class="mat-elevation-z8">
+  <mat-card fxFlex="400px" fxFlex.xs="100%" fxLayout="column wrap">
+    <strong *ngIf="errorStatus" class="systemColorError text-center mb2">{{ message | translate }}</strong>
+    <mat-card-title>
+      <span>{{ 'sidebar.home' | translate }}</span>
+    </mat-card-title>
+    <form [formGroup]="loginForm" novalidate (ngSubmit)="login(loginForm.value)" fxLayout="column wrap" fxLayoutAlign="center end">
+      <mat-card-content>
 
-                <mat-form-field>
-                    <input matInput type="text" placeholder="{{ 'auth.username' | translate }}" formControlName="username" id="username" appAutofocus>
-                    <mat-error *ngIf="hasError('username', 'required')">{{ 'login.error.username' | translate }}</mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <input matInput type="text" placeholder="{{ 'auth.username' | translate }}" formControlName="username" id="username" appAutofocus>
+          <mat-error *ngIf="hasError('username', 'required')">{{ 'login.error.username' | translate }}</mat-error>
+        </mat-form-field>
 
-                <mat-form-field>
-                    <input matInput type="password" placeholder="{{ 'auth.password' | translate }}" formControlName="password">
-                    <mat-error *ngIf="hasError('password', 'required')">{{ 'login.error.password' | translate }}</mat-error>
-                </mat-form-field>
+        <mat-form-field>
+          <input matInput type="password" placeholder="{{ 'auth.password' | translate }}" formControlName="password">
+          <mat-error *ngIf="hasError('password', 'required')">{{ 'login.error.password' | translate }}</mat-error>
+        </mat-form-field>
 
-            </mat-card-content>
-            <mat-card-actions>
-                <button class="login-button" mat-raised-button color="primary" [disabled]="!loginForm.valid">{{ 'auth.login' | translate }}</button>
-            </mat-card-actions>
-        </form>
-    </mat-card>
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="login-button" mat-raised-button color="primary" [disabled]="!loginForm.valid">{{ 'auth.login' | translate }}</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
 </div>

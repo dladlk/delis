@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IdentifierModel } from '../../../../model/content/identifier/identifier.model';
@@ -7,9 +7,9 @@ import { IdentifierService } from '../../../../service/content/identifier.servic
 import { ErrorModel } from '../../../../model/system/error.model';
 import { JournalIdentifierService } from '../../../../service/content/journal-identifier.service';
 import { JournalIdentifierModel } from '../../../../model/content/identifier/journal-identifier.model';
+import { IdentifierStateService } from '../../../../service/state/identifier-state.service';
 
-import {SHOW_DATE_FORMAT, IDENTIFIER_PATH} from '../../../../app.constants';
-import {IdentifierStateService} from "../../../../service/state/identifier-state.service";
+import { SHOW_DATE_FORMAT, IDENTIFIER_PATH } from '../../../../app.constants';
 
 @Component({
   selector: 'app-identifier-details',
@@ -34,6 +34,15 @@ export class IdentifierDetailsComponent implements OnInit {
   isNextUp: boolean;
   isNextDown: boolean;
   currentIds: number[];
+
+  isShowFooter: boolean;
+  topPosToStartShowing = 100;
+
+  @HostListener('window:scroll')
+  checkScroll() {
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    this.isShowFooter = scrollPosition >= this.topPosToStartShowing;
+  }
 
   constructor(
     private router: Router,
@@ -61,7 +70,7 @@ export class IdentifierDetailsComponent implements OnInit {
 
   private initStateDetails(id: number) {
     if (this.stateService.getFilter() !== undefined) {
-      let stateDetails = this.stateService.getFilter().detailsState;
+      const stateDetails = this.stateService.getFilter().detailsState;
       this.currentIds = stateDetails.currentIds;
       if (this.currentIds.length !== 0) {
         this.isNextUp = id !== this.currentIds[0];
@@ -73,9 +82,8 @@ export class IdentifierDetailsComponent implements OnInit {
   }
 
   private currentProdJournalIdentifier() {
-    this.journalIdentifierService.getAllByIdentifierId(this.id).subscribe(
-      (data: {}) => {
-        this.journalIdentifiers = data['items'];
+    this.journalIdentifierService.getAllByIdentifierId(this.id).subscribe((data: any) => {
+        this.journalIdentifiers = data.items;
         this.errorOneJournalIdentifiers = false;
       }, error => {
         this.errorOneJournalIdentifiersModel = this.errorService.errorProcess(error);

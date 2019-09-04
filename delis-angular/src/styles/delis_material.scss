@@ -1,0 +1,49 @@
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~@angular/material/theming';
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
+
+// !!! Remember to only ever include the @mat-core mixin only once; it should not be included for each theme.
+// It is already included with custom font-family!
+//@include mat-core();
+
+$mat-delis: (
+  100: #0B78D0,
+
+  contrast: (
+    100: #FFFFFF
+  )
+);
+
+// default theme:
+$primary: mat-palette($mat-delis, 100);
+$accent: mat-palette($mat-teal);
+$theme: mat-light-theme($primary, $accent);
+
+@include angular-material-theme($theme);
+
+.system-color {
+  color: mat-color($primary) !important;
+}
+
+.system-color-error {
+  color: #ff2e26 !important;
+}
+
+.system-color-success {
+  color: green !important;
+}
+
+$delis-font-family: 'IBM Plex Sans';
+
+// default font-family:
+$delis-typography: mat-typography-config(
+  $font-family: $delis-font-family,
+  $headline: mat-typography-level(32px, 48px, 700),
+  $body-1: mat-typography-level(16px, 24px, 500)
+);
+@include mat-core($delis-typography);
+@include angular-material-typography($delis-typography);
+
+@font-face {
+  font-family: $delis-font-family;
+}

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { RuntimeConfigService } from './runtime-config.service';
 import { TokenService } from './token.service';
 import { ErrorModel } from '../../model/system/error.model';
-import { LogoutService } from "./logout.service";
+import { LogoutService } from './logout.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +12,10 @@ import { LogoutService } from "./logout.service";
 export class ErrorService {
 
   constructor(
-      private router: Router,
-      private tokenService: TokenService,
-      private configService: RuntimeConfigService,
-      private logoutService: LogoutService) { }
+    private router: Router,
+    private tokenService: TokenService,
+    private configService: RuntimeConfigService,
+    private logoutService: LogoutService) { }
 
   errorProcess(error: any): ErrorModel {
     let errorModel = new ErrorModel();

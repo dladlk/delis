@@ -7,7 +7,7 @@ import { IdentifierService } from '../../../service/content/identifier.service';
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
 import { LocalStorageService } from '../../../service/system/local-storage.service';
 import { IdentifierDataSource } from './identifier-data-source';
-import { IdentifierStateService } from "../../../service/state/identifier-state.service";
+import { IdentifierStateService } from '../../../service/state/identifier-state.service';
 
 @Component({
   selector: 'app-identifier',
@@ -60,7 +60,7 @@ export class IdentifierComponent implements OnInit {
         value: this.selectedStatusList,
         list: this.statusList
       }
-    }
+    };
   }
 
   initTextFilterModel() {
@@ -69,6 +69,6 @@ export class IdentifierComponent implements OnInit {
       type: null,
       value: null,
       name: null
-    }
+    };
   }
 }

@@ -175,6 +175,10 @@
   "previous": "View previous",
   "apply": "Apply",
   "cancel": "Cancel",
+  "up": "Page Up",
+  "down": "Page Down",
+  "lineChart": "Line Chart",
+  "barChart": "Bar Chart",
 
   "td.picker.all": "All",
   "td.picker.today": "Today",
@@ -200,5 +204,7 @@
   "profile.menu.lastName": "Last name",
   "profile.menu.loginTime": "Login time",
   "profile.menu.role": "Role",
-  "profile.menu.organisation": "Organisation"
+  "profile.menu.organisation": "Organisation",
+
+  "generate": "Generate"
 }
