@@ -8,14 +8,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import dk.erst.delis.util.DateUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +39,7 @@ public class ChartServiceImpl implements ChartService {
 
 	protected static final String INPUT_NOW_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
-	private static final DateTimeFormatter OUTPUT_DAILY_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
+	private static final DateTimeFormatter OUTPUT_DAILY_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	private static final DateTimeFormatter OUTPUT_HOURLY_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 	private static final DateTimeFormatter DB_FORMAT = DateTimeFormatter.ofPattern(INPUT_NOW_FORMAT);
 
@@ -96,8 +93,36 @@ public class ChartServiceImpl implements ChartService {
 		ChartData chartData = new ChartData();
 
 		uiTimeNow = DateUtil.addHour(uiTimeNow, 1);
+
+		Map<StatType, List<KeyValue>> labelStatMap = new HashMap<>();
 		for (StatType statType : StatType.values()) {
-			processStatType(statType, organisationId, uiTimeNow, hoursDiff, statRange, groupHourNotDate, today, chartData);
+			labelStatMap.put(statType, generateLabels(statType, statRange, groupHourNotDate, hoursDiff, organisationId));
+		}
+
+		List<KeyValue> mixedLabelsInfo = new ArrayList<>();
+		mixedLabelsInfo.addAll(labelStatMap.get(StatType.RECEIVE));
+		mixedLabelsInfo.addAll(labelStatMap.get(StatType.RECEIVE_ERROR));
+		mixedLabelsInfo.addAll(labelStatMap.get(StatType.SEND));
+
+		List<String> mixedLabels = mixedLabelsInfo.stream().map(KeyValue::getKey).sorted().distinct().collect(Collectors.toList());
+		Map<StatType, List<KeyValue>> newLabelStatMap = new HashMap<>();
+
+		for (StatType statType : StatType.values()) {
+			List<KeyValue> labelsByStatType = labelStatMap.get(statType);
+			List<KeyValue> newLabelsByStatType = new ArrayList<>();
+			for (String label : mixedLabels) {
+				KeyValue existKeyValue = labelsByStatType.stream().filter(keyValue -> StringUtils.equals(keyValue.getKey(), label)).findFirst().orElse(null);
+				if (existKeyValue != null) {
+					newLabelsByStatType.add(existKeyValue);
+				} else {
+					newLabelsByStatType.add(new KeyValue(label, 0));
+				}
+			}
+			newLabelStatMap.put(statType, newLabelsByStatType);
+		}
+
+		for (StatType statType : StatType.values()) {
+			processStatType(statType, newLabelStatMap.get(statType), uiTimeNow, statRange, groupHourNotDate, today, chartData);
 		}
 
 		log.debug("Done chart data in " + (System.currentTimeMillis() - start) + " with: " + chartData);
@@ -105,13 +130,16 @@ public class ChartServiceImpl implements ChartService {
 		return chartData;
 	}
 
-	private void processStatType(StatType statType, Long organisationId, Date uiTimeNow, int hoursDiff, StatRange statRange, final boolean groupHourNotDate, final boolean today, ChartData chartData) {
+	private List<KeyValue> generateLabels(StatType statType, StatRange statRange, final boolean groupHourNotDate, int hoursDiff, Long organisationId) {
 		long start = System.currentTimeMillis();
 		List<KeyValue> list = statDao.loadStat(statType, statRange, groupHourNotDate, hoursDiff, organisationId);
-
 		if (log.isDebugEnabled()) {
 			log.debug("Loaded stat by "+statType+": " + list+" in "+(System.currentTimeMillis() - start)+" ms");
 		}
+		return list;
+	}
+
+	private void processStatType(StatType statType, List<KeyValue> list, Date uiTimeNow, StatRange statRange, final boolean groupHourNotDate, final boolean today, ChartData chartData) {
 
 		boolean noLabels = chartData.getLineChartLabels().isEmpty();
 		LineChartData lineChartDataContent = new LineChartData();

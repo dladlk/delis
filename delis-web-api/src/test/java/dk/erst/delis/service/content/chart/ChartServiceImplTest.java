@@ -145,4 +145,45 @@ public class ChartServiceImplTest {
 
 	}
 
+	@Test
+	public void testGenerateChartDataDifferentRanges() {
+		StatDao statDao = mock(StatDao.class);
+		when(statDao.loadDbTimeNow()).thenReturn(calculateDbNow());
+		when(statDao.loadFullRange(nullable(Long.class))).then(d -> {
+			return dbStatRange;
+		});
+		when(statDao.loadStat(nullable(StatType.class), nullable(StatRange.class), anyBoolean(), anyInt(), nullable(Long.class))).then(d -> {
+			StatType type = (StatType) d.getArgument(0);
+			switch (type){
+				case RECEIVE_ERROR:
+					return buildKeyValueList("15.05","20.05");
+				case RECEIVE:
+					return buildKeyValueList("12.05","20.05");
+				case SEND:
+				default:
+					return buildKeyValueList("01.05","01.06");
+			}
+		});
+
+		SecurityService securityService = mock(SecurityService.class);
+		when(securityService.getOrganisation()).thenReturn(null);
+		service = new ChartServiceImpl(statDao, securityService);
+
+		ChartData chartData = service.generateChartData(null, null, new SimpleDateFormat(ChartServiceImpl.INPUT_NOW_FORMAT).format(Calendar.getInstance().getTime()));
+		List<String> labels = chartData.getLineChartLabels();
+		assertEquals("01.05.2019", labels.get(0));
+		assertEquals("01.06.2019", labels.get(labels.size() - 1));
+	}
+
+	private List<KeyValue> buildKeyValueList(String ... s) {
+		List<KeyValue> res = new ArrayList<KeyValue>();
+		for (int i = 0; i < s.length; i++) {
+			String v = s[i];
+			String dbFormat = "2019-"+v.substring(3)+"-"+v.substring(0,2)+" 12:00:00";
+			KeyValue kv = new KeyValue(dbFormat, 1);
+			res.add(kv);
+		}
+		return res;
+	}
+
 }
