@@ -12,54 +12,55 @@
 
     <div class="card border-secondary m-1">
         <div class="card-body pb-0">
-            <table class="table table-sm table-borderless">
+            <table class="table table-sm table-borderless w-auto">
                 <tr>
-                    <th>Error Type</th>
-                    <th>ErrorCode</th>
-                    <th>Flag</th>
+                    <th>Code</th>
+                    <td>
+                    	<span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>
+                    	<span th:text="${errorDictionary.code}"/>
+                    </td>
                 </tr>
                 <tr>
+                    <th>Type</th>
                     <td th:text="${errorDictionary.errorType?.name}"></td>
-                    <td th:text="${errorDictionary.code}"></td>
-                    <td th:text="${errorDictionary.flag}"></td>
                 </tr>
                 <tr>
-                    <th>Occured times</th>
-                    <th>First</th>
-                    <th>Last</th>
+                    <th>Message</th>
+                    <td th:text="${errorDictionary.message}"></td>
                 </tr>
                 <tr>
-                    <td th:text="${errorDictionary.count}">XXX</td>
-                    <td th:text="${#dates.format(errorDictionary.startDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01
-                        12:32:12
-                    </td>
-                    <td th:text="${#dates.format(errorDictionary.endDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12
-                    </td>
+                    <th>Location</th>
+                    <td th:text="${errorDictionary.location}"></td>
                 </tr>
             </table>
         </div>
     </div>
 
     <div class="card border-secondary m-1">
+    	<div class="card-header">
+    	Statistics
+    	</div>
         <div class="card-body pb-0">
-            <table class="table table-sm table-borderless">
+            <table class="table table-sm table-borderless w-auto">
                 <tr>
-                    <th>Message</th>
+                    <th>Documents</th>
+                    <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" th:text="${errorDictionary.count}">XXX</a></td>
                 </tr>
-                <tr>
-                    <td th:text="${errorDictionary.message}"></td>
+                <tr>    
+                    <th>First</th>
+                    <td th:text="${#dates.format(errorDictionary.startDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01
+                        12:32:12
+                    </td>
                 </tr>
-                <tr>
-                    <th>Location</th>
-                </tr>
-                <tr>
-                    <td th:text="${errorDictionary.location}"></td>
+                <tr>    
+                    <th>Last</th>
+                    <td th:text="${#dates.format(errorDictionary.endDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12
+                    </td>
                 </tr>
             </table>
-        </div>
+       </div>
     </div>
     
-    <a href="#" th:href="@{|/errordict/listdocument/${errorDictionary.id}|}" class="m-2 btn btn-primary btn-sm">View documents</a>
     
 </div>
 

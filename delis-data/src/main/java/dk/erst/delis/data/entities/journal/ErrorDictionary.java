@@ -52,4 +52,8 @@ public class ErrorDictionary extends AbstractEntity {
 	public int calculateHash() {
 		return this.hashCode();
 	}
+	
+	public static boolean isWarningFlag(String flag) {
+		return flag != null && flag.equalsIgnoreCase("warning");
+	}
 }

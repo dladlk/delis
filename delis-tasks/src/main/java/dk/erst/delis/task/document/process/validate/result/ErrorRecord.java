@@ -1,5 +1,6 @@
 package dk.erst.delis.task.document.process.validate.result;
 
+import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,6 +44,6 @@ public class ErrorRecord {
 	}
 
 	public boolean isWarning() {
-		return this.flag != null && this.flag.equalsIgnoreCase("warning");
+		return ErrorDictionary.isWarningFlag(flag);
 	}
 }

@@ -1,5 +1,6 @@
 package dk.erst.delis.web.error;
 
+import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,4 +23,8 @@ public class ErrorDictionaryData {
     private Integer count;
     private Date startDate;
     private Date endDate;
+    
+    public boolean isWarning() {
+    	return ErrorDictionary.isWarningFlag(flag);
+    }
 }
