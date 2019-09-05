@@ -17,7 +17,7 @@
                     <th dt-field="errorType" th:attr="dt-enum=${@jsons.json(errorTypeList)}">Error Type</th>
                     <th dt-field="code">Code</th>
                     <th dt-field="message">Message</th>
-                    <th dt-field="flag">Flag</th>
+                    <th dt-field="flag" dt-enum="['fatal', 'warning', 'error']">Flag</th>
                     <th dt-field="location">Location</th>
 				</tr>
 				</thead>
