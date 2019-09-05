@@ -1,12 +1,12 @@
 package dk.erst.delis.dao;
 
-import dk.erst.delis.data.entities.document.Document;
-import dk.erst.delis.data.entities.journal.JournalDocumentError;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.Date;
-import java.util.List;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.journal.JournalDocumentError;
 
 public interface JournalDocumentErrorDaoRepository extends PagingAndSortingRepository<JournalDocumentError, Long> {
 
@@ -17,18 +17,14 @@ public interface JournalDocumentErrorDaoRepository extends PagingAndSortingRepos
 	)
 	List<Document> loadDocumentByErrorId(Long id);
 
-	@Query("select count(jde.journalDocument.document) "
+	@Query("select "
+			+ "new dk.erst.delis.dao.ErrorDictionaryStat("
+			+ "count(jde.journalDocument.document) as documentCount, "
+			+ "max(jde.journalDocument.document.createTime) as maxCreateTime, "
+			+ "min(jde.journalDocument.document.createTime) as minCreateTime "
+			+ ")"
 			+ "from JournalDocumentError jde where jde.errorDictionary.id = ?1"
 	)
-	Integer getDocumentCountByErrorId(Long id);
+	ErrorDictionaryStat findErrorStatByErrorId(Long id);
 
-	@Query("select max(jde.journalDocument.document.createTime) "
-			+ "from JournalDocumentError jde where jde.errorDictionary.id = ?1"
-	)
-	Date getDocumentMaxDate(Long id);
-
-	@Query("select min(jde.journalDocument.document.createTime) "
-			+ "from JournalDocumentError jde where jde.errorDictionary.id = ?1"
-	)
-	Date getDocumentMinDate(Long id);
 }

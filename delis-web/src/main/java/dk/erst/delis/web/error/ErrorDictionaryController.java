@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
@@ -17,7 +18,6 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.document.DocumentStatusBachUdpateInfo;
-import dk.erst.delis.web.error.ErrorDictionaryService.ErrorDictionaryStat;
 import dk.erst.delis.web.list.AbstractEasyListController;
 
 @Controller
@@ -27,15 +27,17 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
     private ErrorDictionaryService service;
 
     @RequestMapping("/errordict/view/{id}")
-    public String list(@PathVariable Long id, Model model) {
+    public String list(@PathVariable Long id, Model model, RedirectAttributes ra) {
         ErrorDictionary error = service.getErrorDictionary(id);
-        if (error != null) {
-        	model.addAttribute("errorDictionary", error);
-        	
-        	ErrorDictionaryStat errorStat = service.getErrorDictionaryStat(id);
-        	model.addAttribute("errorStat", errorStat);
+        if (error == null) {
+			ra.addFlashAttribute("errorMessage", "Error is not found");
+        	return "redirect:/errordict/list";
         }
-        return "/errordict/view";
+    	
+        model.addAttribute("errorDictionary", error);
+    	model.addAttribute("errorStat", service.getErrorDictionaryStat(id));
+
+    	return "/errordict/view";
     }
 
     @RequestMapping("/errordict/listdocument/{id}")
