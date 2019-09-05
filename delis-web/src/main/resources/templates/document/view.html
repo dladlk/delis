@@ -24,9 +24,7 @@
 					<td><a th:if="${document.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${document.receiverIdentifier.id}__}" th:text="${document.receiverIdentifier.name}">Receiver name</a></td>
 					<td th:text="${#dates.format(document.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
 					<td>
-						<span th:text="${document.documentStatus?.name}">LOADED</span>
-						<th:block th:if="${document.lastError}">
-							last error: 
+						<span th:text="${document.documentStatus?.name}" th:classappend="${document.documentStatus?.error ? 'document-error': ''}">LOADED</span><th:block th:if="${document.lastError}">, last error: 
 							<span th:text="${document.lastError?.name}" class="text-muted">OIOUBL_XSD</span>
 						</th:block>
 					</td>					

@@ -16,3 +16,7 @@ ul.org-smp-setup li ul li {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.document-error {
+	color: red;
+}

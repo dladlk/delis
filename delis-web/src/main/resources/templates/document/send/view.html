@@ -33,7 +33,7 @@
 				</tr>
 				<tr>
 					<td>
-						<span th:text="${document.documentStatus?.name}">LOADED</span>
+						<span th:text="${document.documentStatus?.name}" th:classappend="${document.documentStatus?.error ? 'document-error': ''}">LOADED</span>
 					</td>					
 					<td th:text="${document.documentType?.name}">INVOICE</td>
 					<td th:text="${document.documentId}">F-2345RWELF2</td>
