@@ -10,11 +10,11 @@
 		<div class="card-body">
 			<form action="#" th:action="@{/errordict/list}" method="post">
             <table class="table table-striped table-bordered table-sm datatables-easy"
-                	th:attr="dt-page=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(errordictPage)}"
+                	th:attr="dt-page=${@jsons.json(errordictPage)}"
                 	>
                 <thead>
 				<tr>
-                    <th dt-field="errorType" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(errorTypeList)}">Error Type</th>
+                    <th dt-field="errorType" th:attr="dt-enum=${@jsons.json(errorTypeList)}">Error Type</th>
                     <th dt-field="code">Code</th>
                     <th dt-field="message">Message</th>
                     <th dt-field="flag">Flag</th>

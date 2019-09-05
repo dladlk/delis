@@ -11,7 +11,7 @@
 			<form action="#" th:action="@{/identifier/list}" th:object="${selectedIdList}" method="post">
 				<div class="container">
 					<table id="identifiers" class="table table-striped table-bordered table-sm datatables-easy"
-						th:attr="dt-page=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(identifierPage)}"
+						th:attr="dt-page=${@jsons.json(identifierPage)}"
 						>
 						<thead>
 						<tr>
@@ -19,8 +19,8 @@
 							<th dt-field="value">Identifier</th>
 							<th dt-field="type">Type</th>
 							<th dt-field="name">Name</th>
-							<th dt-field="status" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(statusList)}">Status</th>
-							<th dt-field="publishingStatus" th:attr="dt-enum=${T(dk.erst.delis.web.datatables.util.JsonUtil).json(publishingStatusList)}">Publishing</th>
+							<th dt-field="status" th:attr="dt-enum=${@jsons.json(statusList)}">Status</th>
+							<th dt-field="publishingStatus" th:attr="dt-enum=${@jsons.json(publishingStatusList)}">Publishing</th>
 							<th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
 						</tr>
 						</thead>
