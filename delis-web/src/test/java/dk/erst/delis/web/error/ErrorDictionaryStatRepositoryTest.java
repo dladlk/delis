@@ -21,4 +21,9 @@ public class ErrorDictionaryStatRepositoryTest {
 		errorDictionaryStatRepository.findErrorStatByErrorId(0L);
 	}
 
+	@Test
+	public void loadErrorStatBySenderCountry() {
+		errorDictionaryStatRepository.loadErrorStatBySenderCountry(0L);
+	}
+
 }

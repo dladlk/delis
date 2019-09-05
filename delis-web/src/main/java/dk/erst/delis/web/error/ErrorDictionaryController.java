@@ -1,5 +1,6 @@
 package dk.erst.delis.web.error;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,18 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.document.DocumentStatusBachUdpateInfo;
+import dk.erst.delis.web.error.ErrorDictionaryStatRepository.ErrorDictionaryStat;
 import dk.erst.delis.web.list.AbstractEasyListController;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Controller
 public class ErrorDictionaryController extends AbstractEasyListController<ErrorDictionary> {
 
     @Autowired
     private ErrorDictionaryService service;
+    @Autowired
+    private ErrorDictionaryStatRepository errorDictionaryStatRepository;
 
     @RequestMapping("/errordict/view/{id}")
     public String view(@PathVariable Long id, Model model, RedirectAttributes ra) {
@@ -35,9 +41,30 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
         }
     	
         model.addAttribute("errorDictionary", error);
-    	model.addAttribute("errorStat", service.getErrorDictionaryStat(id));
 
+    	ErrorDictionaryStat errorStatTotal = errorDictionaryStatRepository.findErrorStatByErrorId(id);
+    	if (errorStatTotal != null) {
+    		List<ErrorStatTypeGroup> groupList = new ArrayList<ErrorDictionaryController.ErrorStatTypeGroup>();
+    		
+			groupList.add(new ErrorStatTypeGroup(errorStatTotal));
+	    	groupList.add(new ErrorStatTypeGroup("Sender country", errorDictionaryStatRepository.loadErrorStatBySenderCountry(id)));
+	    	groupList.add(new ErrorStatTypeGroup("Sender name", errorDictionaryStatRepository.loadErrorStatBySenderName(id)));
+	    	model.addAttribute("errorStatGroupList", groupList);
+    	}
+    	
     	return "/errordict/view";
+    }
+    
+    @Getter
+    @AllArgsConstructor
+    private static class ErrorStatTypeGroup {
+    	private String name;
+    	private List<ErrorDictionaryStat> list;
+    	
+    	public ErrorStatTypeGroup(ErrorDictionaryStat stat) {
+    		this.list = new ArrayList<ErrorDictionaryStatRepository.ErrorDictionaryStat>();
+    		this.list.add(stat);
+    	}
     }
 
     @RequestMapping("/errordict/listdocument/{id}")

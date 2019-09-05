@@ -36,14 +36,14 @@
         </div>
     </div>
 
-    <div class="card border-secondary m-1" th:if="${errorStat}">
+    <div class="card border-secondary m-1" th:if="${errorStatGroupList}">
     	<div class="card-header">
     	Statistics
     	</div>
         <div class="card-body pb-0">
-            <table class="table table-sm table-borderless w-auto">
+            <table class="table table-sm table-borderless w-auto" th:if="${errorStat}">
                 <tr>
-                    <th>Documents</th>
+                    <th>Docs</th>
                     <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" th:text="${errorStat.documentCount}">XXX</a></td>
                 </tr>
                 <tr>    
@@ -58,6 +58,24 @@
                     </td>
                 </tr>
             </table>
+            
+            <table class="table table-sm table-borderless w-auto">
+            <th:block th:each="group: ${errorStatGroupList}">
+                <tr>
+                    <th th:text="${group.name}"></th>
+                    <th>Documents</th>
+                    <th>First</th>
+                    <th>Last</th>
+                </tr>
+                <tr th:each="errorStat: ${group?.list}">
+                	<td><span th:text="${errorStat.statKey}"></span></td>    
+                    <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" th:text="${errorStat.documentCount}">XXX</a></td>
+                    <td th:text="${#dates.format(errorStat.minCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+                    <td th:text="${#dates.format(errorStat.maxCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+                </tr>
+            </th:block>
+            </table>            
+            
        </div>
     </div>
     
