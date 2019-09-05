@@ -7,16 +7,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-
-import dk.erst.delis.web.datatables.data.PageData;
-import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
-import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,7 @@ import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentBytesDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.entities.journal.JournalDocumentError;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentStatus;
@@ -44,8 +47,14 @@ import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.web.RedirectUtil;
+import dk.erst.delis.web.datatables.data.DataTablesData;
+import dk.erst.delis.web.datatables.data.PageData;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.document.ir.ApplicationResponseFormController;
 import dk.erst.delis.web.list.AbstractEasyListController;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -62,10 +71,10 @@ public class DocumentController extends AbstractEasyListController<Document> {
 	private DocumentBytesDaoRepository documentBytesDaoRepository;
 	@Autowired
 	private ApplicationResponseFormController applicationResponseFormController;
-	
+
 	@Value("${delis.download.allow.all:#{false}}")
 	private boolean downloadAllowAll;
-	
+
 	/*
 	 * START EasyDatatables block
 	 */
@@ -73,15 +82,17 @@ public class DocumentController extends AbstractEasyListController<Document> {
 	private DocumentDataTableRepository documentDataTableRepository;
 	@Autowired
 	private EasyDatatablesListServiceImpl<Document> documentEasyDatatablesListService;
-	
+
 	@Override
 	protected String getListCode() {
 		return "document";
 	}
+
 	@Override
 	protected DataTablesRepository<Document, Long> getDataTableRepository() {
 		return this.documentDataTableRepository;
 	}
+
 	@Override
 	protected EasyDatatablesListService<Document> getEasyDatatablesListService() {
 		return documentEasyDatatablesListService;
@@ -93,13 +104,30 @@ public class DocumentController extends AbstractEasyListController<Document> {
 		model.addAttribute("statusList", DocumentStatus.values());
 		model.addAttribute("documentFormatList", DocumentFormat.values());
 		model.addAttribute("documentTypeList", DocumentType.values());
-		
+
 		return super.list(model, webRequest);
+	}
+
+	@Override
+	public PageData buildInitialPageData() {
+		return new DocumentPageData();
+	}
+
+	@Override
+	protected PageData updatePageData(WebRequest webRequest) {
+		PageData pageData = super.updatePageData(webRequest);
+
+		String errorDictionaryIdStr = webRequest.getParameter("errorDictionaryId");
+		if (errorDictionaryIdStr != null) {
+			long errorDictionaryId = Long.parseLong(errorDictionaryIdStr);
+			((DocumentPageData) pageData).setErrorDictionaryId(errorDictionaryId);
+		}
+
+		return pageData;
 	}
 	/*
 	 * END EasyDatatables block
-	 */	
-	
+	 */
 
 	@RequestMapping("/document/listOld")
 	public String listOld(Model model) {
@@ -148,12 +176,12 @@ public class DocumentController extends AbstractEasyListController<Document> {
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
 		model.addAttribute("errorListByJournalDocumentIdMap", documentService.getErrorListByJournalDocumentIdMap(document));
 		model.addAttribute("documentBytes", documentBytesDaoRepository.findByDocument(document));
-		
+
 		applicationResponseFormController.fillModel(model, document);
 
 		return "/document/view";
 	}
-	
+
 	@PostMapping("/document/upload")
 	public String upload(
 
@@ -228,15 +256,56 @@ public class DocumentController extends AbstractEasyListController<Document> {
 		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
 		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
 	}
-	@Override
-	protected PageData getPageData() {
-		PageData pageData = super.getPageData();
+
+	public static class DocumentPageData extends PageData {
+		private static final long serialVersionUID = -4788973622822908206L;
+
+		@Getter
+		@Setter
+		private Long errorDictionaryId;
 		
-		if (StringUtils.isEmpty(pageData.getOrder())) {
-			pageData.setOrder("createTime_desc");
+		public void clear() {
+			super.clear();
+			this.errorDictionaryId = null;
+			this.setOrder("createTime_desc");
 		}
-		
-		return pageData;
+	}
+
+	@Override
+	protected DataTablesData<Document> toDataTablesInput(PageData pd) {
+		DataTablesData<Document> dtd = super.toDataTablesInput(pd);
+		Specification<Document> spec = dtd.getSpecification();
+
+		DocumentPageData documentPageData = (DocumentPageData) pd;
+		if (documentPageData.getErrorDictionaryId() != null) {
+			long errorId = documentPageData.getErrorDictionaryId();
+			if (spec == null) {
+				dtd.setSpecification(withErrorById(errorId));
+			} else {
+				dtd.setSpecification(spec.and(withErrorById(errorId)));
+			}
+		}
+
+		return dtd;
+	}
+
+	private Specification<Document> withErrorById(final long errorId) {
+		return new Specification<Document>() {
+
+			private static final long serialVersionUID = -5188102375045602476L;
+
+			@Override
+			public Predicate toPredicate(Root<Document> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+				Subquery<JournalDocumentError> subquery = query.subquery(JournalDocumentError.class);
+				Root<JournalDocumentError> subqueryRoot = subquery.from(JournalDocumentError.class);
+				subquery.select(subqueryRoot);
+				subquery.where(builder.and(builder.equal(root, subqueryRoot.get("journalDocument").get("document")),
+
+						subqueryRoot.get("errorDictionary").get("id").in(errorId)));
+				return builder.exists(subquery);
+			}
+
+		};
 	}
 
 }

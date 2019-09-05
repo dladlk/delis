@@ -51,7 +51,7 @@
                 </tr>
                 <tr th:each="errorStat: ${group?.list}">
                 	<td><span th:text="${errorStat.statKey}"></span></td>    
-                    <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" class="btn btn-light border-primary btn-sm">
+                    <td> <a th:href="@{/document/list/(errorDictionaryId=__${errorDictionary.id}__,clear=1)}" class="btn btn-light border-primary btn-sm">
                     	<span class="badge badge-light" th:text="${errorStat.documentCount}">XXX</span>
                     	</a></td>
                     <td th:text="${#dates.format(errorStat.minCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
@@ -74,7 +74,7 @@
                     <th>Location</th>
                 </tr>
                 <tr th:each="ed,i: ${similarErrorList}">
-                    <td th:classappend="${errorDictionary.id == ed.id ? 'font-weight-bold': ''}">
+                    <td>
                     	<a href='#' th:href="@{__${ed.id}__}" class="btn btn-light border-primary btn-sm">
 	                    	<span class="badge badge-light" th:text="${i.index + 1}"></span>
 	                    	<span th:if="${errorDictionary.id == ed.id}"> [current]</span>

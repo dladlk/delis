@@ -9,6 +9,8 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
+import dk.erst.delis.web.datatables.web.PageDataBuilder;
+
 @Component
 @Scope(scopeName = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SessionData implements Serializable {
@@ -17,13 +19,13 @@ public class SessionData implements Serializable {
 
 	private Map<Class<?>, PageData> pageStateByControllerClass = new HashMap<>();
 
-	public PageData getOrCreatePageData(Class<?> controllerClass, int defaultPageSize) {
+	public PageData getOrCreatePageData(Class<?> controllerClass, PageDataBuilder builder) {
 		PageData pageData = pageStateByControllerClass.get(controllerClass);
 		if (pageData == null) {
-			pageData = new PageData();
-			pageData.setSize(defaultPageSize);
+			pageData = builder.buildInitialPageData();
 			pageStateByControllerClass.put(controllerClass, pageData);
 		}
 		return pageData;
 	}
+
 }
