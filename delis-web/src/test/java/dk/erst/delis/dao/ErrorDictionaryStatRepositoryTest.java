@@ -11,15 +11,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.ANY)
-public class JournalDocumentErrorDaoRepositoryTest {
+public class ErrorDictionaryStatRepositoryTest {
 
 	@Autowired
-	private JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository;
-	
+	private ErrorDictionaryStatRepository errorDictionaryStatRepository;
+
 	@Test
-	public void testGetErrorStatByErrorId() {
-		journalDocumentErrorDaoRepository.loadDocumentByErrorId(0L);
-		journalDocumentErrorDaoRepository.findErrorStatByErrorId(0L);
+	public void testFindErrorStatByErrorId() {
+		errorDictionaryStatRepository.findErrorStatByErrorId(0L);
 	}
 
 }

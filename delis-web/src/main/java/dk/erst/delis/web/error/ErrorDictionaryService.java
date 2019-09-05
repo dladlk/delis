@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.ErrorDictionaryDaoRepository;
+import dk.erst.delis.dao.ErrorDictionaryStatRepository;
+import dk.erst.delis.dao.ErrorDictionaryStatRepository.ErrorDictionaryStat;
 import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
-import dk.erst.delis.dao.JournalDocumentErrorDaoRepository.ErrorDictionaryStat;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
 
@@ -16,11 +17,13 @@ public class ErrorDictionaryService {
 
 	private ErrorDictionaryDaoRepository errorDictionaryDaoRepository;
 	private JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository;
+	private ErrorDictionaryStatRepository errorDictionaryStatRepository;
 
 	@Autowired
-	public ErrorDictionaryService(ErrorDictionaryDaoRepository errorDictionaryDaoRepository, JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository) {
+	public ErrorDictionaryService(ErrorDictionaryDaoRepository errorDictionaryDaoRepository, JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository, ErrorDictionaryStatRepository errorDictionaryStatRepository) {
 		this.errorDictionaryDaoRepository = errorDictionaryDaoRepository;
 		this.journalDocumentErrorDaoRepository = journalDocumentErrorDaoRepository;
+		this.errorDictionaryStatRepository = errorDictionaryStatRepository;
 	}
 
 	public List<Document> documentList(Long errorDictionaryId) {
@@ -33,6 +36,6 @@ public class ErrorDictionaryService {
 	}
 
 	public ErrorDictionaryStat getErrorDictionaryStat(long id) {
-		return journalDocumentErrorDaoRepository.findErrorStatByErrorId(id);
+		return errorDictionaryStatRepository.findErrorStatByErrorId(id);
 	}
 }
