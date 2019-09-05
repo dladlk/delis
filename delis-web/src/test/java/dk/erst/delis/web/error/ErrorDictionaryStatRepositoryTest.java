@@ -24,6 +24,7 @@ public class ErrorDictionaryStatRepositoryTest {
 	@Test
 	public void loadErrorStatBySenderCountry() {
 		errorDictionaryStatRepository.loadErrorStatBySenderCountry(0L);
+		errorDictionaryStatRepository.loadErrorStatBySenderName(0L);
 	}
 
 }

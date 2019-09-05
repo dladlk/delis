@@ -49,6 +49,8 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
 			groupList.add(new ErrorStatTypeGroup(errorStatTotal));
 	    	groupList.add(new ErrorStatTypeGroup("Sender country", errorDictionaryStatRepository.loadErrorStatBySenderCountry(id)));
 	    	groupList.add(new ErrorStatTypeGroup("Sender name", errorDictionaryStatRepository.loadErrorStatBySenderName(id)));
+	    	groupList.add(new ErrorStatTypeGroup("Date", errorDictionaryStatRepository.loadErrorStatByDate(id)));
+	    	groupList.add(new ErrorStatTypeGroup("Month", errorDictionaryStatRepository.loadErrorStatByYearMonth(id)));
 	    	model.addAttribute("errorStatGroupList", groupList);
     	}
     	

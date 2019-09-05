@@ -41,29 +41,11 @@
     	Statistics
     	</div>
         <div class="card-body pb-0">
-            <table class="table table-sm table-borderless w-auto" th:if="${errorStat}">
-                <tr>
-                    <th>Docs</th>
-                    <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" th:text="${errorStat.documentCount}">XXX</a></td>
-                </tr>
-                <tr>    
-                    <th>First</th>
-                    <td th:text="${#dates.format(errorStat.minCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01
-                        12:32:12
-                    </td>
-                </tr>
-                <tr>    
-                    <th>Last</th>
-                    <td th:text="${#dates.format(errorStat.maxCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12
-                    </td>
-                </tr>
-            </table>
-            
             <table class="table table-sm table-borderless w-auto">
             <th:block th:each="group: ${errorStatGroupList}">
                 <tr>
                     <th th:text="${group.name}"></th>
-                    <th>Documents</th>
+                    <th>Docs</th>
                     <th>First</th>
                     <th>Last</th>
                 </tr>
