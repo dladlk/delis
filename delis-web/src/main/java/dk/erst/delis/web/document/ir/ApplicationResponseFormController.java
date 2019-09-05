@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.SendDocument;
+import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
@@ -36,7 +37,6 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.Applicati
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
-import dk.erst.delis.web.error.ErrorDictionaryData;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -188,14 +188,14 @@ public class ApplicationResponseFormController {
 				}
 				if (lastFailedValidationJournal != null) {
 					if (model.containsAttribute("errorListByJournalDocumentIdMap")) {
-						Map<Long, List<ErrorDictionaryData>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorDictionaryData>>) model.asMap().get("errorListByJournalDocumentIdMap");
-						List<ErrorDictionaryData> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
+						Map<Long, List<ErrorDictionary>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorDictionary>>) model.asMap().get("errorListByJournalDocumentIdMap");
+						List<ErrorDictionary> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
 						if (list != null && !list.isEmpty()) {
 							DocumentProcessStep s = new DocumentProcessStep(lastFailedValidationJournal.getMessage(), lastFailedValidationJournal.getType());
 							s.setSuccess(false);
 
 							List<ErrorRecord> errorRecords = new ArrayList<ErrorRecord>();
-							for (ErrorDictionaryData ed : list) {
+							for (ErrorDictionary ed : list) {
 								ErrorRecord e = new ErrorRecord(ed.getErrorType(), ed.getCode(), ed.getMessage(), ed.getFlag(), ed.getLocation());
 								e.setDetailedLocation(ed.getLocation());
 								errorRecords.add(e);

@@ -44,17 +44,17 @@
             <table class="table table-sm table-borderless w-auto">
                 <tr>
                     <th>Documents</th>
-                    <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" th:text="${errorDictionary.count}">XXX</a></td>
+                    <td> <a th:href="@{/errordict/listdocument/__${errorDictionary.id}__}" th:text="${errorStat.count}">XXX</a></td>
                 </tr>
                 <tr>    
                     <th>First</th>
-                    <td th:text="${#dates.format(errorDictionary.startDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01
+                    <td th:text="${#dates.format(errorStat.startDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01
                         12:32:12
                     </td>
                 </tr>
                 <tr>    
                     <th>Last</th>
-                    <td th:text="${#dates.format(errorDictionary.endDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12
+                    <td th:text="${#dates.format(errorStat.endDate, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12
                     </td>
                 </tr>
             </table>

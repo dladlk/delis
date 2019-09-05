@@ -17,6 +17,7 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.document.DocumentStatusBachUdpateInfo;
+import dk.erst.delis.web.error.ErrorDictionaryService.ErrorDictionaryStat;
 import dk.erst.delis.web.list.AbstractEasyListController;
 
 @Controller
@@ -27,8 +28,13 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
 
     @RequestMapping("/errordict/view/{id}")
     public String list(@PathVariable Long id, Model model) {
-        ErrorDictionaryData errorDictionaryWithStats = service.getErrorDictionaryWithStats(id);
-        model.addAttribute("errorDictionary", errorDictionaryWithStats);
+        ErrorDictionary error = service.getErrorDictionary(id);
+        if (error != null) {
+        	model.addAttribute("errorDictionary", error);
+        	
+        	ErrorDictionaryStat errorStat = service.getErrorDictionaryStat(id);
+        	model.addAttribute("errorStat", errorStat);
+        }
         return "/errordict/view";
     }
 
