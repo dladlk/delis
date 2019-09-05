@@ -54,6 +54,9 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
 	    	model.addAttribute("errorStatGroupList", groupList);
     	}
     	
+    	List<ErrorDictionary> similarErrorList = errorDictionaryStatRepository.findSimilar(id);
+    	model.addAttribute("similarErrorList", similarErrorList);
+    	
     	return "/errordict/view";
     }
     

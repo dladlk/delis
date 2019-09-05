@@ -78,4 +78,13 @@ public interface ErrorDictionaryStatRepository extends org.springframework.data.
 
 			+ STAT_YEAR_MONTH)
 	List<ErrorDictionaryStat> loadErrorStatByYearMonth(Long id);
+
+	@Query("select e from ErrorDictionary e "
+
+			+ "where "
+
+			+ "e.code = (select p.code from ErrorDictionary p where p.id = ?1)"
+
+			+ "and e.errorType = (select p.errorType from ErrorDictionary p where p.id = ?1)")
+	List<ErrorDictionary> findSimilar(Long id);
 }
