@@ -4,8 +4,8 @@
       th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
 
-<h3 class="m-2 text-secondary"><a href="#" th:href="@{/errordict/list}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
-	<a href="#" th:href="@{/errordict/view/__${errorDictionary.id}__}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+<h3 class="m-2 text-secondary"><a href="#" th:href="${@backs.get('/errordict/list')}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
+	<a href="#" th:href="@{/errordict/view/__${errorDictionary.id}__(back=${@backs.get('/errordict/list')})}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
 	Error details</h3>        
 
 <div class="">
