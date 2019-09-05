@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.dao.ErrorDictionaryDaoRepository;
-import dk.erst.delis.dao.ErrorDictionaryStat;
 import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
+import dk.erst.delis.dao.JournalDocumentErrorDaoRepository.ErrorDictionaryStat;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
 
