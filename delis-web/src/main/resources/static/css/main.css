@@ -20,3 +20,7 @@ ul.org-smp-setup li ul li {
 .document-error {
 	color: red;
 }
+
+.no-wrap {
+	white-space: nowrap;
+}
