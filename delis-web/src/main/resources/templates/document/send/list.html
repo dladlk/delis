@@ -28,7 +28,7 @@
 						<a href="#" th:href="@{/document/send/view/__${r.id}__}" th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
 					</td>
 					<td>
-						<a th:if="${r.organisation}" href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}">Region Nord</a>
+						<span th:if="${r.organisation}" th:text="${r.organisation.name}">Region Nord</span>
 					</td>
 					<td>
 						<span th:text="${r.senderIdRaw}">0088:234234234</span>

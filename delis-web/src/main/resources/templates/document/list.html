@@ -18,11 +18,11 @@
                     <tr>
                         <th dt-field="createTime" type="date">Received</th>
                         <th dt-field="organisation.name">Organisation</th>
-                        <th dt-field="receiverIdentifier.name">Receiver</th>
                         <th dt-field="documentStatus" th:attr="dt-enum=${@jsons.json(statusList)}">Status</th>
                         <th dt-field="documentType" th:attr="dt-enum=${@jsons.json(documentTypeList)}">Ingoing Type</th>
                         <th dt-field="ingoingDocumentFormat" th:attr="dt-enum=${@jsons.json(documentFormatList)}">Ingoing Format</th>
                         <th dt-field="senderName">Sender</th>
+                        <th dt-field="receiverName">Receiver</th>
                         <th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
                     </tr>
                     </thead>
@@ -32,16 +32,15 @@
                         <a href="#" th:href="@{/document/view/__${r.id}__}" th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</a>
                     </td>
                     <td>
-                        <a th:if="${r.organisation}" href="#" th:href="@{/document/view/__${r.id}__}" th:text="${r.organisation.name}">Region Nord</a>
-                    </td>
-                    <td>
-                        <a th:if="${r.receiverIdentifier}" href="#" th:href="@{/document/view/__${r.id}__}" th:text="${r.receiverIdentifier.name}">Receiver name</a>
-                        <span th:text="${r.receiverIdRaw}">0088:234234234</span>
+                        <span th:if="${r.organisation}" th:text="${r.organisation.name}">Region Nord</span>
                     </td>
                     <td th:text="${r.documentStatus?.name}" th:classappend="${r.documentStatus?.error ? 'document-error': ''}">LOAD_OK</td>
                     <td th:text="${r.documentType?.name}">Invoice</td>
                     <td th:text="${r.ingoingDocumentFormat?.name}">BIS3_INVOICE</td>
                     <td th:text="${r.senderName}">Lego Spain</td>
+                    <td>
+                        <span th:text="${r.receiverName}">Receiver name</span>
+                    </td>
                     <td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
                 </tr>                  
                 </table>
