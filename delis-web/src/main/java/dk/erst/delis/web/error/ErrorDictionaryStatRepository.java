@@ -1,4 +1,4 @@
-package dk.erst.delis.dao;
+package dk.erst.delis.web.error;
 
 import java.util.Date;
 

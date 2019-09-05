@@ -27,7 +27,7 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
     private ErrorDictionaryService service;
 
     @RequestMapping("/errordict/view/{id}")
-    public String list(@PathVariable Long id, Model model, RedirectAttributes ra) {
+    public String view(@PathVariable Long id, Model model, RedirectAttributes ra) {
         ErrorDictionary error = service.getErrorDictionary(id);
         if (error == null) {
 			ra.addFlashAttribute("errorMessage", "Error is not found");
