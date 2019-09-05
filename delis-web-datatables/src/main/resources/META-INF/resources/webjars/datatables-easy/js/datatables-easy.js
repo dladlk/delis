@@ -44,7 +44,7 @@
 
         var dataTablesSettings = {
             colReorder: true,
-            responsive: true,
+            responsive: false,
             pageLength: size,
             pagingType: "full",
             order: [orderInfo.col, orderInfo.dir],
