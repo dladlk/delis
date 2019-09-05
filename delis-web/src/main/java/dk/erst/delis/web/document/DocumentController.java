@@ -7,10 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+
+import dk.erst.delis.web.datatables.data.PageData;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
@@ -224,6 +227,16 @@ public class DocumentController extends AbstractEasyListController<Document> {
 		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"data_" + documentId + "_" + bytesId + ".xml\"");
 		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
 		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
+	}
+	@Override
+	protected PageData getPageData() {
+		PageData pageData = super.getPageData();
+		
+		if (StringUtils.isEmpty(pageData.getOrder())) {
+			pageData.setOrder("createTime_desc");
+		}
+		
+		return pageData;
 	}
 
 }
