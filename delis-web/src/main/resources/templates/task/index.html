@@ -67,6 +67,8 @@
 						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
 					</td>
 				</tr>
+				
+				
 				<tr>
 					<th colspan="2" style="text-align: center">Sent documents tasks</th>
 				</tr>
@@ -84,6 +86,19 @@
 					</td>
 					<td>
 						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwhise FORWARD_ERROR) - otherwise FORWARD_SKIP.
+					</td>
+				</tr>
+
+
+				<tr>
+					<th colspan="2" style="text-align: center">Export tasks</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/exportHistory}">History</a>
+					</td>
+					<td>
+						Export history of received documents validation for further analysis in CSV format.
 					</td>
 				</tr>
 				
