@@ -24,7 +24,7 @@ export class HttpEventInterceptor implements HttpInterceptor {
           this.spinnerService.hide();
           if (error instanceof HttpErrorResponse) {
             if (String(error.status) === '401') {
-              this.logoutService.logout();
+              // this.logoutService.logout();
             }
           }
         }

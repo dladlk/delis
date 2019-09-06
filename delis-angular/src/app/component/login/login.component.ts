@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
         if (error.status === 500) {
           this.message = 'login.error.disconnect';
         }
-        this.router.navigate(['/login']);
+        // this.router.navigate(['/login']);
       }
     );
   }

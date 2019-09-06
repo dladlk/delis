@@ -1,13 +1,17 @@
-<mat-toolbar color="primary" class="fix-nav">
-  <button type="button" mat-icon-button class="visible-md" (click)="toggleSidebar()">
+<mat-toolbar color="primary">
+  <button type="button" mat-icon-button class="visible-md" (click)="onToggleSidenav()">
     <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
   </button>
-  <div class="nav-brand" >
-    <a [routerLinkActive]="'active'" [routerLink]="['']"
-       class="topnav-main-link"
-       matRipple [matRippleRadius]="250" [matRippleCentered]="true">
-      DELIS
-    </a>
+  <div>
+    <a [routerLink]="['']">DELIS</a>
+  </div>
+
+  <div fxFlex fxLayout dir="ltr" fxFlexOffset="5" fxHide.xs>
+    <ul fxLayout fxLayoutGap="1em" class="navigation-items">
+      <li><a [routerLink]="['/document']" [routerLinkActive]="['active']">{{ 'sidebar.received.documents' | translate }}</a></li>
+      <li><a [routerLink]="['/send-document']" [routerLinkActive]="['active']">{{ 'sidebar.send.documents' | translate }}</a></li>
+      <li><a [routerLink]="['/identifier']" [routerLinkActive]="['active']">{{ 'sidebar.identifier' | translate }}</a></li>
+    </ul>
   </div>
 
   <span class="nav-spacer"></span>
@@ -31,27 +35,27 @@
   <mat-menu #profile="matMenu" xPosition="before">
     <table class="profile-info">
       <tr>
-        <td>{{ 'profile.menu.role' | translate }}</td>
+        <td><strong>{{ 'profile.menu.role' | translate }}</strong></td>
         <td>{{ currentUser.role | translate }}</td>
       </tr>
       <tr>
-        <td>{{ 'profile.menu.loginName' | translate }}</td>
+        <td><strong>{{ 'profile.menu.loginName' | translate }}</strong></td>
         <td>{{ currentUser.username }}</td>
       </tr>
       <tr *ngIf="currentUser.firstName !== null">
-        <td>{{ 'profile.menu.firstName' | translate }}</td>
+        <td><strong>{{ 'profile.menu.firstName' | translate }}</strong></td>
         <td>{{ currentUser.firstName }}</td>
       </tr>
       <tr *ngIf="currentUser.lastName !== null">
-        <td>{{ 'profile.menu.lastName' | translate }}</td>
+        <td><strong>{{ 'profile.menu.lastName' | translate }}</strong></td>
         <td>{{ currentUser.lastName }}</td>
       </tr>
       <tr *ngIf="currentUser.role === 'ROLE_USER'">
-        <td>{{ 'profile.menu.organisation' | translate }}</td>
+        <td><strong>{{ 'profile.menu.organisation' | translate }}</strong></td>
         <td>{{ currentUser.organisation }}</td>
       </tr>
       <tr>
-        <td>{{ 'profile.menu.loginTime' | translate }}</td>
+        <td><strong>{{ 'profile.menu.loginTime' | translate }}</strong></td>
         <td>{{ currentUser.lastLoginTime | date: SHOW_DATE_FORMAT }}</td>
       </tr>
     </table>

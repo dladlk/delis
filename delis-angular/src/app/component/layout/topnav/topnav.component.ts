@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
 import { SHOW_DATE_FORMAT } from '../../../app.constants';
@@ -19,9 +19,15 @@ export class TopnavComponent implements OnInit {
   public currentUser: CurrentUserModel;
   public headerUserName: string;
 
+  @Output() public sidenavToggle = new EventEmitter();
+
   SHOW_DATE_FORMAT = SHOW_DATE_FORMAT;
 
-  constructor(private router: Router, private changeLangService: ChangeLangService, private configService: RuntimeConfigService, private locale: LocaleService) {
+  constructor(
+      private router: Router,
+      private changeLangService: ChangeLangService,
+      private configService: RuntimeConfigService,
+      private locale: LocaleService) {
     this.router.events.subscribe(val => {
       if (val instanceof NavigationEnd && window.innerWidth <= 992 && this.isToggled()) {
         this.toggleSidebar();
@@ -49,6 +55,10 @@ export class TopnavComponent implements OnInit {
     const dom: any = document.querySelector('body');
     dom.classList.toggle(this.pushRightClass);
   }
+
+  public onToggleSidenav = () => {
+    this.sidenavToggle.emit();
+  };
 
   onLoggedout() {
     this.router.navigate(['/logout']);

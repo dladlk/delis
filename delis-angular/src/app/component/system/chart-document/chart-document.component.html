@@ -1,13 +1,12 @@
 <mat-card>
 
   <div class="ml20">
-    <div fxLayout="row">
-      <div fxFlex>
+    <div fxLayout="row" fxLayout.xs="column">
+      <div fxFlex fxLayoutAlign.xs="center">
         <app-date-range [range]="range"></app-date-range>
       </div>
-      <div fxFlex fxLayoutAlign="end">
-
-        <div class="delis-button-row">
+      <div fxFlex fxLayoutAlign="end" fxLayoutAlign.xs="center">
+        <div class="delis-button-row vertical-align-center">
           <button mat-mini-fab color="primary" (click)="checkLineChart()" title="{{ 'lineChart' | translate }}" aria-label="Line Chart">
             <mat-icon>show_chart</mat-icon>
           </button>
@@ -21,22 +20,6 @@
             <mat-icon>autorenew</mat-icon>
           </button>
         </div>
-
-<!--        <div fxFlex fxLayoutAlign="end" style="height: 75%">-->
-<!--        <mat-button-toggle-group>-->
-<!--          <mat-button-toggle (click)="checkLineChart()" title="{{ 'lineChart' | translate }}" aria-label="Line Chart">-->
-<!--            <mat-icon color="primary">show_chart</mat-icon>-->
-<!--          </mat-button-toggle>-->
-<!--          <mat-button-toggle (click)="checkBarChart()" title="{{ 'barChart' | translate }}" aria-label="Bar Chart">-->
-<!--            <mat-icon color="primary">bar_chart</mat-icon>-->
-<!--          </mat-button-toggle>-->
-<!--          <mat-button-toggle (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">-->
-<!--            <mat-icon color="primary">refresh</mat-icon>-->
-<!--          </mat-button-toggle>-->
-<!--          <mat-button-toggle (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">-->
-<!--            <mat-icon color="primary">autorenew</mat-icon>-->
-<!--          </mat-button-toggle>-->
-<!--        </mat-button-toggle-group>-->
       </div>
     </div>
   </div>
@@ -44,12 +27,12 @@
   <mat-progress-bar color="primary" mode="buffer" *ngIf="spinnerService.visibility | async; else drawChart"></mat-progress-bar>
 
   <ng-template #drawChart>
-    <table>
+    <table class="mt-20">
       <tbody>
       <tr>
         <td *ngIf="showing; else elseBlock">
           <div *ngIf="isLineChart">
-            <canvas baseChart height="100"
+            <canvas baseChart height="135"
                     [datasets]="lineChartData"
                     [labels]="lineChartLabels"
                     [options]="lineChartOptions"
@@ -61,7 +44,7 @@
             </canvas>
           </div>
           <div *ngIf="isBarChart">
-            <canvas baseChart height="100"
+            <canvas baseChart height="135"
                     [datasets]="lineChartData"
                     [labels]="lineChartLabels"
                     [options]="barChartOptions"

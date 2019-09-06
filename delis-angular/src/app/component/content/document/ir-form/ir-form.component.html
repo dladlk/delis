@@ -52,182 +52,183 @@
   </div>
 
   <mat-card-content>
-    <table class="delis-table-data delis-table-details">
-      <tr>
-        <td>
-          <mat-form-field>
-            <strong matPrefix>Use case:</strong>
-            <mat-select (selectionChange)="selectInvoiceResponseUseCaseView($event.value)" [(value)]="invoiceResponseUseCaseView" id="inputGroupUseCase">
-              <mat-option *ngFor="let useCase of documentInvoiceModel.invoiceResponseUseCaseList; index as i" [value]="useCase">
-                <div *ngIf="i === 0; else elseBlock">{{ useCase[1] }}</div>
-                <ng-template #elseBlock>{{ useCase[0] }}: {{ useCase[1] }}</ng-template>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </td>
-        <td>
-          <div *ngIf="invoiceResponseUseCaseView[0] !== ''">
-            <span>{{ invoiceResponseUseCaseView[0] }}: {{ invoiceResponseUseCaseView[2] }}</span>
-            <br>
-          </div>
-          <small>See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
-            Invoice Response use cases</a> for details
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <strong matPrefix>Status:</strong>
-            <mat-select (selectionChange)="selectInvoiceStatusCodeView($event.value)" [(value)]="invoiceStatusCodeView" #inputGroupStatusCode id="inputGroupStatusCode">
-              <mat-option *ngFor="let statusCode of documentInvoiceModel.invoiceStatusCodeList" [value]="statusCode">
-                {{ statusCode[0] }}: {{ statusCode[1] }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </td>
-        <td>
-          <div> {{ invoiceStatusCodeView[0] }}: {{ invoiceStatusCodeView[2] }}
-          </div>
-          <small>
-            <div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
-            <span>See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
+    <div class="table-scroll">
+      <table class="delis-table-data">
+        <tr>
+          <td>
+            <mat-form-field>
+              <strong matPrefix>Use case:</strong>
+              <mat-select (selectionChange)="selectInvoiceResponseUseCaseView($event.value)" [(value)]="invoiceResponseUseCaseView" id="inputGroupUseCase">
+                <mat-option *ngFor="let useCase of documentInvoiceModel.invoiceResponseUseCaseList; index as i" [value]="useCase">
+                  <div *ngIf="i === 0; else elseBlock">{{ useCase[1] }}</div>
+                  <ng-template #elseBlock>{{ useCase[0] }}: {{ useCase[1] }}</ng-template>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <div *ngIf="invoiceResponseUseCaseView[0] !== ''">
+              <span>{{ invoiceResponseUseCaseView[0] }}: {{ invoiceResponseUseCaseView[2] }}</span>
+              <br>
+            </div>
+            <small>See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
+              Invoice Response use cases</a> for details
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <strong matPrefix>Status:</strong>
+              <mat-select (selectionChange)="selectInvoiceStatusCodeView($event.value)" [(value)]="invoiceStatusCodeView" #inputGroupStatusCode id="inputGroupStatusCode">
+                <mat-option *ngFor="let statusCode of documentInvoiceModel.invoiceStatusCodeList" [value]="statusCode">
+                  {{ statusCode[0] }}: {{ statusCode[1] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <div> {{ invoiceStatusCodeView[0] }}: {{ invoiceStatusCodeView[2] }}
+            </div>
+            <small>
+              <div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
+              <span>See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
             Invoice status code (UNCL4343 Subset)</a> for details</span>
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <mat-checkbox matPrefix [(ngModel)]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled()"><strong>Effective date:</strong></mat-checkbox>
-            <input matInput [matDatepicker]="picker" [value]="effectiveDate" #inputGroupEffectiveDate [disabled]="!effectiveDateEnabled">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-        </td>
-        <td>
-          <small class="font-italic">//DocumentResponse/Response/EffectiveDate</small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <mat-checkbox matPrefix [(ngModel)]="statusReasonEnabled" (change)="checkStatusReasonEnabled($event)"><strong>Reason:</strong></mat-checkbox>
-            <mat-select (selectionChange)="selectStatusReasonView($event.value)" [(value)]="statusReasonView" #inputGroupStatusReason [disabled]="!statusReasonEnabled">
-              <mat-option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [value]="statusReason">
-                {{ statusReason[0] }}: {{ statusReason[1] }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </td>
-        <td>
-          <div *ngIf="statusReasonView !== undefined">
-            {{ statusReasonView[0] }}: {{ statusReasonView[2] }}
-          </div>
-          <small>
-            <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
-            <span>See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-checkbox matPrefix [(ngModel)]="effectiveDateEnabled" (change)="checkEffectiveDateEnabled()"><strong>Effective date:</strong></mat-checkbox>
+              <input matInput [matDatepicker]="picker" [value]="effectiveDate" #inputGroupEffectiveDate [disabled]="!effectiveDateEnabled">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </td>
+          <td>
+            <small class="font-italic">//DocumentResponse/Response/EffectiveDate</small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-checkbox matPrefix [(ngModel)]="statusReasonEnabled" (change)="checkStatusReasonEnabled($event)"><strong>Reason:</strong></mat-checkbox>
+              <mat-select (selectionChange)="selectStatusReasonView($event.value)" [(value)]="statusReasonView" #inputGroupStatusReason [disabled]="!statusReasonEnabled">
+                <mat-option *ngFor="let statusReason of documentInvoiceModel.statusReasonList" [value]="statusReason">
+                  {{ statusReason[0] }}: {{ statusReason[1] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <div *ngIf="statusReasonView !== undefined">
+              {{ statusReasonView[0] }}: {{ statusReasonView[2] }}
+            </div>
+            <small>
+              <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
+              <span>See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
             Status Clarification Reason (OpenPEPPOL)</a> for details</span>
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <mat-checkbox matPrefix class="example-margin" [(ngModel)]="statusActionEnabled" (change)="checkStatusActionEnabled($event)"><strong>Action:</strong></mat-checkbox>
-            <mat-select (selectionChange)="selectStatusActionView($event.value)" [(value)]="statusActionView" #inputGroupStatusAction [disabled]="!statusActionEnabled">
-              <mat-option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [value]="statusAction">
-                {{ statusAction[0] }}: {{ statusAction[1] }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </td>
-        <td>
-          <div *ngIf="statusActionView !== undefined">
-            {{statusActionView[0]}}: {{statusActionView[2]}}
-          </div>
-          <small>
-            <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
-            <span>See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-checkbox matPrefix class="example-margin" [(ngModel)]="statusActionEnabled" (change)="checkStatusActionEnabled($event)"><strong>Action:</strong></mat-checkbox>
+              <mat-select (selectionChange)="selectStatusActionView($event.value)" [(value)]="statusActionView" #inputGroupStatusAction [disabled]="!statusActionEnabled">
+                <mat-option *ngFor="let statusAction of documentInvoiceModel.statusActionList" [value]="statusAction">
+                  {{ statusAction[0] }}: {{ statusAction[1] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <div *ngIf="statusActionView !== undefined">
+              {{statusActionView[0]}}: {{statusActionView[2]}}
+            </div>
+            <small>
+              <div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
+              <span>See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
             Status Clarification Action (OpenPEPPOL)</a> for details</span>
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <mat-checkbox matPrefix class="example-margin" [(ngModel)]="statusAction2Enabled" (change)="checkStatusAction2Enabled($event)"><strong>Action 2:</strong></mat-checkbox>
-            <mat-select (selectionChange)="selectStatusAction2View($event.value)" [(value)]="statusAction2View" #inputGroupStatusAction2 [disabled]="!statusAction2Enabled">
-              <mat-option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [value]="statusAction2">
-                {{ statusAction2[0] }}: {{ statusAction2[1] }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </td>
-        <td>
-          <div *ngIf="statusAction2View !== undefined">
-            {{ statusAction2View[0] }}: {{ statusAction2View[2] }}
-          </div>
-          <small>
-            Some use cases suppose 2 actions
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <strong matPrefix>Reason text:</strong>
-            <input class="filter-input" matInput [(ngModel)]="statusReasonText" id="statusReasonText"/>
-          </mat-form-field>
-        </td>
-        <td>
-          <div class="font-italic">
-            <small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <strong matPrefix>Detail type:</strong>
-            <input class="filter-input" matInput [(ngModel)]="detailType" id="invoiceResponseDetailTypeCode"/>
-          </mat-form-field>
-        </td>
-        <td>
-          <small class="form-text text-muted">
-            <span class="font-italic display-block">//DocumentResponse/Response/Status/Condition/AttributeID</span>
-            <span>E.g. BT-48</span>
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-form-field>
-            <strong matPrefix>Detail value:</strong>
-            <input class="filter-input" matInput [(ngModel)]="detailValue" id="invoiceResponseDetailValue"/>
-          </mat-form-field>
-        </td>
-        <td>
-          <small class="form-text text-muted">
-            <span class="font-italic">//DocumentResponse/Response/Status/Condition/Description</span>
-            <span>E.g. EU12345</span>
-          </small>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <mat-checkbox [(ngModel)]="validateGeneratedEnabled">
-            <label id="validateGenerated" (click)="checkValidateGeneratedEnabled()" lang="en">{{ validateGenerated }}</label>
-          </mat-checkbox>
-        </td>
-        <td>
-          <mat-checkbox [(ngModel)]="onlyGeneratedEnabled">
-            <label id="onlyGenerated" (click)="checkOnlyGeneratedEnabled()" lang="en">{{ onlyGenerated }}</label>
-          </mat-checkbox>
-        </td>
-      </tr>
-    </table>
-
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <mat-checkbox matPrefix class="example-margin" [(ngModel)]="statusAction2Enabled" (change)="checkStatusAction2Enabled($event)"><strong>Action 2:</strong></mat-checkbox>
+              <mat-select (selectionChange)="selectStatusAction2View($event.value)" [(value)]="statusAction2View" #inputGroupStatusAction2 [disabled]="!statusAction2Enabled">
+                <mat-option *ngFor="let statusAction2 of documentInvoiceModel.statusActionList" [value]="statusAction2">
+                  {{ statusAction2[0] }}: {{ statusAction2[1] }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <div *ngIf="statusAction2View !== undefined">
+              {{ statusAction2View[0] }}: {{ statusAction2View[2] }}
+            </div>
+            <small>
+              Some use cases suppose 2 actions
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <strong matPrefix>Reason text:</strong>
+              <input class="filter-input" matInput [(ngModel)]="statusReasonText" id="statusReasonText"/>
+            </mat-form-field>
+          </td>
+          <td>
+            <div class="font-italic">
+              <small class="form-text text-muted">//DocumentResponse/Response/Status/StatusReason</small>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <strong matPrefix>Detail type:</strong>
+              <input class="filter-input" matInput [(ngModel)]="detailType" id="invoiceResponseDetailTypeCode"/>
+            </mat-form-field>
+          </td>
+          <td>
+            <small class="form-text text-muted">
+              <span class="font-italic display-block">//DocumentResponse/Response/Status/Condition/AttributeID</span>
+              <span>E.g. BT-48</span>
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field>
+              <strong matPrefix>Detail value:</strong>
+              <input class="filter-input" matInput [(ngModel)]="detailValue" id="invoiceResponseDetailValue"/>
+            </mat-form-field>
+          </td>
+          <td>
+            <small class="form-text text-muted">
+              <span class="font-italic">//DocumentResponse/Response/Status/Condition/Description</span>
+              <span>E.g. EU12345</span>
+            </small>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-checkbox [(ngModel)]="validateGeneratedEnabled">
+              <label id="validateGenerated" (click)="checkValidateGeneratedEnabled()" lang="en">{{ validateGenerated }}</label>
+            </mat-checkbox>
+          </td>
+          <td>
+            <mat-checkbox [(ngModel)]="onlyGeneratedEnabled">
+              <label id="onlyGenerated" (click)="checkOnlyGeneratedEnabled()" lang="en">{{ onlyGenerated }}</label>
+            </mat-checkbox>
+          </td>
+        </tr>
+      </table>
+    </div>
   </mat-card-content>
 
   <mat-card-content>

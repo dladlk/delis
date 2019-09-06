@@ -87,7 +87,9 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     this.updateLineChart(this.range);
     this.lineChartLegend = true;
     this.lineChartOptions = {
+      scaleShowVerticalLines: false,
       responsive: true,
+      showScale: false,
       scales: {
         yAxes: [{
           ticks: {
@@ -107,6 +109,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     this.barChartOptions = {
       scaleShowVerticalLines: false,
       responsive: true,
+      showScale: false,
       scales: {
         yAxes: [{
           ticks: {

@@ -6,6 +6,10 @@
   margin-top: 20px;
 }
 
+.mt-80 {
+  margin-top: 80px;
+}
+
 .mb-80 {
   margin-bottom: 80px;
 }
@@ -22,10 +26,18 @@
   text-align: right !important;
 }
 
+.text-center {
+  text-align: center !important;
+}
+
 .font-italic {
   font-style: italic !important;
 }
 
 .ml2 {
   margin-left: 2em !important;
+}
+
+.m1 {
+  margin: 1em !important;
 }

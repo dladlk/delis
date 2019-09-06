@@ -1,11 +1,11 @@
 <mat-card class="mb-20">
   <mat-card-title>
-    <div fxLayout="row" fxLayout.lt-md="column">
-      <div fxFlex>
+    <div fxLayout="row" fxLayout.xs="column">
+      <div fxFlex fxLayoutAlign.xs="center">
         {{ header | translate}}
       </div>
-      <div fxFlex fxLayoutAlign="end">
-        <div class="delis-button-row">
+      <div fxFlex fxLayoutAlign="end" fxLayoutAlign.xs="center">
+        <div class="delis-button-row vertical-align-center">
           <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
             <mat-icon>keyboard_backspace</mat-icon>
           </button>
@@ -168,17 +168,19 @@
   <mat-progress-bar color="primary" mode="buffer" *ngIf="dataSource.getLoading() | async"></mat-progress-bar>
 </div>
 
-<div class="delis-button-row delis-button-row-footer" *ngIf="isShowFooter">
-  <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
-    <mat-icon>keyboard_backspace</mat-icon>
-  </button>
-  <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
-    <mat-icon>refresh</mat-icon>
-  </button>
-  <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
-    <mat-icon>autorenew</mat-icon>
-  </button>
-  <button mat-mini-fab color="primary" (click)="gotoTop()" title="{{ 'up' | translate }}" aria-label="Page Up">
-    <mat-icon>navigation</mat-icon>
-  </button>
+<div fxLayoutAlign="end" fxLayoutAlign.xs="center">
+  <div class="delis-button-row delis-button-row-footer" *ngIf="isShowFooter">
+    <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+      <mat-icon>keyboard_backspace</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
+      <mat-icon>autorenew</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" (click)="gotoTop()" title="{{ 'up' | translate }}" aria-label="Page Up">
+      <mat-icon>navigation</mat-icon>
+    </button>
+  </div>
 </div>

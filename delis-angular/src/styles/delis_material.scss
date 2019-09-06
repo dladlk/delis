@@ -42,7 +42,7 @@ $delis-typography: mat-typography-config(
   $body-1: mat-typography-level(16px, 24px, 500)
 );
 @include mat-core($delis-typography);
-@include angular-material-typography($delis-typography);
+//@include angular-material-typography($delis-typography);
 
 @font-face {
   font-family: $delis-font-family;

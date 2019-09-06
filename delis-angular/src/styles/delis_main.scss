@@ -1,12 +1,15 @@
 @import "delis_material";
 
-.main-container {
-    position: absolute;
-    top: 64px;
-    left: 200px;
-    right: 0;
-    bottom: 0;
-    padding: 20px;
+.delis-main-content {
+  margin-left: 1pt;
+  margin-right: 1pt;
+}
+
+@media screen and (max-width: 992px) {
+  .delis-main-content {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
 }
 
 .check-header-language {
@@ -14,9 +17,16 @@
   margin-left: 1em;
 }
 
+.vertical-align-center {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+}
+
 .delis-button-row button,
 .delis-button-row a {
   margin-right: 2em;
+  vertical-align: middle !important;
 }
 
 .delis-button-row button:last-child {
@@ -26,10 +36,6 @@
 .delis-button-row-footer {
   position: fixed;
   bottom: 20px;
-  right: 20px;
-  text-align: center;
-  border-radius: 5px;
-  outline: none;
 }
 
 .download-muted {

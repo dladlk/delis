@@ -1,11 +1,11 @@
 <mat-card class="mb-20">
   <mat-card-title>
-    <div fxLayout="row" fxLayout.lt-md="column">
-      <div fxFlex>
+    <div fxLayout="row" fxLayout.xs="column">
+      <div fxFlex fxLayoutAlign.xs="center">
         {{ header | translate}}
       </div>
-      <div fxFlex fxLayoutAlign="end">
-        <div class="delis-button-row">
+      <div fxFlex fxLayoutAlign="end" fxLayoutAlign.xs="center">
+        <div class="delis-button-row vertical-align-center">
           <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
             <mat-icon>keyboard_backspace</mat-icon>
           </button>

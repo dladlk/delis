@@ -1,25 +1,8 @@
-:host {
-  display: block;
+mat-toolbar {
+  border-radius: 0px 0px 3px 3px;
   position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1000;
-}
-.nav-brand {
-  width: 215px;
-  text-align: left;
-}
-.topnav-icon {
-  text-decoration: none;
-  display: flex;
-  color: #fff;
-}
-
-.topnav-main-link {
-  text-align: left;
-  text-decoration: none;
-  color: white
+  width: 70%;
+  z-index: 2;
 }
 
 .nav-spacer {
@@ -29,24 +12,34 @@
 .visible-md {
   display: none;
 }
-.visible-sm {
-  display: none;
+
+a {
+  text-decoration: none;
+  color: white;
 }
+
+a.active {
+  color: lightgray;
+}
+
+a:hover, a:active {
+  color: lightgray;
+}
+
+.navigation-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
 @media screen and (max-width: 992px) {
+
   .visible-md {
     display: block;
   }
-}
-@media screen and (max-width: 768px) {
-  .visible-sm {
-    display: block;
-  }
-  .nav-brand {
+
+  mat-toolbar {
     width: 100%;
-  }
-}
-@media screen and (max-width: 768px) {
-  .hidden-sm {
-    display: none;
+    border-radius: 0;
   }
 }
