@@ -5,6 +5,7 @@ export class DetailsStateModel {
     nextUp: boolean;
     nextDown: boolean;
     currentId: number;
+    skip: boolean;
 
     constructor() {
         this.currentIds = [];
@@ -12,5 +13,6 @@ export class DetailsStateModel {
         this.nextUp = false;
         this.nextDown = false;
         this.currentId = null;
+        this.skip = true;
     }
 }

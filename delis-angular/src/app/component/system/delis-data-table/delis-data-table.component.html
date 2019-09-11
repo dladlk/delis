@@ -6,17 +6,11 @@
       </div>
       <div fxFlex fxLayoutAlign="end" fxLayoutAlign.xs="center">
         <div class="delis-button-row vertical-align-center">
-          <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
-            <mat-icon>keyboard_backspace</mat-icon>
-          </button>
           <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
             <mat-icon>refresh</mat-icon>
           </button>
-          <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
-            <mat-icon>autorenew</mat-icon>
-          </button>
-          <button mat-mini-fab color="primary" (click)="gotoBottom()" title="{{ 'down' | translate }}" aria-label="Page Down">
-            <mat-icon class="rotate-180">navigation</mat-icon>
+          <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+            <mat-icon>keyboard_backspace</mat-icon>
           </button>
         </div>
       </div>
@@ -130,11 +124,19 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <mat-paginator
-        [length]="dataSource.getTotalElements() | async"
-        [pageSize]="paginator.pageSize"
-        [pageSizeOptions]="[10, 25, 50, 100]"
-        [showFirstLastButtons]="true"></mat-paginator>
+      <div fxLayoutAlign="end" fxLayoutAlign.xs="center">
+        <div class="delis-button-row vertical-align-center">
+          <mat-paginator
+                  [length]="dataSource.getTotalElements() | async"
+                  [pageSize]="paginator.pageSize"
+                  [pageSizeOptions]="[10, 25, 50, 100]"
+                  [showFirstLastButtons]="true">
+          </mat-paginator>
+          <button mat-icon-button (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear" class="reset-button">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+      </div>
     </mat-card-actions>
 
     <!--    <mat-card-actions>-->
@@ -170,17 +172,14 @@
 
 <div fxLayoutAlign="end" fxLayoutAlign.xs="center">
   <div class="delis-button-row delis-button-row-footer" *ngIf="isShowFooter">
-    <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
-      <mat-icon>keyboard_backspace</mat-icon>
+    <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
+      <mat-icon>autorenew</mat-icon>
     </button>
     <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
       <mat-icon>refresh</mat-icon>
     </button>
-    <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
-      <mat-icon>autorenew</mat-icon>
-    </button>
-    <button mat-mini-fab color="primary" (click)="gotoTop()" title="{{ 'up' | translate }}" aria-label="Page Up">
-      <mat-icon>navigation</mat-icon>
+    <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+      <mat-icon>keyboard_backspace</mat-icon>
     </button>
   </div>
 </div>

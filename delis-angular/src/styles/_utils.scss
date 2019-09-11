@@ -22,6 +22,11 @@
   cursor: pointer;
 }
 
+.disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+}
+
 .text-right {
   text-align: right !important;
 }

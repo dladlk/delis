@@ -1,9 +1,9 @@
-import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Location} from '@angular/common';
-import {MatPaginator, MatSort} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
+import { MatPaginator, MatSort } from '@angular/material';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {
@@ -16,26 +16,27 @@ import {
   SHOW_DATE_FORMAT
 } from '../../../app.constants';
 
-import {DelisDataTableColumnModel} from '../../../model/content/delis-data-table-column.model';
-import {TableStateModel} from '../../../model/filter/table-state.model';
-import {HideColumnModel} from '../../../model/content/hide-column.model';
-import {AbstractEntityModel} from '../../../model/content/abstract-entity.model';
-import {SendDocumentFilterModel} from '../../../model/filter/send-document-filter.model';
-import {DocumentFilterModel} from '../../../model/filter/document-filter.model';
-import {IdentifierFilterModel} from '../../../model/filter/identifier-filter.model';
-import {Range} from '../date-range/model/model';
-import {StateService} from '../../../service/state/state-service';
-import {DelisService} from '../../../service/content/delis-service';
-import {DelisDataSource} from '../../content/delis-data-source';
-import {DocumentDataSource} from '../../content/document/document-data-source';
-import {IdentifierDataSource} from '../../content/identifier/identifier-data-source';
-import {SendDocumentDataSource} from '../../content/send-document/send-document-data-source';
-import {DataTableConfig} from '../../content/data-table-config';
-import {DaterangeObservable} from '../../../observable/daterange.observable';
-import {RefreshObservable} from '../../../observable/refresh.observable';
-import {ResetDaterangeObservable} from '../../../observable/reset-daterange.observable';
-import {DocumentErrorService} from '../../content/document/document-error.service';
-import {RedirectContentService} from '../../../service/content/redirect-content.service';
+import { DelisDataTableColumnModel } from '../../../model/content/delis-data-table-column.model';
+import { TableStateModel } from '../../../model/filter/table-state.model';
+import { HideColumnModel } from '../../../model/content/hide-column.model';
+import { AbstractEntityModel } from '../../../model/content/abstract-entity.model';
+import { SendDocumentFilterModel } from '../../../model/filter/send-document-filter.model';
+import { DocumentFilterModel } from '../../../model/filter/document-filter.model';
+import { IdentifierFilterModel } from '../../../model/filter/identifier-filter.model';
+import { Range } from '../date-range/model/model';
+import { StateService } from '../../../service/state/state-service';
+import { DelisService } from '../../../service/content/delis-service';
+import { DelisDataSource } from '../../content/delis-data-source';
+import { DocumentDataSource } from '../../content/document/document-data-source';
+import { IdentifierDataSource } from '../../content/identifier/identifier-data-source';
+import { SendDocumentDataSource } from '../../content/send-document/send-document-data-source';
+import { DataTableConfig } from '../../content/data-table-config';
+import { DaterangeObservable } from '../../../observable/daterange.observable';
+import { RefreshObservable } from '../../../observable/refresh.observable';
+import { ResetDaterangeObservable } from '../../../observable/reset-daterange.observable';
+import { DocumentErrorService } from '../../content/document/document-error.service';
+import { RedirectContentService } from '../../../service/content/redirect-content.service';
+import { RoutingStateService } from "../../../service/system/routing-state.service";
 
 const DOCUMENT_STATUS = 'documentStatus';
 const DATE_PATTERN = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/;
@@ -43,7 +44,7 @@ const DATE_PATTERN = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/;
 @Component({
   selector: 'app-delis-data-table',
   templateUrl: './delis-data-table.component.html',
-  styleUrls: ['./delis-data-table.component.scss']
+  styleUrls: ['./delis-data-table.component.scss'],
 })
 export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -77,8 +78,6 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
   delisDataTableColumnModel: DelisDataTableColumnModel[];
 
-  skip: boolean;
-  // statusError: boolean;
   lastVisitedId: number;
 
   LAST_ACTIVE_MAT_ROW = LAST_ACTIVE_MAT_ROW;
@@ -94,11 +93,11 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private location: Location,
     private documentErrorService: DocumentErrorService,
     private daterangeObservable: DaterangeObservable,
     private redirectService: RedirectContentService,
+    private routingState: RoutingStateService,
     private refreshObservable: RefreshObservable,
     private resetDaterangeObservable: ResetDaterangeObservable) {
     this.rangeUpdate$ = this.daterangeObservable.listen().subscribe((range: Range) => {
@@ -114,18 +113,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit() {
-
     this.statusErrors = this.documentErrorService.statusErrors;
-    this.route.queryParamMap.subscribe(params => {
-      const queryParamMap = {...params.keys, ...params};
-      const queryParams = queryParamMap['params'];
-      if (queryParams.skip !== undefined) {
-        this.skip = JSON.parse(queryParams.skip);
-      } else {
-        this.skip = true;
-      }
-    });
-
     // this.breakpointCols = (window.innerWidth <= 500) ? 1 : 8;
     // this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
     if (this.path === SEND_DOCUMENT_PATH) {
@@ -152,6 +140,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
       this.refreshUpdate$.unsubscribe();
     }
     this.redirectService.resetRedirectData();
+    this.stateService.filter.detailsState.skip = true;
   }
 
   ngAfterViewInit() {
@@ -181,35 +170,35 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   initFilter() {
-    if (this.skip) {
-      this.initDefaultFilter();
-    } else {
-      this.filter = this.stateService.getFilter();
-      if (this.filter === undefined) {
+
+    this.filter = this.stateService.getFilter();
+    if (this.filter) {
+      if (this.filter.detailsState.skip) {
         this.initDefaultFilter();
-      } else {
-        this.paginator.pageIndex = this.filter.pageIndex;
-        this.paginator.pageSize = this.filter.pageSize;
-        this.sort = this.filter.sort;
-        this.lastVisitedId = this.filter.detailsState.currentId;
-        for (const field in this.filter) {
-          if (!this.filter.hasOwnProperty(field)) {
-            continue;
-          }
-          this.textFilterModel[field] = this.filter[field];
-          if (this.enumFilterModel[field] !== undefined) {
-            if (this.enumFilterModel[field].value.name === undefined) {
-              if (this.filter[field] === 'ALL') {
-                this.enumFilterModel[field].value = this.enumFilterModel[field].list[0];
-              } else {
-                this.enumFilterModel[field].value = this.filter[field];
-              }
+      }
+      this.paginator.pageIndex = this.filter.pageIndex;
+      this.paginator.pageSize = this.filter.pageSize;
+      this.sort = this.filter.sort;
+      this.lastVisitedId = this.filter.detailsState.currentId;
+      for (const field in this.filter) {
+        if (!this.filter.hasOwnProperty(field)) {
+          continue;
+        }
+        this.textFilterModel[field] = this.filter[field];
+        if (this.enumFilterModel[field] !== undefined) {
+          if (this.enumFilterModel[field].value.name === undefined) {
+            if (this.filter[field] === 'ALL') {
+              this.enumFilterModel[field].value = this.enumFilterModel[field].list[0];
             } else {
-              this.enumFilterModel[field].value = this.enumFilterModel[field].list.find(value => value.name === this.filter[field]);
+              this.enumFilterModel[field].value = this.filter[field];
             }
+          } else {
+            this.enumFilterModel[field].value = this.enumFilterModel[field].list.find(value => value.name === this.filter[field]);
           }
         }
       }
+    } else {
+      this.initDefaultFilter();
     }
   }
 
@@ -273,8 +262,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   onRowClicked(row) {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/' + this.path, row.id]));
+    this.filter.detailsState.currentId = row.id;
+    this.router.navigateByUrl('/' + this.path + '/details');
   }
 
   clear() {
@@ -292,8 +281,14 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
       this.textFilterModel[filterParam] = null;
     }
     this.resetDaterangeObservable.reset();
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/' + this.path]));
+    this.filter.detailsState.skip = true;
+
+    this.router.routeReuseStrategy.shouldReuseRoute = function(){return false;};
+    this.router.navigateByUrl('/' + this.path)
+        .then(() => {
+          this.router.navigated = false;
+          this.router.navigate([this.router.url]);
+        });
   }
 
   refresh() {
@@ -301,7 +296,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   back() {
-    this.location.back();
+    this.router.navigateByUrl(this.routingState.getPreviousUrl());
   }
 
   gotoTop() {

@@ -1,19 +1,16 @@
 <div fxLayoutAlign="end" fxLayoutAlign.xs="center">
   <div class="delis-button-row delis-button-row-footer">
-    <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
-      <mat-icon>keyboard_backspace</mat-icon>
-    </button>
-    <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
-      <mat-icon>refresh</mat-icon>
-    </button>
     <button mat-mini-fab color="primary" (click)="nextUp()" title="{{ 'previous' | translate }}" aria-label="Previous" [disabled]="!isNextUp">
       <mat-icon class="rotate-90">keyboard_backspace</mat-icon>
     </button>
     <button mat-mini-fab color="primary" (click)="nextDown()" title="{{ 'next' | translate }}" aria-label="Next" [disabled]="!isNextDown">
       <mat-icon class="rotate-270">keyboard_backspace</mat-icon>
     </button>
-    <button mat-mini-fab color="primary" (click)="gotoTop()" title="{{ 'up' | translate }}" aria-label="Page Up">
-      <mat-icon>navigation</mat-icon>
+    <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+      <mat-icon>keyboard_backspace</mat-icon>
     </button>
   </div>
 </div>

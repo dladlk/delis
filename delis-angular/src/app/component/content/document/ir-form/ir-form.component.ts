@@ -1,25 +1,26 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {MatCheckboxChange, MatSelect} from '@angular/material';
-import {SuccessModel} from '../../../../model/system/success.model';
-import {DocumentInvoiceModel} from '../../../../model/content/document/document-invoice.model';
-import {DocumentInvoiceResponseFormModel} from '../../../../model/content/document/document-invoice-response-form.model';
-import {InvoiceResponseGenerationModel} from '../../../../model/content/document/invoice-response-generation.model';
-import {ErrorModel} from '../../../../model/system/error.model';
-import {InvoiceErrorRecordModel} from '../../../../model/content/document/invoice-error-record.model';
-import {ActivatedRoute} from '@angular/router';
-import {DocumentInvoiceService} from '../../../../service/content/document-invoice.service';
-import {ErrorService} from '../../../../service/system/error.service';
-import {FileSaverService} from '../../../../service/system/file-saver.service';
-import {SpinnerService} from '../../../../service/system/spinner.service';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from "rxjs";
+import { MatCheckboxChange, MatSelect } from '@angular/material';
+import { SuccessModel } from '../../../../model/system/success.model';
+import { DocumentInvoiceModel } from '../../../../model/content/document/document-invoice.model';
+import { DocumentInvoiceResponseFormModel } from '../../../../model/content/document/document-invoice-response-form.model';
+import { InvoiceResponseGenerationModel } from '../../../../model/content/document/invoice-response-generation.model';
+import { ErrorModel } from '../../../../model/system/error.model';
+import { InvoiceErrorRecordModel } from '../../../../model/content/document/invoice-error-record.model';
+import { DocumentInvoiceService } from '../../../../service/content/document-invoice.service';
+import { ErrorService } from '../../../../service/system/error.service';
+import { FileSaverService } from '../../../../service/system/file-saver.service';
+import { SpinnerService } from '../../../../service/system/spinner.service';
+import { DelisEntityDetailsObservable } from "../../../../observable/delis-entity-details.observable";
 
 @Component({
   selector: 'app-ir-form',
   templateUrl: './ir-form.component.html',
   styleUrls: ['./ir-form.component.scss']
 })
-export class IrFormComponent implements OnInit {
+export class IrFormComponent implements OnInit, OnDestroy {
 
-  documentId: number;
+  @Input() documentId: number;
   @Input() effectiveDate: string;
 
   @ViewChild('inputGroupStatusReason', {static: true}) inputGroupStatusReason: MatSelect;
@@ -60,15 +61,34 @@ export class IrFormComponent implements OnInit {
   errorList: InvoiceErrorRecordModel[] = [];
   isErrorList = false;
 
-  constructor(private route: ActivatedRoute,
-              private documentInvoiceService: DocumentInvoiceService,
+  private pageUpdate$: Subscription;
+
+  constructor(private documentInvoiceService: DocumentInvoiceService,
               private errorService: ErrorService,
-              public spinnerService: SpinnerService) { }
+              public spinnerService: SpinnerService,
+              private delisEntityDetailsObservable: DelisEntityDetailsObservable) {
+    this.pageUpdate$ = this.delisEntityDetailsObservable.listen().subscribe((id: any) => {
+      this.documentId = id;
+      this.loadInvoice(this.documentId);
+    });
+  }
 
   ngOnInit() {
-    const id = Number.parseInt(this.route.snapshot.paramMap.get('id'));
-    this.documentId = id;
+    if (this.documentId) {
+      this.loadInvoice(this.documentId);
+    }
+  }
+  ngOnDestroy() {
+    if (this.pageUpdate$) {
+      this.pageUpdate$.unsubscribe();
+    }
+  }
+
+  loadInvoice(id: any) {
     this.documentInvoiceService.getInvoice(id).subscribe((data: any) => {
+      this.error = false;
+      this.errorDownload = false;
+      this.isErrorList = false;
       this.documentInvoiceModel = data.data;
       this.setDefaultConfig();
     }, error => {

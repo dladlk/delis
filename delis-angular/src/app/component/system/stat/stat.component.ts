@@ -30,7 +30,6 @@ export class StatComponent implements OnInit {
       path: this.path
     };
     this.redirectService.updateRedirectData(data);
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/' + this.path]));
+    this.router.navigate(['/' + this.path]);
   }
 }

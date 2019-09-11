@@ -61,7 +61,7 @@
 </mat-card>
 
 <div *ngIf="!errorOneDocument && !hideForm" class="mb-20">
-  <app-ir-form [effectiveDate]="document.documentDate"></app-ir-form>
+  <app-ir-form [effectiveDate]="document.documentDate" [documentId]="documentId"></app-ir-form>
 </div>
 
 <mat-card class="mb-20">

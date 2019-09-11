@@ -29,19 +29,19 @@ const routes: Routes = [
         path: IDENTIFIER_PATH, component: IdentifierComponent
       },
       {
-        path: IDENTIFIER_PATH + '/:id', component: IdentifierDetailsComponent
+        path: IDENTIFIER_PATH + '/details', component: IdentifierDetailsComponent
       },
       {
         path: DOCUMENT_PATH, component: DocumentComponent
       },
       {
-        path: DOCUMENT_PATH + '/:id', component: DocumentDetailsComponent
+        path: DOCUMENT_PATH + '/details', component: DocumentDetailsComponent
       },
       {
         path: SEND_DOCUMENT_PATH, component: SendDocumentComponent
       },
       {
-        path: SEND_DOCUMENT_PATH + '/:id', component: SendDocumentDetailsComponent
+        path: SEND_DOCUMENT_PATH + '/details', component: SendDocumentDetailsComponent
       },
       {
         path: 'logout', component: LogoutComponent

@@ -171,15 +171,15 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
   }
 
   checkLineChart() {
-    this.isLineChart = true;
-    this.isBarChart = false;
-    this.chartDocumentService.updateChartType(LINE_CHART_TYPE);
-  }
-
-  checkBarChart() {
     this.isLineChart = false;
     this.isBarChart = true;
     this.chartDocumentService.updateChartType(BAR_CHART_TYPE);
+  }
+
+  checkBarChart() {
+    this.isLineChart = true;
+    this.isBarChart = false;
+    this.chartDocumentService.updateChartType(LINE_CHART_TYPE);
   }
 
   initRange() {
@@ -194,12 +194,12 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
     const chartType = this.chartDocumentService.chartType;
     if (chartType) {
       if (chartType === LINE_CHART_TYPE) {
-        this.checkLineChart();
-      } else {
         this.checkBarChart();
+      } else {
+        this.checkLineChart();
       }
     } else {
-      this.checkLineChart();
+      this.checkBarChart();
     }
   }
 

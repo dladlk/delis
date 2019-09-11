@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StateService } from '../../../service/state/state-service';
 import { TableStateModel } from '../../../model/filter/table-state.model';
+import { DelisEntityDetailsObservable } from "../../../observable/delis-entity-details.observable";
+import { RoutingStateService } from "../../../service/system/routing-state.service";
 
 @Component({
   selector: 'app-delis-table-details-header',
@@ -18,7 +20,7 @@ export class DelisTableDetailsHeaderComponent implements OnInit {
   @Input() header: string;
   @Input() stateService: StateService<TableStateModel>;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private routingState: RoutingStateService, private delisEntityDetailsObservable: DelisEntityDetailsObservable) { }
 
   ngOnInit() {
     if (this.stateService !== undefined) {
@@ -33,25 +35,24 @@ export class DelisTableDetailsHeaderComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['/' + this.path], { queryParams: { skip: false } });
+    this.stateService.filter.detailsState.skip = false;
+    this.router.navigateByUrl(this.routingState.getPreviousUrl());
   }
 
   nextUp() {
     const upId = this.currentIds[this.currentIds.indexOf(this.id) - 1];
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        this.router.navigate(['/' + this.path, upId]));
+    this.delisEntityDetailsObservable.loadCurrentId(upId);
   }
 
   nextDown() {
     const downId = this.currentIds[this.currentIds.indexOf(this.id) + 1];
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        this.router.navigate(['/' + this.path, downId]));
+    this.delisEntityDetailsObservable.loadCurrentId(downId);
   }
 
   refreshData() {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-        this.router.navigate(['/' + this.path, this.id]));
+    this.delisEntityDetailsObservable.loadCurrentId(this.id);
   }
+
   gotoBottom() {
     window.scrollTo(0, 10000);
   }

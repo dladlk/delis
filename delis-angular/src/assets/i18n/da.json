@@ -205,5 +205,8 @@
   "profile.menu.role": "Rolle",
   "profile.menu.organisation": "Organisation",
 
-  "generate": "Udvikle"
+  "generate": "Udvikle",
+
+  "page.not-found": "SIDEN BLEV IKKE FUNDET",
+  "page.not-found.go-to": "Gå til"
 }

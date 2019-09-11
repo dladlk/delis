@@ -3,6 +3,7 @@
 .delis-main-content {
   margin-left: 1pt;
   margin-right: 1pt;
+  display: block;
 }
 
 @media screen and (max-width: 992px) {
@@ -36,6 +37,7 @@
 .delis-button-row-footer {
   position: fixed;
   bottom: 20px;
+  display: block;
 }
 
 .download-muted {

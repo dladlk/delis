@@ -33,6 +33,15 @@ $theme: mat-light-theme($primary, $accent);
   color: green !important;
 }
 
+.system-color-not-found {
+  color: #3eb8ea !important;
+}
+
+.system-color-not-found-background {
+  background-color: #3eb8ea !important;
+  color: #fafafa;
+}
+
 $delis-font-family: 'IBM Plex Sans';
 
 // default font-family:

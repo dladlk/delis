@@ -206,5 +206,8 @@
   "profile.menu.role": "Role",
   "profile.menu.organisation": "Organisation",
 
-  "generate": "Generate"
+  "generate": "Generate",
+
+  "page.not-found": "PAGE NOT FOUND",
+  "page.not-found.go-to": "Go to"
 }

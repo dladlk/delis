@@ -7,17 +7,16 @@
       </div>
       <div fxFlex fxLayoutAlign="end" fxLayoutAlign.xs="center">
         <div class="delis-button-row vertical-align-center">
-          <button mat-mini-fab color="primary" (click)="checkLineChart()" title="{{ 'lineChart' | translate }}" aria-label="Line Chart">
+          <button mat-mini-fab color="primary" (click)="checkLineChart()" title="{{ 'lineChart' | translate }}" aria-label="Line Chart" *ngIf="isLineChart; else elseBar">
             <mat-icon>show_chart</mat-icon>
           </button>
-          <button mat-mini-fab color="primary" (click)="checkBarChart()" title="{{ 'barChart' | translate }}" aria-label="Bar Chart">
-            <mat-icon>bar_chart</mat-icon>
-          </button>
+          <ng-template #elseBar>
+            <button mat-mini-fab color="primary" (click)="checkBarChart()" title="{{ 'barChart' | translate }}" aria-label="Bar Chart">
+              <mat-icon>bar_chart</mat-icon>
+            </button>
+          </ng-template>
           <button mat-mini-fab color="primary" (click)="refresh()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
             <mat-icon>refresh</mat-icon>
-          </button>
-          <button mat-mini-fab color="primary" (click)="clear()" title="{{ 'pagination.clear' | translate }}" aria-label="Clear">
-            <mat-icon>autorenew</mat-icon>
           </button>
         </div>
       </div>

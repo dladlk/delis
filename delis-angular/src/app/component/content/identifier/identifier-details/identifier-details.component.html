@@ -1,78 +1,78 @@
 <app-delis-table-details-header
-  [currentIds]="currentIds"
-  [id]="id"
-  [isNextDown]="isNextDown"
-  [isNextUp]="isNextUp"
-  [path]="IDENTIFIER_PATH"
-  [stateService]="stateService"
-  [header]="'identifier.header.details'">
+        [currentIds]="currentIds"
+        [id]="id"
+        [isNextDown]="isNextDown"
+        [isNextUp]="isNextUp"
+        [path]="IDENTIFIER_PATH"
+        [stateService]="stateService"
+        [header]="'identifier.header.details'">
 </app-delis-table-details-header>
 
 <div *ngIf="errorOneIdentifier" class="table-details-error">
-  <mat-card class="mb-20">
-    <app-error [errorModel]="errorOneIdentifierModel"></app-error>
-  </mat-card>
+    <mat-card class="mb-20">
+        <app-error [errorModel]="errorOneIdentifierModel"></app-error>
+    </mat-card>
 </div>
 
 <mat-card class="mb-20">
-  <div class="table-scroll">
-    <table class="delis-table-data">
-      <thead>
-      <tr>
-        <th>{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
-        <th>{{ 'identifier.table.columnName.createTime' | translate }}</th>
-        <th>{{ 'identifier.header' | translate }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>
-          <span *ngIf="identifier.organisation !== null">{{ identifier.organisation.name }}</span></td>
-        <td>{{ identifier.createTime | date: SHOW_DATE_FORMAT }}</td>
-        <td>{{ identifier.type }} {{ identifier.value }}</td>
-      </tr>
-      </tbody>
-      <thead>
-      <tr>
-        <th>Navn</th>
-        <th>Publicering</th>
-        <th>Status</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>{{ identifier.name }}</td>
-        <td>{{ identifier.publishingStatus }}</td>
-        <td>{{ identifier.status }}</td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="table-scroll">
+        <table class="delis-table-data">
+            <thead>
+            <tr>
+                <th>{{ 'documents.table.send.one.columnName.organisation' | translate }}</th>
+                <th>{{ 'identifier.table.columnName.createTime' | translate }}</th>
+                <th>{{ 'identifier.header' | translate }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <span *ngIf="identifier.organisation !== null">{{ identifier.organisation.name }}</span></td>
+                <td>{{ identifier.createTime | date: SHOW_DATE_FORMAT }}</td>
+                <td>{{ identifier.type }} {{ identifier.value }}</td>
+            </tr>
+            </tbody>
+            <thead>
+            <tr>
+                <th>Navn</th>
+                <th>Publicering</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ identifier.name }}</td>
+                <td>{{ identifier.publishingStatus }}</td>
+                <td>{{ identifier.status }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </mat-card>
 
 <div *ngIf="errorOneJournalIdentifiers" class="table-details-error">
-  <mat-card class="mb-20">
-    <app-error [errorModel]="errorOneJournalIdentifiersModel"></app-error>
-  </mat-card>
+    <mat-card class="mb-20">
+        <app-error [errorModel]="errorOneJournalIdentifiersModel"></app-error>
+    </mat-card>
 </div>
 
 <mat-card class="mb-80">
-  <mat-card-title>
-    {{ 'journal.identifier.table.header' | translate }}
-  </mat-card-title>
+    <mat-card-title>
+        {{ 'journal.identifier.table.header' | translate }}
+    </mat-card-title>
 
-  <div class="table-scroll">
-    <table class="delis-table-data">
-      <tr>
-        <th>{{ 'journal.identifier.table.columnName.createTime' | translate }}</th>
-        <th>{{ 'journal.identifier.table.columnName.message' | translate }}</th>
-      </tr>
-      <tr *ngFor="let doc of journalIdentifiers">
-        <td>{{ doc.createTime | date: SHOW_DATE_FORMAT }}</td>
-        <td>{{ doc.message }}</td>
-      </tr>
-    </table>
-  </div>
+    <div class="table-scroll">
+        <table class="delis-table-data">
+            <tr>
+                <th>{{ 'journal.identifier.table.columnName.createTime' | translate }}</th>
+                <th>{{ 'journal.identifier.table.columnName.message' | translate }}</th>
+            </tr>
+            <tr *ngFor="let doc of journalIdentifiers">
+                <td>{{ doc.createTime | date: SHOW_DATE_FORMAT }}</td>
+                <td>{{ doc.message }}</td>
+            </tr>
+        </table>
+    </div>
 
 </mat-card>
 

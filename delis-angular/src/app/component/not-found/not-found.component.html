@@ -1,1 +1,10 @@
-<p>not-found works!</p>
+<div fxLayout="row wrap" fxLayoutAlign="center center">
+    <div fxFlex.xs="100%" fxLayout="column wrap">
+        <div class="error-content">
+            <h1 class="system-color-not-found text-center">
+                {{ 'page.not-found' | translate }}
+            </h1>
+            <a mat-button class="system-color-not-found-background" [routerLink]="['/dashboard']">{{ 'page.not-found.go-to' | translate }} DELIS</a>
+        </div>
+    </div>
+</div>
