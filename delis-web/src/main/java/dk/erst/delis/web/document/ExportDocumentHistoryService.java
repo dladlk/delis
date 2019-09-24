@@ -23,6 +23,13 @@ public class ExportDocumentHistoryService {
 	public int generateExportFile(File file) throws IOException {
 		int count = 0;
 		try (FileWriter writer = new FileWriter(file)) {
+			
+			String[] columnList = new String[] {"document.id", "document.receved_date", "document.issue_date", "document.status", "documnet.type", "document.format", "document.last_error", "receiver.country", "receiver.number", "receiver.name", "sender.country", "sender.number", "sender.name", "error.id", "error.code", "error.type", "error.flag", "error.message", "error.location", "document.error.location", "document.error.time", "document.error.type"};
+			for (String column : columnList) {
+				writer.write(column);
+				writer.write(";");
+			}
+			writer.write("\r\n");
 			List<Object[]> list = documentDao.loadDocumentHistory();
 			for (Object[] row : list) {
 				for (Object cell : row) {
