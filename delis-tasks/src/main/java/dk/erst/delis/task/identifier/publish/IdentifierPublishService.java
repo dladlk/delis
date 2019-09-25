@@ -48,6 +48,7 @@ public class IdentifierPublishService {
 	}
 
 	public boolean publishIdentifier(Identifier identifier) {
+		long startTotal = System.currentTimeMillis();
 		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier);
 		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
 		if (published == null) {
@@ -57,7 +58,7 @@ public class IdentifierPublishService {
 			long startDelete = System.currentTimeMillis();
 			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
 			if (isDeleted) {
-				addJournalIdentifierRecord(identifier, "Service group is deleted", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
+				addJournalIdentifierRecord(identifier, "Identifier is deleted", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
 			}
 			return isDeleted;
 		}
@@ -68,9 +69,13 @@ public class IdentifierPublishService {
 		
 		long startPublishServiceGroup = System.currentTimeMillis();
 		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
-			addJournalIdentifierRecord(identifier, "Failed to publish service group", System.currentTimeMillis() - startPublishServiceGroup, journalIdentifierDaoRepository);
+			addJournalIdentifierRecord(identifier, "Failed to publish identifier", System.currentTimeMillis() - startPublishServiceGroup, journalIdentifierDaoRepository);
 			return false;
 		}
+		
+		int countDeleted = 0;
+		int countFailed = 0;
+		int countPublished = 0;
 		
 		if (published != null) {
 			for (SmpPublishServiceData publishedService : published.getServiceList()) {
@@ -90,13 +95,20 @@ public class IdentifierPublishService {
 			long start = System.currentTimeMillis();
 			boolean isPublished = publishServiceMetadata(forPublish.getParticipantIdentifier(), serviceForPublish);
 			if (!isPublished) {
-				return false;
+				String message = String.format("Failed to publish '%s'", serviceForPublish.getDocumentIdentifier());
+				addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - startPublishServiceGroup, journalIdentifierDaoRepository);
 			} else {
 				SmpDocumentIdentifier documentIdentifier = serviceForPublish.getDocumentIdentifier();
 				String message = String.format("Published '%s'", documentIdentifier.getDocumentIdentifierValue());
 				addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - start, journalIdentifierDaoRepository);
 			}
 		}
+		
+		if (countDeleted + countFailed + countPublished > 0) {
+			String message = String.format("Updated SMP registration with %d deleted, %d published and %d failed profiles", countDeleted, countPublished, countFailed);
+			addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - startTotal, journalIdentifierDaoRepository);
+		}
+		
 		return true;
 	}
 
