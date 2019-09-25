@@ -86,6 +86,7 @@ public class IdentifierPublishService {
 						SmpDocumentIdentifier documentIdentifier = publishedService.getDocumentIdentifier();
 						String message = String.format("Deleted '%s'", documentIdentifier.getDocumentIdentifierValue());
 						addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - start, journalIdentifierDaoRepository);
+						countDeleted++;
 					}
 				}
 			}
@@ -97,10 +98,12 @@ public class IdentifierPublishService {
 			if (!isPublished) {
 				String message = String.format("Failed to publish '%s'", serviceForPublish.getDocumentIdentifier());
 				addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - startPublishServiceGroup, journalIdentifierDaoRepository);
+				countFailed++;
 			} else {
 				SmpDocumentIdentifier documentIdentifier = serviceForPublish.getDocumentIdentifier();
 				String message = String.format("Published '%s'", documentIdentifier.getDocumentIdentifierValue());
 				addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - start, journalIdentifierDaoRepository);
+				countPublished++;
 			}
 		}
 		
