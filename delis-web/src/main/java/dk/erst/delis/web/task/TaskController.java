@@ -3,8 +3,6 @@ package dk.erst.delis.web.task;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,11 +174,10 @@ public class TaskController {
 		try {
 			File file = File.createTempFile("export_history", "txt");
 			try {
-				String localDateTimeNow = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").format(LocalDateTime.now());
 				exportDocumentHistoryService.generateExportFile(file);
 
 				BodyBuilder resp = ResponseEntity.ok();
-				resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"export_history_" + localDateTimeNow + ".csv\"");
+				resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"document.csv\"");
 				resp.contentType(MediaType.parseMediaType("application/octet-stream"));
 				return resp.body(new InputStreamResource(new FileInputStream(file)));
 			} finally {
