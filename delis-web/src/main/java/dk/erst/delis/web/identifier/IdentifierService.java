@@ -78,7 +78,7 @@ public class IdentifierService {
 	}
 
 	List<JournalIdentifier> getJournalRecords(Identifier identifier) {
-		return journalIdentifierDaoRepository.findTop5ByIdentifierOrderByIdDesc(identifier);
+		return journalIdentifierDaoRepository.findTop10ByIdentifierOrderByIdDesc(identifier);
 	}
 
 	public int markAsDeleted(Long id) {
