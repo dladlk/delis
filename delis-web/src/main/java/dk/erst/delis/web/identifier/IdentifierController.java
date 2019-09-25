@@ -106,14 +106,14 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 		List<Long> ids = idList.getIdList();
 		IdentifierStatus status = idList.getStatus();
 		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();
-		identifierService.updateStatuses(ids, status, publishStatus);
+		identifierService.updateStatuses(ids, status, publishStatus, null);
 		return "redirect:/identifier/list";
 	}
 
 	@PostMapping("/identifier/updatestatus")
 	public String updateStatus(Identifier staleIdentifier, RedirectAttributes ra) {
 		Long id = staleIdentifier.getId();
-		int i = identifierService.updateStatus(id, staleIdentifier.getStatus(), staleIdentifier.getPublishingStatus());
+		int i = identifierService.updateStatus(id, staleIdentifier.getStatus(), staleIdentifier.getPublishingStatus(), null);
 		if (i == 0) {
 			ra.addFlashAttribute("errorMessage", "Identifier with ID " + id + " is not found");
 			return "redirect:/identifier/list";

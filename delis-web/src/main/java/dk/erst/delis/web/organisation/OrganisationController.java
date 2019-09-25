@@ -171,7 +171,7 @@ public class OrganisationController {
 				idsForUpdate.add(identifier.getId());
 			}
 		});
-		return identifierService.updateStatuses(idsForUpdate, IdentifierStatus.ACTIVE, IdentifierPublishingStatus.PENDING);
+		return identifierService.updateStatuses(idsForUpdate, IdentifierStatus.ACTIVE, IdentifierPublishingStatus.PENDING, "Pending publishing after change of organisation setup");
 	}
 
 	@PostMapping("/organisation/save")
