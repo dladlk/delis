@@ -54,9 +54,10 @@ public class IdentifierPublishService {
 			log.info(String.format("ServiceGroup by Identifier '%s' is absent in SMP", identifier.getValue()));
 		}
 		if (identifier.getStatus().isDeleted()) {
+			long startDelete = System.currentTimeMillis();
 			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
 			if (isDeleted) {
-				addJournalIdentifierRecord(identifier, "Service group was deleted", journalIdentifierDaoRepository);
+				addJournalIdentifierRecord(identifier, "Service group is deleted", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
 			}
 			return isDeleted;
 		}
@@ -64,42 +65,47 @@ public class IdentifierPublishService {
 			log.info(String.format("Publish data created for identifier '%s' is invalid!", identifier.getValue()));
 			return false;
 		}
+		
+		long startPublishServiceGroup = System.currentTimeMillis();
 		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
-			addJournalIdentifierRecord(identifier, "Unable to publish service group", journalIdentifierDaoRepository);
+			addJournalIdentifierRecord(identifier, "Failed to publish service group", System.currentTimeMillis() - startPublishServiceGroup, journalIdentifierDaoRepository);
 			return false;
 		}
 		
 		if (published != null) {
 			for (SmpPublishServiceData publishedService : published.getServiceList()) {
 				if (!contains(publishedService, forPublish.getServiceList())) {
+					long start = System.currentTimeMillis();
 					boolean isDeleted = deleteServiceMetadata(published.getParticipantIdentifier(), publishedService);
 					if (isDeleted) {
 						SmpDocumentIdentifier documentIdentifier = publishedService.getDocumentIdentifier();
-						String message = String.format("Service metadata with DocumentIdentifier value '%s' was deleted", documentIdentifier.getDocumentIdentifierValue());
-						addJournalIdentifierRecord(identifier, message, journalIdentifierDaoRepository);
+						String message = String.format("Deleted '%s'", documentIdentifier.getDocumentIdentifierValue());
+						addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - start, journalIdentifierDaoRepository);
 					}
 				}
 			}
 		}
 		List<SmpPublishServiceData> servicesForPublish = forPublish.getServiceList();
 		for (SmpPublishServiceData serviceForPublish : servicesForPublish) {
+			long start = System.currentTimeMillis();
 			boolean isPublished = publishServiceMetadata(forPublish.getParticipantIdentifier(), serviceForPublish);
 			if (!isPublished) {
 				return false;
 			} else {
 				SmpDocumentIdentifier documentIdentifier = serviceForPublish.getDocumentIdentifier();
-				String message = String.format("Service metadata with DocumentIdentifier value '%s' was published", documentIdentifier.getDocumentIdentifierValue());
-				addJournalIdentifierRecord(identifier, message, journalIdentifierDaoRepository);
+				String message = String.format("Published '%s'", documentIdentifier.getDocumentIdentifierValue());
+				addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - start, journalIdentifierDaoRepository);
 			}
 		}
 		return true;
 	}
 
-	private void addJournalIdentifierRecord(Identifier identifier, String message, JournalIdentifierDaoRepository journalIdentifierDaoRepository) {
+	private void addJournalIdentifierRecord(Identifier identifier, String message, long durationMs, JournalIdentifierDaoRepository journalIdentifierDaoRepository) {
 		JournalIdentifier journalIdentifier = new JournalIdentifier();
 		journalIdentifier.setIdentifier(identifier);
 		journalIdentifier.setOrganisation(identifier.getOrganisation());
 		journalIdentifier.setMessage(message);
+		journalIdentifier.setDurationMs(durationMs);
 		this.journalIdentifierDaoRepository.save(journalIdentifier);
 	}
 
