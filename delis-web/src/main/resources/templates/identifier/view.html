@@ -78,7 +78,7 @@
 				</tr>
 				<tr th:each="r,iter : ${lastJournalList}">
 					<td th:text="${r.createTime}"></td>
-					<td th:text="${r.message}"></td>
+					<td th:utext="${@identifierController.replaceIdentifierWithCode(r.message)}"></td>
 					<td th:text="${r.durationMs}"/>
 				</tr>
 			</table>

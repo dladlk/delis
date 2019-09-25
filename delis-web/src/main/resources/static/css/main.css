@@ -24,3 +24,7 @@ ul.org-smp-setup li ul li {
 .no-wrap {
 	white-space: nowrap;
 }
+.delis-profile-code {
+	font-style:italic;
+	font-weight: bold; 
+}
