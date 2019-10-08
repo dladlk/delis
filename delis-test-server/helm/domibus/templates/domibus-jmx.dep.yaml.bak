@@ -1,0 +1,67 @@
+{{- if .Values.jmx.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-jmx'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}-jmx'
+  name: '{{.Release.Name}}-jmx'
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-jmx'
+  strategy:
+    type: '{{.Values.jmx.deploymentStrategy}}'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-jmx'
+    spec:
+      restartPolicy: '{{.Values.jmx.restartPolicy}}'
+      containers:
+      - env:
+        - name: DOMIBUS_HOME_OVERWRITE
+          value: '/home/overwrite/*'
+
+        - name: MERGE_DOMIBUS_PROPERTIES_ENV_PREFIX
+          value: 'DOMIBUS_PROPERTY_'
+
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKER_HOST
+          value: '{{.Values.dtx.env.activemqhost}}'
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKERNAME
+          value: "localhost"
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_USERNAME
+          value: '{{.Values.dtx.env.activemqusername}}'
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_PASSWORD
+          value: '{{.Values.dtx.env.activemqpassword}}'
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_CONNECTORPORT
+          value: "1199"
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_RMISERVERPORT
+          value: "1200"
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_TRANSPORTCONNECTOR_URI
+          value: "tcp://localhost:61616?jms.watchTopicAdvisories=false"
+
+        - name: JAVA_OPTS
+          value: '{{.Values.jmx.env.javaopts}}'
+
+        image: '{{.Values.all.imagePrefix}}{{.Values.jmx.image}}:{{.Values.jmx.imageTag}}'
+        imagePullPolicy: '{{.Values.jmx.imagePullPolicy}}'
+        name: '{{.Release.Name}}-jmx'
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+#        volumeMounts:
+#        - mountPath: /usr/local/tomcat/logs
+#          name: domibus-logs
+#          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
+      imagePullSecrets:
+      - name: {{ .Values.dtx.imagePullSecret }}
+#      volumes:
+#      - name: domibus-logs
+#        hostPath:
+#          path: /data/logs
+{{ -end }}

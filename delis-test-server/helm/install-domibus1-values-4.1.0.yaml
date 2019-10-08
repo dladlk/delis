@@ -2,3 +2,19 @@ dtx:
   imageTag: 4.1.1.0
   env:
     unsecureLoginAllowed: 'false'
+
+  envExt:
+    - name: DOMIBUS_PROPERTY_domibus_alert_active
+      value: 'true'  
+    - name: DOMIBUS_PROPERTY_domibus_alert_mail_sending_active
+      value: 'true'  
+    - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_url
+      value: '172.16.2.4'  
+    - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_port
+      value: '25'  
+    - name: DOMIBUS_PROPERTY_domibus_alert_sender_email
+      value: 'dlk@edelivery-test.trueservice.dk'  
+    - name: DOMIBUS_PROPERTY_domibus_alert_receiver_email
+      value: 'dlk@truelink.dk'
+    - name: DOMIBUS_PROPERTY_domibus_alert_user_login_failure_active
+      value: 'true'

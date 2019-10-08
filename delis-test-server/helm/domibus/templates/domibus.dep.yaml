@@ -120,6 +120,10 @@ spec:
         - name: CONTEXT_NAME
           value: domibus{{.Values.partyIndex}}
 
+{{ with .Values.dtx.envExt }}
+{{ toYaml . | indent 8 -}}
+{{- end }}          
+
         image: '{{.Values.all.imagePrefix}}{{.Values.dtx.image}}:{{.Values.dtx.imageTag}}'
         imagePullPolicy: '{{.Values.dtx.imagePullPolicy}}'
         name: '{{.Release.Name}}'
