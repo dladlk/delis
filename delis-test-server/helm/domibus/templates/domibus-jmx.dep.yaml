@@ -64,4 +64,4 @@ spec:
 #      - name: domibus-logs
 #        hostPath:
 #          path: /data/logs
-{{ -end }}
+{{- end }}
