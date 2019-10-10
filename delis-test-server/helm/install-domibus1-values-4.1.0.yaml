@@ -1,5 +1,5 @@
 dtx:
-  imageTag: 4.1.1.0
+  imageTag: 4.1.1.1
   env:
     unsecureLoginAllowed: 'false'
 
@@ -9,12 +9,40 @@ dtx:
     - name: DOMIBUS_PROPERTY_domibus_alert_mail_sending_active
       value: 'true'  
     - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_url
-      value: '172.16.2.4'  
+      value: 'smtp.sendgrid.net'  
     - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_port
-      value: '25'  
+      value: '587'  
+
+#   When mail.transport.protocol was set to smtps, sending emails did not work
+#    - name: DOMIBUS_PROPERTY_domibus_alert_mail_transport_protocol
+#      value: 'smtps'
+    - name: DOMIBUS_PROPERTY_domibus_alert_mail_smtp_host
+      value: 'smtp.sendgrid.net'
+    - name: DOMIBUS_PROPERTY_domibus_alert_mail_smtp_port
+      value: '587'
+    - name: DOMIBUS_PROPERTY_domibus_alert_mail_smtp_starttls_enable
+      value: 'true'
+    - name: DOMIBUS_PROPERTY_domibus_alert_mail_smtp_starttls_required
+      value: 'true'
+    - name: DOMIBUS_PROPERTY_domibus_alert_mail_smtp_auth
+      value: 'true'      
+
+#     Example of alternative configuration - with sending to local Postfix
+#    - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_url
+#      value: '172.16.2.4'  
+#    - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_port
+#      value: '25'  
+#    - name: DOMIBUS_PROPERTY_domibus_alert_sender_email
+#      value: 'dlk@edelivery-test.trueservice.dk'  
+
+
     - name: DOMIBUS_PROPERTY_domibus_alert_sender_email
       value: 'dlk@edelivery-test.trueservice.dk'  
     - name: DOMIBUS_PROPERTY_domibus_alert_receiver_email
       value: 'dlk@truelink.dk'
-    - name: DOMIBUS_PROPERTY_domibus_alert_user_login_failure_active
+    - name: DOMIBUS_PROPERTY_domibus_alert_user_login__failure_active
       value: 'true'
+
+
+    - name: DOMIBUS_PROPERTY_domibus_alert_retry_max__attempts
+      value: '0'

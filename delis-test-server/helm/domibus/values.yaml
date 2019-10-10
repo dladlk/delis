@@ -30,6 +30,8 @@ dtx:
     domibus_dispatcher_timeout: 30000
     unsecureLoginAllowed: 'true'
     fsplugin_validation_endpoint: https://edelivery-test.trueservice.dk:443/delis-web-admin/rest/open/receivercheck/
+    domibus_alert_sender_smtp_user: ''
+    domibus_alert_sender_smtp_password: ''
 
   envExt: []
 

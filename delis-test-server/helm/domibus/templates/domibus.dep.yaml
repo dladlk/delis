@@ -120,6 +120,11 @@ spec:
         - name: CONTEXT_NAME
           value: domibus{{.Values.partyIndex}}
 
+        - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_user
+          value: '{{.Values.dtx.env.domibus_alert_sender_smtp_user}}'
+        - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_password
+          value: '{{.Values.dtx.env.domibus_alert_sender_smtp_password}}'
+
 {{ with .Values.dtx.envExt }}
 {{ toYaml . | indent 8 -}}
 {{- end }}          
