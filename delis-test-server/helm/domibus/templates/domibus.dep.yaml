@@ -53,6 +53,7 @@ spec:
           value: 'domibus{{.Values.partyIndex}}dbuser'
         - name: DOMIBUS_PROPERTY_DOMIBUS_DATASOURCE_XA_PROPERTY_PASSWORD
           value: 'domibus{{.Values.partyIndex}}dbuser'
+
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKER_HOST
           value: '{{.Values.dtx.env.activemqhost}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKERNAME
@@ -66,7 +67,8 @@ spec:
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_RMISERVERPORT
           value: "1200"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_TRANSPORTCONNECTOR_URI
-          value: "tcp://localhost:61616?jms.watchTopicAdvisories=false"
+          value: "{{.Values.dtx.env.activemqtransport}}"
+
         - name: DOMIBUS_PROPERTY_DOMIBUS_MSH_RETRY_CRON
           value: '{{.Values.dtx.env.cron}}'
         - name: DOMIBUS_PROPERTY_DOMIBUS_PULL_RETRY_CRON

@@ -23,8 +23,16 @@ spec:
       restartPolicy: '{{.Values.jmx.restartPolicy}}'
       containers:
       - env:
-        - name: DOMIBUS_HOME_OVERWRITE
-          value: '/home/overwrite/*'
+        - name: ACTIVEMQ_NAME
+          value: {{.Values.dtx.env.activemqhost}}
+        - name: ACTIVEMQ_CONFIG_DEFAULTACCOUNT
+          value: 'false' #IMPORTANT - for security reasons remove all default accounts
+        - name: ACTIVEMQ_ADMIN_LOGIN
+          value: adminred
+        - name: ACTIVEMQ_ADMIN_PASSWORD
+          value: passred
+        - name: ACTIVEMQ_ENABLED_SCHEDULER
+          value: 'false' #IMPORTANT - scheduler already activated, do not set it to true, otherwise double attribute is set
 
         - name: MERGE_DOMIBUS_PROPERTIES_ENV_PREFIX
           value: 'DOMIBUS_PROPERTY_'
@@ -32,7 +40,7 @@ spec:
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKER_HOST
           value: '{{.Values.dtx.env.activemqhost}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKERNAME
-          value: "localhost"
+          value: "{{.Values.dtx.env.activemqhost}}"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_USERNAME
           value: '{{.Values.dtx.env.activemqusername}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_PASSWORD
@@ -42,7 +50,7 @@ spec:
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_RMISERVERPORT
           value: "1200"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_TRANSPORTCONNECTOR_URI
-          value: "tcp://localhost:61616?jms.watchTopicAdvisories=false"
+          value: "{{.Values.dtx.env.activemqtransport}}"
 
         - name: JAVA_OPTS
           value: '{{.Values.jmx.env.javaopts}}'
@@ -54,14 +62,18 @@ spec:
         - containerPort: 8080
           name: http
           protocol: TCP
-#        volumeMounts:
-#        - mountPath: /usr/local/tomcat/logs
-#          name: domibus-logs
-#          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
+        volumeMounts:
+        - mountPath: /data
+          name: activemq-data
+        - mountPath: /var/log/activemq
+          name: activemq-log
       imagePullSecrets:
       - name: {{ .Values.dtx.imagePullSecret }}
-#      volumes:
-#      - name: domibus-logs
-#        hostPath:
-#          path: /data/logs
+      volumes:
+      - name: activemq-data
+        hostPath:
+          path: /data/activemq/domibus${{.Values.partyIndex}}/data
+      - name: activemq-log
+        hostPath:
+          path: /data/activemq/domibus${{.Values.partyIndex}}/log
 {{- end }}

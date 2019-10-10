@@ -18,6 +18,7 @@ dtx:
     activemqhost: localhost
     activemqpassword: changeit
     activemqusername: domibus
+    activemqtransport: tcp://localhost:61616?jms.watchTopicAdvisories=false
     databasehost: 172.16.2.4
     databaseport: "3306"
     javaopts: -Xmx384m -XX:MaxMetaspaceSize=200m -Dmode.TEST.security.pki=/peppol_pki_local/pki_local.xml -Dlogging.level.org.apache.cxf=INFO
