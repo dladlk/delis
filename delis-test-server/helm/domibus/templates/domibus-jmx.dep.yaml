@@ -40,7 +40,7 @@ spec:
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKER_HOST
           value: '{{.Values.dtx.env.activemqhost}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKERNAME
-          value: "{{.Values.dtx.env.activemqhost}}"
+          value: "{{.Values.dtx.env.activemqBrokerName}}"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_USERNAME
           value: '{{.Values.dtx.env.activemqusername}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_PASSWORD
@@ -50,7 +50,10 @@ spec:
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_RMISERVERPORT
           value: "1200"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_TRANSPORTCONNECTOR_URI
-          value: "{{.Values.dtx.env.activemqtransport}}"
+          value: "{{.Values.jmx.env.activemqtransport}}"
+        - name: DOMIBUS_PROPERTY_activeMQ_console_context
+          value: "{{.Values.jmx.env.consoleContext}}"
+        
 
         - name: JAVA_OPTS
           value: '{{.Values.jmx.env.javaopts}}'

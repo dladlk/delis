@@ -1,0 +1,16 @@
+dtx:
+  env:
+    activemqEmbeddedConfigFile: '' # Set to empty value to tell Domibus to use external message broker
+    activemqhost: dt1-jmx
+    activemqpassword: changeit
+    activemqusername: domibus
+    activemqtransport: tcp://dt1-jmx:61616?jms.watchTopicAdvisories=false
+    activemqBrokerName: dt1-jmx
+
+jmx:
+  enabled: true
+  ingress:
+    enabled: true
+  env: 
+    activemqtransport: tcp://0.0.0.0:61616?jms.watchTopicAdvisories=false
+    consoleContext: 'jmx1'
