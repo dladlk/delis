@@ -5,6 +5,7 @@ partyIndex: 1
 all:
   imagePrefix: cef-erst/
 dtx:
+  replicas: 1
   deploymentStrategy: RollingUpdate
   
   image: domibus-tomcat
