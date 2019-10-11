@@ -9,6 +9,7 @@ metadata:
   name: '{{.Release.Name}}'
   namespace: '{{.Values.namespace}}'
 spec:
+  replicas: {{.Values.dtx.replicas}}
   selector:
     matchLabels:
       app: '{{.Release.Name}}'
@@ -144,9 +145,9 @@ spec:
         - mountPath: /usr/local/tomcat/domibus/keystores
           name: domibus-ks
           subPath: keystore_dynconcepttestparty0{{.Values.partyIndex}}gw
-        - mountPath: /usr/local/tomcat/logs
-          name: domibus-logs
-          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
+#        - mountPath: /usr/local/tomcat/logs
+#          name: domibus-logs
+#          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
         - mountPath: /home/domibus/fs_plugin_data/MAIN
           name: domibus-fs
           subPath: dynconcepttestparty0{{.Values.partyIndex}}gw
@@ -160,9 +161,9 @@ spec:
       - name: domibus-ks
         hostPath:
           path: /data/keystores
-      - name: domibus-logs
-        hostPath:
-          path: /data/logs
+#      - name: domibus-logs
+#        hostPath:
+#          path: /data/logs
       - name: domibus-fs
         hostPath:
           path: /data/fs-plugin
