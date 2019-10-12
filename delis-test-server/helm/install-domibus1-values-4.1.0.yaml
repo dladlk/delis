@@ -46,3 +46,6 @@ dtx:
 
     - name: DOMIBUS_PROPERTY_domibus_alert_retry_max__attempts
       value: '0'
+
+    - name: DOMIBUS_PROPERTY_domibus_metrics_sl4j_reporter_enable
+      value: 'false'

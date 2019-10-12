@@ -1,5 +1,7 @@
 dtx:
+  replicas: 2
   env:
+    clustered: 'true'
     activemqEmbeddedConfigFile: '' # Set to empty value to tell Domibus to use external message broker
     activemqhost: dt1-jmx
     activemqpassword: changeit
@@ -9,6 +11,7 @@ dtx:
 
 jmx:
   enabled: true
+  imageTag: 4.1.1.2
   ingress:
     enabled: true
   env: 

@@ -66,7 +66,7 @@ spec:
           name: http
           protocol: TCP
         volumeMounts:
-        - mountPath: /data
+        - mountPath: /data/activemq
           name: activemq-data
         - mountPath: /var/log/activemq
           name: activemq-log
@@ -75,8 +75,8 @@ spec:
       volumes:
       - name: activemq-data
         hostPath:
-          path: /data/activemq/domibus${{.Values.partyIndex}}/data
+          path: /data/activemq/domibus{{.Values.partyIndex}}/data
       - name: activemq-log
         hostPath:
-          path: /data/activemq/domibus${{.Values.partyIndex}}/log
+          path: /data/activemq/domibus{{.Values.partyIndex}}/log
 {{- end }}

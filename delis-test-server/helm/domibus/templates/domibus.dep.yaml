@@ -31,6 +31,8 @@ spec:
 
         - name: DOMIBUS_PROPERTY_domibus_UI_title_name
           value: '{{.Values.partyName}} Domibus'
+        - name: DOMIBUS_PROPERTY_domibus_deployment_clustered
+          value: '{{.Values.dtx.env.clustered}}'
           
         - name: DOMIBUS_PROPERTY_DOMIBUS_SECURITY_KEYSTORE_LOCATION
           value: '{{.Values.dtx.env.keystorelocation}}'
@@ -145,6 +147,9 @@ spec:
         - mountPath: /usr/local/tomcat/domibus/keystores
           name: domibus-ks
           subPath: keystore_dynconcepttestparty0{{.Values.partyIndex}}gw
+        - mountPath: /domibus/attachment
+          name: domibus-attachment
+          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw
 #        - mountPath: /usr/local/tomcat/logs
 #          name: domibus-logs
 #          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
@@ -161,6 +166,9 @@ spec:
       - name: domibus-ks
         hostPath:
           path: /data/keystores
+      - name: domibus-attachment
+        hostPath:
+          path: /data/domibus-attachment
 #      - name: domibus-logs
 #        hostPath:
 #          path: /data/logs

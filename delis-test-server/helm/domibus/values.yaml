@@ -16,6 +16,7 @@ dtx:
   restartPolicy: Always
   serviceType: NodePort
   env:
+    clustered: 'false'
     activemqhost: localhost
     activemqpassword: changeit
     activemqusername: domibus
