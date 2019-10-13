@@ -28,9 +28,9 @@ spec:
         - name: ACTIVEMQ_CONFIG_DEFAULTACCOUNT
           value: 'false' #IMPORTANT - for security reasons remove all default accounts
         - name: ACTIVEMQ_ADMIN_LOGIN
-          value: adminred
+          value: '{{.Values.dtx.env.activemqusername}}'
         - name: ACTIVEMQ_ADMIN_PASSWORD
-          value: passred
+          value: '{{.Values.dtx.env.activemqpassword}}'
         - name: ACTIVEMQ_ENABLED_SCHEDULER
           value: 'false' #IMPORTANT - scheduler already activated, do not set it to true, otherwise double attribute is set
 
