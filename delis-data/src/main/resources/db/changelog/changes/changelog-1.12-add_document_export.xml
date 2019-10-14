@@ -1,0 +1,73 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	
+	logicalFilePath="true"
+	
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+	<changeSet author="dlk" id="1571063887324-29">
+		<createTable tableName="document_export">
+			<column autoIncrement="true" name="id_pk" type="BIGINT">
+				<constraints primaryKey="true" />
+			</column>
+			<column name="delivered_date" type="datetime" />
+			<column name="export_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
+			<column name="export_file_name" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="export_size" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_check_date" type="datetime" />
+			<column name="status" type="VARCHAR(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="document_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="organisation_id" type="BIGINT">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+	<changeSet author="dlk" id="1571063887324-30">
+		<createIndex indexName="DE_STATUS"
+			tableName="document_export">
+			<column name="status" />
+		</createIndex>
+	</changeSet>
+	<changeSet author="dlk" id="1571063887324-31">
+		<createIndex indexName="DE_ORGANISATION_ID"
+			tableName="document_export">
+			<column name="organisation_id" />
+		</createIndex>
+	</changeSet>
+	<changeSet author="dlk" id="1571063887324-32">
+		<createIndex indexName="DE_DOCUMENT_ID"
+			tableName="document_export">
+			<column name="document_id" />
+		</createIndex>
+	</changeSet>
+	<changeSet author="dlk" id="1571063887324-33">
+		<addForeignKeyConstraint
+			baseColumnNames="organisation_id" baseTableName="document_export"
+			constraintName="FK_DE_ORGANISATION" deferrable="false"
+			initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+			referencedColumnNames="id_pk" referencedTableName="organisation"
+			validate="true" />
+	</changeSet>
+	<changeSet author="dlk" id="1571063887324-34">
+		<addForeignKeyConstraint
+			baseColumnNames="document_id" baseTableName="document_export"
+			constraintName="FK_DE_DOCUMENT" deferrable="false"
+			initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+			referencedColumnNames="id_pk" referencedTableName="document"
+			validate="true" />
+	</changeSet>
+
+</databaseChangeLog>
