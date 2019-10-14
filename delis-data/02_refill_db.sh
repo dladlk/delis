@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 echo Rebuilding delis-data...
 pushd ../delis-data
 mvn install -DskipTests=true 
