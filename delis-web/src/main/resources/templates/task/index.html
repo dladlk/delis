@@ -67,6 +67,14 @@
 						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentCheckDelivered}">Check delivered</a>
+					</td>
+					<td>
+						Lookup db for Document records with status = EXPORTED or DELIVERY_PENDING and configured to check that they are consumed, and if they are - mark as DELIVERED. If documents are not consumed for more than 24 hours - mark them as DELIVERY_PENDING
+					</td>
+				</tr>
 				
 				
 				<tr>

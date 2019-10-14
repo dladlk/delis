@@ -20,6 +20,7 @@ public enum OrganisationSetupKey {
 
 	RECEIVE_BOTH_BIS3_AND_OIOUBL,
 
+	CHECK_DELIVERED_CONSUMED,
 	;
 
 	public static OrganisationSetupKey getEnum(String value) {

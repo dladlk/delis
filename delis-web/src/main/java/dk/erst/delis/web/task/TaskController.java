@@ -143,6 +143,11 @@ public class TaskController {
 		return "/task/index";
 	}
 
+	@GetMapping("/task/documentCheckDelivered")
+	public String documentCheckDelivered(Model model) {
+		return unimplemented(model);
+	}
+	
 	@GetMapping("/task/sendDocumentValidate")
 	public String sendDocumentValidate(Model model) {
 		try {

@@ -12,7 +12,9 @@ public enum DocumentStatus implements Named {
 	
 	EXPORT_START, EXPORT_OK,
 	
-	DELIVER_OK
+	DELIVER_OK,
+	
+	DELIVER_PENDING,
 	
 	;
 	

@@ -146,6 +146,8 @@ public class OrganisationSetupService {
 		m.put(OrganisationSetupKey.SEND_UNDELIVERABLE_RESPONSE_TO_ERST, String.valueOf(d.isSendUndeliverableInvoiceResponseToERST()));
 		
 		m.put(OrganisationSetupKey.RECEIVE_BOTH_BIS3_AND_OIOUBL, String.valueOf(d.isReceiveBothOIOUBLBIS3()));
+
+		m.put(OrganisationSetupKey.CHECK_DELIVERED_CONSUMED, String.valueOf(d.isCheckDeliveredConsumed()));
 		return m;
 	}
 
@@ -196,6 +198,9 @@ public class OrganisationSetupService {
 					break;
 				case RECEIVE_BOTH_BIS3_AND_OIOUBL:
 					d.setReceiveBothOIOUBLBIS3(Boolean.valueOf(os.getValue()));
+					break;
+				case CHECK_DELIVERED_CONSUMED:
+					d.setCheckDeliveredConsumed(Boolean.valueOf(os.getValue()));
 					break;
 				default:
 					break;
