@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.task.document.deliver.DocumentCheckDeliveryService;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
@@ -45,6 +46,9 @@ public class TaskController {
 
 	@Autowired
 	private DocumentDeliverService documentDeliverService;
+
+	@Autowired
+	private DocumentCheckDeliveryService documentCheckDeliveryService;
 
 	@Autowired
 	private IdentifierBatchPublishingService identifierBatchPublishingService;
@@ -145,7 +149,15 @@ public class TaskController {
 
 	@GetMapping("/task/documentCheckDelivered")
 	public String documentCheckDelivered(Model model) {
-		return unimplemented(model);
+		try {
+			StatData sd = documentCheckDeliveryService.checkDelivery();
+			String message = "Done processing of delivery check in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke documentDeliveryCheckService.process", e);
+			model.addAttribute("errorMessage", "Failed to check document delivery: " + e.getMessage());
+		}
+		return "/task/index";
 	}
 	
 	@GetMapping("/task/sendDocumentValidate")
