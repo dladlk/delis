@@ -27,6 +27,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 	@Value("${job.interval.sec.documentDeliver:-1}")
 	private long documentDeliver;
 
+	@Value("${job.interval.sec.documentCheckDelivery:-1}")
+	private long documentCheckDelivery;
+
 	@Value("${job.interval.sec.identifierLoad:-1}")
 	private long identifierLoad;
 
@@ -67,6 +70,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		String t = intervalTask.toString();
 		if (t.endsWith("documentDeliver")) {
 			return this.documentDeliver * 1000;
+		}
+		if (t.endsWith("documentCheckDelivery")) {
+			return this.documentCheckDelivery * 1000;
 		}
 		if (t.endsWith("documentLoad")) {
 			return this.documentLoad * 1000;

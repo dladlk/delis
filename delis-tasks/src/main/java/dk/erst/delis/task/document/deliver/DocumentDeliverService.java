@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,13 @@ import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.DocumentDaoRepository;
+import dk.erst.delis.dao.DocumentExportDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.entities.document.DocumentExport;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentBytesType;
+import dk.erst.delis.data.enums.document.DocumentExportStatus;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
@@ -33,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DocumentDeliverService {
 
     private DocumentDaoRepository documentDaoRepository;
+    private DocumentExportDaoRepository documentExportDaoRepository;
     private OrganisationSetupService organisationSetupService;
     private JournalDocumentService journalDocumentService;
     private DocumentBytesStorageService documentBytesStorageService;
@@ -40,8 +45,10 @@ public class DocumentDeliverService {
 
     @Autowired
     public DocumentDeliverService(DocumentDaoRepository documentDaoRepository, OrganisationSetupService organisationSetupService,
+    							DocumentExportDaoRepository documentExportDaoRepository,
                                   JournalDocumentService journalDocumentService, DocumentBytesStorageService documentBytesStorageService, VFSService vfsService) {
         this.documentDaoRepository = documentDaoRepository;
+        this.documentExportDaoRepository = documentExportDaoRepository;
         this.organisationSetupService = organisationSetupService;
         this.journalDocumentService = journalDocumentService;
         this.documentBytesStorageService = documentBytesStorageService;
@@ -122,7 +129,11 @@ public class DocumentDeliverService {
         	boolean doDoubleSending = setupData.isReceiveBothOIOUBLBIS3() && documentBytes.getFormat().isOIOUBL();
             
         	String outputFileName = buildOutputFileName(document, doDoubleSending ? "OIOUBL" : null);
-            uploadDocument(setupData, processLog, documentBytes, outputFileName);
+            boolean uploaded = uploadDocument(setupData, processLog, documentBytes, outputFileName);
+            
+            if (uploaded && setupData.isCheckDeliveredConsumed()) {
+            	saveDocumentExport(document, documentBytes.getSize(), outputFileName);
+            }
             
             if (doDoubleSending) {
             	DocumentFormat addReceivingFormat;
@@ -135,7 +146,10 @@ public class DocumentDeliverService {
         		
         		if (addDocumentBytes != null) {
         			outputFileName = buildOutputFileName(document, "BIS3");
-        			uploadDocument(setupData, processLog, addDocumentBytes, outputFileName);
+        			uploaded = uploadDocument(setupData, processLog, addDocumentBytes, outputFileName);
+        			if (uploaded && setupData.isCheckDeliveredConsumed()) {
+        				saveDocumentExport(document, addDocumentBytes.getSize(), outputFileName);
+        			}
         		}
             }
         }
@@ -143,19 +157,34 @@ public class DocumentDeliverService {
         return processLog;
     }
 
-	private void uploadDocument(OrganisationSetupData setupData, DocumentProcessLog processLog, DocumentBytes documentBytes, String outputFileName) {
+	private void saveDocumentExport(Document document, long size, String outputFileName) {
+		DocumentExport documentExport = new DocumentExport();
+		documentExport.setOrganisation(document.getOrganisation());
+		documentExport.setDocument(document);
+		documentExport.setStatus(DocumentExportStatus.EXPORTED);
+		
+		documentExport.setExportFileName(outputFileName);
+		documentExport.setExportDate(Calendar.getInstance().getTime());
+		documentExport.setExportSize(size);
+		
+		documentExportDaoRepository.save(documentExport);
+	}
+
+	private boolean uploadDocument(OrganisationSetupData setupData, DocumentProcessLog processLog, DocumentBytes documentBytes, String outputFileName) {
 		OrganisationReceivingMethod receivingMethod = setupData.getReceivingMethod();
 		String receivingMethodSetup = setupData.getReceivingMethodSetup();
+		
+		boolean success = false;
 		switch (receivingMethod) {
 		    case FILE_SYSTEM:
 		        File outputFile = new File(receivingMethodSetup, outputFileName);
-		        moveToFileSystem(documentBytes, outputFile, processLog);
+		        success = moveToFileSystem(documentBytes, outputFile, processLog);
 		        break;
 		    case AZURE_STORAGE_ACCOUNT:
-		        moveToAzure(documentBytes, processLog);
+		        success = moveToAzure(documentBytes, processLog);
 		        break;
 		    case VFS:
-		        moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
+		        success = moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
 		        break;
 		    default:
 		        DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " +
@@ -164,9 +193,10 @@ public class DocumentDeliverService {
 		        failStep.done();
 		        processLog.addStep(failStep);
 		}
+		return success;
 	}
 
-    private void moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) {
+    private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
         
         boolean uploaded = moveToVFS(documentBytes, outputFileName, configPath);
@@ -174,6 +204,7 @@ public class DocumentDeliverService {
         step.setSuccess(uploaded);
         step.done();
         processLog.addStep(step);
+        return uploaded;
     }
 
 	private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath) {
@@ -227,7 +258,7 @@ public class DocumentDeliverService {
         return s;
     }
 
-    private void moveToFileSystem(DocumentBytes documentBytes, File outputFile, DocumentProcessLog processLog) {
+    private boolean moveToFileSystem(DocumentBytes documentBytes, File outputFile, DocumentProcessLog processLog) {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFile, DocumentProcessStepType.DELIVER);
         boolean copied = false;
         outputFile.getParentFile().mkdirs();
@@ -239,12 +270,14 @@ public class DocumentDeliverService {
         step.setSuccess(copied);
         step.done();
         processLog.addStep(step);
+        return copied;
     }
 
-    private void moveToAzure(DocumentBytes documentBytes, DocumentProcessLog log) {
+    private boolean moveToAzure(DocumentBytes documentBytes, DocumentProcessLog log) {
         DocumentProcessStep failStep = new DocumentProcessStep("Delivering to Azure storage not implemented yet", DocumentProcessStepType.DELIVER);
         failStep.setSuccess(false);
         failStep.done();
         log.addStep(failStep);
+        return false;
     }
 }
