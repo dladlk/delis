@@ -18,4 +18,5 @@
     <include file="changes/changelog-1.09-expand_DocumentBytes_add_format.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.10-expand_User_add_organisationId.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.11-expand_User_add_disable_ilr_form.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.12-add_document_export.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
