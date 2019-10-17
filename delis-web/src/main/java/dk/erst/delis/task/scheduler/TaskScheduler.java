@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.task.document.deliver.DocumentCheckDeliveryService;
 import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
@@ -33,6 +34,8 @@ public class TaskScheduler {
 	private DocumentProcessService documentProcessService;
 	@Autowired
 	private DocumentDeliverService documentDeliverService;
+	@Autowired
+	private DocumentCheckDeliveryService documentCheckDeliveryService;
 	@Autowired
 	private IdentifierBatchLoadService identifierBatchLoadService;
 	@Autowired
@@ -86,6 +89,19 @@ public class TaskScheduler {
             log.error("TaskScheduler: documentDeliver ==> Failed to invoke documentDeliveryService.processValidated", e);
         }
         log.info("-- DONE DOCUMENT DELIVER TASK --");
+    }
+
+    @Scheduled(fixedDelay = Long.MAX_VALUE)
+    public void documentCheckDelivery() {
+        log.info("-- START DOCUMENT DELIVERY CHECK TASK --");
+        try {
+            StatData sd = documentCheckDeliveryService.checkDelivery();
+            String message = "Done processing of exported records in " + sd.toDurationString() + " with result: " + sd.toStatString();
+            log.info(message);
+        } catch (Exception e) {
+            log.error("TaskScheduler: documentDeliveryCheck ==> Failed to invoke documentCheckDeliveryService.checkDelivery", e);
+        }
+        log.info("-- DONE DOCUMENT DELIVERY CHECK TASK --");
     }
 
     @Scheduled(fixedDelay = 5000L)

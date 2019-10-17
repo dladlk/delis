@@ -148,6 +148,10 @@ public class OrganisationSetupService {
 		m.put(OrganisationSetupKey.RECEIVE_BOTH_BIS3_AND_OIOUBL, String.valueOf(d.isReceiveBothOIOUBLBIS3()));
 
 		m.put(OrganisationSetupKey.CHECK_DELIVERED_CONSUMED, String.valueOf(d.isCheckDeliveredConsumed()));
+
+		if (d.getCheckDeliveredAlertMins() > 0) {
+			m.put(OrganisationSetupKey.CHECK_DELIVERED_ALERT_AFTER_MIN, String.valueOf(d.getCheckDeliveredAlertMins()));
+		}
 		return m;
 	}
 
@@ -201,6 +205,11 @@ public class OrganisationSetupService {
 					break;
 				case CHECK_DELIVERED_CONSUMED:
 					d.setCheckDeliveredConsumed(Boolean.valueOf(os.getValue()));
+					break;
+				case CHECK_DELIVERED_ALERT_AFTER_MIN:
+					if (!StringUtils.isEmpty(os.getValue()) && StringUtils.isNumeric(os.getValue())) {
+						d.setCheckDeliveredAlertMins(Integer.valueOf(os.getValue()));
+					}
 					break;
 				default:
 					break;

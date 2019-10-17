@@ -24,5 +24,7 @@ public class OrganisationSetupData {
 	private boolean sendAllInvoiceResponseToERST;
 	
 	private boolean receiveBothOIOUBLBIS3;
+	
 	private boolean checkDeliveredConsumed;
+	private int checkDeliveredAlertMins = 0;
 }

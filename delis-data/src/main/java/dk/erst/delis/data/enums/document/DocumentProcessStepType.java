@@ -22,6 +22,7 @@ public enum DocumentProcessStepType implements Named {
 	
 	GENERATE_RESPONSE,
 	
+	CHECK_DELIVERY,
 	;
 	
 	public boolean isXsd() {

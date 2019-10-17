@@ -21,6 +21,8 @@ public enum OrganisationSetupKey {
 	RECEIVE_BOTH_BIS3_AND_OIOUBL,
 
 	CHECK_DELIVERED_CONSUMED,
+
+	CHECK_DELIVERED_ALERT_AFTER_MIN,
 	;
 
 	public static OrganisationSetupKey getEnum(String value) {

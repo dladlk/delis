@@ -2,6 +2,7 @@ package dk.erst.delis.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
@@ -25,5 +26,5 @@ public interface DocumentExportDaoRepository extends PagingAndSortingRepository<
 			+ "and s.id > ?3 "
 			+ "order by s.id"
 	)
-	List<DocumentExport> findForExportCheck(DocumentExportStatus status, Organisation organisation, Long lastId);
+	List<DocumentExport> findForExportCheck(DocumentExportStatus status, Organisation organisation, Long lastId, Pageable pageable);
 }
