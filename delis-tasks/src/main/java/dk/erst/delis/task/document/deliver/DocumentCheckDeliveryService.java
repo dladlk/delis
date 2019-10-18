@@ -69,7 +69,7 @@ public class DocumentCheckDeliveryService {
 					boolean found;
 					Long previousDocumentId = 0l;
 					do {
-						List<DocumentExport> list = documentExportDaoRepository.findForExportCheck(status, org, previousDocumentId, PageRequest.of(0, 2));
+						List<DocumentExport> list = documentExportDaoRepository.findForExportCheck(status, org, previousDocumentId, PageRequest.of(0, 10));
 						found = !list.isEmpty();
 
 						for (DocumentExport documentExport : list) {

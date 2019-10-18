@@ -14,7 +14,7 @@ public enum DocumentStatus implements Named {
 	
 	DELIVER_OK,
 	
-	DELIVER_PENDING,
+	DELIVER_PENDING(true),
 	
 	;
 	
