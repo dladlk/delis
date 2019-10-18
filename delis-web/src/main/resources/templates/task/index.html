@@ -72,7 +72,7 @@
 						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentCheckDelivered}">Delivery check</a>
 					</td>
 					<td>
-						Lookup db for Document records with status = EXPORTED or DELIVERY_PENDING and configured to check that they are consumed, and if they are - mark as DELIVERED. If documents are not consumed for more than 24 hours - mark them as DELIVERY_PENDING
+						Lookup db for Document records with status = EXPORTED or DELIVERY_PENDING and configured to check that they are collected, and if they are - mark as Collected. If documents are not collected for more than configured time - mark them as DELIVERY_PENDING
 					</td>
 				</tr>
 				
