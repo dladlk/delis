@@ -91,6 +91,8 @@ public class ChartServiceImpl implements ChartService {
 		final boolean today = statRange.isSingleDay() && nowUI.startsWith(startStr);
 		log.debug("today: " + today);
 		ChartData chartData = new ChartData();
+		
+		chartData.setDeliveryAlertCount(statDao.loadDeliveryAlertCount(organisationId));
 
 		uiTimeNow = DateUtil.addHour(uiTimeNow, 1);
 

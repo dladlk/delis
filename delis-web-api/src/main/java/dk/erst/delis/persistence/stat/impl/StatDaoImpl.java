@@ -23,6 +23,23 @@ public class StatDaoImpl implements StatDao {
 		return (Date) entityManager.createNativeQuery("select now()").getSingleResult();
 	}
 
+	public int loadDeliveryAlertCount(Long organisationId) {
+		String jql = "select count(s) from Document s where s.documentStatus = :status";
+		if (organisationId != null) {
+			jql += " and s.organisationId = :organisationId";
+		}
+		Query q = entityManager.createQuery(jql);
+		q.setParameter("status", DocumentStatus.DELIVER_PENDING);
+		if (organisationId != null) {
+			q.setParameter("organisationId", organisationId);
+		}
+		Number result = (Number) q.getSingleResult();
+		if (result != null) {
+			return result.intValue();
+		}
+		return 0;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<KeyValue> loadStat(StatType statType, StatRange range, boolean groupHourNotDate, int addHours, Long organisationId) {
@@ -35,10 +52,9 @@ public class StatDaoImpl implements StatDao {
 		sb.append("	from ");
 		sb.append(statType.getTableName());
 		sb.append(" d ");
-		
-		
+
 		StringBuilder where = new StringBuilder();
-		
+
 		if (range.getFrom() != null) {
 			appendAndIf(where);
 			where.append("	d.create_time >= :from ");
@@ -69,12 +85,12 @@ public class StatDaoImpl implements StatDao {
 			}
 			where.append(")");
 		}
-		
+
 		if (where.length() > 0) {
 			sb.append("	where ");
 			sb.append(where);
 		}
-		
+
 		sb.append("	group by " + keyExpression);
 		sb.append("	order by " + keyExpression);
 		String query = sb.toString();

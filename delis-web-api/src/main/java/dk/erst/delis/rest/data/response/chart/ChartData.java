@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class ChartData {
 
     private List<LineChartData> lineChartData;
     private List<String> lineChartLabels;
+    
+    @Setter
+    private int deliveryAlertCount;
 
     public ChartData() {
         this.lineChartData = new ArrayList<LineChartData>();
@@ -18,6 +22,9 @@ public class ChartData {
     
     public String toString() {
     	StringBuilder sb = new StringBuilder();
+    	sb.append("deliveryAlertCount=");
+    	sb.append(this.deliveryAlertCount);
+    	sb.append("\t");
 		sb.append(lineChartLabels);
 		sb.append("\t");
 		sb.append(lineChartData);

@@ -14,6 +14,7 @@ export class StatComponent implements OnInit {
   @Input() count: number;
   @Input() label: string;
   @Input() statusError: boolean;
+  @Input() documentStatus: string;
   @Input() path: string;
   @Input() dateStart: string;
   @Input() dateEnd: string;
@@ -23,10 +24,17 @@ export class StatComponent implements OnInit {
   ngOnInit() {}
 
   redirectDelisContent() {
+    if (this.dateStart === undefined) {
+      this.dateStart = null;
+    }
+    if (this.dateEnd === undefined) {
+      this.dateEnd = null;
+    }
     let data = {
       dateStart: this.dateStart,
       dateEnd: this.dateEnd,
       statusError: this.statusError,
+      documentStatus: this.documentStatus,
       path: this.path
     };
     this.redirectService.updateRedirectData(data);

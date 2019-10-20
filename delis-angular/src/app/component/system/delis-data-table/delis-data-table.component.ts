@@ -242,6 +242,10 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
             this.enumFilterModel[DOCUMENT_STATUS].value = this.enumFilterModel[DOCUMENT_STATUS].list[1];
             this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
           }
+          if (redirectData.documentStatus) {
+            this.enumFilterModel[DOCUMENT_STATUS].value = this.enumFilterModel[DOCUMENT_STATUS].list.find(value => value.name === redirectData.documentStatus);
+            this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
+          }
         }
       } else {
         this.redirectService.resetRedirectData();

@@ -28,6 +28,7 @@
   "dashboard.documents": "Received",
   "dashboard.errors": "Received with error",
   "dashboard.send": "Sent",
+  "dashboard.deliveryAlert": "Not collected",
 
   "dashboard.chart.receiving": "Received",
   "dashboard.chart.sending": "Sent",

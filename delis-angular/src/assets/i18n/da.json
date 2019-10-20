@@ -28,6 +28,7 @@
   "dashboard.documents": "Modtaget",
   "dashboard.errors": "Modtaget med fejl",
   "dashboard.send": "Afsendt",
+  "dashboard.deliveryAlert": "Ikke hentet",
 
   "dashboard.chart.receiving": "Modtaget",
   "dashboard.chart.sending": "Afsendt",

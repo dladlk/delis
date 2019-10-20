@@ -112,4 +112,6 @@ public interface StatDao {
 		}
 	}
 
+	int loadDeliveryAlertCount(Long organisationId);
+
 }

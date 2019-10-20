@@ -34,6 +34,16 @@
       [dateEnd]="dateEnd">
     </app-stat>
   </div>
+  <div fxFlex>
+    <app-stat
+      [bgClass]="dashboardModel.deliveryAlertCount !== 0 ? 'danger' : 'light'"
+      [icon]="'notification_important'"
+      [count]="dashboardModel.deliveryAlertCount"
+      [label]="'dashboard.deliveryAlert'"
+      [path]="'document'"
+      [documentStatus]="'DELIVER_PENDING'">
+    </app-stat>
+  </div>  
 </div>
 
 <div class="mb-20" fxLayout="row">

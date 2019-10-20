@@ -45,6 +45,8 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   showing = false;
 
+  deliveryAlertCount = 0;
+
   lineChartData: Array<any> = [];
   lineChartLabels: Array<string> = [];
 
@@ -281,6 +283,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   private generateLineChart(data: any) {
     const lineChart = Object.assign({}, data.data);
+    this.deliveryAlertCount = lineChart.deliveryAlertCount;
     this.lineChartData = lineChart.lineChartData;
     let totalSum = 0;
     this.lineChartData.forEach(d => {
@@ -310,6 +313,7 @@ export class ChartDocumentComponent implements OnInit, OnDestroy {
 
   generateDashboardData() {
     const dashboardModel = new DashboardModel();
+    dashboardModel.deliveryAlertCount = this.deliveryAlertCount;
     for (const line of this.lineChartData) {
       const label = line.label;
       const arr = line.data;
