@@ -4,10 +4,8 @@ import dk.erst.delis.data.enums.Named;
 
 public enum DocumentExportStatus implements Named {
 
-	EXPORTED,
+	PENDING,
 	
-	DELIVERED,
-	
-	PENDING;
+	DELIVERED;
 	
 }

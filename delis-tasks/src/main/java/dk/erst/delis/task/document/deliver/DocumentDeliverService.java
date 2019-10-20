@@ -161,7 +161,7 @@ public class DocumentDeliverService {
 		DocumentExport documentExport = new DocumentExport();
 		documentExport.setOrganisation(document.getOrganisation());
 		documentExport.setDocument(document);
-		documentExport.setStatus(DocumentExportStatus.EXPORTED);
+		documentExport.setStatus(DocumentExportStatus.PENDING);
 		
 		documentExport.setExportFileName(outputFileName);
 		documentExport.setExportDate(Calendar.getInstance().getTime());

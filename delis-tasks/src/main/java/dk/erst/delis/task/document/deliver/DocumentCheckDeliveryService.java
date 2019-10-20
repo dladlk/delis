@@ -47,11 +47,7 @@ public class DocumentCheckDeliveryService {
 
 	public StatData checkDelivery() {
 		StatData statData = new StatData();
-		/*
-		 * Important - at first process pending, as exported will be converted to pending, so will be checked once more
-		 */
 		checkDelivery(DocumentExportStatus.PENDING, statData);
-		checkDelivery(DocumentExportStatus.EXPORTED, statData);
 		return statData;
 	}
 
