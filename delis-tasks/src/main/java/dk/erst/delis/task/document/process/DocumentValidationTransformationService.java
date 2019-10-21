@@ -134,6 +134,10 @@ public class DocumentValidationTransformationService {
 	}
 
 	protected DocumentProcessStep transformByRule(Path xmlPath, Path xmlOutPath, RuleDocumentTransformation transformationRule) {
+		return transformByRule(xmlPath, xmlOutPath, transformationRule, ruleService);
+	}
+	
+	public static DocumentProcessStep transformByRule(Path xmlPath, Path xmlOutPath, RuleDocumentTransformation transformationRule, RuleService ruleService) {
 		DocumentProcessStep step = new DocumentProcessStep(transformationRule);
 
 		Path xslFilePath = ruleService.filePath(transformationRule);

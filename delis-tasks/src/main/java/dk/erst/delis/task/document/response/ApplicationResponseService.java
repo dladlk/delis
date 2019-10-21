@@ -4,6 +4,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -15,12 +17,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.io.Files;
+
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.DocumentBytes;
+import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
+import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
@@ -44,11 +50,13 @@ public class ApplicationResponseService {
 	private DocumentBytesStorageService documentBytesStorageService;
 	private DocumentValidationTransformationService validationTransformationService;
 	private ApplicationResponseBuilder builder = new ApplicationResponseBuilder();
+	private RuleService ruleService;
 
 	@Autowired
-	public ApplicationResponseService(DocumentBytesStorageService documentBytesStorageService, DocumentValidationTransformationService validationTransformationService) {
+	public ApplicationResponseService(DocumentBytesStorageService documentBytesStorageService, DocumentValidationTransformationService validationTransformationService, RuleService ruleService) {
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.validationTransformationService = validationTransformationService;
+		this.ruleService = ruleService;
 	}
 
 	@Data
@@ -105,15 +113,27 @@ public class ApplicationResponseService {
 			if (documentBytes == null) {
 				documentBytes = documentBytesStorageService.find(document, DocumentFormat.BIS3_CREDITNOTE);
 			}
-			log.info("Found document bytes: " + documentBytes);
-			if (documentBytes == null) {
-				throw new ApplicationResponseGenerationException(document.getId(), "Cannot find document data in format family BIS3");
+
+			byte[] xmlBytes = null;
+
+			if (documentBytes == null && ingoingFamily == DocumentFormatFamily.CII) {
+				/*
+				 * AR is generated basing on BIS3 format, but ingoing format CII is already invalid, so document was not converted to BIS3.
+				 * 
+				 * Let's try to convert it here and use as document bytes
+				 */
+				log.info("BIS3 format is not found, but ingoing format is CII, try to convert it on the fly to BIS3 to extract ApplicationResponse data");
+				xmlBytes = convertCII2BIS3(document);
+			} else {
+				log.info("Found document bytes: " + documentBytes);
+				if (documentBytes == null) {
+					throw new ApplicationResponseGenerationException(document.getId(), "Cannot find document data in format family BIS3");
+				}
+				ByteArrayOutputStream bisOutput = new ByteArrayOutputStream();
+				documentBytesStorageService.load(documentBytes, bisOutput);
+	
+				xmlBytes = bisOutput.toByteArray();
 			}
-
-			ByteArrayOutputStream bisOutput = new ByteArrayOutputStream();
-			documentBytesStorageService.load(documentBytes, bisOutput);
-
-			byte[] xmlBytes = bisOutput.toByteArray();
 			log.info("Loaded " + xmlBytes.length + " bytes");
 
 			ByteArrayOutputStream irOutput = new ByteArrayOutputStream();
@@ -212,6 +232,47 @@ public class ApplicationResponseService {
 
 		} finally {
 			log.info("Finished generation in " + (System.currentTimeMillis() - start) + " ms");
+		}
+	}
+
+	private byte[] convertCII2BIS3(Document document) throws ApplicationResponseGenerationException {
+		File tempFileCII = null;
+		File tempFileBIS = null;
+		try {
+			RuleDocumentTransformation transformationRule = ruleService.getTransformation(DocumentFormatFamily.CII);
+
+			DocumentBytes ciiBytes = documentBytesStorageService.find(document, DocumentFormat.CII);
+
+			tempFileCII = File.createTempFile("convert_CII2BIS_input_CII", ".xml");
+			
+			boolean loadedCii;
+			try (FileOutputStream fos = new FileOutputStream(tempFileCII)) {
+				loadedCii = documentBytesStorageService.load(ciiBytes, fos);
+			}
+			if (loadedCii) {
+				tempFileBIS = File.createTempFile("convert_CII2BIS_output_BIS", ".xml");
+
+				DocumentProcessStep res = DocumentValidationTransformationService.transformByRule(tempFileCII.toPath(), tempFileBIS.toPath(), transformationRule, ruleService);
+				if (res.isSuccess()) {
+					ByteArrayOutputStream resBIS3 = new ByteArrayOutputStream();
+					Files.copy(tempFileBIS, resBIS3);
+					return resBIS3.toByteArray();
+				} else {
+					throw new ApplicationResponseGenerationException(document.getId(), "Cannot convert document data in format family CII to BIS3");
+				}
+			} else {
+				throw new ApplicationResponseGenerationException(document.getId(), "Cannot load document data in format family CII");
+			}
+		} catch (Exception e) {
+			log.error("Failed to convert CII to BIS3 for document " + document, e);
+			throw new ApplicationResponseGenerationException(document.getId(), "Cannot convert document data in format family CII to BIS3");
+		} finally {
+			if (tempFileBIS != null && tempFileBIS.exists()) {
+				tempFileBIS.delete();
+			}
+			if (tempFileCII != null && tempFileCII.exists()) {
+				tempFileCII.delete();
+			}
 		}
 	}
 
