@@ -140,7 +140,7 @@ public class DocumentCheckDeliveryService {
 				document.setDocumentStatus(DocumentStatus.DELIVER_OK);
 				documentDaoRepository.updateDocumentStatus(document);
 			
-				step.setMessage("consumed");
+				step.setMessage("collected");
 				step.setSuccess(true);
 				
 				incrementMessage = "DELIVERED";
