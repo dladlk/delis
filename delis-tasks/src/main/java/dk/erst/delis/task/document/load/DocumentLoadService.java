@@ -222,7 +222,9 @@ public class DocumentLoadService {
 			return;
 		}
 		
-		file.delete();
+		if (!file.delete()) {
+			log.error("Cannot delete file " + file);
+		}
 
 		if (metadataFile != null) {
 			try (InputStream is = Files.newInputStream(metadataFile.toPath())) {
@@ -231,7 +233,9 @@ public class DocumentLoadService {
 				log.error("Failed to save metadata file " + metadataFile, e);
 			}
 			
-			metadataFile.delete();
+			if (!metadataFile.delete()) {
+				log.error("Cannot metadata delete file " + metadataFile);
+			}
 		}
 
 		if (fileSbd != null) {
@@ -240,8 +244,10 @@ public class DocumentLoadService {
 			} catch (IOException e) {
 				log.error("Failed to save SBD file " + fileSbd, e);
 			}
-			
-			fileSbd.delete();
+
+			if (!fileSbd.delete()) {
+				log.error("Cannot SBD delete file " + fileSbd);
+			}
 		}
 	}
 

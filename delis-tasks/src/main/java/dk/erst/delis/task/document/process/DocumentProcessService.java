@@ -3,6 +3,7 @@ package dk.erst.delis.task.document.process;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -163,8 +164,8 @@ public class DocumentProcessService {
 			
 			if (documentBytesType != null) {
 				File file = plog.getResultPath().toFile();
-				try {
-					documentBytesStorageService.save(document, documentBytesType, plog.getLastDocumentFormat(), file.length(), Files.newInputStream(file.toPath()));
+				try (InputStream is = Files.newInputStream(file.toPath())){
+					documentBytesStorageService.save(document, documentBytesType, plog.getLastDocumentFormat(), file.length(), is);
 				} catch (IOException e) {
 					String description = "Can not save validated document " + document.getName();
 					log.error(description, e);

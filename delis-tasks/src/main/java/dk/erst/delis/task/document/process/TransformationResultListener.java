@@ -2,6 +2,7 @@ package dk.erst.delis.task.document.process;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 
 import dk.erst.delis.data.entities.document.Document;
@@ -25,8 +26,8 @@ public class TransformationResultListener {
 	}
 
 	public void notify(DocumentProcessLog plog, DocumentFormat resultFormat, File file) {
-		try {
-			documentBytesStorageService.save(document, DocumentBytesType.INTERM, resultFormat, file.length(), Files.newInputStream(file.toPath()));
+		try (InputStream is = Files.newInputStream(file.toPath())) {
+			documentBytesStorageService.save(document, DocumentBytesType.INTERM, resultFormat, file.length(), is);
 		} catch (IOException e) {
 			String description = "Can not save validated document " + document.getName();
 			log.error(description, e);
