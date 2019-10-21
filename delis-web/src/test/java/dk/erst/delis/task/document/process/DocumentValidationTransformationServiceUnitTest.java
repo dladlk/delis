@@ -44,6 +44,12 @@ public class DocumentValidationTransformationServiceUnitTest {
 	
 	@BeforeClass
 	public static void init() {
+		RuleService ruleService = buildDefaultRuleService();
+		DocumentParseService parseService = new DocumentParseService();
+		processService = new DocumentValidationTransformationService(ruleService, parseService);
+	}
+
+	public static RuleService buildDefaultRuleService() {
 		RuleDocumentTransformationDaoRepository ruleDocumentTransformationDaoRepository = mock(RuleDocumentTransformationDaoRepository.class);
 		when(ruleDocumentTransformationDaoRepository.findAll(any(PageRequest.class))).then(d -> {
 			return new PageImpl<>(DefaultRuleBuilder.buildDefaultTransformationRuleList());
@@ -63,8 +69,7 @@ public class DocumentValidationTransformationServiceUnitTest {
 		TransformationRuleService tRuleService = new TransformationRuleService(ruleDocumentTransformationDaoRepository);
 		ValidationRuleService vRuleService = new ValidationRuleService(ruleDocumentValidationDaoRepository);
 		RuleService ruleService = new RuleService(configBean, vRuleService, tRuleService);
-		DocumentParseService parseService = new DocumentParseService();
-		processService = new DocumentValidationTransformationService(ruleService, parseService);
+		return ruleService;
 	}
 	
 	@Test
