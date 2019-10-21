@@ -145,6 +145,11 @@ public class OrganisationSetupService {
 		m.put(OrganisationSetupKey.GENERATE_RESPONSE_ON_ERROR, String.valueOf(d.isGenerateInvoiceResponseOnError()));
 		m.put(OrganisationSetupKey.SEND_UNDELIVERABLE_RESPONSE_TO_ERST, String.valueOf(d.isSendUndeliverableInvoiceResponseToERST()));
 		
+		m.put(OrganisationSetupKey.ON_ERROR_AUTO_SEND_EMAIL_SUPPLIER, String.valueOf(d.isOnErrorAutoSendEmailToSupplier()));
+		if (d.isOnErrorAutoSendEmailToSupplier()) {
+			m.put(OrganisationSetupKey.ON_ERROR_SENDER_EMAIL_ADDRESS, String.valueOf(d.getOnErrorSenderEmailAddress()));
+		}
+		
 		m.put(OrganisationSetupKey.RECEIVE_BOTH_BIS3_AND_OIOUBL, String.valueOf(d.isReceiveBothOIOUBLBIS3()));
 
 		m.put(OrganisationSetupKey.CHECK_DELIVERED_CONSUMED, String.valueOf(d.isCheckDeliveredConsumed()));
@@ -199,6 +204,12 @@ public class OrganisationSetupService {
 					break;
 				case SEND_UNDELIVERABLE_RESPONSE_TO_ERST:
 					d.setSendUndeliverableInvoiceResponseToERST(Boolean.valueOf(os.getValue()));
+					break;
+				case ON_ERROR_AUTO_SEND_EMAIL_SUPPLIER:
+					d.setOnErrorAutoSendEmailToSupplier(Boolean.valueOf(os.getValue()));
+					break;
+				case ON_ERROR_SENDER_EMAIL_ADDRESS:
+					d.setOnErrorSenderEmailAddress(os.getValue());
 					break;
 				case RECEIVE_BOTH_BIS3_AND_OIOUBL:
 					d.setReceiveBothOIOUBLBIS3(Boolean.valueOf(os.getValue()));

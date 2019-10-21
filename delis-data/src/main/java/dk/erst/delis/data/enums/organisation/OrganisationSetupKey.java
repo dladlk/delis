@@ -23,6 +23,10 @@ public enum OrganisationSetupKey {
 	CHECK_DELIVERED_CONSUMED,
 
 	CHECK_DELIVERED_ALERT_AFTER_MIN,
+	
+	ON_ERROR_AUTO_SEND_EMAIL_SUPPLIER,
+
+	ON_ERROR_SENDER_EMAIL_ADDRESS,
 	;
 
 	public static OrganisationSetupKey getEnum(String value) {
