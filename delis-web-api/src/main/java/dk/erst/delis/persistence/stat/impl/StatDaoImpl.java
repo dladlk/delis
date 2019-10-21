@@ -26,7 +26,7 @@ public class StatDaoImpl implements StatDao {
 	public int loadDeliveryAlertCount(Long organisationId) {
 		String jql = "select count(s) from Document s where s.documentStatus = :status";
 		if (organisationId != null) {
-			jql += " and s.organisationId = :organisationId";
+			jql += " and s.organisation.id = :organisationId";
 		}
 		Query q = entityManager.createQuery(jql);
 		q.setParameter("status", DocumentStatus.DELIVER_PENDING);
