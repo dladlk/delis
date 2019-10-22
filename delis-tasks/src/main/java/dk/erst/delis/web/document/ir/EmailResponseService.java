@@ -35,7 +35,7 @@ public class EmailResponseService {
 		
 		f.setSubject(s.toString());
 		
-		if (setupData != null && StringUtils.isEmpty(setupData.getOnErrorSenderEmailAddress())) {
+		if (setupData != null && !StringUtils.isEmpty(setupData.getOnErrorSenderEmailAddress())) {
 			f.setFrom(setupData.getOnErrorSenderEmailAddress());
 		}
 		if (!StringUtils.isEmpty(document.getReceiverEmail())) {
