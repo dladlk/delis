@@ -51,6 +51,8 @@ public class ApplicationResponseFormController {
 	private ApplicationResponseService applicationResponseService;
 	@Autowired
 	private DocumentProcessService documentProcessService;
+	@Autowired
+	private EmailResponseService emailResponseService;
 
 	@PostMapping("/document/generate/messageLevelResponseByErrorAndSend/{id}")
 	public String generateMessageLevelResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
@@ -85,6 +87,16 @@ public class ApplicationResponseFormController {
 	public ResponseEntity<Object> generateMessageLevelResponse(MessageLevelResponseForm mlrForm, RedirectAttributes ra) throws IOException {
 		ra.addFlashAttribute("mlrForm", mlrForm);
 		return generateApplicationResponse(mlrForm, ra);
+	}
+
+	@PostMapping("/document/generate/emailResponse")
+	public ResponseEntity<Object> generateEmailResponse(EmailResponseForm emailForm, RedirectAttributes ra) throws IOException {
+		String defaultReturnPath = "/document/view/" + emailForm.getDocumentId();
+		
+		ra.addFlashAttribute("emailForm", emailForm);
+		ra.addFlashAttribute("errorMessage", "Email delivery is not yet implemented");
+
+		return redirectEntity(defaultReturnPath);
 	}
 
 	private ResponseEntity<Object> generateApplicationResponse(AbstractApplicationResponseForm arForm, RedirectAttributes ra) throws IOException {
@@ -170,8 +182,9 @@ public class ApplicationResponseFormController {
 			irForm.setEffectiveDate(document.getDocumentDate());
 			model.addAttribute("irForm", irForm);
 		}
+		MessageLevelResponseForm mlrForm;
 		if (!model.containsAttribute("mlrForm")) {
-			MessageLevelResponseForm mlrForm = new MessageLevelResponseForm();
+			mlrForm = new MessageLevelResponseForm();
 			mlrForm.setDocumentId(document.getId());
 			model.addAttribute("mlrForm", mlrForm);
 
@@ -208,6 +221,8 @@ public class ApplicationResponseFormController {
 					}
 				}
 			}
+		} else {
+			mlrForm	= (MessageLevelResponseForm) model.asMap().get("mlrForm");
 		}
 
 		/*
@@ -224,6 +239,10 @@ public class ApplicationResponseFormController {
 		model.addAttribute("applicationResponseTypeCodeList", MessageLevelResponseConst.applicationResponseTypeCodeList);
 		model.addAttribute("applicationResponseLineResponseCodeList", MessageLevelResponseConst.applicationResponseLineResponseCodeList);
 		model.addAttribute("applicationResponseLineReasonCodeList", MessageLevelResponseConst.applicationResponseLineReasonCodeList);
+		
+		if (!model.containsAttribute("emailForm")) {
+			model.addAttribute("emailForm", emailResponseService.buildEmailResponse(document, mlrForm));
+		}
 	}
 
 }

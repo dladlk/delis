@@ -6,6 +6,7 @@
 	<div>
 		<button class="m-2 btn btn-primary btn-sm" onclick="$('#invoiceResponseForm').toggle()">Invoice Response 3.0 Form</button>
 		<button class="m-2 btn btn-primary btn-sm" onclick="$('#messageLevelResponseForm').toggle()">Message Level Response 3.0 Form</button>
+		<button class="m-2 btn btn-primary btn-sm" onclick="$('#emailResponseForm').toggle()">Email Response Form</button>
 		<form th:action="@{/document/generate/messageLevelResponseByErrorAndSend/__${document.id}__}" method="post" style="display: inline">
 			<button class="m-2 btn btn-primary btn-sm" type="submit">Generate MLR by last error and send</button>
 		</form>
@@ -34,6 +35,7 @@
 		
 		<div th:replace="~{document/ir/ir_form}"></div>
 		<div th:replace="~{document/mlr/mlr_form}"></div>
+		<div th:replace="~{document/email/email_form}"></div>
 				
 	</div>
 
