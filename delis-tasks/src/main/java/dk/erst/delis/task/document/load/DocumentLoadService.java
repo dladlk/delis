@@ -175,11 +175,13 @@ public class DocumentLoadService {
 				document.setReceiverIdRaw(info.getReceiver().encodeID());
 				document.setReceiverCountry(info.getReceiver().getCountry());
 				document.setReceiverName(info.getReceiver().getName());
+				document.setReceiverEmail(info.getReceiver().getEmail());
 			}
 			if (info.getSender() != null) {
 				document.setSenderIdRaw(info.getSender().encodeID());
 				document.setSenderCountry(info.getSender().getCountry());
 				document.setSenderName(info.getSender().getName());
+				document.setSenderEmail(info.getSender().getEmail());
 			}
 			DocumentFormat documentFormat = documentInfoService.defineDocumentFormat(info);
 			document.setIngoingDocumentFormat(documentFormat);

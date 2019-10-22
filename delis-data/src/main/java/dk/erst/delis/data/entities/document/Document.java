@@ -57,6 +57,9 @@ public class Document extends AbstractCreateUpdateEntity {
 	@Column(nullable = true)
 	private String receiverCountry;
 
+	@Column(nullable = true, length = 50)
+	private String receiverEmail;
+
 	@Column(nullable = true)
 	private String senderIdRaw;
 
@@ -65,6 +68,10 @@ public class Document extends AbstractCreateUpdateEntity {
 
 	@Column(nullable = true)
 	private String senderCountry;
+
+	@Column(nullable = true, length = 50)
+	private String senderEmail;
+
 
 	@Column(nullable = true)
 	private String documentId;
