@@ -25,8 +25,19 @@ public class EmailResponseService {
 
 		EmailResponseForm f = new EmailResponseForm();
 		f.setDocumentId(document.getId());
-		f.setSubject("Error in document " + document.getDocumentId() + " to " + document.getOrganisation().getName());
-		f.setFrom(setupData.getOnErrorSenderEmailAddress());
+		StringBuilder s = new StringBuilder();
+		s.append("Error in document ");
+		s.append(document.getDocumentId());
+		if (document.getOrganisation() != null) {
+			s.append(" to ");
+			s.append(document.getOrganisation().getName());
+		}
+		
+		f.setSubject(s.toString());
+		
+		if (setupData != null && StringUtils.isEmpty(setupData.getOnErrorSenderEmailAddress())) {
+			f.setFrom(setupData.getOnErrorSenderEmailAddress());
+		}
 		if (!StringUtils.isEmpty(document.getReceiverEmail())) {
 			f.setTo(document.getReceiverEmail());
 		}

@@ -3,6 +3,8 @@ package dk.erst.delis.web.document;
 import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.data.enums.document.DocumentType;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +84,7 @@ public class DocumentControllerTest {
         document.setName("TestDocumentView");
         document.setMessageId("messageId");
         document.setDocumentStatus(DocumentStatus.LOAD_ERROR);
+        document.setDocumentType(DocumentType.INVOICE);
         Document save = documentDaoRepository.save(document);
 
         this.mockMvc.perform(get("/document/view/" + save.getId()))
