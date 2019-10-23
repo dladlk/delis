@@ -38,8 +38,8 @@ public class EmailResponseService {
 		if (setupData != null && !StringUtils.isEmpty(setupData.getOnErrorSenderEmailAddress())) {
 			f.setFrom(setupData.getOnErrorSenderEmailAddress());
 		}
-		if (!StringUtils.isEmpty(document.getReceiverEmail())) {
-			f.setTo(document.getReceiverEmail());
+		if (!StringUtils.isEmpty(document.getSenderEmail())) {
+			f.setTo(document.getSenderEmail());
 		}
 
 		StringBuilder sb = new StringBuilder();
