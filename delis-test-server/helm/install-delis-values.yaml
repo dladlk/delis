@@ -8,6 +8,8 @@ delisAdmin:
           value: "20"
         - name: job.interval.sec.documentDeliver
           value: "60"
+        - name: job.interval.sec.documentCheckDelivery
+          value: "121"
         - name: job.interval.sec.identifierLoad
           value: "120"
         - name: job.interval.sec.identifierPublish
