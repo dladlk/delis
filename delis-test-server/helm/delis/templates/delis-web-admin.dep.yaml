@@ -33,6 +33,10 @@ spec:
             value: {{.Values.delisDb.user}}
           - name: SPRING_DATASOURCE_PASSWORD
             value: {{.Values.delisDb.password}}
+          - name: SPRING_MAIL_USERNAME
+            value: {{.Values.delisAdmin.mail.username}}
+          - name: SPRING_MAIL_PASSWORD
+            value: {{.Values.delisAdmin.mail.password}}
           {{- with .Values.delisAdmin.env }}
           {{- toYaml . | nindent 10 }}
           {{- end }}
