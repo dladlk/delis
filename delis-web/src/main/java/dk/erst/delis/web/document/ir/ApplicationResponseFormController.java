@@ -37,6 +37,7 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.Applicati
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
+import dk.erst.delis.web.email.EmailSendService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -53,6 +54,8 @@ public class ApplicationResponseFormController {
 	private DocumentProcessService documentProcessService;
 	@Autowired
 	private EmailResponseService emailResponseService;
+	@Autowired 
+	private EmailSendService emailSendService;
 
 	@PostMapping("/document/generate/messageLevelResponseByErrorAndSend/{id}")
 	public String generateMessageLevelResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
@@ -94,7 +97,16 @@ public class ApplicationResponseFormController {
 		String defaultReturnPath = "/document/view/" + emailForm.getDocumentId();
 		
 		ra.addFlashAttribute("emailForm", emailForm);
-		ra.addFlashAttribute("errorMessage", "Email delivery is not yet implemented");
+		
+		if (emailForm.isValid()) {
+			if (emailSendService.send(emailForm)) {
+				ra.addFlashAttribute("message", "Email is successfully sent");
+			} else {
+				ra.addFlashAttribute("errorMessage", "Email sending failed");
+			}
+		} else {
+			ra.addFlashAttribute("errorMessage", "Email delivery is not yet implemented");
+		}
 
 		return redirectEntity(defaultReturnPath);
 	}
