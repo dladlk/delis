@@ -173,17 +173,109 @@ public class OrganisationController {
 		});
 		return identifierService.updateStatuses(idsForUpdate, IdentifierStatus.ACTIVE, IdentifierPublishingStatus.PENDING, "Pending publishing after change of organisation setup");
 	}
+	
+	@GetMapping("/organisation/edit/{id}")
+	public String edit(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/organisation/list";
+		}
+		
+		model.addAttribute("organisation", organisation);
+		return "organisation/edit";
+	}
+	
+	@GetMapping("/organisation/delete/{id}")
+	public String delete(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/organisation/list";
+		}
+		organisation.setDeactivated(true);
+		organisationService.saveOrganisation(organisation);
 
+		return "redirect:/organisation/list";
+	}
+
+	@GetMapping("/organisation/restore/{id}")
+	public String restore(@PathVariable long id, Model model, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found");
+			return "redirect:/organisation/list";
+		}
+		organisation.setDeactivated(false);
+		organisationService.saveOrganisation(organisation);
+		
+		return "redirect:/organisation/list";
+	}
+	
 	@PostMapping("/organisation/save")
 	public String save(@ModelAttribute Organisation organisation, Model model, RedirectAttributes ra) {
+		if (organisation.getName() != null) {
+			organisation.setName(organisation.getName().trim());
+		}
+		if (organisation.getCode() != null) {
+			organisation.setCode(organisation.getCode().trim());
+		}
+		
 		if (StringUtils.isEmpty(organisation.getName())) {
 			model.addAttribute("errorMessage", "Name is mandatory");
 			return "organisation/edit";
 		}
+		
+		if (organisation.getName().length() > 120) {
+			model.addAttribute("errorMessage", "Max length of organisation name is 120 symbols");
+			return "organisation/edit";
+		}
+
+		if (organisation.getId() == null) {
+			if (StringUtils.isEmpty(organisation.getCode())) {
+				model.addAttribute("errorMessage", "Code is mandatory");
+				return "organisation/edit";
+			}
+			if (organisation.getCode().length() > 30) {
+				model.addAttribute("errorMessage", "Max length of organisation code is 30 symbols");
+				return "organisation/edit";
+			}
+			
+			if (!organisation.getCode().matches("[a-z0-9]{4,30}")) {
+				model.addAttribute("errorMessage", "Organisation code should be at least 4 lower case letters or digits, max length is 30 symbols");
+				return "organisation/edit";
+			}
+			
+			Organisation existingOrganisation = organisationService.findOrganisationByCode(organisation.getCode());
+			if (existingOrganisation != null) {
+				model.addAttribute("errorMessage", "Organisation code should be unique, but it is already used at "+existingOrganisation.getName());
+				return "organisation/edit";
+			}
+		} else {
+			Organisation dbOrganisation = organisationService.findOrganisation(organisation.getId());
+			dbOrganisation.setName(organisation.getName());
+			organisation = dbOrganisation;
+		}
+		
+		Organisation existingName = organisationService.findOrganisationByName(organisation.getName());
+		if (existingName != null) {
+			boolean duplicatedName = false;
+			if (organisation.getId() == null) {
+				duplicatedName = true;
+			} else {
+				if (organisation.getId() != existingName.getId()) {
+					duplicatedName = true;
+				}
+			}
+			if (duplicatedName) {
+				model.addAttribute("errorMessage", "Organisation name should be unique");
+				return "organisation/edit";
+			}
+		}
 
 		organisationService.saveOrganisation(organisation);
 
-		return "redirect:/home";
+		return "redirect:/organisation/list";
 	}
 
 	@PostMapping("/organisation/upload/{id}")

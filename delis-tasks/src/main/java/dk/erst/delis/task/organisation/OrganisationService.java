@@ -32,4 +32,7 @@ public class OrganisationService {
 	public Organisation findOrganisationByCode(String code) {
 		return this.organisationDaoRepository.findByCode(code);
 	}
+	public Organisation findOrganisationByName(String name) {
+		return this.organisationDaoRepository.findTop1ByName(name);
+	}
 }
