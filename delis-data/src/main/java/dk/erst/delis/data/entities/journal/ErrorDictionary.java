@@ -7,6 +7,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.Transient;
+
 import dk.erst.delis.data.annotations.WebApiContent;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
@@ -27,8 +29,16 @@ public class ErrorDictionary extends AbstractEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	@EqualsAndHashCode.Include
 	private DocumentErrorCode errorType;
+	
+	/*
+	 * Enum returns different hashCode values - calculate hashCode basing on name of Enum
+	 */
+	@Transient
+	@EqualsAndHashCode.Include
+	public String getErrorTypeString() {
+		return errorType != null ? errorType.name() : "";
+	}
 	
 	@Column(nullable = false, length = 50)
 	@EqualsAndHashCode.Include
