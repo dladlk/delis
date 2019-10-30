@@ -1,14 +1,18 @@
 package dk.erst.delis.web.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import dk.erst.delis.email.IEmailSendService;
+import dk.erst.delis.email.condition.SpringEmailPresentCondition;
 import dk.erst.delis.task.email.EmailData;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Conditional(SpringEmailPresentCondition.class)
 @Slf4j
 public class EmailSendService implements IEmailSendService {
 

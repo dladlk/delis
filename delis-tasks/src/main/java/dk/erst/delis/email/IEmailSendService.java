@@ -1,4 +1,4 @@
-package dk.erst.delis.web.email;
+package dk.erst.delis.email;
 
 import dk.erst.delis.task.email.EmailData;
 

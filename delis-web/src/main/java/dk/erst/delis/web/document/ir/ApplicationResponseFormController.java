@@ -28,6 +28,7 @@ import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.email.IEmailSendService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
@@ -37,7 +38,6 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.Applicati
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
-import dk.erst.delis.web.email.IEmailSendService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller

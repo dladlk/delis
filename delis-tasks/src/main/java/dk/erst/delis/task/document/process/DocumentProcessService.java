@@ -23,6 +23,7 @@ import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.email.IEmailSendService;
 import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
@@ -37,7 +38,6 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.web.document.SendDocumentService;
 import dk.erst.delis.web.document.ir.EmailResponseForm;
 import dk.erst.delis.web.document.ir.EmailResponseService;
-import dk.erst.delis.web.email.IEmailSendService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
