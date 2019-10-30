@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-public class EmailSendService {
+public class EmailSendService implements IEmailSendService {
 
 	private JavaMailSender emailSender;
 
@@ -19,8 +19,11 @@ public class EmailSendService {
 		this.emailSender = emailSender;
 	}
 
+	@Override
 	public boolean send(EmailData emailData) {
+		long start = System.currentTimeMillis();
 		try {
+			log.info("Start email sending to " + emailData.getTo() + ", subject " + emailData.getSubject());
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setFrom(emailData.getFrom());
 			message.setTo(emailData.getTo().split(";"));
@@ -31,6 +34,8 @@ public class EmailSendService {
 		} catch (Exception e) {
 			log.error("Failed to send email " + emailData, e);
 			return false;
+		} finally {
+			log.info("Done email sending in " + (System.currentTimeMillis() - start) + " ms to " + emailData.getTo() + ", subject " + emailData.getSubject());
 		}
 	}
 

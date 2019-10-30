@@ -37,7 +37,7 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.Applicati
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
-import dk.erst.delis.web.email.EmailSendService;
+import dk.erst.delis.web.email.IEmailSendService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -55,7 +55,7 @@ public class ApplicationResponseFormController {
 	@Autowired
 	private EmailResponseService emailResponseService;
 	@Autowired 
-	private EmailSendService emailSendService;
+	private IEmailSendService emailSendService;
 
 	@PostMapping("/document/generate/messageLevelResponseByErrorAndSend/{id}")
 	public String generateMessageLevelResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
@@ -253,7 +253,7 @@ public class ApplicationResponseFormController {
 		model.addAttribute("applicationResponseLineReasonCodeList", MessageLevelResponseConst.applicationResponseLineReasonCodeList);
 		
 		if (!model.containsAttribute("emailForm")) {
-			model.addAttribute("emailForm", emailResponseService.buildEmailResponse(document, mlrForm));
+			model.addAttribute("emailForm", emailResponseService.buildEmailResponse(document, mlrForm.getData()));
 		}
 	}
 

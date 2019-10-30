@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.task.document.response.ApplicationResponseService;
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelLineResponse;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -18,7 +19,7 @@ public class EmailResponseService {
 	@Autowired
 	private OrganisationSetupService organisationSetupService;
 
-	public EmailResponseForm buildEmailResponse(Document document, MessageLevelResponseForm mlrForm) {
+	public EmailResponseForm buildEmailResponse(Document document, ApplicationResponseService.MessageLevelResponseGenerationData mlrForm) {
 		Organisation organisation = document.getOrganisation();
 
 		OrganisationSetupData setupData = organisationSetupService.load(organisation);
