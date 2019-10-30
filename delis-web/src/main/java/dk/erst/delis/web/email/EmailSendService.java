@@ -23,7 +23,7 @@ public class EmailSendService {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setFrom(emailData.getFrom());
-			message.setTo(emailData.getTo());
+			message.setTo(emailData.getTo().split(";"));
 			message.setSubject(emailData.getSubject());
 			message.setText(emailData.getBody());
 			emailSender.send(message);

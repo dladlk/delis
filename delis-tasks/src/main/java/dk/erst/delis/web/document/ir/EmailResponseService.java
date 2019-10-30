@@ -26,7 +26,12 @@ public class EmailResponseService {
 		EmailResponseForm f = new EmailResponseForm();
 		f.setDocumentId(document.getId());
 		StringBuilder s = new StringBuilder();
-		s.append("Error in document ");
+		s.append("[DELIS] ");
+		s.append("[#");
+		s.append(document.getId());
+		s.append("] Validation error in ");
+		s.append(document.getDocumentType().getName());
+		s.append(" ");
 		s.append(document.getDocumentId());
 		if (document.getOrganisation() != null) {
 			s.append(" to ");
@@ -38,15 +43,14 @@ public class EmailResponseService {
 		if (setupData != null && !StringUtils.isEmpty(setupData.getOnErrorSenderEmailAddress())) {
 			f.setFrom(setupData.getOnErrorSenderEmailAddress());
 		}
-		if (!StringUtils.isEmpty(document.getSenderEmail())) {
-			f.setTo(document.getSenderEmail());
+		if (setupData != null && !StringUtils.isEmpty(setupData.getOnErrorReceiverEmailAddress())) {
+			f.setTo(setupData.getOnErrorReceiverEmailAddress());
 		}
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Dear EDELIVERY participant,\n\n");
+		sb.append("Dear DELIS support,\n\n");
 
-		sb.append("You receive this email because this address was specified as a contact email in ");
 		sb.append(document.getDocumentType().getName());
 		sb.append(" ");
 		sb.append(document.getDocumentId());
@@ -54,12 +58,38 @@ public class EmailResponseService {
 		sb.append(document.getDocumentDate());
 		sb.append(" to ");
 		sb.append(document.getReceiverIdRaw());
+		sb.append(" failed validation.");
 		sb.append("\n\n");
 
 		if (mlrForm.getDescription() != null) {
 			sb.append(mlrForm.getDescription());
 			sb.append("\n\n");
 		}
+
+		sb.append("Please review the issue and inform sender party of the document.\n\n");
+		
+		sb.append("Information about sender:\n\n");
+		if (StringUtils.isNotBlank(document.getSenderName())) {
+			sb.append("Name: ");
+			sb.append(document.getSenderName());
+			sb.append("\n");
+		}
+		if (StringUtils.isNotBlank(document.getSenderIdRaw())) {
+			sb.append("Identifier: ");
+			sb.append(document.getSenderIdRaw());
+			sb.append("\n");
+		}
+		if (StringUtils.isNotBlank(document.getSenderCountry())) {
+			sb.append("Country: ");
+			sb.append(document.getSenderCountry());
+			sb.append("\n");
+		}
+		if (StringUtils.isNotBlank(document.getSenderEmail())) {
+			sb.append("Document contact email: ");
+			sb.append(document.getSenderEmail());
+			sb.append("\n");
+		}
+		sb.append("\n\n");		
 
 		List<MessageLevelLineResponse> lineResponseList = mlrForm.getLineResponseList();
 		if (lineResponseList != null) {
@@ -76,10 +106,8 @@ public class EmailResponseService {
 				sb.append(line.getLineId());
 				sb.append("\n\n");
 			}
-
-			sb.append("Please correct the problem and resend the document.\n\n");
 		}
-
+		
 		sb.append("Kind regards,\n");
 		sb.append(f.getFrom());
 

@@ -21,6 +21,7 @@ import dk.erst.delis.dao.OrganisationSetupDaoRepository;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.organisation.OrganisationSetup;
 import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
+import dk.erst.delis.task.email.EmailValidator;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -44,6 +45,52 @@ public class OrganisationSetupService {
 		}
 		List<OrganisationSetup> setupList = organisationSetupDaoRepository.findAllByOrganisation(organisation);
 		return convertSetupListToData(setupList, organisation);
+	}
+	
+	public ValidationResultData validate(OrganisationSetupData data) {
+		ValidationResultData res = new ValidationResultData();
+		
+		if (data.isOnErrorAutoSendEmailToSupplier()) {
+			if (StringUtils.isBlank(data.getOnErrorSenderEmailAddress())) {
+				res.addError("onErrorSenderEmailAddress", "Mandatory as automatic email sending on error is enabled.");
+			}
+			if (StringUtils.isBlank(data.getOnErrorReceiverEmailAddress())) {
+				res.addError("onErrorReceiverEmailAddress", "Mandatory as automatic email sending on error is enabled.");
+			}
+		}
+		if (StringUtils.isNotBlank(data.getOnErrorSenderEmailAddress())) {
+			StringBuilder newValue = new StringBuilder();
+			validateEmailValue(res, data.getOnErrorSenderEmailAddress(), newValue, "onErrorSenderEmailAddress", false);
+			data.setOnErrorSenderEmailAddress(newValue.toString());
+		}
+		if (StringUtils.isNotBlank(data.getOnErrorReceiverEmailAddress())) {
+			StringBuilder newValue = new StringBuilder();
+			validateEmailValue(res, data.getOnErrorReceiverEmailAddress(), newValue, "onErrorReceiverEmailAddress", true);
+			data.setOnErrorReceiverEmailAddress(newValue.toString());
+		}
+		return res;
+	}
+
+	private void validateEmailValue(ValidationResultData res, String value, StringBuilder newValue, String code, boolean allowMultiple) {
+		value = value.trim();
+		String[] values = new String[] {value};
+		if (allowMultiple) {
+			if (value.contains(";")) {
+				values = value.split(";");
+			}
+		}
+		for (String email : values) {
+			email = email.trim();
+			if (StringUtils.isNotBlank(email)) {
+				if (newValue.length() > 0) {
+					newValue.append(";");
+				}
+				newValue.append(email);
+				if (!EmailValidator.isValidEmail(email)) {
+					res.addError(code, "Email address '"+email+"' is not valid.");
+				}
+			}
+		}
 	}
 
 	public StatData update(OrganisationSetupData data) {
@@ -146,9 +193,8 @@ public class OrganisationSetupService {
 		m.put(OrganisationSetupKey.SEND_UNDELIVERABLE_RESPONSE_TO_ERST, String.valueOf(d.isSendUndeliverableInvoiceResponseToERST()));
 		
 		m.put(OrganisationSetupKey.ON_ERROR_AUTO_SEND_EMAIL_SUPPLIER, String.valueOf(d.isOnErrorAutoSendEmailToSupplier()));
-		if (d.isOnErrorAutoSendEmailToSupplier()) {
-			m.put(OrganisationSetupKey.ON_ERROR_SENDER_EMAIL_ADDRESS, String.valueOf(d.getOnErrorSenderEmailAddress()));
-		}
+		m.put(OrganisationSetupKey.ON_ERROR_SENDER_EMAIL_ADDRESS, String.valueOf(d.getOnErrorSenderEmailAddress()));
+		m.put(OrganisationSetupKey.ON_ERROR_RECEIVER_EMAIL_ADDRESS, String.valueOf(d.getOnErrorReceiverEmailAddress()));
 		
 		m.put(OrganisationSetupKey.RECEIVE_BOTH_BIS3_AND_OIOUBL, String.valueOf(d.isReceiveBothOIOUBLBIS3()));
 
@@ -210,6 +256,9 @@ public class OrganisationSetupService {
 					break;
 				case ON_ERROR_SENDER_EMAIL_ADDRESS:
 					d.setOnErrorSenderEmailAddress(os.getValue());
+					break;
+				case ON_ERROR_RECEIVER_EMAIL_ADDRESS:
+					d.setOnErrorReceiverEmailAddress(os.getValue());
 					break;
 				case RECEIVE_BOTH_BIS3_AND_OIOUBL:
 					d.setReceiveBothOIOUBLBIS3(Boolean.valueOf(os.getValue()));

@@ -32,6 +32,7 @@ import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
 import dk.erst.delis.task.identifier.load.IdentifierLoadService;
 import dk.erst.delis.task.organisation.OrganisationService;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.ValidationResultData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -106,6 +107,12 @@ public class OrganisationController {
 		}
 		OrganisationSetupData setupData = organisationSetupService.load(organisation);
 
+		fillSetupModel(model, organisation, setupData);
+		
+		return "organisation/setup";
+	}
+
+	private void fillSetupModel(Model model, Organisation organisation, OrganisationSetupData setupData) {
 		model.addAttribute("as2AccessPointList", accessPointService.findAccessPointsByType(AccessPointType.AS2));
 		model.addAttribute("as4AccessPointList", accessPointService.findAccessPointsByType(AccessPointType.AS4));
 		model.addAttribute("organisationReceivingFormatRuleList", OrganisationReceivingFormatRule.values());
@@ -114,8 +121,6 @@ public class OrganisationController {
 
 		model.addAttribute("organisation", organisation);
 		model.addAttribute("organisationSetupData", setupData);
-		
-		return "organisation/setup";
 	}
 	
 	@PostMapping("/organisation/setup-save/{id}")
@@ -127,6 +132,15 @@ public class OrganisationController {
 		}
 		
 		organisationSetupData.setOrganisation(organisation);
+		
+		ValidationResultData validationResultData = organisationSetupService.validate(organisationSetupData);
+		if (!validationResultData.isAllValid()) {
+			model.addAttribute("errorMessage", "Some setup fields are not valid");
+			fillSetupModel(model, organisation, organisationSetupData);
+			model.addAttribute("validation", validationResultData);
+			return "organisation/setup";
+		}
+		
 		StatData statData = organisationSetupService.update(organisationSetupData);
 		int identifiersSwitchedToPending = 0;
 		if (statData.getResult() != null) {

@@ -85,12 +85,35 @@
 				<tr>
 					<th>On receiving validation error</th>
 						<td>
-							<ul class="on-error-setup">
+							<ul class="on-error-setup container">
 								<li><input id="onerror1" th:field="*{generateInvoiceResponseOnError}" type="checkbox"></input> <label for="onerror1">Generate MessageLevelResponse and try sending back to sender</label></li>
 								<li><input id="onerror2" th:field="*{sendUndeliverableInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror2">Forward undeliverable InvoiceResponses and MessageLevelResponses to ERST</label></li>
-								<li><input id="onerror3" th:field="*{sendAllInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror3">Forward ALL InvoiceResponses and MessageLevelResponses to ERST</label></li>
-								<li><input id="onerror4" th:field="*{onErrorAutoSendEmailToSupplier}" type="checkbox"></input> <label for="onerror4">Automatically send email with error description back to sender</label></li>
-								<li><label for="onerror5" class="mr-1">Sender email address: </label><input th:field="*{onErrorSenderEmailAddress}" class="form-input" id="onerror5" type="text" size="30"></input> </li>
+								<li><input id="onerror3" th:field="*{sendAllInvoiceResponseToERST}" type="checkbox"></input> <label for="onerror3">Forward ALL InvoiceResponses and MessageLevelResponses to ERST <span class="text-danger">(NOT IMPLEMENTED)</span></label></li>
+								<li><input id="onerror4" th:field="*{onErrorAutoSendEmailToSupplier}" type="checkbox"></input> <label for="onerror4">Automatically send email with error description</label></li>
+								<div class="form-group row">
+									<label for="onerror5" class="col-sm-2">Sender email:</label>
+									<div class="col-sm-6">
+										<input th:field="*{onErrorSenderEmailAddress}" class="form-control" th:classappend="${(validation != null && validation?.isInvalid('onErrorSenderEmailAddress'))?'is-invalid':''}" id="onerror5" type="text" size="30"></input>
+										<div class="invalid-feedback" th:if="${validation?.isInvalid('onErrorSenderEmailAddress')}">
+											<div th:each="e: ${validation?.getErrorList('onErrorSenderEmailAddress')}" th:text="${e}">Error message</div>
+										</div>
+										<small class="form-text text-muted">
+										  Email address, which will be used as FROM address in email notifications. Mandatory, if above checkbox is selected.
+										</small>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="onerror6" class="col-sm-2">Receiver email: </label>
+									<div class="col-sm-6">
+										<input th:field="*{onErrorReceiverEmailAddress}" class="form-control" th:classappend="${(validation != null && validation?.isInvalid('onErrorReceiverEmailAddress'))?'is-invalid':''}" id="onerror6" type="text" size="60"></input>
+										<div class="invalid-feedback" th:if="${validation?.isInvalid('onErrorReceiverEmailAddress')}">
+											<div th:each="e: ${validation?.getErrorList('onErrorReceiverEmailAddress')}" th:text="${e}">Error message</div>
+										</div>
+										<small class="form-text text-muted">
+										  Multiple email addresses can be specified, separated with semicolon ";". Mandatory, if above checkbox is selected.
+										</small>
+									</div>
+								</div>
 							</ul>
 						</td>
 					</tr>

@@ -24,6 +24,7 @@ public class OrganisationSetupData {
 	private boolean sendAllInvoiceResponseToERST;
 	private boolean onErrorAutoSendEmailToSupplier;
 	private String onErrorSenderEmailAddress;
+	private String onErrorReceiverEmailAddress;
 	
 	private boolean receiveBothOIOUBLBIS3;
 	

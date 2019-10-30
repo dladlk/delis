@@ -27,6 +27,8 @@ public enum OrganisationSetupKey {
 	ON_ERROR_AUTO_SEND_EMAIL_SUPPLIER,
 
 	ON_ERROR_SENDER_EMAIL_ADDRESS,
+
+	ON_ERROR_RECEIVER_EMAIL_ADDRESS,
 	;
 
 	public static OrganisationSetupKey getEnum(String value) {
