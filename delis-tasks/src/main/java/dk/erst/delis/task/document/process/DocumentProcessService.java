@@ -101,7 +101,10 @@ public class DocumentProcessService {
 
 			} while (presentLoaded);
 		} finally {
-			log.info("Done processing of loaded documents in " + (System.currentTimeMillis() - statData.getStartMs()) + " ms");
+			long duration = System.currentTimeMillis() - statData.getStartMs();
+			if (duration > 500) {
+				log.info("Done processing of loaded documents in " + duration + " ms");
+			}
 		}
 
 		return statData;

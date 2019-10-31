@@ -81,7 +81,10 @@ public class DocumentDeliverService {
                 }
             }
         } finally {
-            log.info("Done exporting of validated documents in " + (System.currentTimeMillis() - statData.getStartMs()) + " ms");
+            long duration = System.currentTimeMillis() - statData.getStartMs();
+            if (duration > 500) {
+            	log.info("Done exporting of validated documents in " + duration + " ms");
+            }
         }
 
         return statData;

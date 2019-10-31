@@ -76,7 +76,10 @@ public class DocumentCheckDeliveryService {
 				}
 			}
 		} finally {
-			log.info("Done checking status of exported documents in " + (System.currentTimeMillis() - statData.getStartMs()) + " ms");
+			long duration = System.currentTimeMillis() - statData.getStartMs();
+			if (duration > 500) {
+				log.info("Done checking status of exported documents in " + duration + " ms");
+			}
 		}
 	}
 
