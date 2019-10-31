@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import dk.erst.delis.common.util.StatData;
@@ -13,22 +14,49 @@ import dk.erst.delis.common.util.StatData;
 @Component
 public class TaskSchedulerMonitor {
 
-	private Map<String, TaskResult> lastResultMap;
+	private Map<String, TaskResult[]> lastResultMap;
 
 	public TaskSchedulerMonitor() {
-		this.lastResultMap = new HashMap<String, TaskSchedulerMonitor.TaskResult>();
+		this.lastResultMap = new HashMap<String, TaskSchedulerMonitor.TaskResult[]>();
 	}
 
 	public TaskResult build(String taskName) {
 		return new TaskResult(taskName, this);
 	}
 	
-	public TaskResult getLast(String taskName) {
-		return this.lastResultMap.get(taskName);
+	public String getLast(String taskName) {
+		TaskResult[] taskResults = this.lastResultMap.get(taskName);
+		return buildInfo(taskResults);
+	}
+
+	private String buildInfo(TaskResult[] taskResults) {
+		if (taskResults == null) {
+			return "Not yet run";
+		}
+		TaskResult prev = taskResults[1];
+		TaskResult last = taskResults[0];
+		StringBuilder sb = new StringBuilder();
+		if (last != null) {
+			sb.append("Last run ");
+			sb.append(last);
+		}
+		if (prev != null) {
+			sb.append(", previous ");
+			sb.append(prev);
+		}
+		return sb.toString();
 	}
 
 	private void addResult(TaskResult result) {
-		this.lastResultMap.put(result.getTaskName(), result);
+		TaskResult[] taskResults = this.lastResultMap.get(result.getTaskName());
+		if (taskResults == null) {
+			taskResults = new TaskResult[2];
+			taskResults[0] = result;
+			this.lastResultMap.put(result.getTaskName(), taskResults);
+		} else {
+			taskResults[1] = taskResults[0];
+			taskResults[0] = result;
+		}
 	}
 
 	public static class TaskResult {
@@ -88,34 +116,35 @@ public class TaskSchedulerMonitor {
 		
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Last run ");
 			long lastRunMs = System.currentTimeMillis() - this.startTime.getTime();
 			sb.append(Math.round(lastRunMs / 1000.0));
 			sb.append(" sec ago");
 			sb.append(" for ");
 			sb.append(this.duration);
 			sb.append(" ms");
-			sb.append(", result: ");
-			sb.append(this.success ? "success" : "FAILURE");
+			if (!success) {
+				sb.append(" FAILURE");
+			}
 			if (result != null) {
+				String resultText = null;
 				if (result instanceof StatData) {
 					StatData s = (StatData)result;
 					if (!s.isEmpty()) {
-						sb.append(", ");
-						sb.append(result);
+						resultText=  String.valueOf(result);
 					}
 				} else if (result instanceof Exception) {
-					sb.append(((Exception)result).getMessage());
+					resultText = ((Exception)result).getMessage();
 				} else if (result instanceof List<?>) {
 					List<?> list = (List<?>) result;
 					if (!list.isEmpty()) {
-						sb.append(", ");
-						sb.append(list.size());
-						sb.append(" elements");
+						resultText=  String.valueOf(list.size()) + " elements";
 					}
 				} else {
+					resultText = String.valueOf(result);
+				}
+				if (StringUtils.isNotEmpty(resultText)) {
 					sb.append(", ");
-					sb.append(result);
+					sb.append(resultText);
 				}
 			}
 			return sb.toString();
