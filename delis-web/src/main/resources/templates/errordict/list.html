@@ -3,10 +3,12 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
-			Document Validation Errors
-		</div>
+
+	<h3 class="m-2 text-secondary"> 
+		<a href="#" th:href="@{/errordict/list}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+		Document Validation Errors</h3>
+		
+	<div class="card border-secondary">
 		<div class="card-body">
 			<form action="#" th:action="@{/errordict/list}" method="post">
             <table class="table table-striped table-bordered table-sm datatables-easy"
@@ -34,6 +36,9 @@
 				</tbody>
 			</table>
 			</form>
+		</div>
+		<div class="card-footer">
+			<a href="#" th:href="@{/errordict/reorg}" onclick="return confirm('Are you sure that you want to reorgnaize all errors?');" class="btn btn-outline-primary btn-sm">Reorganize all errors in dictionary</a>
 		</div>
 	</div>
 	

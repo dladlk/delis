@@ -110,5 +110,11 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
 	}
 	/*
 	 * END EasyDatatables block
-	 */	
+	 */
+	
+    @RequestMapping("/errordict/reorg")
+    public String reorg(RedirectAttributes ra) {
+    	ra.addFlashAttribute("errorMessage", "Not implemented");
+        return "redirect:/errordict/list";
+    }	
 }
