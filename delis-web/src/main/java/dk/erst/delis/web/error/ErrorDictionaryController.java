@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
@@ -23,8 +24,10 @@ import dk.erst.delis.web.error.ErrorDictionaryStatRepository.ErrorDictionaryStat
 import dk.erst.delis.web.list.AbstractEasyListController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 public class ErrorDictionaryController extends AbstractEasyListController<ErrorDictionary> {
 
     @Autowired
@@ -112,9 +115,15 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
 	 * END EasyDatatables block
 	 */
 	
-    @RequestMapping("/errordict/reorg")
-    public String reorg(RedirectAttributes ra) {
-    	ra.addFlashAttribute("errorMessage", "Not implemented");
-        return "redirect:/errordict/list";
-    }	
+	@RequestMapping("/errordict/reorg")
+	public String reorg(RedirectAttributes ra) {
+		try {
+			StatData statData = service.reorg();
+			ra.addFlashAttribute("message", "Reorganization successfully finished in " + (System.currentTimeMillis() - statData.getStartMs() + " ms with result: " + statData));
+		} catch (Exception e) {
+			log.error("Failed ErrorDictionaryController.reorg", e);
+			ra.addFlashAttribute("errorMessage", "Reorg failed with error " + e.getMessage());
+		}
+		return "redirect:/errordict/list";
+	}
 }

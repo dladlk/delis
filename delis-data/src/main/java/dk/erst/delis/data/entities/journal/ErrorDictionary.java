@@ -108,4 +108,19 @@ public class ErrorDictionary extends AbstractEntity {
 		return result * PRIME + (($$getErrorTypeString == null) ? 43 : $$getErrorTypeString.hashCode());
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.code);
+		sb.append("\t");
+		sb.append(this.errorType);
+		sb.append("\t");
+		sb.append(this.flag);
+		sb.append("\t");
+		sb.append(this.hash);
+		sb.append("\t");
+		sb.append(this.location);
+		sb.append("\t");
+		sb.append(this.message);
+		return sb.toString();
+	}
 }

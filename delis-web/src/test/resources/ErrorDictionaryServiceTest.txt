@@ -1,0 +1,3 @@
+PEPPOL-EN16931-R007	CII_SCH	fatal	1916066510	/CrossIndustryInvoice[1]/ExchangedDocumentContext[1]	Business process MUST be in the format 'urn:fdc:peppol.eu:2017:poacc:billing:NN:1.0' where NN indicates the process number.
+PEPPOL-EN16931-R007	CII_SCH	fatal	232521422	/CrossIndustryInvoice[1]/ExchangedDocumentContext[1]	Business process MUST be in the format 'urn:fdc:peppol.eu:2017:poacc:billing:NN:1.0' where NN indicates the process number.
+PEPPOL-EN16931-R007	CII_SCH	fatal	1369347721	/CrossIndustryInvoice/ExchangedDocumentContext	Business process MUST be in the format 'urn:fdc:peppol.eu:2017:poacc:billing:NN:1.0' where NN indicates the process number.

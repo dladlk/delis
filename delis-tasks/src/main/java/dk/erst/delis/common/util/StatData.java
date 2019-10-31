@@ -11,14 +11,14 @@ public class StatData {
 	private Map<String, int[]> statMap;
 
 	private long startMs;
-	
+
 	private Object result;
 
 	public StatData() {
 		this.startMs = System.currentTimeMillis();
 		this.statMap = new HashMap<>();
 	}
-	
+
 	public int getCount(String key) {
 		int[] c = this.statMap.get(key);
 		if (c != null) {
@@ -30,16 +30,21 @@ public class StatData {
 	public void incrementObject(Object key) {
 		increment(String.valueOf(key));
 	}
+
 	public void increment(String key) {
+		this.increase(key, 1);
+	}
+
+	public void increase(String key, int count) {
 		String code = key == null ? "UNDEFINED" : key;
 		int[] c = statMap.get(code);
 		if (c == null) {
-			statMap.put(code, new int[] { 1 });
+			statMap.put(code, new int[] { count });
 		} else {
-			c[0]++;
+			c[0] += count;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return toStatString();
@@ -51,7 +56,7 @@ public class StatData {
 		}
 
 		StringBuilder sb = new StringBuilder();
-		
+
 		List<String> keyList = new ArrayList<>(statMap.keySet());
 		Collections.sort(keyList);
 		for (String key : keyList) {
