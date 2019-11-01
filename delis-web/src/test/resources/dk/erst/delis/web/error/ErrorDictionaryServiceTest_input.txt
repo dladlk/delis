@@ -1,0 +1,35 @@
+BR-47	BIS3_SCH	fatal	-26256134	/Invoice/TaxTotal/TaxSubtotal	[BR-47]-Each VAT breakdown (BG-23) shall be defined through a VAT category code (BT-118).
+BR-47	BIS3_SCH	fatal	-26256134	/Invoice[1]/TaxTotal[1]/TaxSubtotal[1]	[BR-47]-Each VAT breakdown (BG-23) shall be defined through a VAT category code (BT-118).
+BR-48	BIS3_SCH	fatal	1309550142	/Invoice/TaxTotal/TaxSubtotal	[BR-48]-Each VAT breakdown (BG-23) shall have a VAT category rate (BT-119), except if the Invoice is not subject to VAT.
+BR-48	BIS3_SCH	fatal	1309550142	/Invoice[1]/TaxTotal[1]/TaxSubtotal[1]	[BR-48]-Each VAT breakdown (BG-23) shall have a VAT category rate (BT-119), except if the Invoice is not subject to VAT.
+BR-CO-04	BIS3_SCH	fatal	1319427843	/Invoice/InvoiceLine	[BR-CO-04]-Each Invoice line (BG-25) shall be categorized with an Invoiced item VAT category code (BT-151).
+BR-CO-04	BIS3_SCH	fatal	1319427843	/Invoice[1]/InvoiceLine[1]	[BR-CO-04]-Each Invoice line (BG-25) shall be categorized with an Invoiced item VAT category code (BT-151).
+BR-CO-13	BIS3_SCH	fatal	-1794644010	/Invoice/LegalMonetaryTotal	[BR-CO-13]-Invoice total amount without VAT (BT-109) = Σ Invoice line net amount (BT-131) - Sum of allowances on document level (BT-107) + Sum of charges on document level (BT-108).
+BR-CO-13	BIS3_SCH	fatal	-1781850297	/Invoice/LegalMonetaryTotal	[BR-CO-13]-Invoice total amount without VAT (BT-109) = Σ Invoice line net amount (BT-131) - Sum of allowances on document level (BT-107) + Sum of charges on document level (BT-108).
+BR-CO-15	BIS3_SCH	fatal	1531077713	/Invoice	[BR-CO-15]-Invoice total amount with VAT (BT-112) = Invoice total amount without VAT (BT-109) + Invoice total VAT amount (BT-110).
+BR-CO-15	BIS3_SCH	fatal	1543871426	/Invoice	[BR-CO-15]-Invoice total amount with VAT (BT-112) = Invoice total amount without VAT (BT-109) + Invoice total VAT amount (BT-110).
+BR-CO-17	BIS3_SCH	fatal	1625926154	/Invoice/TaxTotal/TaxSubtotal	[BR-CO-17]-VAT category tax amount (BT-117) = VAT category taxable amount (BT-116) x (VAT category rate (BT-119) / 100), rounded to two decimals.
+BR-CO-17	BIS3_SCH	fatal	1625926154	/Invoice[1]/TaxTotal[1]/TaxSubtotal[1]	[BR-CO-17]-VAT category tax amount (BT-117) = VAT category taxable amount (BT-116) x (VAT category rate (BT-119) / 100), rounded to two decimals.
+BR-S-02	BIS3_SCH	fatal	-1265933369	/Invoice	[BR-S-02]-An Invoice that contains an Invoice line (BG-25) where the Invoiced item VAT category code (BT-151) is "Standard rated" shall contain the Seller VAT Identifier (BT-31), the Seller tax registration identifier (BT-32) and/or the Seller tax representative VAT identifier (BT-63).
+BR-S-02	BIS3_SCH	fatal	-1265933369	/Invoice[1]	[BR-S-02]-An Invoice that contains an Invoice line (BG-25) where the Invoiced item VAT category code (BT-151) is "Standard rated" shall contain the Seller VAT Identifier (BT-31), the Seller tax registration identifier (BT-32) and/or the Seller tax representative VAT identifier (BT-63).
+DK-R-001	BIS3_SCH	warning	-1551458610	/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]	For Danish suppliers when the Accounting code is known, it should be referred on the Invoice.
+DK-R-001	BIS3_SCH	warning	486814613	/Invoice	For Danish suppliers when the Accounting code is known, it should be referred on the Invoice.
+DK-R-001	BIS3_SCH	warning	1214948036	/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]	For Danish suppliers when the Accounting code is known, it should be referred on the Invoice.
+DK-R-003	CII_SCH	warning	160989347	/CrossIndustryInvoice/SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem	If ItemClassification is provided from Danish suppliers, UNSPSC version 19.0501 should be used
+DK-R-005	CII_SCH	fatal	-761888742	/CrossIndustryInvoice/SupplyChainTradeTransaction/ApplicableHeaderTradeSettlement/SpecifiedTradeSettlementPaymentMeans	For Danish suppliers the following Payment means type codes are allowed: 1, 10, 31, 42, 48, 49, 50, 58, 59, 93 and 97
+DK-R-014	BIS3_SCH	fatal	-513339488	/Invoice	For Danish Suppliers it is mandatory to use schemeID when PartyLegalEntity/CompanyID is used for AccountingCustomerParty or AccountingSupplierParty
+DK-R-014	BIS3_SCH	fatal	214793935	/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]	For Danish Suppliers it is mandatory to use schemeID when PartyLegalEntity/CompanyID is used for AccountingCustomerParty or AccountingSupplierParty
+DK-R-014	BIS3_SCH	fatal	1743354585	/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]	For Danish Suppliers it is mandatory to use schemeID when PartyLegalEntity/CompanyID is used for AccountingCustomerParty or AccountingSupplierParty
+F-LIB187	OIOUBL_SCH	Error	-420879757	/Invoice/cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity	 Invalid CompanyID. Must contain a value
+PEPPOL-EN16931-R001	CII_SCH	fatal	-43594978	/CrossIndustryInvoice[1]/ExchangedDocumentContext[1]	Business process MUST be provided.
+PEPPOL-EN16931-R002	CII_SCH	fatal	2097174871	/CrossIndustryInvoice/ExchangedDocument	No more than one note is allowed on document level.
+PEPPOL-EN16931-R003	BIS3_SCH	fatal	-2055046709	/*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]	A buyer reference or purchase order reference MUST be provided.
+PEPPOL-EN16931-R003	BIS3_SCH	fatal	98424700	/Invoice	A buyer reference or purchase order reference MUST be provided.
+PEPPOL-EN16931-R003	CII_SCH	fatal	-994661835	/CrossIndustryInvoice/SupplyChainTradeTransaction/ApplicableHeaderTradeAgreement	A buyer reference or purchase order reference MUST be provided.
+PEPPOL-EN16931-R004	CII_SCH	fatal	1403679955	/CrossIndustryInvoice/ExchangedDocumentContext	Specification identifier MUST have the value 'urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0'.
+PEPPOL-EN16931-R010	CII_SCH	fatal	-1634421896	/CrossIndustryInvoice[1]/SupplyChainTradeTransaction[1]/ApplicableHeaderTradeAgreement[1]/BuyerTradeParty[1]	Buyer electronic address MUST be provided
+PEPPOL-EN16931-R020	CII_SCH	fatal	1783406975	/CrossIndustryInvoice[1]/SupplyChainTradeTransaction[1]/ApplicableHeaderTradeAgreement[1]/SellerTradeParty[1]	Seller electronic address MUST be provided
+UBL-CR-002	BIS3_SCH	warning	957420105	/Invoice	[UBL-CR-002]-A UBL invoice should not include the UBLVersionID
+UBL-CR-002	BIS3_SCH	warning	957420105	/Invoice[1]	[UBL-CR-002]-A UBL invoice should not include the UBLVersionID
+UBL-CR-660	BIS3_SCH	warning	-1087025979	/Invoice	[UBL-CR-660]-A UBL invoice should not include the Country Identification code listID
+UBL-CR-660	BIS3_SCH	warning	-1087025979	/Invoice[1]	[UBL-CR-660]-A UBL invoice should not include the Country Identification code listID

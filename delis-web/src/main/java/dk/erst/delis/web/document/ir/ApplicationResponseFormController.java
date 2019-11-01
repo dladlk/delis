@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.SendDocument;
-import dk.erst.delis.data.entities.journal.ErrorDictionary;
 import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.email.IEmailSendService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
@@ -213,19 +211,12 @@ public class ApplicationResponseFormController {
 				}
 				if (lastFailedValidationJournal != null) {
 					if (model.containsAttribute("errorListByJournalDocumentIdMap")) {
-						Map<Long, List<ErrorDictionary>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorDictionary>>) model.asMap().get("errorListByJournalDocumentIdMap");
-						List<ErrorDictionary> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
+						Map<Long, List<ErrorRecord>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorRecord>>) model.asMap().get("errorListByJournalDocumentIdMap");
+						List<ErrorRecord> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
 						if (list != null && !list.isEmpty()) {
 							DocumentProcessStep s = new DocumentProcessStep(lastFailedValidationJournal.getMessage(), lastFailedValidationJournal.getType());
 							s.setSuccess(false);
-
-							List<ErrorRecord> errorRecords = new ArrayList<ErrorRecord>();
-							for (ErrorDictionary ed : list) {
-								ErrorRecord e = new ErrorRecord(ed.getErrorType(), ed.getCode(), ed.getMessage(), ed.getFlag(), ed.getLocation());
-								e.setDetailedLocation(ed.getLocation());
-								errorRecords.add(e);
-							}
-							s.setErrorRecords(errorRecords);
+							s.setErrorRecords(list);
 
 							MessageLevelResponseGenerationData mlrData = this.applicationResponseService.buildMLRDataByFailedStep(s);
 							mlrForm.setData(mlrData);

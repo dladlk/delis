@@ -58,7 +58,7 @@ public class JournalDocumentService {
                         errorDictionary.setLocation(errorRecord.getLocation());
                         errorDictionary.setMessage(errorRecord.getMessage());
                         
-                        errorDictionaryService.normalize(errorDictionary);
+                        errorDictionaryService.normalize(errorDictionary, false);
                         
                         int hash = errorDictionary.calculateHash();
                         errorDictionary.setHash(hash);

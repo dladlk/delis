@@ -8,7 +8,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,28 +47,49 @@ public class ErrorDictionaryServiceTest {
 	private DocumentDaoRepository documentDaoRepository;
 	@Autowired
 	private JournalDocumentDaoRepository journalDocumentDaoRepository;
-	
+
 	@Autowired
 	private ErrorDictionaryDaoRepository errorDictionaryDaoRepository;
 	@Autowired
 	private JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository;
+	@Autowired
+	private EntityManager entityManager;
 
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testReorg() {
+	public void testReorg() throws IOException {
 		prepareTestData();
+
+		String expectedTotal;
+		try (InputStreamReader isr = getStream("_expected.txt")) {
+			expectedTotal = IOUtils.readLines(isr).stream().collect(Collectors.joining("\r\n"));
+		}
 
 		ErrorDictionaryService errorDictionaryService = new ErrorDictionaryService(errorDictionaryDaoRepository, journalDocumentErrorDaoRepository);
 
 		StatData stat = errorDictionaryService.reorg();
+
+		Query sql = entityManager.createNativeQuery("select code, error_type, flag, hash, location, message from error_dictionary order by code, error_type, flag, hash, location, message");
+		List<Object[]> resultList = sql.getResultList();
+
+		StringBuilder actualTotal = new StringBuilder();
+		for (Object[] objects : resultList) {
+			if (actualTotal.length() > 0) {
+				actualTotal.append("\r\n");
+			}
+			String line = Arrays.stream(objects).map(s -> String.valueOf(s)).collect(Collectors.joining("\t"));
+			actualTotal.append(line);
+		}
+
 		assertNotNull(stat);
 
-		assertEquals("DELETED: 2, JOURNAL_UPDATED: 2, LOADED: 3, UNCHANGED: 1, UPDATED: 2", stat.toStatString());
+		assertEquals(expectedTotal, actualTotal.toString());
+		assertEquals("DELETED: 14, JOURNAL_UPDATED: 14, LOADED: 35, REHASHED: 20, UPDATED: 15", stat.toStatString());
 	}
 
 	private void prepareTestData() {
 		// select code, error_type, flag, hash, location, message from error_dictionary order by id_pk asc limit 10;
-		String resourceName = "/" + this.getClass().getSimpleName() + ".txt";
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(resourceName), StandardCharsets.UTF_8))) {
+		try (BufferedReader reader = new BufferedReader(getStream("_input.txt"))) {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (StringUtils.isNotBlank(line)) {
@@ -75,22 +103,22 @@ public class ErrorDictionaryServiceTest {
 					e.setMessage(parts[5]);
 
 					this.errorDictionaryDaoRepository.save(e);
-					
+
 					Document doc = new Document();
 					doc.setDocumentStatus(DocumentStatus.LOAD_ERROR);
 					doc.setName("test");
 					doc.setMessageId("test");
-					
+
 					this.documentDaoRepository.save(doc);
-					
+
 					JournalDocument jd = new JournalDocument();
 					jd.setDocument(doc);
 					jd.setSuccess(false);
 					jd.setType(DocumentProcessStepType.LOAD);
 					jd.setMessage("test");
-					
+
 					this.journalDocumentDaoRepository.save(jd);
-					
+
 					JournalDocumentError jde = new JournalDocumentError();
 					jde.setErrorDictionary(e);
 					jde.setJournalDocument(jd);
@@ -105,4 +133,8 @@ public class ErrorDictionaryServiceTest {
 		;
 	}
 
+	private InputStreamReader getStream(String suffix) {
+		String resourceName = this.getClass().getSimpleName() + suffix;
+		return new InputStreamReader(this.getClass().getResourceAsStream(resourceName), StandardCharsets.UTF_8);
+	}
 }

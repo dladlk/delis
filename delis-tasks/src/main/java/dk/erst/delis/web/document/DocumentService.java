@@ -24,6 +24,7 @@ import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.journal.JournalDocumentError;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 
 @Service
@@ -91,24 +92,27 @@ public class DocumentService {
         return journalDocumentDaoRepository.findByDocumentOrderByIdAsc(document);
     }
 
-	public Map<Long, List<ErrorDictionary>> getErrorListByJournalDocumentIdMap(Document document) {
+	public Map<Long, List<ErrorRecord>> getErrorListByJournalDocumentIdMap(Document document) {
 		List<JournalDocumentError> errorList = journalDocumentErrorDaoRepository.findAllByJournalDocumentDocumentOrderById(document);
-		Map<Long, List<ErrorDictionary>> res = new HashMap<>();
+		Map<Long, List<ErrorRecord>> res = new HashMap<>();
 		if (errorList != null) {
 			for (JournalDocumentError journalDocumentError : errorList) {
 				Long jdId = journalDocumentError.getJournalDocument().getId();
-				ErrorDictionary error = journalDocumentError.getErrorDictionary();
+				ErrorDictionary errorDict = journalDocumentError.getErrorDictionary();
 
+				String detailedLocation = errorDict.getLocation();
 				if (StringUtils.isNotEmpty(journalDocumentError.getDetailedLocation())) {
-                    error.setLocation(journalDocumentError.getDetailedLocation());
+                    detailedLocation = journalDocumentError.getDetailedLocation();
                 }
-
-				List<ErrorDictionary> list = res.get(jdId);
+				
+				ErrorRecord er = new ErrorRecord(errorDict, detailedLocation);
+				
+				List<ErrorRecord> list = res.get(jdId);
 				if (list == null) {
 					list = new ArrayList<>();
 					res.put(jdId, list);
 				}
-				list.add(error);
+				list.add(er);
 			}
 		}
 		return res;

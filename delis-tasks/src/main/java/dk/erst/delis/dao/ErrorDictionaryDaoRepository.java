@@ -15,7 +15,7 @@ public interface ErrorDictionaryDaoRepository extends PagingAndSortingRepository
 	
 	ErrorDictionary findFirstByErrorTypeAndMessage(DocumentErrorCode errorType, String message);
 
-	List<ErrorDictionary> findAllByHash(int hash);
+	List<ErrorDictionary> findAllByHashOrderByIdAsc(int hash);
 	
 	@Query("select s "
 			+ "from ErrorDictionary s "

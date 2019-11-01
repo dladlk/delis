@@ -22,7 +22,7 @@ import lombok.Setter;
 @Table(indexes = {
 
 		@Index(name = "I_HASH", columnList = "HASH") })
-public class ErrorDictionary extends AbstractEntity {
+public class ErrorDictionary extends AbstractEntity implements IErrorInfo {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)

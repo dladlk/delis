@@ -1,8 +1,7 @@
 package dk.erst.delis.web.error;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +12,8 @@ import dk.erst.delis.dao.ErrorDictionaryDaoRepository;
 import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.journal.ErrorDictionary;
+import dk.erst.delis.task.document.process.validate.SchemaValidator;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -42,7 +43,7 @@ public class ErrorDictionaryService {
 	}
 
 	public List<ErrorDictionary> findAllByHash(int hash) {
-		return this.errorDictionaryDaoRepository.findAllByHash(hash);
+		return this.errorDictionaryDaoRepository.findAllByHashOrderByIdAsc(hash);
 	}
 
 	public StatData reorg() {
@@ -50,10 +51,10 @@ public class ErrorDictionaryService {
 		long start = System.currentTimeMillis();
 
 		/*
-		 * Reorg is done in 2 steps: 
+		 * Reorg is done in 2 steps:
 		 * 
 		 * 1) walk through list of all errors and renormalize / recalculate hash on them
-		 *  
+		 * 
 		 * 2) check that there are no records, equal by hash and contents. If there are - replace links to first of them and delete unnecessary.
 		 */
 		renormalizeAll(sd);
@@ -67,13 +68,22 @@ public class ErrorDictionaryService {
 	private void cleanDuplicates(StatData sd) {
 		List<Object[]> duplicatedByHash = errorDictionaryDaoRepository.findDuplicatedByHash();
 		for (Object[] objects : duplicatedByHash) {
-			int hash = ((Number)objects[0]).intValue();
-			long minId = ((Number)objects[1]).longValue();
-			
-			List<ErrorDictionary> allByHash = errorDictionaryDaoRepository.findAllByHash(hash);
+			int hash = ((Number) objects[0]).intValue();
+
+			List<ErrorDictionary> allByHash = errorDictionaryDaoRepository.findAllByHashOrderByIdAsc(hash);
+
+			List<ErrorDictionary> uniqueListToLeave = new ArrayList<ErrorDictionary>();
 			for (ErrorDictionary ed : allByHash) {
-				if (ed.getId() != minId) {
-					int updatedCount = journalDocumentErrorDaoRepository.updateErrorDictionaryId(ed.getId(), minId);
+				Long duplicatedById = null;
+				for (ErrorDictionary kept : uniqueListToLeave) {
+					if (kept.equals(ed)) {
+						duplicatedById = kept.getId();
+					}
+				}
+				if (duplicatedById == null) {
+					uniqueListToLeave.add(ed);
+				} else {
+					int updatedCount = journalDocumentErrorDaoRepository.updateErrorDictionaryId(ed.getId(), duplicatedById);
 					sd.increase("JOURNAL_UPDATED", updatedCount);
 					errorDictionaryDaoRepository.delete(ed);
 					sd.increment("DELETED");
@@ -99,7 +109,7 @@ public class ErrorDictionaryService {
 						log.debug("Before:\t" + errorDictionary);
 					}
 
-					normalize(errorDictionary);
+					normalize(errorDictionary, true);
 
 					int hashAfter = errorDictionary.calculateHash();
 
@@ -124,20 +134,33 @@ public class ErrorDictionaryService {
 		} while (someFound);
 	}
 
-	public void normalize(ErrorDictionary errorDictionary) {
+	public void normalize(ErrorDictionary errorDictionary, boolean fixOldBugs) {
 		errorDictionary.setCode(cutString(errorDictionary.getCode(), 50));
 		errorDictionary.setFlag(cutString(errorDictionary.getFlag(), 20));
 		errorDictionary.setLocation(cutString(errorDictionary.getLocation(), 500));
 		errorDictionary.setMessage(cutString(errorDictionary.getMessage(), 1024));
 
+		if (!fixOldBugs) {
+			return;
+		}
+		
 		if (errorDictionary.getErrorType().isXSD()) {
-			errorDictionary.setLocation("");
+			/*
+			 * Old version of SchemaValidator placed line XX, column YY to Location - which generates different instances for same error
+			 */
+			if (errorDictionary.getLocation().contains(", column ")) {
+				errorDictionary.setLocation("");
+			}
+			SchemaValidator.cleanupXsdErrorRecord(errorDictionary);
 		} else if (errorDictionary.getErrorType().isSCH()) {
+			if (errorDictionary.getLocation().indexOf("namespace-uri()") > 0) {
+				errorDictionary.setLocation(ErrorRecord.cleanupNamespaces(errorDictionary.getLocation()));
+			}
+			/*
+			 * Old version left indexes in location of schematrons
+			 */
 			if (errorDictionary.getLocation().indexOf("[") > 0) {
-				Pattern p = Pattern.compile("\\[\\d+\\]");
-				Matcher matcher = p.matcher(errorDictionary.getLocation());
-				String newLocation = matcher.replaceAll("");
-				errorDictionary.setLocation(newLocation);
+				errorDictionary.setLocation(ErrorRecord.cleanupIndexes(errorDictionary.getLocation()));
 			}
 		}
 
