@@ -54,7 +54,7 @@ public class DocumentValidationTransformationServiceTest {
                 assertTrue(errorRecords.size() == 1);
                 ErrorRecord errorRecord = errorRecords.get(0);
                 assertEquals(errorRecord.getErrorType(), DocumentErrorCode.BIS3_XSD);
-                assertEquals(errorRecord.getLocation(), "line 6, column 18");
+                assertEquals("/Invoice", errorRecord.getLocation());
                 return true;
             }
         });
@@ -92,8 +92,8 @@ public class DocumentValidationTransformationServiceTest {
                 List<ErrorRecord> errorRecords = documentProcessStepXSD.getErrorRecords();
                 assertTrue(errorRecords.size() == 1);
                 ErrorRecord errorRecord = errorRecords.get(0);
-                assertEquals(errorRecord.getCode(), "");
-                assertEquals(errorRecord.getLocation(), "line 9, column 24");
+                assertEquals("cvc-complex-type.2.4.a", errorRecord.getCode());
+                assertEquals("/Invoice", errorRecord.getLocation());
                 return true;
             }
         });
@@ -133,8 +133,8 @@ public class DocumentValidationTransformationServiceTest {
                 List<ErrorRecord> errorRecords = documentProcessStepXSD.getErrorRecords();
                 assertTrue(errorRecords.size() == 1);
                 ErrorRecord errorRecord = errorRecords.get(0);
-                assertEquals(errorRecord.getCode(), "");
-                assertEquals(errorRecord.getLocation(), "line 325, column 13");
+                assertEquals("cvc-complex-type.2.4.a", errorRecord.getCode());
+                assertEquals("/CrossIndustryInvoice/SupplyChainTradeTransaction/ApplicableHeaderTradeDelivery/ShipToTradeParty", errorRecord.getLocation());
                 return true;
             }
         });
