@@ -64,6 +64,13 @@ create user delis@localhost identified by 'delis';
 grant all on delis.* to delis@localhost;
 ```
 
+For access outside of localhost, last 2 lines should look like:
+
+```sql
+create user 'delis'@'%' identified by 'delis';
+grant all on delis.* to 'delis'@'%';
+```
+
 ## <a id="functionality">Run</a>
 
 ### <a id="functionality">Test</a>
