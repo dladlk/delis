@@ -15,14 +15,16 @@
 
 </head>
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
-			Tasks
-		</div>
+
+	<h3 class="m-2 text-secondary"> 
+		<a href="#" th:href="@{/task/index}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+		Tasks</h3>
+
+	<div class="card border-secondary">
 		<div class="card-body">
 			<table class="table table-sm">
 				<tr>
-					<th colspan="2" style="text-align: center">Identifier tasks</th>
+					<th colspan="3" style="text-align: center">Identifier tasks</th>
 				</tr>
 				<tr>
 					<td>
@@ -31,6 +33,7 @@
 					<td>
 						Scan folder with exported list of identifiers per organisation and synchronize list of identifiers with database
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('identifierLoad')}"></td>
 				</tr>
 				<tr>
 					<td>
@@ -39,9 +42,10 @@
 					<td>
 						Lookup db for Identifier records with identifierPublishStatus = PENDING and send requests to SMP
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('identifierPublish')}"></td>
 				</tr>
 				<tr>
-					<th colspan="2" style="text-align: center">Received documents tasks</th>
+					<th colspan="3" style="text-align: center">Received documents tasks</th>
 				</tr>
 				<tr>
 					<td>
@@ -50,6 +54,7 @@
 					<td>
 						Scan IN folder of Domibus and Oxalis, resolve format, document details, receiver and load to database.
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('documentLoad')}"></td>
 				</tr>
 				<tr>
 					<td>
@@ -58,6 +63,7 @@
 					<td>
 						Lookup db for Document records with status = LOADED_OK, validate ingoing format, transform to intermediate/final formats and validate them.
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('documentValidate')}"></td>
 				</tr>
 				<tr>
 					<td>
@@ -66,9 +72,21 @@
 					<td>
 						Lookup db for Document records with status = VALIDATED_OK and deliver them to final receiver.
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('documentDeliver')}"></td>
 				</tr>
 				<tr>
-					<th colspan="2" style="text-align: center">Sent documents tasks</th>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/documentCheckDelivered}">Delivery check</a>
+					</td>
+					<td>
+						Lookup db for Document records with status = EXPORTED or DELIVERY_PENDING and configured to check that they are collected, and if they are - mark as Collected. If documents are not collected for more than configured time - mark them as DELIVERY_PENDING
+					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('documentCheckDelivery')}"></td>
+				</tr>
+				
+				
+				<tr>
+					<th colspan="3" style="text-align: center">Sent documents tasks</th>
 				</tr>
 				<tr>
 					<td>
@@ -77,6 +95,7 @@
 					<td>
 						Lookup db for SendDocument records with status = NEW and validate original format, if ok - change to VALID, otherwhise VALIDATE_ERROR.
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('sendDocumentValidate')}"></td>
 				</tr>
 				<tr>
 					<td>
@@ -85,6 +104,21 @@
 					<td>
 						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwhise FORWARD_ERROR) - otherwise FORWARD_SKIP.
 					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('sendDocumentFailedProcess')}"></td>
+				</tr>
+
+
+				<tr>
+					<th colspan="3" style="text-align: center">Export tasks</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/exportHistory}">History</a>
+					</td>
+					<td>
+						Export history of received documents validation for further analysis in CSV format.
+					</td>
+					<td></td>
 				</tr>
 				
 			</table>

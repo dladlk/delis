@@ -8,6 +8,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface JournalIdentifierDaoRepository extends PagingAndSortingRepository<JournalIdentifier, Long> {
 
-	List<JournalIdentifier> findTop5ByIdentifierOrderByIdDesc(Identifier identifier);
+	List<JournalIdentifier> findTop10ByIdentifierOrderByIdDesc(Identifier identifier);
 
 }

@@ -10,6 +10,7 @@ import dk.erst.delis.rest.data.response.auth.AuthData;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class AllRestControllerTest {
     }
 
     @Test
+    @Ignore
     public void loginProcessAndTestRequest() {
         log.info("start test for multiThread request");
         ExecutorService threadPool = Executors.newFixedThreadPool(ConstValues.paths.size());

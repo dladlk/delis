@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.journal.JournalDocument;
+import dk.erst.delis.email.IEmailSendService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
@@ -36,7 +36,6 @@ import dk.erst.delis.task.document.response.ApplicationResponseService.Applicati
 import dk.erst.delis.task.document.response.ApplicationResponseService.MessageLevelResponseGenerationData;
 import dk.erst.delis.web.document.DocumentService;
 import dk.erst.delis.web.document.SendDocumentService;
-import dk.erst.delis.web.error.ErrorDictionaryData;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -51,6 +50,10 @@ public class ApplicationResponseFormController {
 	private ApplicationResponseService applicationResponseService;
 	@Autowired
 	private DocumentProcessService documentProcessService;
+	@Autowired
+	private EmailResponseService emailResponseService;
+	@Autowired 
+	private IEmailSendService emailSendService;
 
 	@PostMapping("/document/generate/messageLevelResponseByErrorAndSend/{id}")
 	public String generateMessageLevelResponseByLastErrorAndSend(@PathVariable long id, Model model, RedirectAttributes ra) throws IOException {
@@ -85,6 +88,25 @@ public class ApplicationResponseFormController {
 	public ResponseEntity<Object> generateMessageLevelResponse(MessageLevelResponseForm mlrForm, RedirectAttributes ra) throws IOException {
 		ra.addFlashAttribute("mlrForm", mlrForm);
 		return generateApplicationResponse(mlrForm, ra);
+	}
+
+	@PostMapping("/document/generate/emailResponse")
+	public ResponseEntity<Object> generateEmailResponse(EmailResponseForm emailForm, RedirectAttributes ra) throws IOException {
+		String defaultReturnPath = "/document/view/" + emailForm.getDocumentId();
+		
+		ra.addFlashAttribute("emailForm", emailForm);
+		
+		if (emailForm.isValid()) {
+			if (emailSendService.send(emailForm)) {
+				ra.addFlashAttribute("message", "Email is successfully sent");
+			} else {
+				ra.addFlashAttribute("errorMessage", "Email sending failed");
+			}
+		} else {
+			ra.addFlashAttribute("errorMessage", "Email delivery is not yet implemented");
+		}
+
+		return redirectEntity(defaultReturnPath);
 	}
 
 	private ResponseEntity<Object> generateApplicationResponse(AbstractApplicationResponseForm arForm, RedirectAttributes ra) throws IOException {
@@ -170,8 +192,9 @@ public class ApplicationResponseFormController {
 			irForm.setEffectiveDate(document.getDocumentDate());
 			model.addAttribute("irForm", irForm);
 		}
+		MessageLevelResponseForm mlrForm;
 		if (!model.containsAttribute("mlrForm")) {
-			MessageLevelResponseForm mlrForm = new MessageLevelResponseForm();
+			mlrForm = new MessageLevelResponseForm();
 			mlrForm.setDocumentId(document.getId());
 			model.addAttribute("mlrForm", mlrForm);
 
@@ -188,19 +211,12 @@ public class ApplicationResponseFormController {
 				}
 				if (lastFailedValidationJournal != null) {
 					if (model.containsAttribute("errorListByJournalDocumentIdMap")) {
-						Map<Long, List<ErrorDictionaryData>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorDictionaryData>>) model.asMap().get("errorListByJournalDocumentIdMap");
-						List<ErrorDictionaryData> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
+						Map<Long, List<ErrorRecord>> errorListByJournalDocumentIdMap = (Map<Long, List<ErrorRecord>>) model.asMap().get("errorListByJournalDocumentIdMap");
+						List<ErrorRecord> list = errorListByJournalDocumentIdMap.get(lastFailedValidationJournal.getId());
 						if (list != null && !list.isEmpty()) {
 							DocumentProcessStep s = new DocumentProcessStep(lastFailedValidationJournal.getMessage(), lastFailedValidationJournal.getType());
 							s.setSuccess(false);
-
-							List<ErrorRecord> errorRecords = new ArrayList<ErrorRecord>();
-							for (ErrorDictionaryData ed : list) {
-								ErrorRecord e = new ErrorRecord(ed.getErrorType(), ed.getCode(), ed.getMessage(), ed.getFlag(), ed.getLocation());
-								e.setDetailedLocation(ed.getLocation());
-								errorRecords.add(e);
-							}
-							s.setErrorRecords(errorRecords);
+							s.setErrorRecords(list);
 
 							MessageLevelResponseGenerationData mlrData = this.applicationResponseService.buildMLRDataByFailedStep(s);
 							mlrForm.setData(mlrData);
@@ -208,6 +224,8 @@ public class ApplicationResponseFormController {
 					}
 				}
 			}
+		} else {
+			mlrForm	= (MessageLevelResponseForm) model.asMap().get("mlrForm");
 		}
 
 		/*
@@ -224,6 +242,10 @@ public class ApplicationResponseFormController {
 		model.addAttribute("applicationResponseTypeCodeList", MessageLevelResponseConst.applicationResponseTypeCodeList);
 		model.addAttribute("applicationResponseLineResponseCodeList", MessageLevelResponseConst.applicationResponseLineResponseCodeList);
 		model.addAttribute("applicationResponseLineReasonCodeList", MessageLevelResponseConst.applicationResponseLineReasonCodeList);
+		
+		if (!model.containsAttribute("emailForm")) {
+			model.addAttribute("emailForm", emailResponseService.buildEmailResponse(document, mlrForm.getData()));
+		}
 	}
 
 }

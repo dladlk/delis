@@ -46,7 +46,7 @@ public class TokenService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public void removeAccessToken(OAuth2AccessToken token) {
-        OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByUserId(SecurityUtil.getUserId());
+        OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(token.getValue());
         if (oAuthAccessToken != null) {
             OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(oAuthAccessToken.getRefreshToken());
             if (oAuthRefreshToken != null) {

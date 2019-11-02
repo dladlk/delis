@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { TokenService } from '../service/system/token.service';
+import { ActivatedRouteSnapshot, CanActivateChild, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { CheckExpirationService } from '../service/system/check-expiration.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivateChild {
 
-  constructor(private router: Router, private tokenService: TokenService) {}
+  constructor(private router: Router, private checkExpirationService: CheckExpirationService) {}
 
-  canActivate() {
-    if (this.tokenService.isAuthenticated()) {
-      return true;
+  canActivateChild(
+      childRoute: ActivatedRouteSnapshot,
+      state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    if (this.checkExpirationService.isExpired()) {
+      this.router.navigate(['/login']);
+      return false;
     }
-    this.router.navigate(['/login']);
-    return false;
+    return true;
   }
 }

@@ -13,4 +13,6 @@ import java.util.List;
 public interface IdentifierRepository extends AbstractRepository<Identifier> {
 
     List<Identifier> findByPublishingStatusAndCreateTimeBetween(IdentifierPublishingStatus publishingStatus, Date start, Date End);
+
+    Long countByCreateTimeBetweenAndOrganisationId(Date start, Date end, Long id);
 }

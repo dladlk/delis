@@ -10,20 +10,23 @@ import { DATE_FORMAT } from '../../../app.constants';
 export class DateRangeComponent implements OnInit {
 
   @ViewChild('dateRangePicker', {static: true}) dateRangePicker;
-  @Input() placeholder: string;
+  // @Input() placeholder: string;
   @Input() appearance: string;
+  @Input() range: Range;
 
-  range: Range = {fromDate: null, toDate: null};
   options: NgxDrpOptions;
   presets: Array<PresetItem> = [];
 
   ngOnInit() {
+    if (!this.range) {
+      this.range = {fromDate: null, toDate: null};
+    }
     this.setupPresets();
     this.options = {
       presets: this.presets,
       format: DATE_FORMAT,
-      range: null,
-      placeholder: this.placeholder || 'Dato',
+      range: this.range,
+      // placeholder: this.placeholder || 'Dato',
       applyLabel: 'Submit',
       calendarOverlayConfig: {
         shouldCloseOnBackdropClick: false,

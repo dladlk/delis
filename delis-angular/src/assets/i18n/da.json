@@ -24,12 +24,17 @@
   "header.account.inbox": "Indbakke",
   "header.account.logout": "Log ud",
   "page-header.dashboard": "Oversigt",
-  "dashboard.identifier": "Modtagere den sidste time",
-  "dashboard.documents": "Modtagelse dokumenter den sidste time / gennemsnit",
-  "dashboard.errors": "Fejl sidste tid",
-  "dashboard.send": "Afsendelse den sidste time / gennemsnit",
-  "dashboard.details": "Se detaljer",
-  "dashboard.chart.receiving": "Modtagelse",
+
+  "dashboard.documents": "Modtaget",
+  "dashboard.errors": "Modtaget med fejl",
+  "dashboard.send": "Afsendt",
+  "dashboard.deliveryAlert": "Ikke hentet",
+
+  "dashboard.chart.receiving": "Modtaget",
+  "dashboard.chart.sending": "Afsendt",
+  "dashboard.chart.receiving_error": "Modtaget med fejl",
+
+  "dashboard.chart.default_message": "Ingen oplysninger i den valgte periode.",
   "documents.header": "Dokumenter",
   "documents.header.details": "Modtagelse detaljer",
   "documents.table.header": "Modtagelse Oversigt",
@@ -170,6 +175,10 @@
   "back": "Tilbage",
   "next": "Vis naeste",
   "previous": "Vis tidligere",
+  "up": "Side op",
+  "down": "Side ned",
+  "lineChart": "Linjediagram",
+  "barChart": "Søjlediagram",
 
   "td.picker.all": "Alle",
   "td.picker.today": "I dag",
@@ -181,6 +190,9 @@
 
   "td.picker.from": "FRA",
   "td.picker.to": "TIL",
+  "td.picker.from.date": "Fra Dato",
+  "td.picker.to.date": "Til Dato",
+  "td.picker.presets": "Forudindstillinger",
 
   "column.hide": "Skjul kolonner",
 
@@ -192,5 +204,10 @@
   "profile.menu.lastName": "Efternavn",
   "profile.menu.loginTime": "Login tid",
   "profile.menu.role": "Rolle",
-  "profile.menu.organisation": "Organisation"
+  "profile.menu.organisation": "Organisation",
+
+  "generate": "Udvikle",
+
+  "page.not-found": "SIDEN BLEV IKKE FUNDET",
+  "page.not-found.go-to": "Gå til"
 }

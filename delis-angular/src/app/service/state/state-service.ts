@@ -1,4 +1,4 @@
-import { TableStateModel } from "../../model/filter/table-state.model";
+import { TableStateModel } from '../../model/filter/table-state.model';
 
 export interface StateService<T extends TableStateModel> {
 

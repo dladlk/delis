@@ -1,0 +1,57 @@
+@import "delis_material";
+
+.delis-main-content {
+  margin-left: 1pt;
+  margin-right: 1pt;
+  display: block;
+}
+
+@media screen and (max-width: 992px) {
+  .delis-main-content {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+}
+
+.check-header-language {
+  color: mat-color($primary) !important;
+  margin-left: 1em;
+}
+
+.vertical-align-center {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+}
+
+.delis-button-row button,
+.delis-button-row a {
+  margin-right: 2em;
+  vertical-align: middle !important;
+}
+
+.delis-button-row button:last-child {
+  margin-right: 0em;
+}
+
+.delis-button-row-footer {
+  position: fixed;
+  bottom: 20px;
+  display: block;
+}
+
+.download-muted {
+  cursor: pointer;
+  text-decoration: underline;
+  opacity: 0.5;
+}
+
+.download {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.profile-info {
+  padding: 1em;
+  font-family: $delis-font-family, "system", serif !important;
+}

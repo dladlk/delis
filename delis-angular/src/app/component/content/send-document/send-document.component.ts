@@ -5,8 +5,8 @@ import { SendDocumentService } from '../../../service/content/send-document.serv
 import { SendDocumentDataSource } from './send-document-data-source';
 import { LocalStorageService } from '../../../service/system/local-storage.service';
 import { EnumInfoModel } from '../../../model/system/enum-info.model';
-import { SendDocumentStateService } from "../../../service/state/send-document-state.service";
-import { SEND_DOCUMENT_PATH } from "../../../app.constants";
+import { SendDocumentStateService } from '../../../service/state/send-document-state.service';
+import { SEND_DOCUMENT_PATH } from '../../../app.constants';
 
 @Component({
   selector: 'app-send-document',
@@ -70,13 +70,13 @@ export class SendDocumentComponent implements OnInit {
         value: this.selectedDocumentType,
         list: this.documentTypes
       }
-    }
+    };
   }
 
   initTextFilterModel() {
     this.textFilterModel = {
       receiverIdRaw: null,
       senderIdRaw: null
-    }
+    };
   }
 }

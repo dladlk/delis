@@ -1,6 +1,5 @@
 package dk.erst.delis.rest.controller.info;
 
-import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.rest.data.response.DataContainer;
 import dk.erst.delis.rest.data.response.ListContainer;
 import dk.erst.delis.rest.data.response.info.TableInfoData;
@@ -28,14 +27,7 @@ public class TableInfoController {
 
     @GetMapping("/enums")
     public ResponseEntity<ListContainer<TableInfoData>> getTableInfoByAllEntities(HttpServletRequest httpServletRequest) {
-    	
-        ListContainer<TableInfoData> list = tableInfoService.getTableInfoByAllEntities(getLocale(httpServletRequest));
-        System.out.println(list);
-        
-        String str = DocumentStatus.LOAD_OK.getNameDa();
-        System.out.println(str);
-        
-		return ResponseEntity.ok(list);
+		return ResponseEntity.ok(tableInfoService.getTableInfoByAllEntities(getLocale(httpServletRequest)));
     }
 
     @GetMapping("/organizations")

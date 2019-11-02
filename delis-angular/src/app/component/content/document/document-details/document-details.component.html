@@ -1,188 +1,199 @@
-<mat-card>
+<app-delis-table-details-header
+  [currentIds]="currentIds"
+  [id]="documentId"
+  [isNextDown]="isNextDown"
+  [isNextUp]="isNextUp"
+  [path]="DOCUMENT_PATH"
+  [stateService]="stateService"
+  [header]="'documents.header.details'">
+</app-delis-table-details-header>
 
-    <div class="example-container mat-elevation-z8">
+<div *ngIf="errorOneDocument" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorOneDocumentModel"></app-error>
+  </mat-card>
+</div>
 
-        <app-delis-table-details-header
-                [currentIds]="currentIds"
-                [id]="documentId"
-                [isNextDown]="isNextDown"
-                [isNextUp]="isNextUp"
-                [path]="DOCUMENT_PATH"
-                [stateService]="stateService">
-        </app-delis-table-details-header>
-
-        <div class="table-details">
-            <mat-card-content>
-                <div *ngIf="errorOneDocument" class="table-details-error">
-                    <app-error [errorModel]="errorOneDocumentModel"></app-error>
-                </div>
-            </mat-card-content>
-            <mat-card-content>
-                <h5 class="table-details-header">{{ 'documents.header.details' | translate}}</h5>
-                <table class="delis-table-data">
-                    <thead>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.organisation' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.identifier' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.createTime' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.status' | translate }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <span *ngIf="document.organisation !== null">{{document.organisation.name}}</span>
-                        </td>
-                        <td>
-                            <span *ngIf="document.receiverIdentifier !== null">{{document.receiverIdentifier.name}}</span>
-                        </td>
-                        <td>{{document.createTime | date: SHOW_DATE_FORMAT}}</td>
-                        <td>{{document.documentStatus}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.documentType' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.ingoingDocumentFormat' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.documentId' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
-                    </tr>
-                    <tr>
-                        <td>{{document.documentType}}</td>
-                        <td>{{document.ingoingDocumentFormat}}</td>
-                        <td>{{document.documentId}}</td>
-                        <td>{{document.documentDate}}</td>
-                    </tr>
-					</tbody>
-					<!--
-                    <thead>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.name' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.messageId' | translate }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>{{document.name}}</td>
-                        <td>{{document.messageId}}</td>
-                    </tr>
-					</tbody>
-					-->
-                </table>
-            </mat-card-content>
-            <mat-card-content>
-                <div *ngIf="!errorOneDocument && !hideForm">
-                    <app-invoice [documentId]="document.id" [effectiveDate]="document.documentDate"></app-invoice>
-                </div>
-            </mat-card-content>
-            <mat-card-content>
-                <table class="delis-table-data">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.senderName' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.sender' | translate }}</th>
-                        <td>{{document.senderIdRaw}}</td>
-                        <td>{{document.senderName}}</td>
-                        <td>{{document.senderCountry}}</td>
-                    </tr>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.receiver' | translate }}</th>
-                        <td>{{document.receiverIdRaw}}</td>
-                        <td>{{document.receiverName}}</td>
-                        <td>{{document.receiverCountry}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </mat-card-content>
-            <mat-card-content>
-                <div *ngIf="errorJournalDocuments" class="table-details-error">
-                    <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
-                </div>
-            </mat-card-content>
-            <mat-card-content>
-                <h5 class="table-details-header">{{ 'documents.table.one.columnName.journalRecords' | translate }}</h5>
-                <table class="delis-table-data">
-                    <thead>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
-                    </tr>
-                    </thead>
-                    <tbody *ngFor="let doc of journalDocuments">
-                    <tr>
-                        <td>{{doc.createTime | date: SHOW_DATE_FORMAT}}</td>
-                        <td>{{doc.type}}</td>
-                        <td class="systemColorSuccess" *ngIf="doc.success">
-                            <mat-icon>check_circle</mat-icon>
-                        </td>
-                        <td class="systemColorError" *ngIf="!doc.success">
-                            <mat-icon>error</mat-icon>
-                        </td>
-                        <td>{{doc.message}}</td>
-                        <td style="text-align: right !important;">{{doc.durationMs}}</td>
-                    </tr>
-                    <tr *ngIf="getErrorDictionaryModel(doc.id).length !== 0">
-                        <td colspan="5">
-                            <mat-card>
-                                <table>
-                                    <tr>
-                                        <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.flag' | translate }}</th>
-                                        <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
-                                        <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
-                                        <th class="table-details-th-error">{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
-                                    </tr>
-                                    <tr *ngFor="let err of getErrorDictionaryModel(doc.id)">
-                                        <td class="table-details-td-error">{{err.flag}}</td>
-                                        <td class="table-details-td-error">{{err.code}}</td>
-                                        <td class="table-details-td-error">{{err.message}}</td>
-                                        <td class="table-details-td-error">{{err.location}}</td>
-									</tr>
-                                </table>
-                            </mat-card>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </mat-card-content>
-            <mat-card-content>
-                <div *ngIf="errorDocumentBytes" class="table-details-error">
-                    <app-error [errorModel]="errorDocumentBytesModel"></app-error>
-                </div>
-            </mat-card-content>
-            <mat-card-content>
-                <div *ngIf="errorDownload" class="table-details-error">
-                    <app-error [errorModel]="errorDownloadModel"></app-error>
-                </div>
-            </mat-card-content>
-            <mat-card-content>
-                <h5 class="table-details-header">{{ 'documents.table.one.columnName.documentBytesModels' | translate }}</h5>
-                <table class="delis-table-data">
-                    <thead>
-                    <tr>
-                        <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
-                        <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
-                        <th>Download</th>
-                    </tr>
-                    </thead>
-                    <tbody *ngFor="let doc of documentBytesModels">
-                    <tr>
-                        <td>{{doc.type}}</td>
-                        <td>{{doc.format}}</td>
-                        <td class="text-right">{{doc.size}}</td>
-                        <td class="download-muted" (click)="download(doc.id)">Download</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </mat-card-content>
-        </div>
-    </div>
+<mat-card class="mb-20">
+  <div class="table-scroll">
+    <table class="delis-table-data">
+      <thead>
+      <tr>
+        <th>{{ 'documents.table.one.columnName.organisation' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.identifier' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.createTime' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.status' | translate }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <span *ngIf="document.organisation !== null">{{ document.organisation.name }}</span>
+        </td>
+        <td>
+          <span *ngIf="document.receiverIdentifier !== null">{{ document.receiverIdentifier.name }}</span>
+        </td>
+        <td>{{ document.createTime | date: SHOW_DATE_FORMAT }}</td>
+        <td>
+          <div *ngIf="statusErrors.indexOf(document.documentStatus) >= 0; else elseSuccessBlock" class="system-color-error">
+            {{ document.documentStatus }}
+          </div>
+          <ng-template #elseSuccessBlock>
+            {{ document.documentStatus }}
+          </ng-template>
+        </td>
+      </tr>
+      <tr>
+        <th>{{ 'documents.table.one.columnName.documentType' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.ingoingDocumentFormat' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.documentId' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.documentDate' | translate }}</th>
+      </tr>
+      <tr>
+        <td>{{ document.documentType }}</td>
+        <td>{{ document.ingoingDocumentFormat }}</td>
+        <td>{{ document.documentId }}</td>
+        <td>{{ document.documentDate }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </mat-card>
+
+<div *ngIf="!errorOneDocument && !hideForm" class="mb-20">
+  <app-ir-form [effectiveDate]="document.documentDate" [documentId]="documentId"></app-ir-form>
+</div>
+
+<mat-card class="mb-20">
+  <div class="table-scroll">
+    <table class="delis-table-data">
+      <thead>
+      <tr>
+        <th></th>
+        <th>{{ 'documents.table.one.columnName.senderIdRaw' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.senderName' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.senderCountry' | translate }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th>{{ 'documents.table.one.columnName.sender' | translate }}</th>
+        <td>{{ document.senderIdRaw }}</td>
+        <td>{{ document.senderName }}</td>
+        <td>{{ document.senderCountry }}</td>
+      </tr>
+      <tr>
+        <th>{{ 'documents.table.one.columnName.receiver' | translate }}</th>
+        <td>{{ document.receiverIdRaw }}</td>
+        <td>{{ document.receiverName }}</td>
+        <td>{{ document.receiverCountry }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</mat-card>
+
+<div *ngIf="errorJournalDocuments" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorJournalDocumentsModel"></app-error>
+  </mat-card>
+</div>
+
+<mat-card class="mb-20">
+  <mat-card-title>
+    {{ 'documents.table.one.columnName.journalRecords' | translate }}
+  </mat-card-title>
+  <div class="table-scroll">
+    <table class="delis-table-data">
+      <thead>
+      <tr>
+        <th>{{ 'documents.table.one.columnName.journalRecords.createTime' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.journalRecords.type' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.journalRecords.success' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.journalRecords.message' | translate }}</th>
+        <th style="text-align: right !important;">{{ 'documents.table.one.columnName.journalRecords.durationMs' | translate }}</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let doc of journalDocuments">
+      <tr>
+        <td>{{ doc.createTime | date: SHOW_DATE_FORMAT }}</td>
+        <td>{{ doc.type }}</td>
+        <td class="system-color-success" *ngIf="doc.success">
+          <mat-icon>check_circle</mat-icon>
+        </td>
+        <td class="system-color-error" *ngIf="!doc.success">
+          <mat-icon>error</mat-icon>
+        </td>
+        <td>{{ doc.message }}</td>
+        <td style="text-align: right !important;">{{ doc.durationMs }}</td>
+      </tr>
+      <tr *ngIf="getErrorDictionaryModel(doc.id).length !== 0">
+        <td colspan="5">
+          <hr>
+          <table class="delis-table-data system-color-error">
+            <tr>
+              <th>{{ 'documents.table.one.columnName.journalDocumentErrors.flag' | translate }}</th>
+              <th>{{ 'documents.table.one.columnName.journalDocumentErrors.code' | translate }}</th>
+              <th>{{ 'documents.table.one.columnName.journalDocumentErrors.message' | translate }}</th>
+              <th>{{ 'documents.table.one.columnName.journalDocumentErrors.location' | translate }}</th>
+            </tr>
+            <tr *ngFor="let err of getErrorDictionaryModel(doc.id)">
+              <td>{{ err.flag }}</td>
+              <td>{{ err.code }}</td>
+              <td>{{ err.message }}</td>
+              <td>{{ err.location }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</mat-card>
+
+<div *ngIf="errorDocumentBytes" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorDocumentBytesModel"></app-error>
+  </mat-card>
+</div>
+
+<div *ngIf="errorDownload" class="table-details-error">
+  <mat-card class="mb-20">
+    <app-error [errorModel]="errorDownloadModel"></app-error>
+  </mat-card>
+</div>
+
+<mat-card class="mb-80">
+  <mat-card-title>
+    {{ 'documents.table.one.columnName.documentBytesModels' | translate }}
+  </mat-card-title>
+  <div class="table-scroll">
+    <table class="delis-table-data delis-table-details">
+      <thead>
+      <tr>
+        <th>{{ 'documents.table.one.columnName.documentBytesModels.type' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.documentBytesModels.format' | translate }}</th>
+        <th>{{ 'documents.table.one.columnName.documentBytesModels.size' | translate }}</th>
+        <th>Download</th>
+      </tr>
+      </thead>
+      <tbody *ngFor="let doc of documentBytesModels">
+      <tr>
+        <td>{{ doc.type }}</td>
+        <td>{{ doc.format }}</td>
+        <td class="text-right">{{ doc.size }}</td>
+        <td class="download-muted" (click)="download(doc.id)">Download</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</mat-card>
+
+<app-delis-table-details-footer *ngIf="isShowFooter"
+  [currentIds]="currentIds"
+  [id]="documentId"
+  [isNextDown]="isNextDown"
+  [isNextUp]="isNextUp"
+  [path]="DOCUMENT_PATH"
+  [stateService]="stateService">
+</app-delis-table-details-footer>

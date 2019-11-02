@@ -1,51 +1,53 @@
-<mat-card>
-  <div class="example-container mat-elevation-z8">
-
-    <mat-card-content class="dashboard-flex">
-      <div class="bounds">
-        <div class="content"
-             fxLayout="row"
-             fxLayout.xs="column"
-             fxLayoutAlign="center"
-             fxLayoutGap="1em"
-             fxFlexFill>
-          <div fxFlex="30" class="sec2" >
-            <app-stat
-                    [bgClass]="'matDocument'"
-                    [icon]="'send'"
-                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
-                    [label]="'dashboard.documents'"
-                    [router]="'/document'"
-                    [rotate]="false">
-            </app-stat>
-          </div>
-          <div fxFlex="30" class="sec3" fxFlex.xs="15">
-            <app-stat
-                    [bgClass]="'matSendDocument'"
-                    [icon]="'send'"
-                    [count]="dashboardModel.receivedDocumentsLastHour + '/' + dashboardModel.averageDocumentsLastHour"
-                    [label]="'dashboard.send'"
-                    [router]="'/send-document'"
-                    [rotate]="true">
-            </app-stat>
-          </div>
-          <div fxFlex="30" class="sec1" fxFlex.xs="55">
-            <app-stat
-                    [bgClass]="'matIdentifier'"
-                    [icon]="'perm_identity'"
-                    [count]="dashboardModel.identifierLastHour"
-                    [label]="'dashboard.identifier'"
-                    [router]="'/identifier'"
-                    [rotate]="false">
-            </app-stat>
-          </div>
-        </div>
-      </div>
-    </mat-card-content>
-
-    <mat-card-content style="margin: 2em">
-      <app-chart-document></app-chart-document>
-    </mat-card-content>
-
+<div class="mb-20" fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px">
+  <div fxFlex>
+    <app-stat
+      [bgClass]="dashboardModel.errorLastHour !== 0 ? 'danger' : 'light'"
+      [icon]="'warning'"
+      [count]="dashboardModel.errorLastHour"
+      [label]="'dashboard.errors'"
+      [path]="'document'"
+      [dateStart]="dateStart"
+      [dateEnd]="dateEnd"
+      [statusError]="true">
+    </app-stat>
   </div>
-</mat-card>
+  <div fxFlex>
+    <app-stat
+      [bgClass]="dashboardModel.receivedDocumentsLastHour !== 0 ? 'info' : 'light'"
+      [icon]="'cloud_download'"
+      [count]="dashboardModel.receivedDocumentsLastHour"
+      [label]="'dashboard.documents'"
+      [path]="'document'"
+      [dateStart]="dateStart"
+      [dateEnd]="dateEnd"
+      [statusError]="false">
+    </app-stat>
+  </div>
+  <div fxFlex>
+    <app-stat
+      [bgClass]="dashboardModel.sendDocumentsLastHour !== 0 ? 'warn' : 'light'"
+      [icon]="'cloud_upload'"
+      [count]="dashboardModel.sendDocumentsLastHour"
+      [label]="'dashboard.send'"
+      [path]="'send-document'"
+      [dateStart]="dateStart"
+      [dateEnd]="dateEnd">
+    </app-stat>
+  </div>
+  <div fxFlex>
+    <app-stat
+      [bgClass]="dashboardModel.deliveryAlertCount !== 0 ? 'danger' : 'light'"
+      [icon]="'notification_important'"
+      [count]="dashboardModel.deliveryAlertCount"
+      [label]="'dashboard.deliveryAlert'"
+      [path]="'document'"
+      [documentStatus]="'DELIVER_PENDING'">
+    </app-stat>
+  </div>  
+</div>
+
+<div class="mb-20" fxLayout="row">
+  <div fxFlex>
+      <app-chart-document></app-chart-document>
+  </div>
+</div>

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { TableInfoModel } from '../../model/system/table-info.model';
 import { HttpRestService } from './http-rest.service';
 import { RuntimeConfigService } from './runtime-config.service';
 import { LocalStorageService } from './local-storage.service';
-import { TableInfoModel } from '../../model/system/table-info.model';
 
 @Injectable({
   providedIn: 'root'

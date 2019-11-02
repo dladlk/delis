@@ -22,6 +22,9 @@ public class DocumentParticipant {
 	@XmlElement(name = "Country")
 	private String country;
 
+	@XmlElement(name = "Email")
+	private String email;
+
 	public String encodeID() {
 		return schemeId + "::" + id;
 	}

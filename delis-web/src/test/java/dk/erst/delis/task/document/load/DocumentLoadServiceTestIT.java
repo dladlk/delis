@@ -31,6 +31,7 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.document.sbdh.SBDHTranslator;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
+import dk.erst.delis.task.document.parse.DocumentInfoService;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
@@ -89,7 +90,7 @@ public class DocumentLoadServiceTestIT {
 		});
 		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService(config, documentBytesDaoRepositiry);
 
-		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentParseService(), documentBytesStorageService, identifierResolverService);
+		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentInfoService(new DocumentParseService()), documentBytesStorageService, identifierResolverService);
 	}
 
 	private boolean fullLoadFromInputImitationDone = false;

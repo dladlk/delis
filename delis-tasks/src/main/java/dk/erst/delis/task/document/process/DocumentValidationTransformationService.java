@@ -134,6 +134,10 @@ public class DocumentValidationTransformationService {
 	}
 
 	protected DocumentProcessStep transformByRule(Path xmlPath, Path xmlOutPath, RuleDocumentTransformation transformationRule) {
+		return transformByRule(xmlPath, xmlOutPath, transformationRule, ruleService);
+	}
+	
+	public static DocumentProcessStep transformByRule(Path xmlPath, Path xmlOutPath, RuleDocumentTransformation transformationRule, RuleService ruleService) {
 		DocumentProcessStep step = new DocumentProcessStep(transformationRule);
 
 		Path xslFilePath = ruleService.filePath(transformationRule);
@@ -178,7 +182,8 @@ public class DocumentValidationTransformationService {
 						ISchematronResultCollector collector = SchematronResultCollectorFactory.getCollector(ruleDocumentValidation.getDocumentFormat());
 						xmlStream.reset();
 						List<ErrorRecord> errorList = schValidator.validate(xmlStream, schematronStream, collector, xslFilePath);
-						step.setSuccess(errorList.isEmpty());
+						boolean success = isEmptyOrOnlyWarnings(errorList);
+						step.setSuccess(success);
 						step.setErrorRecords(errorList);
 					} catch (Exception e) {
 						log.error("Failed validation by rule " + ruleDocumentValidation, e);
@@ -192,6 +197,19 @@ public class DocumentValidationTransformationService {
 		}
 
 		return step;
+	}
+
+	private boolean isEmptyOrOnlyWarnings(List<ErrorRecord> errorList) {
+		boolean success = true;
+		if (errorList != null) {
+			for (ErrorRecord errorRecord : errorList) {
+				if (!errorRecord.isWarning()) {
+					success = false;
+					break;
+				}
+			}
+		}
+		return success;
 	}
 
 	public Path createTempFile(DocumentProcessLog plog, Path xmlOutPath, String prefix) {

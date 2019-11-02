@@ -39,17 +39,14 @@ public class OauthResponseHandler implements ResponseBodyAdvice<Object> {
             Class<? extends HttpMessageConverter<?>> aClass,
             ServerHttpRequest serverHttpRequest,
             ServerHttpResponse serverHttpResponse) {
-
         if (body instanceof DefaultOAuth2AccessToken) {
             DefaultOAuth2AccessToken defaultOAuth2AccessToken = (DefaultOAuth2AccessToken) body;
             OAuth2Authentication oAuth2Authentication = tokenStore.readAuthentication(tokenStore.readAccessToken(defaultOAuth2AccessToken.getValue()));
             CustomUserDetails userDetails = (CustomUserDetails) oAuth2Authentication.getUserAuthentication().getPrincipal();
-            
             AuthData authData = userDetails.buildAuthData();
-            
             authData.setAccessToken(defaultOAuth2AccessToken.getValue());
             authData.setRefreshToken(defaultOAuth2AccessToken.getRefreshToken().getValue());
-            
+            authData.setExpiration(defaultOAuth2AccessToken.getExpiresIn());
             return new DataContainer<>(authData);
         } else {
             return body;

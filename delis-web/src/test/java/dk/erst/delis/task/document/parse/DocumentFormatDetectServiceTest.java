@@ -21,6 +21,12 @@ public class DocumentFormatDetectServiceTest {
 		assertEquals(DocumentFormat.UNSUPPORTED, s.defineDocumentFormat(tc("wrong", "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100", null)));
 		assertEquals(DocumentFormat.UNSUPPORTED, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", null)));
 		assertEquals(DocumentFormat.UNSUPPORTED, s.defineDocumentFormat(tc("Wrong", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "OIOUBL-2.02")));
+
+		assertEquals(DocumentFormat.UNSUPPORTED, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "urn:cen.eu:en16931:2016")));
+		assertEquals(DocumentFormat.BIS3_INVOICE, s.defineDocumentFormat(tc("Invoice", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2", "urn:cen.eu:en16931:2017")));
+
+		assertEquals(DocumentFormat.UNSUPPORTED, s.defineDocumentFormat(tc("CreditNote", "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2", "urn:cen.eu:en16931:2016")));
+		assertEquals(DocumentFormat.BIS3_CREDITNOTE, s.defineDocumentFormat(tc("CreditNote", "urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2", "urn:cen.eu:en16931:2017")));
 		
 		assertEquals(DocumentFormat.CII, s.defineDocumentFormat(tc("CrossIndustryInvoice", "urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100", null)));
 		

@@ -24,12 +24,18 @@
   "header.account.inbox": "Inbox",
   "header.account.logout": "Logout",
   "page-header.dashboard": "Dashboard",
-  "dashboard.identifier": "Identifiers last hour",
-  "dashboard.documents": "Received documents last hour / average",
-  "dashboard.errors": "Errors last hour",
-  "dashboard.send": "Send documents last hour / average",
-  "dashboard.details": "View Details",
-  "dashboard.chart.receiving": "Receiving",
+
+  "dashboard.documents": "Received",
+  "dashboard.errors": "Received with error",
+  "dashboard.send": "Sent",
+  "dashboard.deliveryAlert": "Not collected",
+
+  "dashboard.chart.receiving": "Received",
+  "dashboard.chart.sending": "Sent",
+  "dashboard.chart.receiving_error": "Received error",
+
+  "dashboard.chart.default_message": "No data for the selected period.",
+
   "documents.header": "Documents",
   "documents.header.details": "Document details",
   "documents.table.header": "Documents Overview",
@@ -170,6 +176,10 @@
   "previous": "View previous",
   "apply": "Apply",
   "cancel": "Cancel",
+  "up": "Page Up",
+  "down": "Page Down",
+  "lineChart": "Line Chart",
+  "barChart": "Bar Chart",
 
   "td.picker.all": "All",
   "td.picker.today": "Today",
@@ -181,6 +191,9 @@
 
   "td.picker.from": "FROM",
   "td.picker.to": "TO",
+  "td.picker.from.date": "From Date",
+  "td.picker.to.date": "To Date",
+  "td.picker.presets": "Presets",
 
   "column.hide": "Hide columns",
 
@@ -192,5 +205,10 @@
   "profile.menu.lastName": "Last name",
   "profile.menu.loginTime": "Login time",
   "profile.menu.role": "Role",
-  "profile.menu.organisation": "Organisation"
+  "profile.menu.organisation": "Organisation",
+
+  "generate": "Generate",
+
+  "page.not-found": "PAGE NOT FOUND",
+  "page.not-found.go-to": "Go to"
 }

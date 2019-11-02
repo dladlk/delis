@@ -1,31 +1,111 @@
-<div [@transformPickerOverlay]="shouldAnimate" class="ngx-mat-drp-calendar-container">
+<div *ngIf="minScreen" (window:resize)="onResize($event)" class="ngx-mat-drp-calendar-min-container">
+    <mat-accordion>
+        <mat-expansion-panel>
 
-  <div class="ngx-mat-drp-calendar-item">
-    <app-calendar-wrapper
-      [prefixLabel]="startDatePrefix | translate"
-      [selectedDate]="fromDate"
-      [minDate]="fromMinDate"
-      [maxDate]="fromMaxDate"
-      (selectedDateChange)="updateFromDate($event)">
-    </app-calendar-wrapper>
-  </div>
-  <div class="ngx-mat-drp-calendar-item">
-    <app-calendar-wrapper
-      [prefixLabel]="endDatePrefix | translate"
-      [selectedDate]="toDate"
-      [minDate]="toMinDate"
-      [maxDate]="toMaxDate"
-      (selectedDateChange)="updateToDate($event)">
-    </app-calendar-wrapper>
-  </div>
-  <div class="ngx-mat-drp-calendar-item">
-    <div class="ngx-mat-drp-menu">
-      <app-mat-drp-presets [presets]="presets" (presetChanged)="updateRangeByPreset($event)"></app-mat-drp-presets>
-      <div class="ngx-mat-drp-controls">
-        <button mat-mini-fab color="primary" (click)="applyNewDates()" title="{{ 'apply' | translate }}" aria-label="Apply"><mat-icon>done</mat-icon></button>
-        <button mat-mini-fab color="primary" (click)="discardNewDates()" title="{{ 'cancel' | translate }}" aria-label="Cancel"><mat-icon>close</mat-icon></button>
-        <div (window:mouseup)="autoClose($event)"></div>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ 'td.picker.from.date' | translate }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="ngx-mat-drp-calendar-item">
+                <app-calendar-wrapper
+                        [prefixLabel]="startDatePrefix | translate"
+                        [selectedDate]="fromDate"
+                        [minDate]="fromMinDate"
+                        [maxDate]="fromMaxDate"
+                        (selectedDateChange)="updateFromDate($event)">
+                </app-calendar-wrapper>
+            </div>
+
+        </mat-expansion-panel>
+
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ 'td.picker.to.date' | translate }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="ngx-mat-drp-calendar-item">
+                <app-calendar-wrapper
+                        [prefixLabel]="endDatePrefix | translate"
+                        [selectedDate]="toDate"
+                        [minDate]="toMinDate"
+                        [maxDate]="toMaxDate"
+                        (selectedDateChange)="updateToDate($event)">
+                </app-calendar-wrapper>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ 'td.picker.presets' | translate }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="ngx-mat-drp-calendar-item">
+                <div class="ngx-mat-drp-menu">
+                    <app-mat-drp-presets [presets]="presets" (presetChanged)="updateRangeByPreset($event)"></app-mat-drp-presets>
+                </div>
+            </div>
+
+        </mat-expansion-panel>
+
+        <div class="mt1">
+            <mat-card>
+                <div class="ngx-mat-drp-controls">
+                    <button mat-mini-fab color="primary" (click)="applyNewDates()" title="{{ 'apply' | translate }}" aria-label="Apply">
+                        <mat-icon>done</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="discardNewDates()" title="{{ 'cancel' | translate }}" aria-label="Cancel">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+
+        <div (window:mouseup)="autoCloseMin($event)"></div>
+
+    </mat-accordion>
+</div>
+
+<div [@transformPickerOverlay]="shouldAnimate" class="ngx-mat-drp-calendar-container" *ngIf="!minScreen" (window:resize)="onResize($event)">
+    <div class="ngx-mat-drp-calendar-item">
+        <app-calendar-wrapper
+                [prefixLabel]="startDatePrefix | translate"
+                [selectedDate]="fromDate"
+                [minDate]="fromMinDate"
+                [maxDate]="fromMaxDate"
+                (selectedDateChange)="updateFromDate($event)">
+        </app-calendar-wrapper>
+    </div>
+    <div class="ngx-mat-drp-calendar-item">
+        <app-calendar-wrapper
+                [prefixLabel]="endDatePrefix | translate"
+                [selectedDate]="toDate"
+                [minDate]="toMinDate"
+                [maxDate]="toMaxDate"
+                (selectedDateChange)="updateToDate($event)">
+        </app-calendar-wrapper>
+    </div>
+    <div class="ngx-mat-drp-calendar-item">
+        <div class="ngx-mat-drp-menu">
+            <app-mat-drp-presets [presets]="presets" (presetChanged)="updateRangeByPreset($event)"></app-mat-drp-presets>
+            <div class="ngx-mat-drp-controls">
+                <button mat-mini-fab color="primary" (click)="applyNewDates()" title="{{ 'apply' | translate }}" aria-label="Apply">
+                    <mat-icon>done</mat-icon>
+                </button>
+                <button mat-mini-fab color="primary" (click)="discardNewDates()" title="{{ 'cancel' | translate }}" aria-label="Cancel">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
         </div>
     </div>
-  </div>
+
+    <div (window:mouseup)="autoClose($event)"></div>
+
 </div>

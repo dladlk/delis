@@ -1,10 +1,14 @@
 export class DashboardModel {
 
-  identifierLastHour: number;
   errorLastHour: number;
   receivedDocumentsLastHour: number;
-  averageDocumentsLastHour: number;
-  journalDocument: number;
-  journalIdentifier: number;
-  journalOrganisation: number;
+  sendDocumentsLastHour: number;
+  deliveryAlertCount: number;
+
+  constructor() {
+    this.errorLastHour = 0;
+    this.receivedDocumentsLastHour = 0;
+    this.sendDocumentsLastHour = 0;
+    this.deliveryAlertCount = 10;
+  }
 }

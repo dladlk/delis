@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
 import { TokenService } from '../system/token.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { HttpRestService } from '../system/http-rest.service';
-import { DocumentFilterModel } from '../../model/filter/document-filter.model';
 import { DelisService } from "./delis-service";
+import { DocumentFilterModel } from '../../model/filter/document-filter.model';
 import { DocumentModel } from "../../model/content/document/document.model";
 
 @Injectable({
@@ -15,10 +16,7 @@ export class DocumentService implements DelisService<DocumentModel, DocumentFilt
 
   private readonly url: string;
 
-  constructor(
-    private tokenService: TokenService,
-    private configService: RuntimeConfigService,
-    private httpRestService: HttpRestService) {
+  constructor(private tokenService: TokenService, private configService: RuntimeConfigService, private httpRestService: HttpRestService) {
     this.url = this.configService.getConfigUrl();
     this.url = this.url + '/rest/document';
   }
@@ -51,7 +49,11 @@ export class DocumentService implements DelisService<DocumentModel, DocumentFilt
     params = params.append('order', filter.sort.direction);
 
     if (filter.documentStatus !== 'ALL') {
-      params = params.append('documentStatus', filter.documentStatus);
+      if (filter.documentStatus === 'ALL FAILED') {
+        params = params.append('statusError', String('true'));
+      } else {
+        params = params.append('documentStatus', filter.documentStatus);
+      }
     }
     if (filter.lastError !== 'ALL') {
       params = params.append('lastError', filter.lastError);

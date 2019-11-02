@@ -1,6 +1,10 @@
 package dk.erst.delis.task.document;
 
-import dk.erst.delis.dao.ErrorDictionaryDaoRepository;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentErrorDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
@@ -10,24 +14,21 @@ import dk.erst.delis.data.entities.journal.JournalDocumentError;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import dk.erst.delis.web.error.ErrorDictionaryService;
 
 @Service
 public class JournalDocumentService {
     private JournalDocumentDaoRepository journalDocumentDaoRepository;
     private JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository;
-    private ErrorDictionaryDaoRepository errorDictionaryDaoRepository;
+    private ErrorDictionaryService errorDictionaryService;
 
     @Autowired
     public JournalDocumentService(JournalDocumentDaoRepository journalDocumentDaoRepository,
                                   JournalDocumentErrorDaoRepository journalDocumentErrorDaoRepository,
-                                  ErrorDictionaryDaoRepository errorDictionaryDaoRepository) {
+                                  ErrorDictionaryService errorDictionaryService) {
         this.journalDocumentDaoRepository = journalDocumentDaoRepository;
         this.journalDocumentErrorDaoRepository = journalDocumentErrorDaoRepository;
-        this.errorDictionaryDaoRepository = errorDictionaryDaoRepository;
+        this.errorDictionaryService = errorDictionaryService;
     }
 
     public void saveDocumentStep(Document document, List<DocumentProcessStep> stepList) {
@@ -50,23 +51,20 @@ public class JournalDocumentService {
                 		errorType = DocumentErrorCode.OTHER;
                 	}
                     for(ErrorRecord errorRecord : errorRecords) {
-                        String code = cutString(errorRecord.getCode(), 50);
-                        String flag = cutString(errorRecord.getFlag(), 20);
-                        String location = cutString(errorRecord.getLocation(), 500);
-                        String message = cutString(errorRecord.getMessage(), 1024);
-
                         ErrorDictionary errorDictionary = new ErrorDictionary();
-                        errorDictionary.setErrorType(errorType);
-                        errorDictionary.setCode(code);
-                        errorDictionary.setFlag(flag);
-                        errorDictionary.setLocation(location);
-                        errorDictionary.setMessage(message);
+                        errorDictionary.setErrorType(errorRecord.getErrorType());
+                        errorDictionary.setCode(errorRecord.getCode());
+                        errorDictionary.setFlag(errorRecord.getFlag());
+                        errorDictionary.setLocation(errorRecord.getLocation());
+                        errorDictionary.setMessage(errorRecord.getMessage());
+                        
+                        errorDictionaryService.normalize(errorDictionary, false);
                         
                         int hash = errorDictionary.calculateHash();
                         errorDictionary.setHash(hash);
 
                         ErrorDictionary existingError = null;
-                        List<ErrorDictionary> existingErrorList = errorDictionaryDaoRepository.findAllByHash(hash);
+                        List<ErrorDictionary> existingErrorList = errorDictionaryService.findAllByHash(hash);
                         /*
                          * Hash code can overlap for different values - check that contents actually equal
                          */
@@ -78,7 +76,7 @@ public class JournalDocumentService {
 						}
                         
                         if (existingError == null) {
-                            errorDictionaryDaoRepository.save(errorDictionary);
+                        	errorDictionaryService.save(errorDictionary);
                         } else {
                         	errorDictionary = existingError;
                         }

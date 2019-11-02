@@ -22,6 +22,12 @@ public class OrganisationSetupData {
 	private boolean generateInvoiceResponseOnError;
 	private boolean sendUndeliverableInvoiceResponseToERST;
 	private boolean sendAllInvoiceResponseToERST;
+	private boolean onErrorAutoSendEmailToSupplier;
+	private String onErrorSenderEmailAddress;
+	private String onErrorReceiverEmailAddress;
 	
 	private boolean receiveBothOIOUBLBIS3;
+	
+	private boolean checkDeliveredConsumed;
+	private int checkDeliveredAlertMins = 0;
 }

@@ -1,4 +1,4 @@
-import { DelisDataTableColumnModel } from "../../model/content/delis-data-table-column.model";
+import { DelisDataTableColumnModel } from '../../model/content/delis-data-table-column.model';
 
 export class DataTableConfig {
 

@@ -35,16 +35,13 @@
         var size = pageData.size;
         var displayStart = pageData.displayStart;
         var displayEnd = pageData.displayEnd;
-        var filterMap = {};
         if (pageData.filterMap === null) {
-            pageData.filterMap = filterMap;
-        } else {
-            filterMap = pageData.filterMap;
+            pageData.filterMap = {};
         }
 
         var dataTablesSettings = {
             colReorder: true,
-            responsive: true,
+            responsive: false,
             pageLength: size,
             pagingType: "full",
             order: [orderInfo.col, orderInfo.dir],
@@ -74,7 +71,7 @@
             }
         };
 
-        renderFilters(t, columnDefs, filterMap);
+        renderFilters(t, columnDefs, pageData);
 
         if (t.hasClass(dataTablesEasy.config.withButtonsClass)) {
         	configButtons(dataTablesSettings);
@@ -101,7 +98,7 @@
         appDataTable.columns().every(function (i) {
             $('input', this.footer()).on('keypress', function (event) {
                 if (event.keyCode === 13) {
-                    doFilterAndRequest(this, pageData, filterMap, columnDefs[i].field, this.value);
+                    doFilterAndRequest(this, pageData, columnDefs[i].field, this.value);
                 }
             });
         });
@@ -109,7 +106,7 @@
         appDataTable.columns().every(function (i) {
             $('select', this.footer()).on('change', function () {
                 var value = $.fn.dataTable.util.escapeRegex($(this).val());
-                doFilterAndRequest(this, pageData, filterMap, columnDefs[i].field, value);
+                doFilterAndRequest(this, pageData, columnDefs[i].field, value);
             });
         });
 
@@ -138,7 +135,7 @@
         return order;
     }
 
-    function renderFilters(t, columnDefs, filterMap) {
+    function renderFilters(t, columnDefs, pageData) {
         var thead = t.find('thead');
         var tfoot = t.find('tfoot');
         if (tfoot.length === 0) {
@@ -146,12 +143,6 @@
             tfoot = t.find('tfoot');
         }
         thead.find('tr').clone(true).appendTo(tfoot);
-        
-        var enums = {};
-        try {
-        	enums = getAllEnums();
-        } catch (err){
-        }
         
         tfoot.find('tr>th').each(function (i) {
             var title = $(this).text();
@@ -162,77 +153,91 @@
             if (!field) {
             	return;
             }
-            var type = columnDefs[i].type;
-            var enums = columnDefs[i].enum;
+            var filterType = columnDefs[i].type;
+            var columnEnum = columnDefs[i].enum;
             var searchable = columnDefs[i].searchable;
-            var searchValue = filterMap[field];
+            var searchValue = pageData.filterMap[field];
 
             if (searchable) {
-                if (enums !== undefined) {
-                    if (searchValue !== undefined) {
-                        initEnums(this, enums, searchValue);
-                    } else {
-                        initEnums(this, enums, null);
-                    }
+                if (columnEnum !== undefined) {
+                    selectFilter(this, columnEnum, searchValue !== undefined ? searchValue : null);
+                } else if (filterType === 'date') {
+                	$(this).html('<span class="form-control-date"/>');
+                	dateFilter(this, field, searchValue, pageData);
                 } else {
-                    if (searchValue !== undefined) {
-                        $(this).html('<input type="text" class="form-control" value="' + searchValue + '" />');
-                    } else {
-                        $(this).html('<input type="text" class="form-control" placeholder="Search ' + title + '" />');
-                    }
+                	$(this).html('<input type="text" name="'+field+'" class="form-control" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
                 }
             }
         });
     }
+    
+    var DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
+    var SHORT_DATE_FORMAT = 'DD-MM-YY';
+    
+    function dateFilter(filterContainer, field, searchValue, pageData) {
+        var drpSettings = {
+            alwaysShowCalendars: true,
+            ranges: initRanges(moment('2019-01-01'))
+        };
+        
+    	if (searchValue !== undefined) {
+	        var dateFromTo = searchValue.split('_');
+	        drpSettings.startDate = moment(dateFromTo[0]);
+	        drpSettings.endDate = moment(dateFromTo[1]);
+    	}
+        var daterangepicker = $(filterContainer).daterangepicker(drpSettings, function(start, end){
+        	setDateInput(filterContainer, start, end);
+        	var dateRangeValue = start.format(DATETIME_FORMAT) + '_' + end.format(DATETIME_FORMAT);
+        	pageData.filterMap[field] = dateRangeValue; 
+        	dataTableRequest(filterContainer, pageData);
+        });
+        
+        if (drpSettings.startDate) {
+        	setDateInput(filterContainer, drpSettings.startDate, drpSettings.endDate);
+        }
+    }
+    
+    function setDateInput(container, startDate, endDate) {
+    	$(container).find('span').text(startDate.format(SHORT_DATE_FORMAT) + ' - ' + endDate.format(SHORT_DATE_FORMAT));
+    }
 
-    function initEnums(ownerSelect, e, searchValue) {
+    function selectFilter(ownerSelect, e, searchValue) {
         e = eval(e);
         var selectList = document.createElement("select");
         selectList.setAttribute('class', 'form-control');
-        if (searchValue !== null) {
-            if (e.indexOf(searchValue) > -1) {
-                var option = document.createElement("option");
-                option.value = searchValue;
-                option.text = searchValue;
-                selectList.appendChild(option);
-                option = document.createElement("option");
-                option.value = "";
-                option.text = "ALL";
-                selectList.appendChild(option);
-                for (var val in e) {
-                    if (e[val] !== searchValue) {
-                        option = document.createElement("option");
-                        option.value = e[val];
-                        option.text = e[val];
-                        selectList.appendChild(option);
-                    }
-                }
-            } else {
-                initDefaultEnums(selectList, e);
-            }
-        } else {
-            initDefaultEnums(selectList, e);
+
+        var option = document.createElement("option");
+        option.value = "";
+        option.text = "All";
+        selectList.appendChild(option);
+        
+        for (var val in e) {
+        	var optionObject = e[val];
+
+        	var optionValue = optionObject;
+        	var optionName = optionObject;
+        	if (typeof optionObject !== 'string') {
+        		if (optionObject.hasOwnProperty('name') && optionObject.hasOwnProperty('value')) {
+	        		optionValue = optionObject.value;
+	        		optionName = optionObject.name;
+        		}
+        	}
+
+        	option = document.createElement("option");
+	        option.value = optionValue;
+	        option.text = optionName;
+	        if (searchValue !== null && searchValue == optionValue) {
+	        	option.selected = 'true';
+	        }
+	        selectList.appendChild(option);
         }
+
         ownerSelect.innerText = '';
         ownerSelect.appendChild(selectList);
     }
 
-    function initDefaultEnums(selectList, e) {
-        var option = document.createElement("option");
-        option.value = "";
-        option.text = "ALL";
-        selectList.appendChild(option);
-        for (var val in e) {
-            option = document.createElement("option");
-            option.value = e[val];
-            option.text = e[val];
-            selectList.appendChild(option);
-        }
-    }
-
-    function doFilterAndRequest(ownerEvent, pageData, filterMap, field, value) {
-        filterMap[field] = value;
-        pageData.filterMap = filterMap;
+    function doFilterAndRequest(ownerEvent, pageData, field, value) {
+        pageData.filterMap[field] = value;
         dataTableRequest(ownerEvent, pageData);
     }
 
@@ -383,7 +388,7 @@
         owner.parentElement.appendChild(button);
         jQuery(button).trigger("click");
     }
-
+    
     function initRanges(start) {
         return {
             'All': [start, moment()],

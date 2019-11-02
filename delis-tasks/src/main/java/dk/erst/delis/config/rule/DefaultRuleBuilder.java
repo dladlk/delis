@@ -53,23 +53,40 @@ public class DefaultRuleBuilder {
          * Schematron
          */
 
-        result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_Invoice_Schematron.xsl", 10));
-        result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_CreditNote_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_Invoice_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_CreditNote_Schematron.xsl", 10));
 
-        String BIS3_PEPPOL = "sch/bis3/peppol_2019-03-15_1/PEPPOL-EN16931-UBL.xslt";
-        String BIS3_CEN = "sch/bis3/cen_2019-03-15_1/CEN-EN16931-UBL.xslt";
-        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 10));
-        result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 20));
-        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 10));
-        result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
+		
+		/*
+		 * Schematron files for CEN BIS3/CII are generated basing on next GitHub project:
+		 * 
+		 * https://github.com/OpenPEPPOL/peppol-bis-invoice-3/tree/master/rules/sch
+		 * 
+		 * 
+		 * CEN part of these schematron files are actaully copied from another GitHub project:
+		 * 
+		 * https://github.com/CenPC434/validation
+		 * 
 
-        result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
-        result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T71.xslt", 10));
+		 */
+		String CEN_PC434_VERSION = "2019-08-15_1";
+		String PEPPOL_VERSION = "2019-08-15_1";
 
-        result.add(sch(DocumentFormat.CII, "sch/cii/cen_2019-03-15_1/CEN-EN16931-CII.xslt", 10));
-        result.add(sch(DocumentFormat.CII, "sch/cii/peppol_2019-03-15_1/PEPPOL-EN16931-CII.xslt", 20));
-        return result;
-    }
+		String BIS3_PEPPOL = "sch/bis3/peppol_" + PEPPOL_VERSION + "/PEPPOL-EN16931-UBL.xslt";
+		String BIS3_CEN = "sch/bis3/cen_" + CEN_PC434_VERSION + "/CEN-EN16931-UBL.xslt";
+		
+		result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 10));
+		result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 20));
+		result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 10));
+		result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
+
+		result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T71.xslt", 10));
+
+		result.add(sch(DocumentFormat.CII, "sch/cii/cen_" + CEN_PC434_VERSION + "/CEN-EN16931-CII.xslt", 10));
+		result.add(sch(DocumentFormat.CII, "sch/cii/peppol_" + PEPPOL_VERSION + "/PEPPOL-EN16931-CII.xslt", 20));
+		return result;
+	}
 
     private static RuleDocumentValidation xsd(DocumentFormat format, String path) {
         RuleDocumentValidation v = new RuleDocumentValidation();

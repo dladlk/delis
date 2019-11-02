@@ -1,0 +1,16 @@
+<div id="sidebar">
+  <mat-nav-list>
+    <a mat-list-item [routerLinkActive]="'active'" [routerLink]="['/dashboard']" appMaterialElevation (click)="onSidenavClose()">
+      <mat-icon class="sidenav-icon">dashboard</mat-icon> {{ 'sidebar.dashboard' | translate }}
+    </a>
+    <a mat-list-item [routerLinkActive]="'active'" [routerLink]="['/document']" appMaterialElevation (click)="onSidenavClose()">
+      <mat-icon class="sidenav-icon">cloud_download</mat-icon> {{ 'sidebar.received.documents' | translate }}
+    </a>
+    <a mat-list-item [routerLinkActive]="'active'" [routerLink]="['/send-document']" appMaterialElevation (click)="onSidenavClose()">
+      <mat-icon class="sidenav-icon">cloud_upload</mat-icon> {{ 'sidebar.send.documents' | translate }}
+    </a>
+    <a mat-list-item [routerLinkActive]="'active'" [routerLink]="['/identifier']" appMaterialElevation (click)="onSidenavClose()">
+      <mat-icon class="sidenav-icon">group</mat-icon> {{ 'sidebar.identifier' | translate }}
+    </a>
+  </mat-nav-list>
+</div>

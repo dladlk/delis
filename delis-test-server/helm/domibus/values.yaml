@@ -5,6 +5,7 @@ partyIndex: 1
 all:
   imagePrefix: cef-erst/
 dtx:
+  replicas: 1
   deploymentStrategy: RollingUpdate
   
   image: domibus-tomcat
@@ -15,9 +16,13 @@ dtx:
   restartPolicy: Always
   serviceType: NodePort
   env:
+    clustered: 'false'
     activemqhost: localhost
     activemqpassword: changeit
     activemqusername: domibus
+    activemqtransport: tcp://localhost:61616?jms.watchTopicAdvisories=false
+    activemqBrokerName: localhost
+    activemqEmbeddedConfigFile: 'file:///${domibus.config.location}/internal/activemq.xml'
     databasehost: 172.16.2.4
     databaseport: "3306"
     javaopts: -Xmx384m -XX:MaxMetaspaceSize=200m -Dmode.TEST.security.pki=/peppol_pki_local/pki_local.xml -Dlogging.level.org.apache.cxf=INFO
@@ -29,5 +34,28 @@ dtx:
     truststorelocation: "/usr/local/tomcat/domibus/keystores/truststore.jks"
     domibus_dispatcher_timeout: 30000
     unsecureLoginAllowed: 'true'
-    fsplugin_auth_fix: 'true'
     fsplugin_validation_endpoint: https://edelivery-test.trueservice.dk:443/delis-web-admin/rest/open/receivercheck/
+    domibus_alert_sender_smtp_user: ''
+    domibus_alert_sender_smtp_password: ''
+
+  envExt: []
+
+jmx:
+  enabled: false
+  ingress:
+    enabled: false
+
+  env: 
+    activemqtransport: tcp://0.0.0.0:61616?jms.watchTopicAdvisories=false
+    consoleContext: 'admin'
+  deploymentStrategy: RollingUpdate
+  
+  image: domibus-activemq
+  imagePullPolicy: IfNotPresent
+  imageTag: latest
+  imagePullSecret:
+  
+  restartPolicy: Always
+  serviceType: ClusterIP
+  env:
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=200m

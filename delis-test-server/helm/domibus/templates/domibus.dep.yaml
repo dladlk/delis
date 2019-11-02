@@ -9,6 +9,7 @@ metadata:
   name: '{{.Release.Name}}'
   namespace: '{{.Values.namespace}}'
 spec:
+  replicas: {{.Values.dtx.replicas}}
   selector:
     matchLabels:
       app: '{{.Release.Name}}'
@@ -30,6 +31,8 @@ spec:
 
         - name: DOMIBUS_PROPERTY_domibus_UI_title_name
           value: '{{.Values.partyName}} Domibus'
+        - name: DOMIBUS_PROPERTY_domibus_deployment_clustered
+          value: '{{.Values.dtx.env.clustered}}'
           
         - name: DOMIBUS_PROPERTY_DOMIBUS_SECURITY_KEYSTORE_LOCATION
           value: '{{.Values.dtx.env.keystorelocation}}'
@@ -53,10 +56,13 @@ spec:
           value: 'domibus{{.Values.partyIndex}}dbuser'
         - name: DOMIBUS_PROPERTY_DOMIBUS_DATASOURCE_XA_PROPERTY_PASSWORD
           value: 'domibus{{.Values.partyIndex}}dbuser'
+
+        - name: DOMIBUS_PROPERTY_ACTIVEMQ_EMBEDDED_CONFIGURATIONFILE
+          value: '{{.Values.dtx.env.activemqEmbeddedConfigFile}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKER_HOST
           value: '{{.Values.dtx.env.activemqhost}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_BROKERNAME
-          value: "localhost"
+          value: "{{.Values.dtx.env.activemqBrokerName}}"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_USERNAME
           value: '{{.Values.dtx.env.activemqusername}}'
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_PASSWORD
@@ -66,7 +72,8 @@ spec:
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_RMISERVERPORT
           value: "1200"
         - name: DOMIBUS_PROPERTY_ACTIVEMQ_TRANSPORTCONNECTOR_URI
-          value: "tcp://localhost:61616?jms.watchTopicAdvisories=false"
+          value: "{{.Values.dtx.env.activemqtransport}}"
+
         - name: DOMIBUS_PROPERTY_DOMIBUS_MSH_RETRY_CRON
           value: '{{.Values.dtx.env.cron}}'
         - name: DOMIBUS_PROPERTY_DOMIBUS_PULL_RETRY_CRON
@@ -109,11 +116,25 @@ spec:
 
         - name: DOMIBUS_PROPERTY_fsplugin_validation_endpoint
           value: "{{.Values.dtx.env.fsplugin_validation_endpoint}}"
-          
-          
-          
+
+        - name: MERGE_FS_PROPERTIES_ENV_PREFIX
+          value: 'FS_PROPERTY_'
+        - name: FS_PROPERTY_fsplugin_authentication_user
+          value: "fsplugin"
+        - name: FS_PROPERTY_fsplugin_authentication_password
+          value: "Systest1_"
+
         - name: CONTEXT_NAME
           value: domibus{{.Values.partyIndex}}
+
+        - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_user
+          value: '{{.Values.dtx.env.domibus_alert_sender_smtp_user}}'
+        - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_password
+          value: '{{.Values.dtx.env.domibus_alert_sender_smtp_password}}'
+
+{{ with .Values.dtx.envExt }}
+{{ toYaml . | indent 8 -}}
+{{- end }}          
 
         image: '{{.Values.all.imagePrefix}}{{.Values.dtx.image}}:{{.Values.dtx.imageTag}}'
         imagePullPolicy: '{{.Values.dtx.imagePullPolicy}}'
@@ -126,9 +147,12 @@ spec:
         - mountPath: /usr/local/tomcat/domibus/keystores
           name: domibus-ks
           subPath: keystore_dynconcepttestparty0{{.Values.partyIndex}}gw
-        - mountPath: /usr/local/tomcat/logs
-          name: domibus-logs
-          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
+        - mountPath: /domibus/attachment
+          name: domibus-attachment
+          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw
+#        - mountPath: /usr/local/tomcat/logs
+#          name: domibus-logs
+#          subPath: dynconcepttestparty0{{.Values.partyIndex}}gw-logs
         - mountPath: /home/domibus/fs_plugin_data/MAIN
           name: domibus-fs
           subPath: dynconcepttestparty0{{.Values.partyIndex}}gw
@@ -142,9 +166,12 @@ spec:
       - name: domibus-ks
         hostPath:
           path: /data/keystores
-      - name: domibus-logs
+      - name: domibus-attachment
         hostPath:
-          path: /data/logs
+          path: /data/domibus-attachment
+#      - name: domibus-logs
+#        hostPath:
+#          path: /data/logs
       - name: domibus-fs
         hostPath:
           path: /data/fs-plugin

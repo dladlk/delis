@@ -7,11 +7,13 @@ import lombok.Setter;
 @Setter
 public class DashboardData {
 
-    private long identifierLastHour;
-    private long errorLastHour;
     private long receivedDocumentsLastHour;
-    private long averageDocumentsLastHour;
-    private long journalDocument;
-    private long journalIdentifier;
-    private long journalOrganisation;
+    private long sendDocumentsLastHour;
+    private long errorLastHour;
+
+    public DashboardData() {
+        this.errorLastHour = 0;
+        this.receivedDocumentsLastHour = 0;
+        this.sendDocumentsLastHour = 0;
+    }
 }

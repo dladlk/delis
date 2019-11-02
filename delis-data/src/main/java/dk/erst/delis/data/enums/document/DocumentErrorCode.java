@@ -16,6 +16,16 @@ public enum DocumentErrorCode implements Named {
 	
 	OIOUBL_SCH,
 	
-	OTHER
+	OTHER,
+	
+	;
+	
+	public boolean isXSD() {
+		return this.name().endsWith("_XSD");
+	}
+
+	public boolean isSCH() {
+		return this.name().endsWith("_SCH");
+	}
 	
 }

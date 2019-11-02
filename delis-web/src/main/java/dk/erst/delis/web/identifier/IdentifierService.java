@@ -40,14 +40,14 @@ public class IdentifierService {
 		return identifierDaoRepository.findByOrganisation(organisation).iterator();
 	}
 
-	public int updateStatuses(List<Long> idList, IdentifierStatus status, IdentifierPublishingStatus publishStatus) {
+	public int updateStatuses(List<Long> idList, IdentifierStatus status, IdentifierPublishingStatus publishStatus, String message) {
 		AtomicInteger count = new AtomicInteger(0);
 		if (idList.size() > 0) {
 			Iterable<Identifier> identifierList = identifierDaoRepository.findAllById(idList);
 			identifierList.forEach(identifier -> {
 				identifier.setStatus(status);
 				identifier.setPublishingStatus(publishStatus);
-				noticeInJournal(status, publishStatus, identifier);
+				noticeInJournal(status, publishStatus, identifier, message);
 				count.getAndIncrement();
 			});
 			identifierDaoRepository.saveAll(identifierList);
@@ -55,30 +55,33 @@ public class IdentifierService {
 		return count.get();
 	}
 
-	public int updateStatus(Long id, IdentifierStatus status, IdentifierPublishingStatus publishStatus) {
+	public int updateStatus(Long id, IdentifierStatus status, IdentifierPublishingStatus publishStatus, String message) {
 		int count = 0;
 		Identifier identifier = identifierDaoRepository.findById(id).get();
 		if (identifier != null) {
 			identifier.setStatus(status);
 			identifier.setPublishingStatus(publishStatus);
 			identifierDaoRepository.save(identifier);
-			noticeInJournal(status, publishStatus, identifier);
+			noticeInJournal(status, publishStatus, identifier, message);
 			count++;
 		}
 
 		return count;
 	}
 
-	private void noticeInJournal(IdentifierStatus status, IdentifierPublishingStatus publishStatus, Identifier identifier) {
+	private void noticeInJournal(IdentifierStatus status, IdentifierPublishingStatus publishStatus, Identifier identifier, String message) {
 		JournalIdentifier updateRecord = new JournalIdentifier();
 		updateRecord.setIdentifier(identifier);
 		updateRecord.setOrganisation(identifier.getOrganisation());
-		updateRecord.setMessage(MessageFormat.format("Updated by user manually. Set status={0} and publishStatus={1}.", status, publishStatus));
+		if (message == null) {
+			message = MessageFormat.format("Updated manually to status {0} and publishStatus {1}", status, publishStatus);
+		}
+		updateRecord.setMessage(message);
 		journalIdentifierDaoRepository.save(updateRecord);
 	}
 
 	List<JournalIdentifier> getJournalRecords(Identifier identifier) {
-		return journalIdentifierDaoRepository.findTop5ByIdentifierOrderByIdDesc(identifier);
+		return journalIdentifierDaoRepository.findTop10ByIdentifierOrderByIdDesc(identifier);
 	}
 
 	public int markAsDeleted(Long id) {

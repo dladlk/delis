@@ -261,8 +261,11 @@ public class SendDocumentService {
 		while ((sendDocument = sendDocumentLockService.findDocumentAndLock(SendDocumentStatus.NEW, SendDocumentStatus.VALIDATE_START)) != null) {
 			validateNewDocument(sendDocument, statData);
 		}
-		
-		log.info("Done validation of new documents: "+statData);
+
+		long duration = System.currentTimeMillis() - statData.getStartMs();
+		if (duration > 500 || !statData.isEmpty()) {
+			log.info("Done validation of new documents: "+statData);
+		}
 		return statData;
 	}
 

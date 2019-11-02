@@ -4,11 +4,11 @@ import { catchError, finalize } from 'rxjs/operators';
 
 import { IdentifierModel } from '../../../model/content/identifier/identifier.model';
 import { IdentifierFilterModel } from '../../../model/filter/identifier-filter.model';
-import { DelisDataSource } from "../delis-data-source";
-import { DelisService } from "../../../service/content/delis-service";
-import { AbstractEntityModel } from "../../../model/content/abstract-entity.model";
-import { TableStateModel } from "../../../model/filter/table-state.model";
-import { StateService } from "../../../service/state/state-service";
+import { DelisDataSource } from '../delis-data-source';
+import { DelisService } from '../../../service/content/delis-service';
+import { AbstractEntityModel } from '../../../model/content/abstract-entity.model';
+import { TableStateModel } from '../../../model/filter/table-state.model';
+import { StateService } from '../../../service/state/state-service';
 
 export class IdentifierDataSource implements DelisDataSource<IdentifierModel, IdentifierFilterModel> {
 
@@ -50,8 +50,8 @@ export class IdentifierDataSource implements DelisDataSource<IdentifierModel, Id
 
   private setStateDetails(stateService: StateService<IdentifierFilterModel>, res: any) {
     if (res.items !== undefined && res.items.length !== 0) {
-      let ids = res.items.map(value => value.id);
-      let filter = stateService.getFilter();
+      const ids = res.items.map(value => value.id);
+      const filter = stateService.getFilter();
       filter.detailsState.currentIds = ids;
       stateService.setFilter(filter);
     }

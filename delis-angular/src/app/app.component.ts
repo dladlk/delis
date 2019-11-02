@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
-import { environment } from '../environments/environment';
 import { RuntimeConfigService } from './service/system/runtime-config.service';
 import { LocaleService } from './service/system/locale.service';
+import { VersionCheckService } from './service/system/version-check.service';
+import { RoutingStateService } from "./service/system/routing-state.service";
 
 @Component({
   selector: 'app-root',
@@ -12,26 +12,22 @@ import { LocaleService } from './service/system/locale.service';
 })
 export class AppComponent implements OnInit {
 
-  version = environment.version;
-
-  constructor(
-    private configService: RuntimeConfigService,
-    private translate: TranslateService,
-    private locale: LocaleService) {
-      this.translate.setDefaultLang('en');
-      let currentLang = 'en';
-      if (locale.getLocale().match(/en|da/)) {
-        currentLang = locale.getLocale();
-      }
-      this.translate.use(currentLang);
+  constructor(private configService: RuntimeConfigService,
+              private translate: TranslateService,
+              private locale: LocaleService,
+              private versionCheckService: VersionCheckService,
+              private routingState: RoutingStateService) {
+    this.translate.setDefaultLang('da');
+    let currentLang = 'da';
+    if (locale.getLocale().match(/en|da/)) {
+      currentLang = locale.getLocale();
+    }
+    this.translate.use(currentLang);
+    this.configService.getUrl();
+    this.routingState.loadRouting();
   }
 
   ngOnInit() {
-    const currentVersion = localStorage.getItem('appVersion');
-    if (currentVersion === null || currentVersion !== this.version) {
-      localStorage.clear();
-      localStorage.setItem('appVersion', this.version);
-    }
-    this.configService.getUrl();
+    this.versionCheckService.initVersionCheck();
   }
 }

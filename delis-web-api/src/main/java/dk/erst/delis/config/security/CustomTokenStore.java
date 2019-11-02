@@ -6,8 +6,8 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,15 +46,19 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public OAuth2Authentication readAuthentication(String token) {
+        if (token == null) {
+            return null;
+        }
         OAuth2Authentication authentication = null;
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(token);
 
-        if (Objects.isNull(oAuthAccessToken)) {
+        if (oAuthAccessToken == null) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Failed to find access token for token " + token);
             }
             return null;
         }
+
         try {
             authentication = this.deserializeAuthentication(oAuthAccessToken.getOAuth2Authentication());
         } catch (IllegalArgumentException var5) {
@@ -67,46 +71,51 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-        long startTime = System.nanoTime();
-        long currentTime = startTime;
-        String refreshToken = token.getRefreshToken().getValue();
-        if (Objects.nonNull(this.readAccessToken(token.getValue()))) {
-            currentTime = logDuration(currentTime, "storeAccessToken. Step 1. readAccessToken took: ");
-            this.removeAccessToken(token.getValue());
+        if (token != null && authentication != null) {
+            long startTime = System.nanoTime();
+            long currentTime = startTime;
+            String refreshToken = token.getRefreshToken().getValue();
+            if (this.readAccessToken(token.getValue()) != null) {
+                currentTime = logDuration(currentTime, "storeAccessToken. Step 1. readAccessToken took: ");
+                this.removeAccessToken(token.getValue());
+            }
+            currentTime = logDuration(currentTime, "storeAccessToken. Step 2. removeAccessToken took: ");
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+            OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(token.getValue());
+            if (oAuthAccessToken == null) {
+                oAuthAccessToken = new OAuthAccessToken();
+            }
+            oAuthAccessToken.setAccessToken(token.getValue());
+            oAuthAccessToken.setRefreshToken(refreshToken);
+            String authenticationKey = this.authenticationKeyGenerator.extractKey(authentication);
+            oAuthAccessToken.setAuthenticationKey(authenticationKey);
+            currentTime = logDuration(currentTime, "storeAccessToken. Step 3. extractKey took: ");
+            oAuthAccessToken.setOAuth2AccessToken(this.serializeAccessToken(token));
+            oAuthAccessToken.setOAuth2Authentication(this.serializeAuthentication(authentication));
+            oAuthAccessToken.setUserId(userDetails.getId());
+            currentTime = logDuration(currentTime, "storeAccessToken. Step 4. findOne took: ");
+            oAuthAccessToken.setClient(authentication.getOAuth2Request().getClientId());
+
+            oAuthAccessTokenRepository.save(oAuthAccessToken);
+
+            logDuration(currentTime, "storeAccessToken. Step 5. save took: ");
+            logDuration(startTime, "storeAccessToken. Everything took: ");
         }
-        currentTime = logDuration(currentTime, "storeAccessToken. Step 2. removeAccessToken took: ");
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-        OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(token.getValue());
-        if (Objects.isNull(oAuthAccessToken)) {
-            oAuthAccessToken = new OAuthAccessToken();
-        }
-        oAuthAccessToken.setAccessToken(token.getValue());
-        oAuthAccessToken.setRefreshToken(refreshToken);
-        String authenticationKey = this.authenticationKeyGenerator.extractKey(authentication);
-        oAuthAccessToken.setAuthenticationKey(authenticationKey);
-        currentTime = logDuration(currentTime, "storeAccessToken. Step 3. extractKey took: ");
-        oAuthAccessToken.setOAuth2AccessToken(this.serializeAccessToken(token));
-        oAuthAccessToken.setOAuth2Authentication(this.serializeAuthentication(authentication));
-        oAuthAccessToken.setUserId(userDetails.getId());
-        currentTime = logDuration(currentTime, "storeAccessToken. Step 4. findOne took: ");
-        oAuthAccessToken.setClient(authentication.getOAuth2Request().getClientId());
-
-        oAuthAccessTokenRepository.save(oAuthAccessToken);
-
-        logDuration(currentTime, "storeAccessToken. Step 5. save took: ");
-        logDuration(startTime, "storeAccessToken. Everything took: ");
     }
 
     @Override
     public OAuth2AccessToken readAccessToken(String token) {
+        if (token == null) {
+            return null;
+        }
         long startTime = System.nanoTime();
         long currentTime = startTime;
         OAuth2AccessToken auth2AccessToken = null;
 
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(token);
         currentTime = logDuration(currentTime, "readAccessToken. Step 1. findByAccessToken took: ");
-        if (Objects.isNull(oAuthAccessToken)) {
+        if (oAuthAccessToken == null) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Failed to find access token for token " + token);
             }
@@ -125,46 +134,55 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public void removeAccessToken(OAuth2AccessToken token) {
-        this.removeAccessToken(token.getValue());
+        if (token != null) {
+            this.removeAccessToken(token.getValue());
+        }
     }
 
     private void removeAccessToken(String tokenValue) {
-        long currentTime = System.nanoTime();
-        try {
-            OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(tokenValue);
-            if (Objects.nonNull(oAuthAccessToken)) {
-                OAuth2RefreshToken oAuth2RefreshToken = this.readRefreshToken(oAuthAccessToken.getRefreshToken());
-                if (oAuth2RefreshToken != null) {
-                    this.removeRefreshToken(oAuth2RefreshToken);
+        if (tokenValue != null) {
+            long currentTime = System.nanoTime();
+            try {
+                OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByAccessToken(tokenValue);
+                if (oAuthAccessToken != null) {
+                    OAuth2RefreshToken oAuth2RefreshToken = this.readRefreshToken(oAuthAccessToken.getRefreshToken());
+                    if (oAuth2RefreshToken != null) {
+                        this.removeRefreshToken(oAuth2RefreshToken);
+                    }
+                    oAuthAccessTokenRepository.delete(oAuthAccessToken);
                 }
-                oAuthAccessTokenRepository.delete(oAuthAccessToken);
+            } catch (Exception e) {
+                LOG.error("removeAccessToken failed: " + e.getMessage(), e);
+            } finally {
+                logDuration(currentTime, "removeAccessToken. deleteByAccessToken took: ");
             }
-        } catch (Exception e) {
-            LOG.error("removeAccessToken failed: " + e.getMessage(), e);
-        } finally {
-            logDuration(currentTime, "removeAccessToken. deleteByAccessToken took: ");
         }
     }
 
     @Override
     public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
-        long startTime = System.nanoTime();
-        OAuthRefreshToken oAuthRefreshToken = new OAuthRefreshToken();
-        oAuthRefreshToken.setTokenId(refreshToken.getValue());
-        oAuthRefreshToken.setOAuth2RefreshToken(this.serializeRefreshToken(refreshToken));
-        oAuthRefreshToken.setOAuth2Authentication(this.serializeAuthentication(authentication));
-        oAuthRefreshTokenRepository.save(oAuthRefreshToken);
-        logDuration(startTime, "storeRefreshToken. Everything took: ");
+        if (refreshToken != null && authentication != null) {
+            long startTime = System.nanoTime();
+            OAuthRefreshToken oAuthRefreshToken = new OAuthRefreshToken();
+            oAuthRefreshToken.setTokenId(refreshToken.getValue());
+            oAuthRefreshToken.setOAuth2RefreshToken(this.serializeRefreshToken(refreshToken));
+            oAuthRefreshToken.setOAuth2Authentication(this.serializeAuthentication(authentication));
+            oAuthRefreshTokenRepository.save(oAuthRefreshToken);
+            logDuration(startTime, "storeRefreshToken. Everything took: ");
+        }
     }
 
     @Override
     public OAuth2RefreshToken readRefreshToken(String token) {
+        if (token == null) {
+            return null;
+        }
         long startTime = System.nanoTime();
         long currentTime = startTime;
         OAuth2RefreshToken oAuth2RefreshToken = null;
         OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(token);
         currentTime = logDuration(currentTime, "readRefreshToken. Step 1. findOne took: ");
-        if (Objects.isNull(oAuthRefreshToken)) {
+        if (oAuthRefreshToken == null) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Failed to find refresh token for token " + token);
             }
@@ -183,13 +201,19 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken refreshToken) {
+        if (refreshToken == null) {
+            return null;
+        }
         long startTime = System.nanoTime();
         OAuth2Authentication authentication = null;
 
+        if (refreshToken.getValue() == null) {
+            return null;
+        }
         OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(refreshToken.getValue());
         long currentTime = logDuration(startTime,
                 "readAuthenticationForRefreshToken. step 1. readAuthenticationForRefreshToken took: ");
-        if (Objects.isNull(oAuthRefreshToken)) {
+        if (oAuthRefreshToken == null) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Failed to find refresh token for token " + refreshToken.getValue());
             }
@@ -209,15 +233,19 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public void removeRefreshToken(OAuth2RefreshToken refreshToken) {
-        long startTime = System.nanoTime();
-        OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(refreshToken.getValue());
-        long currentTime = logDuration(startTime,
-                "removeRefreshToken. step 1. findOne took: ");
-        if (Objects.nonNull(oAuthRefreshToken)) {
-            oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
+        if (refreshToken != null) {
+            long startTime = System.nanoTime();
+            if (refreshToken.getValue() != null) {
+                OAuthRefreshToken oAuthRefreshToken = oAuthRefreshTokenRepository.findByTokenId(refreshToken.getValue());
+                long currentTime = logDuration(startTime,
+                        "removeRefreshToken. step 1. findOne took: ");
+                if (oAuthRefreshToken != null) {
+                    oAuthRefreshTokenRepository.delete(oAuthRefreshToken);
+                }
+                logDuration(currentTime, "removeRefreshToken. step 2. delete took: ");
+                logDuration(startTime, "removeRefreshToken. Everything took: ");
+            }
         }
-        logDuration(currentTime, "removeRefreshToken. step 2. delete took: ");
-        logDuration(startTime, "removeRefreshToken. Everything took: ");
     }
 
     @Override
@@ -225,7 +253,7 @@ public class CustomTokenStore implements TokenStore {
         long startTime = System.nanoTime();
         try {
             OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findByRefreshToken(oAuth2RefreshToken.getValue());
-            if (Objects.nonNull(oAuthAccessToken)) {
+            if (oAuthAccessToken != null) {
                 oAuthAccessTokenRepository.delete(oAuthAccessToken);
             }
         } catch (Exception e) {
@@ -236,6 +264,9 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
+        if (authentication == null) {
+            return null;
+        }
         long startTime = System.nanoTime();
         long currentTime = startTime;
         OAuth2AccessToken accessToken;
@@ -249,7 +280,7 @@ public class CustomTokenStore implements TokenStore {
         }
         OAuthAccessToken oAuthAccessToken = oAuthAccessTokenRepository.findTopByAuthenticationKeyOrderByIdDesc(key);
         currentTime = logDuration(currentTime, "getAccessToken. Step 1. findByAuthenticationKey took: ");
-        if (Objects.isNull(oAuthAccessToken)) {
+        if (oAuthAccessToken == null) {
             if (LOG.isInfoEnabled()) {
                 LOG.info("Failed to find access token for authentication key " + key);
             }
@@ -262,10 +293,28 @@ public class CustomTokenStore implements TokenStore {
             return null;
         }
 
-        if (Objects.nonNull(accessToken) && !key.equals(this.authenticationKeyGenerator.extractKey(this.readAuthentication(accessToken.getValue())))) {
+        if (accessToken == null) {
+            LOG.warn("Failed to find accessToken after deserialize authentication for " + key);
+            return null;
+        }
+
+        OAuth2Authentication oAuth2Authentication = this.readAuthentication(accessToken.getValue());
+        if (oAuth2Authentication == null) {
+            LOG.warn("Failed to read authentication key " + accessToken.getValue());
+            return null;
+        }
+
+        String keyExtracted = this.authenticationKeyGenerator.extractKey(oAuth2Authentication);
+        if (StringUtils.isBlank(keyExtracted)) {
+            LOG.warn("Failed to extract key " + accessToken.getValue());
+            return null;
+        }
+
+        if (ObjectUtils.notEqual(key, keyExtracted)) {
             this.removeAccessToken(accessToken.getValue());
             this.storeAccessToken(accessToken, authentication);
         }
+
         logDuration(currentTime, "getAccessToken. Step 2. extractKey took: ");
         logDuration(startTime, "getAccessToken. Everything took: ");
         return accessToken;
@@ -279,6 +328,9 @@ public class CustomTokenStore implements TokenStore {
 
     @Override
     public Collection<OAuth2AccessToken> findTokensByClientId(String client) {
+        if (client == null) {
+            return Collections.emptyList();
+        }
         long startTime = System.nanoTime();
         List<OAuthAccessToken> accessTokenList = oAuthAccessTokenRepository.findByClient(client);
         List<OAuth2AccessToken> result = accessTokenList.stream()
@@ -289,26 +341,44 @@ public class CustomTokenStore implements TokenStore {
     }
 
     private byte[] serializeAccessToken(OAuth2AccessToken token) {
+        if (token == null) {
+            return null;
+        }
         return SerializationUtils.serialize(token);
     }
 
     private byte[] serializeRefreshToken(OAuth2RefreshToken token) {
+        if (token == null) {
+            return null;
+        }
         return SerializationUtils.serialize(token);
     }
 
     private byte[] serializeAuthentication(OAuth2Authentication authentication) {
+        if (authentication == null) {
+            return null;
+        }
         return SerializationUtils.serialize(authentication);
     }
 
     private OAuth2AccessToken deserializeAccessToken(byte[] token) {
+        if (token == null) {
+            return null;
+        }
         return (OAuth2AccessToken) SerializationUtils.deserialize(token);
     }
 
     private OAuth2RefreshToken deserializeRefreshToken(byte[] token) {
+        if (token == null) {
+            return null;
+        }
         return (OAuth2RefreshToken) SerializationUtils.deserialize(token);
     }
 
     private OAuth2Authentication deserializeAuthentication(byte[] authentication) {
+        if (authentication == null) {
+            return null;
+        }
         return (OAuth2Authentication) SerializationUtils.deserialize(authentication);
     }
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+
+<h3 class="m-2 text-secondary"><a href="#" th:href="${@backs.get('/errordict/list')}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
+	<a href="#" th:href="@{/errordict/view/__${errorDictionary.id}__(back=${@backs.get('/errordict/list')})}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+	Error details</h3>        
+
+<div class="">
+
+    <div class="card border-secondary m-1">
+        <div class="card-body pb-0">
+            <table class="table table-sm table-borderless w-auto">
+                <tr>
+                    <th>Code</th>
+                    <td>
+                    	<span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>
+                    	<span th:text="${errorDictionary.code}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td th:text="${errorDictionary.errorType?.name}"></td>
+                </tr>
+                <tr>
+                    <th>Message</th>
+                    <td th:text="${errorDictionary.message}"></td>
+                </tr>
+                <tr>
+                    <th>Location</th>
+                    <td th:text="${errorDictionary.location}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card border-secondary m-1" th:if="${errorStatGroupList}">
+    	<div class="card-header">
+    		Statistics
+    	</div>
+        <div class="card-body pb-0">
+            <table class="table table-sm table-borderless w-auto">
+            <th:block th:each="group: ${errorStatGroupList}">
+                <tr>
+                    <th th:text="${group.name}"></th>
+                    <th>Docs</th>
+                    <th>First</th>
+                    <th>Last</th>
+                </tr>
+                <tr th:each="errorStat: ${group?.list}">
+                	<td><span th:text="${errorStat.statKey}"></span></td>    
+                    <td> <a th:href="@{/document/list/(errorDictionaryId=__${errorDictionary.id}__,clear=1)}" class="btn btn-light border-primary btn-sm">
+                    	<span class="badge badge-light" th:text="${errorStat.documentCount}">XXX</span>
+                    	</a></td>
+                    <td th:text="${#dates.format(errorStat.minCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+                    <td th:text="${#dates.format(errorStat.maxCreateTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
+                </tr>
+            </th:block>
+            </table>            
+       </div>
+    </div>
+    
+    <div class="card border-secondary m-1">
+    	<div class="card-header">
+    		Similar errors - <span th:text="${#lists.size(similarErrorList) - 1}"></span>
+    	</div>        
+        <div class="card-body pb-0" th:unless="${#lists.size(similarErrorList) <= 1}">
+            <table class="table table-sm table-borderless w-auto">
+                <tr>
+                    <th>#</th>
+                    <th>Message</th>
+                    <th>Location</th>
+                </tr>
+                <tr th:each="ed,i: ${similarErrorList}">
+                    <td>
+                    	<a href='#' th:href="@{__${ed.id}__}" class="btn btn-light border-primary btn-sm">
+	                    	<span class="badge badge-light" th:text="${i.index + 1}"></span>
+	                    	<span th:if="${errorDictionary.id == ed.id}"> [current]</span>
+                    	</a>
+                    </td>
+                    <td th:text="${ed.message}"></td>
+                    <td th:text="${ed.location}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>    
+    
+</div>
+
+</body>
+</html>

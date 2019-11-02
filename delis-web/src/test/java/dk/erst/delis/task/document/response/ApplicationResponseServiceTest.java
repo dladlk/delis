@@ -23,6 +23,7 @@ import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationServiceUnitTest;
+import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.document.response.ApplicationResponseService.InvoiceResponseGenerationData;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
@@ -42,9 +43,11 @@ public class ApplicationResponseServiceTest {
 			IOUtils.copy(TestDocument.BIS3_INVOICE.getInputStream(), out);
 			return true;
 		});
+		
+		RuleService ruleService = DocumentValidationTransformationServiceUnitTest.buildDefaultRuleService();
 
 		DocumentValidationTransformationService validationTransformationService = DocumentValidationTransformationServiceUnitTest.getTestInstance();
-		ApplicationResponseService s = new ApplicationResponseService(storageService, validationTransformationService);
+		ApplicationResponseService s = new ApplicationResponseService(storageService, validationTransformationService, ruleService);
 		Document document = new Document();
 		document.setIngoingDocumentFormat(DocumentFormat.BIS3_INVOICE);
 		InvoiceResponseGenerationData data = new InvoiceResponseGenerationData();

@@ -13,7 +13,36 @@ import lombok.Setter;
 @Transactional
 public interface StatDao {
 
-	List<KeyValue> loadStat(StatRange range, boolean groupHourNotDate, int addHours, Long organisationId);
+	public static enum StatType {
+
+		RECEIVE_ERROR ("document", "chart.receiving_error"),
+		
+		RECEIVE ("document", "chart.receiving"), 
+		
+		SEND ("send_document", "chart.sending");
+
+		private String tableName;
+		private String chartLabel;
+
+		private StatType (String tableName, String chartLabel) {
+			this.tableName = tableName;
+			this.chartLabel = chartLabel;
+		}
+		
+		public boolean isLimitError() {
+			return this == RECEIVE_ERROR;
+		}
+
+		public String getTableName() {
+			return tableName;
+		}
+
+		public String getChartLabel() {
+			return chartLabel;
+		}
+	}
+	
+	List<KeyValue> loadStat(StatType statType, StatRange range, boolean groupHourNotDate, int addHours, Long organisationId);
 
 	StatRange loadFullRange(Long organisationId);
 
@@ -82,5 +111,7 @@ public interface StatDao {
 			return sb.toString();
 		}
 	}
+
+	int loadDeliveryAlertCount(Long organisationId);
 
 }

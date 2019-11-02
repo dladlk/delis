@@ -3,8 +3,13 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
+	<style>
+		.delis-deactivated {
+			text-decoration: line-through;
+		}
+	</style>
+	<div class="card border-secondary">
+		<div class="card-header">
 			Organisations
 		</div>
 		<div class="card-body">
@@ -13,16 +18,26 @@
 					<th>Name</th>
 					<th>Code</th>
 					<th>Identifiers</th>
+					<th>Created</th>
+					<th>Actions</th>
 				</tr>
 				<tr th:each="r,iter : ${organisationList}">
-					<td><a href="#" th:href="@{/organisation/view/__${r.id}__}" th:text="${r.name}"></a></td>
+					<td><a href="#" th:href="@{/organisation/view/__${r.id}__}" th:text="${r.name}" th:classappend="${r.isStateDeactivated()?'delis-deactivated':''}"></a></td>
 					<td th:text="${r.code}"></td>
-					<td th:if="${orgStatMap.get(r.id)}">
-						<a href="#" th:href="@{/identifier/list/__${r.id}__}" title="Total" th:text="${orgStatMap.get(r.id).total}">10</a> = 
-						<span title="Published active" th:text="${orgStatMap.get(r.id).activeDone}">5</span> +
-						<span title="Pending active" th:text="${orgStatMap.get(r.id).activePending}">3</span> +
-						<span title="Pending deletion" th:text="${orgStatMap.get(r.id).disabledPending}">1</span> +
-						<span title="Failed" th:text="${orgStatMap.get(r.id).failed}">1</span>
+					<td>
+						<th:block th:if="${orgStatMap.get(r.id)}">
+							<a href="#" th:href="@{/identifier/list/__${r.id}__}" title="Total" th:text="${orgStatMap.get(r.id).total}">10</a> = 
+							<span title="Published active" th:text="${orgStatMap.get(r.id).activeDone}">5</span> +
+							<span title="Pending active" th:text="${orgStatMap.get(r.id).activePending}">3</span> +
+							<span title="Pending deletion" th:text="${orgStatMap.get(r.id).disabledPending}">1</span> +
+							<span title="Failed" th:text="${orgStatMap.get(r.id).failed}">1</span>
+						</th:block>
+					</td>
+					<td th:attr="title=${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}" th:text="${#dates.format(r.createTime, 'dd-MM-yyyy')}"></td>
+					<td>
+						<a href="#" th:href="@{/organisation/edit/__${r.id}__}">Update</a>
+						<a href="#" th:href="@{/organisation/delete/__${r.id}__}" onclick="return confirm('Are you sure that you want to delete this organisation?')" th:if="${!r.isStateDeactivated()}">Delete</a>
+						<a href="#" th:href="@{/organisation/restore/__${r.id}__}" onclick="return confirm('Are you sure that you want to activate this organisation?')" th:if="${r.isStateDeactivated()}">Restore</a>
 					</td>
 				</tr>
 			</table>

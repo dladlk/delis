@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Router } from "@angular/router";
 
-import { TokenService } from "./token.service";
-import { RuntimeConfigService } from "./runtime-config.service";
-import { HttpRestService } from "./http-rest.service";
+import { TokenService } from './token.service';
+import { RuntimeConfigService } from './runtime-config.service';
+import { CheckExpirationService } from './check-expiration.service';
+import { ChartDocumentService } from '../content/chart-document.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LogoutService {
 
-  constructor(private router: Router, private tokenService: TokenService, private configService: RuntimeConfigService, private http: HttpRestService) { }
+  constructor(
+    private tokenService: TokenService,
+    private checkExpirationService: CheckExpirationService,
+    private configService: RuntimeConfigService,
+    private chartDocumentService: ChartDocumentService) { }
 
   logout() {
-      this.tokenService.resetToken();
-      this.configService.resetCurrentUser();
-      this.router.navigate(['/login']);
+    this.tokenService.resetToken();
+    this.configService.resetCurrentUser();
+    this.checkExpirationService.resetExpiration();
+    this.chartDocumentService.resetRange();
+    this.chartDocumentService.resetChartType();
+    window.location.reload();
   }
 }

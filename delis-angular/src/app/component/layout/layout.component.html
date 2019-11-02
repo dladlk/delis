@@ -1,8 +1,15 @@
 <div fxLayout="row wrap" fxLayoutAlign="center" class="layout-wrapper" >
   <div fxFlex="70%" fxFlex.lt-md="100%" class="flex-wrapper">
-        <app-header></app-header>
-        <main>
+    <mat-sidenav-container>
+      <mat-sidenav #sidenav role="navigation">
+        <app-sidebar (sidenavClose)="sidenav.close()"></app-sidebar>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <app-topnav (sidenavToggle)="sidenav.toggle()"></app-topnav>
+        <main class="mt-80 delis-main-content">
           <router-outlet></router-outlet>
         </main>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
   </div>
 </div>

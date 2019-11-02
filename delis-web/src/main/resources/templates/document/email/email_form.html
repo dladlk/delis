@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<div>
+	
+<div class="card border-secondary m-1 mb-3 delis-email-response-form" th:classappend="${emailResponseFormOpened}?'':'collapse'" id="emailResponseForm">
+		
+<div class="card-body pb-1 invoice-response">
+
+	<form method="post" action="#" th:action="@{/document/generate/emailResponse}" th:object="${emailForm}">
+		<input type="hidden" name="id" class="form-control" th:field="*{documentId}"/>
+		
+		<div class="row mb-3">
+			<h2 class="col-5">Email Response</h2>
+		</div>
+
+		<div class="row">
+			<div class="form-group col-4">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">From</span>
+					</div>
+					<input th:field="*{from}" type="text" name="emailFrom" class="form-control"/>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-4">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">To</span>
+					</div>
+					<input th:field="*{to}" type="text" name="emailTo" class="form-control"/>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-12">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Subject</span>
+					</div>
+					<input th:field="*{subject}" type="text" name="emailSubject" class="form-control"/>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-12">
+				<div class="input-group">
+					<textarea th:field="*{body}" name="emailBody" class="form-control" rows=10/>
+				</div>
+			</div>
+		</div>
+
+	<div class="row" th:fragment="footerBlock(formCode)">
+		<button type="submit" class="m-2 btn btn-primary btn-sm">Send</button>
+		<button type="button" class="m-2 btn btn-secondary btn-sm" onclick="$(this).parents('.delis-email-response-form').toggle()">Hide</button>
+	</div>
+
+	</form>
+</div>
+
+</div>
+</div>
+
+</html>

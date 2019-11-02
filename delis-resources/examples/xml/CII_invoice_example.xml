@@ -7,7 +7,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<rsm:ExchangedDocumentContext>
 		<ram:BusinessProcessSpecifiedDocumentContextParameter>
-			<ram:ID>P1</ram:ID>
+			<ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:30:1.0</ram:ID>
 		</ram:BusinessProcessSpecifiedDocumentContextParameter>
 		<ram:GuidelineSpecifiedDocumentContextParameter>
 			<ram:ID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</ram:ID>
@@ -285,7 +285,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<ram:CountrySubDivisionName>Jutland</ram:CountrySubDivisionName>
 				</ram:PostalTradeAddress>
 				<ram:SpecifiedTaxRegistration>
-					<ram:ID schemeID="VAT">DK16356609</ram:ID>
+					<ram:ID schemeID="VA">DK16356609</ram:ID>
 				</ram:SpecifiedTaxRegistration>
 			</ram:SellerTaxRepresentativeTradeParty>
 			<ram:SellerOrderReferencedDocument>

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { OverlayRef } from '@angular/cdk/overlay';
 
-import { PresetItem } from '../model/model';
+import { PresetItem, RangeUpdate } from '../model/model';
 import { RangeStoreService } from '../service/range-store.service';
 import { ConfigStoreService } from '../service/config-store.service';
 import { pickerOverlayAnimations } from './picker-overlay.animations';
@@ -29,12 +29,17 @@ export class PickerOverlayComponent implements OnInit {
   cancelLabel: string;
   shouldAnimate: string;
 
+  panelOpenState = false;
+  minScreen = false;
+  minScreenSize = 800;
+
   constructor(
     private rangeStoreService: RangeStoreService,
     private configStoreService: ConfigStoreService,
     private overlayRef: OverlayRef) { }
 
   ngOnInit() {
+    this.minScreen = (window.innerWidth <= this.minScreenSize);
     this.fromDate = this.rangeStoreService.fromDate;
     this.toDate = this.rangeStoreService.toDate;
     this.startDatePrefix = this.configStoreService.ngxDrpOptions.startDatePrefix || 'td.picker.from';
@@ -75,12 +80,18 @@ export class PickerOverlayComponent implements OnInit {
   }
 
   applyNewDates() {
-    this.rangeStoreService.updateRange(this.fromDate, this.toDate);
+    const rangeUpdate = new RangeUpdate();
+    rangeUpdate.range = {fromDate: this.fromDate, toDate: this.toDate};
+    rangeUpdate.update = true;
+    this.rangeStoreService.updateRange(rangeUpdate);
     this.disposeOverLay();
   }
 
   clearDates() {
-    this.rangeStoreService.updateRange(null, null);
+    const rangeUpdate = new RangeUpdate();
+    rangeUpdate.range = {fromDate: null, toDate: null};
+    rangeUpdate.update = true;
+    this.rangeStoreService.updateRange(rangeUpdate);
     this.disposeOverLay();
   }
 
@@ -92,10 +103,25 @@ export class PickerOverlayComponent implements OnInit {
     this.overlayRef.dispose();
   }
 
+  onResize(event) {
+    this.minScreen = (event.target.innerWidth <= this.minScreenSize);
+  }
+
   autoClose(event) {
-    var target = event.target;
-    if (!target.closest(".ngx-mat-drp-calendar-container")) {
-      this.disposeOverLay();
+    if (!this.minScreen) {
+      var target = event.target;
+      if (!target.closest(".ngx-mat-drp-calendar-container")) {
+        this.disposeOverLay();
+      }
+    }
+  }
+
+  autoCloseMin(event) {
+    if (this.minScreen) {
+      var target = event.target;
+      if (!target.closest(".ngx-mat-drp-calendar-min-container")) {
+        this.disposeOverLay();
+      }
     }
   }
 }

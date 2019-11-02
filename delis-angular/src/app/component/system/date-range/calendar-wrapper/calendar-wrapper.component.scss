@@ -1,4 +1,4 @@
-@import "../../../../../styles";
+@import "../../../../../styles/styles";
 
 .ngx-mat-drp-date-label {
   background: #fafafa;
@@ -7,11 +7,11 @@
   width: 100%;
   font-size: 14px;
   font-weight: 500;
-  font-family: "IBM Plex Sans", "system", serif !important;
+  font-family: $delis-font-family, "system", serif !important;
 }
 
 .ngx-mat-drp-selected-date-label {
   color: rgba(0,0,0,.38);
   padding-left: 5%;
-  font-family: "IBM Plex Sans", "system", serif !important;
+  font-family: $delis-font-family, "system", serif !important;
 }

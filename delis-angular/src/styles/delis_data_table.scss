@@ -5,22 +5,45 @@ mat-cell {
 }
 
 .mat-row:nth-child(odd) {
-  background-color: rgba(0, 0, 0, 0.01);
-}
-
-.mat-row:hover {
   background-color: rgba(0, 0, 0, 0.04);
 }
 
-//.mat-cell-shadow {
-  //@include mat-elevation-transition;
-  //@include mat-elevation(2);
+.mat-row:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
 
-  //&:active {
-  //  @include mat-elevation(8);
-  //}
-//}
+.mat-row:active {
+  outline: none;
+}
 
-//.mat-row:nth-child(even){
-//  background-color:red;
-//}
+.delis-table-data th, .delis-table-data td {
+  padding-right: 2em;
+  height: 4mm !important;
+  font-size: 4mm !important;
+  text-align: left !important;
+  word-wrap: break-word !important;
+}
+
+.table-details-error {
+  text-align: left !important;
+  color: red !important;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.table-ir-form-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+@media(max-width: 1400px) {
+  .responsive-table {
+    overflow-x: auto !important;
+  }
+
+  .mat-table {
+    min-width:800px;
+  }
+}

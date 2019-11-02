@@ -54,7 +54,7 @@ public class DocumentValidationTransformationServiceTest {
                 assertTrue(errorRecords.size() == 1);
                 ErrorRecord errorRecord = errorRecords.get(0);
                 assertEquals(errorRecord.getErrorType(), DocumentErrorCode.BIS3_XSD);
-                assertEquals(errorRecord.getLocation(), "line 6, column 18");
+                assertEquals("/Invoice", errorRecord.getLocation());
                 return true;
             }
         });
@@ -69,8 +69,8 @@ public class DocumentValidationTransformationServiceTest {
                 assertEquals(2, processLog.getStepList().size());
                 DocumentProcessStep documentProcessStep = processLog.getStepList().get(1);
                 List<ErrorRecord> errorRecords = documentProcessStep.getErrorRecords();
-                assertEquals(2, errorRecords.size());
-                ErrorRecord errorRecord = errorRecords.get(1);
+				assertEquals(10, errorRecords.size());
+				ErrorRecord errorRecord = errorRecords.stream().filter(e -> e.getCode().equals("BR-CO-16")).findFirst().get();
                 assertEquals(DocumentErrorCode.BIS3_SCH, errorRecord.getErrorType());
                 assertEquals("BR-CO-16", errorRecord.getCode());
                 assertEquals("/Invoice/LegalMonetaryTotal", errorRecord.getLocation());
@@ -92,8 +92,8 @@ public class DocumentValidationTransformationServiceTest {
                 List<ErrorRecord> errorRecords = documentProcessStepXSD.getErrorRecords();
                 assertTrue(errorRecords.size() == 1);
                 ErrorRecord errorRecord = errorRecords.get(0);
-                assertEquals(errorRecord.getCode(), "");
-                assertEquals(errorRecord.getLocation(), "line 9, column 24");
+                assertEquals("cvc-complex-type.2.4.a", errorRecord.getCode());
+                assertEquals("/Invoice", errorRecord.getLocation());
                 return true;
             }
         });
@@ -133,8 +133,8 @@ public class DocumentValidationTransformationServiceTest {
                 List<ErrorRecord> errorRecords = documentProcessStepXSD.getErrorRecords();
                 assertTrue(errorRecords.size() == 1);
                 ErrorRecord errorRecord = errorRecords.get(0);
-                assertEquals(errorRecord.getCode(), "");
-                assertEquals(errorRecord.getLocation(), "line 325, column 13");
+                assertEquals("cvc-complex-type.2.4.a", errorRecord.getCode());
+                assertEquals("/CrossIndustryInvoice/SupplyChainTradeTransaction/ApplicableHeaderTradeDelivery/ShipToTradeParty", errorRecord.getLocation());
                 return true;
             }
         });
@@ -152,11 +152,7 @@ public class DocumentValidationTransformationServiceTest {
                 DocumentProcessStep documentProcessStepSCH = processLog.getStepList().get(1);
                 assertFalse(documentProcessStepSCH.isSuccess());
                 List<ErrorRecord> errorRecords = documentProcessStepSCH.getErrorRecords();
-                assertTrue(errorRecords.size() == 1);
-                ErrorRecord errorRecord = errorRecords.get(0);
-                assertEquals(errorRecord.getCode(), "BR-52");
-                assertEquals(errorRecord.getLocation(), "/CrossIndustryInvoice/SupplyChainTradeTransaction/IncludedSupplyChainTradeLineItem/SpecifiedLineTradeSettlement/AdditionalReferencedDocument");
-                assertEquals(errorRecord.getDetailedLocation(), "/CrossIndustryInvoice[1]/SupplyChainTradeTransaction[1]/IncludedSupplyChainTradeLineItem[1]/SpecifiedLineTradeSettlement[1]/AdditionalReferencedDocument[1]");
+                assertEquals(5, errorRecords.size());
                 return true;
             }
         });
@@ -187,7 +183,7 @@ public class DocumentValidationTransformationServiceTest {
 
             resultChecker.checkResult(processLog);
         } finally {
-            //TestDocumentUtil.cleanupTestFile(testFile);
+            TestDocumentUtil.cleanupTestFile(testFile);
         }
     }
 

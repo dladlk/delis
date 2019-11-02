@@ -25,7 +25,7 @@
 				</div>
 				<div class="card-body">
 					  <h4><a href="/delis" target="_blank">DELIS</a></h4>
-					  <p>Main web GUI for DELIS on Angular, based on sbadmin</p>
+					  <p>Main web GUI for DELIS on Angular, based on clear bootstrap</p>
 
 					  <h4><a href="/delis-web-api/status" target="_blank">DELIS Web Api</a></h4>
 					  <p>REST web api for GUI</p>
@@ -71,8 +71,11 @@
 					Corner Blue
 				</div>
 				<div class="card-body">
-				  <h4><a href="/domibus1" target="_blank">DOMIBUS 4.0.2 - blue</a></h4>
-				  <p>AS4 access point 1
+				  <h4><a href="/domibus1" target="_blank">DOMIBUS 4.1.1 - blue</a></h4>
+				  <p>AS4 access point 1 (clustered, mutliple intsances)</p>
+
+				  <h4><a href="/jmx1" target="_blank">ActiveMQ 5.14.3 - blue</a></h4>
+				  <p>External JMS (Java Messaging Service)</p>
 
 				  <h4><a href="/delis-domibus-ws-sender" target="_blank">DOMIBUS WS Sender 1</a></h4>
 				  <p>REST interface with Swagger to send documents from AS4 access point 1</p>
@@ -93,6 +96,18 @@
 
 				  <h4><a href="/oxalis2/status" target="_blank">OXALIS 4.0.4 - red</a></h4>
 				  <p>Internal AS2 access point 2</p>
+				</div>
+			</div>
+			<div class="card mb-1">
+				<div class="card-header">
+					Monitoring
+				</div>
+				<div class="card-body">
+				  <h4><a href="/grafana" target="_blank">Grafana</a></h4>
+				  <p>Prometheus-operator managed Grafana</p>
+
+				  <h4><a href="/delis-web-admin/actuator/prometheus" target="_blank">DELIS Setup Cockpit metrics</a></h4>
+				  <p>Spring Boot Actuator with micrometer-registry-prometheus</p>
 				</div>
 			</div>
 		</div>

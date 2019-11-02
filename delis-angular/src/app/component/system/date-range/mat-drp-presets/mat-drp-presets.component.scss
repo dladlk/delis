@@ -1,4 +1,4 @@
-@import "../../../../../styles";
+@import "../../../../../styles/styles";
 
 .ngx-mat-drp-presets-list {
   list-style-type: none;
@@ -13,11 +13,10 @@
   background: #fafafa !important;
   color: mat-color($primary) !important;
   user-select: none;
-  font-family: "IBM Plex Sans", "system", serif !important;
+  font-family: $delis-font-family, "system", serif !important;
 }
 
 .ngx-mat-drp-presets-list li:hover {
   background: mat-color($primary) !important;
   color: #fff !important;
-  font-family: "IBM Plex Sans", "system", serif !important;
 }

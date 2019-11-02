@@ -18,4 +18,7 @@
     <include file="changes/changelog-1.09-expand_DocumentBytes_add_format.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.10-expand_User_add_organisationId.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.11-expand_User_add_disable_ilr_form.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.12-add_document_export.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.13-expand_document_add_receiverEmail_senderEmail.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.14-expand_organisation_add_deactivated.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -1,25 +1,19 @@
 package dk.erst.delis.task.document.process.validate.result;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class OIOUBLSchematronResultCollector implements ISchematronResultCollector {
 
 	public static final String ERROR = "Error";
-	public static boolean DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE = false;
 
 	protected static OIOUBLSchematronResultCollector INSTANCE = new OIOUBLSchematronResultCollector();
 
@@ -45,13 +39,6 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 					message = tmp.substring(index + 1);
 					code = tmp.substring(1, index);
 				}
-			}
-
-			if (DUMP_NODE_VALUE_INSTEAD_OF_MESSAGE) {
-				String nodeToString = nodeToString(errorItem);
-				System.out.println(nodeToString);
-				errorList.add(new ErrorRecord(DocumentErrorCode.OIOUBL_SCH, code, nodeToString, ERROR, xpath));
-				continue;
 			}
 
 			StringBuilder sb = new StringBuilder();
@@ -89,20 +76,5 @@ public class OIOUBLSchematronResultCollector implements ISchematronResultCollect
 			}
 		}
 		return null;
-	}
-
-	private String nodeToString(Node node) {
-		String res;
-		StringWriter writer = new StringWriter();
-		Transformer transformer;
-		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.transform(new DOMSource(node), new StreamResult(writer));
-			res = writer.toString();
-		} catch (Exception e) {
-			log.error("Failed to convert node to string", e);
-			res = String.valueOf(node);
-		}
-		return res;
 	}
 }

@@ -3,6 +3,7 @@ package dk.erst.delis.web.identifier;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
@@ -25,6 +26,7 @@ import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.organisation.OrganisationService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfile;
 import dk.erst.delis.web.list.AbstractEasyListController;
 
 @Controller
@@ -104,14 +106,14 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 		List<Long> ids = idList.getIdList();
 		IdentifierStatus status = idList.getStatus();
 		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();
-		identifierService.updateStatuses(ids, status, publishStatus);
+		identifierService.updateStatuses(ids, status, publishStatus, null);
 		return "redirect:/identifier/list";
 	}
 
 	@PostMapping("/identifier/updatestatus")
 	public String updateStatus(Identifier staleIdentifier, RedirectAttributes ra) {
 		Long id = staleIdentifier.getId();
-		int i = identifierService.updateStatus(id, staleIdentifier.getStatus(), staleIdentifier.getPublishingStatus());
+		int i = identifierService.updateStatus(id, staleIdentifier.getStatus(), staleIdentifier.getPublishingStatus(), null);
 		if (i == 0) {
 			ra.addFlashAttribute("errorMessage", "Identifier with ID " + id + " is not found");
 			return "redirect:/identifier/list";
@@ -146,4 +148,18 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 		return view(id, model, ra);
 	}
 
+	public String replaceIdentifierWithCode(String message) {
+		if (StringUtils.isEmpty(message) || message.length() < 30) {
+			return message;
+		}
+		OrganisationSubscriptionProfile[] profiles = OrganisationSubscriptionProfile.values();
+		String newMessage = message;
+		for (OrganisationSubscriptionProfile profile : profiles) {
+			newMessage = message.replace(profile.getDocumentIdentifier(), "<span class='delis-profile-code' title='"+profile.getDocumentIdentifier()+"'>"+profile.getName()+"</span>");
+			if (message != newMessage) {
+				break;
+			}
+		}
+		return newMessage;
+	}
 }

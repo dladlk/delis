@@ -1,0 +1,45 @@
+mat-toolbar {
+  border-radius: 0px 0px 3px 3px;
+  position: fixed;
+  width: 70%;
+  z-index: 2;
+}
+
+.nav-spacer {
+  flex: 1 1 auto;
+}
+
+.visible-md {
+  display: none;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a.active {
+  color: lightgray;
+}
+
+a:hover, a:active {
+  color: lightgray;
+}
+
+.navigation-items {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media screen and (max-width: 992px) {
+
+  .visible-md {
+    display: block;
+  }
+
+  mat-toolbar {
+    width: 100%;
+    border-radius: 0;
+  }
+}

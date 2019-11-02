@@ -4,11 +4,11 @@ import { catchError, finalize } from 'rxjs/operators';
 
 import { DocumentModel } from '../../../model/content/document/document.model';
 import { DocumentFilterModel } from '../../../model/filter/document-filter.model';
-import { DelisDataSource } from "../delis-data-source";
-import { DelisService } from "../../../service/content/delis-service";
-import { AbstractEntityModel } from "../../../model/content/abstract-entity.model";
-import { TableStateModel } from "../../../model/filter/table-state.model";
-import { StateService } from "../../../service/state/state-service";
+import { DelisDataSource } from '../delis-data-source';
+import { DelisService } from '../../../service/content/delis-service';
+import { AbstractEntityModel } from '../../../model/content/abstract-entity.model';
+import { TableStateModel } from '../../../model/filter/table-state.model';
+import { StateService } from '../../../service/state/state-service';
 
 export class DocumentDataSource implements DelisDataSource<DocumentModel, DocumentFilterModel> {
 
@@ -50,8 +50,8 @@ export class DocumentDataSource implements DelisDataSource<DocumentModel, Docume
 
   private setStateDetails(stateService: StateService<DocumentFilterModel>, res: any) {
     if (res.items !== undefined && res.items.length !== 0) {
-      let ids = res.items.map(value => value.id);
-      let filter = stateService.getFilter();
+      const ids = res.items.map(value => value.id);
+      const filter = stateService.getFilter();
       filter.detailsState.currentIds = ids;
       stateService.setFilter(filter);
     }

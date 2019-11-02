@@ -13,6 +13,11 @@ export class RangeModel implements Range {
   toDate: Date;
 }
 
+export class RangeUpdate {
+  range: Range;
+  update: boolean;
+}
+
 export interface CalendarOverlayConfig {
   panelClass?: string;
   hasBackdrop?: boolean;

@@ -1,0 +1,29 @@
+{{- if .Values.jmx.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{.Release.Name}}-jmx
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}-jmx'
+  name: {{.Release.Name}}-jmx
+  namespace: '{{.Values.namespace}}'
+spec:
+  ports:
+  - name: connector
+    port: 1199
+    protocol: TCP
+    targetPort: 1199
+  - name: rmi
+    port: 1200
+    protocol: TCP
+    targetPort: 1200
+  - name: transport
+    port: 61616
+    protocol: TCP
+    targetPort: 61616
+  selector:
+    app: {{.Release.Name}}-jmx
+  type: '{{.Values.jmx.serviceType}}'
+{{- end }}

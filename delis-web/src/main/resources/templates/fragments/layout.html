@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (template)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html th:fragment="layout (template)" th:with="customTitle=${customTitle} ?: ''" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
 	<meta charset="utf-8">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" th:href="@{/css/main.css?v=__${'1.01'}__}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css?v=__${'1.03'}__}"/>
 
     <!-- add datatables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
@@ -27,7 +27,7 @@
     <!-- <link rel="stylesheet" type="text/css" th:href="@{/css/datatables-easy.css?v=__${'1.03'}__}"> -->
 
 
-	<title>DELIS Setup Cockpit</title>
+	<title th:text="${#strings.isEmpty(customTitle)? 'DELIS Setup Cockpit' : customTitle}">DELIS Setup Cockpit</title>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://unpkg.com/moment"></script>
@@ -46,9 +46,10 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent" th:if="${loggedIn}">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/organisation/list}">Organisations</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Documents Received</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/send/list}">Documents Sent</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/list}">Docs Received</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/document/send/list}">Docs Sent</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/errordict/list}" th:if="${admin}">Errors</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" th:href="@{/validate/index}" th:if="${admin}">Validate</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/identifier/list}">Identifiers</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/task/index}" th:if="${admin}">Tasks</a></li>
       <li class="nav-item"><a class="nav-link" href="#" th:href="@{/setup/index}" th:if="${admin}">Setup</a></li>
@@ -108,7 +109,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 <!-- add datatables script process -->
-<script th:src="@{/webjars/datatables-easy/js/datatables-easy.js}"></script>
+<script th:src="@{/webjars/datatables-easy/js/datatables-easy.js(v='1.01')}"></script>
 
 <script type="text/javascript" th:inline="javascript">
     $(document).ready(function () {

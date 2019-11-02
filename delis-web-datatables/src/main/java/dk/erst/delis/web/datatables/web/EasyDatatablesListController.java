@@ -26,7 +26,7 @@ import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.util.DataTablesUtil;
 import dk.erst.delis.web.datatables.util.SpecificationUtil;
 
-public abstract class EasyDatatablesListController<T> {
+public abstract class EasyDatatablesListController<T> implements PageDataBuilder {
 
 	private static final String FILTER_PARAM_PREFIX = "filter_";
 	private static final int DEFAULT_PAGE_SIZE = 10;
@@ -91,8 +91,15 @@ public abstract class EasyDatatablesListController<T> {
 	}
 
 	protected PageData getPageData() {
-		return sessionData.getOrCreatePageData(this.getClass(), DEFAULT_PAGE_SIZE);
+		return sessionData.getOrCreatePageData(this.getClass(), this);
 	}
+	
+	public PageData buildInitialPageData() {
+		PageData pd = new PageData();
+		pd.setSize(DEFAULT_PAGE_SIZE);
+		return pd;
+	}
+	
 
 	protected DataTablesData<T> toDataTablesInput(PageData pd) {
 		DataTablesInput i = new DataTablesInput();

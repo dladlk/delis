@@ -1,35 +1,25 @@
-<div class="bounds">
-    <div class="content"
-         fxLayout="row"
-         fxLayout.xs="column"
-         fxLayoutAlign="left"
-         fxLayoutGap="1em"
-         fxFlexFill>
-        <div fxFlex="100" class="sec1" fxFlex.xs="55">
-            <div class="app-button-row">
-                <div class="example-button-row">
-                    <ng-container>
-                        <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
-                            <mat-icon>keyboard_backspace</mat-icon>
-                        </button>
-                    </ng-container>
-                    <ng-container>
-                        <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
-                            <mat-icon>refresh</mat-icon>
-                        </button>
-                    </ng-container>
-                    <ng-container>
-                        <button mat-mini-fab color="primary" (click)="nextUp()" title="{{ 'previous' | translate }}" aria-label="Previous" [disabled]="!isNextUp">
-                            <mat-icon class="rotate-90">keyboard_backspace</mat-icon>
-                        </button>
-                    </ng-container>
-                    <ng-container>
-                        <button mat-mini-fab color="primary" (click)="nextDown()" title="{{ 'next' | translate }}" aria-label="Next" [disabled]="!isNextDown">
-                            <mat-icon class="rotate-270">keyboard_backspace</mat-icon>
-                        </button>
-                    </ng-container>
+<mat-card class="mb-20">
+    <mat-card-title>
+        <div fxLayout="row" fxLayout.xs="column">
+            <div fxFlex fxLayoutAlign.xs="center">
+                {{ header | translate}}
+            </div>
+            <div fxFlex fxLayoutAlign="end" fxLayoutAlign.xs="center">
+                <div class="delis-button-row vertical-align-center">
+                    <button mat-mini-fab color="primary" (click)="nextUp()" title="{{ 'previous' | translate }}" aria-label="Previous" [disabled]="!isNextUp">
+                        <mat-icon class="rotate-90">keyboard_backspace</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="nextDown()" title="{{ 'next' | translate }}" aria-label="Next" [disabled]="!isNextDown">
+                        <mat-icon class="rotate-270">keyboard_backspace</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="refreshData()" title="{{ 'refresh' | translate }}" aria-label="Refresh">
+                        <mat-icon>refresh</mat-icon>
+                    </button>
+                    <button mat-mini-fab color="primary" (click)="back()" title="{{ 'back' | translate }}" aria-label="Back">
+                        <mat-icon>keyboard_backspace</mat-icon>
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </mat-card-title>
+</mat-card>

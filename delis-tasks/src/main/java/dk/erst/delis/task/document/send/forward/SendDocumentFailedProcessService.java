@@ -71,6 +71,7 @@ public class SendDocumentFailedProcessService {
 	public StatData processFailedDocuments() {
 		StatData statData = new StatData();
 		SendDocument sendDocument;
+		long start = System.currentTimeMillis();
 
 		Map<Long, OrganisationForwardSetup> organisationIdToSetupMap = null;
 
@@ -87,8 +88,11 @@ public class SendDocumentFailedProcessService {
 			}
 			statData.incrementObject(status);
 		}
-
-		log.info("Done processing of failed documents during sending: " + statData);
+		
+		long duration = System.currentTimeMillis() - start;
+		if (duration > 500 || !statData.isEmpty()) {
+			log.info("Done processing of failed documents during sending in " + duration + "ms : " + statData);
+		}
 		return statData;
 	}
 

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
   MatButtonModule,
+  MatButtonToggleModule,
   MatCardModule,
   MatDialogModule,
   MatInputModule,
@@ -22,7 +23,9 @@ import {
   MatGridListModule,
   MatDatepickerModule,
   MatTooltipModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatProgressBarModule,
+  MatRippleModule
 } from '@angular/material';
 
 @NgModule({
@@ -49,7 +52,10 @@ import {
     MatFormFieldModule,
     MatDatepickerModule,
     MatTooltipModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatButtonToggleModule
   ],
   exports: [
     MatGridListModule,
@@ -74,7 +80,10 @@ import {
     MatFormFieldModule,
     MatDatepickerModule,
     MatTooltipModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatProgressBarModule,
+    MatRippleModule,
+    MatButtonToggleModule
   ],
 })
 export class DelisMaterialModule { }

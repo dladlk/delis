@@ -29,6 +29,9 @@ delisAdmin:
     enabled: true
     image: delis-web-admin:latest
     contextPath: /delis-web-admin
+    mail:
+      - username: ''
+      - password: ''
     env: []
     volumeMounts:
       - mountPath: /delis-resources
