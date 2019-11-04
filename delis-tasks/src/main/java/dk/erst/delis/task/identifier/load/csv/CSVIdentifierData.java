@@ -9,8 +9,8 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class CSVIdentifierData {
 
-	@CsvBindByName(column="EAN")
-	private String ean;
+	@CsvBindByName(column="Number")
+	private String number;
 	
 	@CsvBindByName
 	private String name;

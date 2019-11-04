@@ -46,7 +46,7 @@ public class CSVIdentifierStreamReader extends AbstractIdentifierStreamReader {
 		if (v != null) {
 			Identifier i = new Identifier();
 			i.setName(v.getName());
-			i.setValue(v.getEan());
+			i.setValue(v.getNumber());
 			return i;
 		}
 		return null;

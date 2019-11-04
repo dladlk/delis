@@ -68,7 +68,7 @@ public class IdentifierLoadServiceTest {
 
     private InputStream createTestCSVStream(List<String> lines) {
         List<String> newLines = new ArrayList<>(lines);
-        newLines.add(0, "EAN;Name");
+        newLines.add(0, "Number;Name");
         String csvString = StringUtils.join(newLines, "\n");
         return new ByteArrayInputStream(csvString.getBytes());
     }
