@@ -183,9 +183,6 @@ public class DocumentDeliverService {
 		        File outputFile = new File(receivingMethodSetup, outputFileName);
 		        success = moveToFileSystem(documentBytes, outputFile, processLog);
 		        break;
-		    case AZURE_STORAGE_ACCOUNT:
-		        success = moveToAzure(documentBytes, processLog);
-		        break;
 		    case VFS:
 		        success = moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
 		        break;
@@ -276,11 +273,4 @@ public class DocumentDeliverService {
         return copied;
     }
 
-    private boolean moveToAzure(DocumentBytes documentBytes, DocumentProcessLog log) {
-        DocumentProcessStep failStep = new DocumentProcessStep("Delivering to Azure storage not implemented yet", DocumentProcessStepType.DELIVER);
-        failStep.setSuccess(false);
-        failStep.done();
-        log.addStep(failStep);
-        return false;
-    }
 }

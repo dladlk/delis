@@ -234,7 +234,7 @@ public class OrganisationSetupService {
 					d.setReceivingFormatRule(OrganisationReceivingFormatRule.valueOf(os.getValue()));
 					break;
 				case RECEIVING_METHOD:
-					d.setReceivingMethod(OrganisationReceivingMethod.valueOf(os.getValue()));
+					d.setReceivingMethod(OrganisationReceivingMethod.getInstance(os.getValue()));
 					break;
 				case RECEIVING_METHOD_SETUP:
 					d.setReceivingMethodSetup(os.getValue());
