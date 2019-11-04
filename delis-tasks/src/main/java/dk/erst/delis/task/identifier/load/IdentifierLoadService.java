@@ -89,6 +89,14 @@ public class IdentifierLoadService {
 				String identifierType = defineIdentifierType(identifier);
 				if (identifierType != null) {
 					identifier.setType(identifierType);
+					/*
+					 * If CVR does not start with DK prefix - add it.
+					 */
+					if (IdentifierValueType.DK_CVR.getCode().equals(identifierType)) {
+						if (!identifier.getValue().startsWith("DK") && identifier.getValue().length() == 8) {
+							identifier.setValue("DK"+identifier.getValue());
+						}
+					}
 
 					if (identifier.getName() != null) {
 						if (identifier.getName().length() > 128) {
