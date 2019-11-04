@@ -55,12 +55,17 @@ public class IdentifierPublishService {
 			log.info(String.format("ServiceGroup by Identifier '%s' is absent in SMP", identifier.getValue()));
 		}
 		if (identifier.getStatus().isDeleted()) {
-			long startDelete = System.currentTimeMillis();
-			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
-			if (isDeleted) {
-				addJournalIdentifierRecord(identifier, "Identifier is deleted", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
+			if (published != null) {
+				long startDelete = System.currentTimeMillis();
+				boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
+				if (isDeleted) {
+					addJournalIdentifierRecord(identifier, "Identifier is deleted from SMP", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
+				}
+				return isDeleted;
+			} else {
+				addJournalIdentifierRecord(identifier, "Identifier is absent in SMP", System.currentTimeMillis() - startTotal, journalIdentifierDaoRepository);
+				return true;
 			}
-			return isDeleted;
 		}
 		if (!isPublishDataValid(forPublish)) {
 			log.info(String.format("Publish data created for identifier '%s' is invalid!", identifier.getValue()));
