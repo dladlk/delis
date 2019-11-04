@@ -132,6 +132,7 @@ public class IdentifierLoadService {
 								Organisation previousOrganisation = present.getOrganisation();
 								
 								present.setOrganisation(organisation);
+								present.setName(identifier.getName());
 								present.setIdentifierGroup(identifierGroup);
 								present.setStatus(IdentifierStatus.ACTIVE);
 								present.setPublishingStatus(IdentifierPublishingStatus.PENDING);
