@@ -145,7 +145,7 @@ public class IdentifierLoadService {
 							}
 						} else {
 						
-							if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId())) {
+							if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId()) && present.getStatus() == IdentifierStatus.ACTIVE) {
 								stat.incrementEqual();
 	
 								present.setLastSyncOrganisationFactId(stat.getId());
@@ -153,6 +153,10 @@ public class IdentifierLoadService {
 	
 							} else {
 								present.setName(identifier.getName());
+								if (present.getStatus() !=  IdentifierStatus.ACTIVE) {
+									present.setStatus(IdentifierStatus.ACTIVE);
+									present.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+								}
 								present.setIdentifierGroup(identifierGroup);
 								// TODO: What if identifier group is changed?
 								// TODO: What if identifier name is changed - should we republish identifier?
