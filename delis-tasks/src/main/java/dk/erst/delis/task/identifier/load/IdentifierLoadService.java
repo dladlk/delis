@@ -125,7 +125,7 @@ public class IdentifierLoadService {
 							if (present.getStatus().isActive()) {
 								stat.incrementFailed();
 								saveJournalIdentifierMessage(organisation, present, "Tried to import into another organisation " + organisation.getName() + " by " + description);
-								saveJournalOrganisationMessage(organisation, "Identifier is already registered at " + organisation.getName() + " and is active there: " + identifier.getValue());
+								saveJournalOrganisationMessage(organisation, "Identifier is already registered at " + present.getOrganisation().getName() + " and is active there: " + identifier.getValue());
 							} else {
 								stat.incrementAdd();
 								
