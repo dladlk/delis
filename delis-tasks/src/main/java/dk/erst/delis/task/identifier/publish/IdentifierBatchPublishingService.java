@@ -1,5 +1,6 @@
 package dk.erst.delis.task.identifier.publish;
 
+import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.IdentifierDaoRepository;
 
 import dk.erst.delis.data.entities.identifier.Identifier;
@@ -21,15 +22,17 @@ public class IdentifierBatchPublishingService {
     @Autowired
     private IdentifierPublishService identifierPublishService;
 
-    public List<Long> publishPending(){
+    public StatData publishPending(){
+    	StatData statData = new StatData();
         List<Identifier> pendingIdentifiers = identifierDaoRepository.findByPublishingStatus(IdentifierPublishingStatus.PENDING);
-        List<Identifier> publishedIdentifiers = performPublishing(identifierPublishService, pendingIdentifiers);
-        List<Long> publishedIds = new ArrayList<>();
-        publishedIdentifiers.forEach(identifier -> publishedIds.add(identifier.getId()));
-        return publishedIds;
+        if (pendingIdentifiers != null && !pendingIdentifiers.isEmpty()) {
+        	statData.increase("FOUND_PENDING", pendingIdentifiers.size());
+        }
+        performPublishing(identifierPublishService, pendingIdentifiers, statData);
+        return statData;
     }
 
-    private List<Identifier> performPublishing(IdentifierPublishService publishService, List<Identifier> pendingIdentifiers) {
+    private List<Identifier> performPublishing(IdentifierPublishService publishService, List<Identifier> pendingIdentifiers, StatData statData) {
         List<Identifier> publishedIdentifiers = new ArrayList<>();
         for (Identifier pendingIdentifier : pendingIdentifiers) {
             if (publishService.publishIdentifier(pendingIdentifier)) {
@@ -37,8 +40,10 @@ public class IdentifierBatchPublishingService {
                 publishedIdentifiers.add(pendingIdentifier);
                 identifierDaoRepository.save(pendingIdentifier);
                 log.debug(String.format("Identifier '%s' successfully published to SMP.", pendingIdentifier.getValue()));
+                statData.increment("DONE");
             } else {
                 log.warn(String.format("Failed to publish identifier '%s' to SMP.", pendingIdentifier.getValue()));
+                statData.increment("FAILED");
             }
         }
         return publishedIdentifiers;

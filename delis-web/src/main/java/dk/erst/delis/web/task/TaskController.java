@@ -3,7 +3,6 @@ package dk.erst.delis.web.task;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -18,17 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.task.document.deliver.DocumentCheckDeliveryService;
-import dk.erst.delis.task.document.deliver.DocumentDeliverService;
-import dk.erst.delis.task.document.load.DocumentLoadService;
-import dk.erst.delis.task.document.process.DocumentProcessService;
-import dk.erst.delis.task.document.send.forward.SendDocumentFailedProcessService;
-import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
-import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
-import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
+import dk.erst.delis.task.scheduler.TaskScheduler;
 import dk.erst.delis.web.RedirectUtil;
 import dk.erst.delis.web.document.ExportDocumentHistoryService;
-import dk.erst.delis.web.document.SendDocumentService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -39,29 +30,8 @@ public class TaskController {
 	private ConfigBean configBean;
 
 	@Autowired
-	private DocumentLoadService documentLoadService;
-
-	@Autowired
-	private DocumentProcessService documentProcessService;
-
-	@Autowired
-	private DocumentDeliverService documentDeliverService;
-
-	@Autowired
-	private DocumentCheckDeliveryService documentCheckDeliveryService;
-
-	@Autowired
-	private IdentifierBatchPublishingService identifierBatchPublishingService;
-
-	@Autowired
-	private IdentifierBatchLoadService identifierBatchLoadService;
-
-	@Autowired
-	private SendDocumentService sendDocumentService;
-
-	@Autowired
-	private SendDocumentFailedProcessService sendDocumentFailedProcessService;
-
+	private TaskScheduler taskScheduler;
+	
 	@Autowired
 	private ExportDocumentHistoryService exportDocumentHistoryService;
 
@@ -73,10 +43,8 @@ public class TaskController {
 	@GetMapping("/task/identifierLoad")
 	public String identifierLoad(Model model) {
 		try {
-			List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
-			String message = identifierBatchLoadService.createReportMessage(loadReports);
-			model.addAttribute("message", message);
-			log.info(message);
+			StatData sd = taskScheduler.identifierLoad();
+			model.addAttribute("message", "Done load identifiers in" + sd.toDurationString() + ": " + sd);
 		} catch (Throwable e) {
 			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
 			log.error(e.getMessage(), e);
@@ -87,10 +55,9 @@ public class TaskController {
 	@GetMapping("/task/identifierPublish")
 	public String identifierPublish(Model model) {
 		try {
-			List<Long> publishedIdentifierIds = identifierBatchPublishingService.publishPending();
-			String message = String.format("%d identifiers published to SMP", publishedIdentifierIds.size());
-			model.addAttribute("message", message);
-			log.info(message);
+			StatData statData = taskScheduler.identifierPublish();
+			model.addAttribute("message", "Done publish to SMP in " + statData.toDurationString() + ": " + statData);
+			return "/task/index";
 		} catch (Throwable e) {
 			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
 			log.error(e.getMessage(), e);
@@ -109,9 +76,9 @@ public class TaskController {
 		}
 
 		try {
-			StatData sd = documentLoadService.loadFromInput(inputFolderPath);
+			StatData sd = taskScheduler.documentLoad();
 			String loadStatStr = sd.toStatString();
-			String message = "Done loading from folder " + inputFolderPath + " in " + sd.toDurationString() + " with next statisics of document status: " + loadStatStr;
+			String message = "Done received document loading from " + inputFolderPath + " in " + sd.toDurationString() + ": " + loadStatStr;
 			model.addAttribute("message", message);
 		} catch (Exception e) {
 			log.error("Failed to invoke documentLoadService.loadFromInput", e);
@@ -124,8 +91,8 @@ public class TaskController {
 	@GetMapping("/task/documentValidate")
 	public String documentValidate(Model model) {
 		try {
-			StatData sd = documentProcessService.processLoaded();
-			String message = "Done processing of loaded files in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			StatData sd = taskScheduler.documentValidate();
+			String message = "Done processing of loaded files in " + sd.toDurationString() + ": " + sd.toStatString();
 			model.addAttribute("message", message);
 		} catch (Exception e) {
 			log.error("Failed to invoke documentListProcessService.processLoaded", e);
@@ -137,8 +104,8 @@ public class TaskController {
 	@GetMapping("/task/documentDeliver")
 	public String documentDeliver(Model model) {
 		try {
-			StatData sd = documentDeliverService.processValidated();
-			String message = "Done processing of validated files in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			StatData sd = taskScheduler.documentDeliver();
+			String message = "Done document delivery in " + sd.toDurationString() + ": " + sd.toStatString();
 			model.addAttribute("message", message);
 		} catch (Exception e) {
 			log.error("Failed to invoke documentDeliveryService.processValidated", e);
@@ -150,8 +117,8 @@ public class TaskController {
 	@GetMapping("/task/documentCheckDelivered")
 	public String documentCheckDelivered(Model model) {
 		try {
-			StatData sd = documentCheckDeliveryService.checkDelivery();
-			String message = "Done processing of delivery check in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			StatData sd = taskScheduler.documentCheckDelivery();
+			String message = "Done delivery check in " + sd.toDurationString() + ": " + sd.toStatString();
 			model.addAttribute("message", message);
 		} catch (Exception e) {
 			log.error("Failed to invoke documentDeliveryCheckService.process", e);
@@ -163,8 +130,8 @@ public class TaskController {
 	@GetMapping("/task/sendDocumentValidate")
 	public String sendDocumentValidate(Model model) {
 		try {
-			StatData sd = sendDocumentService.validateNewDocuments();
-			String message = "Done processing of NEW sent documents in " + sd.toDurationString() + " with result: " + sd.toStatString();
+			StatData sd = taskScheduler.sendDocumentValidate();
+			String message = "Done processing of NEW sent documents in " + sd.toDurationString() + ": " + sd.toStatString();
 			model.addAttribute("message", message);
 		} catch (Exception e) {
 			log.error("Failed to invoke sendDocumentService.validateNewDocuments", e);
@@ -176,7 +143,7 @@ public class TaskController {
 	@GetMapping("/task/sendFailedProcess")
 	public String sendFailedProcess(Model model) {
 		try {
-			StatData sd = sendDocumentFailedProcessService.processFailedDocuments();
+			StatData sd = taskScheduler.sendDocumentFailedProcess();
 			String message = "Done processing of SEND_FAILED sent documents in " + sd.toDurationString() + " with result: " + sd.toStatString();
 			model.addAttribute("message", message);
 		} catch (Exception e) {

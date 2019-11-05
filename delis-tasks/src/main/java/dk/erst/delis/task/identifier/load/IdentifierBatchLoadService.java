@@ -1,12 +1,5 @@
 package dk.erst.delis.task.identifier.load;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +14,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 @Slf4j
 public class IdentifierBatchLoadService {
@@ -34,25 +36,33 @@ public class IdentifierBatchLoadService {
         this.identifierLoadService = identifierLoadService;
     }
 
-    public List<OrganizationIdentifierLoadReport> performLoad() {
+    public StatData performLoad() {
         List<OrganizationIdentifierLoadReport> result = new ArrayList<>();
         try {
             Path identifierInputPath = configBean.getIdentifierInputPath();
             File identifierInputDir = identifierInputPath.toFile();
             if (!identifierInputDir.exists() || !identifierInputDir.isDirectory()) {
-                return result;
+				return StatData.error("Folder " + identifierInputDir + " does not exist or is not a directory");
             }
+            StatData sd = new StatData();
             for (File organizationFolder : identifierInputDir.listFiles()) {
                 String organizationCode = organizationFolder.getName();
                 OrganizationIdentifierLoadReport loadReport = loadOrganizationIdentifiers(organizationFolder.toPath(), organizationCode);
                 if (loadReport != null) {
                     result.add(loadReport);
+                    sd.increment("SYNCHRONIZED");
+                    sd.increase("ADD", loadReport.getAdd());
+                    sd.increase("UPDATE", loadReport.getUpdate());
+                    sd.increase("DELETE", loadReport.getDelete());
+                    sd.increase("EQUAL", loadReport.getEqual());
+                    sd.increase("FAILED", loadReport.getFailed());
                 }
             }
+            return sd;
         } catch (Exception e) {
             log.error("Failed to load identifiers", e);
+            return StatData.error(e.getMessage());
         }
-        return result;
     }
 
     private OrganizationIdentifierLoadReport loadOrganizationIdentifiers(Path orgFolderPath, String organizationCode) throws IOException {
