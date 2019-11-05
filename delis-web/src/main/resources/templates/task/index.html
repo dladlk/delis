@@ -93,7 +93,7 @@
 						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendDocumentValidate}">Validate</a>
 					</td>
 					<td>
-						Lookup db for SendDocument records with status = NEW and validate original format, if ok - change to VALID, otherwhise VALIDATE_ERROR.
+						Lookup db for SendDocument records with status = NEW and validate original format. If ok - change to VALID, otherwise VALIDATE_ERROR.
 					</td>
 					<td th:text="${@taskSchedulerMonitor.getLast('sendDocumentValidate')}"></td>
 				</tr>
@@ -102,7 +102,7 @@
 						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendFailedProcess}">Process failed</a>
 					</td>
 					<td>
-						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwhise FORWARD_ERROR) - otherwise FORWARD_SKIP.
+						Lookup db for SendDocument records with status = SEND_ERROR and if forwarding configured - try to forward (if ok - set to FORWARD_OK, otherwise FORWARD_ERROR) - otherwise FORWARD_SKIP.
 					</td>
 					<td th:text="${@taskSchedulerMonitor.getLast('sendDocumentFailedProcess')}"></td>
 				</tr>
