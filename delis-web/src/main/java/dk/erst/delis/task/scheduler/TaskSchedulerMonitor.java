@@ -15,7 +15,7 @@ import dk.erst.delis.common.util.StatData;
 public class TaskSchedulerMonitor {
 
 	private Map<String, TaskResult[]> lastResultMap;
-
+	
 	public TaskSchedulerMonitor() {
 		this.lastResultMap = new HashMap<String, TaskSchedulerMonitor.TaskResult[]>();
 	}
@@ -24,7 +24,7 @@ public class TaskSchedulerMonitor {
 		return new TaskResult(taskName, this);
 	}
 	
-	public String getLast(String taskName) {
+	public synchronized String getLast(String taskName) {
 		TaskResult[] taskResults = this.lastResultMap.get(taskName);
 		return buildInfo(taskResults);
 	}
@@ -47,7 +47,7 @@ public class TaskSchedulerMonitor {
 		return sb.toString();
 	}
 
-	private void addResult(TaskResult result) {
+	private synchronized void addResult(TaskResult result) {
 		TaskResult[] taskResults = this.lastResultMap.get(result.getTaskName());
 		if (taskResults == null) {
 			taskResults = new TaskResult[2];
