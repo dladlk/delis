@@ -23,6 +23,8 @@ import dk.erst.delis.dao.JournalOrganisationDaoRepository;
 import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReader;
+import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 
 @Service
 public class IdentifierLoadService {
@@ -44,6 +46,9 @@ public class IdentifierLoadService {
 
 	@Autowired
 	private SyncOrganisationFactDaoRepository syncOrganisationFactDaoRepository;
+	
+	@Autowired
+	private OrganisationSetupService organisationSetupService;
 
 	public SyncOrganisationFact loadCSV(String organisationCode, InputStream inputStream, String description) {
 		AbstractIdentifierStreamReader reader = new CSVIdentifierStreamReader(inputStream, StandardCharsets.ISO_8859_1, ';');
@@ -57,6 +62,13 @@ public class IdentifierLoadService {
 		}
 
 		long start = System.currentTimeMillis();
+		
+		OrganisationSetupData setupData = organisationSetupService.load(organisation);
+		boolean schedulePublish = false;
+		if (setupData.isSmpIntegrationPublish()) {
+			schedulePublish = true;
+		}
+		IdentifierPublishingStatus publishingStatus = schedulePublish ? IdentifierPublishingStatus.PENDING : null;
 
 		saveJournalOrganisationMessage(organisation, "Start identifiers synchronization by " + description);
 
@@ -107,12 +119,13 @@ public class IdentifierLoadService {
 					}
 
 					Identifier present = identifierDaoRepository.findByValueAndType(identifier.getValue(), identifier.getType());
+					
 					if (present == null) {
 						stat.incrementAdd();
 
 						identifier.setOrganisation(organisation);
 						identifier.setIdentifierGroup(identifierGroup);
-						identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+						identifier.setPublishingStatus(publishingStatus);
 						identifier.setStatus(IdentifierStatus.ACTIVE);
 						identifier.setLastSyncOrganisationFactId(stat.getId());
 						identifier.setUniqueValueType(buildUniqueValueType(identifier));
@@ -135,7 +148,7 @@ public class IdentifierLoadService {
 								present.setName(identifier.getName());
 								present.setIdentifierGroup(identifierGroup);
 								present.setStatus(IdentifierStatus.ACTIVE);
-								present.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+								present.setPublishingStatus(publishingStatus);
 								present.setUniqueValueType(buildUniqueValueType(identifier));
 								present.setLastSyncOrganisationFactId(stat.getId());
 
@@ -155,7 +168,7 @@ public class IdentifierLoadService {
 								present.setName(identifier.getName());
 								if (present.getStatus() !=  IdentifierStatus.ACTIVE) {
 									present.setStatus(IdentifierStatus.ACTIVE);
-									present.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+									present.setPublishingStatus(publishingStatus);
 								}
 								present.setIdentifierGroup(identifierGroup);
 								// TODO: What if identifier group is changed?
@@ -174,7 +187,7 @@ public class IdentifierLoadService {
 				}
 			}
 
-			int deactivated = deactivateAbsent(organisation, stat);
+			int deactivated = deactivateAbsent(organisation, stat, schedulePublish);
 			stat.setDelete(deactivated);
 
 		} finally {
@@ -190,14 +203,16 @@ public class IdentifierLoadService {
 		return identifier.getType()+"::"+identifier.getValue();
 	}
 
-	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat) {
+	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat, boolean schedulePublish) {
 		final int count[] = new int[] { 0 };
 		List<Identifier> list = identifierDaoRepository.getPendingForDeactivation(organisation.getId(), stat.getId());
 		if (list != null) {
 			list.forEach(i -> {
 				i.setStatus(IdentifierStatus.DELETED);
-				if (i.getPublishingStatus() == IdentifierPublishingStatus.DONE) {
-					i.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+				if (schedulePublish) {
+					if (i.getPublishingStatus() == IdentifierPublishingStatus.DONE) {
+						i.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+					}
 				}
 				identifierDaoRepository.save(i);
 				saveJournalIdentifierMessage(organisation, i, "Deleted by " + stat.getDescription());

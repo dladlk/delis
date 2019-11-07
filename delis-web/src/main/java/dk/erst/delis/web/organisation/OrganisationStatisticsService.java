@@ -43,23 +43,30 @@ public class OrganisationStatisticsService {
 			int identifierCount = ((Long) map.get("identifierCount")).intValue();
 			IdentifierStatus status = (IdentifierStatus) map.get("status");
 			IdentifierPublishingStatus publishingStatus = (IdentifierPublishingStatus) map.get("publishingStatus");
-			if (publishingStatus != null && status != null) {
-				if (publishingStatus.isFailed()) {
-					d.failed += identifierCount;
-				}
-				if (!(status.isDeleted() && publishingStatus.isDone())) {
-					// Done deletions should be excluded from total
-					d.total += identifierCount;
-				}
-				if (status.isActive()) {
-					if (publishingStatus.isDone()) {
-						d.activeDone += identifierCount;
-					} else if (publishingStatus.isPending()) {
-						d.activePending += identifierCount;
+			
+			if (status != null) {
+				if (publishingStatus == null) {
+					if (status.isActive()) {
+						d.total++;
 					}
 				} else {
-					if (publishingStatus.isPending()) {
-						d.disabledPending += identifierCount;
+					if (publishingStatus.isFailed()) {
+						d.failed += identifierCount;
+					}
+					if (!(status.isDeleted() && publishingStatus.isDone())) {
+						// Done deletions should be excluded from total
+						d.total += identifierCount;
+					}
+					if (status.isActive()) {
+						if (publishingStatus.isDone()) {
+							d.activeDone += identifierCount;
+						} else if (publishingStatus.isPending()) {
+							d.activePending += identifierCount;
+						}
+					} else {
+						if (publishingStatus.isPending()) {
+							d.disabledPending += identifierCount;
+						}
 					}
 				}
 			}
@@ -76,6 +83,10 @@ public class OrganisationStatisticsService {
 		private int activePending;
 		private int disabledPending;
 		private int failed;
+		
+		public boolean isNoPublish() {
+			return (this.activeDone + this.activePending + this.disabledPending + this.failed) == 0;
+		}
 
 		public String toString() {
 			StringBuilder sb = new StringBuilder();

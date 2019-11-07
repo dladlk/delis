@@ -54,8 +54,14 @@ public class SmpLookupService {
 			List<ServiceMetadata> serviceMetadataList = queryServiceMetaData(identifier, client, documentIdentifiers);
 			smpPublishData.setServiceList(createServiceList(serviceMetadataList));
 			smpPublishData.setParticipantIdentifier(identifier);
-		} catch (PeppolLoadingException | LookupException | PeppolSecurityException e) {
+		} catch (PeppolLoadingException | PeppolSecurityException e) {
 			log.error(e.getMessage(), e);
+			return null;
+		} catch (LookupException le) {
+			/*
+			 * LookupException means that we did not find any record in configured SMP - do not log exception in this case
+			 */
+			log.info(String.format("No data found for ParticipantIdentifier %s", identifier));
 			return null;
 		}
 		return smpPublishData;

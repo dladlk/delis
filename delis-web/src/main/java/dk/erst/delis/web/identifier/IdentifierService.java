@@ -96,4 +96,9 @@ public class IdentifierService {
 
 		return count;
 	}
+
+	public int countByPublishingStatus(IdentifierPublishingStatus publishingStatus, Organisation organisation) {
+		Long count = identifierDaoRepository.countByPublishingStatusAndOrganisation(publishingStatus, organisation);
+		return count != null ? count.intValue() : 0;
+	}
 }

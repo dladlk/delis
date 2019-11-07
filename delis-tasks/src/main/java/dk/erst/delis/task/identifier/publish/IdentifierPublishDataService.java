@@ -1,29 +1,38 @@
 package dk.erst.delis.task.identifier.publish;
 
-import com.google.common.collect.Lists;
-
-import dk.erst.delis.data.entities.access.AccessPoint;
-import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.enums.access.AccessPointType;
-import dk.erst.delis.task.codelist.CodeListDict;
-import dk.erst.delis.task.identifier.publish.data.*;
-import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
-import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
-import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
-import dk.erst.delis.web.accesspoint.AccessPointService;
-import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+
+import dk.erst.delis.data.entities.access.AccessPoint;
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.enums.access.AccessPointType;
+import dk.erst.delis.task.codelist.CodeListDict;
+import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.web.accesspoint.AccessPointService;
+import lombok.extern.slf4j.Slf4j;
+import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 
 @Service
 @Slf4j
@@ -33,9 +42,6 @@ public class IdentifierPublishDataService {
 
 	@Autowired
 	private AccessPointService accessPointService;
-
-	@Autowired
-	private OrganisationSetupService organisationSetupService;
 
 	private static CertificateFactory certificateFactory;
 
@@ -59,23 +65,21 @@ public class IdentifierPublishDataService {
 		this.codeListDict = codeListDict;
 	}
 
-	public SmpPublishData buildPublishData(Identifier identifier) {
+	public SmpPublishData buildPublishData(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		SmpPublishData publishData = new SmpPublishData();
 		String icdValue = codeListDict.getIdentifierTypeIcdValue(identifier.getType());
 		if (icdValue == null) {
 			throw new RuntimeException("Identifier type " + identifier.getType() + " is unknown in ICD code lists for identifier " + identifier);
 		}
 		ParticipantIdentifier participantIdentifier = ParticipantIdentifier.of(icdValue + ":" + identifier.getValue());
-		List<SmpPublishServiceData> serviceList = createServiceList(identifier);
+		List<SmpPublishServiceData> serviceList = createServiceList(identifier, organisationSetupData);
 		publishData.setParticipantIdentifier(participantIdentifier);
 		publishData.setServiceList(serviceList);
 		return publishData;
 	}
 
-	private List<SmpPublishServiceData> createServiceList(Identifier identifier) {
+	private List<SmpPublishServiceData> createServiceList(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		List<SmpPublishServiceData> result = new ArrayList<>();
-		Organisation organisation = identifier.getOrganisation();
-		OrganisationSetupData organisationSetupData = organisationSetupService.load(organisation);
 		List<SmpServiceEndpointData> endpointList = createEndpointList(organisationSetupData);
 		Set<OrganisationSubscriptionProfileGroup> subscribedProfiles = organisationSetupData.getSubscribeProfileSet();
 		for (OrganisationSubscriptionProfileGroup subscribedProfile : subscribedProfiles) {

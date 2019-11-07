@@ -26,7 +26,7 @@
 						</thead>
 				<tr th:each="r,iter : ${identifierList}">
 					<td><a href="#" th:href="@{/organisation/view/__${r.organisation.id}__}" th:text="${r.organisation.name}"></a></td>
-					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" th:text="${r.value}"></a></td>
+					<td><a href="#" th:href="@{/identifier/view/__${r.id}__}" class="" th:text="${r.value}" th:classappend="${r.status?.isDeleted()?'delis-deactivated':''}"></a></td>
 					<td th:text="${r.type}"></td>
 					<td th:text="${r.name}"/>
 					<td th:text="${r.status?.name}"/>

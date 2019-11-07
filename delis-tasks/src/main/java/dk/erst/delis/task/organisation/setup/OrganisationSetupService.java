@@ -179,6 +179,7 @@ public class OrganisationSetupService {
 		if (d.getReceivingMethodSetup() != null) {
 			m.put(OrganisationSetupKey.RECEIVING_METHOD_SETUP, d.getReceivingMethodSetup().trim());
 		}
+		m.put(OrganisationSetupKey.SMP_INTEGRATION, d.isSmpIntegrationPublish() ? "PUBLISH": "");
 		if (d.getSubscribeProfileSet() != null) {
 			String joined = d.getSubscribeProfileSet().stream().map(OrganisationSubscriptionProfileGroup::getCode).collect(Collectors.joining(","));
 			m.put(OrganisationSetupKey.SUBSCRIBED_SMP_PROFILES, joined);
@@ -216,6 +217,9 @@ public class OrganisationSetupService {
 					continue;
 				}
 				switch (os.getKey()) {
+				case SMP_INTEGRATION:
+					d.setSmpIntegrationPublish("PUBLISH".equalsIgnoreCase(os.getValue()));
+					break;
 				case SUBSCRIBED_SMP_PROFILES:
 					String[] profiles = os.getValue().split(",");
 

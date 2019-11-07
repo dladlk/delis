@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -140,14 +141,41 @@ public class OrganisationController {
 			model.addAttribute("validation", validationResultData);
 			return "organisation/setup";
 		}
+		if (organisationSetupData.isSmpIntegrationPublish() && !organisationSetupData.validatePublishReady()) {
+			organisationSetupData.setSmpIntegrationPublish(false);
+			
+			ra.addFlashAttribute("errorMessage", "Setup is not ready for publishing: either AS2 or AS4 access point should be selected and at least one profile. SMP integration is switched back to 'Do not publish to SMP'.");
+		}
+		
+		/*
+		 * If publishing is not finished, changes to setup of publishing is forbidden
+		 */
+		OrganisationSetupData currentSetupData = organisationSetupService.load(organisation);
+		if (organisationSetupData.isSmpIntegrationPublish() || currentSetupData.isSmpIntegrationPublish()) {
+			boolean isSmpFieldsChanged = isSmpFieldsChanged(organisationSetupData, currentSetupData);
+			if (isSmpFieldsChanged) {
+				int countPublishingPending = identifierService.countByPublishingStatus(IdentifierPublishingStatus.PENDING, organisation);
+				if (countPublishingPending > 0) {
+					model.addAttribute("errorMessage", "SMP related fields cannot be changed at the moment, as publishing is in progress and there are " + countPublishingPending + " publishing pending identifiers. Please wait until publishing is finished to avoid unexpected publishing results.");
+					fillSetupModel(model, organisation, organisationSetupData);
+					model.addAttribute("validation", validationResultData);
+					return "organisation/setup";
+				}
+			}
+		}
 		
 		StatData statData = organisationSetupService.update(organisationSetupData);
 		int identifiersSwitchedToPending = 0;
 		if (statData.getResult() != null) {
 			@SuppressWarnings("unchecked")
 			List<OrganisationSetupKey> changedFields = (List<OrganisationSetupKey>) statData.getResult();
-			if (isSmpFieldsChanged(changedFields)) {
-				identifiersSwitchedToPending = smpOrganisationSetupChanged(organisation);
+			if (organisationSetupData.isSmpIntegrationPublish() && isSmpFieldsChanged(changedFields)) {
+				identifiersSwitchedToPending = markActiveIdentifiersPending(organisation, false);
+			} else if (!organisationSetupData.isSmpIntegrationPublish() && currentSetupData.isSmpIntegrationPublish()) {
+				/*
+				 * Switched from publish to not publish - we need to delete from publishing and cleanup publishing status
+				 */
+				identifiersSwitchedToPending = markActiveIdentifiersPending(organisation, true);
 			}
 		}
 		if (statData.isEmpty()) {
@@ -159,30 +187,55 @@ public class OrganisationController {
 			if (identifiersSwitchedToPending > 0) {
 				sb.append(". ");
 				sb.append(identifiersSwitchedToPending);
-				sb.append(" identifiers switched to PENDING publishing state.");
+				sb.append(" identifier");
+				if (identifiersSwitchedToPending > 1) {
+					sb.append("s");
+				}
+				sb.append(" switched to PENDING publishing state.");
 			}
 			ra.addFlashAttribute("message", sb.toString());
 		}
-
+		
 		return "redirect:/organisation/setup/"+id;
 	}
 	
+	private boolean isSmpFieldsChanged(OrganisationSetupData newSetupData, OrganisationSetupData currentSetupData) {
+		if (currentSetupData.getAs2() != newSetupData.getAs2()) {
+			return true;
+		}
+		if (currentSetupData.getAs4() != newSetupData.getAs4()) {
+			return true;
+		}
+		if (currentSetupData.isSmpIntegrationPublish() != newSetupData.isSmpIntegrationPublish()) {
+			return true;
+		}
+		Set<OrganisationSubscriptionProfileGroup> oldSet = currentSetupData.getSubscribeProfileSet();
+		Set<OrganisationSubscriptionProfileGroup> newSet = newSetupData.getSubscribeProfileSet();
+		if (!oldSet.containsAll(newSet) || !newSet.containsAll(oldSet)) {
+			return true;
+		}
+		return false;
+	}
+
 	private boolean isSmpFieldsChanged(List<OrganisationSetupKey> changedFields) {
 		List<OrganisationSetupKey> smpRelatedFields = Arrays.asList(new OrganisationSetupKey[] { 
 				OrganisationSetupKey.SUBSCRIBED_SMP_PROFILES,
 				OrganisationSetupKey.ACCESS_POINT_AS2,
-				OrganisationSetupKey.ACCESS_POINT_AS4
+				OrganisationSetupKey.ACCESS_POINT_AS4,
+				OrganisationSetupKey.SMP_INTEGRATION,
 		}
 		);
 		return !Collections.disjoint(smpRelatedFields, changedFields);
 	}
 
-	private int smpOrganisationSetupChanged(Organisation organisation) {
+	private int markActiveIdentifiersPending(Organisation organisation, boolean excludeFailed) {
 		Iterator<Identifier> identifiers = identifierService.findByOrganisation(organisation);
 		List<Long> idsForUpdate = new ArrayList<>();
 		identifiers.forEachRemaining(identifier -> {
-			if (IdentifierStatus.ACTIVE.equals(identifier.getStatus()) && IdentifierPublishingStatus.DONE.equals(identifier.getPublishingStatus())) {
-				idsForUpdate.add(identifier.getId());
+			if (identifier.getStatus() == IdentifierStatus.ACTIVE) {
+				if (!excludeFailed || identifier.getPublishingStatus() != IdentifierPublishingStatus.FAILED) {
+					idsForUpdate.add(identifier.getId());
+				}
 			}
 		});
 		return identifierService.updateStatuses(idsForUpdate, IdentifierStatus.ACTIVE, IdentifierPublishingStatus.PENDING, "Pending publishing after change of organisation setup");

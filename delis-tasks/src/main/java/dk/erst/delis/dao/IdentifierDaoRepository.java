@@ -31,6 +31,8 @@ public interface IdentifierDaoRepository extends JpaRepository<Identifier, Long>
 	Long countByOrganisation(Organisation organisation);
 	
 	Long countByPublishingStatus(IdentifierPublishingStatus identifierPublishingStatus);
+	
+	Long countByPublishingStatusAndOrganisation(IdentifierPublishingStatus identifierPublishingStatus, Organisation organisaton);
 
 	List<Identifier> findByPublishingStatus(IdentifierPublishingStatus identifierPublishingStatus);
 

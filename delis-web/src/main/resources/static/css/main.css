@@ -28,3 +28,6 @@ ul.org-smp-setup li ul li {
 	font-style:italic;
 	font-weight: bold; 
 }
+.delis-deactivated {
+	text-decoration: line-through;
+}

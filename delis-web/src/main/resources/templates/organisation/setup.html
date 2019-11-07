@@ -22,7 +22,16 @@
 					</td>
 				</tr>
 				<tr>
-					<th>Subscribed SMP profiles</th>
+					<th>SMP integration</th>
+					<td>
+						<select th:field="*{smpIntegrationPublish}" id="smpIntegration" onchange="return smpIntegrationChanged();">
+							<option value="false" th:selected="${!organisationSetupData.smpIntegrationPublish}">Do not publish to SMP</option>
+							<option value="true" th:selected="${organisationSetupData.smpIntegrationPublish}">Publish to configured SMP</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>SMP profiles</th>
 					<td>
 						<ul class="org-smp-setup">
 							<li th:each="p : ${organisationSubscriptionProfileGroupList}">
@@ -36,7 +45,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th>Subscribed SMP AP</th>
+					<th>SMP AcessPoints</th>
 					<td>
 						<ul class="org-smp-setup">
 							<li>
@@ -125,6 +134,16 @@
 			</form>
 		</div>
 	</div>
+	
+<script>
+function smpIntegrationChanged(){
+	var newValue = $('#smpIntegration').val();
+	if (newValue == 'false') {
+		return confirm('Are you sure, that you want to disable publishing to SMP? All active and published identifiers will be deleted from SMP.');
+	}
+	return true;
+}	
+</script>
 	
 </body>
 </html>
