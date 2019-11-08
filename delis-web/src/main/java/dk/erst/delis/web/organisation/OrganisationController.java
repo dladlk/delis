@@ -21,8 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalOrganisationDaoRepository;
+import dk.erst.delis.dao.SendDocumentDaoRepository;
 import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
+import dk.erst.delis.data.entities.document.Document;
+import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
@@ -70,6 +74,12 @@ public class OrganisationController {
 	@Autowired
 	private IdentifierService identifierService;
 
+	@Autowired
+	private DocumentDaoRepository documentDaoRepository;
+
+	@Autowired
+	private SendDocumentDaoRepository sendDocumentDaoRepository;
+	
 	@RequestMapping("/organisation/list")
 	public String list(Model model) {
 		model.addAttribute("organisationList", organisationService.getOrganisations());
@@ -298,21 +308,20 @@ public class OrganisationController {
 			return "organisation/edit";
 		}
 
+		if (StringUtils.isEmpty(organisation.getCode())) {
+			model.addAttribute("errorMessage", "Code is mandatory");
+			return "organisation/edit";
+		}
+		if (organisation.getCode().length() > 30) {
+			model.addAttribute("errorMessage", "Max length of organisation code is 30 symbols");
+			return "organisation/edit";
+		}
+		
+		if (!organisation.getCode().matches("[a-z0-9]{4,30}")) {
+			model.addAttribute("errorMessage", "Organisation code should be at least 4 lower case letters or digits, max length is 30 symbols");
+			return "organisation/edit";
+		}
 		if (organisation.getId() == null) {
-			if (StringUtils.isEmpty(organisation.getCode())) {
-				model.addAttribute("errorMessage", "Code is mandatory");
-				return "organisation/edit";
-			}
-			if (organisation.getCode().length() > 30) {
-				model.addAttribute("errorMessage", "Max length of organisation code is 30 symbols");
-				return "organisation/edit";
-			}
-			
-			if (!organisation.getCode().matches("[a-z0-9]{4,30}")) {
-				model.addAttribute("errorMessage", "Organisation code should be at least 4 lower case letters or digits, max length is 30 symbols");
-				return "organisation/edit";
-			}
-			
 			Organisation existingOrganisation = organisationService.findOrganisationByCode(organisation.getCode());
 			if (existingOrganisation != null) {
 				model.addAttribute("errorMessage", "Organisation code should be unique, but it is already used at "+existingOrganisation.getName());
@@ -320,7 +329,17 @@ public class OrganisationController {
 			}
 		} else {
 			Organisation dbOrganisation = organisationService.findOrganisation(organisation.getId());
+			if (!dbOrganisation.getCode().equals(organisation.getCode())) {
+				Document document = documentDaoRepository.findTop1ByOrganisation(dbOrganisation);
+				SendDocument sendDocument = sendDocumentDaoRepository.findTop1ByOrganisation(dbOrganisation);
+				if (document != null || sendDocument != null) {
+					model.addAttribute("errorMessage", "Organisation code cannot be changed after at least one document is received or sent.");
+					return "organisation/edit";
+				}
+			}
 			dbOrganisation.setName(organisation.getName());
+			dbOrganisation.setCode(organisation.getCode());
+			
 			organisation = dbOrganisation;
 		}
 		
