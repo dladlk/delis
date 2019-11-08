@@ -44,7 +44,7 @@ public class TaskController {
 	public String identifierLoad(Model model) {
 		try {
 			StatData sd = taskScheduler.identifierLoad();
-			model.addAttribute("message", "Done load identifiers in" + sd.toDurationString() + ": " + sd);
+			model.addAttribute("message", "Done load identifiers in " + sd.toDurationString() + ": " + sd);
 		} catch (Throwable e) {
 			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
 			log.error(e.getMessage(), e);
