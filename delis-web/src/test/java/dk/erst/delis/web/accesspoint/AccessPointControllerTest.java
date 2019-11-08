@@ -1,8 +1,16 @@
 package dk.erst.delis.web.accesspoint;
 
-import dk.erst.delis.dao.AccessPointDaoRepository;
-import dk.erst.delis.data.entities.access.AccessPoint;
-import dk.erst.delis.data.enums.access.AccessPointType;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import javax.sql.rowset.serial.SerialBlob;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,15 +24,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.sql.rowset.serial.SerialBlob;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import dk.erst.delis.dao.AccessPointDaoRepository;
+import dk.erst.delis.data.entities.access.AccessPoint;
+import dk.erst.delis.data.enums.access.AccessPointType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -85,10 +87,8 @@ public class AccessPointControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testCreateNew() throws Exception {
-        this.mockMvc.perform(get("/accesspoint/create/0"))
-                
+        this.mockMvc.perform(get("/accesspoint/create"))
                 .andExpect(view().name("accesspoint/edit"))
-                .andExpect(model().attribute("errorMessage", nullValue()))
                 .andExpect(model().attribute("accessPoint", notNullValue()));
     }
 
@@ -144,9 +144,7 @@ public class AccessPointControllerTest {
         Assert.assertNotNull(created);
 
         this.mockMvc.perform(get("/accesspoint/delete/" + created.getId()))
-                
-                .andExpect(view().name("accesspoint/list"))
-                .andExpect(model().attribute("accessPointList", notNullValue()));
+                .andExpect(view().name("redirect:/accesspoint/list"));
     }
 
     @After
