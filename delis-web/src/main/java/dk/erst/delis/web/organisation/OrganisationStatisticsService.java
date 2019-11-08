@@ -6,6 +6,7 @@ import java.util.Map;
 
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,11 @@ public class OrganisationStatisticsService {
 
 	public OrganisationIdentifierStatData loadOrganisationIdentifierStatMap(long organisationId) {
 		List<Map<String, Object>> rawList = this.identifierDaoRepository.loadIndetifierStatByOrganisation(organisationId);
-		return processStatListMap(rawList).get(organisationId);
+		OrganisationIdentifierStatData statData = processStatListMap(rawList).get(organisationId);
+		if (statData == null) {
+			return new OrganisationIdentifierStatData();
+		}
+		return statData;
 	}
 
 	
