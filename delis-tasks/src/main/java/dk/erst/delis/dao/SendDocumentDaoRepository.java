@@ -14,4 +14,6 @@ public interface SendDocumentDaoRepository extends PagingAndSortingRepository<Se
 
 	SendDocument findTop1ByDocumentStatusAndDocumentTypeAndOrganisationOrderByIdAsc(SendDocumentStatus documentStatus, DocumentType documentType, Organisation organisation);
 
+	SendDocument findTop1ByOrganisation(Organisation dbOrganisation);
+
 }

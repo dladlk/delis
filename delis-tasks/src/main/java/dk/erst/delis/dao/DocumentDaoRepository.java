@@ -36,4 +36,6 @@ public interface DocumentDaoRepository extends PagingAndSortingRepository<Docume
 	)
 	List<Document> findForExport(DocumentStatus documentStatus, Organisation organisation, Long lastFailedInCurrentProcessing);
 
+	Document findTop1ByOrganisation(Organisation dbOrganisation);
+
 }

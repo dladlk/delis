@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<style>
+		table.break-all td {
+			word-wrap: break-word;
+			word-break: break-all;
+			white-space: normal;
+		}
+		ul {
+			padding-left: 15px;
+			list-style: circle;
+		}
+	</style>
+	
+	<div class="card border-secondary">
+		<div class="card-header ">
+			<span th:text="${organisation.name}">Organisation name</span>
+			(<span th:text="${organisation.code}">Code</span>)
+		</div>
+		<div class="card-body">
+			
+			<div th:replace="fragments/tree :: tree(tree=${expectedTree}, depth=${0})"  />
+			
+			<table class="table table-striped table-bordered table-sm break-all">
+				<tr>
+					<th>Identifier</th>
+					<th>Match status</th>
+					<th>Duration, ms</th>
+				</tr>
+				<th:block th:each="e, iter: ${resultList.identifierResultList}"> 
+				<tr>
+					<td><span th:text="${e.identifier.value}" th:classappend="${e.identifier.status?.isDeleted()?'delis-deactivated':''}"></span></td>
+					<td>
+						<span th:text="${e.matchSuccess ? 'Matched':'Not matched'}" th:refid="${'details-'+iter.index}" class="btn btn-sm" th:classappend="${e.matchSuccess?'btn-success':'btn-danger'}" onclick="$('#'+$(this).attr('refid')).toggle();"></span>
+					</td>
+					<td><span th:text="${e.duration}"></span> </td>
+				</tr>
+				<tr class="collapse" th:id="${'details-'+iter.index}">
+					<td colspan="3">
+						<div class="ml-3">
+							<div th:replace="fragments/tree :: tree(tree=${e.actualPublishedTree}, depth=${0})"  />						
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+	</div>
+	
+</body>
+</html>

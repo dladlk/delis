@@ -30,6 +30,7 @@ import dk.erst.delis.data.entities.organisation.OrganisationSetup;
 import dk.erst.delis.data.enums.access.AccessPointType;
 import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
 import dk.erst.delis.task.organisation.setup.ValidationResultData;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -37,45 +38,45 @@ import lombok.extern.slf4j.Slf4j;
 public class AccessPointService {
 
 	private AccessPointDaoRepository accessPointRepository;
-	
+
 	private OrganisationSetupDaoRepository organisationSetupDaoRepository;
 
-    private static CertificateFactory certificateFactory;
+	private static CertificateFactory certificateFactory;
 
-    static {
-        try {
-            certificateFactory = CertificateFactory.getInstance("X.509");
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        }
-    }
+	static {
+		try {
+			certificateFactory = CertificateFactory.getInstance("X.509");
+		} catch (CertificateException e) {
+			e.printStackTrace();
+		}
+	}
 
-    @Autowired
-    public AccessPointService(AccessPointDaoRepository accessPointRepository, OrganisationSetupDaoRepository organisationSetupDaoRepository) {
-        this.accessPointRepository = accessPointRepository;
+	@Autowired
+	public AccessPointService(AccessPointDaoRepository accessPointRepository, OrganisationSetupDaoRepository organisationSetupDaoRepository) {
+		this.accessPointRepository = accessPointRepository;
 		this.organisationSetupDaoRepository = organisationSetupDaoRepository;
-    }
+	}
 
-    public Iterable<AccessPoint> getAccessPoints() {
-        return accessPointRepository.findAll();
-    }
+	public Iterable<AccessPoint> getAccessPoints() {
+		return accessPointRepository.findAll();
+	}
 
-    public List<AccessPointData> getAccessPointDTOs() {
-        Iterable<AccessPoint> accessPointsList = accessPointRepository.findAll();
-        List<AccessPointData> accessPointDataList = new ArrayList<>();
-        for (AccessPoint ap : accessPointsList) { // to-do convert later to lambda
-            AccessPointData accessPointData = new AccessPointData();
-            copyToDTOView(ap, accessPointData);
-            accessPointDataList.add(accessPointData);
-        }
-        return accessPointDataList;
-    }
+	public List<AccessPointData> getAccessPointDTOs() {
+		Iterable<AccessPoint> accessPointsList = accessPointRepository.findAll();
+		List<AccessPointData> accessPointDataList = new ArrayList<>();
+		for (AccessPoint ap : accessPointsList) { // to-do convert later to lambda
+			AccessPointData accessPointData = new AccessPointData();
+			copyToDTOView(ap, accessPointData);
+			accessPointDataList.add(accessPointData);
+		}
+		return accessPointDataList;
+	}
 
-    public List<AccessPoint> findAccessPointsByType(AccessPointType type) {
-        List<AccessPoint> accessPointsList = accessPointRepository.findByType(type);
-        return accessPointsList;
-    }
-    
+	public List<AccessPoint> findAccessPointsByType(AccessPointType type) {
+		List<AccessPoint> accessPointsList = accessPointRepository.findByType(type);
+		return accessPointsList;
+	}
+
 	public ValidationResultData validate(AccessPointData data) {
 		ValidationResultData res = new ValidationResultData();
 
@@ -92,14 +93,14 @@ public class AccessPointService {
 				}
 			}
 		}
-		
+
 		if (StringUtils.isBlank(data.getServiceDescription())) {
 			res.addError("serviceDescription", "Service description is mandatory");
 		} else {
 			if (data.getServiceDescription().length() > 250) {
 				res.addError("serviceDescription", "Service description maximum length is 250 symbols");
 			}
-		}		
+		}
 
 		if (StringUtils.isBlank(data.getTechnicalContactUrl())) {
 			res.addError("technicalContactUrl", "Technical contact URL is mandatory");
@@ -107,12 +108,12 @@ public class AccessPointService {
 			if (data.getTechnicalContactUrl().length() > 250) {
 				res.addError("technicalContactUrl", "Technical contact URL maximum length is 250 symbols");
 			}
-		}		
-		
+		}
+
 		if (StringUtils.isBlank(data.getCertificate())) {
 			res.addError("certificate", "Certificate is mandatory");
 		} else {
-			if (parseCertificateData(data.getCertificate()) == null) {
+			if (parseCertificateDataByPEM(data.getCertificate()) == null) {
 				res.addError("certificate", "PEM data are not a valid certificate");
 			}
 		}
@@ -126,87 +127,87 @@ public class AccessPointService {
 				}
 			}
 		}
-		
+
 		return res;
-	}    
+	}
 
-    void saveAccessPoint(AccessPointData accessPointData) throws Exception {
-        AccessPoint accessPoint;
-        if (accessPointData.getId() == null) {
-            accessPoint = new AccessPoint();
-        } else {
-            accessPoint = findById(accessPointData.getId());
-        }
+	void saveAccessPoint(AccessPointData accessPointData) throws Exception {
+		AccessPoint accessPoint;
+		if (accessPointData.getId() == null) {
+			accessPoint = new AccessPoint();
+		} else {
+			accessPoint = findById(accessPointData.getId());
+		}
 
-        accessPoint.setUrl(accessPointData.getUrl());
-        accessPoint.setType(accessPointData.getType());
-        accessPoint.setServiceDescription(accessPointData.getServiceDescription());
-        accessPoint.setTechnicalContactUrl(accessPointData.getTechnicalContactUrl());
-        
-        CertificateData data = parseCertificateData(accessPointData.getCertificate());
-        if (data != null) {
-	        accessPoint.setCertificateCN(data.certififcateName);
-	        accessPoint.setCertificate(new SerialBlob(data.certificateBytes));
-	        accessPointRepository.save(accessPoint);
-        }
-    }
-        
+		accessPoint.setUrl(accessPointData.getUrl());
+		accessPoint.setType(accessPointData.getType());
+		accessPoint.setServiceDescription(accessPointData.getServiceDescription());
+		accessPoint.setTechnicalContactUrl(accessPointData.getTechnicalContactUrl());
 
-    private class CertificateData {
-    	byte[] certificateBytes;
-    	String certififcateName;
-    }
-    
-    private CertificateData parseCertificateData(String certificateString) {
-    	try {
-	    	CertificateData res = new CertificateData();
-	        certificateString = certificateString.replaceAll("\\s+","");
-	        byte[] bytes = certificateString.getBytes(StandardCharsets.UTF_8);
-	
-	        byte[] certBytes = Base64.getDecoder().decode(bytes);
-	        X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
-	        String name = certificate.getSubjectDN().getName();
-	        
-	        res.certififcateName = name;
-	        res.certificateBytes = bytes;
-	        return res;
-    	} catch (Exception e) {
-    		return null;
-    	}
-    }
-    
-    public AccessPoint findById(Long id) {
-        return findOne(id);
-    }
+		CertificateData data = parseCertificateDataByPEM(accessPointData.getCertificate());
+		if (data != null) {
+			accessPoint.setCertificateCN(data.certififcateName);
+			accessPoint.setCertificate(new SerialBlob(data.certificateBytes));
+			accessPointRepository.save(accessPoint);
+		}
+	}
 
-    private AccessPoint findOne(Long id) {
-        AccessPoint accessPoint = accessPointRepository.findById(id).orElse(null);
-        if (accessPoint != null) {
-            return accessPoint;
-        } else {
-            throw new RuntimeException(String.format("AccessPoint with id=%s not found", id));
-        }
-    }
+	@Getter
+	public static class CertificateData {
+		byte[] certificateBytes;
+		String certififcateName;
+	}
 
-    void deleteAccessPoint(Long id) {
-        accessPointRepository.delete(findOne(id));
-    }
+	public static CertificateData parseCertificateDataByPEM(String certificateString) {
+		try {
+			certificateString = certificateString.replaceAll("\\s+", "");
+			byte[] bytes = certificateString.getBytes(StandardCharsets.UTF_8);
+			byte[] certBytes = Base64.getDecoder().decode(bytes);
+			CertificateData res = new CertificateData();
+			X509Certificate certificate;
+			certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
+			String name = certificate.getSubjectDN().getName();
 
-    public void copyToDTOEdit (AccessPoint accessPoint, AccessPointData accessPointData) {
-        BeanUtils.copyProperties(accessPoint, accessPointData);
-        try {
-            java.sql.Blob certificate = accessPoint.getCertificate();
-            String s = new String(certificate.getBytes(1, (int)certificate.length()));
-            accessPointData.setCertificate(s);
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        }
-    }
+			res.certififcateName = name;
+			res.certificateBytes = bytes;
+			return res;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-    public void copyToDTOView (AccessPoint accessPoint, AccessPointData accessPointData) {
-        BeanUtils.copyProperties(accessPoint, accessPointData);
-        accessPointData.setCertificate(accessPoint.getCertificateCN());
-    }
+	public AccessPoint findById(Long id) {
+		return findOne(id);
+	}
+
+	private AccessPoint findOne(Long id) {
+		AccessPoint accessPoint = accessPointRepository.findById(id).orElse(null);
+		if (accessPoint != null) {
+			return accessPoint;
+		} else {
+			throw new RuntimeException(String.format("AccessPoint with id=%s not found", id));
+		}
+	}
+
+	void deleteAccessPoint(Long id) {
+		accessPointRepository.delete(findOne(id));
+	}
+
+	public void copyToDTOEdit(AccessPoint accessPoint, AccessPointData accessPointData) {
+		BeanUtils.copyProperties(accessPoint, accessPointData);
+		try {
+			java.sql.Blob certificate = accessPoint.getCertificate();
+			String s = new String(certificate.getBytes(1, (int) certificate.length()));
+			accessPointData.setCertificate(s);
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	public void copyToDTOView(AccessPoint accessPoint, AccessPointData accessPointData) {
+		BeanUtils.copyProperties(accessPoint, accessPointData);
+		accessPointData.setCertificate(accessPoint.getCertificateCN());
+	}
 
 	public List<Organisation> getOrganisationReferencedAccessPointList(long id) {
 		AccessPoint accessPoint = accessPointRepository.findById(id).orElse(null);

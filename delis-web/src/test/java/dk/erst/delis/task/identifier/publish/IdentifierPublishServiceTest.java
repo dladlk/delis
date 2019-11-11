@@ -12,6 +12,7 @@ import dk.erst.delis.dao.ConfigValueDaoRepository;
 import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.codelist.CodeListReaderService;
 import dk.erst.delis.task.identifier.publish.xml.SmpXmlServiceFactory;
+import dk.erst.delis.web.accesspoint.AccessPointService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,6 +21,9 @@ public class IdentifierPublishServiceTest {
 
     @Autowired
     private ConfigValueDaoRepository configRepository;
+    
+    @Autowired
+    private AccessPointService accessPointService;
 
     @Test
     public void test() {
@@ -28,7 +32,7 @@ public class IdentifierPublishServiceTest {
         SmpXmlServiceFactory smpXmlServiceFactory = new SmpXmlServiceFactory(configBean);
         SmpIntegrationService smpIntegrationService = new SmpIntegrationService(configBean);
         CodeListDict codeListDict = new CodeListDict(new CodeListReaderService(configBean));
-        IdentifierPublishDataService identifierPublishDataService = new IdentifierPublishDataService(codeListDict);
+        IdentifierPublishDataService identifierPublishDataService = new IdentifierPublishDataService(codeListDict, accessPointService);
         SmpLookupService smpLookupService = new SmpLookupService(configBean);
 
         new IdentifierPublishService(smpXmlServiceFactory, smpIntegrationService, identifierPublishDataService, smpLookupService);

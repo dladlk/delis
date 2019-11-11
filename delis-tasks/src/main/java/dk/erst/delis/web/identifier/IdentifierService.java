@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,10 @@ public class IdentifierService {
 
 	public Iterator<Identifier> findByOrganisation(Organisation organisation) {
 		return identifierDaoRepository.findByOrganisation(organisation).iterator();
+	}
+	
+	public List<Identifier> loadIdentifierList(Organisation organisation, long previousId, Pageable pageable) {
+		return identifierDaoRepository.loadIdentifierList(organisation, previousId, pageable);
 	}
 
 	public int updateStatuses(List<Long> idList, IdentifierStatus status, IdentifierPublishingStatus publishStatus, String message) {

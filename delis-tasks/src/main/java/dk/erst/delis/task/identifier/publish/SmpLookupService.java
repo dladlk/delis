@@ -45,10 +45,18 @@ public class SmpLookupService {
 	}
 	
 	public SmpPublishData lookup(ParticipantIdentifier identifier) {
+		return lookup(identifier, true);
+	}
+	
+	public SmpPublishData lookup(ParticipantIdentifier identifier, boolean useConfiguredSmp) {
 		SmpPublishData smpPublishData = new SmpPublishData();
-		log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SMP "+configBean.getSmpEndpointConfig().getUrl());
+		if (useConfiguredSmp) {
+			log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SMP "+configBean.getSmpEndpointConfig().getUrl());
+		} else {
+			log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SML");
+		}
 		try {
-			LookupClient client = createLookupClient();
+			LookupClient client = createLookupClient(useConfiguredSmp);
 			List<DocumentTypeIdentifier> documentIdentifiers = client.getDocumentIdentifiers(identifier);
 			log.info(String.format("%d DocumentIdentifiers found by ParticipantIdentifier %s", documentIdentifiers.size(), identifier));
 			List<ServiceMetadata> serviceMetadataList = queryServiceMetaData(identifier, client, documentIdentifiers);
@@ -67,7 +75,10 @@ public class SmpLookupService {
 		return smpPublishData;
 	}
 
-	private LookupClient createLookupClient() throws PeppolLoadingException {
+	private LookupClient createLookupClient(boolean useConfiguredSmp) throws PeppolLoadingException {
+		if (!useConfiguredSmp) {
+			return LookupClientBuilder.forProduction().build();
+		}
 		return LookupClientBuilder.forProduction()
                         .locator(createLocalSMPLocator())
                         .provider(createMetadataProvider())

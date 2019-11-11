@@ -1,0 +1,13 @@
+<!doctype html>
+<html th:fragment="tree(tree, depth)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+	<li>
+		<span th:text="${tree.node}"></span>
+		<ul th:if="${!tree.children.isEmpty()}">
+			<th:block th:each="child: ${tree.children}">
+				<div th:replace="fragments/tree :: tree(tree=${child}, depth=${depth+1})"  />
+			</th:block>
+		</ul>	
+	</li>
+</body>

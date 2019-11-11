@@ -40,7 +40,6 @@ public class IdentifierPublishDataService {
 
 	private CodeListDict codeListDict;
 
-	@Autowired
 	private AccessPointService accessPointService;
 
 	private static CertificateFactory certificateFactory;
@@ -61,21 +60,27 @@ public class IdentifierPublishDataService {
 	}
 
 	@Autowired
-	public IdentifierPublishDataService(CodeListDict codeListDict) {
+	public IdentifierPublishDataService(CodeListDict codeListDict, AccessPointService accessPointService) {
 		this.codeListDict = codeListDict;
+		this.accessPointService = accessPointService;
 	}
 
 	public SmpPublishData buildPublishData(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		SmpPublishData publishData = new SmpPublishData();
+		ParticipantIdentifier participantIdentifier = buildParticipantIdentifier(identifier);
+		List<SmpPublishServiceData> serviceList = createServiceList(identifier, organisationSetupData);
+		publishData.setParticipantIdentifier(participantIdentifier);
+		publishData.setServiceList(serviceList);
+		return publishData;
+	}
+
+	public ParticipantIdentifier buildParticipantIdentifier(Identifier identifier) {
 		String icdValue = codeListDict.getIdentifierTypeIcdValue(identifier.getType());
 		if (icdValue == null) {
 			throw new RuntimeException("Identifier type " + identifier.getType() + " is unknown in ICD code lists for identifier " + identifier);
 		}
 		ParticipantIdentifier participantIdentifier = ParticipantIdentifier.of(icdValue + ":" + identifier.getValue());
-		List<SmpPublishServiceData> serviceList = createServiceList(identifier, organisationSetupData);
-		publishData.setParticipantIdentifier(participantIdentifier);
-		publishData.setServiceList(serviceList);
-		return publishData;
+		return participantIdentifier;
 	}
 
 	private List<SmpPublishServiceData> createServiceList(Identifier identifier, OrganisationSetupData organisationSetupData) {
