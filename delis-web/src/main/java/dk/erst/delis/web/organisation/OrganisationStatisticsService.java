@@ -52,7 +52,7 @@ public class OrganisationStatisticsService {
 			if (status != null) {
 				if (publishingStatus == null) {
 					if (status.isActive()) {
-						d.total++;
+						d.total += identifierCount;
 					}
 				} else {
 					if (publishingStatus.isFailed()) {
