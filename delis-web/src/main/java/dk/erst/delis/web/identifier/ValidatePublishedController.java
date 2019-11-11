@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.task.identifier.publish.ValidatePublishedService;
 import dk.erst.delis.task.identifier.publish.ValidatePublishedTreeBuilder;
+import dk.erst.delis.task.identifier.publish.ValidatePublishedTreeBuilder.TreeNode;
 import dk.erst.delis.task.identifier.publish.ValidatePublishedService.ValidatePublishedResult;
 import dk.erst.delis.task.organisation.OrganisationService;
 
@@ -52,8 +53,9 @@ public class ValidatePublishedController {
 		}
 
 		model.addAttribute("resultList", resultList);
-		model.addAttribute("expectedTree", ValidatePublishedTreeBuilder.buildExpectedTree(resultList));
-		ValidatePublishedTreeBuilder.buildActualTreeList(resultList);
+		TreeNode expectedTree = ValidatePublishedTreeBuilder.buildExpectedTree(resultList);
+		model.addAttribute("expectedTree", expectedTree);
+		ValidatePublishedTreeBuilder.buildActualTreeList(resultList, expectedTree);
 
 		return "/organisation/validate";
 	}

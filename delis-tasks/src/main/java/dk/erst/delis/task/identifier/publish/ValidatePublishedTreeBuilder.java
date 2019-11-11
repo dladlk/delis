@@ -9,7 +9,7 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
+import org.apache.commons.lang3.StringUtils;
 
 import dk.erst.delis.task.identifier.publish.ValidatePublishedService.IdentifierResult;
 import dk.erst.delis.task.identifier.publish.ValidatePublishedService.ValidatePublishedResult;
@@ -23,13 +23,34 @@ import lombok.Setter;
 import lombok.ToString;
 
 public class ValidatePublishedTreeBuilder {
+	
+	private static final boolean BUILD_EXPECTED_AS_ACTUAL = true;
 
+	public static enum TreeNodeState {
+		EQUAL, DIFF, MISS,
+		;
+		
+		public boolean isEqual() {
+			return this == EQUAL;
+		}
+		public boolean isDiff() {
+			return this == DIFF;
+		}
+		public boolean isMiss() {
+			return this == MISS;
+		}
+	}
+	
 	@Getter
 	@ToString
 	public static class TreeNode {
 		private int level;
 		private String node;
-		@ToStringExclude
+		private TreeNodeState state;
+		
+		@Setter
+		private String desc;
+		
 		private Set<TreeNode> children = new TreeSet<TreeNode>(new Comparator<TreeNode>() {
 			@Override
 			public int compare(TreeNode o1, TreeNode o2) {
@@ -53,6 +74,27 @@ public class ValidatePublishedTreeBuilder {
 		public TreeNode addChild(TreeNode child) {
 			children.add(child);
 			return child;
+		}
+
+		public boolean hasChildren() {
+			return !children.isEmpty();
+		}
+
+		public boolean hasSingleChild() {
+			return children.size() == 1;
+		}
+
+		public TreeNode getFirstChild() {
+			if (!this.children.isEmpty()) {
+				return this.children.iterator().next();
+			}
+			return null;
+		}
+
+		public TreeNode copy() {
+			TreeNode tn = new TreeNode(this.node);
+			tn.children = this.children;
+			return tn;
 		}
 	}
 
@@ -100,6 +142,13 @@ public class ValidatePublishedTreeBuilder {
 
 	public static TreeNode buildExpectedTree(ValidatePublishedResult resultList) {
 		SmpPublishData expected = resultList.getExpected();
+		
+		if (BUILD_EXPECTED_AS_ACTUAL) {
+			IdentifierResult expectedResult = new IdentifierResult();
+			expectedResult.setActualPublished(expected);
+			return buildActualTree(expectedResult, null);
+		}
+		
 		TreeNode tree = new TreeNode("Expected");
 		if (expected != null) {
 			Function<SmpPublishServiceData, String>[] profilesGroupByList = buildProfilesGroupByList();
@@ -117,17 +166,17 @@ public class ValidatePublishedTreeBuilder {
 		return tree;
 	}
 
-	public static void buildActualTreeList(ValidatePublishedResult resultList) {
+	public static void buildActualTreeList(ValidatePublishedResult resultList, TreeNode expectedTree) {
 		if (resultList.getIdentifierResultList() != null && !resultList.getIdentifierResultList().isEmpty()) {
 			List<IdentifierResult> identifierResultList = resultList.getIdentifierResultList();
 			for (IdentifierResult identifierResult : identifierResultList) {
-				TreeNode tree = buildActualTree(identifierResult);
+				TreeNode tree = buildActualTree(identifierResult, expectedTree);
 				identifierResult.setActualPublishedTree(tree);
 			}
 		}
 	}
 
-	public static TreeNode buildActualTree(IdentifierResult identifierResult) {
+	public static TreeNode buildActualTree(IdentifierResult identifierResult, TreeNode expectedTree) {
 		TreeNode identifierTree;
 		SmpPublishData published = identifierResult.getActualPublished();
 		if (published != null) {
@@ -140,12 +189,49 @@ public class ValidatePublishedTreeBuilder {
 			}
 
 			Function<SmpFlatData, String>[] groupByList = buildIdentifierGroupByList();
-			buildIdentifierChildren(identifierTree, flatList, 0, groupByList);
+			String[] groupByListDesc = buildIdentifierGroupByListDesc();
+			buildIdentifierChildren(identifierTree, flatList, 0, groupByList, groupByListDesc);
+			
+			if (expectedTree != null) {
+				mergeTrees(identifierTree, expectedTree);
+			}
+			
 		} else {
 			identifierTree = new TreeNode("Not published");
 		}
 		return identifierTree;
 
+	}
+
+	private static TreeNodeState mergeTrees(TreeNode actualTree, TreeNode expectedTree) {
+		if (StringUtils.equals(actualTree.getNode(), expectedTree.getNode())) {
+			actualTree.state = TreeNodeState.EQUAL;
+			if (actualTree.hasChildren() && expectedTree.hasChildren()) {
+				if (actualTree.hasSingleChild() && expectedTree.hasSingleChild()) {
+					mergeTrees(actualTree.getFirstChild(), expectedTree.getFirstChild());
+				} else {
+					for (TreeNode expectedChild : expectedTree.getChildren()) {
+						TreeNode actualChild = null;
+						for (TreeNode actualChildPotential : actualTree.getChildren()) {
+							if (StringUtils.equals(actualChildPotential.getNode(), expectedChild.getNode())) {
+								actualChild = actualChildPotential;
+								break;
+							}
+						}
+						if (actualChild != null) {
+							mergeTrees(actualChild, expectedChild);
+						} else {
+							TreeNode expectedChildCopy = expectedChild.copy();
+							expectedChildCopy.state = TreeNodeState.MISS;
+							actualTree.addChild(expectedChildCopy);
+						}
+					}
+				}
+			}
+		} else {
+			actualTree.state = TreeNodeState.DIFF;
+		}
+		return actualTree.state;
 	}
 
 	private static void buildProfilesChildren(TreeNode parent, List<SmpPublishServiceData> serviceList, int level, Function<SmpPublishServiceData, String>[] profilesGroupByList) {
@@ -170,13 +256,14 @@ public class ValidatePublishedTreeBuilder {
 		}
 	}
 
-	private static void buildIdentifierChildren(TreeNode parent, List<SmpFlatData> endpointList, int level, Function<SmpFlatData, String>[] groupByList) {
+	private static void buildIdentifierChildren(TreeNode parent, List<SmpFlatData> endpointList, int level, Function<SmpFlatData, String>[] groupByList, String[] groupByListDesc) {
 		Map<String, List<SmpFlatData>> grouped = endpointList.stream().collect(Collectors.groupingBy(groupByList[level]));
 		for (String key : grouped.keySet()) {
 			TreeNode child = parent.addChild(key);
+			child.setDesc(groupByListDesc[level]);
 			if (level + 1 < groupByList.length) {
 				List<SmpFlatData> childServiceList = grouped.get(key);
-				buildIdentifierChildren(child, childServiceList, level + 1, groupByList);
+				buildIdentifierChildren(child, childServiceList, level + 1, groupByList, groupByListDesc);
 			}
 		}
 	}
@@ -209,6 +296,25 @@ public class ValidatePublishedTreeBuilder {
 
 		};
 		return classifier;
+	}
+	
+	private static String[] buildIdentifierGroupByListDesc() {
+		return new String[] {
+				
+				"certificate",
+				
+				"transport",
+				
+				"url",
+				
+				"processScheme",
+				
+				"processValue",
+				
+				"documentScheme",
+				
+				"documentValue",
+		};
 	}
 
 	@SuppressWarnings("unchecked")
