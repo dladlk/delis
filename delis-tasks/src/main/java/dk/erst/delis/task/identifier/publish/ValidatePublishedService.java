@@ -46,6 +46,22 @@ public class ValidatePublishedService {
 	@ToString
 	public static class ValidatePublishedResult {
 		private SmpPublishData expected;
+		
+		private int total;
+
+		private int processed;
+		private int processedDeleted;
+		public int getProcessedActive() {
+			return this.total - this.processedDeleted;
+		}
+		
+		private int matched;
+		public long duration;
+		
+		public int getNotMatched() {
+			return this.processed - this.matched;
+		}
+		
 		private List<IdentifierResult> identifierResultList = new ArrayList<ValidatePublishedService.IdentifierResult>();
 
 		public void add(IdentifierResult identifierResult) {
@@ -76,6 +92,8 @@ public class ValidatePublishedService {
 	}
 
 	public void validatePublishedIdentifiers(Organisation organisation, ValidatePublishedResult resultList) {
+		long startTotal = System.currentTimeMillis();
+		
 		OrganisationSetupData setupData = organisationSetupService.load(organisation);
 		Identifier templateIdentifier = new Identifier();
 		templateIdentifier.setType(IdentifierValueType.GLN.getCode());
@@ -83,6 +101,8 @@ public class ValidatePublishedService {
 		SmpPublishData template = identifierPublishDataService.buildPublishData(templateIdentifier, setupData);
 
 		resultList.setExpected(template);
+		
+		resultList.total = identifierService.countByOrganisation(organisation);
 
 		boolean moreIdentifiers = false;
 		long previousId = 0;
@@ -110,8 +130,18 @@ public class ValidatePublishedService {
 				resultList.add(result);
 
 				previousId = identifier.getId();
+				
+				if (identifier.getStatus().isDeleted()) {
+					resultList.processedDeleted++;
+				}
+				if (result.isMatchSuccess()) {
+					resultList.matched++;
+				}
+				resultList.processed++;
 			}
 		} while (moreIdentifiers);
+		
+		resultList.duration = System.currentTimeMillis() - startTotal;
 	}
 
 	private IdentifierResult compareResult(SmpPublishData expected, SmpPublishData actual) {

@@ -106,4 +106,12 @@ public class IdentifierService {
 		Long count = identifierDaoRepository.countByPublishingStatusAndOrganisation(publishingStatus, organisation);
 		return count != null ? count.intValue() : 0;
 	}
+
+	public int countByOrganisation(Organisation organisation) {
+		Long cnt = this.identifierDaoRepository.countByOrganisation(organisation);
+		if (cnt != null) {
+			return cnt.intValue();
+		}
+		return 0;
+	}
 }
