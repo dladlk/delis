@@ -38,7 +38,7 @@
 				<tr th:unless="${#lists.isEmpty(r.errorRecords)}">
 					<td colspan="5">
 						
-						<div class="alert alert-primary">Found <span class="badge badge-danger" th:text="${r.errorRecords.size()}">9</span> validation error(s)
+						<div class="alert alert-primary">Found <span class="badge badge-danger" th:text="${r.countError}">9</span> <span th:th:text="${r.countError > 1 ? 'errors':'error'}">errors</span> and <span class="badge badge-warning" th:text="${r.countWarning}">9</span> <span th:th:text="${r.countWarning > 1 ? 'warnings':'warning'}">warnings</span>
 							<div class="btn btn-sm btn-warning" onclick="$('tr.error-flag-warning').toggle();">Toggle warnings</div>
 						</div>
 					

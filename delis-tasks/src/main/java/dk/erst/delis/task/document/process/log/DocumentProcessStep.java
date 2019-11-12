@@ -29,7 +29,9 @@ public class DocumentProcessStep {
 	private DocumentErrorCode errorCode;
 
 	private List<ErrorRecord> errorRecords = new ArrayList<>();
-
+	
+	private int countError;
+	private int countWarning;
 
 	public DocumentProcessStep(String description, DocumentProcessStepType stepType) {
 		this.description = description;
@@ -49,6 +51,19 @@ public class DocumentProcessStep {
 	}
 
 	public void done() {
+		if (this.errorRecords != null) {
+			int error = 0;
+			int warn = 0;
+			for (ErrorRecord errorRecord : errorRecords) {
+				if (errorRecord.isWarning()) {
+					warn++;
+				} else {
+					error++;
+				}
+			}
+			this.countError = error;
+			this.countWarning = warn;
+		}
 		this.duration = System.currentTimeMillis() - start;
 
 		log.info("Done " + (success ? "OK" : "ERROR") + " in " + duration);
