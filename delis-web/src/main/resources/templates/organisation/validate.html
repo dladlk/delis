@@ -37,17 +37,13 @@
 				<tr>
 					<td class="container">
 						<div class="row">
-							<div class="col-md-2 font-weight-bold">Processed / total:</div>
-							<div class="col-md-1"><span th:text="${resultList.processed}">9</span> / <span th:text="${resultList.total}">9</span></div>
+							<div class="col-md-3"><span class="font-weight-bold">Processed / total</span> : <span th:text="${resultList.processed}">9</span> / <span th:text="${resultList.total}">9</span></div>
 							
-							<div class="col-md-2 text-right"><span class="btn-sm" th:classappend="${resultList.matched > 0 ? 'btn-success':'btn-secondary'}">Matched</span> :</div>
-							<div class="col-md-1"><span th:text="${resultList.matched}">9</span></div>
+							<div class="col-md-3"><span class="btn-sm" th:classappend="${resultList.matched > 0 ? 'btn-success':'btn-secondary'}">Matched</span> : <span th:text="${resultList.matched}">9</span></div>
 							
-							<div class="col-md-2 text-right"><span class="btn-sm" th:classappend="${resultList.notMatched > 0 ? 'btn-danger':'btn-secondary'}">Not matched</span> :</div>
-							<div class="col-md-1"><span th:text="${resultList.notMatched}">9</span></div>
+							<div class="col-md-3"><span class="btn-sm" th:classappend="${resultList.notMatched > 0 ? 'btn-danger':'btn-secondary'}">Not matched</span> : <span th:text="${resultList.notMatched}">9</span></div>
 
-							<div class="col-md-2 font-weight-bold text-right">Duration, sec:</div>
-							<div class="col-md-1 text-left"><span th:text="${#numbers.formatDecimal(resultList.duration / 1000.0, 1, 1)}">9</span></div>
+							<div class="col-md-2"><span class="font-weight-bold">Duration, sec</span> : <span th:text="${#numbers.formatDecimal(resultList.duration / 1000.0, 1, 1)}">9</span></div>
 						</div>
 					</td>
 				</tr>
