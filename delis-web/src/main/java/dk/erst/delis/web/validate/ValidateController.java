@@ -131,7 +131,9 @@ public class ValidateController {
 					TransformationResultListener transformationResultListener = new TransformationResultListener(null, null) {
 						@Override
 						public void notify(DocumentProcessLog plog, DocumentFormat resultFormat, File file) {
-							super.notify(plog, resultFormat, file);
+							/*
+							 * Avoid notification - as we do not want to save documents into byte storage
+							 */
 						}
 					};
 					DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener);
