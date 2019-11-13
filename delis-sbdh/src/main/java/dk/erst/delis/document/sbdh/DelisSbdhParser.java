@@ -22,6 +22,8 @@ import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
 import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
 import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
 import no.difi.vefa.peppol.common.model.Header;
+import no.difi.vefa.peppol.common.model.ProcessIdentifier;
+import no.difi.vefa.peppol.common.model.Scheme;
 
 public class DelisSbdhParser {
 
@@ -75,6 +77,17 @@ public class DelisSbdhParser {
             if (headerParser.canParse()) {
                 sbdh.setDocumentTypeIdentifier(headerParser.fetchDocumentTypeId().toVefa());
                 sbdh.setProfileTypeIdentifier(headerParser.fetchProcessTypeId());
+                if (sbdh.getProfileTypeIdentifier() != null) {
+                	ProcessIdentifier profileTypeIdentifier = sbdh.getProfileTypeIdentifier();
+                	if (profileTypeIdentifier.getIdentifier() != null) {
+                		/*
+                		 * Special Danish profile, which requires non-standard ProfileTypeIdentifier scheme, different to 'cenbii-procid-ubl' 
+                		 */
+                		if ("urn:www.nesubl.eu:profiles:profile5:ver2.0".equals(profileTypeIdentifier.getIdentifier())) {
+                			sbdh.setProfileTypeIdentifier(ProcessIdentifier.of(profileTypeIdentifier.getIdentifier(), Scheme.of("nes-procid-ubl")));
+                		}
+                	}
+                }
                 // try to use a specialized document parser to fetch more document details
                 PEPPOLDocumentParser documentParser = null;
                 try {
