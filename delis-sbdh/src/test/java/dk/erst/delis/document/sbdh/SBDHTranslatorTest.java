@@ -1,5 +1,6 @@
 package dk.erst.delis.document.sbdh;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -73,6 +74,12 @@ public class SBDHTranslatorTest {
 	public void testInvoiceResponse() throws Exception {
 		checkFile(new File(resourcesFolder, "BIS3_InvoiceResponse_Example.xml"));
 	}
+	@Test
+	public void testOIOUBLInvoice() throws Exception {
+		Header header = checkFile(new File(resourcesFolder, "OIOUBL_Invoice_v2p2.xml"));
+		assertEquals("nes-procid-ubl", header.getProcess().getScheme().getIdentifier());
+		assertEquals("urn:www.nesubl.eu:profiles:profile5:ver2.0", header.getProcess().getIdentifier());
+	}
 	
 	@Test
 	public void testAllResourceExamples() throws Exception {
@@ -81,7 +88,7 @@ public class SBDHTranslatorTest {
 		}
 	}
 
-	private void checkFile(File sourceFile) throws IOException, FileNotFoundException, SbdhException {
+	private Header checkFile(File sourceFile) throws IOException, FileNotFoundException, SbdhException {
 		log.info("Testing " + sourceFile);
 
 		File tempSourceFile = File.createTempFile(sourceFile.getName(), "tmp.xml");
@@ -105,5 +112,7 @@ public class SBDHTranslatorTest {
 		assertTrue(writeMetadata);
 		assertTrue(targetFile.delete());
 		assertTrue(metadataFile.delete());
+		
+		return actual;
 	}
 }
