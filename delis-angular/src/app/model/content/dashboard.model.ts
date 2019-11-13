@@ -9,6 +9,6 @@ export class DashboardModel {
     this.errorLastHour = 0;
     this.receivedDocumentsLastHour = 0;
     this.sendDocumentsLastHour = 0;
-    this.deliveryAlertCount = 10;
+    this.deliveryAlertCount = 0;
   }
 }
