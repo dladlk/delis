@@ -38,7 +38,17 @@ public class MetadataBuilder {
 		agreementRef.setValue("urn:fdc:peppol.eu:2017:agreements:tia:ap_provider");
 		Service service = new Service();
 		service.setType(DEFAULT_PROCESS_SCHEME_ID);
-		service.setValue(sbdhHeader.getProcess().getIdentifier());
+//		service.setValue(sbdhHeader.getProcess().getIdentifier());
+		/*
+		 * To support different process scheme to default 'cenbii-procid-ubl', 
+		 * 
+		 * (e.g. for OIOUBL it should be 'nes-procid-ubl') 
+		 * 
+		 * process scheme should be encoded with value of process identifier via :: 
+		 * 
+		 * it is done by toString() method of ProcessIdentifier
+		 */
+		service.setValue(String.valueOf(sbdhHeader.getProcess()));
 		CollaborationInfo collaborationInfo = new CollaborationInfo();
 		collaborationInfo.setAgreementRef(agreementRef);
 		collaborationInfo.setService(service);

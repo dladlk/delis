@@ -111,7 +111,7 @@ public class SmpPublishDataDummyService {
 		for (TempDocumentProcess tdp : TEMP_DOCUMENT_LIST) {
 			SmpPublishServiceData sd = new SmpPublishServiceData();
 			sd.setDocumentIdentifier(SmpDocumentIdentifier.of(tdp.getDocumentIdentifier()));
-			sd.setProcessIdentifier(SmpProcessIdentifier.of(tdp.getProcesIdentifier()));
+			sd.setProcessIdentifier(SmpProcessIdentifier.of(tdp.getProcesIdentifier(), "cenbii-procid-ubl"));
 			sd.setEndpoints(endpointList);
 			serviceList.add(sd);
 		}

@@ -89,7 +89,7 @@ public enum OrganisationSubscriptionProfileGroup {
 		return this.name();
 	}
 	
-	public String getProcessScheme() {
+	public String getProcessType() {
 		return DEFAULT_PROCESS_SCHEME_ID;
 	}
 	

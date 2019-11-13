@@ -7,15 +7,13 @@ import lombok.Data;
 @Data
 public class SmpProcessIdentifier {
 
-	private static String DEFAULT_SCHEME = "cenbii-procid-ubl";
-
 	private String processIdentifierScheme;
 	private String processIdentifierValue;
 
-	public static SmpProcessIdentifier of(String processIdentifierValue) {
+	public static SmpProcessIdentifier of(String processIdentifierValue, String schemeValue) {
 		SmpProcessIdentifier r = new SmpProcessIdentifier();
 		r.setProcessIdentifierValue(processIdentifierValue);
-		r.setProcessIdentifierScheme(DEFAULT_SCHEME);
+		r.setProcessIdentifierScheme(schemeValue);
 		return r;
 	}
 	
