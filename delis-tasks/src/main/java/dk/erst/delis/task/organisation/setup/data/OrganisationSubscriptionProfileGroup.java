@@ -94,6 +94,9 @@ public enum OrganisationSubscriptionProfileGroup {
 	}
 	
 	public String getProcessSchemeSMP() {
+		if (this == OIOUBL) {
+			return "nes-procid-ubl";
+		}
 		return "cenbii-procid-ubl";
 	}
 	
