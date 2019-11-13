@@ -1,23 +1,5 @@
 package dk.erst.delis.rest;
 
-import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.enums.identifier.IdentifierStatus;
-import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
-import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
-import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
-import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
-import io.swagger.annotations.Api;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -26,12 +8,30 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import dk.erst.delis.data.entities.identifier.Identifier;
+import dk.erst.delis.data.entities.organisation.Organisation;
+import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
+import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+
 @Api
 @RestController
 @RequestMapping("/rest/open")
+@Slf4j
 public class IdentifierCheckRestController {
 
-    private static final Logger log = LoggerFactory.getLogger(IdentifierResolverService.class);
     public static final String UTF_8 = "utf-8";
     public static final String OK = "ok";
     public static final String REASON_HEADER = "reason";
@@ -153,9 +153,17 @@ public class IdentifierCheckRestController {
             log.info("Check service skip... Return all available services: " + allServices);
             resultSet.addAll(orgSubscribedProfiles);
         } else {
-            log.info("Check service");
-            resultSet = orgSubscribedProfiles.stream().filter(s -> s.getProcessId().equalsIgnoreCase(service)).collect(Collectors.toSet());
-            log.info("Found " + service);
+        	String processIdentifier = service;
+        	if (service != null) {
+        		int schemeDelimiterIndex = service.indexOf("::");
+        		if (schemeDelimiterIndex > 0 && schemeDelimiterIndex < service.length() - 1) {
+        			service = service.substring(schemeDelimiterIndex+2);
+        		}
+        	}
+            log.info("Check service "+service);
+            
+            resultSet = orgSubscribedProfiles.stream().filter(s -> s.getProcessId().equalsIgnoreCase(processIdentifier)).collect(Collectors.toSet());
+            log.info("Found " + resultSet);
 
         }
         return resultSet;
