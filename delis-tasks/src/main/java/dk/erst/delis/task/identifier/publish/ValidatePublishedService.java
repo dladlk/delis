@@ -119,7 +119,7 @@ public class ValidatePublishedService {
 				long start = System.currentTimeMillis();
 				SmpPublishData actual = smpLookupService.lookup(participantIdentifier, true);
 				if (actual == null) {
-					smpLookupService.lookup(participantIdentifier, false);
+					actual = smpLookupService.lookup(participantIdentifier, false);
 				}
 
 				IdentifierResult result = compareResult(expected, actual);
