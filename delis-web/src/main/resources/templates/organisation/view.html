@@ -11,24 +11,34 @@
 			<span th:text="${organisation.name}">Organisation name</span>
 			(<span th:text="${organisation.code}">Code</span>)
 		</div>
-		<div class="card-body">
+		<div class="card-body" th:if="${stat}">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
-					<th>Identifiers total</th>
-					<th:block th:if="${!stat.isNoPublish()}">
-					<th>Active published</th>
-					<th>Pending active</th>
-					<th>Pending deletion</th>
-					<th>Failed publishing</th>
+					<th>Identifiers</th>
+					<th:block th:switch="${stat.isNoPublish()}">
+						<th:block th:case="${true}">
+							<th>Deleted</th>
+						</th:block>
+						<th:block th:case="${false}">
+							<th>Active published</th>
+							<th>Pending active</th>
+							<th>Pending deletion</th>
+							<th>Failed publishing</th>
+						</th:block>
 					</th:block>
 				</tr>
-				<tr th:if="${stat}">
+				<tr>
 					<td><a href="#" th:href="@{/identifier/list/__${organisation.id}__}" th:text="${stat.total}"></a></td>
-					<th:block th:if="${!stat.isNoPublish()}">
-					<td th:text="${stat.activeDone}">7</td>
-					<td th:text="${stat.activePending}">1</td>
-					<td th:text="${stat.disabledPending}">1</td>
-					<td th:text="${stat.failed}">1</td>
+					<th:block th:switch="${stat.isNoPublish()}">
+						<th:block th:case="${true}">
+							<td th:text="${stat.deleted}">7</td>
+						</th:block>
+						<th:block th:case="${false}">
+							<td th:text="${stat.activeDone}">7</td>
+							<td th:text="${stat.activePending}">1</td>
+							<td th:text="${stat.disabledPending}">1</td>
+							<td th:text="${stat.failed}">1</td>
+						</th:block>
 					</th:block>
 				</tr>
 			</table>

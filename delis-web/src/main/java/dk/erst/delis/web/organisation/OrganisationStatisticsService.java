@@ -53,6 +53,8 @@ public class OrganisationStatisticsService {
 				if (publishingStatus == null) {
 					if (status.isActive()) {
 						d.total += identifierCount;
+					} else {
+						d.deleted += identifierCount;
 					}
 				} else {
 					if (publishingStatus.isFailed()) {
@@ -84,6 +86,7 @@ public class OrganisationStatisticsService {
 	protected static class OrganisationIdentifierStatData {
 
 		private int total;
+		private int deleted;
 		private int activeDone;
 		private int activePending;
 		private int disabledPending;
@@ -104,6 +107,9 @@ public class OrganisationStatisticsService {
 			sb.append(this.disabledPending);
 			sb.append(" + ");
 			sb.append(this.failed);
+			sb.append(" (");
+			sb.append(this.deleted);
+			sb.append(")");
 			return sb.toString();
 		}
 	}
