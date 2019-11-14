@@ -3,6 +3,7 @@ package dk.erst.delis.rest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,9 +38,6 @@ public class IdentifierCheckRestController {
     public static final String REASON_HEADER = "reason";
     public static final String IDENTIFIER_CHECK_STEP_SKIP = "identifier.check.step.skip";
 
-    private boolean skipServiceStep;
-    private boolean skipActionStep;
-
     @Autowired
     private IdentifierResolverService identifierResolverService;
 
@@ -54,8 +52,8 @@ public class IdentifierCheckRestController {
         long startTime = new Date().getTime();
         log.info("Start checkIdentifier.");
 
-        skipServiceStep = skipStep(IdentifierCheckStep.SERVICE);
-        skipActionStep = skipStep(IdentifierCheckStep.ACTION);
+        boolean skipServiceStep = skipStep(IdentifierCheckStep.SERVICE);
+        boolean skipActionStep = skipStep(IdentifierCheckStep.ACTION);
 
         try {
             compoundIdentifier = URLDecoder.decode(compoundIdentifier, UTF_8);
@@ -65,7 +63,7 @@ public class IdentifierCheckRestController {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        log.info("Start checkIdentifier. CompoundIdentifier=" + compoundIdentifier + " Service=" + service + " Action=" + action);
+        log.info("Start checkIdentifier for identifier '" + compoundIdentifier + "', service '" + service + "', action '" + action+"'");
         log.info("Skip steps variable status (" + IDENTIFIER_CHECK_STEP_SKIP + ")");
         log.info("Skip Service validation = " + skipServiceStep);
         log.info("Skip Action validation = " + skipActionStep);
@@ -78,12 +76,12 @@ public class IdentifierCheckRestController {
             if (skipServiceStep && skipActionStep) {
                 log.info("Identifier found. Service and Action validation skipped.");
             } else {
-                Set<OrganisationSubscriptionProfileGroup> availableServices = getAvailableServices(identifier, service);
+                Set<OrganisationSubscriptionProfileGroup> availableServices = getAvailableServices(identifier, service, skipServiceStep);
                 if (availableServices.size() == 0) {
                     log.info("No Service found for related organisation");
                     result = new Result(HttpStatus.NO_CONTENT, "No Service found for related organisation");
                 } else {
-                    Set<String> availableActions = getAvailableActions(availableServices, action);
+                    Set<String> availableActions = getAvailableActions(availableServices, action, skipActionStep);
                     if (availableActions.size() == 0) {
                         log.info("No Action found for related organisation");
                         result = new Result(HttpStatus.NO_CONTENT, "No Action found for related organisation");
@@ -92,7 +90,7 @@ public class IdentifierCheckRestController {
             }
         }
 
-        long stopTime = new Date().getTime();
+        long stopTime = Calendar.getInstance().getTimeInMillis();
         log.info("Stop checkIdentifier. Execution time: " + (stopTime - startTime) + " ms.");
 
         ResponseEntity<?> response;
@@ -141,13 +139,15 @@ public class IdentifierCheckRestController {
         return new Result(status, description);
     }
 
-    private Set<OrganisationSubscriptionProfileGroup> getAvailableServices(Identifier identifier, String service) {
+    private Set<OrganisationSubscriptionProfileGroup> getAvailableServices(Identifier identifier, String service, boolean skipServiceStep) {
         Set<OrganisationSubscriptionProfileGroup> resultSet = new HashSet<>();
 
         Organisation organisation = identifier.getOrganisation();
         OrganisationSetupData setupData = organisationSetupService.load(organisation);
         Set<OrganisationSubscriptionProfileGroup> orgSubscribedProfiles = setupData.getSubscribeProfileSet();
 
+		log.info("Supported organisation profiles: " + orgSubscribedProfiles);
+        
         if (skipServiceStep) {
             String allServices = orgSubscribedProfiles.stream().map(OrganisationSubscriptionProfileGroup::getCode).collect(Collectors.joining(","));
             log.info("Check service skip... Return all available services: " + allServices);
@@ -169,7 +169,7 @@ public class IdentifierCheckRestController {
         return resultSet;
     }
 
-    private Set<String> getAvailableActions(Set<OrganisationSubscriptionProfileGroup> services, String action) {
+    private Set<String> getAvailableActions(Set<OrganisationSubscriptionProfileGroup> services, String action, boolean skipActionStep) {
         Set<String> all = new HashSet<>();
         Set<String> result = new HashSet<>();
         for (OrganisationSubscriptionProfileGroup group : services) {
