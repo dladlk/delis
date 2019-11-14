@@ -152,22 +152,27 @@ public class IdentifierCheckRestController {
             String allServices = orgSubscribedProfiles.stream().map(OrganisationSubscriptionProfileGroup::getCode).collect(Collectors.joining(","));
             log.info("Check service skip... Return all available services: " + allServices);
             resultSet.addAll(orgSubscribedProfiles);
-        } else {
-        	String processIdentifier = service;
-        	if (service != null) {
-        		int schemeDelimiterIndex = service.indexOf("::");
-        		if (schemeDelimiterIndex > 0 && schemeDelimiterIndex < service.length() - 1) {
-        			service = service.substring(schemeDelimiterIndex+2);
-        		}
-        	}
-            log.info("Check service "+service);
-            
-            resultSet = orgSubscribedProfiles.stream().filter(s -> s.getProcessId().equalsIgnoreCase(processIdentifier)).collect(Collectors.toSet());
-            log.info("Found " + resultSet);
+		} else {
+			final String processIdentifier = extractProcessIdentifier(service);
+			log.info("Check processIdentifier '" + processIdentifier + "'");
 
-        }
+			resultSet = orgSubscribedProfiles.stream().filter(s -> s.getProcessId().equalsIgnoreCase(processIdentifier)).collect(Collectors.toSet());
+			log.info("Found " + resultSet);
+
+		}
         return resultSet;
     }
+
+	private static String extractProcessIdentifier(String service) {
+		String processIdentifier = service;
+		if (processIdentifier != null) {
+			int schemeDelimiterIndex = processIdentifier.indexOf("::");
+			if (schemeDelimiterIndex > 0 && schemeDelimiterIndex < processIdentifier.length() - 1) {
+				processIdentifier = processIdentifier.substring(schemeDelimiterIndex+2);
+			}
+		}
+		return processIdentifier;
+	}
 
     private Set<String> getAvailableActions(Set<OrganisationSubscriptionProfileGroup> services, String action, boolean skipActionStep) {
         Set<String> all = new HashSet<>();
