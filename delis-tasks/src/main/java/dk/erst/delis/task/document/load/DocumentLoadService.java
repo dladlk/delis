@@ -226,6 +226,8 @@ public class DocumentLoadService {
 		
 		if (!file.delete()) {
 			log.error("Cannot delete file " + file);
+		} else {
+			log.info("File " + file + " is deleted");
 		}
 
 		if (metadataFile != null) {
@@ -237,6 +239,8 @@ public class DocumentLoadService {
 			
 			if (!metadataFile.delete()) {
 				log.error("Cannot metadata delete file " + metadataFile);
+			} else {
+				log.info("Metadata file " + metadataFile + " is deleted");
 			}
 		}
 
@@ -249,6 +253,8 @@ public class DocumentLoadService {
 
 			if (!fileSbd.delete()) {
 				log.error("Cannot SBD delete file " + fileSbd);
+			} else {
+				log.info("SDB file " + fileSbd + " is deleted");
 			}
 		}
 	}
