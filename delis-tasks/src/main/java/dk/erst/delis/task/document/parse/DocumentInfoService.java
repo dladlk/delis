@@ -49,7 +49,10 @@ public class DocumentInfoService {
 		File fileSbd = null;
 		if (info != null && "StandardBusinessDocument".equals(info.getRoot().getRootTag())) {
 			log.info("Root tag is SBD: " + info.getRoot());
-			try (SbdReader sbdReader = SbdReader.newInstance(new FileInputStream(file))) {
+			/*
+			 * Important - SbdReader does not close given InputStream - it should be closed explicitely!
+			 */
+			try (InputStream is = new FileInputStream(file); SbdReader sbdReader = SbdReader.newInstance(is)) {
 				Type type = sbdReader.getType();
 				log.info("SbdReader defined type as " + type);
 

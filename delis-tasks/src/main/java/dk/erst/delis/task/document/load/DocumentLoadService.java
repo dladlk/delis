@@ -252,7 +252,7 @@ public class DocumentLoadService {
 			}
 
 			if (!fileSbd.delete()) {
-				log.error("Cannot SBD delete file " + fileSbd);
+				log.error("Cannot delete SBD file " + fileSbd);
 			} else {
 				log.info("SDB file " + fileSbd + " is deleted");
 			}

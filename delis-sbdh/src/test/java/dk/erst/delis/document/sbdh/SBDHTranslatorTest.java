@@ -106,6 +106,9 @@ public class SBDHTranslatorTest {
 		boolean writeMetadata = service.writeMetadata(expected, "testPartyIdValue", metadataFile.toPath());
 		FileInputStream inputStream = new FileInputStream(targetFile);
 		SbdReader reader = SbdReader.newInstance(inputStream);
+		/*
+		 * Important - SbdReader does not close given InputStream - it should be closed explicitely!
+		 */		
 		inputStream.close();
 		Header actual = reader.getHeader();
 		assertTrue(actual.equals(expected));
