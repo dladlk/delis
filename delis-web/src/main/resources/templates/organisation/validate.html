@@ -47,6 +47,13 @@
 						</div>
 					</td>
 				</tr>
+				<tr class="xcollapse" th:fragment="progress" th:remove="all">
+					<td>
+						<div class="progress mt-2 mb-2">
+							<div class="progress-bar" role="progressbar" style="width: 25%;" th:aria-valuenow="${resultList.total}" aria-valuemin="0" th:aria-valuemax="${resultList.total}">25%</div>
+						</div>
+					</td>
+				</tr>
 				<tr>
 					<th>
 						Expected state of all active identifiers
@@ -73,7 +80,7 @@
 				<tr>
 					<td><span th:text="${e.identifier.value}" th:classappend="${e.identifier.status?.isDeleted()?'delis-deactivated':''}"></span></td>
 					<td>
-						<span th:text="${e.matchSuccess ? 'Matched':'Not matched'}" th:refid="${'details-'+iter.index}" class="btn-sm" th:classappend="${e.matchSuccess?'btn-success':'btn-danger'}" onclick="$('#'+$(this).attr('refid')).toggle();"></span>
+						<span th:text="${e.matchSuccess ? 'Matched':'Not matched'}" th:refid="${'details-'+iter.index}" class="cursor-pointer btn-sm" th:classappend="${e.matchSuccess?'btn-success':'btn-danger'}" onclick="$('#'+$(this).attr('refid')).toggle();"></span>
 					</td>
 					<td><span th:text="${e.duration}"></span> </td>
 				</tr>
