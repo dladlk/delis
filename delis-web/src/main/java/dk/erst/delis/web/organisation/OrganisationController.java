@@ -365,24 +365,23 @@ public class OrganisationController {
 	}
 
 	@PostMapping("/organisation/upload/{id}")
-	public String identifierFileUpload(@RequestParam("file") MultipartFile file, @PathVariable long id, RedirectAttributes ra, Model model) {
+	public String identifierFileUpload(@RequestParam("file") MultipartFile file, @PathVariable long id, RedirectAttributes ra) {
 		if (file == null || file.isEmpty()) {
-			ra.addAttribute("errorMessage", "File is empty");
+			ra.addFlashAttribute("errorMessage", "File is empty");
 		} else {
 			Organisation organisation = organisationService.findOrganisation(id);
 			if (organisation == null) {
-				ra.addAttribute("errorMessage", "Organisation is not found by id " + id);
+				ra.addFlashAttribute("errorMessage", "Organisation is not found by id " + id);
 			} else {
-
 				SyncOrganisationFact loadCSV = null;
 				try {
 					loadCSV = identifierLoadService.loadCSV(organisation.getCode(), file.getInputStream(), file.getOriginalFilename());
+					if (loadCSV != null) {
+						ra.addFlashAttribute("message", "File is loaded in " + loadCSV.getDurationMs() + " ms");
+					}
 				} catch (Exception e) {
 					log.error("Failed to load file " + file.getOriginalFilename() + " for " + organisation.getCode(), e);
-					ra.addAttribute("errorMessage", e.getMessage());
-				}
-				if (loadCSV != null) {
-					ra.addAttribute("infoMessage", "File is loaded in " + loadCSV.getDurationMs() + " ms" + ", total ");
+					ra.addFlashAttribute("errorMessage", e.getMessage());
 				}
 			}
 		}

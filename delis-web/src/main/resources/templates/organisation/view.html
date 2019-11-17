@@ -6,8 +6,8 @@
 
 	<div th:replace="~{fragments/org-menu :: org-menu (~{::body}, 'identifiers')}"></div>
 
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
+	<div class="card border-secondary">
+		<div class="card-header">
 			<span th:text="${organisation.name}">Organisation name</span>
 			(<span th:text="${organisation.code}">Code</span>)
 		</div>
@@ -48,22 +48,44 @@
 		</div>
 	</div>
 	
-	<div class="card">
-		<div class="card-header bg-primary text-white">
+	<div class="card mt-2">
+		<div class="card-header">
 			Upload identifier list
 		</div>
 		<div class="card-body">
-			<form method="POST" enctype="multipart/form-data" action="/organisation/upload/213" th:action="@{/organisation/upload/__${organisation.id}__}">
-				<div class="form-group">
-					<label for="file1">File:</label><input type="file" name="file" class="form-control-file" id="file1" />
+			<form method="POST" enctype="multipart/form-data" action="/organisation/upload/213" th:action="@{/organisation/upload/__${organisation.id}__}" class="row">
+				<div class="col-3">
+					<div class="font-weight-bold">CSV file:</div>
+					<input type="file" name="file" class="form-control-file mt-2" id="file1" />
+					<input class="btn btn-primary btn-sm mt-2" type="submit" value="Upload" />
 				</div>
-				<input class="btn btn-primary" type="submit" value="Upload" />
+				
+				<div class="col-3">
+					<strong>Example of csv file:</strong>
+<pre>
+Number;Name
+00000124;Test Company 1
+DK00000124;Test Company 2
+0000000000017;Test GLN
+3
+</pre>
+				</div>
+				<div class="col-6">
+					<strong>Format description:</strong>
+					<ul>
+					<li>Headers should include Number and Name</li>
+					<li>Delimiter is semicolon.</li>
+					<li>Last line should contain total number of identifiers.</li> 
+					<li>Number can contain only valid GLN or CVR numbers.</li> 
+					<li>In case of any mistake in format, import is discarded.</li>
+					</ul>
+				</div>
 			</form>
 		</div>
 	</div>
 	
-	<div class="card">
-		<div class="card-header bg-primary text-white">
+	<div class="card mt-2">
+		<div class="card-header">
 			Journal records
 		</div>
 		<div class="card-body">
@@ -82,8 +104,8 @@
 		</div>
 	</div>
 
-	<div class="card">
-		<div class="card-header bg-primary text-white">
+	<div class="card mt-2">
+		<div class="card-header">
 			Synchronizations
 		</div>
 		<div class="card-body">

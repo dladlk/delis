@@ -11,10 +11,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,8 +89,11 @@ public class IdentifierBatchLoadService {
 
     private void moveToProcessedFolder(Path sourceFilePath) {
         File targetFolder = new File(sourceFilePath.getParent().toString(), "PROCESSED");
-        if (!targetFolder.exists() && targetFolder.mkdirs()) {
-            throw new RuntimeException("Target folder "+targetFolder+" for processed identifier files not exists and unable to create");
+        if (!targetFolder.exists()) {
+        	targetFolder.mkdirs();
+        	if (!targetFolder.exists()) {
+        		throw new RuntimeException("Target folder "+targetFolder+" for processed identifier files not exists and unable to create");
+        	}
         }
         try {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -109,20 +110,17 @@ public class IdentifierBatchLoadService {
     private OrganizationIdentifierLoadReport createLoadReport(List<SyncOrganisationFact> organisationFacts) {
         OrganizationIdentifierLoadReport loadReport = new OrganizationIdentifierLoadReport();
         for (SyncOrganisationFact organisationFact : organisationFacts) {
-            loadReport.setAdd(loadReport.getAdd() + organisationFact.getAdd());
-            loadReport.setUpdate(loadReport.getUpdate() + organisationFact.getUpdate());
-            loadReport.setDelete(loadReport.getDelete() + organisationFact.getDelete());
-            loadReport.setEqual(loadReport.getEqual() + organisationFact.getEqual());
-            loadReport.setFailed(loadReport.getFailed() + organisationFact.getFailed());
+        	if (organisationFact == null) {
+        		loadReport.setFailed(loadReport.getFailed() + 1);
+        	} else {
+	            loadReport.setAdd(loadReport.getAdd() + organisationFact.getAdd());
+	            loadReport.setUpdate(loadReport.getUpdate() + organisationFact.getUpdate());
+	            loadReport.setDelete(loadReport.getDelete() + organisationFact.getDelete());
+	            loadReport.setEqual(loadReport.getEqual() + organisationFact.getEqual());
+	            loadReport.setFailed(loadReport.getFailed() + organisationFact.getFailed());
+        	}
         }
         return loadReport;
-    }
-
-    public String createReportMessage(List<OrganizationIdentifierLoadReport> loadReports) {
-        List<String> messages = loadReports.stream()
-                .map(object -> Objects.toString(object, null))
-                .collect(Collectors.toList());
-        return StringUtils.join(messages, "\n");
     }
 
 }

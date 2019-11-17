@@ -22,6 +22,7 @@ import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.dao.JournalOrganisationDaoRepository;
 import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
+import dk.erst.delis.task.identifier.load.csv.IdentifierListParseException;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReader;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -50,18 +51,23 @@ public class IdentifierLoadService {
 	@Autowired
 	private OrganisationSetupService organisationSetupService;
 
-	public SyncOrganisationFact loadCSV(String organisationCode, InputStream inputStream, String description) {
-		AbstractIdentifierStreamReader reader = new CSVIdentifierStreamReader(inputStream, StandardCharsets.ISO_8859_1, ';');
-		return load(organisationCode, reader, description);
-	}
-
-	public SyncOrganisationFact load(String organisationCode, AbstractIdentifierStreamReader reader, String description) {
+	public SyncOrganisationFact loadCSV(String organisationCode, InputStream inputStream, String description) throws IdentifierListParseException {
 		Organisation organisation = organisationDaoRepository.findByCode(organisationCode);
 		if (organisation == null) {
 			throw new RuntimeException("Not found organisation by code " + organisationCode);
 		}
 
 		long start = System.currentTimeMillis();
+		
+		AbstractIdentifierStreamReader reader;
+		try {
+			reader = new CSVIdentifierStreamReader(inputStream, StandardCharsets.ISO_8859_1, ';');
+		} catch (IdentifierListParseException e) {
+			String errorMessage = e.getMessage()+". File "+description;
+			saveJournalOrganisationMessage(organisation, errorMessage, System.currentTimeMillis() - start);
+			throw e;
+		}
+		
 		
 		OrganisationSetupData setupData = organisationSetupService.load(organisation);
 		boolean schedulePublish = false;
@@ -98,13 +104,13 @@ public class IdentifierLoadService {
 
 				stat.incrementTotal();
 
-				String identifierType = defineIdentifierType(identifier);
+				IdentifierValueType identifierType = defineIdentifierType(identifier);
 				if (identifierType != null) {
-					identifier.setType(identifierType);
+					identifier.setType(identifierType.getCode());
 					/*
 					 * If CVR does not start with DK prefix - add it.
 					 */
-					if (IdentifierValueType.DK_CVR.getCode().equals(identifierType)) {
+					if (IdentifierValueType.DK_CVR == identifierType) {
 						if (!identifier.getValue().startsWith("DK") && identifier.getValue().length() == 8) {
 							identifier.setValue("DK"+identifier.getValue());
 						}
@@ -142,7 +148,7 @@ public class IdentifierLoadService {
 							} else {
 								stat.incrementAdd();
 								
-								Organisation previousOrganisation = present.getOrganisation();
+								String previousOrganisationName = present.getOrganisation().getName();
 								
 								present.setOrganisation(organisation);
 								present.setName(identifier.getName());
@@ -154,7 +160,7 @@ public class IdentifierLoadService {
 
 								saveIdentifier(present);
 
-								saveJournalIdentifierMessage(organisation, identifier, "Moved deactivated from " + previousOrganisation + " by " + description);
+								saveJournalIdentifierMessage(organisation, present, "Moved from " + previousOrganisationName + " to " + organisation.getName() + " by " + description);
 							}
 						} else {
 						
@@ -246,7 +252,7 @@ public class IdentifierLoadService {
 		journalOrganisationDaoRepository.save(s);
 	}
 
-	protected String defineIdentifierType(Identifier identifier) {
+	public static IdentifierValueType defineIdentifierType(Identifier identifier) {
 		if (identifier == null) {
 			return null;
 		}
@@ -254,14 +260,14 @@ public class IdentifierLoadService {
 		if (value != null) {
 			if (value.length() == 13) {
 				if (value.matches("\\d{13}")) {
-					return IdentifierValueType.GLN.getCode();
+					return IdentifierValueType.GLN;
 				}
 			}
 			if (value.length() == 10 && value.matches("DK\\d{8}")) {
-				return IdentifierValueType.DK_CVR.getCode();
+				return IdentifierValueType.DK_CVR;
 			}
 			if (value.length() == 8 && value.matches("\\d{8}")) {
-				return IdentifierValueType.DK_CVR.getCode();
+				return IdentifierValueType.DK_CVR;
 			}
 		}
 		return null;
