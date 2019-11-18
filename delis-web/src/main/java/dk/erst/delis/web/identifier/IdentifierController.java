@@ -60,7 +60,7 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 
 	@RequestMapping("/identifier/list")
 	public String list(Model model, WebRequest webRequest) {
-		model.addAttribute("selectedIdList", new IdentifierStatusBachUdpateInfo());
+		model.addAttribute("selectedIdList", new IdentifierStatusBatchUpdateInfo());
 		model.addAttribute("statusList", IdentifierStatus.values());
 		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
 		
@@ -95,14 +95,14 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 			model.addAttribute("organisation", organisation);
 		}
 		model.addAttribute("identifierList", list);
-		model.addAttribute("selectedIdList", new IdentifierStatusBachUdpateInfo());
+		model.addAttribute("selectedIdList", new IdentifierStatusBatchUpdateInfo());
 		model.addAttribute("statusList", IdentifierStatus.values());
 		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
 		return "identifier/list";
 	}
 
 	@PostMapping("/identifier/updatestatuses")
-	public String listFilter(@ModelAttribute IdentifierStatusBachUdpateInfo idList, Model model) {
+	public String listFilter(@ModelAttribute IdentifierStatusBatchUpdateInfo idList, Model model) {
 		List<Long> ids = idList.getIdList();
 		IdentifierStatus status = idList.getStatus();
 		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();

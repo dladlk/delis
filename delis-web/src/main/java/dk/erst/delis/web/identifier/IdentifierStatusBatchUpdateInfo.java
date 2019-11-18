@@ -14,8 +14,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdentifierStatusBachUdpateInfo {
-    List<Long> idList = new ArrayList<>();
-    IdentifierStatus status;
-    IdentifierPublishingStatus publishStatus;
+public class IdentifierStatusBatchUpdateInfo {
+    private List<Long> idList = new ArrayList<>();
+    private IdentifierStatus status;
+    private IdentifierPublishingStatus publishStatus;
 }
