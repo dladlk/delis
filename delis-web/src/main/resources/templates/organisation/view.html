@@ -58,6 +58,10 @@
 					<div class="font-weight-bold">CSV file:</div>
 					<input type="file" name="file" class="form-control-file mt-2" id="file1" />
 					<input class="btn btn-primary btn-sm mt-2" type="submit" value="Upload" />
+					
+					<div class="mt-2">
+						<a th:href="@{/organisation/download/__${organisation.id}__}" class="btn btn-secondary btn-sm">Export</a>
+					</div>
 				</div>
 				
 				<div class="col-3">

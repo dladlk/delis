@@ -1,5 +1,9 @@
 package dk.erst.delis.web.organisation;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,6 +12,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -42,6 +51,7 @@ import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRul
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.web.RedirectUtil;
 import dk.erst.delis.web.accesspoint.AccessPointService;
 import dk.erst.delis.web.identifier.IdentifierService;
 import lombok.extern.slf4j.Slf4j;
@@ -386,5 +396,21 @@ public class OrganisationController {
 			}
 		}
 		return "redirect:/organisation/view/"+id;
+	}
+	
+	@GetMapping("/organisation/download/{id}")
+	public ResponseEntity<Object> identifierFileUpload(@PathVariable long id, RedirectAttributes ra) {
+		Organisation organisation = organisationService.findOrganisation(id);
+		if (organisation == null) {
+			ra.addFlashAttribute("errorMessage", "Organisation is not found by id " + id);
+			return RedirectUtil.redirectEntity("/organisation/list");
+		}
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		this.identifierLoadService.exportIdentifierList(organisation, out);
+		byte[] data = out.toByteArray();
+		BodyBuilder resp = ResponseEntity.ok();
+		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + organisation.getCode() + "_" + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) + ".csv\"");
+		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
+		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
 	}
 }

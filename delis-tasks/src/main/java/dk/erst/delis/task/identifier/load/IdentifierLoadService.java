@@ -1,9 +1,26 @@
 package dk.erst.delis.task.identifier.load;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
+
+import dk.erst.delis.dao.IdentifierDaoRepository;
+import dk.erst.delis.dao.IdentifierGroupDaoRepository;
+import dk.erst.delis.dao.JournalIdentifierDaoRepository;
+import dk.erst.delis.dao.JournalOrganisationDaoRepository;
+import dk.erst.delis.dao.OrganisationDaoRepository;
+import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.identifier.IdentifierGroup;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
@@ -13,17 +30,8 @@ import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierValueType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import dk.erst.delis.dao.IdentifierGroupDaoRepository;
-import dk.erst.delis.dao.IdentifierDaoRepository;
-import dk.erst.delis.dao.JournalIdentifierDaoRepository;
-import dk.erst.delis.dao.JournalOrganisationDaoRepository;
-import dk.erst.delis.dao.OrganisationDaoRepository;
-import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
-import dk.erst.delis.task.identifier.load.csv.IdentifierListParseException;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReader;
+import dk.erst.delis.task.identifier.load.csv.IdentifierListParseException;
 import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 
@@ -271,6 +279,32 @@ public class IdentifierLoadService {
 			}
 		}
 		return null;
+	}
+
+	public void exportIdentifierList(Organisation organisation, OutputStream out) {
+		try (Writer streamWriter = new OutputStreamWriter(out, StandardCharsets.ISO_8859_1)) {
+			ICSVWriter writer = new CSVWriterBuilder(streamWriter).withSeparator(';').build();
+			writer.writeNext(new String[] { "Number", "Name" });
+
+			boolean moreIdentifiers = false;
+			long previousId = 0;
+
+			int count = 0;
+			do {
+				List<Identifier> list = identifierDaoRepository.loadIdentifierList(organisation, previousId, PageRequest.of(0, 10));
+				moreIdentifiers = !list.isEmpty();
+				for (Identifier identifier : list) {
+					previousId = identifier.getId();
+					if (identifier.getStatus() == IdentifierStatus.ACTIVE) {
+						String[] res = new String[] { identifier.getValue(), identifier.getName() };
+						writer.writeNext(res);
+						count++;
+					}
+				}
+			} while (moreIdentifiers);
+			writer.writeNext(new String[] { String.valueOf(count) });
+		} catch (IOException e) {
+		}
 	}
 
 }
