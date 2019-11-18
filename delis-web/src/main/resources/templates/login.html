@@ -7,8 +7,16 @@
 </head>
 <body>
 <div class="col-6 offset-3">
-	
-	<div th:if="${param.error}" class="text-danger mb-2">Invalid username and password.</div>
+
+	<th:block th:if="${param.error}">
+		<div class="text-danger mb-2">
+		<th:block th:switch="${param.error.get(0)}">
+			<span th:case="'user'">You have no access to DELIS Setup Cockpit, please login to main DELIS web interface.</span>
+			<span th:case="*">Invalid username and password.</span>
+		</th:block>
+		</div>
+	</th:block>	
+
 	<div th:if="${param.logout}" class="text-success mb-2">You have been logged out.</div>
 	
 	<div class="card border-primary">
