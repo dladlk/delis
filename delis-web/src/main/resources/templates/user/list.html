@@ -10,17 +10,15 @@
 		<div class="card-body">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
-					<th>#</th>
 					<th>Login name</th>
 					<th>Organisation</th>
 					<th>Email</th>
 					<th>First name</th>
 					<th>Last name</th>
 					<th>IR Form</th>
-					<th></th>
+					<th>Actions</th>
 				</tr>
 				<tr th:each="user,iter : ${users}">
-					<td th:text="${user.id}"></td>
 					<td th:text="${user.username}"></td>
 					<td>
 						<a href="#" th:href="@{|/organisation/view/${user.organisation.id}|}" th:text="${user.organisation.code}" th:if="${user.organisation}"/>
@@ -29,11 +27,11 @@
 					<td th:text="${user.firstName}"></td>
 					<td th:text="${user.lastName}"></td>
 
-					<td th:text="${user.disabledIrForm != null && user.disabledIrForm ? '': 'Yes'}"></td>
+					<td th:text="${user.disabledIrForm != null && user.disabledIrForm ? 'Hidden': ''}"></td>
 					
 					<td>
-						<a href="#" th:href="@{|/users/update/${user.id}|}" th:text="Update"></a>
-						<a href="#" th:href="@{|/users/delete/${user.id}|}" th:text="Delete"></a>
+						<a href="#" class="mr-2" th:href="@{|/users/update/${user.id}|}" th:text="Update"></a>
+						<a href="#" th:href="@{|/users/delete/${user.id}|}" onclick="return confirm('Are you sure that you want to delete this user?')" th:text="Delete"></a>
 					</td>
 				</tr>
 			</table>
