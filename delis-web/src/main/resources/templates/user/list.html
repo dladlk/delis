@@ -19,7 +19,7 @@
 					<th>Actions</th>
 				</tr>
 				<tr th:each="user,iter : ${users}">
-					<td th:text="${user.username}"></td>
+					<td class="" th:text="${user.username}" th:classappend="${user.disabled?'delis-deactivated':''}"></td>
 					<td>
 						<a href="#" th:href="@{|/organisation/view/${user.organisation.id}|}" th:text="${user.organisation.code}" th:if="${user.organisation}"/>
 					</td>
@@ -31,7 +31,8 @@
 					
 					<td>
 						<a href="#" class="mr-2" th:href="@{|/user/update/${user.id}|}" th:text="Update"></a>
-						<a href="#" th:href="@{|/user/delete/${user.id}|}" onclick="return confirm('Are you sure that you want to deactivate this user?')" th:text="Deactivate"></a>
+						<a href="#" th:href="@{|/user/deactivate/${user.id}|}" th:if="${!user.disabled}" onclick="return confirm('Are you sure that you want to deactivate this user?')" th:text="Deactivate"></a>
+						<a href="#" th:href="@{|/user/activate/${user.id}|}" th:if="${user.disabled}" onclick="return confirm('Are you sure that you want to activate this user?')" th:text="Activate"></a>
 					</td>
 				</tr>
 			</table>

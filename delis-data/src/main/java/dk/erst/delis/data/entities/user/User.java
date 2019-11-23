@@ -45,4 +45,7 @@ public class User extends AbstractCreateUpdateEntity {
 	
 	@Column(nullable = true)
 	private Boolean disabledIrForm;
+
+	@Column
+	private boolean disabled;
 }

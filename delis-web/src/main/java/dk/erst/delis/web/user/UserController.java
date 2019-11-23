@@ -60,8 +60,19 @@ public class UserController {
 		return "user/edit";
 	}
 
-	@GetMapping("/delete/{id}")
-	public String disable(@PathVariable long id, RedirectAttributes ra) {
+	@GetMapping("/deactivate/{id}")
+	public String deactivate(@PathVariable long id, RedirectAttributes ra) {
+		if (userService.deactivateUser(id)) {
+			ra.addFlashAttribute("message", "User is deactivated");
+		}
+		return "redirect:/user/list";
+	}
+
+	@GetMapping("/activate/{id}")
+	public String activate(@PathVariable long id, RedirectAttributes ra) {
+		if (userService.activateUser(id)) {
+			ra.addFlashAttribute("message", "User is activated");
+		}
 		return "redirect:/user/list";
 	}
 

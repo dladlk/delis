@@ -94,8 +94,28 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public void deleteUser(Long id) {
-		userRepository.delete(findOne(id));
+	public boolean deactivateUser(Long id) {
+		User user = userRepository.findById(id).orElse(null);
+		if (user != null) {
+			if (!user.isDisabled()) {
+				user.setDisabled(true);
+				userRepository.save(user);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean activateUser(Long id) {
+		User user = userRepository.findById(id).orElse(null);
+		if (user != null) {
+			if (user.isDisabled()) {
+				user.setDisabled(false);
+				userRepository.save(user);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private User findOne(Long id) {
