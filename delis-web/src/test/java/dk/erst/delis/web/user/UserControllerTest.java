@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,7 +45,9 @@ public class UserControllerTest {
         for (int i = 0; i < 4; i++) {
             UserData user = new UserData();
             user.setUsername("test_user_" + i);
-            user.setPassword("pass" + i);
+            user.setPassword("Systest" + i+"_");
+            user.setFirstName("Test");
+            user.setLastName("Test");
             user.setEmail("test" + i + "@test.com");
             userService.saveOrUpdateUser(user);
         }
@@ -64,13 +67,13 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testCreateGet() throws Exception {
-        this.mockMvc.perform(get("/users/create")).andExpect(view().name("user/edit"));
+        this.mockMvc.perform(get("/user/create")).andExpect(view().name("user/edit"));
     }
 
     @Test
     @WithMockUser(username = "delis")
     public void testList() throws Exception {
-        this.mockMvc.perform(get("/users/list")).andExpect(status().isOk())
+        this.mockMvc.perform(get("/user/list")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("test_user_1")))
                 .andExpect(content().string(containsString("test_user_3")));
     }
@@ -78,11 +81,14 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = "delis")
     public void testCreatePost() throws Exception {
-        this.mockMvc.perform(post("/users/create")
+        this.mockMvc.perform(post("/user/save")
                 .param("username", "new_user")
-                .param("password", "new_pass")
+                .param("password", "Systest1_")
+                .param("password2", "Systest1_")
+                .param("firstName", "First")
+                .param("lastName", "Last")
                 .param("email", "new_user@test.com"))
-                .andExpect(redirectedUrl("/users/list"));
+                .andExpect(redirectedUrl("/user/list"));
     }
 
     @Test
@@ -90,21 +96,23 @@ public class UserControllerTest {
     public void testUpdateGet() throws Exception {
         User test_user = userService.findUserByUsername("test_user_0");
         Long id = test_user.getId();
-        this.mockMvc.perform(get("/users/update/" + id))
-                .andExpect(view().name("user/update"));
+        this.mockMvc.perform(get("/user/update/" + id))
+                .andExpect(view().name("user/edit"));
     }
 
     @Test
     @WithMockUser(username = "delis")
     public void testUpdatePost() throws Exception {
         User user = userService.findUserByUsername("test_user_0");
-        this.mockMvc.perform(post("/users/update")
+        this.mockMvc.perform(post("/user/save")
                 .param("id", "" + user.getId())
                 .param("username", user.getUsername())
-                .param("password", user.getPassword())
+                .param("password", "Systest1_")
+                .param("password2", "Systest1_")
                 .param("email", user.getEmail())
-                .param("lastName", "new_not_empty_last_name"))
-                .andExpect(redirectedUrl("/users/list"));
+                .param("lastName", "new_not_empty_last_name")
+        		.param("firstName", "new_not_empty_first_name"))
+                .andExpect(redirectedUrl("/user/list"));
 
         User updated = userService.findUserByUsername("test_user_0");
         Assert.assertEquals("new_not_empty_last_name", updated.getLastName());
@@ -113,15 +121,20 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username = "delis")
-    public void testDelete() throws Exception {
+    public void testDeactivateActivate() throws Exception {
         User userToDelete = userService.findUserByUsername("user_to_delete");
-
+        assertFalse(userToDelete.isDisabled());
         Assert.assertNotNull(userToDelete);
 
-        this.mockMvc.perform(get("/users/delete/" + userToDelete.getId())).andExpect(view().name("user/list"));
+        this.mockMvc.perform(get("/user/deactivate/" + userToDelete.getId())).andExpect(redirectedUrl("/user/list"));
 
         User deletedUser = userService.findUserByUsername("user_to_delete");
-        Assert.assertNull(deletedUser);
+        Assert.assertTrue(deletedUser.isDisabled());
+
+        this.mockMvc.perform(get("/user/activate/" + userToDelete.getId())).andExpect(redirectedUrl("/user/list"));
+        
+        deletedUser = userService.findUserByUsername("user_to_delete");
+        Assert.assertFalse(deletedUser.isDisabled());
     }
 
     @After
