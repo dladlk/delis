@@ -34,7 +34,6 @@ public class User extends AbstractCreateUpdateEntity {
 	private String lastName;
 
 	@Email
-	@Column(unique = true)
 	private String email;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)

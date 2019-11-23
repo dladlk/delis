@@ -21,4 +21,5 @@
     <include file="changes/changelog-1.12-add_document_export.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.13-expand_document_add_receiverEmail_senderEmail.xml" relativeToChangelogFile="true"/>
     <include file="changes/changelog-1.14-expand_organisation_add_deactivated.xml" relativeToChangelogFile="true"/>
+    <include file="changes/changelog-1.15-user_allow_duplicate_email.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
