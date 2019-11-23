@@ -34,7 +34,7 @@ public class AccessPointController {
     }
 
     @PostMapping("save")
-    public String createNew(AccessPointData accessPoint, Model model) throws Exception {
+    public String save(AccessPointData accessPoint, Model model) throws Exception {
     	ValidationResultData validationResultData = service.validate(accessPoint);
 		if (!validationResultData.isAllValid()) {
 			model.addAttribute("errorMessage", "Some fields are not valid");

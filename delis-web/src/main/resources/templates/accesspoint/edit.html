@@ -15,10 +15,8 @@
 				<div class="form-group row">
 					<label class="col-sm-2 col-form-label">URL* :</label>
 					<div class="col-sm-8">
-						<input id="url" type="text" th:field="*{url}" placeholder="Access point URL" class="form-control" th:classappend="${(validation != null && validation?.isInvalid('url'))?'is-invalid':''}" required="true"/>
-						<div class="invalid-feedback" th:if="${validation?.isInvalid('url')}">
-							<div th:each="e: ${validation?.getErrorList('url')}" th:text="${e}">Error message</div>
-						</div>							   
+						<input id="url" type="text" th:field="*{url}" placeholder="Access point URL" class="form-control" th:classappend="${@invalids.append(validation, 'url')}" required="true"/>
+						<div th:replace="~{fragments/misc :: errors('url')}"/>
 					</div>
 				</div>
 
