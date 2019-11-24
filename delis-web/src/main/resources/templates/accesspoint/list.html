@@ -13,10 +13,9 @@
 					<th>URL</th>
 					<th>Type</th>
 					<th>Certificate</th>
-					<th>Service description</th>
-					<th>Technical contact url</th>
-					<th>update</th>
-					<th>delete</th>
+					<th>Description</th>
+					<th>Technical contact</th>
+					<th>Actions</th>
 				</tr>
 				<tr th:each="accessPoint,iter : ${accessPointList}">
 					<td th:text="${accessPoint.url}"></td>
@@ -24,8 +23,10 @@
 					<td th:text="${accessPoint.certificate}"></td>
 					<td th:text="${accessPoint.serviceDescription}"></td>
 					<td th:text="${accessPoint.technicalContactUrl}"></td>
-					<td><a href="#" th:href="@{|/accesspoint/update/${accessPoint.id}|}" th:text="Update"></a></td>
-					<td><a href="#" th:href="@{|/accesspoint/delete/${accessPoint.id}|}" onclick="return confirm('Are you sure that you want to delete this access point?')" th:text="Delete"></a></td>
+					<td>
+						<a class="mr-2" href="#" th:href="@{|/accesspoint/update/${accessPoint.id}|}" th:text="Update"></a>
+						<a class="mr-2"href="#" th:href="@{|/accesspoint/delete/${accessPoint.id}|}" onclick="return confirm('Are you sure that you want to delete this access point?')" th:text="Delete"></a>
+					</td>
 				</tr>
 			</table>
 		</div>
