@@ -40,7 +40,7 @@ public class RuleService {
 	private List<RuleDocumentValidation> buildValidationRuleList() {
 		List<RuleDocumentValidation> l = new ArrayList<>();
 
-		Iterable<RuleDocumentValidation> all = validationRuleService.findAll();
+		Iterable<RuleDocumentValidation> all = validationRuleService.findAllActive();
 		all.iterator().forEachRemaining(l::add);
 
 		return l;

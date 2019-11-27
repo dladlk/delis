@@ -82,4 +82,8 @@ public class ValidationRuleService {
         repository.saveAll(defaultValidationRuleList);
     }
 
+	public Iterable<RuleDocumentValidation> findAllActive() {
+		return repository.findAllByActive(true);
+	}
+
 }

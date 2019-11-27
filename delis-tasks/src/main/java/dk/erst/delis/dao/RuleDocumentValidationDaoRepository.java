@@ -5,4 +5,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface RuleDocumentValidationDaoRepository extends PagingAndSortingRepository<RuleDocumentValidation, Long> {
 
+	Iterable<RuleDocumentValidation> findAllByActive(boolean active);
+
 }
