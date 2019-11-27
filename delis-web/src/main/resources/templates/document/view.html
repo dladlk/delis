@@ -121,8 +121,8 @@
 							<tr th:each="errorDictionary : ${errorListByJournalDocumentIdMap.get(r.id)}">
 								<td th:text="${errorDictionary.flag}"></td>
 								<td><a href="" th:href="@{/errordict/view/__${errorDictionary.errorDictionaryId}__(back=@{/document/view/__${document.id}__})}" th:text="${errorDictionary.code}"></td>
-								<td th:text="${errorDictionary.message}"></td>
-								<td th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 100)}"></td>
+								<td class="force-break-all" th:text="${errorDictionary.message}"></td>
+								<td class="force-break-all" th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 100)}"></td>
 							</tr>
 						</table>
 					</td>

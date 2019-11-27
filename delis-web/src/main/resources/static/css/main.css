@@ -10,7 +10,7 @@ ul.org-smp-setup, ul.on-error-setup, ul.none-list-style {
 	list-style: none;
 }
 ul.org-smp-setup li ul li {
-	word-break: break-all
+	word-break: break-all;
 }	
 /* END Organisation setup */
 .cursor-pointer {
@@ -20,6 +20,10 @@ ul.org-smp-setup li ul li {
 .document-error {
 	color: red;
 }
+
+.force-break-all {
+	word-break: break-all;
+} 
 
 .no-wrap {
 	white-space: nowrap;
