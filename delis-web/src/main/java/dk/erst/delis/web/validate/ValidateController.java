@@ -28,6 +28,7 @@ import dk.erst.delis.task.document.parse.DocumentInfoService.DocumentInfoData;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
 import dk.erst.delis.task.document.process.TransformationResultListener;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import lombok.Getter;
 import lombok.Setter;
@@ -110,7 +111,10 @@ public class ValidateController {
 
 			if (tempFile != null) {
 				try {
+					result.setFileSize(tempFile.length());
 					if (ingoingDocumentFormat == null) {
+						DocumentProcessStep step = DocumentProcessStep.buildDefineFormatStep();
+						
 						infoData = documentInfoService.documentInfoData(tempFile.toPath(), tempFile);
 						DocumentFormat documentFormat = documentInfoService.defineDocumentFormat(infoData.getDocumentInfo());
 
@@ -118,11 +122,24 @@ public class ValidateController {
 						result.setDocumentFormatDetected(true);
 						
 						tempFile = infoData.getFile();
+
+						if (documentFormat.isUnsupported()) {
+							DocumentProcessLog plog = new DocumentProcessLog();
+							plog.setResultPath(tempFile.toPath());
+
+							step.fillDefineFormatError(infoData.getDocumentInfo());
+							
+							plog.addStep(step);
+
+							result.setProcessLog(plog);
+							resultList.add(result);
+
+							continue;
+						}
 					} else {
 						result.setDocumentFormat(ingoingDocumentFormat);
 					}
 
-					result.setFileSize(tempFile.length());
 					Document document = new Document();
 					document.setIngoingDocumentFormat(result.getDocumentFormat());
 

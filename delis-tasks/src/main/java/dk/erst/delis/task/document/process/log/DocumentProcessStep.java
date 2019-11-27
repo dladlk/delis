@@ -5,10 +5,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentErrorCode;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -85,5 +88,23 @@ public class DocumentProcessStep {
 
 	public void addError (ErrorRecord error) {
 		errorRecords.add(error);
+	}
+	
+	public static DocumentProcessStep buildDefineFormatStep() {
+		return new DocumentProcessStep("Define format", DocumentProcessStepType.RESOLVE_TYPE);
+	}
+
+	public void fillDefineFormatError(DocumentInfo info) {
+		String description = info != null ? info.toFormatDescription() : "";
+		String location = null;
+		if (info != null && info.getRoot() != null) {
+			if (StringUtils.isNotBlank(info.getRoot().getRootTag())) {
+				location = "/" + info.getRoot().getRootTag();
+			}
+		}
+		ErrorRecord error = new ErrorRecord(DocumentErrorCode.OTHER, "Format", "Unsupported format: " + description, "fatal", location);
+		this.addError(error);
+		this.setSuccess(false);
+		this.done();		
 	}
 }
