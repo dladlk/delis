@@ -38,23 +38,19 @@ public class RuleService {
 	}
 	
 	private List<RuleDocumentValidation> buildValidationRuleList() {
-		List<RuleDocumentValidation> l = new ArrayList<>();
-
-		Iterable<RuleDocumentValidation> all = validationRuleService.findAllActive();
-		all.iterator().forEachRemaining(l::add);
-
-		return l;
+		return toList(validationRuleService.findAllActive());
 	}
 
 	private List<RuleDocumentTransformation> buildTransformationRuleList() {
-		List<RuleDocumentTransformation> l = new ArrayList<>();
-
-		Iterable<RuleDocumentTransformation> all = transformationRuleService.findAll();
-		all.iterator().forEachRemaining(l::add);
-
-		return l;
+		return toList(transformationRuleService.findAllActive());
 	}
 
+	private static <T> List<T> toList(Iterable<T> iterable) {
+		List<T> l = new ArrayList<>();
+		iterable.iterator().forEachRemaining(l::add);
+		return l;
+	}
+	
 	public List<RuleDocumentValidation> getValidationList() {
 		return this.validationList;
 	}
@@ -65,6 +61,14 @@ public class RuleService {
 
 	public void refreshTransformationList () {
 		transformationList = buildTransformationRuleList();
+	}
+	
+	public List<RuleDocumentValidation> loadDbValidationList() {
+		return toList(validationRuleService.findAll());
+	}
+
+	public List<RuleDocumentTransformation> loadDbTransformationList() {
+		return toList(transformationRuleService.findAll());
 	}
 
 	public List<RuleDocumentValidation> getValidationRuleListByFormat(DocumentFormat format) {
@@ -99,6 +103,14 @@ public class RuleService {
 				.findFirst();
 
 		return findFirst.orElse(null);
+	}
+	
+	public Path getStorageValidationPath() {
+		return configBean.getStorageValidationPath();
+	}
+
+	public Path getStorageTransformationPath() {
+		return configBean.getStorageTransformationPath();
 	}
 	
 	public Path filePath(RuleDocumentValidation r) {

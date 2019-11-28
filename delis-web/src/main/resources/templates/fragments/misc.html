@@ -17,4 +17,14 @@
 		</div>
 	</div>
 
+	<div th:fragment="form-select (field, name, list)" class="form-group row" th:with="required = ${#ctx.containsVariable('required')}?${required}: true, type = ${#ctx.containsVariable('type')}?${type}:'text'">
+		<label class="col-2 col-form-label"><span th:text="${name + (required?'* ': '')}"/>:</label>
+		<div class="col-10">
+			<select th:field="*{__${field}__}"  class="form-control" th:errorclass="is-invalid">
+				<option th:each="format : ${__${list}__}" th:text="${format}" th:value="${format}"></option>
+			</select>
+			<div th:replace=":: has-errors (field='__${field}__')"></div>
+		</div>
+	</div>
+
 </body>

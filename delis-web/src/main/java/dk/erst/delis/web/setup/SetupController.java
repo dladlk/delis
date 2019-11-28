@@ -34,8 +34,8 @@ public class SetupController {
 		model.addAttribute("configValuesList", setupService.createConfigValuesList(configBean));
 		model.addAttribute("configBean", configBean);
 		model.addAttribute("configList", setupService.getAllTypesFromDB());
-		model.addAttribute("validationRuleList", validationRuleService.loadRulesList());
-		model.addAttribute("transformationRuleList", transformationRuleService.loadRulesList());
+		model.addAttribute("validationRuleList", validationRuleService.loadForSetup());
+		model.addAttribute("transformationRuleList", transformationRuleService.loadForSetup());
 		return "/setup/index";
 	}
 

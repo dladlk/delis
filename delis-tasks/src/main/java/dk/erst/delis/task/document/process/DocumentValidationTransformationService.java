@@ -97,6 +97,12 @@ public class DocumentValidationTransformationService {
 
 		DocumentFormatFamily formatFamily = documentFormat.getDocumentFormatFamily();
 		RuleDocumentTransformation transformationRule = ruleService.getTransformation(formatFamily);
+		
+		if (transformationRule == null) {
+			plog.setLastDocumentFormat(documentFormat);
+			return;
+		}
+		
 		Path xmlOutPath = null;
 		if (transformationRule != null) {
 			String prefix = "transformation_" + formatFamily + "_to_" + transformationRule.getDocumentFormatFamilyTo();

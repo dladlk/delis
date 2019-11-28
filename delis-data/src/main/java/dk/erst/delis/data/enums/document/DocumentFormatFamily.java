@@ -9,5 +9,12 @@ public enum DocumentFormatFamily implements Named {
 	public String getCode() {
 		return this.name();
 	}
-	
+
+	public boolean isTransformable() {
+		return this == CII || this == BIS3 || this == OIOUBL;
+	}
+
+	public boolean isUnsupported() {
+		return this == UNSUPPORTED;
+	}
 }

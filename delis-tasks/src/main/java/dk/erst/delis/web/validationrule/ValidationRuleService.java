@@ -86,4 +86,7 @@ public class ValidationRuleService {
 		return repository.findAllByActive(true);
 	}
 
+	public List<RuleDocumentValidation> loadForSetup() {
+		return repository.loadAllSorted();
+	}
 }

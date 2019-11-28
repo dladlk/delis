@@ -36,6 +36,10 @@ public class TransformationRuleService {
         return repository.findAll();
     }
 
+	public Iterable<RuleDocumentTransformation> findAllActive() {
+		return repository.findAllByActive(true);
+	}
+
     public List<RuleDocumentTransformationData> loadRulesList() {
         Iterable<RuleDocumentTransformation> list = repository.findAll();
         List<RuleDocumentTransformationData> dtoList = new ArrayList<>();
@@ -81,4 +85,8 @@ public class TransformationRuleService {
         repository.saveAll(defaultTransformationRuleList);
 
     }
+
+	public List<RuleDocumentTransformation> loadForSetup() {
+		return repository.loadAllSorted();
+	}
 }
