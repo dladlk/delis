@@ -69,6 +69,10 @@ public class ValidateController {
 
 			@RequestParam(name = "validateFormat", required = false) String validateFormatName,
 
+			@RequestParam(name = "continueOnError", required = false) boolean continueOnError,
+			
+			@RequestParam(name = "skipPEPPOL", required = false) boolean skipPEPPOL,
+
 			Model model,
 
 			WebRequest webRequest,
@@ -153,7 +157,7 @@ public class ValidateController {
 							 */
 						}
 					};
-					DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener);
+					DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener, !continueOnError, skipPEPPOL);
 					result.setProcessLog(plog);
 
 					resultList.add(result);

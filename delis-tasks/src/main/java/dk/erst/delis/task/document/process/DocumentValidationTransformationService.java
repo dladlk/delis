@@ -19,6 +19,7 @@ import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
+import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.XSLTUtil;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
@@ -43,15 +44,18 @@ public class DocumentValidationTransformationService {
 		this.ruleService = ruleService;
 		this.documentParseService = documentParseService;
 	}
-
 	public DocumentProcessLog process(Document document, Path xmlLoadedPath, OrganisationReceivingFormatRule receivingFormatRule, TransformationResultListener transformationResultListener) {
+		return this.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener, true, false);
+	}
+	
+	public DocumentProcessLog process(Document document, Path xmlLoadedPath, OrganisationReceivingFormatRule receivingFormatRule, TransformationResultListener transformationResultListener, boolean stopOnFirstError, boolean skipPEPPOL) {
 		DocumentFormat ingoingDocumentFormat = document.getIngoingDocumentFormat();
 		DocumentProcessLog plog = new DocumentProcessLog();
 
 		plog.setResultPath(xmlLoadedPath);
 
 		try {
-			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat, receivingFormatRule, transformationResultListener);
+			processAllFormats(plog, xmlLoadedPath, ingoingDocumentFormat, receivingFormatRule, transformationResultListener, stopOnFirstError, skipPEPPOL);
 		} catch (Exception e) {
 			log.error("Failed to process all formats on document " + document + " by path " + xmlLoadedPath, e);
 		}
@@ -59,14 +63,20 @@ public class DocumentValidationTransformationService {
 		return plog;
 	}
 
-	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule, TransformationResultListener transformationListener) {
+	private void processAllFormats(DocumentProcessLog plog, Path xmlPath, DocumentFormat documentFormat, OrganisationReceivingFormatRule receivingFormatRule, TransformationResultListener transformationListener, boolean stopOnFirstError, boolean skipPEPPOL) {
 		List<RuleDocumentValidation> ruleByFormat = ruleService.getValidationRuleListByFormat(documentFormat);
 		for (RuleDocumentValidation ruleDocumentValidation : ruleByFormat) {
+			if (skipPEPPOL && ruleDocumentValidation.getValidationType() == RuleDocumentValidationType.SCHEMATRON) {
+				String schematronPath = ruleDocumentValidation.getRootPath();
+				if (schematronPath != null && schematronPath.contains("PEPPOL")) {
+					continue;
+				}
+			}
 			try (InputStream xmlStream = new BufferedInputStream(new FileInputStream(xmlPath.toFile()), (int)xmlPath.toFile().length())) {
 				xmlStream.mark(Integer.MAX_VALUE);
 				DocumentProcessStep step = validateByRule(xmlStream, ruleDocumentValidation);
 				plog.addStep(step);
-				if (!step.isSuccess()) {
+				if (!step.isSuccess() && stopOnFirstError) {
 					plog.setLastDocumentFormat(documentFormat);
 					return;
 				}
@@ -112,7 +122,7 @@ public class DocumentValidationTransformationService {
 			}
 		}
 
-		processAllFormats(plog, xmlOutPath, resultFormat, receivingFormatRule, transformationListener);
+		processAllFormats(plog, xmlOutPath, resultFormat, receivingFormatRule, transformationListener, stopOnFirstError, skipPEPPOL);
 	}
 
 	protected DocumentFormat identifyResultFormat(DocumentProcessLog plog, Path xmlPath) {
