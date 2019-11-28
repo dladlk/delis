@@ -53,7 +53,7 @@
 								<td> <span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>  </td>
 								<td class="no-wrap" th:text="${errorDictionary.code}"></td>
 								<td class="force-break-all" th:text="${errorDictionary.message}"></td>
-								<td class="force-break-all" th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 500)}"></td>
+								<td class="force-break-word" th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 500)}"></td>
 							</tr>
 						</table>
 					</td>

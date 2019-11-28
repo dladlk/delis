@@ -23,7 +23,10 @@ ul.org-smp-setup li ul li {
 
 .force-break-all {
 	word-break: break-all;
-} 
+}
+.force-break-word {
+	word-wrap: break-word;
+}  
 
 .no-wrap {
 	white-space: nowrap;
