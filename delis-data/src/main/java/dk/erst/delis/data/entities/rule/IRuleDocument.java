@@ -6,4 +6,6 @@ public interface IRuleDocument {
 	
 	public boolean isEqualData(IRuleDocument rule);
 	
+	public boolean isActive();
+	
 }

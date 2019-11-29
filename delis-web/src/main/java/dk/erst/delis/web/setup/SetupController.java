@@ -69,6 +69,11 @@ public class SetupController {
 				if (cachedRule.isEqualData(dbRule)) {
 					noChangeByCache = true;
 				}
+			} else if (!dbRule.isActive()) {
+				/*
+				 * Cache contains only active rules, so if db rule is absent in cache but is inactive - we consider as no change in cache
+				 */
+				noChangeByCache = true;
 			}
 			if (!noChangeByCache) {
 				set.add(dbRule.getId());
