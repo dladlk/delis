@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class RuleDocumentValidation extends AbstractCreateUpdateEntity {
+public class RuleDocumentValidation extends AbstractCreateUpdateEntity implements IRuleDocument {
 
 	@Column(nullable = false)
 	private boolean active;
@@ -64,5 +64,24 @@ public class RuleDocumentValidation extends AbstractCreateUpdateEntity {
 			}
 		}
 		return DocumentErrorCode.OTHER;
+	}
+
+	public boolean isEqualData(IRuleDocument rd) {
+		if (!(rd instanceof RuleDocumentValidation)) {
+			return false;
+		}
+		RuleDocumentValidation r = (RuleDocumentValidation)rd;
+		
+		if (this.active != r.active)
+			return false;
+		if (this.documentFormat != r.documentFormat)
+			return false;
+		if (this.priority != r.priority)
+			return false;
+		if (this.validationType != r.validationType)
+			return false;
+		if (!this.rootPath.equals(r.rootPath))
+			return false;
+		return true;
 	}
 }

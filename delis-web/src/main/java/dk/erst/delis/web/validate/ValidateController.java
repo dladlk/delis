@@ -21,15 +21,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.task.document.parse.DocumentInfoService;
+import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.DocumentInfoService.DocumentInfoData;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
+import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.task.document.process.TransformationResultListener;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
+import dk.erst.delis.web.transformationrule.TransformationRuleService;
+import dk.erst.delis.web.validationrule.ValidationRuleService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +51,16 @@ public class ValidateController {
 	@Autowired
 	private DocumentInfoService documentInfoService;
 
+	@Autowired
+	private ConfigBean configBean;
+	@Autowired
+	private ValidationRuleService validationRuleService;
+	@Autowired
+	private TransformationRuleService transformationRuleService;
+	@Autowired
+	private DocumentParseService documentParseService;
+
+	
 	@RequestMapping("/validate/index")
 	public String index(Model model, WebRequest webRequest) {
 
@@ -73,12 +88,14 @@ public class ValidateController {
 			
 			@RequestParam(name = "skipPEPPOL", required = false) boolean skipPEPPOL,
 
+			@RequestParam(name = "useDbRules", required = false) boolean useDbRules,
+
 			Model model,
 
 			WebRequest webRequest,
 
 			RedirectAttributes redirectAttributes) {
-
+		
 		DocumentFormat ingoingDocumentFormat = null;
 		if (!StringUtils.isEmpty(validateFormatName)) {
 			ingoingDocumentFormat = DocumentFormat.valueOf(validateFormatName);
@@ -157,7 +174,12 @@ public class ValidateController {
 							 */
 						}
 					};
-					DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener, !continueOnError, skipPEPPOL);
+					DocumentValidationTransformationService service = documentValidationTransformationService;
+					if (useDbRules) {
+						RuleService ruleService = new RuleService(configBean, validationRuleService, transformationRuleService);
+						service =new DocumentValidationTransformationService(ruleService, documentParseService);
+					}
+					DocumentProcessLog plog = service.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener, !continueOnError, skipPEPPOL);
 					result.setProcessLog(plog);
 
 					resultList.add(result);
