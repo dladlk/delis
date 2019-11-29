@@ -104,14 +104,18 @@ public class ValidationRuleController {
     }
 
     @GetMapping("createdefault")
-    public String createDefault(Model model) {
+    public String createDefault(RedirectAttributes ra) {
         service.recreateDefault();
+        
+        ra.addFlashAttribute("message", "Default validation rules are recreated.");
+        
         return "redirect:/setup/index";
     }
 
     @GetMapping("flushcache")
-    public String flushCache(Model model) {
+    public String flushCache(RedirectAttributes ra) {
         ruleService.refreshValidationList();
+        ra.addFlashAttribute("message", "Validation rule cache is flushed.");
         return "redirect:/setup/index";
     }
 }

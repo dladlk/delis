@@ -23,6 +23,7 @@ import dk.erst.delis.data.enums.config.ConfigValueType;
 import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
+import lombok.Getter;
 
 @Controller
 public class SetupController {
@@ -53,15 +54,25 @@ public class SetupController {
 		model.addAttribute("validationRuleList", valRules);
 		model.addAttribute("transformationRuleList", transRules);
 		
-		model.addAttribute("validationRuleChange", buildChangedRuleMap(valRules, ruleService.getValidationList()));
-		model.addAttribute("transformationRuleChange", buildChangedRuleMap(transRules, ruleService.getTransformationList()));
+		model.addAttribute("validationChange", buildChangedRuleMap(valRules, ruleService.getValidationList()));
+		model.addAttribute("transformationChange", buildChangedRuleMap(transRules, ruleService.getTransformationList()));
 		
 		return "/setup/index";
 	}
 	
-	private static <T extends IRuleDocument> Set<Long> buildChangedRuleMap(List<T> rules, List<T> cachedList) {
-		Set<Long> set = new HashSet<Long>();
+	@Getter
+	private static class ChangeRuleData {
+		private Set<Long> idSet = new HashSet<Long>();
+		private boolean someRulesDeleted;
+	}
+	
+	private static <T extends IRuleDocument> ChangeRuleData buildChangedRuleMap(List<T> rules, List<T> cachedList) {
+		ChangeRuleData res = new ChangeRuleData();
+		Set<Long> set = res.idSet;
+		
+		Set<Long> dbRuleAllIdSet = new HashSet<Long>();
 		for (T dbRule : rules) {
+			dbRuleAllIdSet.add(dbRule.getId());
 			boolean noChangeByCache = false;
 			Optional<T> byId = cachedList.stream().filter(s -> s.getId().equals(dbRule.getId())).findAny();
 			if (byId.isPresent()) {
@@ -79,7 +90,14 @@ public class SetupController {
 				set.add(dbRule.getId());
 			}
 		}
-		return set;
+		
+		cachedList.forEach(c -> {
+			if (!dbRuleAllIdSet.contains(c.getId())) {
+				res.someRulesDeleted = true;
+			}
+		});
+		
+		return res;
 	}
 
 

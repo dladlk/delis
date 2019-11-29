@@ -83,8 +83,11 @@ public class TransformationRuleController {
     }
 
     @GetMapping("createdefault")
-    public String createDefault(Model model) {
+    public String createDefault(RedirectAttributes ra) {
         service.recreateDefault();
+        
+        ra.addFlashAttribute("message", "Default transformation rules are recreated.");
+        
         return "redirect:/setup/index";
     }
 
@@ -108,8 +111,9 @@ public class TransformationRuleController {
     }
 
     @GetMapping("flushcache")
-    public String flushCache(Model model) {
+    public String flushCache(RedirectAttributes ra) {
         ruleService.refreshTransformationList();
+        ra.addFlashAttribute("message", "Transformation rule cache is flushed.");
         return "redirect:/setup/index";
     }
 }
