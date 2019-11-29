@@ -49,15 +49,15 @@
 		<div class="card-body table-responsive">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
-					<th>Type</th>
 					<th>Document format</th>
+					<th>Type</th>
 					<th>Priority</th>
 					<th>Path</th>
 					<th style="width: 120px;">Actions</th>
 				</tr>
 				<tr th:each="validationRule,iter : ${validationRuleList}" class="" th:classappend="${validationRuleChange.contains(validationRule.id)?'rule-changed':''}">
-					<td th:text="${validationRule.validationType}"></td>
 					<td th:text="${validationRule.documentFormat}"></td>
+					<td th:text="${validationRule.validationType}"></td>
 					<td th:text="${validationRule.priority}"></td>
 					<td th:text="${validationRule.rootPath}" class="" th:classappend="${validationRule.active?'':'delis-deactivated'}" ></td>
 					<td>

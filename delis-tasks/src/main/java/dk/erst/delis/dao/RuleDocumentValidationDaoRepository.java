@@ -11,6 +11,6 @@ public interface RuleDocumentValidationDaoRepository extends PagingAndSortingRep
 
 	Iterable<RuleDocumentValidation> findAllByActive(boolean active);
 
-	@Query("select s from RuleDocumentValidation s order by s.validationType desc, s.documentFormat asc, s.priority asc")
+	@Query("select s from RuleDocumentValidation s order by s.documentFormat asc, s.validationType desc, s.priority asc")
 	List<RuleDocumentValidation> loadAllSorted();
 }
