@@ -309,7 +309,7 @@
             var cd = {};
             $.each(this.attributes, function () {
                 if (this.specified) {
-                    if (this.name.startsWith('dt-')) {
+                    if (startsWith(this.name, 'dt-')) {
                         cd[this.name.substring(3)] = buildColumnAttributeValue(this.name, this.value);
                         return;
                     }
@@ -336,7 +336,7 @@
         if (value === 'true' || value === 'false') {
             return eval(value);
         }
-        if (name.endsWith('-json')) {
+        if (endsWith(name, '-json')) {
             return eval('(' + value + ')');
         }
         return value;
@@ -400,5 +400,17 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         };
     }
+    
+    function startsWith(str, search, rawPos) {
+        var pos = rawPos > 0 ? rawPos|0 : 0;
+        return str.substring(pos, pos + search.length) === search;
+    }
+    
+	function endsWith(str, search, this_len) {
+		if (this_len === undefined || this_len > this.length) {
+			this_len = str.length;
+		}
+		return str.substring(this_len - search.length, this_len) === search;
+	}
 
 }());
