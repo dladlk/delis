@@ -4,25 +4,53 @@
       th:replace="~{fragments/layout :: layout (~{::body})}"
 >
 <body>
-<div class="card border-primary mb-3">
-    <div class="card-header bg-primary text-white">
-        Documents
+<style>
+</style>
+<div class="card border-secondary mb-3">
+    <div class="card-header">
+        Received documents
+        <div style="float: right; line-height: 1.0;" class="btn btn-secondary btn-sm" title="Show or hide administator tools" onclick="$('.delis-tools').toggle();">Tools</div>
     </div>
     <div class="card-body">
+    	<div class="card col-8 delis-tools p-2 collapse">
+    		<div class="font-weight-bold mb-2">Manual upload of new document</div>
+            <form method="POST" enctype="multipart/form-data" action="/document/upload" th:action="@{/document/upload}">
+				<div>
+					<label for="file1" class="mr-2">File:</label>
+					<input type="file" name="file" id="file1" class="form-control-file" style="display: inline; width: auto;"/>
+					
+		            <input type="checkbox" name="validateImmediately" class="pt-1" id="validateImmediately"/>
+		            <label for="validateImmediately" class="form-check-label">Validate immediately</label>
+		            
+		            <input class="ml-3 btn btn-primary btn-sm" type="submit" value="Upload"/>
+				</div>
+            </form>                
+    	</div>
+    	
         <form action="#" th:action="@{/document/list}" th:object="${selectedIdList}" method="post">
-            <div class="container">
-                <table id="documents" class="table table-striped table-bordered table-sm datatables-easy"
+	    	<div class="card col-8 mt-2 delis-tools collapse p-2">
+        		<div class="font-weight-bold mb-2">Bulk status change</div>
+	    		<div class="delis-table-compact">
+	    			<label for="status1" class="mr-2">New status:</label>
+					<select th:field="*{status}" class="form-control" style="display: inline; width: auto;">
+						<option th:each="documentStatus : ${statusList}" th:text="${documentStatus.getName()}" th:value="${documentStatus}"></option>
+					</select>
+					<button th:attr="onclick-action=@{/document/updatestatuses}" onclick="$(this).closest('form').attr('action', $(this).attr('onclick-action'))" type="submit" class="btn btn-primary btn-sm ml-2">Update</button>
+	    		</div>
+			</div>            
+        
+                <table id="documents" class="table table-striped table-bordered table-sm datatables-easy delis-table-compact"
                 	th:attr="dt-page=${@jsons.json(documentPage)}"
                 	>
                     <thead>
                     <tr>
                         <th dt-field="createTime" type="date">Received</th>
                         <th dt-field="organisation.name">Organisation</th>
+                        <th dt-field="receiverIdRaw">Receiver number</th>
                         <th dt-field="documentStatus" th:attr="dt-enum=${@jsons.json(statusList)}">Status</th>
-                        <th dt-field="documentType" th:attr="dt-enum=${@jsons.json(documentTypeList)}">Ingoing Type</th>
                         <th dt-field="ingoingDocumentFormat" th:attr="dt-enum=${@jsons.json(documentFormatList)}">Ingoing Format</th>
-                        <th dt-field="senderName">Sender</th>
-                        <th dt-field="receiverName">Receiver</th>
+                        <th dt-field="senderName">Sender name</th>
+                        <th dt-field="receiverName">Receiver name</th>
                         <th><input type="checkbox" class="selectAll checkbox" name="selectAll" id="selectAll" /></th>
                     </tr>
                     </thead>
@@ -34,8 +62,8 @@
                     <td>
                         <span th:if="${r.organisation}" th:text="${r.organisation.name}">Region Nord</span>
                     </td>
+                    <td th:text="${r.receiverIdRaw}">0088:234234</td>
                     <td th:text="${r.documentStatus?.name}" th:classappend="${r.documentStatus?.error ? 'document-error': ''}">LOAD_OK</td>
-                    <td th:text="${r.documentType?.name}">Invoice</td>
                     <td th:text="${r.ingoingDocumentFormat?.name}">BIS3_INVOICE</td>
                     <td th:text="${r.senderName}">Lego Spain</td>
                     <td>
@@ -44,38 +72,7 @@
                     <td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
                 </tr>                  
                 </table>
-            </div>
-            <div class="card-footer mt-2">
-                <div class="d-flex justify-content-start">
-                    <label class="m-2 col-form-label">Status:</label>
-                    <select th:field="*{status}" class="m-2">
-                        <option th:each="documentStatus : ${statusList}" th:text="${documentStatus.getName()}"
-                                th:value="${documentStatus}"></option>
-                    </select>
-					<button th:attr="onclick-action=@{/document/updatestatuses}" onclick="$(this).closest('form').attr('action', $(this).attr('onclick-action'))" type="submit" class="m-2 btn btn-primary">Update Statuses</button>
-                </div>
-            </div>
         </form>
-    </div>
-
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            Upload document
-        </div>
-        <div class="card-body">
-            <form method="POST" enctype="multipart/form-data" action="/document/upload" th:action="@{/document/upload}">
-                <div class="form-group">
-                    <label for="file1">File:</label>
-                    <input type="file" name="file" class="form-control-file" id="file1"/>
-                </div>
-                <div class="form-check mb-2">
-                    <input type="checkbox" name="validateImmediately" class="form-check-input"
-                           id="validateImmediately"/>
-                    <label for="validateImmediately" class="form-check-label">Validate immediately</label>
-                </div>
-                <input class="btn btn-primary" type="submit" value="Upload"/>
-            </form>
-        </div>
     </div>
 </div>
 </body>

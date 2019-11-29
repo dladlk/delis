@@ -4,6 +4,16 @@ html {
 .dashboard-link {
 	color: white;
 }
+.delis-table-compact {
+	line-height: 1;
+	font-size: 0.9rem;
+}
+.delis-table-compact .form-control {
+	line-height: 1.1;
+	font-size: 0.9rem;
+	height: 1.5rem;
+	padding: 0.1rem 0.2rem;
+}
 
 /* START Organisation setup */
 ul.org-smp-setup, ul.on-error-setup, ul.none-list-style {
