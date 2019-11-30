@@ -31,7 +31,7 @@
                     <td th:text="${r.code}"></td>
                     <td th:text="${#strings.abbreviate(r.message, 150)}"></td>
                     <td th:text="${r.flag}"></td>
-                    <td class="force-break-word" style="max-width: 300px;" th:text="${#strings.abbreviate(r.location, 150)}"></td>
+                    <td class="force-break-word" style="max-width: 300px;" th:text="${@strings.spaceTags(#strings.abbreviate(r.location, 150))}"></td>
 				</tr>
 				</tbody>
 			</table>
