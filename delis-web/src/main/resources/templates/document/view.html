@@ -10,9 +10,18 @@
 
 	<div class="">
 
+<style>
+.table-with-form tr th {
+	padding-bottom: 0px;
+}
+.table-with-form tr td {
+padding-top: 0px;
+}
+</style>
+
 	<div class="card border-secondary m-1">
 		<div class="card-body pb-0">
-			<table class="table table-sm table-borderless">
+			<table class="table table-sm table-borderless table-with-form">
 				<tr>
 					<th>Organisation</th>
 					<th>Identifier</th>
@@ -32,31 +41,30 @@
 				<tr>
 					<th>Document type</th>
 					<th>Ingoing format</th>
-					<th>Document Id</th>
-					<th>Document date</th>
+					<th colspan="2">File name</th>
 				</tr>
 				<tr>
 					<td th:text="${document.ingoingDocumentFormat?.documentType?.name}">INVOICE</td>
 					<td th:text="${document.ingoingDocumentFormat?.name}">CII</td>
-					<td th:text="${document.documentId}">F-2345RWELF2</td>
-					<td th:text="${document.documentDate}">2018-13-23</td>
+					<td colspan="2" th:text="${document.name}">XXX</td>
 				</tr>
 				<tr>
-					<th colspan="2">File name</th>
+					<th>Document Id</th>
+					<th>Document date</th>
 					<th colspan="2">Message ID</th>
 				</tr>
 				<tr>
-					<td colspan="2" th:text="${document.name}">XXX</td>
+					<td th:text="${document.documentId}">F-2345RWELF2</td>
+					<td th:text="${document.documentDate}">2018-13-23</td>
 					<td colspan="2" th:text="${document.messageId}">BSD-332-32D2-2342-ABD3-353F</td>
 				</tr>
 			</table>
 		</div>		
 	</div>
 
-	<div th:replace="~{document/response_block}"></div>
-
 	<div class="card border-secondary m-1">
 		<div class="card-body pb-0">
+			
 			<table class="table table-sm table-borderless">
 				<tr>
 					<th></th>
@@ -84,6 +92,8 @@
 	</div>
 	
 	</div>
+	
+	<div th:replace="~{document/response_block}"></div>
 
 	<div class="card border-secondary m-1">
 		<div class="card-body pb-0">
