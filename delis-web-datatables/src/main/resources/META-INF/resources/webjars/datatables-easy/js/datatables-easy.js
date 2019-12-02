@@ -92,7 +92,6 @@
                 dataTableRequest(this, pageData);
             });
 
-        // overrideButtonColor();
         overrideClearButtonStyle();
 
         appDataTable.columns().every(function (i) {
@@ -268,22 +267,11 @@
         ];
     }
 
-    function overrideButtonColor() {
-        var btns = document.querySelector('div.dt-buttons.btn-group');
-        if (btns) {
-            var kbButtons = btns.getElementsByTagName("button");
-            for (var i = 0; i < kbButtons.length; i++) {
-                kbButtons[i].style.backgroundColor = '#f8f9fa';
-                kbButtons[i].style.color = 'black';
-            }
-        }
-    }
-
     function overrideClearButtonStyle() {
         var btns = document.querySelector('div.dt-buttons.btn-group');
         if (btns) {
         	btns.className = 'dt-buttons'; // Remove btn-group to have small button
-            var kbButtons = btns.getElementsByTagName("button");
+            var kbButtons = btns.getElementsByClassName("btn"); // In IE 11, elements are created as tag a, in other browsers - as button.
             for (var i = 0; i < kbButtons.length; i++) {
                 kbButtons[i].className = 'btn btn-outline-primary btn-sm mt-2';
             }
