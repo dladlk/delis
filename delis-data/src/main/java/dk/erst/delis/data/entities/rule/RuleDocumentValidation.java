@@ -47,6 +47,8 @@ public class RuleDocumentValidation extends AbstractCreateUpdateEntity implement
 					return DocumentErrorCode.OIOUBL_XSD;
 				case CII:
 					return DocumentErrorCode.CII_XSD;
+				case BIS3_IR:
+					return DocumentErrorCode.BIS3_XSD;
 				default:
 					return DocumentErrorCode.OTHER;	
 				}
@@ -58,6 +60,8 @@ public class RuleDocumentValidation extends AbstractCreateUpdateEntity implement
 					return DocumentErrorCode.OIOUBL_SCH;
 				case CII:
 					return DocumentErrorCode.CII_SCH;
+				case BIS3_IR:
+					return DocumentErrorCode.BIS3_SCH;
 				default:
 					return DocumentErrorCode.OTHER;	
 				}
