@@ -25,6 +25,9 @@ public class UserDataValidator implements Validator {
 			}
 		}
 		
+		if (user.isAdmin()) {
+			user.setOrganisationCode(null);
+		}
 	}
 
 }

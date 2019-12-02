@@ -30,6 +30,8 @@ class UserData {
     @Size(min = 5, max = 50)
     private String email;
 
+    private boolean admin;
+    
     private String organisationCode;
     
     private boolean disabledIrForm;

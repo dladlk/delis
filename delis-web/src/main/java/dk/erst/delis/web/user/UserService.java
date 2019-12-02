@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -38,7 +39,7 @@ public class UserService {
 	}
 
 	public List<User> findAll() {
-		return userRepository.findAll();
+		return userRepository.findAll(Sort.by(Sort.Order.asc("organisation.name").ignoreCase(), Sort.Order.asc("firstName").ignoreCase(), Sort.Order.asc("lastName").ignoreCase(), Sort.Order.asc("username").ignoreCase()));
 	}
 
 	public boolean validate(UserData user, BindingResult bindingResult) {
@@ -48,11 +49,15 @@ public class UserService {
 		}
 
 		String organisationCode = user.getOrganisationCode();
-		if (StringUtils.isNotBlank(organisationCode)) {
-			organisationCode = StringUtils.trim(organisationCode);
-			Organisation organisation = organisationService.findOrganisationByCode(organisationCode);
-			if (organisation == null) {
-				bindingResult.rejectValue("organisationCode", "user.organisationCode.notfound");
+		if (!user.isAdmin()) {
+			if (StringUtils.isBlank(organisationCode)) {
+				bindingResult.rejectValue("organisationCode", "javax.validation.constraints.NotNull.message");
+			} else {
+				organisationCode = StringUtils.trim(organisationCode);
+				Organisation organisation = organisationService.findOrganisationByCode(organisationCode);
+				if (organisation == null) {
+					bindingResult.rejectValue("organisationCode", "user.organisationCode.notfound");
+				}
 			}
 		}
 		return !bindingResult.hasErrors();

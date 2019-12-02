@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.user.User;
+import dk.erst.delis.task.organisation.OrganisationService;
 
 @Controller
 @RequestMapping("/user")
@@ -25,6 +26,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private OrganisationService organisationService;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -42,7 +46,12 @@ public class UserController {
 	@GetMapping("/create")
 	public String create(Model model) {
 		model.addAttribute("user", new UserData());
+		fillModel(model);
 		return "user/edit";
+	}
+
+	private void fillModel(Model model) {
+		model.addAttribute("organisationList", organisationService.getOrganisations());
 	}
 
 	@GetMapping("/update/{id}")
@@ -52,11 +61,14 @@ public class UserController {
 		BeanUtils.copyProperties(user, userData, "disabledIrForm");
 		if (user.getOrganisation() != null) {
 			userData.setOrganisationCode(user.getOrganisation().getCode());
+		} else {
+			userData.setAdmin(true);
 		}
 		if (user.getDisabledIrForm() != null && user.getDisabledIrForm().booleanValue()) {
 			userData.setDisabledIrForm(true);
 		}
 		model.addAttribute("user", userData);
+		fillModel(model);
 		return "user/edit";
 	}
 
@@ -83,6 +95,7 @@ public class UserController {
 		}
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("errorMessage", "Some fields are not valid.");
+			fillModel(model);
 			return "user/edit";
 		}
 		
