@@ -135,4 +135,8 @@ public class CachingTransformerFactory extends TransformerFactory {
     public CacheStats stats() {
         return templateCache.stats();
     }
+    
+    public void flushCache() {
+    	this.templateCache.invalidateAll();
+    }
 }

@@ -5,6 +5,7 @@ import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.CachingTransformerFactory;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.xml.transform.TransformerFactory;
 
 @Service
 @Slf4j
@@ -57,10 +60,19 @@ public class RuleService {
 
 	public void refreshValidationList () {
 		validationList = buildValidationRuleList();
+		flushTransformerCache();
+	}
+
+	private void flushTransformerCache() {
+		TransformerFactory transformerFactory = CachingTransformerFactory.getInstance();
+		if (transformerFactory instanceof CachingTransformerFactory) {
+			((CachingTransformerFactory) transformerFactory).flushCache();
+		}
 	}
 
 	public void refreshTransformationList () {
 		transformationList = buildTransformationRuleList();
+		flushTransformerCache();
 	}
 	
 	public List<RuleDocumentValidation> loadDbValidationList() {
