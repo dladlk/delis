@@ -282,9 +282,10 @@
     function overrideClearButtonStyle() {
         var btns = document.querySelector('div.dt-buttons.btn-group');
         if (btns) {
+        	btns.className = 'dt-buttons'; // Remove btn-group to have small button
             var kbButtons = btns.getElementsByTagName("button");
             for (var i = 0; i < kbButtons.length; i++) {
-                kbButtons[i].className = 'btn btn-primary m-1';
+                kbButtons[i].className = 'btn btn-outline-primary btn-sm mt-2';
             }
         }
     }
@@ -316,19 +317,20 @@
                 }
             });
             if (!cd.hasOwnProperty('field')) {
-            	return;
-            }
-            if (!cd.hasOwnProperty('orderable')) {
-                cd.orderable = true;
-            }
-            if (!cd.hasOwnProperty('searchable')) {
-                cd.searchable = true;
+            	cd.orderable = false;
+            	cd.searchable = false;
+            } else {
+	            if (!cd.hasOwnProperty('orderable')) {
+	                cd.orderable = true;
+	            }
+	            if (!cd.hasOwnProperty('searchable')) {
+	                cd.searchable = true;
+	            }
             }
             cd.targets = [columnIndex];
             columnDefs.push(cd);
             columnIndex++;
         });
-        console.log(columnDefs);
         return columnDefs;
     }
 
