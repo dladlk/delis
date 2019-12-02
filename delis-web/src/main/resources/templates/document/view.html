@@ -75,14 +75,14 @@ padding-top: 0px;
 				</tr>
 				<tr>
 					<th>Sender</th>
-					<td th:text="${document.senderIdRaw}">0088::2342342342</td>					
+					<td th:text="${@strings.unraw(document.senderIdRaw)}">0088:2342342342</td>					
 					<td th:text="${document.senderName}">Region</td>					
 					<td th:text="${document.senderCountry}">DK</td>
 					<td th:text="${document.senderEmail}">email@email.dk</td>
 				</tr>
 				<tr>
 					<th>Receiver</th>
-					<td th:text="${document.receiverIdRaw}">0088::2342342342</td>					
+					<td th:text="${@strings.unraw(document.receiverIdRaw)}">0088:2342342342</td>					
 					<td th:text="${document.receiverName}">Region</td>					
 					<td th:text="${document.receiverCountry}">DK</td>
 					<td th:text="${document.receiverEmail}">email@email.dk</td>

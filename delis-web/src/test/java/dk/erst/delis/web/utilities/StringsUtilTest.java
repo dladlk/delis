@@ -21,4 +21,14 @@ public class StringsUtilTest {
 		assertEquals(" 123 4 123 4 123 4 ", u.spaceTexts(" 1234 1234 1234 ", 3));
 	}
 
+	@Test
+	public void testUnraw() {
+		StringsUtil u = new StringsUtil();
+		assertNull(u.unraw(null));
+		assertEquals("", u.unraw(""));
+		assertEquals(" ", u.unraw(" "));
+		assertEquals("", u.unraw("::"));
+		assertEquals("", u.unraw(" :: "));
+		assertEquals("0088:23423423432", u.unraw("0088::23423423432"));
+	}
 }

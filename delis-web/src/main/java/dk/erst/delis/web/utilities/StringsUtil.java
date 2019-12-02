@@ -80,4 +80,15 @@ public class StringsUtil {
 		}
 		return text;
 	}
+	
+	public String unraw(String rawIdentifier) {
+		if (StringUtils.isNotBlank(rawIdentifier)) {
+			String s = rawIdentifier.replaceAll("\\:\\:", ":");
+			if (s.trim().equals(":")) {
+				return "";
+			}
+			return s;
+		}
+		return rawIdentifier;
+	}
 }
