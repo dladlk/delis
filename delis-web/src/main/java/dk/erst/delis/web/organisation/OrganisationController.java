@@ -202,10 +202,9 @@ public class OrganisationController {
 			ra.addFlashAttribute("message", "Nothing is changed");
 		} else {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Configuration updated: ");
-			sb.append(statData.toStatString());
+			sb.append("Configuration is updated.");
 			if (identifiersSwitchedToPending > 0) {
-				sb.append(". ");
+				sb.append(" ");
 				sb.append(identifiersSwitchedToPending);
 				sb.append(" identifier");
 				if (identifiersSwitchedToPending > 1) {
