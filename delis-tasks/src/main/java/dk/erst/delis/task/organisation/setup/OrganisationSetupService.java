@@ -283,6 +283,9 @@ public class OrganisationSetupService {
 		if (d.getSubscribeProfileSet() == null) {
 			d.setSubscribeProfileSet(Collections.emptySet());
 		}
+		if (d.getReceivingFormatRule() == null) {
+			d.setReceivingFormatRule(OrganisationReceivingFormatRule.OIOUBL);
+		}
 		return d;
 	}
 

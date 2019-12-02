@@ -16,7 +16,6 @@
 					<th style="width: 190px;">C4 receiving format</th>
 					<td>
 						<select th:field="*{receivingFormatRule}">
-							<option value="" th:selected="${receivingFormatRule == null}">Select format</option>
 							<option th:each="rule : ${organisationReceivingFormatRuleList}" th:text="${rule.title}" th:value="${rule.code}">OIOUBL - convert everything to OIOUBL</option>
 						</select>
 					</td>
