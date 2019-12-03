@@ -87,6 +87,7 @@ public class UserControllerTest {
                 .param("password2", "Systest1_")
                 .param("firstName", "First")
                 .param("lastName", "Last")
+                .param("admin", "true")
                 .param("email", "new_user@test.com"))
                 .andExpect(redirectedUrl("/user/list"));
     }
@@ -110,6 +111,7 @@ public class UserControllerTest {
                 .param("password", "Systest1_")
                 .param("password2", "Systest1_")
                 .param("email", user.getEmail())
+                .param("admin", "true")
                 .param("lastName", "new_not_empty_last_name")
         		.param("firstName", "new_not_empty_first_name"))
                 .andExpect(redirectedUrl("/user/list"));
