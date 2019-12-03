@@ -48,3 +48,20 @@ ul.org-smp-setup li ul li {
 .delis-deactivated {
 	text-decoration: line-through;
 }
+
+table.dataTable.datatables-easy {
+	border-collapse: collapse !important;
+}
+table.datatables-easy thead th {
+	border-bottom-width: 1px;
+} 
+table.datatables-easy thead tr {
+	background-color: rgba(0,0,0,.03);
+}
+table.datatables-easy .delis-list-cbx {
+	padding-right: 0px !important;
+	vertical-align: middle;
+}
+table.datatables-easy .dt-no-sort {
+	padding-right: 2px !important;
+}

@@ -29,7 +29,7 @@ public class UserController {
 	
 	@Autowired
 	private OrganisationService organisationService;
-
+	
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
     	StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(false);
@@ -37,8 +37,8 @@ public class UserController {
         binder.addValidators(new UserDataValidator());
     }
 	
-	@GetMapping("/list")
-	public String list(Model model) {
+	@GetMapping("/xlist")
+	public String xlist(Model model) {
 		model.addAttribute("users", userService.findAll());
 		return "user/list";
 	}
