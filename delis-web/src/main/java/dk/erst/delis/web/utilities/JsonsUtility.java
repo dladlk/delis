@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import dk.erst.delis.data.entities.AbstractEntity;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.Named;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Component("jsons")
@@ -23,6 +24,19 @@ public class JsonsUtility {
 	public static interface INamed4Json {
 		public String getValue();
 		public String getName();
+	}
+
+	@Data
+	public static class Named4Json implements INamed4Json {
+		private String name;
+		private String value;
+		
+		public static Named4Json of(String name, String value) {
+			Named4Json n = new Named4Json();
+			n.setName(name);
+			n.setValue(value);
+			return n;
+		}
 	}
 
 	public String json(Object o) {

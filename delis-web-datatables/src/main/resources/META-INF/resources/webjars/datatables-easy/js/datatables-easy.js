@@ -12,7 +12,7 @@
             return configureDataTable(this)
         });
     };
-
+    
     function configureDataTable(table) {
         var t = $(table);
         var pageData = getAttributeByPageDataContainer(t);
@@ -77,36 +77,32 @@
         	configButtons(dataTablesSettings);
         }
 
+        var footer = t.find('tfoot');
         var appDataTable = t
             .DataTable(dataTablesSettings)
             .on('order.dt', function (e, settings, order) {
-                pageData.order = columnDefs[order[0].col].field + '_' + order[0].dir;
-                dataTableRequest(this, pageData);
+                pageData.order = columnDefs[order[0].col].orderfield + '_' + order[0].dir;
+                dataTableRequest(footer, pageData);
             })
             .on('length.dt', function (e, settings, len) {
                 pageData.size = len;
-                dataTableRequest(this, pageData);
+                dataTableRequest(footer, pageData);
             })
             .on('page.dt', function () {
                 pageData.page = appDataTable.page.info().page + 1;
-                dataTableRequest(this, pageData);
+                dataTableRequest(footer, pageData);
             });
 
         overrideClearButtonStyle();
 
-        appDataTable.columns().every(function (i) {
-            $('input', this.footer()).on('keypress', function (event) {
-                if (event.keyCode === 13) {
-                    doFilterAndRequest(this, pageData, columnDefs[i].field, this.value);
-                }
-            });
+        $('input.dt-filter', appDataTable.footer()).on('keypress', function (event) {
+            if (event.keyCode === 13) {
+                doFilterAndRequest(pageData, appDataTable);
+            }
         });
 
-        appDataTable.columns().every(function (i) {
-            $('select', this.footer()).on('change', function () {
-                var value = $.fn.dataTable.util.escapeRegex($(this).val());
-                doFilterAndRequest(this, pageData, columnDefs[i].field, value);
-            });
+        $('select.dt-filter', appDataTable.footer()).on('change', function () {
+            doFilterAndRequest(pageData, appDataTable);
         });
 
         new $.fn.dataTable.FixedHeader(appDataTable, {
@@ -116,20 +112,21 @@
 
     function initOrders(columnDefs, pageData) {
         var orderColDir = pageData.order;
-        var order = {};
+        var order = {
+        	col: 0,
+        	dir: "asc"
+        };
         if (orderColDir !== null) {
             var sort = orderColDir.split('_');
             for (var index in columnDefs) {
-                var dtInfo = columnDefs[index].field;
+                var dtInfo = columnDefs[index].orderfield;
                 var col = columnDefs[index].targets[0];
                 if (dtInfo === sort[0]) {
                     order.col = col;
                     order.dir = sort[1];
+                    break;
                 }
             }
-        } else {
-            order.col = 0;
-            order.dir = "asc";
         }
         return order;
     }
@@ -159,21 +156,21 @@
 
             if (searchable) {
                 if (columnEnum !== undefined) {
-                    selectFilter(this, columnEnum, searchValue !== undefined ? searchValue : null);
+                    selectFilter(this, field, columnEnum, searchValue !== undefined ? searchValue : null);
                 } else if (filterType === 'date') {
-                	$(this).html('<span class="form-control-date"/>');
-                	dateFilter(this, field, searchValue, pageData);
+                	$(this).html('<input type="text" readonly name="'+field+'" class="form-control dt-date" value="" placeholder="" />');
+                	dateFilter(tfoot, this, field, searchValue, pageData);
                 } else {
-                	$(this).html('<input type="text" name="'+field+'" class="form-control" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
+                	$(this).html('<input type="text" name="'+field+'" class="form-control dt-filter" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
                 }
             }
         });
     }
     
-    var DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-    var SHORT_DATE_FORMAT = 'DD-MM-YY';
+    var DATETIME_FORMAT = 'YYYYMMDD-HHmmss';
+    var SHORT_DATE_FORMAT = 'DD.MM.YY';
     
-    function dateFilter(filterContainer, field, searchValue, pageData) {
+    function dateFilter(footer, filterContainer, field, searchValue, pageData) {
         var drpSettings = {
             alwaysShowCalendars: true,
             ranges: initRanges(moment('2019-01-01'))
@@ -181,15 +178,19 @@
         
     	if (searchValue !== undefined) {
 	        var dateFromTo = searchValue.split('_');
-	        drpSettings.startDate = moment(dateFromTo[0]);
-	        drpSettings.endDate = moment(dateFromTo[1]);
+	        drpSettings.startDate = moment(dateFromTo[0], DATETIME_FORMAT);
+	        drpSettings.endDate = moment(dateFromTo[1], DATETIME_FORMAT);
+    	} else {
+    		setDateInput(filterContainer, null, null);
     	}
-        var daterangepicker = $(filterContainer).daterangepicker(drpSettings, function(start, end){
-        	setDateInput(filterContainer, start, end);
-        	var dateRangeValue = start.format(DATETIME_FORMAT) + '_' + end.format(DATETIME_FORMAT);
-        	pageData.filterMap[field] = dateRangeValue; 
-        	dataTableRequest(filterContainer, pageData);
-        });
+        var daterangepicker = $(filterContainer).daterangepicker(drpSettings, 
+        	function(start, end){
+		    	setDateInput(filterContainer, start, end);
+		        var dateRangeValue = start.format(DATETIME_FORMAT) + '_' + end.format(DATETIME_FORMAT);
+		        pageData.filterMap[field] = dateRangeValue; 
+		        dataTableRequest(footer, pageData);
+        	}
+        );
         
         if (drpSettings.startDate) {
         	setDateInput(filterContainer, drpSettings.startDate, drpSettings.endDate);
@@ -197,13 +198,22 @@
     }
     
     function setDateInput(container, startDate, endDate) {
-    	$(container).find('span').text(startDate.format(SHORT_DATE_FORMAT) + ' - ' + endDate.format(SHORT_DATE_FORMAT));
+    	var rangeText = 'All';
+    	if (startDate && endDate) {
+    		rangeText = startDate.format(SHORT_DATE_FORMAT);
+    		var endDateText = endDate.format(SHORT_DATE_FORMAT);
+    		if (endDateText != rangeText) {
+    			rangeText += '-' + endDateText;  
+    		}
+    	}
+    	$(container).find('input').val(rangeText);
     }
 
-    function selectFilter(ownerSelect, e, searchValue) {
+    function selectFilter(ownerSelect, field, e, searchValue) {
         e = eval(e);
         var selectList = document.createElement("select");
-        selectList.setAttribute('class', 'form-control');
+        selectList.setAttribute('class', 'form-control dt-filter');
+        selectList.setAttribute('name', field);
 
         var option = document.createElement("option");
         option.value = "";
@@ -235,9 +245,8 @@
         ownerSelect.appendChild(selectList);
     }
 
-    function doFilterAndRequest(ownerEvent, pageData, field, value) {
-        pageData.filterMap[field] = value;
-        dataTableRequest(ownerEvent, pageData);
+    function doFilterAndRequest(pageData, appDataTable) {
+        dataTableRequest(appDataTable.footer(), pageData);
     }
 
     function configButtons(dataTablesSettings) {
@@ -315,6 +324,9 @@
 	                cd.searchable = true;
 	            }
             }
+            if (!cd.hasOwnProperty('orderfield')) {
+            	cd.orderfield = cd.field; 
+            }
             cd.targets = [columnIndex];
             columnDefs.push(cd);
             columnIndex++;
@@ -332,8 +344,21 @@
         return value;
     }
 
+    function updatePageData(footer, pageData) {
+    	$('input.dt-filter', footer).each(function (i) {
+    		var field = $(this).attr('name');
+    		var value = $(this).val();
+    		pageData.filterMap[field] = value;
+        });
+        $('select.dt-filter', footer).each(function (i) {
+        	var field = $(this).attr('name');
+            var value = $.fn.dataTable.util.escapeRegex($(this).val());
+            pageData.filterMap[field] = value;
+        });
+    }
+    
     function dataTableRequest(owner, pageData) {
-
+    	updatePageData(owner, pageData);
         if (pageData.page !== null) {
             $('<input>').attr({
                 type: 'hidden',
@@ -371,12 +396,7 @@
                 }).appendTo(owner);
             }
         }
-
-        var button = document.createElement("button");
-        button.setAttribute('type', 'submit');
-        button.style.visibility = 'hidden';
-        owner.parentElement.appendChild(button);
-        jQuery(button).trigger("click");
+        $(owner).closest('form').submit();
     }
     
     function initRanges(start) {

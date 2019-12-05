@@ -14,7 +14,7 @@
 				>
 				<thead>
 					<tr>
-						<th dt-field="organisation.name" th:attr="dt-enum=${@jsons.json(organisationList)}">Organisation</th>
+						<th dt-field="organisation.id" dt-orderfield="organisation.name" th:attr="dt-enum=${@jsons.json(organisationList)}">Organisation</th>
 						<th dt-field="firstName">First name</th>
 						<th dt-field="lastName">Last name</th>
 						<th dt-field="username">Login name</th>

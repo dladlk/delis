@@ -5,6 +5,7 @@
 	
 	<!--
 	<logger name="dk.erst.delis.task.identifier.publish.SmpIntegrationService" level="DEBUG"/>
+	<logger name="dk.erst.delis.web.datatables.dao.DataTablesRepositoryImpl" level="DEBUG"/>
 	-->
 	
 	<logger name="org.apache.commons.beanutils" level="WARN"/>

@@ -65,3 +65,6 @@ table.datatables-easy .delis-list-cbx {
 table.datatables-easy .dt-no-sort {
 	padding-right: 2px !important;
 }
+.form-control.dt-date {
+	background-color: white;
+}

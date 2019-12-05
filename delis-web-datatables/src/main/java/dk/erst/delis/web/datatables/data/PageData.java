@@ -6,11 +6,9 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 public class PageData implements Serializable {
 
 	private static final long serialVersionUID = -2954553322587783857L;
@@ -91,5 +89,17 @@ public class PageData implements Serializable {
 
 	public void clearFilter() {
 		this.filterMap.clear();
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(page);
+		sb.append(" ");
+		sb.append(size);
+		sb.append(" ");
+		sb.append(order);
+		sb.append(" ");
+		sb.append(filterMap);
+		return sb.toString();
 	}
 }

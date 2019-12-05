@@ -1,24 +1,20 @@
 package dk.erst.delis.web.datatables.service;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.stereotype.Service;
 
-import dk.erst.delis.web.datatables.data.DataTablesData;
+import dk.erst.delis.web.datatables.dao.DataTablesRepository;
+import dk.erst.delis.web.datatables.dao.ICriteriaCustomizer;
+import dk.erst.delis.web.datatables.data.DataTablesOutput;
 import dk.erst.delis.web.datatables.data.PageData;
 
 @Service
 public class EasyDatatablesListServiceImpl<T> implements EasyDatatablesListService<T> {
 
-	@Override
-	public DataTablesOutput<T> getDataTablesOutput(DataTablesData<T> data, DataTablesRepository<T, Long> repository) {
-		DataTablesOutput<T> dto;
+	public DataTablesOutput<T> getDataTablesOutput(PageData pageData, DataTablesRepository<T, Long> repository, ICriteriaCustomizer<T> customizer) {
+		DataTablesOutput<T> dto = new DataTablesOutput<T>();
+		
 		try {
-			if (data.getSpecification() == null) {
-				dto = repository.findAll(data.getInput());
-			} else {
-				dto = repository.findAll(data.getInput(), data.getSpecification());
-			}
+			dto = repository.findAll(pageData, customizer);
 		} catch (Exception e) {
 			dto = new DataTablesOutput<>();
 			dto.setError(e.getMessage());
@@ -30,4 +26,5 @@ public class EasyDatatablesListServiceImpl<T> implements EasyDatatablesListServi
 	public DataTablesOutput<T> getDataTablesOutput(PageData pageData) {
 		return null;
 	}
+
 }

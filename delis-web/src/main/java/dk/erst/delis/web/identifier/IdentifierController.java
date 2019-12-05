@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
-import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,6 +24,9 @@ import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.organisation.OrganisationService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfile;
+import dk.erst.delis.web.datatables.dao.DataTablesRepository;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.list.AbstractEasyListController;
 
 @Controller
@@ -63,6 +63,7 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 		model.addAttribute("selectedIdList", new IdentifierStatusBatchUpdateInfo());
 		model.addAttribute("statusList", IdentifierStatus.values());
 		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
+		model.addAttribute("organisationList", organisationService.getOrganisations());
 		
 		return super.list(model, webRequest);
 	}

@@ -33,7 +33,7 @@
 					<select th:field="*{status}" class="form-control" style="display: inline; width: auto;">
 						<option th:each="documentStatus : ${statusList}" th:text="${documentStatus.getName()}" th:value="${documentStatus}"></option>
 					</select>
-					<button th:attr="onclick-action=@{/document/updatestatuses}" onclick="$(this).closest('form').attr('action', $(this).attr('onclick-action'))" type="submit" class="btn btn-primary btn-sm ml-2">Update</button>
+					<div th:attr="onclick-action=@{/document/updatestatuses}" onclick="return submitStatusChange(this);" class="btn btn-primary btn-sm ml-2">Update</div>
 	    		</div>
 			</div>            
         
@@ -42,8 +42,8 @@
                 	>
                 <thead>
                     <tr>
-                        <th dt-field="createTime" type="date">Received</th>
-                        <th dt-field="organisation.name">Organisation</th>
+                        <th dt-field="createTime" dt-type="date">Received</th>
+                        <th dt-field="organisation.id" dt-orderfield="organisation.name" th:attr="dt-enum=${@jsons.json(organisationList)}">Organisation</th>
                         <th dt-field="receiverIdRaw">Receiver number</th>
                         <th dt-field="documentStatus" th:attr="dt-enum=${@jsons.json(statusList)}">Status</th>
                         <th dt-field="ingoingDocumentFormat" th:attr="dt-enum=${@jsons.json(documentFormatList)}">Ingoing Format</th>

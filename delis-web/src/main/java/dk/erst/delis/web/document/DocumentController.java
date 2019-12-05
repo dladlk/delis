@@ -17,8 +17,6 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +44,10 @@ import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
+import dk.erst.delis.task.organisation.OrganisationService;
 import dk.erst.delis.web.RedirectUtil;
-import dk.erst.delis.web.datatables.data.DataTablesData;
+import dk.erst.delis.web.datatables.dao.DataTablesRepository;
+import dk.erst.delis.web.datatables.dao.ICriteriaCustomizer;
 import dk.erst.delis.web.datatables.data.PageData;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
@@ -59,7 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-public class DocumentController extends AbstractEasyListController<Document> {
+public class DocumentController extends AbstractEasyListController<Document> implements ICriteriaCustomizer<Document> {
 
 	@Autowired
 	private DocumentProcessService documentProcessService;
@@ -74,6 +74,9 @@ public class DocumentController extends AbstractEasyListController<Document> {
 
 	@Value("${delis.download.allow.all:#{false}}")
 	private boolean downloadAllowAll;
+
+	@Autowired
+	private OrganisationService organisationService; 
 
 	/*
 	 * START EasyDatatables block
@@ -97,6 +100,11 @@ public class DocumentController extends AbstractEasyListController<Document> {
 	protected EasyDatatablesListService<Document> getEasyDatatablesListService() {
 		return documentEasyDatatablesListService;
 	}
+	
+	@Override
+	protected ICriteriaCustomizer<Document> getCriteriaCustomizer() {
+		return this;
+	}	
 
 	@RequestMapping("/document/list")
 	public String list(Model model, WebRequest webRequest) {
@@ -104,6 +112,7 @@ public class DocumentController extends AbstractEasyListController<Document> {
 		model.addAttribute("statusList", DocumentStatus.values());
 		model.addAttribute("documentFormatList", DocumentFormat.values());
 		model.addAttribute("documentTypeList", DocumentType.values());
+		model.addAttribute("organisationList", organisationService.getOrganisations());
 
 		return super.list(model, webRequest);
 	}
@@ -272,40 +281,17 @@ public class DocumentController extends AbstractEasyListController<Document> {
 	}
 
 	@Override
-	protected DataTablesData<Document> toDataTablesInput(PageData pd) {
-		DataTablesData<Document> dtd = super.toDataTablesInput(pd);
-		Specification<Document> spec = dtd.getSpecification();
-
-		DocumentPageData documentPageData = (DocumentPageData) pd;
-		if (documentPageData.getErrorDictionaryId() != null) {
-			long errorId = documentPageData.getErrorDictionaryId();
-			if (spec == null) {
-				dtd.setSpecification(withErrorById(errorId));
-			} else {
-				dtd.setSpecification(spec.and(withErrorById(errorId)));
-			}
+	public Predicate customPredicates(PageData pageData, CriteriaBuilder builder, CriteriaQuery<?> query, Root<Document> root) {
+		DocumentPageData dpd = (DocumentPageData)pageData;
+		if (dpd.getErrorDictionaryId() != null) {
+			Subquery<JournalDocumentError> subquery = query.subquery(JournalDocumentError.class);
+			Root<JournalDocumentError> subqueryRoot = subquery.from(JournalDocumentError.class);
+			subquery.select(subqueryRoot);
+			subquery.where(builder.and(builder.equal(root, subqueryRoot.get("journalDocument").get("document")),
+					subqueryRoot.get("errorDictionary").get("id").in(dpd.getErrorDictionaryId()))
+			);
+			return builder.exists(subquery);
 		}
-
-		return dtd;
+		return null;
 	}
-
-	private Specification<Document> withErrorById(final long errorId) {
-		return new Specification<Document>() {
-
-			private static final long serialVersionUID = -5188102375045602476L;
-
-			@Override
-			public Predicate toPredicate(Root<Document> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-				Subquery<JournalDocumentError> subquery = query.subquery(JournalDocumentError.class);
-				Root<JournalDocumentError> subqueryRoot = subquery.from(JournalDocumentError.class);
-				subquery.select(subqueryRoot);
-				subquery.where(builder.and(builder.equal(root, subqueryRoot.get("journalDocument").get("document")),
-
-						subqueryRoot.get("errorDictionary").get("id").in(errorId)));
-				return builder.exists(subquery);
-			}
-
-		};
-	}
-
 }

@@ -15,7 +15,7 @@
 						>
 						<thead>
 						<tr>
-							<th dt-field="organisation.name">Organisation</th>
+							<th dt-field="organisation.id" dt-orderfield="organisation.name" th:attr="dt-enum=${@jsons.json(organisationList)}">Organisation</th>
 							<th dt-field="value">Identifier</th>
 							<th dt-field="type">Type</th>
 							<th dt-field="name">Name</th>
@@ -45,13 +45,13 @@
                         <select th:field="*{publishStatus}" class="m-2">
                             <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus.getName()}" th:value="${publishStatus}"></option>
                         </select>
-						<button th:attr="onclick-action=@{/identifier/updatestatuses}" onclick="$(this).closest('form').attr('action', $(this).attr('onclick-action'))" type="submit" class="m-2 btn btn-primary">Update Statuses</button>
+						<div th:attr="onclick-action=@{/identifier/updatestatuses}" onclick="return submitStatusChange(this);" type="submit" class="m-2 btn btn-primary">Update Statuses</div>
 					</div>
 				</div>
 			</form>
 		</div>
 		<div class="card-footer" th:if="${organisation}">
-			<a href="#" th:href="@{/organisation/view/__${organisation.id}__}" class="btn btn-primary">Back to <span th:text="${organisation.name}">Test organisation</span></a>
+			<a href="#" th:href="@{/organisation/view/__${organisation.id}__}" class="btn btn-primary">Back</a>
 		</div>
 	</div>
 </body>
