@@ -76,7 +76,10 @@
 				<tr>
 					<th>Receiving method config</th>
 					<td>
-						<input type="text" class="form-input w-100" th:value="${receivingMethodSetup}" th:field="*{receivingMethodSetup}"></input>
+						<input type="text" class="form-control" th:value="${receivingMethodSetup}" placeholder="Path to resource" th:field="*{receivingMethodSetup}" th:classappend="${(validation != null && validation?.isInvalid('receivingMethodSetup'))?'is-invalid':''}"></input>
+						<div class="invalid-feedback" th:if="${validation?.isInvalid('receivingMethodSetup')}">
+							<div th:each="e: ${validation?.getErrorList('receivingMethodSetup')}" th:text="${e}">Error message</div>
+						</div>
 					</td>
 				</tr>
 				<tr>

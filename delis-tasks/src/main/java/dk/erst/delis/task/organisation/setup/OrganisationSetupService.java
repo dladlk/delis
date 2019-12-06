@@ -68,6 +68,11 @@ public class OrganisationSetupService {
 			validateEmailValue(res, data.getOnErrorReceiverEmailAddress(), newValue, "onErrorReceiverEmailAddress", true);
 			data.setOnErrorReceiverEmailAddress(newValue.toString());
 		}
+		if (data.getReceivingMethod() != null) {
+			if (StringUtils.isBlank(data.getReceivingMethodSetup())){
+				res.addError("receivingMethodSetup", "When receiving method is selected, setup line should be filled.");
+			}
+		}
 		return res;
 	}
 
