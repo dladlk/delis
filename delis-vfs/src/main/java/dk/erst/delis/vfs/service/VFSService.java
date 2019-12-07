@@ -31,7 +31,7 @@ import java.util.Map;
 public class VFSService {
 
     private static final Logger log = LoggerFactory.getLogger(VFSService.class);
-    private Map<File, VFSConfig> configMap = new HashMap<>();
+    private Map<String, VFSConfig> configMap = new HashMap<>();
 
     /**
      * Method to upload a file in Remote server
@@ -40,8 +40,9 @@ public class VFSService {
      *                       Directory and Filename with \\ as separator
      * @param remoteFilePath remoteFilePath. Should contain the entire remote file path -
      *                       Directory and Filename with / as separator
+     * @throws VFSConfigException 
      */
-    public void upload(String config, String localFilePath, String remoteFilePath) {
+    public void upload(String config, String localFilePath, String remoteFilePath) throws VFSConfigException {
         File file = new File(localFilePath);
         if (!file.exists())
             throw new RuntimeException("Error. Local file not found");
@@ -55,6 +56,8 @@ public class VFSService {
             FileObject remoteFile = manager.resolveFile(baseUrl + remoteFilePath, fsOptions);
             remoteFile.copyFrom(localFile, Selectors.SELECT_SELF);
             log.info(String.format("File '%s' successfully uploaded to '%s'", file.getPath(), remoteFile.getPublicURIString()));
+        } catch (VFSConfigException e) {
+        	throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -68,8 +71,9 @@ public class VFSService {
      *                       Directory and Filename with \\ as separator
      * @param remoteFilePath remoteFilePath. Should contain the entire remote file path -
      *                       Directory and Filename with / as separator
+     * @throws VFSConfigException 
      */
-    public void download(String config, String localFilePath, String remoteFilePath) {
+    public void download(String config, String localFilePath, String remoteFilePath) throws VFSConfigException {
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
             // Create local file object. Change location if necessary for new downloadFilePath
@@ -79,6 +83,8 @@ public class VFSService {
             String baseUrl = vfsConfig.getUrl();
             FileObject remoteFile = manager.resolveFile(baseUrl + remoteFilePath, fsOptions);
             localFile.copyFrom(remoteFile, Selectors.SELECT_SELF);
+        } catch (VFSConfigException e) {
+        	throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -89,8 +95,9 @@ public class VFSService {
      *
      * @param remoteFilePath remoteFilePath. Should contain the entire remote file path -
      *                       Directory and Filename with / as separator
+     * @throws VFSConfigException 
      */
-    public boolean delete(String config, String remoteFilePath) {
+    public boolean delete(String config, String remoteFilePath) throws VFSConfigException {
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
             VFSConfig vfsConfig = getConfig(config);
@@ -98,6 +105,8 @@ public class VFSService {
             String baseUrl = vfsConfig.getUrl();
             FileObject remoteFile = manager.resolveFile(baseUrl + remoteFilePath, fsOptions);
             return remoteFile.exists() && remoteFile.delete();
+        } catch (VFSConfigException e) {
+        	throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -112,9 +121,10 @@ public class VFSService {
      * @param remoteFilePath remoteFilePath. Should contain the entire remote file path -
      *                       Directory and Filename with / as separator
      * @return Returns if the file exists in the specified remote location
+     * @throws VFSConfigException 
      */
 
-    public boolean exist(String config, String remoteFilePath) {
+    public boolean exist(String config, String remoteFilePath) throws VFSConfigException {
         try (StandardFileSystemManager manager = createFileSystemManager()) {
             manager.init();
             VFSConfig vfsConfig = getConfig(config);
@@ -122,7 +132,10 @@ public class VFSService {
             String baseUrl = vfsConfig.getUrl();
             FileObject remoteFile = manager.resolveFile(baseUrl + remoteFilePath, fsOptions);
             return remoteFile.exists();
+        } catch (VFSConfigException e) {
+        	throw e;
         } catch (Exception e) {
+			log.error("Failed exists for config " + config + " and path " + remoteFilePath, e);
             throw new RuntimeException(e);
         }
     }
@@ -137,17 +150,18 @@ public class VFSService {
         }
     }
 
-    private VFSConfig getConfig(String configFilePath) {
+    public VFSConfig getConfig(String configFilePath) throws VFSConfigException {
         File configFile = new File(configFilePath);
-        VFSConfig config = configMap.get(configFile);
+        String configFileDescription = configFilePath+"_"+configFile.lastModified();
+        VFSConfig config = configMap.get(configFileDescription);
         if (config == null) {
             config = loadConfig(configFile);
-            configMap.put(configFile, config);
+            configMap.put(configFileDescription, config);
         }
         return config;
     }
 
-    private VFSConfig loadConfig(File configFile) {
+    private VFSConfig loadConfig(File configFile) throws VFSConfigException {
         String configFilePath = configFile.getAbsolutePath();
         try {
             log.info(String.format("Loading service config from file '%s' ...", configFilePath));
@@ -168,8 +182,8 @@ public class VFSService {
             return new VFSConfig(options, url);
         } catch (Exception e) {
             log.error(String.format("Failed to load config from file '%s'", configFilePath), e);
+            throw new VFSConfigException("Failed to load config from file: " + e.getMessage());
         }
-        return null;
     }
 
     private void setIdentityInfo(Document document, FileSystemOptions options) throws FileSystemException {
@@ -202,6 +216,9 @@ public class VFSService {
             String optionValue = optionNode.getTextContent().trim();
             String methodName = methodNamePrefix + optionName;
             Method optionSetter = findMethodByName(builderClass, methodName);
+            if (optionSetter == null) {
+            	throw new RuntimeException("Cannot find builder method "+methodName);
+            }
             Class<?>[] parameterTypes = optionSetter.getParameterTypes();
             Class<?> optionTypeClass = parameterTypes[1];
             optionTypeClass = ClassUtils.primitiveToWrapper(optionTypeClass);

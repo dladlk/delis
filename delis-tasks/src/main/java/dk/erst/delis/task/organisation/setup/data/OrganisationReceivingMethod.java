@@ -4,8 +4,6 @@ public enum OrganisationReceivingMethod {
 
 	FILE_SYSTEM("File system"),
 
-//	AZURE_STORAGE_ACCOUNT("Azure Storage Account"),
-
 	VFS("VFS")
 
 	;

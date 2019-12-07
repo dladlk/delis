@@ -37,7 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class DocumentDeliverService {
 
-    private DocumentDaoRepository documentDaoRepository;
+    public static final String DELIVER_FOLDER_BIS3 = "BIS3";
+	public static final String DELIVER_FOLDER_OIOUBL = "OIOUBL";
+    
+	private DocumentDaoRepository documentDaoRepository;
     private DocumentExportDaoRepository documentExportDaoRepository;
     private OrganisationSetupService organisationSetupService;
     private JournalDocumentService journalDocumentService;
@@ -124,7 +127,7 @@ public class DocumentDeliverService {
         	
         	boolean doDoubleSending = setupData.isReceiveBothOIOUBLBIS3() && documentBytes.getFormat().isOIOUBL();
             
-        	String outputFileName = buildOutputFileName(document, doDoubleSending ? "OIOUBL" : null);
+        	String outputFileName = buildOutputFileName(document, doDoubleSending ? DELIVER_FOLDER_OIOUBL : null);
         	
         	boolean somethingSent = false;
         	try {
@@ -145,7 +148,7 @@ public class DocumentDeliverService {
 	        		DocumentBytes addDocumentBytes = documentBytesStorageService.find(document, addReceivingFormat);
 	        		
 	        		if (addDocumentBytes != null) {
-	        			outputFileName = buildOutputFileName(document, "BIS3");
+	        			outputFileName = buildOutputFileName(document, DELIVER_FOLDER_BIS3);
 	        			uploaded = uploadDocument(setupData, processLog, addDocumentBytes, outputFileName);
 	        			if (uploaded && setupData.isCheckDeliveredConsumed()) {
 	        				saveDocumentExport(document, addDocumentBytes.getSize(), outputFileName);
@@ -247,14 +250,17 @@ public class DocumentDeliverService {
 
     private String buildOutputFileName(Document document, String subfolder) {
         StringBuilder sb = new StringBuilder();
-        sb.append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss_").format(document.getUpdateTime()));
-        sb.append(document.getReceiverIdRaw());
+        sb.append(new SimpleDateFormat("yyyyMMdd_HHmmss").format(document.getUpdateTime()));
+        sb.append("_REF");
+        sb.append(document.getId());
         sb.append("_");
-        sb.append(document.getSenderIdRaw());
+        sb.append(removePrefix(document.getReceiverIdRaw()));
         sb.append("_");
-        sb.append(document.getDocumentId());
-        sb.append("_");
-        sb.append(document.getDocumentDate());
+        sb.append(removePrefix(document.getSenderIdRaw()));
+//        sb.append("_");
+//        sb.append(document.getDocumentId());
+//        sb.append("_");
+//        sb.append(document.getDocumentDate());
         sb.append(".xml");
         String s = sb.toString();
 
@@ -273,7 +279,17 @@ public class DocumentDeliverService {
         return s;
     }
 
-    private boolean moveToFileSystem(DocumentBytes documentBytes, File outputFile, DocumentProcessLog processLog) throws UploadFailureException {
+	private String removePrefix(String idRaw) {
+		if (StringUtils.isNotBlank(idRaw)) {
+			int delimStart = idRaw.indexOf("::");
+			if (delimStart > 0) {
+				return idRaw.substring(delimStart + 2);
+			}
+		}
+		return idRaw;
+	}
+
+	private boolean moveToFileSystem(DocumentBytes documentBytes, File outputFile, DocumentProcessLog processLog) throws UploadFailureException {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFile, DocumentProcessStepType.DELIVER);
         boolean copied = false;
         File parentFile = outputFile.getParentFile();
