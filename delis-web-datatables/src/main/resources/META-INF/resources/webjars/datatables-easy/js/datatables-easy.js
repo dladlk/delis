@@ -158,10 +158,10 @@
                 if (columnEnum !== undefined) {
                     selectFilter(this, field, columnEnum, searchValue !== undefined ? searchValue : null);
                 } else if (filterType === 'date') {
-                	$(this).html('<input type="text" readonly name="'+field+'" class="form-control dt-date" value="" placeholder="" />');
+                	$(this).html('<input type="text" readonly name="'+field+'" class="form-control form-control-sm dt-date" value="" placeholder="" />');
                 	dateFilter(tfoot, this, field, searchValue, pageData);
                 } else {
-                	$(this).html('<input type="text" name="'+field+'" class="form-control dt-filter" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
+                	$(this).html('<input type="text" name="'+field+'" class="form-control form-control-sm dt-filter" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
                 }
             }
         });
@@ -212,7 +212,7 @@
     function selectFilter(ownerSelect, field, e, searchValue) {
         e = eval(e);
         var selectList = document.createElement("select");
-        selectList.setAttribute('class', 'form-control dt-filter');
+        selectList.setAttribute('class', 'form-control form-control-sm dt-filter');
         selectList.setAttribute('name', field);
 
         var option = document.createElement("option");
