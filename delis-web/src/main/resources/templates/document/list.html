@@ -4,10 +4,17 @@
       th:replace="~{fragments/layout :: layout (~{::body})}"
 >
 <body>
+<h4 class="m-2 text-secondary"> 
+	<a href="#" th:href="@{/document/list}" class="btn btn-outline-secondary btn-sm" title="Reload"><i class="fas fa-redo"></i></a> Received documents
+	<div style="float: right; line-height: 1.0;" class="btn btn-secondary" title="Show or hide administator tools" onclick="$('.delis-tools').toggle();">Tools</div>
+</h4>
 <div class="card border-secondary mb-3">
-    <div class="card-header">
-        Received documents
-        <div style="float: right; line-height: 1.0;" class="btn btn-secondary btn-sm" title="Show or hide administator tools" onclick="$('.delis-tools').toggle();">Tools</div>
+    <div class="card-header" th:if="${errorDictionary}">
+     		Filtered by error 
+     		<a th:href="@{/document/list(clear='1')}" class="badge badge-primary" title="Click to clear">
+     			<span th:text="${errorDictionary.code}"></span>
+     			<span aria-hidden="true">&times;</span>
+     		</a>
     </div>
     <div class="card-body">
     	<div class="card col-8 delis-tools p-2 collapse">

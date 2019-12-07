@@ -52,6 +52,7 @@ import dk.erst.delis.web.datatables.data.PageData;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
 import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.document.ir.ApplicationResponseFormController;
+import dk.erst.delis.web.error.ErrorDictionaryService;
 import dk.erst.delis.web.list.AbstractEasyListController;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,6 +78,9 @@ public class DocumentController extends AbstractEasyListController<Document> imp
 
 	@Autowired
 	private OrganisationService organisationService; 
+
+	@Autowired
+	private ErrorDictionaryService errorDictionaryService;
 
 	/*
 	 * START EasyDatatables block
@@ -114,7 +118,17 @@ public class DocumentController extends AbstractEasyListController<Document> imp
 		model.addAttribute("documentTypeList", DocumentType.values());
 		model.addAttribute("organisationList", organisationService.getOrganisations());
 
-		return super.list(model, webRequest);
+		String res = super.list(model, webRequest);
+
+		PageData pageData = this.getPageData();
+		if (pageData != null) {
+			Long errorDictionaryId = ((DocumentPageData)pageData).getErrorDictionaryId();
+			if (errorDictionaryId != null) {
+				model.addAttribute("errorDictionary", errorDictionaryService.getErrorDictionary(errorDictionaryId));
+			}
+		}
+
+		return res;
 	}
 
 	@Override
