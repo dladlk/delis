@@ -52,6 +52,7 @@ import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.Sta
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.CompanyIDType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.CompanyLegalFormType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.DescriptionType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.IssueDateType;
 import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.StatusReasonType;
 
 public class ApplicationResponseBuilder {
@@ -91,19 +92,39 @@ public class ApplicationResponseBuilder {
 	public void parseAndEnrich(InputStream is, ApplicationResponseData d, OutputStream out) throws Exception {
 		ApplicationResponseType ar = parse(is);
 		copyDataToType(d, ar);
+		
+		boolean isMLR = d.getCustomizationID() != null && d.getCustomizationID().startsWith("urn:fdc:peppol.eu:poacc:trns:mlr");
 
-		removeElementsAbsentInModel(ar);
+		removeElementsAbsentInModel(ar, isMLR);
 
 		serializeType(ar, out);
 	}
 
-	private void removeElementsAbsentInModel(ApplicationResponseType ar) {
-		cleanupPartyLegalEntity(ar.getSenderParty());
-		cleanupPartyLegalEntity(ar.getReceiverParty());
+	private void removeElementsAbsentInModel(ApplicationResponseType ar, boolean isMLR) {
+		cleanupPartyLegalEntity(ar.getSenderParty(), isMLR);
+		cleanupPartyLegalEntity(ar.getReceiverParty(), isMLR);
+		if (isMLR) {
+			List<DocumentResponseType> documentResponse = ar.getDocumentResponse();
+			for (DocumentResponseType documentResponseType : documentResponse) {
+				documentResponseType.setIssuerParty(null);
+				List<DocumentReferenceType> documentReferenceList = documentResponseType.getDocumentReference();
+				for (DocumentReferenceType documentReferenceType : documentReferenceList) {
+					IssueDateType issueDate = null;
+					documentReferenceType.setIssueDate(issueDate);
+				}
+			}
+		}
 	}
 
-	private void cleanupPartyLegalEntity(PartyType party) {
-		if (party == null || party.getPartyLegalEntity().isEmpty()) {
+	private void cleanupPartyLegalEntity(PartyType party, boolean isMLR) {
+		if (party == null) {
+			return;
+		}
+		if (isMLR) {
+			party.setPartyLegalEntity(null);
+			party.setPartyIdentification(null);
+		}
+		if (party.getPartyLegalEntity().isEmpty()) {
 			return;
 		}
 		PartyLegalEntityType partyLegalEntity = party.getPartyLegalEntity().get(0);
