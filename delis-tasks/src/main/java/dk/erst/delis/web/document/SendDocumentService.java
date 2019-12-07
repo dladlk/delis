@@ -208,13 +208,19 @@ public class SendDocumentService {
 					if (step.getErrorRecords() != null) {
 						List<ErrorRecord> errorRecords = step.getErrorRecords();
 						sb.append(errorRecords.size() + " errors: ");
-						for (ErrorRecord errorRecord : errorRecords) {
-							sb.append(errorRecord.toString());
+						for (int i = 0; i < errorRecords.size(); i++) {
+							ErrorRecord errorRecord = errorRecords.get(i);
+							if (i > 0) {
+								sb.append(", ");
+							}
+							sb.append(errorRecord.getCode());
+							sb.append(": ");
+							sb.append(errorRecord.getMessage());
 						}
 					} else {
 						sb.append(step.getMessage());
 					}
-					throw new DocumentProcessStepException(null, "Document is resolved as " + documentFormat + " but is not valid: " + step.getMessage(), step);
+					throw new DocumentProcessStepException(null, sb.toString(), step);
 				}
 			} catch (IOException e) {
 				log.error("Failed to validate document by rule " + ruleDocumentValidation, e);
@@ -222,7 +228,7 @@ public class SendDocumentService {
 				ErrorRecord err = new ErrorRecord(ruleDocumentValidation.buildErrorCode(), "", e.getMessage(), "error", "IOException");
 				step.addError(err);
 				step.setMessage(e.getMessage());
-				throw new DocumentProcessStepException(null, "Document is resolved as " + documentFormat + " but is not valid: " + step.getMessage(), step);
+				throw new DocumentProcessStepException(null, step.getMessage(), step);
 			}
 		}
 	}

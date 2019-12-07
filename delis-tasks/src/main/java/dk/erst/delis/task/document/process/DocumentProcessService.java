@@ -243,14 +243,12 @@ public class DocumentProcessService {
 		DocumentProcessStep step = new DocumentProcessStep("Generate and send MessageLevelResponse", DocumentProcessStepType.GENERATE_RESPONSE);
 		SendDocument sendDocument = null;
 		String errorMessage = null;
-		DocumentProcessStep failedStep = null;
 		
 		try {
 			sendDocument = generateAndSendMessageLevelResponseInternal(document, lastFailedStep);
 		} catch (ApplicationResponseGenerationException e) {
 			log.error("Failed MessageLevelResponse generation", e);
 			errorMessage = e.getMessage();
-			failedStep = e.getFailedStep();
 		} finally {
 			step.done();
 			List<DocumentProcessStep> irStepList = new ArrayList<>();
@@ -265,10 +263,6 @@ public class DocumentProcessService {
 			}
 			step.setMessage((step.getMessage() != null ? step.getMessage() : "") + appendMessage);
 			step.setResult(sendDocument);
-			
-			if (failedStep != null) {
-				step.setErrorRecords(failedStep.getErrorRecords());
-			}
 			
 			irStepList.add(step);
 			
