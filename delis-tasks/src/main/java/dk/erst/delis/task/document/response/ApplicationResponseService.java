@@ -351,8 +351,8 @@ public class ApplicationResponseService {
 					lineResponseList = new ArrayList<>();
 					List<ErrorRecord> errorRecords = lastFailedStep.getErrorRecords();
 
-					String statusReasonCode = stepType.isXsd() ? "SV" : "BV";
 					for (ErrorRecord errorRecord : errorRecords) {
+						String statusReasonCode = stepType.isXsd() ? "SV" : "BV";
 						if (errorRecord.isWarning()) {
 							statusReasonCode = "BW";
 						}
