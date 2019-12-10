@@ -232,6 +232,10 @@ public class VFSService {
     }
 
     private Method findMethodByName(Class<?> builderClass, String methodName) throws NoSuchMethodException {
+    	Method found = org.springframework.util.ClassUtils.getMethodIfAvailable(builderClass, methodName);
+    	if (found != null) {
+    		return found;
+    	}
         for (Method method : builderClass.getMethods()) {
             if (method.getName().equalsIgnoreCase(methodName)) {
                 return method;
