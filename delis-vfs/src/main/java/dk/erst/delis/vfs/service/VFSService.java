@@ -232,9 +232,7 @@ public class VFSService {
     }
 
 	private Method findMethodByName(Class<?> builderClass, String methodName) throws NoSuchMethodException {
-		log.info("Searching for method " + methodName + " in class " + builderClass);
 		for (Method method : builderClass.getMethods()) {
-			log.info("Found: " + method.getName());
 			if (method.getName().equalsIgnoreCase(methodName)) {
 				return method;
 			}
