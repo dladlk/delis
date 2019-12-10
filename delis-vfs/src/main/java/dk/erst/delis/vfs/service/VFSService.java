@@ -231,18 +231,16 @@ public class VFSService {
         }
     }
 
-    private Method findMethodByName(Class<?> builderClass, String methodName) throws NoSuchMethodException {
-    	Method found = org.springframework.util.ClassUtils.getMethodIfAvailable(builderClass, methodName);
-    	if (found != null) {
-    		return found;
-    	}
-        for (Method method : builderClass.getMethods()) {
-            if (method.getName().equalsIgnoreCase(methodName)) {
-                return method;
-            }
-        }
-        return null;
-    }
+	private Method findMethodByName(Class<?> builderClass, String methodName) throws NoSuchMethodException {
+		log.info("Searching for method " + methodName + " in class " + builderClass);
+		for (Method method : builderClass.getMethods()) {
+			log.info("Found: " + method.getName());
+			if (method.getName().equalsIgnoreCase(methodName)) {
+				return method;
+			}
+		}
+		return null;
+	}
 
     private Document createDocument(File configFile) throws Exception {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
