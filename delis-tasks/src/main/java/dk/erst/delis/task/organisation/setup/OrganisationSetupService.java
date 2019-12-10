@@ -1,6 +1,7 @@
 package dk.erst.delis.task.organisation.setup;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -104,8 +106,8 @@ public class OrganisationSetupService {
 							if (validateReceivingSetup) {
 								validateVFSFolder(bindingResult, data.getReceivingMethodSetup(), "/", "Accessibility check of configured receiving method failed.");
 								if (data.isReceiveBothOIOUBLBIS3()) {
-									validateVFSSubfolder(bindingResult, data.getReceivingMethodSetup(), DocumentDeliverService.DELIVER_FOLDER_BIS3);
-									validateVFSSubfolder(bindingResult, data.getReceivingMethodSetup(), DocumentDeliverService.DELIVER_FOLDER_OIOUBL);
+									validateVFSSubfolder(bindingResult, data.getReceivingMethodSetup(), "/" + DocumentDeliverService.DELIVER_FOLDER_BIS3);
+									validateVFSSubfolder(bindingResult, data.getReceivingMethodSetup(), "/" + DocumentDeliverService.DELIVER_FOLDER_OIOUBL);
 								}								
 							}
 						} catch (Exception e) {
@@ -132,6 +134,37 @@ public class OrganisationSetupService {
 			bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": " + e.getMessage());
 		}
 	}
+	
+	/*
+	 * Not yet used
+	 */
+	protected void validateVFSFolderByUpload(BindingResult bindingResult, String setup, String path, String messageNotExists) {
+		File tempFile = null;
+		try {
+			tempFile = File.createTempFile("validateVFSFolder_" + System.currentTimeMillis(), ".tmp");
+			try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+				IOUtils.write("validateVFSFolder".getBytes(), fos);
+			}
+			String remoteFilePath = path + "/" + tempFile.getName();
+			vfsService.upload(setup, tempFile.getAbsolutePath(), remoteFilePath);
+			if (!vfsService.exist(setup, remoteFilePath)) {
+				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": temporary uploaded file does not exist: " + remoteFilePath);
+			}
+			if (!vfsService.delete(setup, remoteFilePath)) {
+				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": cannot delete temporary uploaded file " + remoteFilePath);
+			}
+		} catch (VFSConfigException e) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", "VFS setup XML file is not valid: " + e.getMessage());
+		} catch (Exception e) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": " + e.getMessage());
+		} finally {
+			if (tempFile != null) {
+				if (!tempFile.delete()) {
+					log.error("Failed to delete temporary file, generated for VFS access validation: " + tempFile);
+				}
+			}
+		}
+	}	
 
 	private void validateSubfolder(BindingResult bindingResult, File configFile, String subPath) {
 		File subFolder = new File(configFile, subPath);
