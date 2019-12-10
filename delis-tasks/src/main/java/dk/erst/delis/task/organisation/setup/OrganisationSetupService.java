@@ -39,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OrganisationSetupService {
 
+	private static final boolean VALIDATE_BY_UPLOAD = true;
+
 	private OrganisationSetupDaoRepository organisationSetupDaoRepository;
 
 	private VFSService vfsService;
@@ -124,6 +126,10 @@ public class OrganisationSetupService {
 	}
 	
 	private void validateVFSFolder(BindingResult bindingResult, String setup, String path, String messageNotExists) {
+		if (VALIDATE_BY_UPLOAD) {
+			validateVFSFolderByUpload(bindingResult, setup, path, messageNotExists);
+			return;
+		}
 		try {
 			if (!vfsService.exist(setup, path)) {
 				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists);
@@ -141,17 +147,25 @@ public class OrganisationSetupService {
 	protected void validateVFSFolderByUpload(BindingResult bindingResult, String setup, String path, String messageNotExists) {
 		File tempFile = null;
 		try {
+			log.info("Validating VFS folder " + path + " by config " + setup);
 			tempFile = File.createTempFile("validateVFSFolder_" + System.currentTimeMillis(), ".tmp");
 			try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 				IOUtils.write("validateVFSFolder".getBytes(), fos);
 			}
 			String remoteFilePath = path + "/" + tempFile.getName();
 			vfsService.upload(setup, tempFile.getAbsolutePath(), remoteFilePath);
+			log.info("Successfully uploaded temp file to "+remoteFilePath);
 			if (!vfsService.exist(setup, remoteFilePath)) {
+				log.warn("File does not exist: "+remoteFilePath);
 				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": temporary uploaded file does not exist: " + remoteFilePath);
+			} else {
+				log.info("File exists: "+remoteFilePath);
 			}
 			if (!vfsService.delete(setup, remoteFilePath)) {
+				log.warn("Cannot delete temp file: "+remoteFilePath);
 				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": cannot delete temporary uploaded file " + remoteFilePath);
+			} else {
+				log.info("Successfully deleted temp file: " + remoteFilePath);
 			}
 		} catch (VFSConfigException e) {
 			bindingResult.rejectValue("receivingMethodSetup", "undefined", "VFS setup XML file is not valid: " + e.getMessage());

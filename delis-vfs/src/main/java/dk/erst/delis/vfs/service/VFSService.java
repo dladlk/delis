@@ -131,7 +131,9 @@ public class VFSService {
             FileSystemOptions fsOptions = vfsConfig.getFsOptions();
             String baseUrl = vfsConfig.getUrl();
             FileObject remoteFile = manager.resolveFile(baseUrl + remoteFilePath, fsOptions);
-            return remoteFile.exists();
+            boolean exists = remoteFile.exists();
+			log.info("Checked whether exists " + remoteFile.getURL() + " by config " + config + ": " + exists);
+            return exists;
         } catch (VFSConfigException e) {
         	throw e;
         } catch (Exception e) {
