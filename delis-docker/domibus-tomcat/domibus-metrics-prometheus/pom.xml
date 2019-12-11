@@ -19,8 +19,7 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>eu.domibus</groupId>
-			<artifactId>domibus-MSH</artifactId>
+			<groupId>eu.domibus</groupId><artifactId>domibus-MSH</artifactId>
 			<version>${domibus.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -82,5 +81,31 @@
 			</plugin>
 		</plugins>
 	</build>
+
+    <repositories>
+        <repository>
+            <id>cefdigital-releases</id>
+            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>cefdigital-snapshots</id>
+            <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
 </project>
