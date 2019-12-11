@@ -53,3 +53,14 @@ prometheus:
       - targetPort: 8080
         interval: 10s
         path: /delis-web-admin/actuator/prometheus
+  - name: domibus-monitor
+    selector:
+      matchLabels:
+        app: dt1
+    namespaceSelector:
+      matchNames:
+        - default
+    endpoints:
+      - targetPort: 8080
+        interval: 10s
+        path: /domibus1/prometheus
