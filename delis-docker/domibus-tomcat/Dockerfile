@@ -4,6 +4,8 @@ COPY ./erst-domibus-fs-plugin ./fs-plugin
 RUN mvn -f ./fs-plugin clean install
 COPY ./domibus-patch-jms-timeout ./jms-timeout
 RUN mvn -f ./jms-timeout clean install
+COPY ./domibus-metrics-prometheus ./domibus-metrics-prometheus
+RUN mvn -f ./domibus-metrics-prometheus clean install
 
 FROM tomcat:8.5-jre8-slim
 
@@ -90,6 +92,8 @@ COPY --from=plugin_compiler fs-plugin/target/erst-domibus-fs-plugin-ext-4.1.1.ja
 COPY --from=plugin_compiler jms-timeout/target/receive-timeout-1.0.jar $CATALINA_HOME/domibus/plugins/lib/domibus-default-delis-receive-timeout-1.0.jar
 COPY custom-plugin.xml $CATALINA_HOME/domibus/plugins/config/domibus-default-delis-receive-timeout-plugin.xml
 
+# Copy domibus-metrics-prometheus to WEB-INF/lib folder of Domibus to expose Prometheus metrics
+COPY --from=plugin_compiler domibus-metrics-prometheus/target/domibus-metrics-prometheus-4.1.1.jar $CATALINA_HOME/webapps/ROOT/WEB-INF/lib/domibus-metrics-prometheus-4.1.1.jar
 
 RUN echo '#!/bin/bash' > $CATALINA_HOME/bin/setenv.sh && \
 	echo 'export JAVA_OPTS="$JAVA_OPTS -Ddomibus.config.location=$CATALINA_HOME/domibus"' >> $CATALINA_HOME/bin/setenv.sh
