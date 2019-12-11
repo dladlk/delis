@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+<changeSet author="eDelivery" id="{{ .Env.DB_CONFIG_VERSION_ID }}" logicalFilePath="path-independent">
+
+	<update tableName="tb_user">
+		<column name="USER_NAME" value='{{ .Env.DB_CONFIG_ADMIN_LOGIN }}' type="VARCHAR" />
+		<column name="USER_PASSWORD" value='{{ .Env.DB_CONFIG_ADMIN_PASSWORD }}' type="VARCHAR" />
+		<where>ID_PK=1 and USER_NAME='admin' and USER_PASSWORD='$2a$10$5uKS72xK2ArGDgb2CwjYnOzQcOmB7CPxK6fz2MGcDBM9vJ4rUql36'</where>
+	</update>
+
+	<update tableName="tb_user">
+		<column name="USER_NAME" value='{{ .Env.DB_CONFIG_USER_LOGIN }}' type="VARCHAR" />
+		<column name="USER_PASSWORD" value='{{ .Env.DB_CONFIG_USER_PASSWORD }}' type="VARCHAR" />
+		<where>ID_PK=2 and USER_NAME='user' and USER_PASSWORD='$2a$10$HApapHvDStTEwjjneMCvxuqUKVyycXZRfXMwjU0rRmaWMsjWQp/Zu'</where>
+	</update>
+
+
+</changeSet>
+
+</databaseChangeLog>
