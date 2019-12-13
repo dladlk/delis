@@ -90,7 +90,7 @@
 						<div class="pl-3">
 						<div class="form-check">
 							<input class="form-check-input" id="receiveoption1" th:field="*{receiveBothOIOUBLBIS3}" type="checkbox" th:errorclass="is-invalid"></input> 
-							<label class="form-check-label" for="receiveoption1">Receive both BIS3 and OIOUBL into different subfolders</label>
+							<label class="form-check-label" for="receiveoption1">Receive both OIOUBL and BIS3 (if ingoing format not OIOUBL) into different subfolders</label>
 							<div th:replace="~{fragments/misc :: has-errors (field='receiveBothOIOUBLBIS3')}"></div>
 						</div>
 						<div class="form-check">
