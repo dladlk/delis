@@ -19,6 +19,7 @@
 					<th>Sender</th>
 					<th>Receiver</th>
 					<th>Status</th>
+					<th>Document ID</th>
 					<th>Document Type</th>
 					<th>Delivered</th>
 				</tr>
@@ -37,6 +38,7 @@
 						<span th:text="${r.receiverIdRaw}">0088:234234234</span>
 					</td>
 					<td th:text="${r.documentStatus?.name}" th:classappend="${r.documentStatus?.error ? 'document-error': ''}">LOAD_OK</td>
+					<td th:text="${r.documentId}">23423423</td>
 					<td th:text="${r.documentType?.name}">INVOICE</td>
 					<td th:text="${r.deliveredTime}"><span th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-10-12 10:43:22</span></td>
 				</tr>

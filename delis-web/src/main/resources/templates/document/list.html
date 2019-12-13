@@ -52,6 +52,7 @@
                         <th dt-field="createTime" dt-type="date">Received</th>
                         <th dt-field="organisation.id" dt-orderfield="organisation.name" th:attr="dt-enum=${@jsons.json(organisationList)}">Organisation</th>
                         <th dt-field="receiverIdRaw">Receiver number</th>
+                        <th dt-field="documentId">Document ID</th>
                         <th dt-field="documentStatus" th:attr="dt-enum=${@jsons.json(statusList)}">Status</th>
                         <th dt-field="ingoingDocumentFormat" th:attr="dt-enum=${@jsons.json(documentFormatList)}">Ingoing Format</th>
                         <th dt-field="senderName">Sender name</th>
@@ -67,6 +68,7 @@
                         <span th:if="${r.organisation}" th:text="${r.organisation.name}">Region Nord</span>
                     </td>
                     <td th:text="${@strings.unraw(r.receiverIdRaw)}">0088:234234</td>
+                    <td th:text="${r.documentId}">3242343</td>
                     <td th:text="${r.documentStatus?.name}" th:classappend="${r.documentStatus?.error ? 'document-error': ''}">LOAD_OK</td>
                     <td th:text="${r.ingoingDocumentFormat?.name}">BIS3_INVOICE</td>
                     <td th:text="${r.senderName}">Lego Spain</td>
