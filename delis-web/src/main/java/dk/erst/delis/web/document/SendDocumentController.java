@@ -31,15 +31,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import dk.erst.delis.data.entities.document.SendDocument;
 import dk.erst.delis.data.entities.document.SendDocumentBytes;
+import dk.erst.delis.data.enums.document.DocumentType;
 import dk.erst.delis.data.enums.document.SendDocumentBytesType;
 import dk.erst.delis.data.enums.document.SendDocumentStatus;
 import dk.erst.delis.task.document.process.log.DocumentProcessStepException;
+import dk.erst.delis.task.organisation.OrganisationService;
 import dk.erst.delis.web.RedirectUtil;
+import dk.erst.delis.web.datatables.dao.DataTablesRepository;
+import dk.erst.delis.web.datatables.data.PageData;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
+import dk.erst.delis.web.list.AbstractEasyListController;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-public class SendDocumentController {
+public class SendDocumentController extends AbstractEasyListController<SendDocument> {
 
 	@Autowired
 	@Qualifier("sendDocumentService")
@@ -50,20 +57,47 @@ public class SendDocumentController {
 	
 	@Value("${delis.download.allow.all:#{false}}")
 	private boolean downloadAllowAll;
+	
+	@Autowired
+	private OrganisationService organisationService; 
+	
+	/*
+	 * START EasyDatatables block
+	 */
+	@Autowired
+	private SendDocumentDataTableRepository sendDocumentDataTableRepository;
+	@Autowired
+	private EasyDatatablesListServiceImpl<SendDocument> sendDocumentEasyDatatablesListService;
+
+	@Override
+	protected String getListCode() {
+		return "document_send";
+	}
+
+	@Override
+	protected DataTablesRepository<SendDocument, Long> getDataTableRepository() {
+		return this.sendDocumentDataTableRepository;
+	}
+
+	@Override
+	protected EasyDatatablesListService<SendDocument> getEasyDatatablesListService() {
+		return sendDocumentEasyDatatablesListService;
+	}
 
 	@RequestMapping("/document/send/list")
 	public String list(Model model, WebRequest webRequest) {
-		return listFilter(model, webRequest);
-	}
-
-	@PostMapping("/document/send/list/filter")
-	public String listFilter(Model model, WebRequest webRequest) {
-		List<SendDocument> pageContainer = documentService.documentList(0, 10);
-		model.addAttribute("documentList", pageContainer);
 		model.addAttribute("selectedIdList", new SendDocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", SendDocumentStatus.values());
-		return "/document/send/list";
+		model.addAttribute("documentTypeList", DocumentType.values());
+		model.addAttribute("organisationList", organisationService.getOrganisations());
+
+		String res = super.list(model, webRequest);
+		return res;
 	}
+
+	/*
+	 * END EasyDatatables block
+	 */	
 
 	@PostMapping("/document/send/updatestatuses")
 	public String listFilter(@ModelAttribute SendDocumentStatusBachUdpateInfo idList, Model model, Authentication authentication) {
@@ -166,5 +200,12 @@ public class SendDocumentController {
 		resp.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"data_" + documentId + "_" + bytesId + ".xml\"");
 		resp.contentType(MediaType.parseMediaType("application/octet-stream"));
 		return resp.body(new InputStreamResource(new ByteArrayInputStream(data)));
+	}
+
+	@Override
+	public PageData buildInitialPageData() {
+		PageData pageData = super.buildInitialPageData();
+		pageData.setOrder("id_desc");
+		return pageData;
 	}
 }
