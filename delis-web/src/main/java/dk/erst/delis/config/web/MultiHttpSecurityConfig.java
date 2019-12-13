@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -84,18 +85,21 @@ public class MultiHttpSecurityConfig {
                     .antMatchers("/webjars/**");
         }
 
-        @Component 
-        public class LoginSuccessListener implements ApplicationListener<AuthenticationSuccessEvent>{
+		@Component
+		public class LoginSuccessListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
-            @Override
-            public void onApplicationEvent(AuthenticationSuccessEvent evt) {
-                String login = evt.getAuthentication().getName();
-                CustomUserDetails user = (CustomUserDetails) evt.getAuthentication().getPrincipal();
-                if (!user.getAuthorities().contains(GlobalController.ADMIN_AUTHORITY)) {
+			@Override
+			public void onApplicationEvent(AuthenticationSuccessEvent evt) {
+				String login = evt.getAuthentication().getName();
+				CustomUserDetails user = (CustomUserDetails) evt.getAuthentication().getPrincipal();
+				if (!user.getAuthorities().contains(GlobalController.ADMIN_AUTHORITY)) {
 					throw new InsufficientAuthenticationException("User " + login + " has no access to DELIS Setup Cockpit, please login to main DELIS web interface");
-                }
-            } 
-        }
+				}
+				if (user.isDisabled()) {
+					throw new DisabledException("User " + login + " has no access to DELIS Setup Cockpit, please login to main DELIS web interface");
+				}
+			}
+		}
         
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -103,6 +107,7 @@ public class MultiHttpSecurityConfig {
         	authFailureHandler.setDefaultFailureUrl("/login?error=true");
         	Map<String, String> failureUrlMap = new HashMap<String, String>();
         	failureUrlMap.put("org.springframework.security.authentication.InsufficientAuthenticationException", "/login?error=user");
+        	failureUrlMap.put("org.springframework.security.authentication.DisabledException", "/login?error=disabled");
 			authFailureHandler.setExceptionMappings(failureUrlMap);
         	
             http.csrf().disable();

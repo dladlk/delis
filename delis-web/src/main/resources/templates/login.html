@@ -12,6 +12,7 @@
 		<div class="text-danger mb-2">
 		<th:block th:switch="${param.error.get(0)}">
 			<span th:case="'user'">You have no access to DELIS Setup Cockpit, please login to main DELIS web interface.</span>
+			<span th:case="'disabled'">User account is disabled.</span>
 			<span th:case="*">Invalid username and password.</span>
 		</th:block>
 		</div>
