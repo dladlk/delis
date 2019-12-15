@@ -8,7 +8,6 @@
 	<changeSet author="dlk" id="1576340255000-2">
 		<sql>update user set password_change_time=current_timestamp where password_change_time is null</sql>
 		<addDefaultValue 	  columnDataType="timestamp" columnName="password_change_time" tableName="user" defaultValueDate="2019-01-01T00:00:00"/>
-		<addNotNullConstraint columnDataType="timestamp" columnName="password_change_time" tableName="user" defaultNullValue="CURRENT_TIMESTAMP"/>        
 	</changeSet>
 
 </databaseChangeLog>
