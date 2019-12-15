@@ -25,8 +25,11 @@ public class GlobalController {
 	@ModelAttribute(name = "currentUserId")
 	public Long getCurrentUserId(Authentication authentication) {
 		if (authentication != null && authentication.isAuthenticated()) {
-			CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
-			return cud.getId();
+			Object principal = authentication.getPrincipal();
+			if (principal instanceof CustomUserDetails) {
+				CustomUserDetails cud = (CustomUserDetails) principal;
+				return cud.getId();
+			}
 		}
 		return null;
 	}
