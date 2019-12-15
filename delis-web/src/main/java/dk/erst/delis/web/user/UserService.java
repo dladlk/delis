@@ -81,6 +81,9 @@ public class UserService {
 			}
 			user.setPassword(bCryptPasswordEncoder.encode(userData.getPassword()));
 		}
+		if (userData.getId() == null) {
+			user.setPasswordChangeTime(Calendar.getInstance().getTime());
+		}
 		if (StringUtils.isNotBlank(userData.getEmail())) {
 			user.setEmail(userData.getEmail());
 		}
