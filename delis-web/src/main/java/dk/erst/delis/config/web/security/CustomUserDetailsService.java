@@ -1,6 +1,7 @@
 package dk.erst.delis.config.web.security;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,10 +20,12 @@ import dk.erst.delis.web.main.GlobalController;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	private final UserRepository userRepository;
+	private final UserStatusService userStatusService; 
 
 	@Autowired
-	public CustomUserDetailsService(UserRepository userRepository) {
+	public CustomUserDetailsService(UserRepository userRepository, UserStatusService userStatusService) {
 		this.userRepository = userRepository;
+		this.userStatusService = userStatusService;
 	}
 
 	@Override
@@ -41,6 +44,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 			authorities = Arrays.asList(GlobalController.USER_AUTHORITY);
 		}
 
-		return new CustomUserDetails(user, authorities);
+		return new CustomUserDetails(user, 
+
+				userStatusService.isEnabled(user), userStatusService.isAccountNonExpired(user),
+
+				userStatusService.isCredentialsNonExpired(user), userStatusService.isAccountNonLocked(user),
+
+				
+				authorities);
+	}
+
+	public void successfulLogin(String userLogin) {
+		userRepository.resetInvalidLoginCountAndLogin(userLogin.toLowerCase(), Calendar.getInstance().getTime());
+
+	}
+
+	public void badCredentials(String userLogin) {
+		userRepository.updateInvalidLoginCount(userLogin.toLowerCase(), Calendar.getInstance().getTime());
 	}
 }

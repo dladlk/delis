@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+
+<h3 class="m-2 text-secondary"><a href="#" th:href="${@backs.get('/user/list')}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
+	<a href="#" th:href="@{/user/view/__${user.id}__(back=${@backs.get('/user/list')})}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+	User details</h3>        
+
+<div class="">
+
+	<div class="card border-secondary m-1">
+		<div class="card-body pb-0">
+			<th:block th:remove="all">
+			<table class="table table-sm table-borderless table-with-form">
+				<tr>
+					<th>Login</th>
+					<th>First name</th>
+					<th>Last name</th>
+					<th>Email</th>
+				</tr>
+				<tr>
+					<td th:text="${user.username}" th:classappend="${user.disabled?'delis-deactivated':''}"></td>
+					<td th:text="${user.firstName}"></td>
+					<td th:text="${user.lastName}"></td>
+					<td th:text="${user.email}"></td>
+				</tr>
+				<tr>
+					<th>Organisation</th>
+					<th>Last login time</th>
+					<th>Password change time</th>
+					<th>IR Form</th>
+				</tr>
+				<tr>
+					<td>
+						<a href="#" th:href="@{|/organisation/view/${user.organisation.id}|}" th:text="${user.organisation.name}" th:if="${user.organisation}"/>
+						<span th:if="${user.organisation == null}">Administrator</span>					
+					</td>
+					<td th:text="${user.lastLoginTime}"></td>
+					<td th:text="${user.passwordChangeTime}"></td>
+					<td th:text="${user.disabledIrForm != null && user.disabledIrForm ? 'Hidden': ''}"></td>
+				</tr>
+				<tr>
+					<th>Last invalid login time</th>
+					<th>Failed login count</th>
+					<th>Password expired</th>
+					<th>Account locked</th>
+				</tr>
+				<tr>
+					<td th:text="${user.lastInvalidLoginTime}"></td>
+					<td th:text="${user.invalidLoginCount != null ?user.invalidLoginCount:0}"></td>
+					<td>
+						<span th:text="${@userStatusService.isAccountNonExpired(user)?'No':'Expired'}"></span>
+					</td>
+					<td>
+						<span th:text="${@userStatusService.isAccountNonLocked(user)?'No':'Locked'}"></span>
+					</td>
+				</tr>
+			</table>
+			</th:block>
+			<style>
+				dl dt {
+					color: gray;
+					font-weight: normal;
+				}
+				dl dt:after {
+				}
+			</style>
+			<div class="row">
+				<div class="col-sm-5">
+					<dl class="row">
+						<dt class="col-sm-4">Login</dt>
+						<dd class="col-sm-8"><span th:text="${user.username}" th:classappend="${user.disabled?'delis-deactivated':''}"></span></dd>
+		
+						<dt class="col-sm-4">Name</dt>
+						<dd class="col-sm-8"><span th:text="${user.firstName}"></span> <span th:text="${user.lastName}"></span></dd>
+		
+						<dt class="col-sm-4">Email</dt>
+						<dd class="col-sm-8"><span th:text="${user.email}"></span></dd>
+		
+						<dt class="col-sm-4">Organisation</dt>
+						<dd class="col-sm-8">
+							<a href="#" th:href="@{|/organisation/view/${user.organisation.id}|}" th:text="${user.organisation.name}" th:if="${user.organisation}"/>
+							<span th:if="${user.organisation == null}">Administrator</span>					
+						</dd>
+						
+						<dt class="col-sm-4">IR Form</dt>
+						<dd class="col-sm-8"><span th:text="${user.disabledIrForm != null && user.disabledIrForm ? 'Hidden': 'Show'}"></span></dd>
+					</dl>
+				</div>
+				<div class="col-sm-7">
+					<dl class="row" th:with="expired=${!@userStatusService.isCredentialsNonExpired(user)}, locked=${!@userStatusService.isAccountNonLocked(user)}" >
+						<dt class="col-sm-4">Last login time</dt>
+						<dd class="col-sm-8"><span th:text="${@strings.datetime(user.lastLoginTime)}"></span> </dd>
+		
+						<dt class="col-sm-4">Password change time</dt>
+						<dd class="col-sm-8"><span th:text="${@strings.datetime(user.passwordChangeTime)}"></span> </dd>
+
+						<dt class="col-sm-4">Password expiration time</dt>
+						<dd class="col-sm-8" th:classappend="${expired?'text-danger':''}"><span th:text="${@strings.datetime(@userStatusService.getPasswordExpirationTime(user))}"></span> </dd>
+
+						<dt class="col-sm-4">Password expired</dt>
+						<dd class="col-sm-8"><span th:text="${@userStatusService.isCredentialsNonExpired(user)?'No':'Expired, update password'}"></span> </dd>
+		
+						<dt class="col-sm-4">Last invalid login time</dt>
+						<dd class="col-sm-8"><span th:text="${@strings.datetime(user.lastInvalidLoginTime)}"></span> </dd>
+		
+						<dt class="col-sm-4">Invalid login count</dt>
+						<dd class="col-sm-8"><span th:text="${user.invalidLoginCount != null ?user.invalidLoginCount:0}"></span> </dd>
+	
+						<dt class="col-sm-4">Account locked</dt>
+						<dd class="col-sm-8" th:classappend="${locked?'text-danger':''}"><span th:text="${locked?'Locked':'No'}"></span>
+							<a class="m-2" href="#" th:href="@{|/user/unlock/${user.id}|}" th:if="${locked}" onclick="return confirm('Are you sure that you want to unlock this user?')" th:text="Unlock"></a> 
+						</dd>
+	
+					</dl>
+				</div>
+			</div>
+		</div>		
+	</div>
+	
+		<div>
+			<a class="m-2 btn btn-outline-primary btn-sm" href="#" th:href="@{/user/update/__${user.id}__}">Update</a>
+
+			<a class="m-2 btn btn-outline-primary btn-sm" href="#" th:href="@{|/user/deactivate/${user.id}|}" th:if="${!user.disabled}" onclick="return confirm('Are you sure that you want to deactivate this user?')" th:text="Disable"></a>
+			<a class="m-2 btn btn-outline-primary btn-sm" href="#" th:href="@{|/user/activate/${user.id}|}" th:if="${user.disabled}" onclick="return confirm('Are you sure that you want to activate this user?')" th:text="Activate"></a>
+		</div>
+    
+</div>
+
+</body>
+</html>

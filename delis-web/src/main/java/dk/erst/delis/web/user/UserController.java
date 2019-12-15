@@ -26,17 +26,17 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private OrganisationService organisationService;
-	
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-    	StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(false);
-        binder.registerCustomEditor(String.class, stringtrimmer);    	
-        binder.addValidators(new UserDataValidator());
-    }
-	
+
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(false);
+		binder.registerCustomEditor(String.class, stringtrimmer);
+		binder.addValidators(new UserDataValidator());
+	}
+
 	@GetMapping("/xlist")
 	public String xlist(Model model) {
 		model.addAttribute("users", userService.findAll());
@@ -55,8 +55,12 @@ public class UserController {
 	}
 
 	@GetMapping("/update/{id}")
-	public String update(@PathVariable long id, Model model) {
+	public String update(@PathVariable long id, Model model, RedirectAttributes ra) {
 		User user = userService.findById(id);
+		if (user == null) {
+			ra.addFlashAttribute("errorMessage", "User is not found");
+			return "redirect:/user/list";
+		}
 		UserData userData = new UserData();
 		BeanUtils.copyProperties(user, userData, "disabledIrForm");
 		if (user.getOrganisation() != null) {
@@ -72,22 +76,6 @@ public class UserController {
 		return "user/edit";
 	}
 
-	@GetMapping("/deactivate/{id}")
-	public String deactivate(@PathVariable long id, RedirectAttributes ra) {
-		if (userService.deactivateUser(id)) {
-			ra.addFlashAttribute("message", "User is deactivated");
-		}
-		return "redirect:/user/list";
-	}
-
-	@GetMapping("/activate/{id}")
-	public String activate(@PathVariable long id, RedirectAttributes ra) {
-		if (userService.activateUser(id)) {
-			ra.addFlashAttribute("message", "User is activated");
-		}
-		return "redirect:/user/list";
-	}
-
 	@PostMapping("/save")
 	public String save(@Valid @ModelAttribute("user") UserData user, BindingResult bindingResult, Model model, RedirectAttributes ra) {
 		if (!bindingResult.hasErrors()) {
@@ -98,15 +86,16 @@ public class UserController {
 			fillModel(model);
 			return "user/edit";
 		}
-		
+
+		boolean isNew = user.isNew();
 		userService.saveOrUpdateUser(user);
-		
-		if (user.isNew()) {
+
+		if (isNew) {
 			ra.addFlashAttribute("message", "User is created.");
 		} else {
 			ra.addFlashAttribute("message", "User is updated.");
 		}
-		
-		return "redirect:/user/list";
+
+		return "redirect:/user/view/" + user.getId();
 	}
 }

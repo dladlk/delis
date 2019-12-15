@@ -17,6 +17,14 @@
 		</div>
 	</div>
 
+	<div th:fragment="form-input-text-narrow (field, name)" class="form-group row" th:with="placeholder = ${placeholder} ?${placeholder} : ${name}, required = ${#ctx.containsVariable('required')}?${required}: true, type = ${#ctx.containsVariable('type')}?${type}:'text'">
+		<label class="col-3 col-form-label"><span th:text="${name + (required?'* ': '')}"/>:</label>
+		<div class="col-9">
+			<input th:type="${type}" th:field="*{__${field}__}" th:placeholder="${placeholder}" class="form-control" th:errorclass="is-invalid" autocomplete="off" />
+			<div th:replace=":: has-errors (field='__${field}__')"></div>
+		</div>
+	</div>
+
 	<div th:fragment="form-select (field, name, list)" class="form-group row" th:with="required = ${#ctx.containsVariable('required')}?${required}: true, type = ${#ctx.containsVariable('type')}?${type}:'text'">
 		<label class="col-2 col-form-label"><span th:text="${name + (required?'* ': '')}"/>:</label>
 		<div class="col-10">
