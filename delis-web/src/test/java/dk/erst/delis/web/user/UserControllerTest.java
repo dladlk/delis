@@ -89,7 +89,7 @@ public class UserControllerTest {
                 .param("lastName", "Last")
                 .param("admin", "true")
                 .param("email", "new_user@test.com"))
-                .andExpect(redirectedUrl("/user/list"));
+                .andExpect(redirectedUrl("/user/view/27"));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class UserControllerTest {
                 .param("admin", "true")
                 .param("lastName", "new_not_empty_last_name")
         		.param("firstName", "new_not_empty_first_name"))
-                .andExpect(redirectedUrl("/user/list"));
+                .andExpect(redirectedUrl("/user/view/"+user.getId()));
 
         User updated = userService.findUserByUsername("test_user_0");
         Assert.assertEquals("new_not_empty_last_name", updated.getLastName());
@@ -128,12 +128,12 @@ public class UserControllerTest {
         assertFalse(userToDelete.isDisabled());
         Assert.assertNotNull(userToDelete);
 
-        this.mockMvc.perform(get("/user/deactivate/" + userToDelete.getId())).andExpect(redirectedUrl("/user/list"));
+        this.mockMvc.perform(get("/user/deactivate/" + userToDelete.getId())).andExpect(redirectedUrl("/user/view/"+userToDelete.getId()));
 
         User deletedUser = userService.findUserByUsername("user_to_delete");
         Assert.assertTrue(deletedUser.isDisabled());
 
-        this.mockMvc.perform(get("/user/activate/" + userToDelete.getId())).andExpect(redirectedUrl("/user/list"));
+        this.mockMvc.perform(get("/user/activate/" + userToDelete.getId())).andExpect(redirectedUrl("/user/view/"+userToDelete.getId()));
         
         deletedUser = userService.findUserByUsername("user_to_delete");
         Assert.assertFalse(deletedUser.isDisabled());
