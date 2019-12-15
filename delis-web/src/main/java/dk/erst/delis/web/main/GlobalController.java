@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import dk.erst.delis.config.web.security.CustomUserDetails;
 import dk.erst.delis.data.enums.user.RoleType;
 
 @ControllerAdvice
@@ -19,6 +20,15 @@ public class GlobalController {
 	@ModelAttribute(name = "loggedIn")
 	public boolean isLoggedIn(Authentication authentication) {
 		return authentication != null && authentication.isAuthenticated();
+	}
+
+	@ModelAttribute(name = "currentUserId")
+	public Long getCurrentUserId(Authentication authentication) {
+		if (authentication != null && authentication.isAuthenticated()) {
+			CustomUserDetails cud = (CustomUserDetails) authentication.getPrincipal();
+			return cud.getId();
+		}
+		return null;
 	}
 
 	@ModelAttribute(name = "admin")

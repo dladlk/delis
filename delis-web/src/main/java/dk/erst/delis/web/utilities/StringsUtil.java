@@ -1,13 +1,16 @@
 package dk.erst.delis.web.utilities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.DateUtils;
 
 @Component("strings")
 public class StringsUtil {
@@ -90,5 +93,12 @@ public class StringsUtil {
 			return s;
 		}
 		return rawIdentifier;
+	}
+	
+	public String datetime(Date date) {
+		if (date == null) {
+			return "No";
+		}
+		return DateUtils.format(date, "yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 	}
 }

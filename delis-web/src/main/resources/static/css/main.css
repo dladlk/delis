@@ -68,3 +68,9 @@ table.datatables-easy .dt-no-sort {
 .form-control.dt-date {
 	background-color: white;
 }
+.table-with-form tr th {
+	padding-bottom: 0px;
+}
+.table-with-form tr td {
+	padding-top: 0px;
+}

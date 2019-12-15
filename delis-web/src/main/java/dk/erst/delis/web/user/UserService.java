@@ -1,5 +1,6 @@
 package dk.erst.delis.web.user;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import dk.erst.delis.dao.UserRepository;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.user.User;
 import dk.erst.delis.task.organisation.OrganisationService;
+import dk.erst.delis.web.user.PasswordController.PasswordForm;
 
 @Service
 public class UserService {
@@ -74,6 +76,9 @@ public class UserService {
 			user.setUsername(userData.getUsername());
 		}
 		if (StringUtils.isNotBlank(userData.getPassword())) {
+			if (userData.getId() != null && !bCryptPasswordEncoder.matches(userData.getPassword(), user.getPassword())) {
+				user.setPasswordChangeTime(Calendar.getInstance().getTime());
+			}
 			user.setPassword(bCryptPasswordEncoder.encode(userData.getPassword()));
 		}
 		if (StringUtils.isNotBlank(userData.getEmail())) {
@@ -89,7 +94,7 @@ public class UserService {
 		} else {
 			user.setDisabledIrForm(Boolean.FALSE);
 		}
-		
+
 		Organisation org = null;
 		if (userData.getOrganisationCode() != null) {
 			org = organisationService.findOrganisationByCode(userData.getOrganisationCode());
@@ -97,6 +102,8 @@ public class UserService {
 		user.setOrganisation(org);
 
 		userRepository.save(user);
+
+		userData.setId(user.getId());
 	}
 
 	public boolean deactivateUser(Long id) {
@@ -124,11 +131,21 @@ public class UserService {
 	}
 
 	private User findOne(Long id) {
-		User user = userRepository.findById(id).orElse(null);
-		if (user != null) {
-			return user;
-		} else {
-			throw new RuntimeException();
+		return userRepository.findById(id).orElse(null);
+	}
+
+	public void validatePassword(User user, PasswordForm passwordForm, BindingResult bindingResult) {
+		if (!bCryptPasswordEncoder.matches(passwordForm.getOldPassword(), user.getPassword())) {
+			bindingResult.rejectValue("oldPassword", "user.password.change.old.wrong");
 		}
+		if (bCryptPasswordEncoder.matches(passwordForm.getPassword(), user.getPassword())) {
+			bindingResult.rejectValue("password", "user.password.change.should.be.different");
+		}
+	}
+
+	public void updatePassword(User user, String password) {
+		user.setPassword(bCryptPasswordEncoder.encode(password));
+		user.setPasswordChangeTime(Calendar.getInstance().getTime());
+		userRepository.save(user);
 	}
 }
