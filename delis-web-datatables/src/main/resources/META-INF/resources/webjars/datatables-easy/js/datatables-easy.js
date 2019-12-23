@@ -4,7 +4,8 @@
 
     dataTablesEasy.config = {
         tableClass: 'datatables-easy',
-        withButtonsClass: 'dt-with-buttons'
+        withButtonsClass: 'dt-with-buttons',
+        startDate: '2019-01-01'
     };
 
     dataTablesEasy.init = function () {
@@ -173,20 +174,22 @@
     function dateFilter(footer, filterContainer, field, searchValue, pageData) {
         var drpSettings = {
             alwaysShowCalendars: true,
-            ranges: initRanges(moment('2019-01-01'))
+            ranges: initRanges(moment(dataTablesEasy.config.startDate))
         };
         
-    	if (searchValue !== undefined) {
+    	if (searchValue !== undefined && searchValue !== '') {
 	        var dateFromTo = searchValue.split('_');
 	        drpSettings.startDate = moment(dateFromTo[0], DATETIME_FORMAT);
 	        drpSettings.endDate = moment(dateFromTo[1], DATETIME_FORMAT);
     	} else {
-    		setDateInput(filterContainer, null, null);
+    		var allRange = drpSettings.ranges['All'];
+	        drpSettings.startDate = allRange[0];
+	        drpSettings.endDate = allRange[1];
+			setDateInput(filterContainer, null, null);
     	}
         var daterangepicker = $(filterContainer).daterangepicker(drpSettings, 
         	function(start, end){
-		    	setDateInput(filterContainer, start, end);
-		        var dateRangeValue = start.format(DATETIME_FORMAT) + '_' + end.format(DATETIME_FORMAT);
+        		var dateRangeValue = setDateInput(filterContainer, start, end);
 		        pageData.filterMap[field] = dateRangeValue; 
 		        dataTableRequest(footer, pageData);
         	}
@@ -197,16 +200,29 @@
         }
     }
     
+    function isAllRange(startDate, endDate) {
+    	if (!startDate.isSame(dataTablesEasy.config.startDate, 'day')){
+    		return false;
+    	}
+    	if (!endDate.isSame(moment(), 'day')){
+    		return false;
+    	}
+    	return true;
+    }
+    
     function setDateInput(container, startDate, endDate) {
     	var rangeText = 'All';
-    	if (startDate && endDate) {
+    	var dateRangeValue = '';
+    	if (startDate && endDate && !isAllRange(startDate, endDate)) {
     		rangeText = startDate.format(SHORT_DATE_FORMAT);
     		var endDateText = endDate.format(SHORT_DATE_FORMAT);
     		if (endDateText != rangeText) {
     			rangeText += '-' + endDateText;  
     		}
+    		dateRangeValue = startDate.format(DATETIME_FORMAT) + '_' + endDate.format(DATETIME_FORMAT);
     	}
     	$(container).find('input').val(rangeText);
+    	return dateRangeValue;
     }
 
     function selectFilter(ownerSelect, field, e, searchValue) {
