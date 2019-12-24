@@ -11,4 +11,4 @@ COPY ./app $WORK_DIR
 
 WORKDIR $WORK_DIR
 
-CMD java org.springframework.boot.loader.JarLauncher
+CMD [ "java", "org.springframework.boot.loader.JarLauncher" ]
