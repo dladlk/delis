@@ -25,6 +25,10 @@ spec:
         imagePullPolicy: IfNotPresent
         name: {{.Release.Name}}-sender-service
         #command: ["sh", "-c", "sleep 3600"]
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
         env:
           - name: SERVER_SERVLET_CONTEXT-PATH
             value: {{.Values.delisSender.contextPath}}
