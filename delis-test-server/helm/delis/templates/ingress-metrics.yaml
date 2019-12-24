@@ -1,0 +1,37 @@
+{{- if .Values.delisIngress.enabled -}}
+{{- if .Values.delisIngress.metrics.protected -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{.Release.Name}}-ingress-metrics
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    certmanager.k8s.io/cluster-issuer: {{.Values.delisIngress.clusterIssuer}}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: {{.Release.Name}}-{{ .Values.delisIngress.metrics.secretName }}
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required for Metrics access"
+spec:
+  tls:
+  - hosts:
+    - {{.Values.delisIngress.host}}
+    secretName: {{.Values.delisIngress.secretName}}
+  rules:
+      - host: {{.Values.delisIngress.host}}
+        http:
+          paths:
+          - path: {{.Values.delisApi.contextPath}}{{ .Values.delisIngress.metrics.subPath }}
+            backend:
+              serviceName: {{.Release.Name}}-api
+              servicePort: 8080
+          - path: {{.Values.delisAdmin.contextPath}}{{ .Values.delisIngress.metrics.subPath }}
+            backend:
+              serviceName: {{.Release.Name}}-admin
+              servicePort: 8080
+          - path: {{.Values.delisSender.contextPath}}{{ .Values.delisIngress.metrics.subPath }}
+            backend:
+              serviceName: {{.Release.Name}}-sender-service
+              servicePort: 8080
+
+{{- end }}
+{{- end }}
