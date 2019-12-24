@@ -4,20 +4,24 @@ CURDIR="$(dirname $(readlink -f $0))"
 pushd ${CURDIR}
 PROJECT_PATH=${CURDIR}/../../delis-angular
 
-#SKIP_REBUILD=yes
+SKIP_REBUILD=yes
 
-echo "Building ${PROJECT_PATH}"
+if [[ $SKIP_REBUILD != "yes" ]]; then
 
-pushd ${PROJECT_PATH}
+    echo "Building ${PROJECT_PATH}";
 
-npm install
+    pushd ${PROJECT_PATH};
 
-ng build --prod --configuration=production --base-href=/delis-gui-context-name/ && npm run post-build
+    npm install;
 
-popd
+    ng build --prod --configuration=production --base-href=/delis-gui-context-name/ && npm run post-build;
 
-rm -R -f ./docker/dist
-cp -R ${PROJECT_PATH}/dist/delis-web-angular ./docker/dist
+    popd;
+
+fi
+
+rm -R -f ${CURDIR}/docker/dist
+cp -R ${PROJECT_PATH}/dist/delis-web-angular ${CURDIR}/docker/dist
 
 docker image \
        build \
@@ -25,6 +29,6 @@ docker image \
        -t delis-angular:latest \
        ./docker
 
-rm -R -f ./docker/dist
+rm -R -f ${CURDIR}/docker/dist
 
 popd
