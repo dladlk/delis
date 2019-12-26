@@ -20,7 +20,6 @@ spec:
       labels:
         app: '{{.Release.Name}}'
     spec:
-      restartPolicy: '{{.Values.dtx.restartPolicy}}'
       containers:
       - env:
         - name: DOMIBUS_HOME_OVERWRITE
@@ -139,6 +138,7 @@ spec:
         image: '{{.Values.all.imagePrefix}}{{.Values.dtx.image}}:{{.Values.dtx.imageTag}}'
         imagePullPolicy: '{{.Values.dtx.imagePullPolicy}}'
         name: '{{.Release.Name}}'
+        restartPolicy: '{{.Values.dtx.restartPolicy}}'
         ports:
         - containerPort: 8080
           name: http
