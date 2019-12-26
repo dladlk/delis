@@ -1,5 +1,6 @@
 dtx:
   replicas: 2
+# restartPolicy: Never
   env:
     clustered: 'true'
     activemqEmbeddedConfigFile: '' # Set to empty value to tell Domibus to use external message broker

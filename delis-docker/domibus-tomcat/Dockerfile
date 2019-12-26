@@ -74,7 +74,6 @@ RUN wget ${DOMIBUS_FS_URL} \
     && mkdir $CATALINA_HOME/domibus/plugins/lib \
     && cp $DOMIBUS_DIST/conf/domibus/plugins/config/tomcat/* $CATALINA_HOME/domibus/plugins/config \
 	&& cp $DOMIBUS_DIST/conf/domibus/plugins/lib/* $CATALINA_HOME/domibus/plugins/lib \
-	&& mkdir --parents /home/domibus/fs_plugin_data/MAIN \
     && rm -r $DOMIBUS_DIST \
     && rm ${DOMIBUS_FS_URL##*/}
     
@@ -207,6 +206,18 @@ RUN echo '#!/bin/bash' > ${STARTUP} && \
 
 RUN cat ${STARTUP}	
 RUN chmod +x ${STARTUP}
+
+ARG DELIS_UID="987"
+ARG DELIS_GID="987"
+
+RUN addgroup --system --gid $DELIS_GID delis && \
+    adduser --system -uid $DELIS_UID --ingroup delis delis && \
+	chown delis ${CATALINA_HOME}/conf/Catalina/localhost -R && \
+	chown delis /$CATALINA_HOME/domibus -R && \
+	mkdir --parents /home/domibus/fs_plugin_data/MAIN && \
+	chown delis /home/domibus -R
+
+USER delis
 
 CMD dockerize \
 	-template ${CATALINA_HOME}/conf/Catalina/localhost/context.tmpl:${CATALINA_HOME}/conf/Catalina/localhost/ROOT.xml \
