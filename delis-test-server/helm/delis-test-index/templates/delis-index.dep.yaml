@@ -28,6 +28,8 @@ spec:
           mountPath: /usr/share/nginx/html/
         - name: nginx-conf
           mountPath: /etc/nginx/
+        restartPolicy: Always
+        #command: ["sh", "-c", "sleep 3600"]
       volumes:
       - name: nginx-conf
         hostPath:
@@ -35,4 +37,6 @@ spec:
       - name: index-html
         hostPath:
           path: {{.Values.pathFolderHtml}}
-      restartPolicy: Always
+      securityContext:
+        runAsUser: 100
+        allowPrivilegeEscalation: false
