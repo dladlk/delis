@@ -16,6 +16,13 @@ fi
 
 echo Searching for docker POD for project code ${PROJECT_CODE}
 DOCKER_POD_ID=`docker ps | grep "POD_${PROJECT_CODE}" | cut -d ' ' -f 1`;
-echo Found docker POD to kill: ${DOCKER_POD_ID}
-echo Killing docker POD...
-docker kill ${DOCKER_POD_ID}
+
+if [ -z $DOCKER_POD_ID ]; then
+   echo No running pod is found
+else
+   echo Found docker POD to kill: ${DOCKER_POD_ID}
+   echo Killing docker POD...
+   docker kill ${DOCKER_POD_ID}
+fi
+
+
