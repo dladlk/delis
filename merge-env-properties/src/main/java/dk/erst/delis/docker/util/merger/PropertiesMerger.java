@@ -1,6 +1,14 @@
 package dk.erst.delis.docker.util.merger;
 
-import java.util.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class PropertiesMerger {
 
@@ -83,23 +91,30 @@ public class PropertiesMerger {
 
 	private List<String> getNewProperties(List<String> existingPropLines, Map<String, String> envVariables) {
 		List<String> result = new ArrayList<>();
-		String existingPropsString = linesToLowercaseString(existingPropLines);
+		Set<String> existingPropertyNames = buildPropertySet(existingPropLines);
 		for (Map.Entry<String, String> entry : envVariables.entrySet()) {
 			String propName = entry.getKey();
 			String propValue = entry.getValue();
-			if (!existingPropsString.contains(propName.toLowerCase())) {
+			if (!existingPropertyNames.contains(propName.toLowerCase())) {
 				result.add(String.format("%s=%s", propName, propValue));
 			}
 		}
 		return result;
 	}
 
-	private String linesToLowercaseString(List<String> lines) {
+	private Set<String> buildPropertySet(List<String> lines) {
 		StringBuilder result = new StringBuilder();
 		for (String line : lines) {
 			result.append(line.toLowerCase());
+			result.append("\n");
 		}
-		return result.toString();
+		
+		Properties currentProperties = new Properties();
+		try {
+			currentProperties.load(new StringReader(result.toString()));
+		} catch (IOException e) {
+		}
+		return currentProperties.stringPropertyNames();
 	}
 
 	protected Map<String, String> translateEnvVariables(Map<String, String> envVariables, String variablePrefix) {

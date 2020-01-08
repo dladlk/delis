@@ -27,12 +27,16 @@ public class Main {
 
 		Map<String, String> environmentMap = System.getenv();
 
+		main(prefix, propertiesFile, environmentMap);
+	}
+
+	protected static int main(String prefix, String propertiesFile, Map<String, String> environmentMap) {
 		File file = new File(propertiesFile);
 		System.out.println("Merging properties file " + canonicalPathSafe(file) + " with environment by variables with prefix " + prefix);
 		if (!file.exists() || !file.isFile()) {
 			System.err.println("File " + file.getAbsolutePath() + " does not exists or is not a file");
 			System.exit(-2);
-			return;
+			return -1;
 		}
 
 		Properties properties = new Properties();
@@ -42,7 +46,7 @@ public class Main {
 			System.out.println("Cannot read given file as java.util.Properties file: " + canonicalPathSafe(file));
 			e.printStackTrace();
 			System.exit(-3);
-			return;
+			return -1;
 		}
 
 		List<String> lines;
@@ -51,12 +55,16 @@ public class Main {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-4);
-			return;
+			return -1;
 		}
 
+		int initialLines = lines != null ? lines.size() : -1;
+		
 		PropertiesMerger m = new PropertiesMerger();
 		List<String> resultList = m.merge(lines, environmentMap, prefix);
 
+		int resultLines = resultList.size();
+		
 		if (!resultList.isEmpty()) {
 			String propertiesFileBackup = propertiesFile + ".bak";
 			try (FileOutputStream fos = new FileOutputStream(propertiesFileBackup)) {
@@ -65,7 +73,7 @@ public class Main {
 			} catch (IOException e) {
 				System.err.println("Failed to create a backup for file " + propertiesFile);
 				e.printStackTrace();
-				return;
+				return -1;
 			}
 			try {
 				Files.write(Paths.get(propertiesFile), resultList);
@@ -74,9 +82,11 @@ public class Main {
 				System.err.println("Failed to write modified properties back to file " + propertiesFile);
 				e.printStackTrace();
 				System.exit(-5);
-				return;
+				return -1;
 			}
 		}
+		
+		return resultLines - initialLines;
 	}
 
 	private static String canonicalPathSafe(File file) {
