@@ -85,14 +85,14 @@ RUN wget ${DOMIBUS_WS_URL} \
     && rm ${DOMIBUS_WS_URL##*/}
 
 COPY --from=plugin_compiler fs-plugin/src/main/resources/erst-domibus-fs-plugin-ext.xml  $CATALINA_HOME/domibus/plugins/config/domibus-default-fs-delis-plugin.xml
-COPY --from=plugin_compiler fs-plugin/target/erst-domibus-fs-plugin-ext-4.1.1.jar $CATALINA_HOME/domibus/plugins/lib/domibus-default-fs-plugin-delis-ext-4.1.1.jar
+COPY --from=plugin_compiler fs-plugin/target/erst-domibus-fs-plugin-ext-4.1.2.jar $CATALINA_HOME/domibus/plugins/lib/domibus-default-fs-plugin-delis-ext-4.1.2.jar
 
 # Chandes to reduce timeout of jms queues checking
 COPY --from=plugin_compiler jms-timeout/target/receive-timeout-1.0.jar $CATALINA_HOME/domibus/plugins/lib/domibus-default-delis-receive-timeout-1.0.jar
 COPY custom-plugin.xml $CATALINA_HOME/domibus/plugins/config/domibus-default-delis-receive-timeout-plugin.xml
 
 # Copy domibus-metrics-prometheus to WEB-INF/lib folder of Domibus to expose Prometheus metrics
-COPY --from=plugin_compiler domibus-metrics-prometheus/target/domibus-metrics-prometheus-4.1.1.jar $CATALINA_HOME/webapps/ROOT/WEB-INF/lib/domibus-metrics-prometheus-4.1.1.jar
+COPY --from=plugin_compiler domibus-metrics-prometheus/target/domibus-metrics-prometheus-4.1.2.jar $CATALINA_HOME/webapps/ROOT/WEB-INF/lib/domibus-metrics-prometheus-4.1.2.jar
 
 RUN echo '#!/bin/bash' > $CATALINA_HOME/bin/setenv.sh && \
 	echo 'export JAVA_OPTS="$JAVA_OPTS -Ddomibus.config.location=$CATALINA_HOME/domibus"' >> $CATALINA_HOME/bin/setenv.sh

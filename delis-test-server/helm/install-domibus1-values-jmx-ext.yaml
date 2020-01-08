@@ -12,7 +12,7 @@ dtx:
 
 jmx:
   enabled: true
-  imageTag: 4.1.1.2
+  imageTag: 4.1.2.0
   ingress:
     enabled: true
   env: 
