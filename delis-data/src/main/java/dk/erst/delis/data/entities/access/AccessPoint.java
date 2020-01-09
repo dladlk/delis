@@ -1,16 +1,20 @@
 package dk.erst.delis.data.entities.access;
 
-import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
-import dk.erst.delis.data.enums.access.AccessPointType;
+import java.sql.Blob;
+import java.util.Base64;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-
-import java.sql.Blob;
+import dk.erst.delis.data.entities.AbstractCreateUpdateEntity;
+import dk.erst.delis.data.enums.access.AccessPointType;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -36,4 +40,11 @@ public class AccessPoint extends AbstractCreateUpdateEntity {
 
 	@Column
 	private Blob certificate;
+	
+	public byte[] decodeCertificateToBytes() throws Exception {
+		if (certificate == null) {
+			return null;
+		}
+		return Base64.getDecoder().decode(certificate.getBytes(1L, (int) certificate.length()));
+	}
 }

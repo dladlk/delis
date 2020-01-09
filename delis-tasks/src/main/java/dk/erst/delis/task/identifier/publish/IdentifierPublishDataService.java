@@ -4,10 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -126,14 +123,13 @@ public class IdentifierPublishDataService {
 		SmpServiceEndpointData endpointData = new SmpServiceEndpointData();
 		Date serviceActivationDate = null;
 		Date serviceExpirationDate = null;
-		Blob certBlob = accessPoint.getCertificate();
 		byte[] certBytes = null;
 		try {
-			certBytes = Base64.getDecoder().decode(certBlob.getBytes(1L, (int) certBlob.length()));
+			certBytes = accessPoint.decodeCertificateToBytes();
 			X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
 			serviceActivationDate = certificate.getNotBefore();
 			serviceExpirationDate = certificate.getNotAfter();
-		} catch (CertificateException | SQLException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		String transportProfile = transportProfilesMap.get(accessPoint.getType());
@@ -147,4 +143,5 @@ public class IdentifierPublishDataService {
 		endpointData.setCertificate(certBytes);
 		return endpointData;
 	}
+
 }

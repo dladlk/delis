@@ -13,6 +13,7 @@
 					<th>URL</th>
 					<th>Type</th>
 					<th>Certificate</th>
+					<th>Expires</th>
 					<th>Description</th>
 					<th>Technical contact</th>
 					<th>Actions</th>
@@ -21,6 +22,7 @@
 					<td th:text="${accessPoint.url}"></td>
 					<td th:text="${accessPoint.type}"></td>
 					<td th:text="${accessPoint.certificate}"></td>
+					<td th:text="${#dates.format(accessPoint.certificateExpirationDate, 'yyyy-MM-dd')}"></td>
 					<td th:text="${accessPoint.serviceDescription}"></td>
 					<td th:text="${accessPoint.technicalContactUrl}"></td>
 					<td>

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -156,6 +157,7 @@ public class AccessPointService {
 	public static class CertificateData {
 		byte[] certificateBytes;
 		String certififcateName;
+		Date expirationDate;
 	}
 
 	public static CertificateData parseCertificateDataByPEM(String certificateString) {
@@ -163,17 +165,23 @@ public class AccessPointService {
 			certificateString = certificateString.replaceAll("\\s+", "");
 			byte[] bytes = certificateString.getBytes(StandardCharsets.UTF_8);
 			byte[] certBytes = Base64.getDecoder().decode(bytes);
-			CertificateData res = new CertificateData();
-			X509Certificate certificate;
-			certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
-			String name = certificate.getSubjectDN().getName();
-
-			res.certififcateName = name;
-			res.certificateBytes = bytes;
-			return res;
+			CertificateData cd = parseCertificateData(certBytes);
+			cd.certificateBytes = bytes;
+			return cd;
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	private static CertificateData parseCertificateData(byte[] certBytes) throws CertificateException {
+		CertificateData res = new CertificateData();
+		X509Certificate certificate;
+		certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
+		String name = certificate.getSubjectDN().getName();
+
+		res.certififcateName = name;
+		res.expirationDate = certificate.getNotAfter();
+		return res;
 	}
 
 	public AccessPoint findById(Long id) {
@@ -207,6 +215,12 @@ public class AccessPointService {
 	public void copyToDTOView(AccessPoint accessPoint, AccessPointData accessPointData) {
 		BeanUtils.copyProperties(accessPoint, accessPointData);
 		accessPointData.setCertificate(accessPoint.getCertificateCN());
+		try {
+			CertificateData cd = parseCertificateData(accessPoint.decodeCertificateToBytes());
+			accessPointData.setCertificateExpirationDate(cd.getExpirationDate());
+		} catch (Exception e) {
+			log.error("Failed to decode certificate for acess point "+accessPoint);
+		}
 	}
 
 	public List<Organisation> getOrganisationReferencedAccessPointList(long id) {
