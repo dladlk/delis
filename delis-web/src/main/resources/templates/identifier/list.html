@@ -3,13 +3,29 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white" th:text="${organisation} ? ${organisation.name} : 'All identifiers'">
-			Test organisation
-		</div>
+<h4 class="m-2 text-secondary"> 
+	<a href="#" th:href="@{/identifier/list}" class="btn btn-outline-secondary btn-sm" title="Reload"><i class="fas fa-redo"></i></a> <span th:text="${organisation} ? ${organisation.name} : 'All identifiers'">All identifiers</span>
+	<div style="float: right; line-height: 1.0;" class="btn btn-secondary" title="Show or hide administator tools" onclick="$('.delis-tools').toggle();">Tools</div>
+</h4>
+	<div class="card border-secondary mb-3">
 		<div class="card-body">
 			<form action="#" th:action="@{/identifier/list}" th:object="${selectedIdList}" method="post">
-				<div class="container">
+			
+					<div class="card col-8 delis-tools p-2 collapse">
+						<div class="font-weight-bold mb-2">Bulk status change</div>
+						<div class="delis-table-compact">
+                        <label class="m-2 col-form-label">Status:</label>
+                        <select th:field="*{statusNew}" class="m-2">
+                            <option th:each="status : ${statusList}" th:text="${status.getName()}" th:value="${status}"></option>
+                        </select>
+                        <label class="m-2 col-form-label">Publishing Status:</label>
+                        <select th:field="*{publishStatusNew}" class="m-2">
+                            <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus.getName()}" th:value="${publishStatus}"></option>
+                        </select>
+						<div th:attr="onclick-action=@{/identifier/updatestatuses}" onclick="return submitStatusChange(this);" type="submit" class="m-2 btn btn-sm btn-primary">Update</div>
+						</div>
+					</div>
+			
 					<table id="identifiers" class="table table-striped table-bordered table-sm datatables-easy"
 						th:attr="dt-page=${@jsons.json(identifierPage)}"
 						>
@@ -34,20 +50,6 @@
 					<td><input type="checkbox" th:field="*{idList}" th:value="${r.id}" class="selectItem checkbox" name="selectItem" id="selectItem"/></td>
 				</tr>						
 					</table>
-				</div>
-				<div class="card-footer mt-2">
-					<div class="d-flex justify-content-start">
-                        <label class="m-2 col-form-label">Status:</label>
-                        <select th:field="*{status}" class="m-2">
-                            <option th:each="status : ${statusList}" th:text="${status.getName()}" th:value="${status}"></option>
-                        </select>
-                        <label class="m-2 col-form-label">Publishing Status:</label>
-                        <select th:field="*{publishStatus}" class="m-2">
-                            <option th:each="publishStatus : ${publishingStatusList}" th:text="${publishStatus.getName()}" th:value="${publishStatus}"></option>
-                        </select>
-						<div th:attr="onclick-action=@{/identifier/updatestatuses}" onclick="return submitStatusChange(this);" type="submit" class="m-2 btn btn-primary">Update Statuses</div>
-					</div>
-				</div>
 			</form>
 		</div>
 		<div class="card-footer" th:if="${organisation}">

@@ -103,10 +103,10 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 	}
 
 	@PostMapping("/identifier/updatestatuses")
-	public String listFilter(@ModelAttribute IdentifierStatusBatchUpdateInfo idList, Model model) {
+	public String updateStatuses(@ModelAttribute IdentifierStatusBatchUpdateInfo idList, Model model) {
 		List<Long> ids = idList.getIdList();
-		IdentifierStatus status = idList.getStatus();
-		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();
+		IdentifierStatus status = idList.getStatusNew();
+		IdentifierPublishingStatus publishStatus = idList.getPublishStatusNew();
 		identifierService.updateStatuses(ids, status, publishStatus, null);
 		return "redirect:/identifier/list";
 	}

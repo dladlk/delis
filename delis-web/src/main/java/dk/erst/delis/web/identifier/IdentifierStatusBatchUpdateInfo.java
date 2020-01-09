@@ -16,6 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class IdentifierStatusBatchUpdateInfo {
     private List<Long> idList = new ArrayList<>();
-    private IdentifierStatus status;
-    private IdentifierPublishingStatus publishStatus;
+    private IdentifierStatus statusNew;
+    private IdentifierPublishingStatus publishStatusNew;
 }
