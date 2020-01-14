@@ -25,7 +25,7 @@ spec:
           path: /data/phoss-smp-setup
       containers:
       - name: '{{.Release.Name}}'
-        image: cef-erst/peppol-smp-tomcat:latest
+        image: {{.Values.smp.image }}
         volumeMounts:
         - name: smp-peppol-setup
           mountPath: /setup
