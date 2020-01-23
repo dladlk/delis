@@ -35,10 +35,15 @@ public class FSValidatorTest {
 
     @Test
     public void testUrlCompose () throws Exception {
-        File tempDirectory = Files.createTempDirectory(this.getClass().getSimpleName()).toFile();
+    	runTestCase("metadata.xml");
+    	runTestCase("metadata2.xml");
+    }
+
+	private void runTestCase(String resourceName) throws Exception {
+		File tempDirectory = Files.createTempDirectory(this.getClass().getSimpleName()).toFile();
         File metadataFile = null;
         try {
-            metadataFile = FSTestHelper.copyResource(this.getClass(), tempDirectory, "metadata.xml");
+			metadataFile = FSTestHelper.copyResource(this.getClass(), tempDirectory, resourceName);
             UserMessage metadata = getUserMessage(metadataFile);
             final Map<String, FSPayload> fsPayloads = new HashMap<>();
             FSMessage fsMessage = new FSMessage(fsPayloads, metadata);
@@ -61,7 +66,7 @@ public class FSValidatorTest {
             metadataFile.delete();
             tempDirectory.delete();
         }
-    }
+	}
 
 //    @Test
     public void testFully () throws Exception { // requires Delise to be run (see. FSPLUGIN_VALIDATION_ENDPOINT value)

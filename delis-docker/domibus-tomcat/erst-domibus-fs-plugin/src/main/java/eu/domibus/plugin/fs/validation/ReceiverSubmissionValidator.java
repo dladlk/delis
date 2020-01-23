@@ -95,7 +95,17 @@ public class ReceiverSubmissionValidator implements SubmissionValidator {
         Collection<Submission.TypedProperty> messageProperties = submission.getMessageProperties();
 
         String finalRecipient = messageProperties.stream().filter(x -> x.getKey().equals("finalRecipient")).findFirst().get().getValue();
-        LOG.info("finalRecipient = " + finalRecipient);
+		LOG.info("finalRecipient = " + finalRecipient);
+		if (finalRecipient != null) {
+			/*
+			 * Convert finalRecipient iso6523-actorid-upis::0088:5798009882875 to 0088:5798009882875 
+			 */
+			int startValue = finalRecipient.indexOf("::");
+			if (startValue >= 0 && finalRecipient.length() > startValue + 2) {
+				finalRecipient = finalRecipient.substring(startValue + 2);
+				LOG.info("finalRecipient transformed to " + finalRecipient);
+			}
+		}
         String service = submission.getService();
         LOG.info("service = " + service);
         String action = submission.getAction();
