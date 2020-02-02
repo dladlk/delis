@@ -15,21 +15,21 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import dk.erst.delis.domibus.util.XmlTemplateConfig.SpringTemplateEngineWrapper;
+import dk.erst.delis.domibus.util.PmodeXmlTemplateConfig.SpringTemplateEngineWrapper;
 import dk.erst.delis.domibus.util.pmode.PmodeData;
 import dk.erst.delis.domibus.util.pmode.PmodeUtil;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = XmlTemplateConfig.class)
+@SpringBootTest(classes = PmodeXmlTemplateConfig.class)
 
-public class XmlServiceTest {
+public class PmodeXmlServiceTest {
 
 	@Autowired
-	private SpringTemplateEngineWrapper xmlTemplateEngineWrapper;
+	private SpringTemplateEngineWrapper pmodeXmlTemplateEngineWrapper;
 
 	@Test
 	public void testPmode() throws Exception {
-		XmlService s = new XmlService(xmlTemplateEngineWrapper);
+		PmodeXmlService s = new PmodeXmlService(pmodeXmlTemplateEngineWrapper);
 
 		PmodeData pmode = new PmodeData();
 		String endpointUrl = "http://localhost:8080";

@@ -8,19 +8,19 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import dk.erst.delis.domibus.util.XmlTemplateConfig.SpringTemplateEngineWrapper;
+import dk.erst.delis.domibus.util.PmodeXmlTemplateConfig.SpringTemplateEngineWrapper;
 import dk.erst.delis.domibus.util.pmode.PmodeData;
 
 @Service
-public class XmlService {
+public class PmodeXmlService {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
-	private SpringTemplateEngine xmlTemplateEngine;
+	private SpringTemplateEngine pmodeXmlTemplateEngine;
 
 	@Autowired
-	public XmlService(@Qualifier("customXmlTemplateEngineWrapper") SpringTemplateEngineWrapper xmlTemplateEngineWrapper) {
-		this.xmlTemplateEngine = xmlTemplateEngineWrapper.getTemplateEngine();
+	public PmodeXmlService(@Qualifier("pmodeXmlTemplateEngineWrapper") SpringTemplateEngineWrapper xmlTemplateEngineWrapper) {
+		this.pmodeXmlTemplateEngine = xmlTemplateEngineWrapper.getTemplateEngine();
 
 	}
 
@@ -29,7 +29,7 @@ public class XmlService {
 		context.setVariable("pmode", pmode);
 
 		String template = "pmode.xml";
-		String result = xmlTemplateEngine.process(template, context);
+		String result = pmodeXmlTemplateEngine.process(template, context);
 		return result;
 	}
 }

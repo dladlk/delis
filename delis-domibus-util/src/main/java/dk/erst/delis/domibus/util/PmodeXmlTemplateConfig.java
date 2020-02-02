@@ -7,13 +7,13 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 
 @Configuration
-public class XmlTemplateConfig {
+public class PmodeXmlTemplateConfig {
 
 	public SpringResourceTemplateResolver xmlTemplateResolver(ApplicationContext appCtx) {
 		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 
 		templateResolver.setApplicationContext(appCtx);
-		templateResolver.setPrefix("classpath:/templates_xml/");
+		templateResolver.setPrefix("classpath:/templates_pmode/");
 		templateResolver.setSuffix(".xml");
 		templateResolver.setTemplateMode("XML");
 		templateResolver.setCharacterEncoding("UTF-8");
@@ -22,7 +22,7 @@ public class XmlTemplateConfig {
 		return templateResolver;
 	}
 
-	@Bean(name = "customXmlTemplateEngineWrapper")
+	@Bean(name = "pmodeXmlTemplateEngineWrapper")
 	public SpringTemplateEngineWrapper templateEngine(ApplicationContext appCtx) {
 		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
 		templateEngine.setTemplateResolver(xmlTemplateResolver(appCtx));
