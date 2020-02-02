@@ -2,6 +2,10 @@ package dk.erst.delis.domibus.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -46,14 +51,44 @@ public class PmodeXmlServiceTest {
 
 		Document doc = builder.parse(new InputSource(new java.io.StringReader(xml)));
 
-		NodeList service = doc.getElementsByTagName("service");
-		assertEquals(15, service.getLength());
-		NodeList action = doc.getElementsByTagName("action");
-		assertEquals(17, action.getLength());
-		NodeList legConfiguration = doc.getElementsByTagName("legConfiguration");
-		assertEquals(45, legConfiguration.getLength());
+		NodeList serviceList = doc.getElementsByTagName("service");
+		assertEquals(15, serviceList.getLength());
+		Set<String> serviceNames = buildNameSet(serviceList);
+		assertEquals(serviceList.getLength(), serviceNames.size());
+
+		NodeList actionList = doc.getElementsByTagName("action");
+		assertEquals(17, actionList.getLength());
+		Set<String> actionNames = buildNameSet(actionList);
+		assertEquals(actionList.getLength(), actionNames.size());
+
+		NodeList legConfigurationList = doc.getElementsByTagName("legConfiguration");
+		assertEquals(45, legConfigurationList.getLength());
+		Set<String> legConfigurationNames = buildNameSet(legConfigurationList);
+		assertEquals(legConfigurationList.getLength(), legConfigurationNames.size());
+		for (int i = 0; i < legConfigurationList.getLength(); i++) {
+			NamedNodeMap attributes = legConfigurationList.item(i).getAttributes();
+			String legName = attributes.getNamedItem("name").getNodeValue();
+			String serviceName = attributes.getNamedItem("service").getNodeValue();
+			String actionName = attributes.getNamedItem("action").getNodeValue();
+
+			assertTrue("Not found service " + serviceName + ", defined at leg " + legName, serviceNames.contains(serviceName));
+			assertTrue("Not found action " + actionName + ", defined at leg " + legName, actionNames.contains(actionName));
+		}
+
 		NodeList legs = doc.getElementsByTagName("leg");
 		assertEquals(180, legs.getLength());
+		for (int i = 0; i < legs.getLength(); i++) {
+			String legName = legs.item(i).getAttributes().getNamedItem("name").getNodeValue();
+			assertTrue("Not found leg name " + legName, legConfigurationNames.contains(legName));
+		}
+	}
+
+	private Set<String> buildNameSet(NodeList nodeList) {
+		Set<String> nameSet = new HashSet<String>();
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			nameSet.add(nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+		}
+		return nameSet;
 	}
 
 }

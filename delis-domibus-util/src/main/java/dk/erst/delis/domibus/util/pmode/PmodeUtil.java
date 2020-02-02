@@ -10,12 +10,12 @@ import dk.erst.delis.domibus.util.pmode.PmodeData.Service;
 
 public class PmodeUtil {
 	
-	private static String buildServiceKey(String type, String value) {
+	private static String buildServiceKey(String value, String type) {
 		return type + "\t" + value;
 	}
 	
 	private static String buildServiceKey(Service service) {
-		return buildServiceKey(service.getType(), service.getValue());
+		return buildServiceKey(service.getValue(), service.getType());
 	}
 	
     public static PmodeData populateServicesActionsLegs(PmodeData pmode) {
@@ -30,16 +30,19 @@ public class PmodeUtil {
         	String code = pModeProfileGroup.getCode();
 
         	PmodeData.Service service = serviceMap.get(buildServiceKey(pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessType()));
-            PmodeData.Service serviceCen = serviceMap.get(buildServiceKey(pModeProfileGroup.getProcessSchemeSMP() + "::" + pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessType()));
-            PmodeData.Service serviceType = serviceMap.get(buildServiceKey(pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessSchemeSMP()));
+            PmodeData.Service serviceEmb = serviceMap.get(buildServiceKey(pModeProfileGroup.getProcessSchemeSMP() + "::" + pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessType()));
+            PmodeData.Service serviceTB = serviceMap.get(buildServiceKey(pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessSchemeSMP()));
             if (service == null) {
                 service = new PmodeData.Service(code, pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessType());
-                serviceCen = new PmodeData.Service(code + "Emb", pModeProfileGroup.getProcessSchemeSMP() + "::" + service.getValue(), service.getType());
-                serviceType = new PmodeData.Service(code + "TB", service.getValue(), pModeProfileGroup.getProcessSchemeSMP());
-                
                 serviceMap.put(buildServiceKey(service), service);
-                serviceMap.put(buildServiceKey(serviceCen), serviceCen);
-                serviceMap.put(buildServiceKey(serviceType), serviceType);
+            }
+            if (serviceEmb == null) {
+                serviceEmb = new PmodeData.Service(code + "Emb", pModeProfileGroup.getProcessSchemeSMP() + "::" + service.getValue(), service.getType());
+                serviceMap.put(buildServiceKey(serviceEmb), serviceEmb);
+            }
+            if (serviceTB == null) {
+                serviceTB = new PmodeData.Service(code + "TB", service.getValue(), pModeProfileGroup.getProcessSchemeSMP());
+                serviceMap.put(buildServiceKey(serviceTB), serviceTB);
             }
 
             String[] documentIdentifiers = pModeProfileGroup.getDocumentIdentifiers();
@@ -54,11 +57,11 @@ public class PmodeUtil {
                 legs.add(new PmodeData.Leg(action.getName(), service.getName(), action.getName()));
                 legs.add(new PmodeData.Leg(actionQns.getName(), service.getName(), actionQns.getName()));
                 
-                legs.add(new PmodeData.Leg(action.getName()+"Emb", serviceCen.getName(), action.getName()));
-                legs.add(new PmodeData.Leg(actionQns.getName()+"Emb", serviceCen.getName(), actionQns.getName()));
+                legs.add(new PmodeData.Leg(action.getName()+"Emb", serviceEmb.getName(), action.getName()));
+                legs.add(new PmodeData.Leg(actionQns.getName()+"Emb", serviceEmb.getName(), actionQns.getName()));
 
-                legs.add(new PmodeData.Leg(action.getName()+"TB", serviceType.getName(), action.getName()));
-                legs.add(new PmodeData.Leg(actionQns.getName()+"TB", serviceType.getName(), actionQns.getName()));
+                legs.add(new PmodeData.Leg(action.getName()+"TB", serviceTB.getName(), action.getName()));
+                legs.add(new PmodeData.Leg(actionQns.getName()+"TB", serviceTB.getName(), actionQns.getName()));
             }
         }
 
