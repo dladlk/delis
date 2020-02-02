@@ -43,6 +43,11 @@
 			<artifactId>delis-web-datatables</artifactId>
 			<version>${delis.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>dk.erst.delis</groupId>
+			<artifactId>delis-domibus-util</artifactId>
+			<version>${delis.version}</version>
+		</dependency>
 
 		<!-- JAVAX-VALIDATION -->
 		<dependency>

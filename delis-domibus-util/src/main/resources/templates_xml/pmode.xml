@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<db:configuration xmlns:db="http://domibus.eu/configuration" party="pop000173" th:attr="party=${pmode.partyName}" xmlns:th="http://www.thymeleaf.org">
+    <mpcs>
+        <mpc name="defaultMpc"
+             qualifiedName="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/defaultMPC"
+             enabled="true"
+             default="true"
+             retention_downloaded="14400"
+             retention_undownloaded="14400"/>
+    </mpcs>
+    <businessProcesses>
+        <roles>
+            <role name="defaultInitiatorRole" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator"/>
+            <role name="defaultResponderRole" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder"/>
+            <role name="peppolSenderRole" value="urn:fdc:peppol.eu:2017:roles:ap:sender"/>
+            <role name="peppolReceiverRole" value="urn:fdc:peppol.eu:2017:roles:ap:receiver"/>
+        </roles>
+        <parties>
+            <partyIdTypes>
+                <partyIdType name="partyTypeUrn" value="urn:oasis:names:tc:ebcore:partyid-type:unregistered"/>
+                <partyIdType name="GLN" value="0088"/>
+                <partyIdType name="peppol" value="urn:fdc:peppol.eu:2017:identifiers:ap"/>
+            </partyIdTypes>
+            <party name="pop000173" th:attr="name=${pmode.partyName},endpoint=${pmode.endpointUrl}" endpoint="https://edelivery2.trueservice.dk/domibus_peppol/services/msh">
+                <identifier partyId="pop000173" th:attr="partyId=${pmode.partyName}" partyIdType="peppol"/>
+            </party>
+        </parties>
+        <meps>
+            <mep name="oneway" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/oneWay"/>
+            <mep name="twoway" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/twoWay"/>
+            <binding name="push" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/push"/>
+            <binding name="pushAndPush" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/push-and-push"/>
+        </meps>
+        <properties>
+            <property name="originalSenderProperty" key="originalSender" datatype="string" required="true"/>
+            <property name="finalRecipientProperty" key="finalRecipient" datatype="string" required="true"/>
+            <propertySet name="eDeliveryPropertySet">
+                <propertyRef property="finalRecipientProperty"/>
+                <propertyRef property="originalSenderProperty"/>
+            </propertySet>
+        </properties>
+        <payloadProfiles>
+            <payload name="businessContentPayload" cid="cid:message" required="true" mimeType="text/xml"/>
+            <payload name="businessContentAttachment" cid="cid:attachment" required="false" mimeType="application/octet-stream"/>
+            <payloadProfile name="MessageProfile" maxSize="40894464"> <!-- maxSize is currently ignored -->
+                <attachment name="businessContentPayload"/>
+                <attachment name="businessContentAttachment"/>
+            </payloadProfile>
+        </payloadProfiles>
+        <securities>
+            <security name="eDeliveryAS4Policy" policy="eDeliveryAS4Policy_BST.xml" signatureMethod="RSA_SHA256"/>
+        </securities>
+        <errorHandlings>
+            <errorHandling name="demoErrorHandling" errorAsResponse="true" businessErrorNotifyProducer="true" businessErrorNotifyConsumer="true" deliveryFailureNotifyProducer="true"/>
+            <errorHandling name="defaultErrorHandling" errorAsResponse="true" businessErrorNotifyProducer="true" businessErrorNotifyConsumer="true" deliveryFailureNotifyProducer="true"/>
+        </errorHandlings>
+        <agreements>
+            <agreement name="agreement1" value="A1" type="T1"/>
+            <agreement name="agreementPeppol" value="urn:fdc:peppol.eu:2017:agreements:tia:ap_provider" type=""/>
+        </agreements>
+        <services>
+            <service name="testbedInvoice1" value="urn:www.cenbii.eu:profile:bii05:ver2.0" type="cenbii-procid-ubl"/>
+            <service name="testbedOrder1"   value="urn:www.cenbii.eu:profile:bii28:ver2.0" type="cenbii-procid-ubl"/>
+
+            <service name="testService" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/service"/>
+            <service th:each="s : ${pmode.serviceList}" name="name" value="value" type="proc-id" th:attr="name=${s.name},value=${s.value},type=${s.type}" />
+        </services>
+        <actions>
+            <action name="testbedInvoice1" value="busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol5a:ver2.0::2.1"/>
+            <action name="testbedOrder1"   value="busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:www.cenbii.eu:transaction:biitrns001:ver2.0:extended:urn:www.peppol.eu:bis:peppol28a:ver1.0::2.1"/>
+        
+            <action name="testAction" value="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/test"/>
+            <action th:each="a : ${pmode.actionList}" name="name" value="value" th:attr="name=${a.name},value=${a.value}"/>
+        </actions>
+        <as4>
+            <receptionAwareness name="receptionAwareness" retry="12;4;CONSTANT" duplicateDetection="true"/>
+            <reliability name="AS4Reliability" nonRepudiation="true" replyPattern="response"/>
+        </as4>
+        
+        <legConfigurations>
+            <legConfiguration name="testbedInvoice1"    service="testbedInvoice1"    action="testbedInvoice1" defaultMpc="defaultMpc" reliability="AS4Reliability" security="eDeliveryAS4Policy" receptionAwareness="receptionAwareness" propertySet="eDeliveryPropertySet" errorHandling="demoErrorHandling" compressPayloads="true"/>                               
+            <legConfiguration name="testbedOrder1"      service="testbedOrder1"      action="testbedOrder1"   defaultMpc="defaultMpc" reliability="AS4Reliability" security="eDeliveryAS4Policy" receptionAwareness="receptionAwareness" propertySet="eDeliveryPropertySet" errorHandling="demoErrorHandling" compressPayloads="true"/>                               
+        
+            <legConfiguration name="testServiceCase" service="testService" action="testAction" defaultMpc="defaultMpc" reliability="AS4Reliability" security="eDeliveryAS4Policy" receptionAwareness="receptionAwareness" propertySet="eDeliveryPropertySet" payloadProfile="MessageProfile" errorHandling="demoErrorHandling" compressPayloads="true"/>                               
+            <legConfiguration th:each="l : ${pmode.legList}" name="peppolLeg1" service="billingService" action="invoiceUBLAction" defaultMpc="defaultMpc" reliability="AS4Reliability" security="eDeliveryAS4Policy" receptionAwareness="receptionAwareness" propertySet="eDeliveryPropertySet" errorHandling="defaultErrorHandling" compressPayloads="true" th:attr="name=${l.name},service=${l.service},action=${l.action}"/>
+        </legConfigurations>
+ 		
+        <process name="tc1Process" agreement="agreementPeppol" mep="oneway" binding="push" initiatorRole="defaultInitiatorRole" responderRole="defaultResponderRole">
+            <initiatorParties>
+                <initiatorParty name="pop000173" th:attr="name=${pmode.partyName}"/>
+            </initiatorParties>
+            <legs>
+                <leg name="testbedInvoice1"/>
+                <leg name="testbedOrder1"/>
+            
+                <leg name="testServiceCase"/>
+                <leg th:each="l : ${pmode.legList}" name="peppolLeg1" th:attr="name=${l.name}"/>
+            </legs>
+        </process>
+        <process name="tc2Process" agreement="agreementPeppol" mep="oneway" binding="push" initiatorRole="defaultInitiatorRole" responderRole="defaultResponderRole">
+            <responderParties>
+                <responderParty name="pop000173" th:attr="name=${pmode.partyName}"/>
+            </responderParties>
+            <legs>
+                <leg name="testbedInvoice1"/>
+                <leg name="testbedOrder1"/>
+
+                <leg name="testServiceCase"/>
+                <leg th:each="l : ${pmode.legList}" name="peppolLeg1" th:attr="name=${l.name}"/>
+            </legs>
+        </process>
+
+        <process name="peppolSendProcess" agreement="agreementPeppol" mep="oneway" binding="push" initiatorRole="peppolSenderRole" responderRole="peppolReceiverRole">
+            <initiatorParties>
+                <initiatorParty name="pop000173" th:attr="name=${pmode.partyName}"/>
+            </initiatorParties>
+            <legs>
+                <leg name="testbedInvoice1"/>
+                <leg name="testbedOrder1"/>
+
+                <leg name="testServiceCase"/>
+                <leg th:each="l : ${pmode.legList}" name="peppolLeg1" th:attr="name=${l.name}"/>
+            </legs>
+        </process>
+
+        <process name="peppolReceiveProcess" agreement="agreementPeppol" mep="oneway" binding="push" initiatorRole="peppolSenderRole" responderRole="peppolReceiverRole">
+            <responderParties>
+                <responderParty name="pop000173" th:attr="name=${pmode.partyName}"/>
+            </responderParties>
+            <legs>
+                <leg name="testbedInvoice1"/>
+                <leg name="testbedOrder1"/>
+
+                <leg name="testServiceCase"/>
+                <leg th:each="l : ${pmode.legList}" name="peppolLeg1" th:attr="name=${l.name}"/>
+            </legs>
+        </process>
+
+    </businessProcesses>
+</db:configuration>
