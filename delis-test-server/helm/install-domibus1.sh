@@ -1,5 +1,6 @@
 #!/bin/bash -ex
 CURDIR=`dirname $0`
+kubectl config use-context minikube
 helm tiller run helm upgrade dt1 --install --force ${CURDIR}/domibus/ --set partyName=Blue --set partyIndex=1 \
     --values ${CURDIR}/install-domibus1-values-4.1.0.yaml \
     --values ${CURDIR}/local-only/install-domibus-local-only.yaml \
