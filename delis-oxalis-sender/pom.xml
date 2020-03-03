@@ -18,7 +18,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<oxalis.version>4.1.1</oxalis.version>
-		<oxalis.as4.version>4.1.6</oxalis.as4.version>
+		<oxalis.as4.version>4.1.7</oxalis.as4.version>
 		<peppol.version>1.1.3</peppol.version>
 <!-- 		
  		<oxalis.version>4.0.3</oxalis.version>
