@@ -32,7 +32,6 @@ import no.difi.vefa.peppol.common.model.TransportProfile;
 import no.difi.vefa.peppol.mode.Mode;
 
 @Slf4j
-@Ignore
 public class SimpleSenderTest {
 
 	private static final boolean SEND_AS2 = false;
@@ -46,12 +45,8 @@ public class SimpleSenderTest {
 
 	@BeforeClass
 	public static void init() {
-		injector = Guice
-				.createInjector(
-						Modules
-						.override(new GuiceModuleLoader())
-							.with(new AbstractModule() {
-							}));
+		injector = Guice.createInjector(Modules.override(new GuiceModuleLoader()).with(new AbstractModule() {
+		}));
 
 		staticBuilder = new StaticTransmissionRequestBuilder();
 		certificate = injector.getInstance(X509Certificate.class);
@@ -128,6 +123,7 @@ public class SimpleSenderTest {
 	}
 
 	@Test
+	@Ignore
 	public void testSendFileByLookup() throws Exception {
 		byte[] payload = loadTestPayload();
 
@@ -137,6 +133,7 @@ public class SimpleSenderTest {
 	}
 
 	@Test
+	@Ignore
 	public void testSendFileStaticMany() throws Exception {
 		byte[] payload = loadTestPayload();
 		ISender sender = new SimpleSender(injector, staticBuilder);
