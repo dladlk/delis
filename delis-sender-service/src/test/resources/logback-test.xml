@@ -6,6 +6,7 @@
     
 	<logger name="root" level="warn" />
 	<logger name="dk.erst.delis" level="info" />
+	<logger name="org.apache.cxf" level="info" />
 
 	<logger name="dk.erst.delis.sender.service.lookup" level="debug" />
 </configuration>

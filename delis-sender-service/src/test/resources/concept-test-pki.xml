@@ -1,0 +1,112 @@
+<!--
+  ~ Copyright 2015-2017 Direktoratet for forvaltning og IKT
+  ~
+  ~ This source code is subject to dual licensing:
+  ~
+  ~
+  ~ Licensed under the EUPL, Version 1.1 or – as soon they
+  ~ will be approved by the European Commission - subsequent
+  ~ versions of the EUPL (the "Licence");
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  ~
+  ~
+  ~ See the Licence for the specific language governing
+  ~ permissions and limitations under the Licence.
+  -->
+<ValidatorRecipe xmlns="http://difi.no/xsd/certvalidator/1.0" name="peppol-contest" version="2018-02-20">
+    <Validator>
+        <Expiration/>
+        <Signing type="PUBLIC_SIGNED"/>
+        <PrincipleName field="CN" principal="ISSUER">
+            <Value>Concept Test Root CA</Value>
+            <Value>Concept Test Component CA</Value>
+        </PrincipleName>
+        <Chain>
+            <RootBucketReference>root</RootBucketReference>
+            <IntermediateBucketReference>intermediate</IntermediateBucketReference>
+        </Chain>
+        <Cached timeout="60">
+            <HandleError>
+                <CRL/>
+            </HandleError>
+            <HandleError>
+                <OCSP>
+                    <IntermediateBucketReference>intermediate</IntermediateBucketReference>
+                </OCSP>
+            </HandleError>
+        </Cached>
+    </Validator>
+    <Validator name="AP" timeout="10">
+        <PrincipleName field="CN" principal="ISSUER">
+            <Value>Concept Test Root CA</Value>
+            <Value>Concept Test Component CA</Value>
+        </PrincipleName>
+        <ValidatorReference>default</ValidatorReference>
+    </Validator>
+    <Validator name="SMP" timeout="10">
+        <PrincipleName field="CN" principal="ISSUER">
+            <Value>Concept Test Root CA</Value>
+            <Value>Concept Test Component CA</Value>
+        </PrincipleName>
+        <ValidatorReference>default</ValidatorReference>
+    </Validator>
+
+    <CertificateBucket name="root">
+        <!-- CN=Concept Test Root CA, OU=CEF RND ERST, O=Concept Test, L=Copenhagen, ST=Denmark, C=DK -->
+        <Certificate>
+MIID/TCCAuWgAwIBAgIEbTLeZzANBgkqhkiG9w0BAQsFADCBgTELMAkGA1UEBhMC
+REsxEDAOBgNVBAgTB0Rlbm1hcmsxEzARBgNVBAcTCkNvcGVuaGFnZW4xFTATBgNV
+BAoTDENvbmNlcHQgVGVzdDEVMBMGA1UECxMMQ0VGIFJORCBFUlNUMR0wGwYDVQQD
+ExRDb25jZXB0IFRlc3QgUm9vdCBDQTAeFw0yMDAxMDExMTAyNDNaFw0yNDEyMzAx
+MTAyNDNaMIGBMQswCQYDVQQGEwJESzEQMA4GA1UECBMHRGVubWFyazETMBEGA1UE
+BxMKQ29wZW5oYWdlbjEVMBMGA1UEChMMQ29uY2VwdCBUZXN0MRUwEwYDVQQLEwxD
+RUYgUk5EIEVSU1QxHTAbBgNVBAMTFENvbmNlcHQgVGVzdCBSb290IENBMIIBIjAN
+BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtuEKkAg1uKU/Imx2774C8Wp8vjsE
+YtbYvhdtIrEoLSiWcpKWOO8o/Io787wBkXtG9QT1ZMEd1LmCgtGg3OE8ifRNY9yS
++2xQbQs+ZsVNtbkAIlaNKa+pxcEDvcAbQItmXjEwAdWlsgPze2eHu8JWVj0lDKRm
+b0A7lUM+2sH/deKujXtn5Kk+ZWDj9E2xks5TkSi0Mgva1VAl5gb3R458CmbfIb/P
+Qpa+ygopOHb1Qa4TCX+FXMvPbTl9YuMb3tlpZaawDGFwI+ADbNQTgf1HNbXuOTno
+UbMMGSmwBBkYydEJtWyBm6iPyUh9qiblKrXi6zvaRCb+MiuocI643eH/cwIDAQAB
+o3sweTASBgNVHRMBAf8ECDAGAQH/AgEAMDQGA1UdHwQtMCswKaAnoCWGI2h0dHA6
+Ly9jb25jZXB0LXRlc3QubXkvY3JsL3Jvb3QuY3JsMA4GA1UdDwEB/wQEAwIBBjAd
+BgNVHQ4EFgQU8/RY36JpgQzIweCUjc1lLc20iAIwDQYJKoZIhvcNAQELBQADggEB
+AAC4SKXCLX+ZQ/BwqSPS0G3ULwcnuQ/c2KltzlgkBf5kdoSse31cEv+rpJvWTO1y
+KLd4nBwGCugANdL/yXXsE++kwZ59rSodYIHLUNS0DOxWuGzQ+gmQgVIIPhSjdijg
+WsgkFqk9W4nQqnTmY2pDjoBr53o7uL5zXkPqEvMFvy0d1FgUiERu/yZJpJN8rm4V
+xqm0mFi9/bRrEPQvT1Px+mBmv1gIW+Ht4qWY513gSkx8eA3GNXyEjHOl2JYvphP5
+X0zZDvEn8Wbs18FuRHa099TdvyXp/blkmSv1d14XH7XdL9WgMIzpGegJfozj2qVn
+pYBpQyNgvR9O1QNC3Si1rJs=
+        </Certificate>
+    </CertificateBucket>
+    <CertificateBucket name="intermediate">
+        <!-- CN=Concept Test Component CA, OU=CEF RND ERST, O=Concept Test, L=Copenhagen, ST=Denmark, C=DK -->
+        <Certificate>
+MIIEJTCCAw2gAwIBAgIEZtaErTANBgkqhkiG9w0BAQsFADCBgTELMAkGA1UEBhMC
+REsxEDAOBgNVBAgTB0Rlbm1hcmsxEzARBgNVBAcTCkNvcGVuaGFnZW4xFTATBgNV
+BAoTDENvbmNlcHQgVGVzdDEVMBMGA1UECxMMQ0VGIFJORCBFUlNUMR0wGwYDVQQD
+ExRDb25jZXB0IFRlc3QgUm9vdCBDQTAeFw0yMDAxMDExMTAyNDZaFw0yNDEyMzAx
+MTAyNDZaMIGGMQswCQYDVQQGEwJESzEQMA4GA1UECBMHRGVubWFyazETMBEGA1UE
+BxMKQ29wZW5oYWdlbjEVMBMGA1UEChMMQ29uY2VwdCBUZXN0MRUwEwYDVQQLEwxD
+RUYgUk5EIEVSU1QxIjAgBgNVBAMTGUNvbmNlcHQgVGVzdCBDb21wb25lbnQgQ0Ew
+ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDWqc5mV3Z6yf721a3nV4gi
+T3wYM338eLhmveGVDlJDyvihGK/vZzDBmYXCrDwa2nAOQnzY58Me6th5RZgrlmyj
+UFcCRLZsRr3Cexkle6jT/WcAJi6RX50YeLseQ5ML7xBH/hbq2Q5rGABirqR7h4wD
+sW/dvF8yj5FzgPzFdwecfxBiKeUgmtR/r2NOp0FW/C8VxB+3AUe7O3s9IiqgQFWc
+a9TVcz6xTiw4csx+rWbpNQ2INYHfs1xMt7DXi4nZSYd7eefG6uPogL9kP7h8mgKa
+vkkRH8w3rvsCSoUGgEgO94l3rQqTjb+gaYrUdscazigFNZo5HNGzZ5iaCxc+BP6N
+AgMBAAGjgZ0wgZowHwYDVR0jBBgwFoAU8/RY36JpgQzIweCUjc1lLc20iAIwEgYD
+VR0TAQH/BAgwBgEB/wIBCjA0BgNVHR8ELTArMCmgJ6AlhiNodHRwOi8vY29uY2Vw
+dC10ZXN0Lm15L2NybC9jb21wLmNybDAOBgNVHQ8BAf8EBAMCAgQwHQYDVR0OBBYE
+FN/jlQoj9MIjfsoL8NyeKRhKUfCMMA0GCSqGSIb3DQEBCwUAA4IBAQBB2OV0JlF5
+ub6rXGxbjv4fL8yk0B9sEaNBBNAr/Sbq0lvLRErudf8BJikJ0qFPWR3SOvx0wkyq
+kIeAMvEVn+FTmCT2qMr7l1GCvgZ9jOgeMkorJeguvDzSzy6PmNqh/5zfQiyJR3al
+hEzVY5TbLftMmV6IbfmZDEF122xgFd7PJm/0MUo4cNnxnVEYU+1j3xA4lozHmTN9
+Sqo3zhpqeUroLDMaIDLgMgCQjfZUxPK/VtPv4LlcpMeJjqHyhtT0xuX/4hWgP9uD
+O9wMLNHErFZfZ9NqWd5rW+hOuvO9DEtL8KGEoGuyRNSMntaKM6+tE74neSAPcsjF
+ZSrojPuddhGk
+        </Certificate>
+    </CertificateBucket>
+</ValidatorRecipe>
