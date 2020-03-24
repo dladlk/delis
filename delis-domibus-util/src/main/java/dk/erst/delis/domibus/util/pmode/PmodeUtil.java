@@ -48,7 +48,14 @@ public class PmodeUtil {
             String[] documentIdentifiers = pModeProfileGroup.getDocumentIdentifiers();
             
             for (int i = 0; i < documentIdentifiers.length; i++) {
-            	String docType = documentIdentifiers.length > 1 ? (i == 0? "_Invoice" : "_CreditNote"): "";
+            	String docType = "";
+            	if (documentIdentifiers.length > 1) {
+            		String di = documentIdentifiers[i];
+            		int startRootTag = di.indexOf("::") + 2;
+            		int endRootTag = di.indexOf("##", startRootTag);
+            		docType = di.substring(startRootTag, endRootTag);
+            		docType = "_" + docType;
+            	}
                 PmodeData.Action action = new PmodeData.Action(code + docType, documentIdentifiers[i]);
                 actions.add(action);
                 PmodeData.Action actionQns = new PmodeData.Action(code + docType+"Qns", "busdox-docid-qns::" + documentIdentifiers[i]);
