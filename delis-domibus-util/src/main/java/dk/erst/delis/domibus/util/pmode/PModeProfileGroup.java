@@ -96,7 +96,7 @@ public enum PModeProfileGroup {
 					
 					"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1",
 					
-					"urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##rn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"
+					"urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"
 					
 	}),	
 	

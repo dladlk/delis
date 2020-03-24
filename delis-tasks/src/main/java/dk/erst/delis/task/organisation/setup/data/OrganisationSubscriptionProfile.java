@@ -20,7 +20,7 @@ public enum OrganisationSubscriptionProfile {
 
 	PEPPOL_BIS3_ORDER("PEPPOL BIS3 Order", "urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1"),
 
-	PEPPOL_BIS3_ORDER_RESPONSE("PEPPOL BIS3 Order Response", "urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##rn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"),
+	PEPPOL_BIS3_ORDER_RESPONSE("PEPPOL BIS3 Order Response", "urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"),
 
 	PEPPOL_BIS3_CATALOGUE("PEPPOL BIS3 Catalogue Only", "urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1"),
 
