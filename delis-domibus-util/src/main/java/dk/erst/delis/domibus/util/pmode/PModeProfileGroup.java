@@ -80,7 +80,7 @@ public enum PModeProfileGroup {
 			
 			new String[] {
 					
-			"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:bis:order_only:3::2.1"
+			"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1"
 			
 			}),	
 	
@@ -94,9 +94,9 @@ public enum PModeProfileGroup {
 			
 			new String[] {
 					
-					"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:bis:ordering:3::2.1",
+					"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1",
 					
-					"urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:poacc:bis:ordering:3::2.1"
+					"urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##rn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"
 					
 	}),	
 	
@@ -110,9 +110,9 @@ public enum PModeProfileGroup {
 			
 			new String[] {
 					
-					"urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:bis:catalogue_only:3::2.1",
+					"urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1",
 					
-					"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:bis:catalogue_only:3::2.1"
+					"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:catalogue_response:3::2.1"
 					
 	}),	
 	;
