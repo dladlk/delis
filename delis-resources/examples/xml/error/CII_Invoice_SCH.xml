@@ -7,7 +7,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<rsm:ExchangedDocumentContext>
 		<ram:BusinessProcessSpecifiedDocumentContextParameter>
-			<ram:ID>P1</ram:ID>
+			<ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:30:1.0</ram:ID>
 		</ram:BusinessProcessSpecifiedDocumentContextParameter>
 		<ram:GuidelineSpecifiedDocumentContextParameter>
 			<ram:ID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</ram:ID>
@@ -202,13 +202,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ram:ApplicableHeaderTradeAgreement>
 			<ram:BuyerReference>qwerty</ram:BuyerReference>
 			<ram:SellerTradeParty>
-				<ram:ID>5790000436101</ram:ID>
 				<ram:GlobalID schemeID="0088">5790000436101</ram:GlobalID>
 				<ram:Name>SellerCompany</ram:Name>
 				<ram:Description>Export</ram:Description>
 				<ram:SpecifiedLegalOrganization>
-					<ram:ID schemeID="0088">NL16356706</ram:ID>
-					<ram:TradingBusinessName>SelCo</ram:TradingBusinessName>
+					<ram:ID schemeID="0088">5790000436101</ram:ID>
+					<ram:TradingBusinessName>SellerCompany</ram:TradingBusinessName>
 				</ram:SpecifiedLegalOrganization>
 				<ram:DefinedTradeContact>
 					<ram:PersonName>Anthon Larsen</ram:PersonName>
@@ -240,12 +239,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				</ram:SpecifiedTaxRegistration>
 			</ram:SellerTradeParty>
 			<ram:BuyerTradeParty>
-				<ram:ID>12345</ram:ID>
 				<ram:GlobalID schemeID="0088">5790000436057</ram:GlobalID>
 				<ram:Name>Buyercompany ltd</ram:Name>
 				<ram:SpecifiedLegalOrganization>
 					<ram:ID schemeID="0184">DK16356607</ram:ID>
-					<ram:TradingBusinessName>Buyco</ram:TradingBusinessName>
+					<ram:TradingBusinessName>Buyercompany ltd</ram:TradingBusinessName>
 				</ram:SpecifiedLegalOrganization>
 				<ram:DefinedTradeContact>
 					<ram:PersonName>John Hansen</ram:PersonName>
@@ -267,7 +265,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<ram:CountrySubDivisionName>Jutland</ram:CountrySubDivisionName>
 				</ram:PostalTradeAddress>
 				<ram:URIUniversalCommunication>
-					<ram:URIID schemeID="0088">info@buyercompany.dk</ram:URIID>
+					<ram:URIID schemeID="0088">5790000436057</ram:URIID>
 				</ram:URIUniversalCommunication>
 				<ram:SpecifiedTaxRegistration>
 					<ram:ID schemeID="VA">DK16356607</ram:ID>

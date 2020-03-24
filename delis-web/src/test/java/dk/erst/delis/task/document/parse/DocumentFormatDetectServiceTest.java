@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
 import dk.erst.delis.task.document.parse.data.DocumentInfoRootTag;
+import dk.erst.delis.task.document.parse.data.DocumentProfile;
 
 public class DocumentFormatDetectServiceTest {
 
@@ -42,8 +43,24 @@ public class DocumentFormatDetectServiceTest {
 
 		assertEquals(DocumentFormat.BIS3_INVOICE_RESPONSE, s.defineDocumentFormat(tc("ApplicationResponse", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_IR_STARTS_WITH)));
 		assertEquals(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, s.defineDocumentFormat(tc("ApplicationResponse", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_MLR_STARTS_WITH)));
+
+		assertEquals(DocumentFormat.BIS3_ORDER_ONLY, s.defineDocumentFormat(tc("Order", "urn:oasis:names:specification:ubl:schema:xsd:Order-2", DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_ORDER_ONLY)));
+		assertEquals(DocumentFormat.BIS3_ORDER, s.defineDocumentFormat(tc("Order", "urn:oasis:names:specification:ubl:schema:xsd:Order-2", DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_ORDERING)));
+		assertEquals(DocumentFormat.BIS3_ORDER_RESPONSE, s.defineDocumentFormat(tc("OrderResponse", "urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_RESPONSE_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_ORDERING)));
+		assertEquals(DocumentFormat.BIS3_CATALOGUE_ONLY, s.defineDocumentFormat(tc("Catalogue", "urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2", DocumentFormatConst.CUSTOMIZATION_BIS3_CATALOGUE_STARTS_WITH)));
+		assertEquals(DocumentFormat.BIS3_CATALOGUE_RESPONSE, s.defineDocumentFormat(tc("ApplicationResponse", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_CATALOGUE_RESPONSE_STARTS_WITH)));
 	}
 
+	private DocumentInfo tc(String rootTag, String namespace, String customizationId, String profile) {
+		DocumentInfo di = tc(rootTag, namespace, customizationId);
+		if (profile != null) {
+			DocumentProfile dp = new DocumentProfile();
+			dp.setId(profile);
+			di.setProfile(dp);
+		}
+		return di;
+	}
+	
 	private DocumentInfo tc(String rootTag, String namespace, String customizationId) {
 		DocumentInfo di;
 		DocumentInfoRootTag root;

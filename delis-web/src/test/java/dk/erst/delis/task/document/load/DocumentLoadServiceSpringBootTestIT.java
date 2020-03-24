@@ -82,7 +82,7 @@ public class DocumentLoadServiceSpringBootTestIT {
 			Document document = dls.loadFile(testFile);
 			assertNotNull(document);
 			assertEquals(testDocument.getDocumentFormat(), document.getIngoingDocumentFormat());
-			assertEquals(DocumentStatus.LOAD_OK, document.getDocumentStatus());
+			assertEquals("TestDocument "+testDocument, DocumentStatus.LOAD_OK, document.getDocumentStatus());
 			assertNotNull(document.getName());
 		} finally {
 			TestDocumentUtil.cleanupTestFile(testFile);

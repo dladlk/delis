@@ -21,6 +21,17 @@ import dk.erst.delis.data.enums.document.DocumentFormat;
 	OIOUBL_INVOICE("OIOUBL_Invoice_v2p2.xml", DocumentFormat.OIOUBL_INVOICE),
 
 	OIOUBL_CREDITNOTE("OIOUBL_CreditNote_v2p2.xml", DocumentFormat.OIOUBL_CREDITNOTE),
+	
+	BIS3_ORDER_ONLY("BIS3_Order_OrderOnly.xml", DocumentFormat.BIS3_ORDER_ONLY),
+	
+	BIS3_ORDER_ORDERING("BIS3_Order_Ordering.xml", DocumentFormat.BIS3_ORDER),
+	
+	BIS3_ORDER_RESPONSE("BIS3_OrderResponse_Example.xml", DocumentFormat.BIS3_ORDER_RESPONSE),
+	
+	BIS3_CATALOGUE_ONLY("BIS3_Catalogue_Only.xml", DocumentFormat.BIS3_CATALOGUE_ONLY),
+	
+	BIS3_CATALOGUE_RESPONSE_ONLY("BIS3_CatalogueResponse_Example.xml", DocumentFormat.BIS3_CATALOGUE_RESPONSE),
+	
 
 	ERROR_XSD_BIS3_INVOICE("error/BIS3_Invoice_XSD.xml ", DocumentFormat.BIS3_INVOICE),
 

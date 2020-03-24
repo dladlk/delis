@@ -40,6 +40,19 @@ public class DocumentFormatDetectService {
 						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_BIS3_MLR_STARTS_WITH)) {
 							return DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE;
 						}
+					} else if (f.isBIS3Order()) {
+						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_STARTS_WITH)) {
+							if (info.getProfile() != null && info.getProfile().getId() != null) {
+								if (info.getProfile().getId().startsWith(DocumentFormatConst.PROFILE_BIS3_ORDER_ONLY)) {
+									return DocumentFormat.BIS3_ORDER_ONLY;
+								}
+								if (info.getProfile().getId().startsWith(DocumentFormatConst.PROFILE_BIS3_ORDERING)) {
+									return DocumentFormat.BIS3_ORDER;
+								}
+							}
+						}
+					} else if (f.isBIS3OR() || f.isBIS3Catalogue() || f.isBIS3CatalogueResponse()) {
+						return f;
 					}
 				}
 			}

@@ -152,7 +152,7 @@ public class DocumentValidationTransformationServiceTest {
                 DocumentProcessStep documentProcessStepSCH = processLog.getStepList().get(1);
                 assertFalse(documentProcessStepSCH.isSuccess());
                 List<ErrorRecord> errorRecords = documentProcessStepSCH.getErrorRecords();
-                assertEquals(5, errorRecords.size());
+                assertEquals(4, errorRecords.size());
                 return true;
             }
         });

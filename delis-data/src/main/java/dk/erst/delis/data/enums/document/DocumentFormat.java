@@ -32,6 +32,16 @@ public enum DocumentFormat implements Named {
 
 	OIOUBL_CREDITNOTE("OIO-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
 
+	BIS3_ORDER_ONLY("BIS3-OO", "Order", DocumentFormatConst.NS_UBL_ORDER, DocumentType.ORDER),
+
+	BIS3_ORDER("BIS3-OR", "Order", DocumentFormatConst.NS_UBL_ORDER, DocumentType.ORDER),
+
+	BIS3_ORDER_RESPONSE("BIS3-ORR", "OrderResponse", DocumentFormatConst.NS_UBL_ORDER_RESPONSE, DocumentType.ORDER_RESPONSE),
+
+	BIS3_CATALOGUE_ONLY("BIS3-CATO", "Catalogue", DocumentFormatConst.NS_UBL_CATALOGUE, DocumentType.CATALOGUE),
+
+	BIS3_CATALOGUE_RESPONSE("BIS3-CATOR", "ApplicationResponse", DocumentFormatConst.NS_UBL_APPLICATION_RESPONSE, DocumentType.CATALOGUE_RESPONSE),
+
 	;
 
 	private final String code;
@@ -88,13 +98,29 @@ public enum DocumentFormat implements Named {
 	public boolean isBIS3() {
 		return this == BIS3_INVOICE || this == BIS3_CREDITNOTE;
 	}
+
+	public boolean isBIS3Order() {
+		return this == BIS3_ORDER || this == BIS3_ORDER_ONLY;
+	}
 	
 	public boolean isBIS3IR() {
 		return this == BIS3_INVOICE_RESPONSE;
 	}
+
+	public boolean isBIS3OR() {
+		return this == BIS3_ORDER_RESPONSE;
+	}
 	
 	public boolean isBIS3MLR() {
 		return this == BIS3_MESSAGE_LEVEL_RESPONSE;
+	}
+
+	public boolean isBIS3Catalogue() {
+		return this == BIS3_CATALOGUE_ONLY;
+	}
+
+	public boolean isBIS3CatalogueResponse() {
+		return this == BIS3_CATALOGUE_RESPONSE;
 	}
 
 	public DocumentType getDocumentType() {

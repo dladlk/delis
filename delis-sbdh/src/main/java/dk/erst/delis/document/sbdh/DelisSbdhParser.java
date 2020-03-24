@@ -15,7 +15,10 @@ import org.w3c.dom.Document;
 import dk.erst.delis.document.sbdh.cii.CIIHeaderParser;
 import dk.erst.delis.document.sbdh.cii.CIINapeSpaceResolver;
 import dk.erst.delis.document.sbdh.ubl.DelisApplicationResponseDocumentParser;
+import dk.erst.delis.document.sbdh.ubl.DelisCatalogueDocumentParser;
 import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
+import dk.erst.delis.document.sbdh.ubl.DelisOrderDocumentParser;
+import dk.erst.delis.document.sbdh.ubl.DelisOrderResponseDocumentParser;
 import dk.erst.delis.document.sbdh.ubl.DelisUBLHeaderParser;
 import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
 import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
@@ -98,8 +101,13 @@ public class DelisSbdhParser {
                         documentParser = new DelisInvoiceDocumentParser(headerParser);
                     } else if ("ApplicationResponse".equals(localName)) {
                     	documentParser = new DelisApplicationResponseDocumentParser(headerParser);
-                    	
-                    }
+	                } else if ("Order".equals(localName)) {
+	                	documentParser = new DelisOrderDocumentParser(headerParser);
+	                } else if ("OrderResponse".equals(localName)) {
+	                	documentParser = new DelisOrderResponseDocumentParser(headerParser);
+	                } else if ("Catalogue".equals(localName)) {
+	                	documentParser = new DelisCatalogueDocumentParser(headerParser);
+	                }
                 } catch (Exception ex) {
                     /*
 					 * allow this to happen so that "unknown" PEPPOL documents still can be used by
