@@ -66,7 +66,7 @@ public class PmodeXmlServiceTest {
 		assertEquals(actionList.getLength(), actionNames.size());
 
 		NodeList legConfigurationList = doc.getElementsByTagName("legConfiguration");
-		assertEquals(45 + ((5 * 2 - 2) * 3), legConfigurationList.getLength());
+		assertEquals(45 + ((5 * 2) * 3), legConfigurationList.getLength());
 		Set<String> legConfigurationNames = buildNameSet(legConfigurationList);
 		assertEquals(legConfigurationList.getLength(), legConfigurationNames.size());
 		for (int i = 0; i < legConfigurationList.getLength(); i++) {
@@ -80,7 +80,7 @@ public class PmodeXmlServiceTest {
 		}
 
 		NodeList legs = doc.getElementsByTagName("leg");
-		assertEquals(180 + ((5 * 2 - 2) * 3 * 4), legs.getLength());
+		assertEquals(180 + ((5 * 2) * 3 * 4), legs.getLength());
 		for (int i = 0; i < legs.getLength(); i++) {
 			String legName = legs.item(i).getAttributes().getNamedItem("name").getNodeValue();
 			assertTrue("Not found leg name " + legName, legConfigurationNames.contains(legName));
