@@ -101,10 +101,17 @@ public class PmodeXmlServiceTest {
 			String name = attributes.getNamedItem("name").getNodeValue();
 			nameSet.add(name);
 			String value = attributes.getNamedItem("value").getNodeValue();
-			if (valueToNameMap.containsKey(value)) {
-				fail("Duplicated value of " + tagName + " with name " + name + " and value " + value + ": already present with name " + valueToNameMap.get(value));
+			String type = "";
+			Node namedItemType = attributes.getNamedItem("type");
+			if (namedItemType != null) {
+				type = namedItemType.getNodeValue();
+			}
+
+			String valueType = value + "_" + type;
+			if (valueToNameMap.containsKey(valueType)) {
+				fail("Duplicated value of " + tagName + " with name " + name + " and value " + valueType + ": already present with name " + valueToNameMap.get(valueType));
 			} else {
-				valueToNameMap.put(value, name);
+				valueToNameMap.put(valueType, name);
 			}
 		}
 		return nameSet;
