@@ -12,6 +12,7 @@ import dk.erst.delis.data.entities.journal.JournalIdentifier;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.xml.SmpXmlServiceFactory;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -137,9 +138,16 @@ public class IdentifierPublishService {
 			return false;
 		}
 		for (SmpPublishServiceData serviceData : serviceList) {
-			if (serviceData.getEndpoints().isEmpty()) {
-				log.info(String.format("Service data for identifier '%s' has empty endpoint list.", publishData.getParticipantIdentifier().toString()));
-				return false;
+			if (serviceData.getProcessList().isEmpty()) {
+				log.info(String.format("Service data for identifier '%s' has empty process list.", publishData.getParticipantIdentifier().toString()));
+			} else {
+				List<SmpPublishProcessData> processList = serviceData.getProcessList();
+				for (SmpPublishProcessData smpPublishProcessData : processList) {
+					if (smpPublishProcessData.getEndpoints().isEmpty()) {
+						log.info(String.format("Service data for identifier '%s' and process %s has empty endpoint list.", publishData.getParticipantIdentifier().toString(), smpPublishProcessData.getProcessIdentifier().toString()));
+						return false;
+					}
+				}
 			}
 		}
 		return true;

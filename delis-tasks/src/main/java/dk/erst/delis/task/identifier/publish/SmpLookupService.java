@@ -14,6 +14,7 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import lombok.extern.slf4j.Slf4j;
@@ -152,6 +153,7 @@ public class SmpLookupService {
 		List<SmpPublishServiceData> serviceDataList = new ArrayList<>();
 		for (ServiceMetadata serviceMetadata : serviceMetadataList) {
 			SmpPublishServiceData smpPublishServiceData = new SmpPublishServiceData();
+			smpPublishServiceData.setProcessList(new ArrayList<SmpPublishProcessData>());
 			DocumentTypeIdentifier documentTypeIdentifier = serviceMetadata.getDocumentTypeIdentifier();
 			SmpDocumentIdentifier documentIdentifier = SmpDocumentIdentifier.of(documentTypeIdentifier.getIdentifier());
 			smpPublishServiceData.setDocumentIdentifier(documentIdentifier);
@@ -159,12 +161,16 @@ public class SmpLookupService {
 				if(processMetadata.getProcessIdentifier().isEmpty()) {
 					continue;
 				}
+				SmpPublishProcessData processData = new SmpPublishProcessData();
+				
 				SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
 				ProcessIdentifier processIdentifier = processMetadata.getProcessIdentifier().get(0);
 				smpProcessIdentifier.setProcessIdentifierScheme(processIdentifier.getScheme().toString());
 				smpProcessIdentifier.setProcessIdentifierValue(processIdentifier.getIdentifier());
-				smpPublishServiceData.setProcessIdentifier(smpProcessIdentifier);
-				smpPublishServiceData.setEndpoints(createEndpoints(processMetadata.getEndpoints()));
+				processData.setProcessIdentifier(smpProcessIdentifier);
+				processData.setEndpoints(createEndpoints(processMetadata.getEndpoints()));
+				
+				smpPublishServiceData.getProcessList().add(processData);
 			}
 			serviceDataList.add(smpPublishServiceData);
 		}

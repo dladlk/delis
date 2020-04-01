@@ -1,5 +1,6 @@
 package dk.erst.delis.task.identifier.publish.xml.impl;
 
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import dk.erst.delis.task.identifier.publish.xml.intf.SmpXmlService;
@@ -28,8 +29,7 @@ public class BdxrSmpXmlService implements SmpXmlService {
 	protected final Log log = LogFactory.getLog(getClass());
 
 	private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
-	private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class,
-			() -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
+	private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class, () -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
 
 	public String createServiceGroupXml(ParticipantIdentifier identifier) {
 		ParticipantIdentifierType participantIdentifier = buildParticipantIdentifierType(identifier);
@@ -82,33 +82,38 @@ public class BdxrSmpXmlService implements SmpXmlService {
 		return result.toString();
 	}
 
-	private List<ProcessType> createProcessList(SmpPublishServiceData smpPublishData) {
+	private List<ProcessType> createProcessList(SmpPublishServiceData smpPublishServiceData) {
 		ArrayList<ProcessType> result = new ArrayList<>();
 
-		ProcessType process = new ProcessType();
-		ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
-		processIdentifier.setScheme(smpPublishData.getProcessIdentifier().getProcessIdentifierScheme());
-		processIdentifier.setValue(smpPublishData.getProcessIdentifier().getProcessIdentifierValue());
-		process.setProcessIdentifier(processIdentifier);
+		List<SmpPublishProcessData> processList = smpPublishServiceData.getProcessList();
+		for (SmpPublishProcessData smpPublishData : processList) {
 
-		ServiceEndpointList serviceEndpoint = new ServiceEndpointList();
-		List<EndpointType> endpointList = serviceEndpoint.getEndpoint();
-		List<SmpServiceEndpointData> endpoints = smpPublishData.getEndpoints();
+			ProcessType process = new ProcessType();
+			ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
+			processIdentifier.setScheme(smpPublishData.getProcessIdentifier().getProcessIdentifierScheme());
+			processIdentifier.setValue(smpPublishData.getProcessIdentifier().getProcessIdentifierValue());
+			process.setProcessIdentifier(processIdentifier);
 
-		for (SmpServiceEndpointData endpoint : endpoints) {
-			EndpointType resultEndpoint = new EndpointType();
-			resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());
-			resultEndpoint.setCertificate(endpoint.getCertificate());
-			resultEndpoint.setTransportProfile(endpoint.getTransportProfile());
-			resultEndpoint.setEndpointURI(endpoint.getUrl());
-			resultEndpoint.setServiceDescription(endpoint.getServiceDescription());
-			resultEndpoint.setServiceActivationDate(toXMLGregorianCalendar(endpoint.getServiceActivationDate()));
-			resultEndpoint.setServiceExpirationDate(toXMLGregorianCalendar(endpoint.getServiceExpirationDate()));
-			resultEndpoint.setTechnicalContactUrl(endpoint.getTechnicalContactUrl());
-			endpointList.add(resultEndpoint);
+			ServiceEndpointList serviceEndpoint = new ServiceEndpointList();
+			List<EndpointType> endpointList = serviceEndpoint.getEndpoint();
+			List<SmpServiceEndpointData> endpoints = smpPublishData.getEndpoints();
+
+			for (SmpServiceEndpointData endpoint : endpoints) {
+				EndpointType resultEndpoint = new EndpointType();
+				resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());
+				resultEndpoint.setCertificate(endpoint.getCertificate());
+				resultEndpoint.setTransportProfile(endpoint.getTransportProfile());
+				resultEndpoint.setEndpointURI(endpoint.getUrl());
+				resultEndpoint.setServiceDescription(endpoint.getServiceDescription());
+				resultEndpoint.setServiceActivationDate(toXMLGregorianCalendar(endpoint.getServiceActivationDate()));
+				resultEndpoint.setServiceExpirationDate(toXMLGregorianCalendar(endpoint.getServiceExpirationDate()));
+				resultEndpoint.setTechnicalContactUrl(endpoint.getTechnicalContactUrl());
+				endpointList.add(resultEndpoint);
+			}
+			process.setServiceEndpointList(serviceEndpoint);
+			result.add(process);
 		}
-		process.setServiceEndpointList(serviceEndpoint);
-		result.add(process);
+
 		return result;
 	}
 

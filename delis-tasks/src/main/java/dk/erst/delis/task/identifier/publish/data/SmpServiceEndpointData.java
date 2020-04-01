@@ -71,14 +71,4 @@ public class SmpServiceEndpointData {
 		return false;
 	}
 	
-	public static String byEndpointTransportProfile(SmpServiceEndpointData d) {
-		return d.getTransportProfile();
-	}	
-	public static String byEndpointUrl(SmpServiceEndpointData d) {
-		return d.getUrl();
-	}
-	public static String byEndpointCertificate(SmpServiceEndpointData d) {
-		return d.getCertificateName();
-	}	
-		
 }

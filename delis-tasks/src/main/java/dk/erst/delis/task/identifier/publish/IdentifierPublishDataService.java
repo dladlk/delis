@@ -23,6 +23,7 @@ import dk.erst.delis.task.codelist.CodeListDict;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
@@ -93,15 +94,30 @@ public class IdentifierPublishDataService {
 
 	private List<SmpPublishServiceData> createServiceData(List<SmpServiceEndpointData> endpointList, OrganisationSubscriptionProfileGroup subscribedProfile) {
 		List<SmpPublishServiceData> result = new ArrayList<>();
+		
+		Map<SmpDocumentIdentifier, SmpPublishServiceData> documentIdentifierToServiceDataMap = new HashMap<SmpDocumentIdentifier, SmpPublishServiceData>();
+		
 		for (String documentIdentifier : subscribedProfile.getDocumentIdentifiers()) {
-            SmpPublishServiceData serviceData = new SmpPublishServiceData();
-            serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(documentIdentifier));
+			SmpDocumentIdentifier smpDocumentIdentifier = SmpDocumentIdentifier.of(documentIdentifier);
+
+			SmpPublishServiceData serviceData = documentIdentifierToServiceDataMap.get(smpDocumentIdentifier);
+            if (serviceData == null) {
+				serviceData = new SmpPublishServiceData();
+				serviceData.setDocumentIdentifier(smpDocumentIdentifier);
+				serviceData.setProcessList(new ArrayList<SmpPublishProcessData>());
+				
+				documentIdentifierToServiceDataMap.put(smpDocumentIdentifier, serviceData);
+				result.add(serviceData);
+            }
+            
+            SmpPublishProcessData processData = new SmpPublishProcessData();
             SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
             smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessSchemeSMP());
             smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
-            serviceData.setProcessIdentifier(smpProcessIdentifier);
-            serviceData.setEndpoints(endpointList);
-            result.add(serviceData);
+            processData.setProcessIdentifier(smpProcessIdentifier);
+            processData.setEndpoints(endpointList);
+            
+            serviceData.getProcessList().add(processData);
         }
         return result;
 	}

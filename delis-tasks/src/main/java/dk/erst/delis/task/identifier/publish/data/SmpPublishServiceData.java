@@ -8,10 +8,8 @@ import lombok.Data;
 public class SmpPublishServiceData {
 
 	private SmpDocumentIdentifier documentIdentifier;
-
-	private SmpProcessIdentifier processIdentifier;
-
-	private List<SmpServiceEndpointData> endpoints;
+	
+	private List<SmpPublishProcessData> processList;
 
 	public String buildServiceId() {
 		StringBuilder sb = new StringBuilder();
@@ -30,21 +28,13 @@ public class SmpPublishServiceData {
 		}
 
 		if (res) {
-			if (this.processIdentifier != null) {
-				res = this.processIdentifier.isMatch(match.getProcessIdentifier());
-			} else if (match.getProcessIdentifier() == null) {
-				res = true;
-			}
-		}
-
-		if (res) {
-			if (!isEmpty(this.endpoints)) {
-				if (isEmpty(match.getEndpoints())) {
+			if (!isEmpty(this.processList)) {
+				if (isEmpty(match.processList)) {
 					res = false;
 				} else {
-					for (SmpServiceEndpointData e : this.endpoints) {
+					for (SmpPublishProcessData e : this.processList) {
 						boolean endpointMatched = false;
-						for (SmpServiceEndpointData em : match.getEndpoints()) {
+						for (SmpPublishProcessData em : match.processList) {
 							if (e.isMatch(em)) {
 								endpointMatched = true;
 								break;
@@ -57,31 +47,15 @@ public class SmpPublishServiceData {
 					}
 				}
 			} else {
-				res = isEmpty(match.getEndpoints());
+				res = isEmpty(match.processList);
 			}
 		}
 
 		return res;
 	}
-
+	
 	private static boolean isEmpty(List<?> list) {
 		return list == null || list.isEmpty();
-	}
-
-	public static String byProcessIdentifierScheme(SmpPublishServiceData d) {
-		return d.getProcessIdentifier().getProcessIdentifierScheme();
-	}
-
-	public static String byProcessIdentifierValue(SmpPublishServiceData d) {
-		return d.getProcessIdentifier().getProcessIdentifierValue();
-	}
-
-	public static String byDocumentIdentifierScheme(SmpPublishServiceData d) {
-		return d.getDocumentIdentifier().getDocumentIdentifierScheme();
-	}
-
-	public static String byDocumentIdentifierValue(SmpPublishServiceData d) {
-		return d.getDocumentIdentifier().getDocumentIdentifierValue();
 	}
 
 }

@@ -2,6 +2,7 @@ package dk.erst.delis.task.identifier.publish.dummy;
 
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import lombok.Data;
@@ -111,8 +112,16 @@ public class SmpPublishDataDummyService {
 		for (TempDocumentProcess tdp : TEMP_DOCUMENT_LIST) {
 			SmpPublishServiceData sd = new SmpPublishServiceData();
 			sd.setDocumentIdentifier(SmpDocumentIdentifier.of(tdp.getDocumentIdentifier()));
-			sd.setProcessIdentifier(SmpProcessIdentifier.of(tdp.getProcesIdentifier(), "cenbii-procid-ubl"));
-			sd.setEndpoints(endpointList);
+			
+			SmpPublishProcessData processData = new SmpPublishProcessData();
+			
+			processData.setProcessIdentifier(SmpProcessIdentifier.of(tdp.getProcesIdentifier(), "cenbii-procid-ubl"));
+			processData.setEndpoints(endpointList);
+			
+			List<SmpPublishProcessData> processList = new ArrayList<SmpPublishProcessData>();
+			processList.add(processData);
+			sd.setProcessList(processList);
+			
 			serviceList.add(sd);
 		}
 
