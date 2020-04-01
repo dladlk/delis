@@ -61,12 +61,12 @@ public class PmodeXmlServiceTest {
 		assertEquals(serviceList.getLength(), serviceNames.size());
 
 		NodeList actionList = doc.getElementsByTagName("action");
-		assertEquals(17 + 5 * 2, actionList.getLength());
+		assertEquals(17 + 5 * 2 - 2, actionList.getLength());
 		Set<String> actionNames = buildNameSet(actionList);
 		assertEquals(actionList.getLength(), actionNames.size());
 
 		NodeList legConfigurationList = doc.getElementsByTagName("legConfiguration");
-		assertEquals(45 + (5 * 2 * 3), legConfigurationList.getLength());
+		assertEquals(45 + ((5 * 2 - 2) * 3), legConfigurationList.getLength());
 		Set<String> legConfigurationNames = buildNameSet(legConfigurationList);
 		assertEquals(legConfigurationList.getLength(), legConfigurationNames.size());
 		for (int i = 0; i < legConfigurationList.getLength(); i++) {
@@ -80,7 +80,7 @@ public class PmodeXmlServiceTest {
 		}
 
 		NodeList legs = doc.getElementsByTagName("leg");
-		assertEquals(180 + (5 * 2 * 3 * 4), legs.getLength());
+		assertEquals(180 + ((5 * 2 - 2) * 3 * 4), legs.getLength());
 		for (int i = 0; i < legs.getLength(); i++) {
 			String legName = legs.item(i).getAttributes().getNamedItem("name").getNodeValue();
 			assertTrue("Not found leg name " + legName, legConfigurationNames.contains(legName));
@@ -97,21 +97,27 @@ public class PmodeXmlServiceTest {
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node item = nodeList.item(i);
 			String tagName = item.getNodeName();
+
+			boolean skipUniqueValue = "legConfiguration".equals(tagName);
+
 			NamedNodeMap attributes = item.getAttributes();
 			String name = attributes.getNamedItem("name").getNodeValue();
 			nameSet.add(name);
-			String value = attributes.getNamedItem("value").getNodeValue();
-			String type = "";
-			Node namedItemType = attributes.getNamedItem("type");
-			if (namedItemType != null) {
-				type = namedItemType.getNodeValue();
-			}
 
-			String valueType = value + "_" + type;
-			if (valueToNameMap.containsKey(valueType)) {
-				fail("Duplicated value of " + tagName + " with name " + name + " and value " + valueType + ": already present with name " + valueToNameMap.get(valueType));
-			} else {
-				valueToNameMap.put(valueType, name);
+			if (!skipUniqueValue) {
+				String value = attributes.getNamedItem("value").getNodeValue();
+				String type = "";
+				Node namedItemType = attributes.getNamedItem("type");
+				if (namedItemType != null) {
+					type = namedItemType.getNodeValue();
+				}
+
+				String valueType = value + "_" + type;
+				if (valueToNameMap.containsKey(valueType)) {
+					fail("Duplicated value of " + tagName + " with name " + name + " and value " + valueType + ": already present with name " + valueToNameMap.get(valueType));
+				} else {
+					valueToNameMap.put(valueType, name);
+				}
 			}
 		}
 		return nameSet;

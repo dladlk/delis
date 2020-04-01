@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import dk.erst.delis.domibus.util.pmode.PmodeData.Action;
 import dk.erst.delis.domibus.util.pmode.PmodeData.Service;
 
 public class PmodeUtil {
@@ -17,6 +18,14 @@ public class PmodeUtil {
 	private static String buildServiceKey(Service service) {
 		return buildServiceKey(service.getValue(), service.getType());
 	}
+
+	private static String buildActionKey(String value) {
+		return value;
+	}
+	
+	private static String buildActionKey(Action action) {
+		return buildActionKey(action.getValue());
+	}
 	
     public static PmodeData populateServicesActionsLegs(PmodeData pmode) {
         PModeProfileGroup[] values = PModeProfileGroup.values();
@@ -26,6 +35,8 @@ public class PmodeUtil {
         List<PmodeData.Leg> legs = new ArrayList<>();
 
         Map<String, PmodeData.Service> serviceMap = new HashMap<>();
+        Map<String, PmodeData.Action> actionMap = new HashMap<>();
+        
         for (PModeProfileGroup pModeProfileGroup : values) {
         	String code = pModeProfileGroup.getCode();
 
@@ -56,19 +67,28 @@ public class PmodeUtil {
             		docType = di.substring(startRootTag, endRootTag);
             		docType = "_" + docType;
             	}
-                PmodeData.Action action = new PmodeData.Action(code + docType, documentIdentifiers[i]);
-                actions.add(action);
-                PmodeData.Action actionQns = new PmodeData.Action(code + docType+"Qns", "busdox-docid-qns::" + documentIdentifiers[i]);
-                actions.add(actionQns);
-
-                legs.add(new PmodeData.Leg(action.getName(), service.getName(), action.getName()));
-                legs.add(new PmodeData.Leg(actionQns.getName(), service.getName(), actionQns.getName()));
-                
-                legs.add(new PmodeData.Leg(action.getName()+"Emb", serviceEmb.getName(), action.getName()));
-                legs.add(new PmodeData.Leg(actionQns.getName()+"Emb", serviceEmb.getName(), actionQns.getName()));
-
-                legs.add(new PmodeData.Leg(action.getName()+"TB", serviceTB.getName(), action.getName()));
-                legs.add(new PmodeData.Leg(actionQns.getName()+"TB", serviceTB.getName(), actionQns.getName()));
+            	
+            	PmodeData.Action action = actionMap.get(buildActionKey(documentIdentifiers[i]));
+            	PmodeData.Action actionQns = actionMap.get("busdox-docid-qns::" + documentIdentifiers[i]);
+            	
+            	if (action == null) {
+            		action = new PmodeData.Action(code + docType, documentIdentifiers[i]);
+            		actions.add(action);
+            		actionMap.put(buildActionKey(action), action);
+            		
+            		legs.add(new PmodeData.Leg(action.getName(), service.getName(), action.getName()));
+            		legs.add(new PmodeData.Leg(action.getName()+"Emb", serviceEmb.getName(), action.getName()));
+            		legs.add(new PmodeData.Leg(action.getName()+"TB", serviceTB.getName(), action.getName()));
+            	}
+            	if (actionQns == null) {
+	                actionQns = new PmodeData.Action(code + docType+"Qns", "busdox-docid-qns::" + documentIdentifiers[i]);
+	                actions.add(actionQns);
+	                actionMap.put(buildActionKey(actionQns), actionQns);
+	                
+	                legs.add(new PmodeData.Leg(actionQns.getName(), service.getName(), actionQns.getName()));
+	                legs.add(new PmodeData.Leg(actionQns.getName()+"Emb", serviceEmb.getName(), actionQns.getName()));
+	                legs.add(new PmodeData.Leg(actionQns.getName()+"TB", serviceTB.getName(), actionQns.getName()));
+            	}
             }
         }
 
