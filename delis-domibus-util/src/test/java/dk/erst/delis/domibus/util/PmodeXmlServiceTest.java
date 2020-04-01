@@ -3,8 +3,11 @@ package dk.erst.delis.domibus.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -81,12 +85,27 @@ public class PmodeXmlServiceTest {
 			String legName = legs.item(i).getAttributes().getNamedItem("name").getNodeValue();
 			assertTrue("Not found leg name " + legName, legConfigurationNames.contains(legName));
 		}
+
+		/*
+		 * Check uniqueness of value for each action and service
+		 */
 	}
 
 	private Set<String> buildNameSet(NodeList nodeList) {
 		Set<String> nameSet = new HashSet<String>();
+		Map<String, String> valueToNameMap = new HashMap<String, String>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			nameSet.add(nodeList.item(i).getAttributes().getNamedItem("name").getNodeValue());
+			Node item = nodeList.item(i);
+			String tagName = item.getNodeName();
+			NamedNodeMap attributes = item.getAttributes();
+			String name = attributes.getNamedItem("name").getNodeValue();
+			nameSet.add(name);
+			String value = attributes.getNamedItem("value").getNodeValue();
+			if (valueToNameMap.containsKey(value)) {
+				fail("Duplicated value of " + tagName + " with name " + name + " and value " + value + ": already present with name " + valueToNameMap.get(value));
+			} else {
+				valueToNameMap.put(value, name);
+			}
 		}
 		return nameSet;
 	}
