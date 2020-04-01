@@ -81,21 +81,22 @@ public class IdentifierPublishDataService {
 		return participantIdentifier;
 	}
 
-	private List<SmpPublishServiceData> createServiceList(Identifier identifier, OrganisationSetupData organisationSetupData) {
+	protected List<SmpPublishServiceData> createServiceList(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		List<SmpPublishServiceData> result = new ArrayList<>();
 		List<SmpServiceEndpointData> endpointList = createEndpointList(organisationSetupData);
 		Set<OrganisationSubscriptionProfileGroup> subscribedProfiles = organisationSetupData.getSubscribeProfileSet();
+		
+		Map<SmpDocumentIdentifier, SmpPublishServiceData> documentIdentifierToServiceDataMap = new HashMap<SmpDocumentIdentifier, SmpPublishServiceData>();
+		
 		for (OrganisationSubscriptionProfileGroup subscribedProfile : subscribedProfiles) {
-			List<SmpPublishServiceData> serviceDataList = createServiceData(endpointList, subscribedProfile);
+			List<SmpPublishServiceData> serviceDataList = createServiceData(endpointList, subscribedProfile, documentIdentifierToServiceDataMap);
 			result.addAll(serviceDataList);
 		}
 		return result;
 	}
 
-	private List<SmpPublishServiceData> createServiceData(List<SmpServiceEndpointData> endpointList, OrganisationSubscriptionProfileGroup subscribedProfile) {
+	private List<SmpPublishServiceData> createServiceData(List<SmpServiceEndpointData> endpointList, OrganisationSubscriptionProfileGroup subscribedProfile, Map<SmpDocumentIdentifier, SmpPublishServiceData> documentIdentifierToServiceDataMap) {
 		List<SmpPublishServiceData> result = new ArrayList<>();
-		
-		Map<SmpDocumentIdentifier, SmpPublishServiceData> documentIdentifierToServiceDataMap = new HashMap<SmpDocumentIdentifier, SmpPublishServiceData>();
 		
 		for (String documentIdentifier : subscribedProfile.getDocumentIdentifiers()) {
 			SmpDocumentIdentifier smpDocumentIdentifier = SmpDocumentIdentifier.of(documentIdentifier);
