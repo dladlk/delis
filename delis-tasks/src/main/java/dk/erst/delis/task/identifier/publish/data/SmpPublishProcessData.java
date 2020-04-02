@@ -13,12 +13,10 @@ public class SmpPublishProcessData {
 
 	public boolean isMatch(SmpPublishProcessData match) {
 		boolean res = false;
-		if (res) {
-			if (this.processIdentifier != null) {
-				res = this.processIdentifier.isMatch(match.getProcessIdentifier());
-			} else if (match.getProcessIdentifier() == null) {
-				res = true;
-			}
+		if (this.processIdentifier != null) {
+			res = this.processIdentifier.isMatch(match.getProcessIdentifier());
+		} else if (match.getProcessIdentifier() == null) {
+			res = true;
 		}
 
 		if (res) {
