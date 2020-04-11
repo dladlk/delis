@@ -139,7 +139,7 @@ public class ReceiverSubmissionValidator implements SubmissionValidator {
 		}
 		int startValue = value.indexOf("::");
 		if (startValue >= 0 && value.length() > startValue + 2) {
-			String prefix = value.substring(startValue);
+			String prefix = value.substring(0, startValue);
 			if (prefixToRemove == null || prefixToRemove.equals(prefix)) {
 				value = value.substring(startValue + 2);
 				LOG.info("Field "+fieldName +" transformed to " + value);
