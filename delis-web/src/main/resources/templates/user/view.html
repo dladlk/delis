@@ -64,8 +64,6 @@
 					color: gray;
 					font-weight: normal;
 				}
-				dl dt:after {
-				}
 			</style>
 			<div class="row">
 				<div class="col-sm-5">
@@ -92,19 +90,19 @@
 				<div class="col-sm-7">
 					<dl class="row" th:with="expired=${!@userStatusService.isCredentialsNonExpired(user)}, locked=${!@userStatusService.isAccountNonLocked(user)}" >
 						<dt class="col-sm-4">Last login time</dt>
-						<dd class="col-sm-8"><span th:text="${@strings.datetime(user.lastLoginTime)}"></span> </dd>
+						<dd class="col-sm-8"><span th:text="${@dates.datetime(user.lastLoginTime)}"></span> </dd>
 		
 						<dt class="col-sm-4">Password change time</dt>
-						<dd class="col-sm-8"><span th:text="${@strings.datetime(user.passwordChangeTime)}"></span> </dd>
+						<dd class="col-sm-8"><span th:text="${@dates.datetime(user.passwordChangeTime)}"></span> </dd>
 
 						<dt class="col-sm-4">Password expiration time</dt>
-						<dd class="col-sm-8" th:classappend="${expired?'text-danger':''}"><span th:text="${@strings.datetime(@userStatusService.getPasswordExpirationTime(user))}"></span> </dd>
+						<dd class="col-sm-8" th:classappend="${expired?'text-danger':''}"><span th:text="${@dates.datetime(@userStatusService.getPasswordExpirationTime(user))}"></span> </dd>
 
 						<dt class="col-sm-4">Password expired</dt>
 						<dd class="col-sm-8"><span th:text="${@userStatusService.isCredentialsNonExpired(user)?'No':'Expired, update password'}"></span> </dd>
 		
 						<dt class="col-sm-4">Last invalid login time</dt>
-						<dd class="col-sm-8"><span th:text="${@strings.datetime(user.lastInvalidLoginTime)}"></span> </dd>
+						<dd class="col-sm-8"><span th:text="${@dates.datetime(user.lastInvalidLoginTime)}"></span> </dd>
 		
 						<dt class="col-sm-4">Invalid login count</dt>
 						<dd class="col-sm-8"><span th:text="${user.invalidLoginCount != null ?user.invalidLoginCount:0}"></span> </dd>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout (template=~{::body})}"
+>
+<body>
+
+<th:block th:if="${resultList}">
+<div id="accordion">
+	<div class="card border-secondary m-1" th:each="result,iter: ${resultList}">
+		<div class="card-header" th:classappend="${'bg-'+ (result.processLog.success?'success':'light')}">
+			<div class="cursor-pointer" data-toggle="collapse" th:attr="data-target=${'#result-'+iter.index},aria-controls=${'result-'+iter.index},id=${'result-header-'+iter.index}" aria-expanded="false"
+			>
+				<span class="badge badge-primary" th:text="${iter.index + 1}">9</span>  
+				<span class="font-weight-bold" th:text="${result.fileName}"></span> (<span th:text="${result.fileSize}"></span> bytes)
+				<span class="font-weight-bold" th:if="${result.documentFormatDetected}">detected</span> 
+				as <span th:text="${result.documentFormat}"></span>
+			</div>
+		</div>
+		<div class="card-body pb-0 collapse show" th:attr="id=${'result-'+iter.index}">
+			<table class="table table-borderless table-sm">
+				<tr>
+					<th>Type</th>
+					<th>Status</th>
+					<th>Description</th>
+					<th class="text-right" title="Duration in milliseconds">Ms</th>
+				</tr>
+				<th:block th:each="r,iter : ${result.processLog.stepList}">
+				<tr>
+					<td th:text="${r.stepType?.name}"></td>
+					<td>
+						<i th:if="${r.success}" class="fa fa-check-circle text-success"></i>
+						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
+					</td>
+					<td th:text="${r.description}"/>
+					<td class="text-right" th:text="${r.duration}"/>
+				</tr>
+				<tr th:unless="${#lists.isEmpty(r.errorRecords)}">
+					<td colspan="5">
+						
+						<div class="alert alert-primary">Found <span class="badge badge-danger" th:text="${r.countError}">9</span> <span th:th:text="${r.countError > 1 ? 'errors':'error'}">errors</span> and <span class="badge badge-warning" th:text="${r.countWarning}">9</span> <span th:th:text="${r.countWarning > 1 ? 'warnings':'warning'}">warnings</span>
+							<div class="btn btn-sm btn-warning" onclick="$('tr.error-flag-warning').toggle();">Toggle warnings</div>
+						</div>
+					
+						<table class="table table-sm">
+							<tr>
+								<th>Flag</th>
+								<th>Code</th>
+								<th>Message</th>
+								<th>Location</th>
+							</tr>
+							<tr th:each="errorDictionary : ${r.errorRecords}" th:attr="class='error-flag-'+${errorDictionary.flag}">
+								<td> <span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>  </td>
+								<td class="no-wrap" th:text="${errorDictionary.code}"></td>
+								<td class="force-break-word" th:text="${@strings.spaceTexts(errorDictionary.message, 100)}"></td>
+								<td class="force-break-word" th:text="${@strings.spaceTags(#strings.abbreviate(errorDictionary.detailedLocation, 500))}"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				</th:block>
+			</table>
+		</div>
+	</div>
+	
+</div>    
+
+</th:block>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Validate XML files
+        </div>
+        <div class="card-body">
+            <form method="POST" id="form1" enctype="multipart/form-data" action="/validate" th:action="@{validate}" target="_blank">
+                <div class="form-group row">
+                    <label for="files1" class="col-sm-2">Files:</label>
+                    <div class="col-sm-10">
+                    	<input type="file" name="file" class="form-control-file" id="files1" multiple="multiple" accept=".xml"/>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						  You can select more than one XML file by holding SHIFT or CTRL. 
+						</small>                    	
+                    </div>
+                </div>
+                <div class="form-group row">
+                	<div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                    	<div class="form-check">
+	                   		<input type="checkbox" name="skipPEPPOL" id="skipPEPPOL1" class="form-check-input"/>
+		                    <label for="skipPEPPOL1" class="form-check-label">Skip PEPPOL validations</label>
+                    	</div>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						   Activate to validate only by CEN rules and skip PEPPOL validation schematron files.
+						</small>
+                    	<div class="form-check">
+	                   		<input type="checkbox" id="sendToREST" class="form-check-input" onchange="changeAction()"/>
+		                    <label for="sendToREST" class="form-check-label">Validate against REST version</label>
+                    	</div>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						   Imitates real-life usage - calls rest service with response just with HTTP status codes and header
+						</small>
+                    </div>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Upload"/>
+            </form>
+        </div>
+    </div>
+
+	<script>
+	function changeAction() {
+		var f = document.getElementById('form1');
+		var sendToREST = $('#sendToREST:checked').length > 0;
+		if (sendToREST) {
+			f.action = 'rest/validate';
+		} else {
+			f.action = 'validate';
+		}
+	}
+	</script>
+
+</body>
+</html>

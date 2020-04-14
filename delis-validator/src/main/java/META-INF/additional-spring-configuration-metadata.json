@@ -1,0 +1,18 @@
+{"properties": [
+  {
+    "name": "delis.validation-artifact-folder",
+    "type": "java.lang.String",
+    "description": "Path to validation folder with artifacts for validation, with subfolders 'sch' for Schematron files and 'xsd' for Schema files"
+  },
+  {
+    "name": "delis.validator.persist.mode",
+    "type": "java.lang.String",
+    "description": "Whether requested files should be saved with result info or not. Values: none (default), all, failed"
+
+  },
+  {
+    "name": "delis.validator.persist.folder",
+    "type": "java.lang.String",
+    "description": "Path to folder to persist files"
+  }
+]}
