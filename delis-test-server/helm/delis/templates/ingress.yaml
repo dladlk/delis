@@ -36,5 +36,9 @@ spec:
             backend:
               serviceName: {{.Release.Name}}-sender-service
               servicePort: 8080
+          - path: {{.Values.delisValidator.contextPath}}
+            backend:
+              serviceName: {{.Release.Name}}-validator
+              servicePort: 8080
 
 {{- end }}

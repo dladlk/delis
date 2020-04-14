@@ -135,3 +135,18 @@ delisDb:
     user: delis
     password: delis
 
+delisValidator:
+    enabled: true
+    image: delis-validator:latest
+    contextPath: /delis-validator
+    env:
+      - name: delis.validation-artifact-folder
+        value: /delis-resources/validation
+    volumeMounts: 
+      - mountPath: /delis-resources
+        name: delis-resources
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /wsh/delis/delis-resources
+    

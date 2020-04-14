@@ -1,0 +1,52 @@
+{{- if .Values.delisValidator.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: '{{.Release.Name}}-validator'
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-validator
+  namespace: '{{.Values.namespace}}'
+spec:
+  selector:
+    matchLabels:
+      app: '{{.Release.Name}}-validator'
+  strategy:
+    type: 'RollingUpdate'
+  template:
+    metadata:
+      labels:
+        app: '{{.Release.Name}}-validator'
+    spec:
+      containers:
+      - image: {{.Values.delisValidator.image}}
+        imagePullPolicy: IfNotPresent
+        name: {{.Release.Name}}-validator
+        #command: ["sh", "-c", "sleep 3600"]
+        ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP
+        env:
+          - name: SERVER_SERVLET_CONTEXT-PATH
+            value: {{.Values.delisValidator.contextPath}}
+          - name: SERVER_PORT
+            value: "8080"
+          {{- with .Values.delisValidator.env }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+        {{- with .Values.delisValidator.volumeMounts }}
+        volumeMounts:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+      {{- with .Values.delisValidator.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
+      {{- with .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{.}}
+      {{- end}}
+{{- end }}
