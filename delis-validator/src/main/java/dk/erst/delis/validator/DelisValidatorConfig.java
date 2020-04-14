@@ -18,21 +18,21 @@ public class DelisValidatorConfig {
 	@Value("${delis.validator.persist.folder}")
 	private String persistFolder;
 
-	@Value("${delis.response.status-header:description}")
+	@Value("${delis.validator.response.status-header:description}")
 	private String responseStatusHeader;
 
-	@Value("${delis.response.valid.code:200}")
+	@Value("${delis.validator.response.valid.code:200}")
 	private int responseResponseValidCode;
-	@Value("${delis.response.valid.status:\"DELIS:VALID\"}")
+	@Value("${delis.validator.response.valid.status:DELIS:VALID}")
 	private String responseResponseValidStatus;
 
-	@Value("${delis.response.invalid.code:412}")
+	@Value("${delis.validator.response.invalid.code:412}")
 	private int responseResponseInvalidCode;
-	@Value("${delis.response.valid.status.xml:\"DELIS:INVALID_XML\"}")
+	@Value("${delis.validator.response.valid.status.xml:DELIS:INVALID_XML}")
 	private String responseResponseInvalidStatusXml;
-	@Value("${delis.response.valid.status.xsd:\"DELIS:INVALID_BY_XSD\"}")
+	@Value("${delis.validator.response.valid.status.xsd:DELIS:INVALID_BY_XSD}")
 	private String responseResponseInvalidStatusXsd;
-	@Value("${delis.response.valid.status.sch:\"DELIS:INVALID_BY_SCHEMATRON\"}")
+	@Value("${delis.validator.response.valid.status.sch:DELIS:INVALID_BY_SCHEMATRON}")
 	private String responseResponseInvalidStatusSchematron;
 
 	private DelisValidatorPesistMode persistMode;
@@ -51,12 +51,27 @@ public class DelisValidatorConfig {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("validationRoot=");
+		sb.append(" validationRoot=");
 		sb.append(storageValidationRoot);
-		sb.append(", persistModeStr=");
-		sb.append(persistModeStr);
-		sb.append(", persistFolder=");
+		sb.append("\n\t persistMode=");
+		sb.append(getPersistMode());
+		sb.append("\n\t persistFolder=");
 		sb.append(persistFolder);
+
+		sb.append("\n\t responseStatusHeader=");
+		sb.append(this.responseStatusHeader);
+		sb.append("\n\t responseResponseValidCode=");
+		sb.append(this.responseResponseValidCode);
+		sb.append("\n\t responseResponseValidStatus=");
+		sb.append(this.responseResponseValidStatus);
+		sb.append("\n\t responseResponseInvalidCode=");
+		sb.append(this.responseResponseInvalidCode);
+		sb.append("\n\t responseResponseInvalidStatusXml=");
+		sb.append(this.responseResponseInvalidStatusXml);
+		sb.append("\n\t responseResponseInvalidStatusXsd=");
+		sb.append(this.responseResponseInvalidStatusXsd);
+		sb.append("\n\t responseResponseInvalidStatusSchematron=");
+		sb.append(this.responseResponseInvalidStatusSchematron);
 		return sb.toString();
 	}
 }
