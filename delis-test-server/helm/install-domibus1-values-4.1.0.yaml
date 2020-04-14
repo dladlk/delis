@@ -1,5 +1,5 @@
 dtx:
-  imageTag: 4.1.2.1
+  imageTag: 4.1.2.2
   env:
     unsecureLoginAllowed: 'false'
 
