@@ -116,6 +116,9 @@ spec:
         - name: DOMIBUS_PROPERTY_fsplugin_validation_endpoint
           value: "{{.Values.dtx.env.fsplugin_validation_endpoint}}"
 
+        - name: DOMIBUS_PROPERTY_fsplugin_payload_validation_endpoint
+          value: "{{.Values.dtx.env.fsplugin_payload_validation_endpoint}}"
+
         - name: MERGE_FS_PROPERTIES_ENV_PREFIX
           value: 'FS_PROPERTY_'
         - name: FS_PROPERTY_fsplugin_authentication_user
