@@ -2,7 +2,7 @@
 
 PROJECT_ROOT=/wsh/delis
 PROJECT_CODE=delis-validator
-PROJECT_SCAN_PATH_LIST="/delis-sbdh;/delis-tasks/delis-validator"
+PROJECT_SCAN_PATH_LIST="/delis-sbdh;/delis-tasks;/delis-validator"
 DOCKER_REBUILD_COMMAND=${PROJECT_ROOT}/delis-docker/delis-web/build-${PROJECT_CODE}.sh
 FORCE_UPDATE=
 if [ -z $1 ]; then
