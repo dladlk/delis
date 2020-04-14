@@ -1,6 +1,6 @@
 package eu.domibus.plugin.fs.validation;
 
-import static eu.domibus.plugin.fs.validation.ReceiverSubmissionValidator.FSPLUGIN_VALIDATION_ENDPOINT;
+import static eu.domibus.plugin.fs.validation.DelisSubmissionValidator.FSPLUGIN_SERVICE_VALIDATION_ENDPOINT;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +29,7 @@ import eu.domibus.plugin.fs.ebms3.ObjectFactory;
 import eu.domibus.plugin.fs.ebms3.UserMessage;
 import eu.domibus.plugin.validation.SubmissionValidationException;
 
-public class FSValidatorTest {
+public class ReceiverSubmissionValidatorTest {
 
     public static final String UTF_8 = "utf-8";
 
@@ -50,17 +50,17 @@ public class FSValidatorTest {
             FSMessageTransformer transformer = new FSMessageTransformer();
             Submission submission = transformer.transformToSubmission(fsMessage);
 
-            ReceiverSubmissionValidator validator = new ReceiverSubmissionValidator(Mockito.mock(DomibusPropertyProvider.class));
+            DelisSubmissionValidator validator = new DelisSubmissionValidator(Mockito.mock(DomibusPropertyProvider.class));
             String parameters = validator.composeParameters(submission);
             
             
             String[] split = parameters.split("/");
 
-            Assert.assertEquals("0088%3A5790001968526/urn%3Awww.nesubl.eu%3Aprofiles%3Aprofile5%3Aver2.0/busdox-docid-qns%3A%3Aurn%3Aoasis%3Anames%3Aspecification%3Aubl%3Aschema%3Axsd%3AInvoice-2%3A%3AInvoice%23%23OIOUBL-2.02%3A%3A2.0", parameters);
+            Assert.assertEquals("0088%3A5790001968526/urn%3Awww.nesubl.eu%3Aprofiles%3Aprofile5%3Aver2.0/urn%3Aoasis%3Anames%3Aspecification%3Aubl%3Aschema%3Axsd%3AInvoice-2%3A%3AInvoice%23%23OIOUBL-2.02%3A%3A2.0", parameters);
             Assert.assertEquals(3, split.length);
             Assert.assertEquals("0088:5790001968526", URLDecoder.decode(split[0], UTF_8));
             Assert.assertEquals("urn:www.nesubl.eu:profiles:profile5:ver2.0", URLDecoder.decode(split[1], UTF_8));
-            Assert.assertEquals("busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0", URLDecoder.decode(split[2], UTF_8));
+            Assert.assertEquals("urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0", URLDecoder.decode(split[2], UTF_8));
 
         } finally {
             metadataFile.delete();
@@ -69,9 +69,9 @@ public class FSValidatorTest {
 	}
 
 //    @Test
-    public void testFully () throws Exception { // requires Delise to be run (see. FSPLUGIN_VALIDATION_ENDPOINT value)
+    public void testFully () throws Exception { // requires Delise to be run (see. FSPLUGIN_SERVICE_VALIDATION_ENDPOINT value)
 
-        System.setProperty(FSPLUGIN_VALIDATION_ENDPOINT, "http://localhost:8085/delis/rest/open/receivercheck/");
+        System.setProperty(FSPLUGIN_SERVICE_VALIDATION_ENDPOINT, "http://localhost:8085/delis/rest/open/receivercheck/");
 
         File tempDirectory = Files.createTempDirectory(this.getClass().getSimpleName()).toFile();
         File metadataFile = null;
@@ -83,7 +83,7 @@ public class FSValidatorTest {
             FSMessageTransformer transformer = new FSMessageTransformer();
             Submission submission = transformer.transformToSubmission(fsMessage);
 
-            ReceiverSubmissionValidator validator = new ReceiverSubmissionValidator(Mockito.mock(DomibusPropertyProvider.class));
+            DelisSubmissionValidator validator = new DelisSubmissionValidator(Mockito.mock(DomibusPropertyProvider.class));
 
             try {
                 validator.validate(submission);
