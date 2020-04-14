@@ -1,19 +1,25 @@
 package eu.domibus.plugin.fs.validation;
 
-import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.activation.DataHandler;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import eu.domibus.api.property.DomibusPropertyProvider;
@@ -49,13 +55,13 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 		String messageId = submission.getMessageId();
 
 		try {
-			LOG.info("DelisSubmissionValidator: START #" + messageId);
+			LOG.info("PAYLOAD_VALIDATOR: START #" + messageId);
 
 			validateService(submission);
 			validatePayload(submission);
 
 		} finally {
-			LOG.info("DelisSubmissionValidator: DONE #" + messageId + " in " + (System.currentTimeMillis() - startTime));
+			LOG.info("PAYLOAD_VALIDATOR: DONE #" + messageId + " in " + (System.currentTimeMillis() - startTime));
 		}
 	}
 
@@ -73,27 +79,58 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 			ResponseEntity<String> response = null;
 			Payload payload = submission.getPayloads().iterator().next();
 
-			LOG.info("DelisSubmissionValidator: CALL " + xmlValidationEndpoint);
+			DataHandler dataHandler = payload.getPayloadDatahandler();
+			LOG.info("PAYLOAD_VALIDATOR: CALL " + xmlValidationEndpoint);
+			
 			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			body.add("file", new File(payload.getFilepath()));
+			body.add("file", new InputStreamResource(dataHandler.getInputStream()) {
+		        @Override
+		        public String getFilename(){
+		            return submission.getMessageId();
+		        }
+
+		        @Override
+		        public long contentLength() throws IOException {
+		            return -1;
+		        }
+		    });
+			
 			HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body);
 			response = new RestTemplate().postForEntity(xmlValidationEndpoint, requestEntity, String.class);
-			reasonCode = response.getHeaders().get(REASON_HEADER).stream().collect(Collectors.joining(","));
+			reasonCode = getHeaderValue(response.getHeaders(), REASON_HEADER);
 			responseStatusCode = response.getStatusCodeValue();
 			responseBody = response.getBody();
+		} catch (HttpClientErrorException e) {
+			reasonCode = getHeaderValue(e.getResponseHeaders(), REASON_HEADER);
+			responseStatusCode = e.getRawStatusCode();
+			responseBody = e.getResponseBodyAsString();
+			
+			if (responseStatusCode != 412) {
+				LOG.error("PAYLOAD_VALIDATOR: CALL FAILED to " + xmlValidationEndpoint + ", consider result as valid", e);
+			}
 		} catch (Exception e) {
-			LOG.error("DelisSubmissionValidator: CALL FAILED to " + xmlValidationEndpoint + ", consider result as valid", e);
+			LOG.error("PAYLOAD_VALIDATOR: CALL FAILED to " + xmlValidationEndpoint + ", consider result as valid", e);
 			return;
 		} finally {
-			LOG.info("DelisSubmissionValidator: CALL DONE in " + (System.currentTimeMillis() - startCallTime) + " with status " + responseStatusCode + ", reasonCode " + reasonCode + ", body " + responseBody);
+			LOG.info("PAYLOAD_VALIDATOR: CALL DONE in " + (System.currentTimeMillis() - startCallTime) + " with status " + responseStatusCode + ", reasonCode " + reasonCode + ", body " + responseBody);
 		}
 
 		if (responseStatusCode == 412) {
 			RuntimeException runtimeException = new RuntimeException(responseBody);
 			throw new SubmissionValidationException(reasonCode, runtimeException);
 		} else if (responseStatusCode != 200) {
-			LOG.error("eceiverSubmissionValidator: Payload validation service returned unexpected HTTP code " + responseStatusCode + ", consider payload as valid");
+			LOG.error("PAYLOAD_VALIDATOR: Payload validation service returned unexpected HTTP code " + responseStatusCode + ", consider payload as valid");
 		}
+	}
+	
+	private String getHeaderValue(HttpHeaders headers, String headerName) {
+		if (headers != null) {
+			List<String> list = headers.get(headerName);
+			if (list != null) {
+				return list.stream().collect(Collectors.joining(","));
+			}
+		}
+		return null;
 	}
 
 	private void validateService(Submission submission) throws SubmissionValidationException {
@@ -106,7 +143,7 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 		long startCallTime = System.currentTimeMillis();
 		ResponseEntity<String> response = null;
 		try {
-			LOG.info("DelisSubmissionValidator: CALL " + serviceValidationUrl);
+			LOG.info("PAYLOAD_VALIDATOR: CALL " + serviceValidationUrl);
 			response = new RestTemplate().getForEntity(serviceValidationUrl, String.class);
 		} catch (Exception e) {
 			LOG.error("Error during REST call to " + serviceValidationUrl + ", consider result as valid", e);
