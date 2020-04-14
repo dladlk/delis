@@ -1,0 +1,22 @@
+{{- if .Values.delisValidator.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{.Release.Name}}-validator
+    prometheus-app: delis-validator
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: {{.Release.Name}}-validator
+  namespace: '{{.Values.namespace}}'
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    name: http
+  selector:
+    app: '{{.Release.Name}}-validator'
+  type: 'NodePort'
+{{- end }}
