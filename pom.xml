@@ -24,6 +24,7 @@
         <module>delis-xml-builder</module>
         <module>delis-sender-service</module>
         <module>delis-oxalis-sender</module>
+        <module>delis-validator</module>
     </modules>
 
     <properties>
