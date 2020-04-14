@@ -12,4 +12,11 @@ public class DelisValidatorApplication {
 		SpringApplication.run(DelisValidatorApplication.class, args);
 	}
 
+	/*
+	 * TODO: Implement warming-up of validations - so all required schematrons are precompiled
+	 */
+
+	/*
+	 * TODO: Implement /ready service - for now it is just a root service
+	 */
 }
