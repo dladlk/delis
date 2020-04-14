@@ -8,7 +8,7 @@ delis:
       # Path to folder to persist validated files and result of validation
       folder: path_to_folder
     response:
-      status-header: description
+      status-header: reason
       valid:
         code: 200
         status: DELIS:VALID
