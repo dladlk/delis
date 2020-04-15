@@ -35,8 +35,10 @@
         <cbc:TaxPointDate>2012-06-08</cbc:TaxPointDate>
         <cbc:DocumentCurrencyCode>SEK</cbc:DocumentCurrencyCode>
         <cbc:AccountingCost>SOPE</cbc:AccountingCost>
+		<cbc:BuyerReference>9000001234</cbc:BuyerReference>
         <cac:AccountingSupplierParty>
             <cac:Party>
+				<cbc:EndpointID schemeID="0088">5798009882875</cbc:EndpointID>
                 <cac:PartyIdentification>
                     <cbc:ID schemeID="0088">5798009882875</cbc:ID>
                 </cac:PartyIdentification>
@@ -53,12 +55,13 @@
                     </cac:Country>
                 </cac:PostalAddress>
                 <cac:PartyTaxScheme>
-                    <cbc:CompanyID>SE5798009882875</cbc:CompanyID>
+                    <cbc:CompanyID>SE098009882875</cbc:CompanyID>
                     <cac:TaxScheme>
                         <cbc:ID>VAT</cbc:ID>
                     </cac:TaxScheme>
                 </cac:PartyTaxScheme>
                 <cac:PartyLegalEntity>
+					<cbc:RegistrationName>Ecru Consulting</cbc:RegistrationName>
                     <cbc:CompanyID>5798009882875</cbc:CompanyID>
                 </cac:PartyLegalEntity>
                 <cac:Person>
@@ -69,6 +72,7 @@
         </cac:AccountingSupplierParty>
         <cac:AccountingCustomerParty>
             <cac:Party>
+				<cbc:EndpointID schemeID="0088">5798009882875</cbc:EndpointID>
                 <cac:PartyIdentification>
                     <cbc:ID schemeID="0088">5798009882875</cbc:ID>
                 </cac:PartyIdentification>
@@ -85,6 +89,7 @@
                     </cac:Country>
                 </cac:PostalAddress>
                 <cac:PartyLegalEntity>
+					<cbc:RegistrationName>ERST - DANISH BUSINESS AUTHORITY</cbc:RegistrationName>
                     <cbc:CompanyID>2021005026</cbc:CompanyID>
                 </cac:PartyLegalEntity>
                 <cac:Contact>
@@ -110,6 +115,9 @@
                 </cac:FinancialInstitutionBranch>
             </cac:PayeeFinancialAccount>
         </cac:PaymentMeans>
+		<cac:PaymentTerms>
+			<cbc:Note>payment terms note</cbc:Note>
+		</cac:PaymentTerms>
         <cac:TaxTotal>
             <cbc:TaxAmount currencyID="SEK">0.25</cbc:TaxAmount>
             <cac:TaxSubtotal>
@@ -139,6 +147,13 @@
             </cac:TaxTotal>
             <cac:Item>
                 <cbc:Name>TEST AV PEPPOL-FAKTURA</cbc:Name>
+				<cac:ClassifiedTaxCategory>
+					<cbc:ID>S</cbc:ID>
+					<cbc:Percent>25</cbc:Percent>
+					<cac:TaxScheme>
+						<cbc:ID>VAT</cbc:ID>
+					</cac:TaxScheme>
+				</cac:ClassifiedTaxCategory>
             </cac:Item>
             <cac:Price>
                 <cbc:PriceAmount currencyID="SEK">1</cbc:PriceAmount>
