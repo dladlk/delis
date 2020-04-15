@@ -14,7 +14,6 @@ RUN mkdir -p "$WORK_DIR" && \
 
 COPY ./app/org $WORK_DIR/org
 COPY ./app/BOOT-INF/lib $WORK_DIR/BOOT-INF/lib
-COPY ./app/oxalis/*.jar $WORK_DIR/BOOT-INF/lib/
 COPY ./app/delis/*.jar $WORK_DIR/BOOT-INF/lib/
 COPY ./app/BOOT-INF/classes $WORK_DIR/BOOT-INF/classes
 COPY ./app/META-INF $WORK_DIR/META-INF

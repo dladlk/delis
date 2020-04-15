@@ -41,9 +41,8 @@ fi
 rm -r -f ./docker/app
 unzip ${DELIS_PART_PATH}/target/${DELIS_PART}-${DELIS_PART_VERSION}.jar -d ./docker/app
 
-# move files silently - if there is no such file, do not fail
-mkdir ./docker/app/delis  && mv ./docker/app/BOOT-INF/lib/delis-*.jar ./docker/app/delis 2>/dev/null
-mkdir ./docker/app/oxalis && mv ./docker/app/BOOT-INF/lib/Oxalis-*.jar ./docker/app/oxalis 2>/dev/null
+mkdir ./docker/app/delis
+mv ./docker/app/BOOT-INF/lib/delis-*.jar ./docker/app/delis
 
 DOCKER_IMAGE_NAME=${DELIS_PART}
 
