@@ -41,6 +41,9 @@ fi
 rm -r -f ./docker/app
 unzip ${DELIS_PART_PATH}/target/${DELIS_PART}-${DELIS_PART_VERSION}.jar -d ./docker/app
 
+mkdir ./docker/app/delis  && mv ./docker/app/BOOT-INF/lib/delis-*.jar ./docker/app/delis
+mkdir ./docker/app/oxalis && mv ./docker/app/BOOT-INF/lib/Oxalis-*.jar ./docker/app/oxalis
+
 DOCKER_IMAGE_NAME=${DELIS_PART}
 
 if [ "${DOCKER_IMAGE_NAME}" = "delis-web" ]; then

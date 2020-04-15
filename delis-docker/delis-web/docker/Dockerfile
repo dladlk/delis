@@ -12,7 +12,12 @@ RUN mkdir -p "$WORK_DIR" && \
     addgroup -S -g $DELIS_GID delis && \
     adduser -S -u $DELIS_UID -G delis delis
 
-COPY ./app $WORK_DIR
+COPY ./app/org $WORK_DIR/org
+COPY ./app/BOOT-INF/lib $WORK_DIR/BOOT-INF/lib
+COPY ./app/oxalis/*.jar $WORK_DIR/BOOT-INF/lib/
+COPY ./app/delis/*.jar $WORK_DIR/BOOT-INF/lib/
+COPY ./app/BOOT-INF/classes $WORK_DIR/BOOT-INF/classes
+COPY ./app/META-INF $WORK_DIR/META-INF
 
 WORKDIR $WORK_DIR
 
