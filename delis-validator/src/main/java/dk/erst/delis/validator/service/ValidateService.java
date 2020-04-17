@@ -27,6 +27,7 @@ import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.task.document.process.TransformationResultListener;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
 import dk.erst.delis.task.document.process.log.DocumentProcessStep;
+import dk.erst.delis.task.document.process.validate.result.ErrorRecord;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.validator.DelisValidatorConfig;
 import dk.erst.delis.validator.service.dao.DummyConfigRepository;
@@ -46,12 +47,18 @@ public class ValidateService {
 	private DocumentInfoService documentInfoService;
 	private DocumentParseService documentParseService;
 	private DocumentValidationTransformationService service;
-	
+
 	private List<RuleDocumentValidation> validationRuleList;
 
+	private PersistService persistService;
+	private ValidateStatBean validateStatBean;
+
 	@Autowired
-	public ValidateService(DelisValidatorConfig config) {
+	public ValidateService(DelisValidatorConfig config, PersistService persistService, ValidateStatBean validateStatBean) {
 		this.config = config;
+		this.persistService = persistService;
+		this.validateStatBean = validateStatBean;
+
 		this.documentParseService = new DocumentParseService();
 		this.documentInfoService = new DocumentInfoService(documentParseService);
 		this.service = buildService();
@@ -120,16 +127,98 @@ public class ValidateService {
 				result.setProcessLog(plog);
 
 			} finally {
-				if (infoData != null) {
-					deleteFile(infoData.getFile());
-					deleteFile(infoData.getFileSbd());
-				} else {
-					deleteFile(tempFile);
-				}
+				result.setRestResult(generateRestResult(result));
+
+				this.validateStatBean.increment(result);
+				this.persistService.persist(tempFile, infoData, result);
 			}
 		}
 
 		return result;
+	}
+
+	private ValidateRestResult generateRestResult(ValidateResult result) {
+		ValidateRestResult restResult = new ValidateRestResult();
+		DocumentProcessLog processLog = result.getProcessLog();
+		List<DocumentProcessStep> stepList = processLog.getStepList();
+
+		if (result.getProcessLog().isSuccess()) {
+			restResult.httpStatusCode = config.getResponseResponseValidCode();
+			restResult.status = ValidateResultStatus.OK;
+
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Status: ");
+			sb.append(restResult.status);
+
+			sb.append(". Details: Validated as ");
+			sb.append(result.getDocumentFormat());
+
+			for (DocumentProcessStep step : stepList) {
+				sb.append(";\n ");
+				sb.append(step.getDescription());
+				sb.append(" -  ");
+				sb.append(step.isSuccess() ? "OK" : "ERROR");
+			}
+			restResult.body = sb.toString();
+		} else {
+			restResult.httpStatusCode = config.getResponseResponseInvalidCode();
+
+			DocumentProcessStep lastStep = stepList.get(stepList.size() - 1);
+			boolean xsdValidation = false;
+			if (lastStep.getStepType().isValidation() && lastStep.getStepType().isXsd()) {
+				xsdValidation = true;
+			}
+
+			/*
+			 * Unsupported format can mean also that XML is not valid - e.g. just TEXT is posted, so let's use it as a sign of non-xml data.
+			 * 
+			 * Of cause, it can also mean that we received unsupported format too...
+			 */
+			if (result.getDocumentFormat() == DocumentFormat.UNSUPPORTED) {
+				restResult.status = ValidateResultStatus.INVALID_XML;
+			} else {
+				restResult.status = xsdValidation ? ValidateResultStatus.INVALID_XSD : ValidateResultStatus.INVALID_SCH;
+			}
+
+			StringBuilder sb = new StringBuilder();
+			sb.append("Status: ");
+			sb.append(restResult.status);
+
+			sb.append(". Details: Validated as ");
+			sb.append(result.getDocumentFormat());
+
+			String lastStepDescription = lastStep.getDescription();
+			if (lastStepDescription != null) {
+				String annoyingPrefix = "Validate with ";
+				if (lastStepDescription.startsWith(annoyingPrefix)) {
+					lastStepDescription = lastStepDescription.substring(annoyingPrefix.length());
+				}
+			}
+			sb.append("; Invalid by ");
+			sb.append(lastStepDescription);
+			if (lastStep.getMessage() != null) {
+				sb.append(": ");
+				sb.append(lastStep.getMessage());
+			}
+			List<ErrorRecord> errorRecords = lastStep.getErrorRecords();
+			if (errorRecords != null && !errorRecords.isEmpty()) {
+				for (ErrorRecord errorRecord : errorRecords) {
+					if (!errorRecord.isWarning()) {
+						sb.append("\n\"");
+						sb.append(errorRecord.getMessage());
+						sb.append("\"\n");
+						if (errorRecord.getDetailedLocation() != null) {
+							sb.append(" at ");
+							sb.append(errorRecord.getDetailedLocation());
+						}
+						break;
+					}
+				}
+			}
+			restResult.body = sb.toString();
+		}
+		return restResult;
 	}
 
 	private DocumentValidationTransformationService buildService() {
@@ -150,17 +239,6 @@ public class ValidateService {
 		RuleService ruleService = new RuleService(configBean, validationRuleService, transformationRuleService);
 		service = new DocumentValidationTransformationService(ruleService, documentParseService);
 		return service;
-	}
-
-	private void deleteFile(File f) {
-		if (f != null) {
-			if (!f.delete()) {
-				f.deleteOnExit();
-				log.info("Cannot delete file " + f + ", requested to delete on exit");
-			} else {
-				log.info("Successfully deleted file " + f);
-			}
-		}
 	}
 
 	public List<RuleDocumentValidation> getValidationRuleList() {

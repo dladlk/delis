@@ -22,7 +22,10 @@ public class ValidateServiceTest {
 	public void testValidateFile() throws IOException {
 		DelisValidatorConfig config = new DelisValidatorConfig();
 		config.setStorageValidationRoot(root);
-		ValidateService s = new ValidateService(config);
+
+		PersistService ps = new PersistService(config);
+		ValidateStatBean stat = new ValidateStatBean();
+		ValidateService s = new ValidateService(config, ps, stat);
 
 		for (TestCaseData tc : TestCaseProvider.getTestCaseList()) {
 
@@ -33,6 +36,8 @@ public class ValidateServiceTest {
 			assertNotNull(result);
 			assertEquals(!tc.isErrorExpected(), result.getProcessLog().isSuccess());
 		}
+
+		System.out.println(stat);
 	}
 
 }

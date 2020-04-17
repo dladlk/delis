@@ -12,7 +12,7 @@ public class DelisValidatorConfig {
 	@Value("${delis.validation-artifact-folder}")
 	private String storageValidationRoot;
 
-	@Value("${delis.validator.persist.mode:none}")
+	@Value("${delis.validator.persist.mode:NONE}")
 	private String persistModeStr;
 
 	@Value("${delis.validator.persist.folder}")
@@ -40,7 +40,7 @@ public class DelisValidatorConfig {
 	public DelisValidatorPesistMode getPersistMode() {
 		if (this.persistMode == null) {
 			try {
-				this.persistMode = DelisValidatorPesistMode.valueOf(persistModeStr.toLowerCase());
+				this.persistMode = DelisValidatorPesistMode.valueOf(persistModeStr.toUpperCase());
 			} catch (Exception e) {
 				this.persistMode = DelisValidatorPesistMode.NONE;
 			}
@@ -51,26 +51,26 @@ public class DelisValidatorConfig {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(" validationRoot=");
+		sb.append(" delis.validation-artifact-folder=");
 		sb.append(storageValidationRoot);
-		sb.append("\n\t persistMode=");
+		sb.append("\n\t delis.validator.persist.mode=");
 		sb.append(getPersistMode());
-		sb.append("\n\t persistFolder=");
+		sb.append("\n\t delis.validator.persist.folder=");
 		sb.append(persistFolder);
 
-		sb.append("\n\t responseStatusHeader=");
+		sb.append("\n\t delis.validator.response.status-header=");
 		sb.append(this.responseStatusHeader);
-		sb.append("\n\t responseResponseValidCode=");
+		sb.append("\n\t delis.validator.response.valid.code=");
 		sb.append(this.responseResponseValidCode);
-		sb.append("\n\t responseResponseValidStatus=");
+		sb.append("\n\t delis.validator.response.valid.status=");
 		sb.append(this.responseResponseValidStatus);
-		sb.append("\n\t responseResponseInvalidCode=");
+		sb.append("\n\t delis.validator.response.invalid.code=");
 		sb.append(this.responseResponseInvalidCode);
-		sb.append("\n\t responseResponseInvalidStatusXml=");
+		sb.append("\n\t delis.validator.response.valid.status.xml=");
 		sb.append(this.responseResponseInvalidStatusXml);
-		sb.append("\n\t responseResponseInvalidStatusXsd=");
+		sb.append("\n\t delis.validator.response.valid.status.xsd=");
 		sb.append(this.responseResponseInvalidStatusXsd);
-		sb.append("\n\t responseResponseInvalidStatusSchematron=");
+		sb.append("\n\t delis.validator.response.valid.status.sch=");
 		sb.append(this.responseResponseInvalidStatusSchematron);
 		return sb.toString();
 	}
