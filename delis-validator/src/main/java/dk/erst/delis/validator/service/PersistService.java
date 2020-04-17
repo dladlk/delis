@@ -45,9 +45,11 @@ public class PersistService {
 			StringBuilder sb = new StringBuilder();
 			sb.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd_HH.mm.ss.SSS")));
 			sb.append("_");
-			sb.append(result.isSuccess() ? "OK" : "ERROR");
+			sb.append(result.isSuccess() ? "OK" : "KO");
 			sb.append("_");
-			sb.append(Thread.currentThread().getId());
+			sb.append(String.format("%03d", Thread.currentThread().getId()));
+			sb.append("_");
+			sb.append(result.getDocumentFormat());
 			sb.append("_");
 			sb.append(result.getFileName());
 
