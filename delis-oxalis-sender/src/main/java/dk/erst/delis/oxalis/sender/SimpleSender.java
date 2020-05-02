@@ -48,12 +48,15 @@ public class SimpleSender implements ISender {
 		DelisResponse response;
 
 		try {
+			listener.orElse(ISendListener.NONE).notifySendStepStart(SendStep.SEND);
 			if (tr.isAs4()) {
 				response = DelisResponse.of(messageSenderAs4.send(tr));
 			} else {
 				response = DelisResponse.of(messageSenderAs2.send(tr));
 			}
+			listener.orElse(ISendListener.NONE).notifySendStepResult(SendStep.SEND, response);
 		} catch (OxalisTransmissionException e) {
+			listener.orElse(ISendListener.NONE).notifySendStepError(SendStep.SEND, e);
 			throw new TransmissionException(e.getMessage(), e);
 		}
 
