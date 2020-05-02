@@ -2,7 +2,10 @@ package dk.erst.delis.oxalis.sender.request;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
+import dk.erst.delis.oxalis.sender.ISendListener;
+import dk.erst.delis.oxalis.sender.SendStep;
 import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest.DelisTransmissionRequestBuilder;
 import lombok.Getter;
@@ -22,7 +25,9 @@ public class StaticTransmissionRequestBuilder implements IDelisTransmissionReque
 	}
 
 	@Override
-	public DelisTransmissionRequest build(InputStream payload) throws IOException, TransmissionLookupException, SbdhException {
+	public DelisTransmissionRequest build(InputStream payload, Optional<ISendListener> listener) throws IOException, TransmissionLookupException, SbdhException {
+		listener.orElse(ISendListener.NONE).notifySendStepResult(SendStep.SBDH, header);
+		listener.orElse(ISendListener.NONE).notifySendStepResult(SendStep.LOOKUP, endpoint);
 		return buildTransmissionRequest(payload);
 	}
 
