@@ -15,7 +15,7 @@ import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 
 public class DefaultRuleBuilder {
 	
-	private static final String CIUS_VERSION = "2019-12-04_v1.4.2";
+	private static final String CIUS_VERSION = "2020-05-15_v1.5.0";
 
     public static List<RuleDocumentTransformation> buildDefaultTransformationRuleList() {
         ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
