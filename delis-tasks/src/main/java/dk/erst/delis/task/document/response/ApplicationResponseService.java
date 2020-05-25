@@ -214,7 +214,7 @@ public class ApplicationResponseService {
 					lineResponseList = new ArrayList<>();
 					for (MessageLevelLineResponse lr : mlrd.getLineResponseList()) {
 						Response r = Response.builder().responseCode(lr.getLineCode()).responseDescription(lr.getDescription()).build();
-						r.addStatus(ResponseStatus.builder().statusReason(lr.getReasonCode()).build());
+						r.addStatus(ResponseStatus.builder().statusReasonCode(lr.getReasonCode()).build());
 						lineResponseList.add(LineResponse.builder().lineId(lr.getLineId()).response(r).build());
 					}
 				}
@@ -351,8 +351,8 @@ public class ApplicationResponseService {
 					lineResponseList = new ArrayList<>();
 					List<ErrorRecord> errorRecords = lastFailedStep.getErrorRecords();
 
-					String statusReasonCode = stepType.isXsd() ? "SV" : "BV";
 					for (ErrorRecord errorRecord : errorRecords) {
+						String statusReasonCode = stepType.isXsd() ? "SV" : "BV";
 						if (errorRecord.isWarning()) {
 							statusReasonCode = "BW";
 						}

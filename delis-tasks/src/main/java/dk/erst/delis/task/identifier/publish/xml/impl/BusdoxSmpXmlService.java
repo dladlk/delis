@@ -1,5 +1,6 @@
 package dk.erst.delis.task.identifier.publish.xml.impl;
 
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import dk.erst.delis.task.identifier.publish.xml.intf.SmpXmlService;
@@ -30,125 +31,130 @@ import java.util.List;
 @Service
 public class BusdoxSmpXmlService implements SmpXmlService {
 
-    protected final Log log = LogFactory.getLog(getClass());
+	protected final Log log = LogFactory.getLog(getClass());
 
-    private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
-    private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class,
-            () -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
+	private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+	private static final JAXBContext JAXB_CONTEXT = ExceptionUtil.perform(IllegalStateException.class, () -> JAXBContext.newInstance(ServiceGroupType.class, ServiceMetadataType.class, SignedServiceMetadataType.class));
 
-    public String createServiceGroupXml(ParticipantIdentifier identifier) {
-        ParticipantIdentifierType participantIdentifier = buildParticipantIdentifierType(identifier);
+	public String createServiceGroupXml(ParticipantIdentifier identifier) {
+		ParticipantIdentifierType participantIdentifier = buildParticipantIdentifierType(identifier);
 
-        ServiceGroupType serviceGroup = new ServiceGroupType();
-        serviceGroup.setParticipantIdentifier(participantIdentifier);
-        serviceGroup.setServiceMetadataReferenceCollection(new ServiceMetadataReferenceCollectionType());
+		ServiceGroupType serviceGroup = new ServiceGroupType();
+		serviceGroup.setParticipantIdentifier(participantIdentifier);
+		serviceGroup.setServiceMetadataReferenceCollection(new ServiceMetadataReferenceCollectionType());
 
-        OutputStream result = createResultStream();
-        try {
-            JAXB_CONTEXT.createMarshaller().marshal(OBJECT_FACTORY.createServiceGroup(serviceGroup), result);
-        } catch (JAXBException e) {
-            log.error(e);
-        }
-        return result.toString();
-    }
+		OutputStream result = createResultStream();
+		try {
+			JAXB_CONTEXT.createMarshaller().marshal(OBJECT_FACTORY.createServiceGroup(serviceGroup), result);
+		} catch (JAXBException e) {
+			log.error(e);
+		}
+		return result.toString();
+	}
 
-    private ParticipantIdentifierType buildParticipantIdentifierType(ParticipantIdentifier identifier) {
-        ParticipantIdentifierType participantIdentifier = new ParticipantIdentifierType();
-        participantIdentifier.setScheme(identifier.getScheme().getIdentifier());
-        participantIdentifier.setValue(identifier.getIdentifier());
-        return participantIdentifier;
-    }
+	private ParticipantIdentifierType buildParticipantIdentifierType(ParticipantIdentifier identifier) {
+		ParticipantIdentifierType participantIdentifier = new ParticipantIdentifierType();
+		participantIdentifier.setScheme(identifier.getScheme().getIdentifier());
+		participantIdentifier.setValue(identifier.getIdentifier());
+		return participantIdentifier;
+	}
 
-    public String createServiceMetadataXml(ParticipantIdentifier identifier, SmpPublishServiceData smpPublishData) {
-        ParticipantIdentifierType participantIdentifierType = buildParticipantIdentifierType(identifier);
+	public String createServiceMetadataXml(ParticipantIdentifier identifier, SmpPublishServiceData smpPublishData) {
+		ParticipantIdentifierType participantIdentifierType = buildParticipantIdentifierType(identifier);
 
-        DocumentIdentifierType documentIdentifier = new DocumentIdentifierType();
-        documentIdentifier.setScheme(smpPublishData.getDocumentIdentifier().getDocumentIdentifierScheme());
-        documentIdentifier.setValue(smpPublishData.getDocumentIdentifier().getDocumentIdentifierValue());
+		DocumentIdentifierType documentIdentifier = new DocumentIdentifierType();
+		documentIdentifier.setScheme(smpPublishData.getDocumentIdentifier().getDocumentIdentifierScheme());
+		documentIdentifier.setValue(smpPublishData.getDocumentIdentifier().getDocumentIdentifierValue());
 
-        ServiceInformationType serviceInformation = new ServiceInformationType();
-        serviceInformation.setParticipantIdentifier(participantIdentifierType);
-        serviceInformation.setDocumentIdentifier(documentIdentifier);
+		ServiceInformationType serviceInformation = new ServiceInformationType();
+		serviceInformation.setParticipantIdentifier(participantIdentifierType);
+		serviceInformation.setDocumentIdentifier(documentIdentifier);
 
-        ProcessListType processListType = new ProcessListType();
-        List<ProcessType> processList = processListType.getProcess();
-        processList.addAll(createProcessList(smpPublishData));
-        serviceInformation.setProcessList(processListType);
+		ProcessListType processListType = new ProcessListType();
+		List<ProcessType> processList = processListType.getProcess();
+		processList.addAll(createProcessList(smpPublishData));
+		serviceInformation.setProcessList(processListType);
 
-        ServiceMetadataType serviceMetadata = new ServiceMetadataType();
-        serviceMetadata.setServiceInformation(serviceInformation);
+		ServiceMetadataType serviceMetadata = new ServiceMetadataType();
+		serviceMetadata.setServiceInformation(serviceInformation);
 
-        OutputStream result = createResultStream();
-        try {
-            JAXB_CONTEXT.createMarshaller().marshal(OBJECT_FACTORY.createServiceMetadata(serviceMetadata), result);
-        } catch (JAXBException e) {
-            log.error(e);
-        }
-        return result.toString();
-    }
+		OutputStream result = createResultStream();
+		try {
+			JAXB_CONTEXT.createMarshaller().marshal(OBJECT_FACTORY.createServiceMetadata(serviceMetadata), result);
+		} catch (JAXBException e) {
+			log.error(e);
+		}
+		return result.toString();
+	}
 
-    private List<ProcessType> createProcessList(SmpPublishServiceData smpPublishData) {
-        ArrayList<ProcessType> result = new ArrayList<>();
+	private List<ProcessType> createProcessList(SmpPublishServiceData smpPublishServiceData) {
+		ArrayList<ProcessType> result = new ArrayList<>();
 
-        ProcessType process = new ProcessType();
-        ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
-        processIdentifier.setScheme(smpPublishData.getProcessIdentifier().getProcessIdentifierScheme());
-        processIdentifier.setValue(smpPublishData.getProcessIdentifier().getProcessIdentifierValue());
-        process.setProcessIdentifier(processIdentifier);
+		List<SmpPublishProcessData> processList = smpPublishServiceData.getProcessList();
+		for (SmpPublishProcessData smpPublishData : processList) {
 
-        ServiceEndpointList serviceEndpoint = new ServiceEndpointList();
-        List<EndpointType> endpointList = serviceEndpoint.getEndpoint();
-        List<SmpServiceEndpointData> endpoints = smpPublishData.getEndpoints();
+			ProcessType process = new ProcessType();
+			ProcessIdentifierType processIdentifier = new ProcessIdentifierType();
+			processIdentifier.setScheme(smpPublishData.getProcessIdentifier().getProcessIdentifierScheme());
+			processIdentifier.setValue(smpPublishData.getProcessIdentifier().getProcessIdentifierValue());
+			process.setProcessIdentifier(processIdentifier);
 
-        for (SmpServiceEndpointData endpoint : endpoints) {
-            EndpointType resultEndpoint = new EndpointType();
-            resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());
-            resultEndpoint.setCertificate(endpoint.getCertificateBase64());
-            resultEndpoint.setTransportProfile(endpoint.getTransportProfile());
-            resultEndpoint.setEndpointReference(createEndpointReference(endpoint));
-            resultEndpoint.setServiceDescription(endpoint.getServiceDescription());
-            resultEndpoint.setServiceActivationDate(toXMLGregorianCalendar(endpoint.getServiceActivationDate()));
-            resultEndpoint.setServiceExpirationDate(toXMLGregorianCalendar(endpoint.getServiceExpirationDate()));
-            resultEndpoint.setTechnicalContactUrl(endpoint.getTechnicalContactUrl());
-            endpointList.add(resultEndpoint);
-        }
-        process.setServiceEndpointList(serviceEndpoint);
-        result.add(process);
-        return result;
-    }
+			ServiceEndpointList serviceEndpoint = new ServiceEndpointList();
+			List<EndpointType> endpointList = serviceEndpoint.getEndpoint();
+			List<SmpServiceEndpointData> endpoints = smpPublishData.getEndpoints();
 
-    private EndpointReferenceType createEndpointReference(SmpServiceEndpointData endpoint) {
-        AttributedURIType address = new AttributedURIType();
-        address.setValue(endpoint.getUrl());
-        EndpointReferenceType endpointReferenceType = new EndpointReferenceType();
-        endpointReferenceType.setAddress(address);
-        return endpointReferenceType;
-    }
+			for (SmpServiceEndpointData endpoint : endpoints) {
+				EndpointType resultEndpoint = new EndpointType();
+				resultEndpoint.setRequireBusinessLevelSignature(endpoint.isRequireBusinessLevelSignature());
+				resultEndpoint.setCertificate(endpoint.getCertificateBase64());
+				resultEndpoint.setTransportProfile(endpoint.getTransportProfile());
+				resultEndpoint.setEndpointReference(createEndpointReference(endpoint));
+				resultEndpoint.setServiceDescription(endpoint.getServiceDescription());
+				resultEndpoint.setServiceActivationDate(toXMLGregorianCalendar(endpoint.getServiceActivationDate()));
+				resultEndpoint.setServiceExpirationDate(toXMLGregorianCalendar(endpoint.getServiceExpirationDate()));
+				resultEndpoint.setTechnicalContactUrl(endpoint.getTechnicalContactUrl());
+				endpointList.add(resultEndpoint);
+			}
+			process.setServiceEndpointList(serviceEndpoint);
+			result.add(process);
 
-    private XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(date);
-        XMLGregorianCalendar result = null;
-        try {
-            result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
-        } catch (DatatypeConfigurationException e) {
-            log.error(e);
-        }
-        return result;
-    }
+		}
 
-    private OutputStream createResultStream() {
-        return new OutputStream() {
-            private StringBuilder stringBuilder = new StringBuilder();
+		return result;
+	}
 
-            @Override
-            public void write(int b) throws IOException {
-                this.stringBuilder.append((char) b);
-            }
+	private EndpointReferenceType createEndpointReference(SmpServiceEndpointData endpoint) {
+		AttributedURIType address = new AttributedURIType();
+		address.setValue(endpoint.getUrl());
+		EndpointReferenceType endpointReferenceType = new EndpointReferenceType();
+		endpointReferenceType.setAddress(address);
+		return endpointReferenceType;
+	}
 
-            public String toString() {
-                return this.stringBuilder.toString();
-            }
-        };
-    }
+	private XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+		GregorianCalendar gregorianCalendar = new GregorianCalendar();
+		gregorianCalendar.setTime(date);
+		XMLGregorianCalendar result = null;
+		try {
+			result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+		} catch (DatatypeConfigurationException e) {
+			log.error(e);
+		}
+		return result;
+	}
+
+	private OutputStream createResultStream() {
+		return new OutputStream() {
+			private StringBuilder stringBuilder = new StringBuilder();
+
+			@Override
+			public void write(int b) throws IOException {
+				this.stringBuilder.append((char) b);
+			}
+
+			public String toString() {
+				return this.stringBuilder.toString();
+			}
+		};
+	}
 }

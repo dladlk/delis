@@ -44,6 +44,12 @@ public class StatData {
 			c[0] += count;
 		}
 	}
+	
+	public static StatData error(String message) {
+		StatData sd = new StatData();
+		sd.increment(message);
+		return sd;
+	}
 
 	@Override
 	public String toString() {

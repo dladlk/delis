@@ -15,6 +15,7 @@
         <module>delis-data</module>
         <module>delis-tasks</module>
         <module>delis-xslt-util</module>
+        <module>delis-domibus-util</module>
         <module>delis-web-datatables</module>
         <module>delis-web</module>
         <module>delis-web-api</module>
@@ -23,6 +24,7 @@
         <module>delis-xml-builder</module>
         <module>delis-sender-service</module>
         <module>delis-oxalis-sender</module>
+        <module>delis-validator</module>
     </modules>
 
     <properties>

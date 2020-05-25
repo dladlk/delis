@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class DocumentDeliverService {
 
-    private DocumentDaoRepository documentDaoRepository;
+    public static final String DELIVER_FOLDER_BIS3 = "BIS3";
+	public static final String DELIVER_FOLDER_OIOUBL = "OIOUBL";
+    
+	private DocumentDaoRepository documentDaoRepository;
     private DocumentExportDaoRepository documentExportDaoRepository;
     private OrganisationSetupService organisationSetupService;
     private JournalDocumentService journalDocumentService;
@@ -63,9 +67,9 @@ public class DocumentDeliverService {
             for (Organisation org : organisations) {
 
                 OrganisationSetupData setupData = organisationSetupService.load(org);
-                if (setupData.getReceivingMethod() == null) {
-                    log.info("No recieving method defined for organization " + org.getName() + ". Documents delivery skipped");
-                    statData.increment("Organizations with no recieving method");
+                if (setupData.getReceivingMethod() == null || StringUtils.isBlank(setupData.getReceivingMethodSetup())) {
+                    log.info("No recieving method or setup is configured for organization " + org.getName() + ". Documents delivery skipped");
+                    statData.increment("Organizations with no recieving setup");
                 } else {
                     boolean presentValidated;
                     Long previousDocumentId = 0l;
@@ -95,8 +99,8 @@ public class DocumentDeliverService {
         documentDaoRepository.updateDocumentStatus(document);
 
         DocumentProcessLog log = moveDocument(document, setupData);
-
-        document.setDocumentStatus(log.isSuccess() ? DocumentStatus.EXPORT_OK : DocumentStatus.VALIDATE_OK);
+        
+        document.setDocumentStatus(log.isSuccess() ? DocumentStatus.EXPORT_OK : DocumentStatus.EXPORT_ERROR);
         documentDaoRepository.updateDocumentStatus(document);
 
 
@@ -110,51 +114,62 @@ public class DocumentDeliverService {
     }
 
     private DocumentProcessLog moveDocument(Document document, OrganisationSetupData setupData) {
+    	long start = System.currentTimeMillis();
         DocumentProcessLog processLog = new DocumentProcessLog();
 
-        OrganisationReceivingMethod receivingMethod = setupData.getReceivingMethod();
-
-        DocumentBytes documentBytes = documentBytesStorageService.find(document, DocumentBytesType.READY);
-        if (receivingMethod == null) {
-            DocumentProcessStep failStep = new DocumentProcessStep("Can not export - receiving method is not set for organization " +
-                    document.getOrganisation().getName(), DocumentProcessStepType.DELIVER);
-            failStep.setSuccess(false);
-            failStep.done();
-            processLog.addStep(failStep);
-        } else if (documentBytes == null) {
-            DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not find '" +
-                    DocumentBytesType.READY + "' DocumentBytes record for " + document.getId(), DocumentProcessStepType.DELIVER);
-            failStep.setSuccess(false);
-            failStep.done();
-            processLog.addStep(failStep);
-        } else {
+		DocumentBytes documentBytes = documentBytesStorageService.find(document, DocumentBytesType.READY);
+		if (documentBytes == null) {
+			DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not find '" + DocumentBytesType.READY + "' DocumentBytes record for " + document.getId(), DocumentProcessStepType.DELIVER);
+			failStep.setSuccess(false);
+			failStep.done();
+			processLog.addStep(failStep);
+		} else {
         	
         	boolean doDoubleSending = setupData.isReceiveBothOIOUBLBIS3() && documentBytes.getFormat().isOIOUBL();
             
-        	String outputFileName = buildOutputFileName(document, doDoubleSending ? "OIOUBL" : null);
-            boolean uploaded = uploadDocument(setupData, processLog, documentBytes, outputFileName);
+        	String outputFileName = buildOutputFileName(document, doDoubleSending ? DELIVER_FOLDER_OIOUBL : null);
+        	
+        	boolean somethingSent = false;
+        	try {
+	            boolean uploaded = uploadDocument(setupData, processLog, documentBytes, outputFileName);
+	            
+	            if (uploaded && setupData.isCheckDeliveredConsumed()) {
+	            	saveDocumentExport(document, documentBytes.getSize(), outputFileName);
+	            	somethingSent = true;
+	            }
             
-            if (uploaded && setupData.isCheckDeliveredConsumed()) {
-            	saveDocumentExport(document, documentBytes.getSize(), outputFileName);
-            }
-            
-            if (doDoubleSending) {
-            	DocumentFormat addReceivingFormat;
-        		if (documentBytes.getFormat() == DocumentFormat.OIOUBL_CREDITNOTE) {
-        			addReceivingFormat = DocumentFormat.BIS3_CREDITNOTE;
-        		} else {
-        			addReceivingFormat = DocumentFormat.BIS3_INVOICE;
+	            if (doDoubleSending) {
+	            	DocumentFormat addReceivingFormat;
+	        		if (documentBytes.getFormat() == DocumentFormat.OIOUBL_CREDITNOTE) {
+	        			addReceivingFormat = DocumentFormat.BIS3_CREDITNOTE;
+	        		} else {
+	        			addReceivingFormat = DocumentFormat.BIS3_INVOICE;
+	        		}
+	        		DocumentBytes addDocumentBytes = documentBytesStorageService.find(document, addReceivingFormat);
+	        		
+	        		if (addDocumentBytes != null) {
+	        			outputFileName = buildOutputFileName(document, DELIVER_FOLDER_BIS3);
+	        			uploaded = uploadDocument(setupData, processLog, addDocumentBytes, outputFileName);
+	        			if (uploaded && setupData.isCheckDeliveredConsumed()) {
+	        				saveDocumentExport(document, addDocumentBytes.getSize(), outputFileName);
+	        			}
+	        		}
+	            }
+        	} catch (UploadFailureException ufe) {
+        		log.error("Failed delivery of "+document, ufe);
+    			DocumentProcessStep failureStep = new DocumentProcessStep(ufe.getMessage(), DocumentProcessStepType.DELIVER);
+    			failureStep.done();
+    			failureStep.setSuccess(false);
+    			failureStep.setDuration(System.currentTimeMillis() - start);
+				processLog.addStep(failureStep);
+
+				if (somethingSent) {
+					/*
+					 * It is BIS3 copy which is failed - keep status success, but add error message to journal about issue with delivery
+					 */
+					processLog.setSuccess(true);
         		}
-        		DocumentBytes addDocumentBytes = documentBytesStorageService.find(document, addReceivingFormat);
-        		
-        		if (addDocumentBytes != null) {
-        			outputFileName = buildOutputFileName(document, "BIS3");
-        			uploaded = uploadDocument(setupData, processLog, addDocumentBytes, outputFileName);
-        			if (uploaded && setupData.isCheckDeliveredConsumed()) {
-        				saveDocumentExport(document, addDocumentBytes.getSize(), outputFileName);
-        			}
-        		}
-            }
+        	}
         }
 
         return processLog;
@@ -173,7 +188,7 @@ public class DocumentDeliverService {
 		documentExportDaoRepository.save(documentExport);
 	}
 
-	private boolean uploadDocument(OrganisationSetupData setupData, DocumentProcessLog processLog, DocumentBytes documentBytes, String outputFileName) {
+	private boolean uploadDocument(OrganisationSetupData setupData, DocumentProcessLog processLog, DocumentBytes documentBytes, String outputFileName) throws UploadFailureException {
 		OrganisationReceivingMethod receivingMethod = setupData.getReceivingMethod();
 		String receivingMethodSetup = setupData.getReceivingMethodSetup();
 		
@@ -183,15 +198,11 @@ public class DocumentDeliverService {
 		        File outputFile = new File(receivingMethodSetup, outputFileName);
 		        success = moveToFileSystem(documentBytes, outputFile, processLog);
 		        break;
-		    case AZURE_STORAGE_ACCOUNT:
-		        success = moveToAzure(documentBytes, processLog);
-		        break;
 		    case VFS:
 		        success = moveToVFS(documentBytes, outputFileName, receivingMethodSetup, processLog);
 		        break;
 		    default:
-		        DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " +
-		                receivingMethod, DocumentProcessStepType.DELIVER);
+		        DocumentProcessStep failStep = new DocumentProcessStep("Can not export - can not recognize receiving method " + receivingMethod, DocumentProcessStepType.DELIVER);
 		        failStep.setSuccess(false);
 		        failStep.done();
 		        processLog.addStep(failStep);
@@ -199,18 +210,21 @@ public class DocumentDeliverService {
 		return success;
 	}
 
-    private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) {
+    private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath, DocumentProcessLog processLog) throws UploadFailureException {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFileName, DocumentProcessStepType.DELIVER);
         
-        boolean uploaded = moveToVFS(documentBytes, outputFileName, configPath);
-
-        step.setSuccess(uploaded);
-        step.done();
-        processLog.addStep(step);
+        boolean uploaded = false;
+        try {
+			uploaded = moveToVFS(documentBytes, outputFileName, configPath);
+        } finally {
+	        step.setSuccess(uploaded);
+	        step.done();
+	        processLog.addStep(step);
+        }
         return uploaded;
     }
 
-	private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath) {
+	private boolean moveToVFS(DocumentBytes documentBytes, String outputFileName, String configPath) throws UploadFailureException {
 		File tempFile = null;
         try {
             tempFile = File.createTempFile("delis", "tmp");
@@ -225,6 +239,7 @@ public class DocumentDeliverService {
             }
         } catch (Exception e) {
             log.error(String.format("Failed to upload file '%s' using '%s'", outputFileName, configPath), e);
+            throw new UploadFailureException(e.getMessage(), documentBytes.getDocument(), outputFileName);
         } finally {
             if (tempFile != null && !tempFile.delete()) {
                 log.warn(String.format("Unable to delete temp file '%s'", tempFile.getAbsolutePath()));
@@ -235,14 +250,17 @@ public class DocumentDeliverService {
 
     private String buildOutputFileName(Document document, String subfolder) {
         StringBuilder sb = new StringBuilder();
-        sb.append(new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss_").format(document.getUpdateTime()));
-        sb.append(document.getReceiverIdRaw());
+        sb.append(new SimpleDateFormat("yyyyMMdd_HHmmss").format(document.getUpdateTime()));
+        sb.append("_REF");
+        sb.append(document.getId());
         sb.append("_");
-        sb.append(document.getSenderIdRaw());
+        sb.append(removePrefix(document.getReceiverIdRaw()));
         sb.append("_");
-        sb.append(document.getDocumentId());
-        sb.append("_");
-        sb.append(document.getDocumentDate());
+        sb.append(removePrefix(document.getSenderIdRaw()));
+//        sb.append("_");
+//        sb.append(document.getDocumentId());
+//        sb.append("_");
+//        sb.append(document.getDocumentDate());
         sb.append(".xml");
         String s = sb.toString();
 
@@ -261,26 +279,34 @@ public class DocumentDeliverService {
         return s;
     }
 
-    private boolean moveToFileSystem(DocumentBytes documentBytes, File outputFile, DocumentProcessLog processLog) {
+	private String removePrefix(String idRaw) {
+		if (StringUtils.isNotBlank(idRaw)) {
+			int delimStart = idRaw.indexOf("::");
+			if (delimStart > 0) {
+				return idRaw.substring(delimStart + 2);
+			}
+		}
+		return idRaw;
+	}
+
+	private boolean moveToFileSystem(DocumentBytes documentBytes, File outputFile, DocumentProcessLog processLog) throws UploadFailureException {
         DocumentProcessStep step = new DocumentProcessStep("Export to " + outputFile, DocumentProcessStepType.DELIVER);
         boolean copied = false;
-        outputFile.getParentFile().mkdirs();
+        File parentFile = outputFile.getParentFile();
+        if (!parentFile.exists() || !parentFile.isDirectory()) {
+        	throw new UploadFailureException("Folder "+parentFile.getAbsolutePath()+" does not exist or is not a folder", documentBytes.getDocument(), outputFile.getAbsolutePath());
+        }
         try (FileOutputStream fos = new FileOutputStream(outputFile);) {
             copied = documentBytesStorageService.load(documentBytes, fos);
         } catch (Exception e) {
             log.error("Failed to deliver document " + documentBytes + " to " + outputFile, e);
+            throw new UploadFailureException(e.getMessage(), documentBytes.getDocument(), outputFile.getAbsolutePath());
+        } finally {
+	        step.setSuccess(copied);
+	        step.done();
+	        processLog.addStep(step);
         }
-        step.setSuccess(copied);
-        step.done();
-        processLog.addStep(step);
         return copied;
     }
 
-    private boolean moveToAzure(DocumentBytes documentBytes, DocumentProcessLog log) {
-        DocumentProcessStep failStep = new DocumentProcessStep("Delivering to Azure storage not implemented yet", DocumentProcessStepType.DELIVER);
-        failStep.setSuccess(false);
-        failStep.done();
-        log.addStep(failStep);
-        return false;
-    }
 }

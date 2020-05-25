@@ -7,8 +7,19 @@
 </head>
 <body>
 <div class="col-6 offset-3">
-	
-	<div th:if="${param.error}" class="text-danger mb-2">Invalid username and password.</div>
+
+	<th:block th:if="${param.error}">
+		<div class="text-danger mb-2">
+		<th:block th:switch="${param.error.get(0)}">
+			<span th:case="'user'">You have no access to DELIS Setup Cockpit, please login to main DELIS web interface.</span>
+			<span th:case="'disabled'">User account is disabled.</span>
+			<span th:case="'passexpired'">User password is expired.</span>
+			<span th:case="'locked'">User account is locked because of too many invalid login attempt.</span>
+			<span th:case="*">Invalid username and password.</span>
+		</th:block>
+		</div>
+	</th:block>	
+
 	<div th:if="${param.logout}" class="text-success mb-2">You have been logged out.</div>
 	
 	<div class="card border-primary">
@@ -19,7 +30,7 @@
 				<div class="form-group row">
 					<label for="username" class="col-sm-4 col-form-label">Login name</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" name="username"  autofocus="autofocus" id="username"/>
+						<input type="text" class="form-control" name="username" autofocus="autofocus" id="username" th:value="${param.username != null ? param.username : ''}"/>
 					</div>
 				</div>
 				<div class="form-group row">

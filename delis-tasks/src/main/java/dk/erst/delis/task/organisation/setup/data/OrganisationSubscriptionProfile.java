@@ -14,7 +14,17 @@ public enum OrganisationSubscriptionProfile {
 
 	PEPPOL_BIS3_INVOICE_RESPONSE("PEPPOL BIS IR 3.0", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:invoice_response:3::2.1"), 
 
-	PEPPOL_BIS3_MESSAGE_LEVEL_RESPONSE("PEPPOL BIS MLR 3.0", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:mlr:3::2.1"), 
+	PEPPOL_BIS3_MESSAGE_LEVEL_RESPONSE("PEPPOL BIS MLR 3.0", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:mlr:3::2.1"),
+	
+	PEPPOL_BIS3_ORDER_ONLY("PEPPOL BIS3 Order Only", "urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1"),
+
+	PEPPOL_BIS3_ORDER("PEPPOL BIS3 Order", "urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1"),
+
+	PEPPOL_BIS3_ORDER_RESPONSE("PEPPOL BIS3 Order Response", "urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"),
+
+	PEPPOL_BIS3_CATALOGUE("PEPPOL BIS3 Catalogue Only", "urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1"),
+
+	PEPPOL_BIS3_CATALOGUE_RESPONSE("PEPPOL BIS3 Catalogue Only Response", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:catalogue_response:3::2.1"),
 	;
 	
 	private final String name;

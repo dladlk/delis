@@ -18,6 +18,7 @@ import dk.erst.delis.dao.DocumentDaoRepository;
 import dk.erst.delis.dao.JournalDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentInfoService;
@@ -53,6 +54,9 @@ public class DocumentLoadServiceSpringBootTestIT {
 	@Autowired
 	private DocumentBytesStorageService documentBytesStorageService;
 
+	@Autowired
+	private JournalDocumentService journalDocumentService;
+
 	@Test
 	public void testLoadFile() throws IOException {
 		/*
@@ -64,7 +68,7 @@ public class DocumentLoadServiceSpringBootTestIT {
 		ilsTest.loadTestIdentifiers();
 		
 		DocumentLoadService dls = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository,
-				new DocumentInfoService(new DocumentParseService()), documentBytesStorageService, identifierResolverService);
+				new DocumentInfoService(new DocumentParseService()), documentBytesStorageService, identifierResolverService, journalDocumentService);
 
 		for (TestDocument testDocument : TestDocument.values()) {
 			runCase(dls, testDocument);
@@ -78,7 +82,7 @@ public class DocumentLoadServiceSpringBootTestIT {
 			Document document = dls.loadFile(testFile);
 			assertNotNull(document);
 			assertEquals(testDocument.getDocumentFormat(), document.getIngoingDocumentFormat());
-			assertEquals(DocumentStatus.LOAD_OK, document.getDocumentStatus());
+			assertEquals("TestDocument "+testDocument, DocumentStatus.LOAD_OK, document.getDocumentStatus());
 			assertNotNull(document.getName());
 		} finally {
 			TestDocumentUtil.cleanupTestFile(testFile);

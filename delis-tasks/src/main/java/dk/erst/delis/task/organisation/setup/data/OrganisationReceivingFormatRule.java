@@ -5,11 +5,11 @@ import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 
 public enum OrganisationReceivingFormatRule {
 
-	OIOUBL("OIOUBL - convert everything to OIOUBL"),
+	OIOUBL("OIOUBL - convert invoices and credit notes to OIOUBL"),
 	
 	BIS3("Prefer BIS3 - convert CII to BIS3, but keep BIS3 and OIOUBL"),
 	
-	BIS3_POSITIVE("BIS3 positive - like BIS3 but keep BIS3 only if it is positive amount, otherwise convert to proper BIS3"),
+	BIS3_POSITIVE("[Not implemented]: BIS3 positive - like BIS3 but keep BIS3 only if it is positive amount, otherwise convert to proper BIS3"),
 	
 	KEEP_ORIGINAL("No transformation - keep ingoing to C3")
 	

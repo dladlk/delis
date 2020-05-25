@@ -21,14 +21,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.data.entities.document.Document;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.task.document.parse.DocumentInfoService;
+import dk.erst.delis.task.document.parse.DocumentParseService;
 import dk.erst.delis.task.document.parse.DocumentInfoService.DocumentInfoData;
 import dk.erst.delis.task.document.process.DocumentValidationTransformationService;
+import dk.erst.delis.task.document.process.RuleService;
 import dk.erst.delis.task.document.process.TransformationResultListener;
 import dk.erst.delis.task.document.process.log.DocumentProcessLog;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
+import dk.erst.delis.web.transformationrule.TransformationRuleService;
+import dk.erst.delis.web.validationrule.ValidationRuleService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +51,16 @@ public class ValidateController {
 	@Autowired
 	private DocumentInfoService documentInfoService;
 
+	@Autowired
+	private ConfigBean configBean;
+	@Autowired
+	private ValidationRuleService validationRuleService;
+	@Autowired
+	private TransformationRuleService transformationRuleService;
+	@Autowired
+	private DocumentParseService documentParseService;
+
+	
 	@RequestMapping("/validate/index")
 	public String index(Model model, WebRequest webRequest) {
 
@@ -68,12 +84,18 @@ public class ValidateController {
 
 			@RequestParam(name = "validateFormat", required = false) String validateFormatName,
 
+			@RequestParam(name = "continueOnError", required = false) boolean continueOnError,
+			
+			@RequestParam(name = "skipPEPPOL", required = false) boolean skipPEPPOL,
+
+			@RequestParam(name = "useDbRules", required = false) boolean useDbRules,
+
 			Model model,
 
 			WebRequest webRequest,
 
 			RedirectAttributes redirectAttributes) {
-
+		
 		DocumentFormat ingoingDocumentFormat = null;
 		if (!StringUtils.isEmpty(validateFormatName)) {
 			ingoingDocumentFormat = DocumentFormat.valueOf(validateFormatName);
@@ -110,7 +132,10 @@ public class ValidateController {
 
 			if (tempFile != null) {
 				try {
+					result.setFileSize(tempFile.length());
 					if (ingoingDocumentFormat == null) {
+						DocumentProcessStep step = DocumentProcessStep.buildDefineFormatStep();
+						
 						infoData = documentInfoService.documentInfoData(tempFile.toPath(), tempFile);
 						DocumentFormat documentFormat = documentInfoService.defineDocumentFormat(infoData.getDocumentInfo());
 
@@ -118,11 +143,24 @@ public class ValidateController {
 						result.setDocumentFormatDetected(true);
 						
 						tempFile = infoData.getFile();
+
+						if (documentFormat.isUnsupported()) {
+							DocumentProcessLog plog = new DocumentProcessLog();
+							plog.setResultPath(tempFile.toPath());
+
+							step.fillDefineFormatError(infoData.getDocumentInfo());
+							
+							plog.addStep(step);
+
+							result.setProcessLog(plog);
+							resultList.add(result);
+
+							continue;
+						}
 					} else {
 						result.setDocumentFormat(ingoingDocumentFormat);
 					}
 
-					result.setFileSize(tempFile.length());
 					Document document = new Document();
 					document.setIngoingDocumentFormat(result.getDocumentFormat());
 
@@ -131,10 +169,17 @@ public class ValidateController {
 					TransformationResultListener transformationResultListener = new TransformationResultListener(null, null) {
 						@Override
 						public void notify(DocumentProcessLog plog, DocumentFormat resultFormat, File file) {
-							super.notify(plog, resultFormat, file);
+							/*
+							 * Avoid notification - as we do not want to save documents into byte storage
+							 */
 						}
 					};
-					DocumentProcessLog plog = documentValidationTransformationService.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener);
+					DocumentValidationTransformationService service = documentValidationTransformationService;
+					if (useDbRules) {
+						RuleService ruleService = new RuleService(configBean, validationRuleService, transformationRuleService);
+						service =new DocumentValidationTransformationService(ruleService, documentParseService);
+					}
+					DocumentProcessLog plog = service.process(document, xmlLoadedPath, receivingFormatRule, transformationResultListener, !continueOnError, skipPEPPOL);
 					result.setProcessLog(plog);
 
 					resultList.add(result);

@@ -3,6 +3,7 @@ package dk.erst.delis.oxalis.sender.request;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
+import java.util.Optional;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.util.Modules;
 
+import dk.erst.delis.oxalis.sender.ISendListener;
 import dk.erst.delis.oxalis.sender.SimpleSenderTest;
 import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest;
 import dk.erst.delis.oxalis.sender.request.IDelisTransmissionRequestBuilder;
@@ -37,7 +39,7 @@ public class LookupTransmissionRequestBuilderTest {
 
 		byte[] testXmlSbdh = SimpleSenderTest.loadTestPayload();
 
-		DelisTransmissionRequest r = b.build(new ByteArrayInputStream(testXmlSbdh));
+		DelisTransmissionRequest r = b.build(new ByteArrayInputStream(testXmlSbdh), Optional.<ISendListener>empty());
 		assertNotNull(r.getHeader());
 		assertNotNull(r.getEndpoint());
 		assertNotNull(r.getPayload());

@@ -1,9 +1,26 @@
 package dk.erst.delis.task.identifier.load;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
+
+import dk.erst.delis.dao.IdentifierDaoRepository;
+import dk.erst.delis.dao.IdentifierGroupDaoRepository;
+import dk.erst.delis.dao.JournalIdentifierDaoRepository;
+import dk.erst.delis.dao.JournalOrganisationDaoRepository;
+import dk.erst.delis.dao.OrganisationDaoRepository;
+import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.identifier.IdentifierGroup;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
@@ -13,16 +30,10 @@ import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierValueType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import dk.erst.delis.dao.IdentifierGroupDaoRepository;
-import dk.erst.delis.dao.IdentifierDaoRepository;
-import dk.erst.delis.dao.JournalIdentifierDaoRepository;
-import dk.erst.delis.dao.JournalOrganisationDaoRepository;
-import dk.erst.delis.dao.OrganisationDaoRepository;
-import dk.erst.delis.dao.SyncOrganisationFactDaoRepository;
 import dk.erst.delis.task.identifier.load.csv.CSVIdentifierStreamReader;
+import dk.erst.delis.task.identifier.load.csv.IdentifierListParseException;
+import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 
 @Service
 public class IdentifierLoadService {
@@ -44,19 +55,34 @@ public class IdentifierLoadService {
 
 	@Autowired
 	private SyncOrganisationFactDaoRepository syncOrganisationFactDaoRepository;
+	
+	@Autowired
+	private OrganisationSetupService organisationSetupService;
 
-	public SyncOrganisationFact loadCSV(String organisationCode, InputStream inputStream, String description) {
-		AbstractIdentifierStreamReader reader = new CSVIdentifierStreamReader(inputStream, StandardCharsets.ISO_8859_1, ';');
-		return load(organisationCode, reader, description);
-	}
-
-	public SyncOrganisationFact load(String organisationCode, AbstractIdentifierStreamReader reader, String description) {
+	public SyncOrganisationFact loadCSV(String organisationCode, InputStream inputStream, String description) throws IdentifierListParseException {
 		Organisation organisation = organisationDaoRepository.findByCode(organisationCode);
 		if (organisation == null) {
 			throw new RuntimeException("Not found organisation by code " + organisationCode);
 		}
 
 		long start = System.currentTimeMillis();
+		
+		AbstractIdentifierStreamReader reader;
+		try {
+			reader = new CSVIdentifierStreamReader(inputStream, StandardCharsets.ISO_8859_1, ';');
+		} catch (IdentifierListParseException e) {
+			String errorMessage = e.getMessage()+". File "+description;
+			saveJournalOrganisationMessage(organisation, errorMessage, System.currentTimeMillis() - start);
+			throw e;
+		}
+		
+		
+		OrganisationSetupData setupData = organisationSetupService.load(organisation);
+		boolean schedulePublish = false;
+		if (setupData.isSmpIntegrationPublish()) {
+			schedulePublish = true;
+		}
+		IdentifierPublishingStatus publishingStatus = schedulePublish ? IdentifierPublishingStatus.PENDING : null;
 
 		saveJournalOrganisationMessage(organisation, "Start identifiers synchronization by " + description);
 
@@ -86,9 +112,17 @@ public class IdentifierLoadService {
 
 				stat.incrementTotal();
 
-				String identifierType = defineIdentifierType(identifier);
+				IdentifierValueType identifierType = defineIdentifierType(identifier);
 				if (identifierType != null) {
-					identifier.setType(identifierType);
+					identifier.setType(identifierType.getCode());
+					/*
+					 * If CVR does not start with DK prefix - add it.
+					 */
+					if (IdentifierValueType.DK_CVR == identifierType) {
+						if (!identifier.getValue().startsWith("DK") && identifier.getValue().length() == 8) {
+							identifier.setValue("DK"+identifier.getValue());
+						}
+					}
 
 					if (identifier.getName() != null) {
 						if (identifier.getName().length() > 128) {
@@ -99,12 +133,13 @@ public class IdentifierLoadService {
 					}
 
 					Identifier present = identifierDaoRepository.findByValueAndType(identifier.getValue(), identifier.getType());
+					
 					if (present == null) {
 						stat.incrementAdd();
 
 						identifier.setOrganisation(organisation);
 						identifier.setIdentifierGroup(identifierGroup);
-						identifier.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+						identifier.setPublishingStatus(publishingStatus);
 						identifier.setStatus(IdentifierStatus.ACTIVE);
 						identifier.setLastSyncOrganisationFactId(stat.getId());
 						identifier.setUniqueValueType(buildUniqueValueType(identifier));
@@ -117,26 +152,27 @@ public class IdentifierLoadService {
 							if (present.getStatus().isActive()) {
 								stat.incrementFailed();
 								saveJournalIdentifierMessage(organisation, present, "Tried to import into another organisation " + organisation.getName() + " by " + description);
-								saveJournalOrganisationMessage(organisation, "Identifier is already registered at " + organisation.getName() + " and is active there: " + identifier.getValue());
+								saveJournalOrganisationMessage(organisation, "Identifier is already registered at " + present.getOrganisation().getName() + " and is active there: " + identifier.getValue());
 							} else {
 								stat.incrementAdd();
 								
-								Organisation previousOrganisation = present.getOrganisation();
+								String previousOrganisationName = present.getOrganisation().getName();
 								
 								present.setOrganisation(organisation);
+								present.setName(identifier.getName());
 								present.setIdentifierGroup(identifierGroup);
 								present.setStatus(IdentifierStatus.ACTIVE);
-								present.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+								present.setPublishingStatus(publishingStatus);
 								present.setUniqueValueType(buildUniqueValueType(identifier));
 								present.setLastSyncOrganisationFactId(stat.getId());
 
 								saveIdentifier(present);
 
-								saveJournalIdentifierMessage(organisation, identifier, "Moved deactivated from " + previousOrganisation + " by " + description);
+								saveJournalIdentifierMessage(organisation, present, "Moved from " + previousOrganisationName + " to " + organisation.getName() + " by " + description);
 							}
 						} else {
 						
-							if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId())) {
+							if (present.getName().equals(identifier.getName()) && present.getIdentifierGroup().getId().equals(identifierGroup.getId()) && present.getStatus() == IdentifierStatus.ACTIVE) {
 								stat.incrementEqual();
 	
 								present.setLastSyncOrganisationFactId(stat.getId());
@@ -144,6 +180,10 @@ public class IdentifierLoadService {
 	
 							} else {
 								present.setName(identifier.getName());
+								if (present.getStatus() !=  IdentifierStatus.ACTIVE) {
+									present.setStatus(IdentifierStatus.ACTIVE);
+									present.setPublishingStatus(publishingStatus);
+								}
 								present.setIdentifierGroup(identifierGroup);
 								// TODO: What if identifier group is changed?
 								// TODO: What if identifier name is changed - should we republish identifier?
@@ -161,7 +201,7 @@ public class IdentifierLoadService {
 				}
 			}
 
-			int deactivated = deactivateAbsent(organisation, stat);
+			int deactivated = deactivateAbsent(organisation, stat, schedulePublish);
 			stat.setDelete(deactivated);
 
 		} finally {
@@ -177,14 +217,16 @@ public class IdentifierLoadService {
 		return identifier.getType()+"::"+identifier.getValue();
 	}
 
-	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat) {
+	private int deactivateAbsent(Organisation organisation, SyncOrganisationFact stat, boolean schedulePublish) {
 		final int count[] = new int[] { 0 };
 		List<Identifier> list = identifierDaoRepository.getPendingForDeactivation(organisation.getId(), stat.getId());
 		if (list != null) {
 			list.forEach(i -> {
 				i.setStatus(IdentifierStatus.DELETED);
-				if (i.getPublishingStatus() == IdentifierPublishingStatus.DONE) {
-					i.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+				if (schedulePublish) {
+					if (i.getPublishingStatus() == IdentifierPublishingStatus.DONE) {
+						i.setPublishingStatus(IdentifierPublishingStatus.PENDING);
+					}
 				}
 				identifierDaoRepository.save(i);
 				saveJournalIdentifierMessage(organisation, i, "Deleted by " + stat.getDescription());
@@ -218,7 +260,7 @@ public class IdentifierLoadService {
 		journalOrganisationDaoRepository.save(s);
 	}
 
-	protected String defineIdentifierType(Identifier identifier) {
+	public static IdentifierValueType defineIdentifierType(Identifier identifier) {
 		if (identifier == null) {
 			return null;
 		}
@@ -226,17 +268,43 @@ public class IdentifierLoadService {
 		if (value != null) {
 			if (value.length() == 13) {
 				if (value.matches("\\d{13}")) {
-					return IdentifierValueType.GLN.getCode();
+					return IdentifierValueType.GLN;
 				}
 			}
 			if (value.length() == 10 && value.matches("DK\\d{8}")) {
-				return IdentifierValueType.DK_CVR.getCode();
+				return IdentifierValueType.DK_CVR;
 			}
 			if (value.length() == 8 && value.matches("\\d{8}")) {
-				return IdentifierValueType.DK_CVR.getCode();
+				return IdentifierValueType.DK_CVR;
 			}
 		}
 		return null;
+	}
+
+	public void exportIdentifierList(Organisation organisation, OutputStream out) {
+		try (Writer streamWriter = new OutputStreamWriter(out, StandardCharsets.ISO_8859_1)) {
+			ICSVWriter writer = new CSVWriterBuilder(streamWriter).withSeparator(';').build();
+			writer.writeNext(new String[] { "Number", "Name" });
+
+			boolean moreIdentifiers = false;
+			long previousId = 0;
+
+			int count = 0;
+			do {
+				List<Identifier> list = identifierDaoRepository.loadIdentifierList(organisation, previousId, PageRequest.of(0, 10));
+				moreIdentifiers = !list.isEmpty();
+				for (Identifier identifier : list) {
+					previousId = identifier.getId();
+					if (identifier.getStatus() == IdentifierStatus.ACTIVE) {
+						String[] res = new String[] { identifier.getValue(), identifier.getName() };
+						writer.writeNext(res);
+						count++;
+					}
+				}
+			} while (moreIdentifiers);
+			writer.writeNext(new String[] { String.valueOf(count) });
+		} catch (IOException e) {
+		}
 	}
 
 }

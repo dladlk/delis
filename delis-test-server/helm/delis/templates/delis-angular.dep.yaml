@@ -24,6 +24,8 @@ spec:
       - image: {{.Values.delisAngular.image}}
         imagePullPolicy: IfNotPresent
         name: {{.Release.Name}}-angular
+        #restartPolicy: Never
+        #command: ["sh", "-c", "sleep 3600"]
         env:
           - name: CONTEXT_NAME
             value: {{.Values.delisAngular.contextName}}

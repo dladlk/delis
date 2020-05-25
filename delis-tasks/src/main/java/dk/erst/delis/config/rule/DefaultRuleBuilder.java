@@ -14,11 +14,13 @@ import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 
 public class DefaultRuleBuilder {
+	
+	private static final String CIUS_VERSION = "2020-05-15_v1.5.0";
 
     public static List<RuleDocumentTransformation> buildDefaultTransformationRuleList() {
         ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
-        result.add(b(CII, BIS3, "cii_to_bis3/v_2019-04-08_35672/CII_2_BIS-Billing.xslt"));
-        result.add(b(BIS3, OIOUBL, "bis3_to_oioubl/v_2019-04-08_35672/BIS-Billing_2_OIOUBL_MASTER.xslt"));
+        result.add(b(CII, BIS3, "cius/" + CIUS_VERSION + "/CII_2_BIS3/CII_2_BIS-Billing.xslt"));
+        result.add(b(BIS3, OIOUBL, "cius/" + CIUS_VERSION + "/BIS3_2_OIOUBL/BIS-Billing_2_OIOUBL_MASTER.xslt"));
         return result;
     }
     
@@ -47,6 +49,14 @@ public class DefaultRuleBuilder {
         result.add(xsd(DocumentFormat.BIS3_INVOICE_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
 
+        result.add(xsd(DocumentFormat.BIS3_ORDER,       "xsd/UBL_2.1/maindoc/UBL-Order-2.1.xsd"));
+        result.add(xsd(DocumentFormat.BIS3_ORDER_ONLY,  "xsd/UBL_2.1/maindoc/UBL-Order-2.1.xsd"));
+
+        result.add(xsd(DocumentFormat.BIS3_ORDER_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-OrderResponse-2.1.xsd"));
+        
+        result.add(xsd(DocumentFormat.BIS3_CATALOGUE_ONLY, "xsd/UBL_2.1/maindoc/UBL-Catalogue-2.1.xsd"));
+        result.add(xsd(DocumentFormat.BIS3_CATALOGUE_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
+
         result.add(xsd(DocumentFormat.CII, "xsd/CII_D16B_SCRDM_uncoupled/data/standard/CrossIndustryInvoice_100pD16B.xsd"));
 
         /*
@@ -69,11 +79,11 @@ public class DefaultRuleBuilder {
 		 * 
 
 		 */
-		String CEN_PC434_VERSION = "2019-08-15_1";
-		String PEPPOL_VERSION = "2019-08-15_1";
+		
+		String cius = "sch/cius/" + CIUS_VERSION;
 
-		String BIS3_PEPPOL = "sch/bis3/peppol_" + PEPPOL_VERSION + "/PEPPOL-EN16931-UBL.xslt";
-		String BIS3_CEN = "sch/bis3/cen_" + CEN_PC434_VERSION + "/CEN-EN16931-UBL.xslt";
+		String BIS3_PEPPOL = cius + "/PEPPOL-EN16931-UBL.xslt";
+		String BIS3_CEN = cius + "/CEN-EN16931-UBL.xslt";
 		
 		result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_CEN, 10));
 		result.add(sch(DocumentFormat.BIS3_INVOICE, BIS3_PEPPOL, 20));
@@ -83,8 +93,8 @@ public class DefaultRuleBuilder {
 		result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T71.xslt", 10));
 
-		result.add(sch(DocumentFormat.CII, "sch/cii/cen_" + CEN_PC434_VERSION + "/CEN-EN16931-CII.xslt", 10));
-		result.add(sch(DocumentFormat.CII, "sch/cii/peppol_" + PEPPOL_VERSION + "/PEPPOL-EN16931-CII.xslt", 20));
+		result.add(sch(DocumentFormat.CII, cius + "/CEN-EN16931-CII.xslt", 10));
+		result.add(sch(DocumentFormat.CII, cius + "/PEPPOL-EN16931-CII.xslt", 20));
 		return result;
 	}
 

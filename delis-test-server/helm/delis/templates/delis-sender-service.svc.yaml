@@ -4,6 +4,7 @@ kind: Service
 metadata:
   labels:
     app: {{.Release.Name}}-sender-service
+    prometheus-app: delis-sender-service
     chart: '{{.Chart.Name}}-{{.Chart.Version}}'
     heritage: '{{.Release.Service}}'
     release: '{{.Release.Name}}'
@@ -14,6 +15,7 @@ spec:
   - port: 8080
     protocol: TCP
     targetPort: 8080
+    name: http
   selector:
     app: '{{.Release.Name}}-sender-service'
   type: 'NodePort'

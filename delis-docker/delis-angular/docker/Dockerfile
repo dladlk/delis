@@ -2,10 +2,16 @@ FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 
-COPY dist/ .
-
 COPY nginx.conf /etc/nginx/nginx.conf
 
-ADD /startup.sh /startup.sh
+COPY startup.sh /startup.sh
 
-CMD /startup.sh
+COPY dist/ .
+
+RUN chown nginx -R /usr/share/nginx/html && \
+    chown nginx -R /etc/nginx && \
+    chmod +x /startup.sh
+
+USER nginx
+
+CMD [ "/startup.sh" ]

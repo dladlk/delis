@@ -19,8 +19,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.oxalis.as4.inbound.As4InboundModule;
-import no.difi.oxalis.as4.outbound.As4OutboundModule;
 import no.difi.oxalis.commons.guice.GuiceModuleLoader;
 
 @Component
@@ -42,8 +40,9 @@ public class SendContext {
 	@PostConstruct
 	public void init() {
 		long start = System.currentTimeMillis();
+		
 		log.info("Start Guice initialization of " + this.getClass().getSimpleName() + "...");
-		injector = Guice.createInjector(new As4OutboundModule(), new As4InboundModule(), Modules.override(new GuiceModuleLoader()).with(new AbstractModule() {
+		injector = Guice.createInjector(Modules.override(new GuiceModuleLoader()).with(new AbstractModule() {
 		}));
 
 		LookupService lookupService = injector.getInstance(LookupService.class);

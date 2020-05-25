@@ -14,6 +14,7 @@ import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import lombok.extern.slf4j.Slf4j;
@@ -45,23 +46,40 @@ public class SmpLookupService {
 	}
 	
 	public SmpPublishData lookup(ParticipantIdentifier identifier) {
+		return lookup(identifier, true);
+	}
+	
+	public SmpPublishData lookup(ParticipantIdentifier identifier, boolean useConfiguredSmp) {
 		SmpPublishData smpPublishData = new SmpPublishData();
-		log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SMP "+configBean.getSmpEndpointConfig().getUrl());
+		if (useConfiguredSmp) {
+			log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SMP "+configBean.getSmpEndpointConfig().getUrl());
+		} else {
+			log.info("Performing lookup for published data by ParticipantIdentifier "+identifier+" at SML");
+		}
 		try {
-			LookupClient client = createLookupClient();
+			LookupClient client = createLookupClient(useConfiguredSmp);
 			List<DocumentTypeIdentifier> documentIdentifiers = client.getDocumentIdentifiers(identifier);
 			log.info(String.format("%d DocumentIdentifiers found by ParticipantIdentifier %s", documentIdentifiers.size(), identifier));
 			List<ServiceMetadata> serviceMetadataList = queryServiceMetaData(identifier, client, documentIdentifiers);
 			smpPublishData.setServiceList(createServiceList(serviceMetadataList));
 			smpPublishData.setParticipantIdentifier(identifier);
-		} catch (PeppolLoadingException | LookupException | PeppolSecurityException e) {
+		} catch (PeppolLoadingException | PeppolSecurityException e) {
 			log.error(e.getMessage(), e);
+			return null;
+		} catch (LookupException le) {
+			/*
+			 * LookupException means that we did not find any record in configured SMP - do not log exception in this case
+			 */
+			log.info(String.format("No data found for ParticipantIdentifier %s", identifier));
 			return null;
 		}
 		return smpPublishData;
 	}
 
-	private LookupClient createLookupClient() throws PeppolLoadingException {
+	private LookupClient createLookupClient(boolean useConfiguredSmp) throws PeppolLoadingException {
+		if (!useConfiguredSmp) {
+			return LookupClientBuilder.forProduction().build();
+		}
 		return LookupClientBuilder.forProduction()
                         .locator(createLocalSMPLocator())
                         .provider(createMetadataProvider())
@@ -135,6 +153,7 @@ public class SmpLookupService {
 		List<SmpPublishServiceData> serviceDataList = new ArrayList<>();
 		for (ServiceMetadata serviceMetadata : serviceMetadataList) {
 			SmpPublishServiceData smpPublishServiceData = new SmpPublishServiceData();
+			smpPublishServiceData.setProcessList(new ArrayList<SmpPublishProcessData>());
 			DocumentTypeIdentifier documentTypeIdentifier = serviceMetadata.getDocumentTypeIdentifier();
 			SmpDocumentIdentifier documentIdentifier = SmpDocumentIdentifier.of(documentTypeIdentifier.getIdentifier());
 			smpPublishServiceData.setDocumentIdentifier(documentIdentifier);
@@ -142,12 +161,16 @@ public class SmpLookupService {
 				if(processMetadata.getProcessIdentifier().isEmpty()) {
 					continue;
 				}
+				SmpPublishProcessData processData = new SmpPublishProcessData();
+				
 				SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
 				ProcessIdentifier processIdentifier = processMetadata.getProcessIdentifier().get(0);
 				smpProcessIdentifier.setProcessIdentifierScheme(processIdentifier.getScheme().toString());
 				smpProcessIdentifier.setProcessIdentifierValue(processIdentifier.getIdentifier());
-				smpPublishServiceData.setProcessIdentifier(smpProcessIdentifier);
-				smpPublishServiceData.setEndpoints(createEndpoints(processMetadata.getEndpoints()));
+				processData.setProcessIdentifier(smpProcessIdentifier);
+				processData.setEndpoints(createEndpoints(processMetadata.getEndpoints()));
+				
+				smpPublishServiceData.getProcessList().add(processData);
 			}
 			serviceDataList.add(smpPublishServiceData);
 		}

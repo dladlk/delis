@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Generate Domibus PMode XML
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data" action="/setup/domibus/pmode" th:action="@{/setup/domibus/pmode}" target="_blank">
+                <div class="form-group row">
+                    <label for="files1" class="col-sm-2">URL:</label>
+                    <div class="col-sm-10">
+                    	<input type="text" name="url" class="form-control" id="url1" value="https://erst.trueservice.dk/domibus"/>
+						<small id="urlHelpBlock" class="form-text text-muted">
+						  External URL of access point to include inside PMode as self-reference. Should end on context name, without /services/msh at the end.
+						</small>                    	
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="validateFormat" class="col-sm-2">Party name:</label>
+                    <div class="col-sm-10">
+                    	<input type="text" name="partyName" class="form-control" id="partyName1" value="POP000173"/>
+						<small id="partyNameHelpBlock" class="form-text text-muted">
+						  Party name, equal to certificate name of Access Point, upper case.
+						</small>                    	
+                    </div>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Generate"/>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

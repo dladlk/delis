@@ -2,9 +2,7 @@ package dk.erst.delis.task.scheduler;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,6 @@ import dk.erst.delis.task.document.load.DocumentLoadService;
 import dk.erst.delis.task.document.process.DocumentProcessService;
 import dk.erst.delis.task.document.send.forward.SendDocumentFailedProcessService;
 import dk.erst.delis.task.identifier.load.IdentifierBatchLoadService;
-import dk.erst.delis.task.identifier.load.OrganizationIdentifierLoadReport;
 import dk.erst.delis.task.identifier.publish.IdentifierBatchPublishingService;
 import dk.erst.delis.task.scheduler.TaskSchedulerMonitor.TaskResult;
 import dk.erst.delis.web.document.SendDocumentService;
@@ -51,12 +48,13 @@ public class TaskScheduler {
 
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
-    public void documentLoad() {
+    public StatData documentLoad() {
         TaskResult task = taskSchedulerMonitor.build("documentLoad");
         Path inputFolderPath = configBean.getStorageInputPath().toAbsolutePath();
         File inputFolderFile = inputFolderPath.toFile();
         if (!inputFolderFile.exists() || !inputFolderFile.isDirectory()) {
             log.error("TaskScheduler: documentLoad ==> Document input folder " + inputFolderPath + " does not exist or is not a directory");
+			return StatData.error("Input folder " + inputFolderPath + " does not exist or is not a directory");
         } else {
 	        try {
 	            StatData sd = documentLoadService.loadFromInput(inputFolderPath);
@@ -65,15 +63,17 @@ public class TaskScheduler {
 		            log.info(message);
 	            }
 	            task.success(sd);
+	            return sd;
 	        } catch (Exception e) {
 	            log.error("TaskScheduler: documentLoad ==> Failed to invoke documentLoadService.loadFromInput", e);
 	            task.failure(e);
+	            return StatData.error(e.getMessage());
 	        }
         }
     }
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
-    public void documentValidate() {
+    public StatData documentValidate() {
         TaskResult task = taskSchedulerMonitor.build("documentValidate");
         try {
             StatData sd = documentProcessService.processLoaded();
@@ -82,14 +82,16 @@ public class TaskScheduler {
 	            log.info(message);
             }
             task.success(sd);
+            return sd;
         } catch (Exception e) {
             log.error("TaskScheduler: documentValidate ==> Failed to invoke documentListProcessService.processLoaded", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
-    public void documentDeliver() {
+    public StatData documentDeliver() {
         TaskResult task = taskSchedulerMonitor.build("documentDeliver");
         try {
             StatData sd = documentDeliverService.processValidated();
@@ -98,14 +100,16 @@ public class TaskScheduler {
 	            log.info(message);
             }
             task.success(sd);
+            return sd;
         } catch (Exception e) {
             log.error("TaskScheduler: documentDeliver ==> Failed to invoke documentDeliveryService.processValidated", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
 
     @Scheduled(fixedDelay = Long.MAX_VALUE)
-    public void documentCheckDelivery() {
+    public StatData documentCheckDelivery() {
         TaskResult task = taskSchedulerMonitor.build("documentCheckDelivery");
         try {
             StatData sd = documentCheckDeliveryService.checkDelivery();
@@ -114,46 +118,51 @@ public class TaskScheduler {
 	            log.info(message);
             }
             task.success(sd);
+            return sd;
         } catch (Exception e) {
             log.error("TaskScheduler: documentDeliveryCheck ==> Failed to invoke documentCheckDeliveryService.checkDelivery", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
 
     @Scheduled(fixedDelay = 5000L)
-    public void identifierLoad() {
+    public StatData identifierLoad() {
         TaskResult task = taskSchedulerMonitor.build("identifierLoad");
         try {
-            List<OrganizationIdentifierLoadReport> loadReports = identifierBatchLoadService.performLoad();
-            String reportMessage = identifierBatchLoadService.createReportMessage(loadReports);
-            if (!reportMessage.isEmpty()) {
-            	log.info(reportMessage);
+            StatData sd = identifierBatchLoadService.performLoad();
+            if (!sd.isEmpty()) {
+            	log.info("identifierLoad: "+ sd);
             }
-            task.success(reportMessage);
+            task.success(sd);
+            return sd;
         } catch (Exception e) {
             log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
 
 
     @Scheduled(fixedDelay = 5000L)
-    public void identifierPublish() {
+    public StatData identifierPublish() {
         TaskResult task = taskSchedulerMonitor.build("identifierPublish");
         try {
-            List<Long> publishedIds = identifierBatchPublishingService.publishPending();
-            if (publishedIds != null && !publishedIds.isEmpty()) {
-            	log.info("Published ids: " + StringUtils.join(publishedIds, ","));
+            StatData statData = identifierBatchPublishingService.publishPending();
+            if (!statData.isEmpty()) {
+            	log.info("identifierPublish: " + statData);
             }
-            task.success(publishedIds);
+            task.success(statData);
+            return statData;
         } catch (Exception e) {
             log.error("TaskScheduler: identifierLoad ==> Failed to invoke identifierBatchLoadService.performLoad", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
     
     @Scheduled(fixedDelay = 5000L)
-    public void sendDocumentValidate() {
+    public StatData sendDocumentValidate() {
         TaskResult task = taskSchedulerMonitor.build("sendDocumentValidate");
         try {
             StatData statData = sendDocumentService.validateNewDocuments();
@@ -161,14 +170,16 @@ public class TaskScheduler {
             	log.info("sendDocumentValidate: " + statData);
             }
             task.success(statData);
+            return statData;
         } catch (Exception e) {
             log.error("TaskScheduler: sendDocumentValidate ==> Failed to invoke sendDocumentService.validateNewDocuments", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
     
     @Scheduled(fixedDelay = 5000L)
-    public void sendDocumentFailedProcess() {
+    public StatData sendDocumentFailedProcess() {
         TaskResult task = taskSchedulerMonitor.build("sendDocumentFailedProcess");
         try {
             StatData statData = sendDocumentFailedProcessService.processFailedDocuments();
@@ -176,9 +187,11 @@ public class TaskScheduler {
             	log.info("sendDocumentFailedProcess: " + statData);
             }
             task.success(statData);
+            return statData;
         } catch (Exception e) {
             log.error("TaskScheduler: Failed to invoke sendDocumentFailedProcessService.processFailedDocuments", e);
             task.failure(e);
+            return StatData.error(e.getMessage());
         }
     }
 }

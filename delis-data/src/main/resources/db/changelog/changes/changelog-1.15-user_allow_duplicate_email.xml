@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog logicalFilePath="true"
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+	
+	<changeSet author="dlk" id="1574512086000-1">
+		<preConditions onFail="MARK_RAN" onError="MARK_RAN">
+			<sqlCheck expectedResult="1">
+				select count(*) from INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc where tc.TABLE_SCHEMA='delis' and tc.TABLE_NAME='user' and tc.CONSTRAINT_NAME='email'
+			</sqlCheck>
+		</preConditions>
+		<dropUniqueConstraint tableName="user" constraintName="email" uniqueColumns="email"/>
+	</changeSet>
+
+</databaseChangeLog>

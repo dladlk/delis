@@ -4,13 +4,23 @@ html {
 .dashboard-link {
 	color: white;
 }
+.delis-table-compact {
+	line-height: 1;
+	font-size: 0.9rem;
+}
+.delis-table-compact .form-control {
+	line-height: 1.1;
+	font-size: 0.9rem;
+	height: 1.5rem;
+	padding: 0.1rem 0.2rem;
+}
 
 /* START Organisation setup */
 ul.org-smp-setup, ul.on-error-setup, ul.none-list-style {
 	list-style: none;
 }
 ul.org-smp-setup li ul li {
-	word-break: break-all
+	word-break: break-all;
 }	
 /* END Organisation setup */
 .cursor-pointer {
@@ -21,10 +31,46 @@ ul.org-smp-setup li ul li {
 	color: red;
 }
 
+.force-break-all {
+	word-break: break-all;
+}
+.force-break-word {
+	word-wrap: break-word;
+}  
+
 .no-wrap {
 	white-space: nowrap;
 }
 .delis-profile-code {
 	font-style:italic;
 	font-weight: bold; 
+}
+.delis-deactivated {
+	text-decoration: line-through;
+}
+
+table.dataTable.datatables-easy {
+	border-collapse: collapse !important;
+}
+table.datatables-easy thead th {
+	border-bottom-width: 1px;
+} 
+table.datatables-easy thead tr {
+	background-color: rgba(0,0,0,.03);
+}
+table.datatables-easy .delis-list-cbx {
+	padding-right: 0px !important;
+	vertical-align: middle;
+}
+table.datatables-easy .dt-no-sort {
+	padding-right: 2px !important;
+}
+.form-control.dt-date {
+	background-color: white;
+}
+.table-with-form tr th {
+	padding-bottom: 0px;
+}
+.table-with-form tr td {
+	padding-top: 0px;
 }

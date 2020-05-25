@@ -125,9 +125,28 @@ delisIngress:
     clusterIssuer: letsencrypt-prod
     secretName: tls-secret
     host: edelivery-test.trueservice.dk
-
+    metrics:
+      protected: true
+      subPath: /actuator/prometheus
+      secretName: basic-auth-metrics
+      secretLocalFile: "local-only/basic-auth-metrics.dat"
 delisDb:
     url: jdbc:mysql://172.16.2.4:3306/delis?useSSL=false
     user: delis
     password: delis
 
+delisValidator:
+    enabled: true
+    image: delis-validator:latest
+    contextPath: /delis-validator
+    env:
+      - name: delis.validation-artifact-folder
+        value: /delis-resources/validation
+    volumeMounts: 
+      - mountPath: /delis-resources
+        name: delis-resources
+    volumes:
+      - name: delis-resources
+        hostPath:
+          path: /wsh/delis/delis-resources
+    

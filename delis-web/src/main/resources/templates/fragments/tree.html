@@ -1,0 +1,40 @@
+<!doctype html>
+<html th:fragment="tree(tree, depth)" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+	<li>
+		<th:block th:switch="${tree.desc}">
+			<div class="" th:classappend="${tree.state != null ? 'delis-tree-'+tree.state : ''}">
+			<a href="#" th:href="${tree.node}" target="_blank" th:text="${tree.node}" th:title="${tree.desc}" th:case="'url'"></a>
+			<th:block th:case="'certificate'">
+				<span class="delis-smp-process">Certificate:</span>
+				<span th:text="${tree.node}"></span>
+			</th:block>
+			<th:block th:case="'transport'">
+				<span class="delis-smp-process">Transport profile:</span>
+				<span th:text="${tree.node}"></span>
+			</th:block>
+			<th:block th:case="'processScheme'">
+				<span class="delis-smp-process">Profile scheme:</span>
+				<span th:text="${tree.node}"></span>
+			</th:block>
+			<th:block th:case="'processValue'">
+				<span class="delis-smp-process">Profile:</span>
+				<span th:text="${tree.node}"></span>
+			</th:block>
+			<th:block th:case="'documentScheme'">
+				<span class="delis-smp-process">Document:</span>
+				<span th:text="${tree.node}"></span>
+			</th:block>
+			<span th:text="${tree.node}" th:case="*"></span>
+			
+				<span th:if="${tree.state?.isMiss()}">[MISSED]</span>
+			</div>			
+		</th:block>
+		<ul th:if="${!tree.children.isEmpty()}">
+			<th:block th:each="child: ${tree.children}">
+				<div th:replace="fragments/tree :: tree(tree=${child}, depth=${depth+1})"  />
+			</th:block>
+		</ul>	
+	</li>
+</body>

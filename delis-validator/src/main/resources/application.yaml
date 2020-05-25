@@ -1,0 +1,20 @@
+# Path to validation folder with artifacts for validation, with subfolders 'sch' for Schematron files and 'xsd' for Schema files
+delis:
+  validation-artifact-folder: "../delis-resources/validation"
+  validator:
+    persist:
+      # Whether requested files should be saved with result info or not. Values: none, all, failed 
+      mode: none
+      # Path to folder to persist validated files and result of validation
+      folder: path_to_folder
+    response:
+      status-header: reason
+      valid:
+        code: 200
+        status: DELIS:VALID
+      invalid:
+        code: 412
+        status:
+          xml: DELIS_INVALID_XML
+          xsd: DELIS:INVALID_BY_XSD
+          sch: DELIS:INVALID_BY_SCHEMATRON

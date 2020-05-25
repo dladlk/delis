@@ -5,64 +5,33 @@
 <body>
 <div class="card border-primary">
 	<div class="card-header bg-primary text-white">
-		Transformation Rule
+		Validation rule
 	</div>
 	<div class="card-body">
 
 		<form method="post" action="#" th:action="@{/validationrule/save}" th:object="${validationRule}">
 
 			<div class="form-group row">
-				<label class="col-sm-4 col-form-label">Active</label>
-				<div class="col-sm-8">
-					<input type="checkbox" th:field="*{active}" placeholder="Active"
-						   class="checkbox" />
+				<label class="col-sm-2 col-form-label" for="active1">Active: </label>
+				<div class="col-sm-10">
+					<input type="checkbox" th:field="*{active}" placeholder="Active" class="checkbox" />
 				</div>
 			</div>
+			
+			<div th:replace="~{fragments/misc :: form-select(field='validationType', name='Type', list='validationTypeList')}"/>
+			<div th:replace="~{fragments/misc :: form-select(field='documentFormat', name='Format', list='documentFormatList')}"/>
+			<div th:replace="~{fragments/misc :: form-input-text(field='priority', name='Priority', type='number')}"/>
+			
 
-			<div class="form-group row">
-				<label class="col-sm-4 col-form-label">Priority</label>
-				<div class="col-sm-8">
-					<input type="number" th:field="*{priority}" placeholder="Config"
-						   class="form-control" />
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<label class="col-sm-4 col-form-label">Format</label>
-				<div class="col-sm-8">
-					<select th:field="*{documentFormat}">
-						<option th:each="format : ${documentFormatList}" th:text="${format}" th:value="${format}"></option>
-					</select>
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<label class="col-sm-4 col-form-label">Validation Type</label>
-				<div class="col-sm-8">
-					<select th:field="*{validationType}">
-						<option th:each="type : ${validationTypeList}" th:text="${type}" th:value="${type}"></option>
-					</select>
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<label class="col-sm-4 col-form-label">Path</label>
-				<div class="col-sm-8">
-					<input type="text" th:field="*{rootPath}" placeholder="Path"
-						   class="form-control" />
-				</div>
-			</div>
-
-			<div class="form-group row">
-				<label class="col-sm-4 col-form-label">Config</label>
-				<div class="col-sm-8">
-					<input type="text" th:field="*{config}" placeholder="Config"
-						   class="form-control" />
-				</div>
-			</div>
+			<div th:replace="~{fragments/misc :: form-input-text(field='rootPath', name='Path', placeholder='Relative path to main file')}"/>
+			
 
 			<input type="hidden" th:field="*{id}" class="form-control" th:value="${validationRule.id}"/>
-			<button type="submit" class="btn btn-primary">Save</button>
+			<div>
+				<a th:href="@{/setup/index}" class="btn btn-secondary">Back</a>
+				<button type="submit" class="btn btn-primary">Save</button>
+				<div style="float: right">* required fields</div>
+			</div>
 		</form>
 
 	</div>

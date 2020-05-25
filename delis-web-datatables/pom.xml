@@ -16,6 +16,8 @@
 
 	<properties>
 		<darrachequesne.datatables>5.0.0</darrachequesne.datatables>
+		<spring-data-jpa.version>2.0.9.RELEASE</spring-data-jpa.version>
+		<javax-persistence-version>2.1.0</javax-persistence-version>
 	</properties>
 
 	<dependencies>
@@ -30,10 +32,24 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>com.github.darrachequesne</groupId>
 			<artifactId>spring-data-jpa-datatables</artifactId>
 			<version>${darrachequesne.datatables}</version>
+		</dependency>
+		 -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>javax.persistence</artifactId>
+			<version>${javax-persistence-version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

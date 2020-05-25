@@ -22,8 +22,6 @@ import dk.erst.delis.oxalis.sender.request.StaticTransmissionRequestBuilder;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.oxalis.as4.inbound.As4InboundModule;
-import no.difi.oxalis.as4.outbound.As4OutboundModule;
 import no.difi.oxalis.commons.guice.GuiceModuleLoader;
 import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
 import no.difi.vefa.peppol.common.model.Endpoint;
@@ -34,9 +32,12 @@ import no.difi.vefa.peppol.common.model.TransportProfile;
 import no.difi.vefa.peppol.mode.Mode;
 
 @Slf4j
-@Ignore
 public class SimpleSenderTest {
 
+	private static final boolean SEND_AS2 = false;
+	
+	private static final boolean SEND_TO_TL_ACCEPTANCE = false;
+	
 	private static Injector injector;
 	private static LookupTransmissionRequestBuilder lookupBuilder;
 	private static StaticTransmissionRequestBuilder staticBuilder;
@@ -44,11 +45,8 @@ public class SimpleSenderTest {
 
 	@BeforeClass
 	public static void init() {
-		injector = Guice
-				.createInjector(new As4OutboundModule(), new As4InboundModule(), Modules
-						.override(new GuiceModuleLoader())
-							.with(new AbstractModule() {
-							}));
+		injector = Guice.createInjector(Modules.override(new GuiceModuleLoader()).with(new AbstractModule() {
+		}));
 
 		staticBuilder = new StaticTransmissionRequestBuilder();
 		certificate = injector.getInstance(X509Certificate.class);
@@ -66,10 +64,11 @@ public class SimpleSenderTest {
 
 	private void sendBothTransports(ISender sender, byte[] payload) throws Exception {
 		staticBuilder.setHeader(buildHeader());
-
-		log.info("Sending by AS2...");
-		staticBuilder.setEndpoint(buildEndpoint(false));
-		sendPayload(sender, payload);
+		if (SEND_AS2) {
+			log.info("Sending by AS2...");
+			staticBuilder.setEndpoint(buildEndpoint(false));
+			sendPayload(sender, payload);
+		}
 
 		log.info("Sending by AS4...");
 		staticBuilder.setEndpoint(buildEndpoint(true));
@@ -93,6 +92,11 @@ public class SimpleSenderTest {
 		String documentIdentifier = "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0::2.1";
 		String processIdentifier = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0";
 
+		if (SEND_TO_TL_ACCEPTANCE) {
+			documentIdentifier = "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:www.cenbii.eu:transaction:biitrns010:ver2.0:extended:urn:www.peppol.eu:bis:peppol5a:ver2.0::2.1";
+			processIdentifier = "urn:www.cenbii.eu:profile:bii05:ver2.0";
+		}
+
 		Header header = Header
 				.newInstance()
 					.sender(ParticipantIdentifier.of(sender))
@@ -111,11 +115,15 @@ public class SimpleSenderTest {
 			transportProfile = TransportProfile.of("busdox-transport-as2-ver1p0");
 		}
 		url = Mode.of(Mode.TEST).getString("oxalis.dev.url."+(as4?"as4":"as2"));
-
+		if (SEND_TO_TL_ACCEPTANCE) {
+			url = "https://peppol-test.trueservice.dk/domibus/services/msh";
+		}
+		
 		return Endpoint.of(transportProfile, URI.create(url), certificate);
 	}
 
 	@Test
+	@Ignore
 	public void testSendFileByLookup() throws Exception {
 		byte[] payload = loadTestPayload();
 
@@ -125,6 +133,7 @@ public class SimpleSenderTest {
 	}
 
 	@Test
+	@Ignore
 	public void testSendFileStaticMany() throws Exception {
 		byte[] payload = loadTestPayload();
 		ISender sender = new SimpleSender(injector, staticBuilder);

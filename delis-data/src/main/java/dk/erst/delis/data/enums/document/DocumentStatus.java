@@ -10,7 +10,7 @@ public enum DocumentStatus implements Named {
 	
 	VALIDATE_START, VALIDATE_OK, VALIDATE_ERROR(true), // Validation phase
 	
-	EXPORT_START, EXPORT_OK,
+	EXPORT_START, EXPORT_OK, EXPORT_ERROR(true),
 	
 	DELIVER_OK,
 	

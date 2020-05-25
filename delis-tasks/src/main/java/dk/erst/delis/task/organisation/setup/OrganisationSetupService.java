@@ -1,5 +1,7 @@
 package dk.erst.delis.task.organisation.setup;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,32 +13,42 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import dk.erst.delis.common.util.StatData;
 import dk.erst.delis.dao.OrganisationSetupDaoRepository;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.organisation.OrganisationSetup;
 import dk.erst.delis.data.enums.organisation.OrganisationSetupKey;
+import dk.erst.delis.task.document.deliver.DocumentDeliverService;
 import dk.erst.delis.task.email.EmailValidator;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingFormatRule;
 import dk.erst.delis.task.organisation.setup.data.OrganisationReceivingMethod;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
+import dk.erst.delis.vfs.service.VFSConfigException;
+import dk.erst.delis.vfs.service.VFSService;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
 public class OrganisationSetupService {
 
+	private static final boolean VALIDATE_BY_UPLOAD = true;
+
 	private OrganisationSetupDaoRepository organisationSetupDaoRepository;
 
+	private VFSService vfsService;
+	
 	@Autowired
-	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository) {
+	public OrganisationSetupService(OrganisationSetupDaoRepository organisationSetupDaoRepository, VFSService vfsService) {
 		this.organisationSetupDaoRepository = organisationSetupDaoRepository;
+		this.vfsService = vfsService;
 	}
 
 	public OrganisationSetupData load(Organisation organisation) {
@@ -47,31 +59,135 @@ public class OrganisationSetupService {
 		return convertSetupListToData(setupList, organisation);
 	}
 	
-	public ValidationResultData validate(OrganisationSetupData data) {
-		ValidationResultData res = new ValidationResultData();
-		
+	public void validate(OrganisationSetupData data, BindingResult bindingResult, boolean validateReceivingSetup) {
 		if (data.isOnErrorAutoSendEmailToSupplier()) {
 			if (StringUtils.isBlank(data.getOnErrorSenderEmailAddress())) {
-				res.addError("onErrorSenderEmailAddress", "Mandatory as automatic email sending on error is enabled.");
+				bindingResult.rejectValue("onErrorSenderEmailAddress", "undefined", "Mandatory as automatic email sending on error is enabled.");
 			}
 			if (StringUtils.isBlank(data.getOnErrorReceiverEmailAddress())) {
-				res.addError("onErrorReceiverEmailAddress", "Mandatory as automatic email sending on error is enabled.");
+				bindingResult.rejectValue("onErrorReceiverEmailAddress", "undefined", "Mandatory as automatic email sending on error is enabled.");
 			}
 		}
 		if (StringUtils.isNotBlank(data.getOnErrorSenderEmailAddress())) {
 			StringBuilder newValue = new StringBuilder();
-			validateEmailValue(res, data.getOnErrorSenderEmailAddress(), newValue, "onErrorSenderEmailAddress", false);
+			validateEmailValue(bindingResult, data.getOnErrorSenderEmailAddress(), newValue, "onErrorSenderEmailAddress", false);
 			data.setOnErrorSenderEmailAddress(newValue.toString());
 		}
 		if (StringUtils.isNotBlank(data.getOnErrorReceiverEmailAddress())) {
 			StringBuilder newValue = new StringBuilder();
-			validateEmailValue(res, data.getOnErrorReceiverEmailAddress(), newValue, "onErrorReceiverEmailAddress", true);
+			validateEmailValue(bindingResult, data.getOnErrorReceiverEmailAddress(), newValue, "onErrorReceiverEmailAddress", true);
 			data.setOnErrorReceiverEmailAddress(newValue.toString());
 		}
-		return res;
+		
+		if (data.isReceiveBothOIOUBLBIS3() && data.getReceivingFormatRule() != OrganisationReceivingFormatRule.OIOUBL) {
+			bindingResult.rejectValue("receiveBothOIOUBLBIS3", "undefined", "Receiving of both OIOUBL and BIS3 format can be selected only if receiving format is set to OIOUBL.");
+		}
+		
+		if (data.getReceivingMethod() != null) {
+			if (StringUtils.isBlank(data.getReceivingMethodSetup())){
+				bindingResult.rejectValue("receivingMethodSetup", "undefined", "When receiving method is selected, setup line should be filled.");
+			} else {
+				File configFile = new File(data.getReceivingMethodSetup());
+				if (data.getReceivingMethod() == OrganisationReceivingMethod.FILE_SYSTEM) {
+					if (!configFile.exists() || !configFile.isDirectory()) {
+						bindingResult.rejectValue("receivingMethodSetup", "undefined", "Path does not exists or is not a directory.");
+					} else {
+						if (validateReceivingSetup) {
+							if (data.isReceiveBothOIOUBLBIS3()) {
+								validateSubfolder(bindingResult, configFile, DocumentDeliverService.DELIVER_FOLDER_BIS3);
+								validateSubfolder(bindingResult, configFile, DocumentDeliverService.DELIVER_FOLDER_OIOUBL);
+							}							
+						}
+					}
+				} else {
+					if (!configFile.exists() || !configFile.isFile()) {
+						bindingResult.rejectValue("receivingMethodSetup", "undefined", "Path does not exists or is not a file with VFS setup.");
+					} else {
+						try {
+							vfsService.getConfig(configFile.getAbsolutePath());
+							if (validateReceivingSetup) {
+								validateVFSFolder(bindingResult, data.getReceivingMethodSetup(), "/", "Accessibility check of configured receiving method failed.");
+								if (data.isReceiveBothOIOUBLBIS3()) {
+									validateVFSSubfolder(bindingResult, data.getReceivingMethodSetup(), "/" + DocumentDeliverService.DELIVER_FOLDER_BIS3);
+									validateVFSSubfolder(bindingResult, data.getReceivingMethodSetup(), "/" + DocumentDeliverService.DELIVER_FOLDER_OIOUBL);
+								}								
+							}
+						} catch (Exception e) {
+							bindingResult.rejectValue("receivingMethodSetup", "undefined", "VFS setup cannot be loaded: "+e.getMessage());
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private void validateVFSSubfolder(BindingResult bindingResult, String setup, String folderName) {
+		validateVFSFolder(bindingResult, setup, folderName, "Receiving of both BIS3 and OIOUBL is configured, but subfolder " + folderName + " does not exists or is not a directory.");		
+	}
+	
+	private void validateVFSFolder(BindingResult bindingResult, String setup, String path, String messageNotExists) {
+		if (VALIDATE_BY_UPLOAD) {
+			validateVFSFolderByUpload(bindingResult, setup, path, messageNotExists);
+			return;
+		}
+		try {
+			if (!vfsService.exist(setup, path)) {
+				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists);
+			}
+		} catch (VFSConfigException e) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", "VFS setup XML file is not valid: " + e.getMessage());
+		} catch (Exception e) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": " + e.getMessage());
+		}
+	}
+	
+	/*
+	 * Not yet used
+	 */
+	protected void validateVFSFolderByUpload(BindingResult bindingResult, String setup, String path, String messageNotExists) {
+		File tempFile = null;
+		try {
+			log.info("Validating VFS folder " + path + " by config " + setup);
+			tempFile = File.createTempFile("validateVFSFolder_" + System.currentTimeMillis(), ".tmp");
+			try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+				IOUtils.write("validateVFSFolder".getBytes(), fos);
+			}
+			String remoteFilePath = path + "/" + tempFile.getName();
+			vfsService.upload(setup, tempFile.getAbsolutePath(), remoteFilePath);
+			log.info("Successfully uploaded temp file to "+remoteFilePath);
+			if (!vfsService.exist(setup, remoteFilePath)) {
+				log.warn("File does not exist: "+remoteFilePath);
+				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": temporary uploaded file does not exist: " + remoteFilePath);
+			} else {
+				log.info("File exists: "+remoteFilePath);
+			}
+			if (!vfsService.delete(setup, remoteFilePath)) {
+				log.warn("Cannot delete temp file: "+remoteFilePath);
+				bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": cannot delete temporary uploaded file " + remoteFilePath);
+			} else {
+				log.info("Successfully deleted temp file: " + remoteFilePath);
+			}
+		} catch (VFSConfigException e) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", "VFS setup XML file is not valid: " + e.getMessage());
+		} catch (Exception e) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", messageNotExists + ": " + e.getMessage());
+		} finally {
+			if (tempFile != null) {
+				if (!tempFile.delete()) {
+					log.error("Failed to delete temporary file, generated for VFS access validation: " + tempFile);
+				}
+			}
+		}
+	}	
+
+	private void validateSubfolder(BindingResult bindingResult, File configFile, String subPath) {
+		File subFolder = new File(configFile, subPath);
+		if (!subFolder.exists() || !subFolder.isDirectory()) {
+			bindingResult.rejectValue("receivingMethodSetup", "undefined", "Receiving of both BIS3 and OIOUBL is configured, but subfolder " + subPath + " does not exists or is not a directory.");
+		}
 	}
 
-	private void validateEmailValue(ValidationResultData res, String value, StringBuilder newValue, String code, boolean allowMultiple) {
+	private void validateEmailValue(BindingResult bindingResult, String value, StringBuilder newValue, String code, boolean allowMultiple) {
 		value = value.trim();
 		String[] values = new String[] {value};
 		if (allowMultiple) {
@@ -87,7 +203,7 @@ public class OrganisationSetupService {
 				}
 				newValue.append(email);
 				if (!EmailValidator.isValidEmail(email)) {
-					res.addError(code, "Email address '"+email+"' is not valid.");
+					bindingResult.rejectValue(code, "undefined", "Email address '"+email+"' is not valid.");
 				}
 			}
 		}
@@ -179,6 +295,7 @@ public class OrganisationSetupService {
 		if (d.getReceivingMethodSetup() != null) {
 			m.put(OrganisationSetupKey.RECEIVING_METHOD_SETUP, d.getReceivingMethodSetup().trim());
 		}
+		m.put(OrganisationSetupKey.SMP_INTEGRATION, d.isSmpIntegrationPublish() ? "PUBLISH": "");
 		if (d.getSubscribeProfileSet() != null) {
 			String joined = d.getSubscribeProfileSet().stream().map(OrganisationSubscriptionProfileGroup::getCode).collect(Collectors.joining(","));
 			m.put(OrganisationSetupKey.SUBSCRIBED_SMP_PROFILES, joined);
@@ -216,6 +333,9 @@ public class OrganisationSetupService {
 					continue;
 				}
 				switch (os.getKey()) {
+				case SMP_INTEGRATION:
+					d.setSmpIntegrationPublish("PUBLISH".equalsIgnoreCase(os.getValue()));
+					break;
 				case SUBSCRIBED_SMP_PROFILES:
 					String[] profiles = os.getValue().split(",");
 
@@ -234,7 +354,7 @@ public class OrganisationSetupService {
 					d.setReceivingFormatRule(OrganisationReceivingFormatRule.valueOf(os.getValue()));
 					break;
 				case RECEIVING_METHOD:
-					d.setReceivingMethod(OrganisationReceivingMethod.valueOf(os.getValue()));
+					d.setReceivingMethod(OrganisationReceivingMethod.getInstance(os.getValue()));
 					break;
 				case RECEIVING_METHOD_SETUP:
 					d.setReceivingMethodSetup(os.getValue());
@@ -278,6 +398,9 @@ public class OrganisationSetupService {
 		}
 		if (d.getSubscribeProfileSet() == null) {
 			d.setSubscribeProfileSet(Collections.emptySet());
+		}
+		if (d.getReceivingFormatRule() == null) {
+			d.setReceivingFormatRule(OrganisationReceivingFormatRule.OIOUBL);
 		}
 		return d;
 	}

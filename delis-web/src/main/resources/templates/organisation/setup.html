@@ -13,16 +13,24 @@
 			<form method="post" action="#" th:action="@{/organisation/setup-save/__${organisation.id}__}" th:object="${organisationSetupData}">
 			<table class="table table-striped table-bordered table-sm">
 				<tr>
-					<th style="width: 190px;">C4 receiving format</th>
+					<th style="width: 190px;">Receiving format</th>
 					<td>
 						<select th:field="*{receivingFormatRule}">
-							<option value="" th:selected="${receivingFormatRule == null}">Select format</option>
 							<option th:each="rule : ${organisationReceivingFormatRuleList}" th:text="${rule.title}" th:value="${rule.code}">OIOUBL - convert everything to OIOUBL</option>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<th>Subscribed SMP profiles</th>
+					<th>SMP integration</th>
+					<td>
+						<select th:field="*{smpIntegrationPublish}" id="smpIntegration" onchange="return smpIntegrationChanged();">
+							<option value="false" th:selected="${!organisationSetupData.smpIntegrationPublish}">Do not publish to SMP</option>
+							<option value="true" th:selected="${organisationSetupData.smpIntegrationPublish}">Publish to configured SMP</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>SMP profiles</th>
 					<td>
 						<ul class="org-smp-setup">
 							<li th:each="p : ${organisationSubscriptionProfileGroupList}">
@@ -36,7 +44,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th>Subscribed SMP AP</th>
+					<th>SMP AccessPoints</th>
 					<td>
 						<ul class="org-smp-setup">
 							<li>
@@ -59,7 +67,7 @@
 				<tr>
 					<th>Receiving method</th>
 					<td>
-						<select th:field="*{receivingMethod}">
+						<select class="form-control form-control-sm" th:field="*{receivingMethod}">
 							<option value="" th:selected="${receivingMethod == null}">Select method</option>
 							<option th:each="rule : ${organisationReceivingMethodList}" th:text="${rule.title}" th:value="${rule.code}">File system</option>
 						</select>
@@ -68,18 +76,33 @@
 				<tr>
 					<th>Receiving method config</th>
 					<td>
-						<input type="text" class="form-input w-100" th:value="${receivingMethodSetup}" th:field="*{receivingMethodSetup}"></input>
+						<input type="text" class="form-control form-control-sm" th:value="${receivingMethodSetup}" placeholder="Path to resource" th:field="*{receivingMethodSetup}" th:errorclass="is-invalid"></input>
+						<div th:replace="~{fragments/misc :: has-errors (field='receivingMethodSetup')}"></div>
+						<div class="form-check">
+							<input class="form-check-input" id="validatesetup1" name="validateReceivingSetup" type="checkbox" th:attrappend="checked=${validateReceivingSetup}?@{'checked'}"></input> 
+							<label class="form-check-label" for="validatesetup1">Validate accessibility on save by uploading file and its deletion afterwards.</label>
+						</div>					
 					</td>
 				</tr>
 				<tr>
 					<th>Receiving options</th>
 					<td>
-						<ul class="none-list-style">
-							<li><input id="receiveoption1" th:field="*{receiveBothOIOUBLBIS3}" type="checkbox"></input> <label for="receiveoption1">Receive both BIS3 and OIOUBL into different subfolders</label></li>
-							<li><input id="receiveoption2" th:field="*{checkDeliveredConsumed}" type="checkbox"></input> <label for="receiveoption2">Check that delivered files are collected</label></li>
-							<li><input id="receiveoption3" th:field="*{checkDeliveredAlertMins}" type="text" size="6" ></input> <label for="receiveoption3">Minutes since export to alert if delivered files are not collected</label></li>
-						</ul>
-						
+						<div class="pl-3">
+						<div class="form-check">
+							<input class="form-check-input" id="receiveoption1" th:field="*{receiveBothOIOUBLBIS3}" type="checkbox" th:errorclass="is-invalid"></input> 
+							<label class="form-check-label" for="receiveoption1">Receive both OIOUBL and BIS3 (if ingoing format not OIOUBL) into different subfolders</label>
+							<div th:replace="~{fragments/misc :: has-errors (field='receiveBothOIOUBLBIS3')}"></div>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="receiveoption2" th:field="*{checkDeliveredConsumed}" type="checkbox"></input> 
+							<label class="form-check-label" for="receiveoption2">Check that delivered files are collected</label>
+						</div>
+						<div class="form-group">
+							<input class="form-control form-control-sm" style="width: 60px; display: inline;" id="receiveoption3" th:field="*{checkDeliveredAlertMins}" type="text" size="4" maxlength="4" th:errorclass="is-invalid"></input> 
+							<div th:replace="~{fragments/misc :: has-errors (field='checkDeliveredAlertMins')}"></div>
+							<label for="receiveoption3">Minutes since export to alert if delivered files are not collected</label>
+						</div>
+						</div>
 					</td>
 				</tr>
 				<tr>
@@ -93,10 +116,8 @@
 								<div class="form-group row">
 									<label for="onerror5" class="col-sm-2">Sender email:</label>
 									<div class="col-sm-6">
-										<input th:field="*{onErrorSenderEmailAddress}" class="form-control" th:classappend="${(validation != null && validation?.isInvalid('onErrorSenderEmailAddress'))?'is-invalid':''}" id="onerror5" type="text" size="30"></input>
-										<div class="invalid-feedback" th:if="${validation?.isInvalid('onErrorSenderEmailAddress')}">
-											<div th:each="e: ${validation?.getErrorList('onErrorSenderEmailAddress')}" th:text="${e}">Error message</div>
-										</div>
+										<input th:field="*{onErrorSenderEmailAddress}" class="form-control form-control-sm" th:errorclass="is-invalid" id="onerror5" type="text" size="30"></input>
+										<div th:replace="~{fragments/misc :: has-errors (field='onErrorSenderEmailAddress')}"></div>
 										<small class="form-text text-muted">
 										  Email address, which will be used as FROM address in email notifications. Mandatory, if above checkbox is selected.
 										</small>
@@ -105,10 +126,8 @@
 								<div class="form-group row">
 									<label for="onerror6" class="col-sm-2">Receiver email: </label>
 									<div class="col-sm-6">
-										<input th:field="*{onErrorReceiverEmailAddress}" class="form-control" th:classappend="${(validation != null && validation?.isInvalid('onErrorReceiverEmailAddress'))?'is-invalid':''}" id="onerror6" type="text" size="60"></input>
-										<div class="invalid-feedback" th:if="${validation?.isInvalid('onErrorReceiverEmailAddress')}">
-											<div th:each="e: ${validation?.getErrorList('onErrorReceiverEmailAddress')}" th:text="${e}">Error message</div>
-										</div>
+										<input th:field="*{onErrorReceiverEmailAddress}" class="form-control form-control-sm" th:errorclass="is-invalid" id="onerror6" type="text" size="60"></input>
+										<div th:replace="~{fragments/misc :: has-errors (field='onErrorReceiverEmailAddress')}"></div>
 										<small class="form-text text-muted">
 										  Multiple email addresses can be specified, separated with semicolon ";". Mandatory, if above checkbox is selected.
 										</small>
@@ -121,10 +140,19 @@
 			</table>
 			
 				<button type="submit" class="btn btn-primary">Save</button>
-			
 			</form>
 		</div>
 	</div>
+	
+<script>
+function smpIntegrationChanged(){
+	var newValue = $('#smpIntegration').val();
+	if (newValue == 'false') {
+		return confirm('Are you sure, that you want to disable publishing to SMP? All active and published identifiers will be deleted from SMP.');
+	}
+	return true;
+}	
+</script>
 	
 </body>
 </html>

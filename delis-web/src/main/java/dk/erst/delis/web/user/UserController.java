@@ -2,115 +2,100 @@ package dk.erst.delis.web.user;
 
 import javax.validation.Valid;
 
-import dk.erst.delis.data.entities.organisation.Organisation;
-import dk.erst.delis.data.entities.user.User;
-import dk.erst.delis.task.organisation.OrganisationService;
-
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import dk.erst.delis.data.entities.user.User;
+import dk.erst.delis.task.organisation.OrganisationService;
+
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
 	@Autowired
-    private UserService userService;
-	
+	private UserService userService;
+
 	@Autowired
 	private OrganisationService organisationService;
 
-    @GetMapping("/list")
-    public String list(Model model) {
-        model.addAttribute("users", userService.findAll());
-        return "user/list";
-    }
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(false);
+		binder.registerCustomEditor(String.class, stringtrimmer);
+		binder.addValidators(new UserDataValidator());
+	}
 
-    @GetMapping("/create")
-    public String createNewUser(Model model) {
-        model.addAttribute("user", new UserData());
-        return "user/edit";
-    }
+	@GetMapping("/xlist")
+	public String xlist(Model model) {
+		model.addAttribute("users", userService.findAll());
+		return "user/list";
+	}
 
-    @GetMapping("/update/{id}")
-    public String updateUser(@PathVariable long id, Model model) {
-        User user = userService.findById(id);
-        UserData userData = new UserData();
-        BeanUtils.copyProperties(user, userData, "disabledIrForm");
-        if (user.getOrganisation() != null) {
-        	userData.setOrganisationCode(user.getOrganisation().getCode());
-        }
-        if (user.getDisabledIrForm() != null && user.getDisabledIrForm().booleanValue()) {
-        	userData.setDisabledIrForm(true);
-        }
-        model.addAttribute("user", userData);
-        return "user/update";
-    }
+	@GetMapping("/create")
+	public String create(Model model) {
+		model.addAttribute("user", new UserData());
+		fillModel(model);
+		return "user/edit";
+	}
 
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable long id, Model model) {
-        userService.deleteUser(id);
-        model.addAttribute("users", userService.findAll());
-        return "user/list";
-    }
+	private void fillModel(Model model) {
+		model.addAttribute("organisationList", organisationService.getOrganisations());
+	}
 
-    @PostMapping("/create")
-    public String createNewUser(@Valid UserData user, RedirectAttributes ra) {
-        if (StringUtils.isBlank(user.getUsername())) {
-            ra.addFlashAttribute("errorMessage", "field username can't be empty");
-            return "redirect:/users/create";
-        }
-        if (StringUtils.isBlank(user.getPassword())) {
-            ra.addFlashAttribute("errorMessage", "field password can't be empty");
-            return "redirect:/users/create";
-        }
-        User userExists = userService.findUserByUsername(user.getUsername());
-        if (userExists != null) {
-            ra.addFlashAttribute("errorMessage", "There is already a user registered with the username provided");
-            return "redirect:/users/create";
-        }
-        userService.saveOrUpdateUser(user);
-        return "redirect:/users/list";
-    }
+	@GetMapping("/update/{id}")
+	public String update(@PathVariable long id, Model model, RedirectAttributes ra) {
+		User user = userService.findById(id);
+		if (user == null) {
+			ra.addFlashAttribute("errorMessage", "User is not found");
+			return "redirect:/user/list";
+		}
+		UserData userData = new UserData();
+		BeanUtils.copyProperties(user, userData, "disabledIrForm");
+		if (user.getOrganisation() != null) {
+			userData.setOrganisationCode(user.getOrganisation().getCode());
+		} else {
+			userData.setAdmin(true);
+		}
+		if (user.getDisabledIrForm() != null && user.getDisabledIrForm().booleanValue()) {
+			userData.setDisabledIrForm(true);
+		}
+		model.addAttribute("user", userData);
+		fillModel(model);
+		return "user/edit";
+	}
 
-    @PostMapping("/update")
-    public String updateUser(@Valid UserData user, RedirectAttributes ra) {
-        User userExists = userService.findUserByUsername(user.getUsername());
-        if (userExists != null) {
-            if (ObjectUtils.notEqual(user.getId(), userExists.getId())) {
-                ra.addFlashAttribute("errorMessage", "There is already a user registered with the username provided");
-                return "redirect:/users/update/" + user.getId();
-            }
-        }
-        String result = processOrganisationCode(user, ra, userExists);
-        if (result != null) {
-        	return result;
-        }
-        userService.saveOrUpdateUser(user);
-        return "redirect:/users/list";
-    }
+	@PostMapping("/save")
+	public String save(@Valid @ModelAttribute("user") UserData user, BindingResult bindingResult, Model model, RedirectAttributes ra) {
+		if (!bindingResult.hasErrors()) {
+			userService.validate(user, bindingResult);
+		}
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("errorMessage", "Some fields are not valid.");
+			fillModel(model);
+			return "user/edit";
+		}
 
-	private String processOrganisationCode(UserData user, RedirectAttributes ra, User userExists) {
-		String organisationCode = user.getOrganisationCode();
-		if (StringUtils.isNotBlank(organisationCode)) {
-			organisationCode = StringUtils.trim(organisationCode);
-        	Organisation organisation = organisationService.findOrganisationByCode(organisationCode);
-        	if (organisation == null) {
-                ra.addFlashAttribute("errorMessage", "No organisation is found by code "+organisationCode);
-                return "redirect:/users/update/" + user.getId();
-        	}
-        	
-        	userExists.setOrganisation(organisation);
-        }
-		return null;
+		boolean isNew = user.isNew();
+		userService.saveOrUpdateUser(user);
+
+		if (isNew) {
+			ra.addFlashAttribute("message", "User is created.");
+		} else {
+			ra.addFlashAttribute("message", "User is updated.");
+		}
+
+		return "redirect:/user/view/" + user.getId();
 	}
 }

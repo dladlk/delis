@@ -12,7 +12,7 @@
 
 	<div class="card border-secondary m-1">
 		<div class="card-body pb-0">
-			<table class="table table-sm table-borderless">
+			<table class="table table-sm table-borderless table-with-form">
 				<tr>
 					<th>Organisation</th>
 					<th>Identifier</th>
@@ -21,7 +21,7 @@
 				</tr>
 				<tr>
 					<td><a th:if="${document.organisation}" href="#" th:href="@{/organisation/view/__${document.organisation.id}__}" th:text="${document.organisation.name}">Region Nord</a></td>
-					<td><a th:if="${document.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${document.receiverIdentifier.id}__}" th:text="${document.receiverIdentifier.name}">Receiver name</a></td>
+					<td><a th:if="${document.receiverIdentifier}" href="#" th:href="@{/identifier/view/__${document.receiverIdentifier.id}__}" th:text="${#strings.isEmpty(document.receiverIdentifier.name)?'No name':document.receiverIdentifier.name}">Receiver name</a></td>
 					<td th:text="${#dates.format(document.createTime, 'yyyy-MM-dd HH:mm:ss')}">2018-12-01 12:32:12</td>
 					<td>
 						<span th:text="${document.documentStatus?.name}" th:classappend="${document.documentStatus?.error ? 'document-error': ''}">LOADED</span><th:block th:if="${document.lastError}">, last error: 
@@ -32,31 +32,30 @@
 				<tr>
 					<th>Document type</th>
 					<th>Ingoing format</th>
-					<th>Document Id</th>
-					<th>Document date</th>
+					<th colspan="2">File name</th>
 				</tr>
 				<tr>
 					<td th:text="${document.ingoingDocumentFormat?.documentType?.name}">INVOICE</td>
 					<td th:text="${document.ingoingDocumentFormat?.name}">CII</td>
-					<td th:text="${document.documentId}">F-2345RWELF2</td>
-					<td th:text="${document.documentDate}">2018-13-23</td>
+					<td colspan="2" th:text="${document.name}">XXX</td>
 				</tr>
 				<tr>
-					<th colspan="2">File name</th>
+					<th>Document Id</th>
+					<th>Document date</th>
 					<th colspan="2">Message ID</th>
 				</tr>
 				<tr>
-					<td colspan="2" th:text="${document.name}">XXX</td>
+					<td th:text="${document.documentId}">F-2345RWELF2</td>
+					<td th:text="${document.documentDate}">2018-13-23</td>
 					<td colspan="2" th:text="${document.messageId}">BSD-332-32D2-2342-ABD3-353F</td>
 				</tr>
 			</table>
 		</div>		
 	</div>
 
-	<div th:replace="~{document/response_block}"></div>
-
 	<div class="card border-secondary m-1">
 		<div class="card-body pb-0">
+			
 			<table class="table table-sm table-borderless">
 				<tr>
 					<th></th>
@@ -67,14 +66,14 @@
 				</tr>
 				<tr>
 					<th>Sender</th>
-					<td th:text="${document.senderIdRaw}">0088::2342342342</td>					
+					<td th:text="${@strings.unraw(document.senderIdRaw)}">0088:2342342342</td>					
 					<td th:text="${document.senderName}">Region</td>					
 					<td th:text="${document.senderCountry}">DK</td>
 					<td th:text="${document.senderEmail}">email@email.dk</td>
 				</tr>
 				<tr>
 					<th>Receiver</th>
-					<td th:text="${document.receiverIdRaw}">0088::2342342342</td>					
+					<td th:text="${@strings.unraw(document.receiverIdRaw)}">0088:2342342342</td>					
 					<td th:text="${document.receiverName}">Region</td>					
 					<td th:text="${document.receiverCountry}">DK</td>
 					<td th:text="${document.receiverEmail}">email@email.dk</td>
@@ -84,19 +83,18 @@
 	</div>
 	
 	</div>
+	
+	<div th:replace="~{document/response_block}"></div>
 
 	<div class="card border-secondary m-1">
 		<div class="card-body pb-0">
-			<div class="card-title">
-				Journal records
-			</div>
 			<table class="table table-borderless table-sm">
 				<tr>
 					<th>Date</th>
 					<th>Type</th>
 					<th>Status</th>
 					<th>Message</th>
-					<th>Duration, ms</th>
+					<th class="text-right" title="Duration in milliseconds">Ms</th>
 				</tr>
 				<th:block th:each="r,iter : ${lastJournalList}">
 				<tr>
@@ -107,7 +105,7 @@
 						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
 					</td>
 					<td th:text="${r.message}"/>
-					<td th:text="${r.durationMs}"/>
+					<td class="text-right" th:text="${r.durationMs}"/>
 				</tr>
 				<tr th:if="${errorListByJournalDocumentIdMap.get(r.id)}">
 					<td colspan="5">
@@ -115,14 +113,14 @@
 							<tr>
 								<th>Flag</th>
 								<th>Code</th>
-								<th>Message</th>
+								<th>Description</th>
 								<th>Location</th>
 							</tr>
 							<tr th:each="errorDictionary : ${errorListByJournalDocumentIdMap.get(r.id)}">
-								<td th:text="${errorDictionary.flag}"></td>
-								<td><a href="" th:href="@{/errordict/view/__${errorDictionary.errorDictionaryId}__(back=@{/document/view/__${document.id}__})}" th:text="${errorDictionary.code}"></td>
-								<td th:text="${errorDictionary.message}"></td>
-								<td th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 100)}"></td>
+								<td> <span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>  </td>
+								<td><a class="no-wrap" href="" th:href="@{/errordict/view/__${errorDictionary.errorDictionaryId}__(back=@{/document/view/__${document.id}__})}" th:text="${errorDictionary.code}"></td>
+								<td class="force-break-word" th:text="${@strings.spaceTexts(errorDictionary.message, 100)}"></td>
+								<td class="force-break-word" th:text="${@strings.spaceTags(#strings.abbreviate(errorDictionary.detailedLocation, 500))}"></td>
 							</tr>
 						</table>
 					</td>
@@ -134,21 +132,16 @@
 
 	<div class="row m-1">
 
-	<div class="col card border-secondary w-50 m-1">
+	<div class="col card border-secondary w-50 mr-1">
 		<div class="card-body pb-0">
-			<div class="card-title">
-				Document Bytes
-			</div>
 			<table class="table table-borderless table-sm">
 				<tr>
-					<th>Id</th>
 					<th>Type</th>
 					<th>Format</th>
 					<th>Size, bytes</th>
 					<th>Download</th>
 				</tr>
 				<tr th:each="r,iter : ${documentBytes}">
-					<td th:text="${r.id}"></td>
 					<td th:text="${r.type?.name}"></td>
 					<td th:text="${r.format?.name}"></td>
 					<td th:text="${r.size}"></td>
@@ -158,11 +151,11 @@
 		</div>
 	</div>
 	
-	<div class="col card border-secondary w-50 m-1 mb-3">
+	<div class="col card border-secondary w-50 mb-3">
 		<div class="card-body pb-1">
 			<form method="post" action="#" th:action="@{/document/updatestatus}" th:object="${document}">
 				<div class="d-flex justify-content-end">
-					<label class="m-2 col-form-label font-weight-bold">Status change:</label>
+					<label class="m-2 col-form-label font-weight-bold">Manual status change:</label>
 					<select th:field="*{documentStatus}" class="m-2">
 						<option th:each="documentStatus : ${documentStatusList}" th:text="${documentStatus.getName()}" th:value="${documentStatus}"></option>
 					</select>

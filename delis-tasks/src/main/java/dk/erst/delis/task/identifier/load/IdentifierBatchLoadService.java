@@ -1,12 +1,5 @@
 package dk.erst.delis.task.identifier.load;
 
-import dk.erst.delis.config.ConfigBean;
-import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,8 +11,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.config.ConfigBean;
+import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -34,25 +34,33 @@ public class IdentifierBatchLoadService {
         this.identifierLoadService = identifierLoadService;
     }
 
-    public List<OrganizationIdentifierLoadReport> performLoad() {
+    public StatData performLoad() {
         List<OrganizationIdentifierLoadReport> result = new ArrayList<>();
         try {
             Path identifierInputPath = configBean.getIdentifierInputPath();
             File identifierInputDir = identifierInputPath.toFile();
             if (!identifierInputDir.exists() || !identifierInputDir.isDirectory()) {
-                return result;
+				return StatData.error("Folder " + identifierInputDir + " does not exist or is not a directory");
             }
+            StatData sd = new StatData();
             for (File organizationFolder : identifierInputDir.listFiles()) {
                 String organizationCode = organizationFolder.getName();
                 OrganizationIdentifierLoadReport loadReport = loadOrganizationIdentifiers(organizationFolder.toPath(), organizationCode);
                 if (loadReport != null) {
                     result.add(loadReport);
+                    sd.increment("SYNCHRONIZED");
+                    sd.increase("ADD", loadReport.getAdd());
+                    sd.increase("UPDATE", loadReport.getUpdate());
+                    sd.increase("DELETE", loadReport.getDelete());
+                    sd.increase("EQUAL", loadReport.getEqual());
+                    sd.increase("FAILED", loadReport.getFailed());
                 }
             }
+            return sd;
         } catch (Exception e) {
             log.error("Failed to load identifiers", e);
+            return StatData.error(e.getMessage());
         }
-        return result;
     }
 
     private OrganizationIdentifierLoadReport loadOrganizationIdentifiers(Path orgFolderPath, String organizationCode) throws IOException {
@@ -81,8 +89,11 @@ public class IdentifierBatchLoadService {
 
     private void moveToProcessedFolder(Path sourceFilePath) {
         File targetFolder = new File(sourceFilePath.getParent().toString(), "PROCESSED");
-        if (!targetFolder.exists() && targetFolder.mkdirs()) {
-            throw new RuntimeException("Target folder "+targetFolder+" for processed identifier files not exists and unable to create");
+        if (!targetFolder.exists()) {
+        	targetFolder.mkdirs();
+        	if (!targetFolder.exists()) {
+        		throw new RuntimeException("Target folder "+targetFolder+" for processed identifier files not exists and unable to create");
+        	}
         }
         try {
             DateTimeFormatter timeStampPattern = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -99,20 +110,17 @@ public class IdentifierBatchLoadService {
     private OrganizationIdentifierLoadReport createLoadReport(List<SyncOrganisationFact> organisationFacts) {
         OrganizationIdentifierLoadReport loadReport = new OrganizationIdentifierLoadReport();
         for (SyncOrganisationFact organisationFact : organisationFacts) {
-            loadReport.setAdd(loadReport.getAdd() + organisationFact.getAdd());
-            loadReport.setUpdate(loadReport.getUpdate() + organisationFact.getUpdate());
-            loadReport.setDelete(loadReport.getDelete() + organisationFact.getDelete());
-            loadReport.setEqual(loadReport.getEqual() + organisationFact.getEqual());
-            loadReport.setFailed(loadReport.getFailed() + organisationFact.getFailed());
+        	if (organisationFact == null) {
+        		loadReport.setFailed(loadReport.getFailed() + 1);
+        	} else {
+	            loadReport.setAdd(loadReport.getAdd() + organisationFact.getAdd());
+	            loadReport.setUpdate(loadReport.getUpdate() + organisationFact.getUpdate());
+	            loadReport.setDelete(loadReport.getDelete() + organisationFact.getDelete());
+	            loadReport.setEqual(loadReport.getEqual() + organisationFact.getEqual());
+	            loadReport.setFailed(loadReport.getFailed() + organisationFact.getFailed());
+        	}
         }
         return loadReport;
-    }
-
-    public String createReportMessage(List<OrganizationIdentifierLoadReport> loadReports) {
-        List<String> messages = loadReports.stream()
-                .map(object -> Objects.toString(object, null))
-                .collect(Collectors.toList());
-        return StringUtils.join(messages, "\n");
     }
 
 }

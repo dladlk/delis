@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
-import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -27,6 +24,9 @@ import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
 import dk.erst.delis.task.organisation.OrganisationService;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfile;
+import dk.erst.delis.web.datatables.dao.DataTablesRepository;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListService;
+import dk.erst.delis.web.datatables.service.EasyDatatablesListServiceImpl;
 import dk.erst.delis.web.list.AbstractEasyListController;
 
 @Controller
@@ -60,9 +60,10 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 
 	@RequestMapping("/identifier/list")
 	public String list(Model model, WebRequest webRequest) {
-		model.addAttribute("selectedIdList", new IdentifierStatusBachUdpateInfo());
+		model.addAttribute("selectedIdList", new IdentifierStatusBatchUpdateInfo());
 		model.addAttribute("statusList", IdentifierStatus.values());
 		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
+		model.addAttribute("organisationList", organisationService.getOrganisations());
 		
 		return super.list(model, webRequest);
 	}
@@ -95,17 +96,17 @@ public class IdentifierController extends AbstractEasyListController<Identifier>
 			model.addAttribute("organisation", organisation);
 		}
 		model.addAttribute("identifierList", list);
-		model.addAttribute("selectedIdList", new IdentifierStatusBachUdpateInfo());
+		model.addAttribute("selectedIdList", new IdentifierStatusBatchUpdateInfo());
 		model.addAttribute("statusList", IdentifierStatus.values());
 		model.addAttribute("publishingStatusList", IdentifierPublishingStatus.values());
 		return "identifier/list";
 	}
 
 	@PostMapping("/identifier/updatestatuses")
-	public String listFilter(@ModelAttribute IdentifierStatusBachUdpateInfo idList, Model model) {
+	public String updateStatuses(@ModelAttribute IdentifierStatusBatchUpdateInfo idList, Model model) {
 		List<Long> ids = idList.getIdList();
-		IdentifierStatus status = idList.getStatus();
-		IdentifierPublishingStatus publishStatus = idList.getPublishStatus();
+		IdentifierStatus status = idList.getStatusNew();
+		IdentifierPublishingStatus publishStatus = idList.getPublishStatusNew();
 		identifierService.updateStatuses(ids, status, publishStatus, null);
 		return "redirect:/identifier/list";
 	}

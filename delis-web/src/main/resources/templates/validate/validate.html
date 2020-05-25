@@ -23,7 +23,7 @@
 					<th>Type</th>
 					<th>Status</th>
 					<th>Description</th>
-					<th>Duration, ms</th>
+					<th class="text-right" title="Duration in milliseconds">Ms</th>
 				</tr>
 				<th:block th:each="r,iter : ${result.processLog.stepList}">
 				<tr>
@@ -33,12 +33,12 @@
 						<i th:if="${!r.success}" class="fa fa-exclamation-circle text-danger "></i>
 					</td>
 					<td th:text="${r.description}"/>
-					<td th:text="${r.duration}"/>
+					<td class="text-right" th:text="${r.duration}"/>
 				</tr>
 				<tr th:unless="${#lists.isEmpty(r.errorRecords)}">
 					<td colspan="5">
 						
-						<div class="alert alert-primary">Found <span class="badge badge-danger" th:text="${r.errorRecords.size()}">9</span> validation error(s)
+						<div class="alert alert-primary">Found <span class="badge badge-danger" th:text="${r.countError}">9</span> <span th:th:text="${r.countError > 1 ? 'errors':'error'}">errors</span> and <span class="badge badge-warning" th:text="${r.countWarning}">9</span> <span th:th:text="${r.countWarning > 1 ? 'warnings':'warning'}">warnings</span>
 							<div class="btn btn-sm btn-warning" onclick="$('tr.error-flag-warning').toggle();">Toggle warnings</div>
 						</div>
 					
@@ -52,8 +52,8 @@
 							<tr th:each="errorDictionary : ${r.errorRecords}" th:attr="class='error-flag-'+${errorDictionary.flag}">
 								<td> <span class="badge" th:classappend="${errorDictionary.isWarning()?'badge-warning':'badge-danger'}" th:text="${errorDictionary.flag}"></span>  </td>
 								<td class="no-wrap" th:text="${errorDictionary.code}"></td>
-								<td th:text="${errorDictionary.message}"></td>
-								<td th:text="${#strings.abbreviate(errorDictionary.detailedLocation, 500)}"></td>
+								<td class="force-break-word" th:text="${@strings.spaceTexts(errorDictionary.message, 100)}"></td>
+								<td class="force-break-word" th:text="${@strings.spaceTags(#strings.abbreviate(errorDictionary.detailedLocation, 500))}"></td>
 							</tr>
 						</table>
 					</td>
@@ -91,6 +91,33 @@
 	                    </select>
 						<small id="filesHelpBlock" class="form-text text-muted">
 						  Validation results will be opened in a new tab, so you can change the format to another one without need to select files again. 
+						</small>                    	
+                    </div>
+                </div>
+                <div class="form-group row">
+                	<div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                    	<div class="form-check">
+	                   		<input type="checkbox" name="continueOnError" id="continueOnError1" class="form-check-input"></input>
+		                    <label for="continueOnError1" class="form-check-label">Continue on error</label>
+                    	</div>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						   Activate to continue next transformations and validations even if some validation fails.
+						</small>                    	
+                    	<div class="form-check">
+	                   		<input type="checkbox" name="skipPEPPOL" id="skipPEPPOL1" class="form-check-input"></input>
+		                    <label for="skipPEPPOL1" class="form-check-label">Skip PEPPOL validations</label>
+                    	</div>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						   Activate to validate only by CEN rules and skip PEPPOL validation schematron files.
+						</small>
+						                    	
+                    	<div class="form-check">
+	                   		<input type="checkbox" name="useDbRules" id="useDbRules1" class="form-check-input"></input>
+		                    <label for="useDbRules1" class="form-check-label">Ignore rules cache</label>
+                    	</div>
+						<small id="filesHelpBlock" class="form-text text-muted">
+						   Activate to validate by actual database rules to preview changes before flushing cache.
 						</small>                    	
                     </div>
                 </div>

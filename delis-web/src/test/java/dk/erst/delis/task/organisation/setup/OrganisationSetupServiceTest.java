@@ -60,7 +60,7 @@ public class OrganisationSetupServiceTest {
 		assertNotNull(dbSetup);
 		assertNotNull(dbSetup.getOrganisation());
 
-		assertNull(dbSetup.getReceivingFormatRule());
+		assertEquals(OrganisationReceivingFormatRule.OIOUBL, dbSetup.getReceivingFormatRule());
 		assertNull(dbSetup.getReceivingMethod());
 		assertNull(dbSetup.getReceivingMethodSetup());
 		assertTrue(dbSetup.getSubscribeProfileSet().isEmpty());
@@ -91,7 +91,7 @@ public class OrganisationSetupServiceTest {
 		assertEqualSetup(s, dbSetup);
 
 		s.setSubscribeProfileSet(buildSet(OIOUBL));
-		s.setReceivingFormatRule(null);
+		s.setReceivingFormatRule(OrganisationReceivingFormatRule.KEEP_ORIGINAL);
 		s.setReceivingMethod(null);
 		s.setReceivingMethodSetup(null);
 		stat = organisationSetupService.update(s);

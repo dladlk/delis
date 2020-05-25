@@ -2,11 +2,13 @@ package dk.erst.delis.task.document.parse;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.document.parse.data.DocumentParticipant;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -14,7 +16,11 @@ public class DocumentParseServiceTest {
 
 	@Test
 	public void testAllDocuments() throws Exception {
-		TestDocument[] testDocuments = new TestDocument[] { TestDocument.OIOUBL_INVOICE, TestDocument.OIOUBL_CREDITNOTE, TestDocument.BIS3_INVOICE, TestDocument.BIS3_CREDITNOTE, TestDocument.CII };
+		TestDocument[] testDocuments = new TestDocument[] { TestDocument.OIOUBL_INVOICE, TestDocument.OIOUBL_CREDITNOTE, TestDocument.BIS3_INVOICE, TestDocument.BIS3_CREDITNOTE, TestDocument.CII ,
+				
+				TestDocument.BIS3_ORDER_ONLY, TestDocument.BIS3_ORDER_ORDERING, TestDocument.BIS3_ORDER_RESPONSE, TestDocument.BIS3_CATALOGUE_ONLY, TestDocument.BIS3_CATALOGUE_RESPONSE_ONLY,
+				
+		};
 		DocumentParseService parser = new DocumentParseService();
 
 		for (TestDocument testDocument : testDocuments) {
@@ -47,12 +53,23 @@ public class DocumentParseServiceTest {
 	
 	private void assertFilledHeader(DocumentInfo header) {
 		assertNotNull(header);
-		assertNotNull(header.getDate());
-		assertNotNull(header.getId());
+		assertNotEmpty(header.getDate());
+		assertNotEmpty(header.getId());
 		assertNotNull(header.getProfile());
-		assertNotNull(header.getSender());
-		assertNotNull(header.getReceiver());
-		assertNotNull(header.getCustomizationID());
+		assertParticipant(header.getSender());
+		assertParticipant(header.getReceiver());
+		assertNotEmpty(header.getCustomizationID());
+	}
+
+	private void assertParticipant(DocumentParticipant p) {
+		assertNotNull(p);
+		assertNotEmpty(p.getId());
+		assertNotEmpty(p.getSchemeId());
+	}
+	
+	private void assertNotEmpty(String s) {
+		assertNotNull(s);
+		assertTrue(s.trim().length() > 0);
 	}
 
 }

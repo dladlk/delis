@@ -6,6 +6,7 @@ import java.util.Map;
 
 import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.data.enums.identifier.IdentifierStatus;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,11 @@ public class OrganisationStatisticsService {
 
 	public OrganisationIdentifierStatData loadOrganisationIdentifierStatMap(long organisationId) {
 		List<Map<String, Object>> rawList = this.identifierDaoRepository.loadIndetifierStatByOrganisation(organisationId);
-		return processStatListMap(rawList).get(organisationId);
+		OrganisationIdentifierStatData statData = processStatListMap(rawList).get(organisationId);
+		if (statData == null) {
+			return new OrganisationIdentifierStatData();
+		}
+		return statData;
 	}
 
 	
@@ -43,23 +48,32 @@ public class OrganisationStatisticsService {
 			int identifierCount = ((Long) map.get("identifierCount")).intValue();
 			IdentifierStatus status = (IdentifierStatus) map.get("status");
 			IdentifierPublishingStatus publishingStatus = (IdentifierPublishingStatus) map.get("publishingStatus");
-			if (publishingStatus != null && status != null) {
-				if (publishingStatus.isFailed()) {
-					d.failed += identifierCount;
-				}
-				if (!(status.isDeleted() && publishingStatus.isDone())) {
-					// Done deletions should be excluded from total
-					d.total += identifierCount;
-				}
-				if (status.isActive()) {
-					if (publishingStatus.isDone()) {
-						d.activeDone += identifierCount;
-					} else if (publishingStatus.isPending()) {
-						d.activePending += identifierCount;
+			
+			if (status != null) {
+				if (publishingStatus == null) {
+					if (status.isActive()) {
+						d.total += identifierCount;
+					} else {
+						d.deleted += identifierCount;
 					}
 				} else {
-					if (publishingStatus.isPending()) {
-						d.disabledPending += identifierCount;
+					if (publishingStatus.isFailed()) {
+						d.failed += identifierCount;
+					}
+					if (!(status.isDeleted() && publishingStatus.isDone())) {
+						// Done deletions should be excluded from total
+						d.total += identifierCount;
+					}
+					if (status.isActive()) {
+						if (publishingStatus.isDone()) {
+							d.activeDone += identifierCount;
+						} else if (publishingStatus.isPending()) {
+							d.activePending += identifierCount;
+						}
+					} else {
+						if (publishingStatus.isPending()) {
+							d.disabledPending += identifierCount;
+						}
 					}
 				}
 			}
@@ -72,10 +86,15 @@ public class OrganisationStatisticsService {
 	protected static class OrganisationIdentifierStatData {
 
 		private int total;
+		private int deleted;
 		private int activeDone;
 		private int activePending;
 		private int disabledPending;
 		private int failed;
+		
+		public boolean isNoPublish() {
+			return (this.activeDone + this.activePending + this.disabledPending + this.failed) == 0;
+		}
 
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
@@ -88,6 +107,9 @@ public class OrganisationStatisticsService {
 			sb.append(this.disabledPending);
 			sb.append(" + ");
 			sb.append(this.failed);
+			sb.append(" (");
+			sb.append(this.deleted);
+			sb.append(")");
 			return sb.toString();
 		}
 	}

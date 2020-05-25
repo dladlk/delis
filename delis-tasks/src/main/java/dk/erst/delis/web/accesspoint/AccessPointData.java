@@ -1,7 +1,13 @@
 package dk.erst.delis.web.accesspoint;
 
+import java.util.Date;
+
 import dk.erst.delis.data.enums.access.AccessPointType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -16,4 +22,5 @@ public class AccessPointData {
     private String serviceDescription;
     private String technicalContactUrl;
     private String certificate;
+    private Date certificateExpirationDate;
 }

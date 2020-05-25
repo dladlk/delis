@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +34,16 @@ public class MainTest {
 
 			main.entryPoint(new String[] { targetFile.getAbsolutePath() });
 			File sbdhFile = new File(targetFile.getAbsolutePath() + suffix);
-			try {
+			
+			/*
+			 * Important - SbdReader does not close given InputStream - it should be closed explicitely!
+			 */			
+			try (InputStream is = new FileInputStream(sbdhFile)){
 				log.info("Check presence of result file " + sbdhFile);
 
 				assertTrue("File " + sbdhFile + " does not exist", sbdhFile.exists());
 
-				SbdReader reader = SbdReader.newInstance(new FileInputStream(sbdhFile));
+				SbdReader reader = SbdReader.newInstance(is);
 				Header actual = reader.getHeader();
 				log.info("SBDH: " + actual);
 				assertNotNull(actual);

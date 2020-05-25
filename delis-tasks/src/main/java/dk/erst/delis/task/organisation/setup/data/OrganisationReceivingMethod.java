@@ -4,8 +4,6 @@ public enum OrganisationReceivingMethod {
 
 	FILE_SYSTEM("File system"),
 
-	AZURE_STORAGE_ACCOUNT("Azure Storage Account"),
-
 	VFS("VFS")
 
 	;
@@ -22,5 +20,13 @@ public enum OrganisationReceivingMethod {
 
 	public String getTitle() {
 		return title;
+	}
+
+	public static OrganisationReceivingMethod getInstance(String value) {
+		try {
+			return OrganisationReceivingMethod.valueOf(value);
+		} catch (Exception e) {
+		}
+		return null;
 	}
 }

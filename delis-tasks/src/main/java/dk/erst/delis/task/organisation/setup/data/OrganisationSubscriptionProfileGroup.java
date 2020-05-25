@@ -69,6 +69,52 @@ public enum OrganisationSubscriptionProfileGroup {
 					
 			}),		
 	
+	/*
+	 * BIS Order only 3.1
+	 * 
+	 * https://docs.peppol.eu/poacc/upgrade-3/profiles/3-order-only/
+	 */
+	
+	BIS3_OrderOnly ("urn:fdc:peppol.eu:poacc:bis:order_only:3", 
+			
+			new String[] {
+					
+			"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1"
+			
+			}),	
+	
+	/*
+	 * BIS Ordering 3.1
+	 * 
+	 * https://docs.peppol.eu/poacc/upgrade-3/profiles/28-ordering/
+	 */
+	
+	BIS3_Ordering ("urn:fdc:peppol.eu:poacc:bis:ordering:3", 
+			
+			new String[] {
+					
+					"urn:oasis:names:specification:ubl:schema:xsd:Order-2::Order##urn:fdc:peppol.eu:poacc:trns:order:3::2.1",
+					
+					"urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2::OrderResponse##urn:fdc:peppol.eu:poacc:trns:order_response:3::2.1"
+					
+	}),	
+	
+	/*
+	 * PEPPOL BIS Catalogue Only 3.0
+	 * 
+	 * https://docs.peppol.eu/poacc/upgrade-3/profiles/1-catalogueonly/
+	 */
+	
+	BIS3_Catalogue_Only("urn:fdc:peppol.eu:poacc:bis:catalogue_only:3", 
+			
+			new String[] {
+					
+					"urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1",
+					
+					"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:catalogue_response:3::2.1"
+					
+	}),	
+	
 	;
 	
 	public static String DEFAULT_PROCESS_SCHEME_ID = "urn:fdc:peppol.eu:2017:identifiers:proc-id";
@@ -89,11 +135,14 @@ public enum OrganisationSubscriptionProfileGroup {
 		return this.name();
 	}
 	
-	public String getProcessScheme() {
+	public String getProcessType() {
 		return DEFAULT_PROCESS_SCHEME_ID;
 	}
 	
 	public String getProcessSchemeSMP() {
+		if (this == OIOUBL) {
+			return "nes-procid-ubl";
+		}
 		return "cenbii-procid-ubl";
 	}
 	

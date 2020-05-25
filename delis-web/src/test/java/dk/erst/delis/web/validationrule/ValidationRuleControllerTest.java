@@ -1,5 +1,6 @@
 package dk.erst.delis.web.validationrule;
 
+import dk.erst.delis.config.rule.DefaultRuleBuilder;
 import dk.erst.delis.dao.RuleDocumentValidationDaoRepository;
 import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
@@ -42,22 +43,16 @@ public class ValidationRuleControllerTest {
 
     @Test
     @WithMockUser(username = "delis")
-    public void testList() throws Exception {
-        this.mockMvc.perform(get("/validationrule/list"))
-                .andExpect(view().name("setup/index"))
-                .andExpect(model().attribute("validationRuleList", notNullValue()));
-    }
-
-    @Test
-    @WithMockUser(username = "delis")
     public void testCreateNewPost() throws Exception {
 
+    	String path = DefaultRuleBuilder.buildDefaultValidationRuleList().get(0).getRootPath();
+    	
         this.mockMvc.perform(post("/validationrule/save")
-                .param("active","true")
+                .param("active","false")
                 .param("priority","1")
                 .param("documentFormat","CII")
                 .param("validationType","SCHEMATRON")
-                .param("rootPath","rootPath")
+                .param("rootPath",path)
                 .param("config","config"))
                 
                 .andExpect(redirectedUrl("/setup/index"));

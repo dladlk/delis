@@ -18,7 +18,7 @@ public class OrganisationService {
 	}
 
 	public Iterable<Organisation> getOrganisations() {
-		return organisationDaoRepository.findAll(Sort.by("name"));
+		return organisationDaoRepository.findAll(Sort.by(Sort.Order.asc("name").ignoreCase()));
 	}
 
 	public void saveOrganisation(Organisation organisation) {

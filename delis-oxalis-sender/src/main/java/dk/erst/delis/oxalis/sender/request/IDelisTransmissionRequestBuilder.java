@@ -2,12 +2,14 @@ package dk.erst.delis.oxalis.sender.request;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
+import dk.erst.delis.oxalis.sender.ISendListener;
 import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import no.difi.vefa.peppol.sbdh.lang.SbdhException;
 
 public interface IDelisTransmissionRequestBuilder {
 
-	DelisTransmissionRequest build(InputStream payload) throws IOException, TransmissionLookupException, SbdhException;
+	DelisTransmissionRequest build(InputStream payloadStream, Optional<ISendListener> listener) throws IOException, TransmissionLookupException, SbdhException;
 
 }

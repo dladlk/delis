@@ -41,6 +41,7 @@ public class RuleServiceTest {
 		assertEquals(transformationSize, service.getTransformationList().size());
 
 		RuleDocumentValidationData validationData = new RuleDocumentValidationData();
+		validationData.setActive(true);
 		validationData.setDocumentFormat(DocumentFormat.UNSUPPORTED);
 		validationData.setRootPath("root path");
 		validationData.setConfig("config");
@@ -48,6 +49,7 @@ public class RuleServiceTest {
 		validationData.setPriority(1);
 		validationRuleService.saveRule(validationData);
 		RuleDocumentTransformationData transformationData = new RuleDocumentTransformationData();
+		transformationData.setActive(true);
 		transformationData.setConfig("config");
 		transformationData.setRootPath("root path");
 		transformationData.setDocumentFormatFamilyFrom(DocumentFormatFamily.OIOUBL);

@@ -20,6 +20,11 @@
     "description": "Interval to execute documentDeliver job, in seconds, if positive"
   },
   {
+    "name": "job.interval.sec.documentCheckDelivery",
+    "type": "java.lang.String",
+    "description": "Interval to execute documentCheckDelivery job, in seconds, if positive"
+  },  
+  {
     "name": "job.interval.sec.identifierLoad",
     "type": "java.lang.String",
     "description": "Interval to execute identifierLoad job, in seconds, if positive"

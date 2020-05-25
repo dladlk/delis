@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UserMessage xmlns="http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/">
+    <PartyInfo>
+        <From>
+            <PartyId type="urn:fdc:peppol.eu:2017:identifiers:ap">dynconcepttestparty01gw</PartyId>
+            <Role>http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator</Role>
+        </From>
+    </PartyInfo>
+    <CollaborationInfo>
+        <AgreementRef>urn:fdc:peppol.eu:2017:agreements:tia:ap_provider</AgreementRef>
+        <Service type="cenbii-procid-ubl">urn:www.nesubl.eu:profiles:profile5:ver2.0</Service>
+        <Action>busdox-docid-qns::urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##OIOUBL-2.02::2.0</Action>
+    </CollaborationInfo>
+    <MessageProperties>
+		<Property name="originalSender">iso6523-actorid-upis::0088:5790000436057</Property>
+		<Property name="finalRecipient">iso6523-actorid-upis::0088:5790001968526</Property>
+    </MessageProperties>
+</UserMessage>

@@ -42,7 +42,7 @@ spec:
         - name: config.authSsoEnabled
           value: 'true'
         - name: config.authSsoUserList
-          value: ';dladlk;alexgeta;apalefisco;iegor-funtusov;olemad;tonsv2'
+          value: ';dladlk;alexgeta;apalefisco;iegor-funtusov;olemad;tonsv2;hmkgithub;'
         - name: github.client.clientId
           value: ae3d961de8435398f7c6 
         - name: github.client.clientSecret

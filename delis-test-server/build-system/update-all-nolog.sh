@@ -23,6 +23,7 @@ pushd ${CURDIR}/scripts
 ./delis-angular.sh
 ./delis-domibus-ws-sender.sh
 ./delis-sender-service.sh
+./delis-validator.sh
 ./cef-erst-test-web-console.sh
 
 popd

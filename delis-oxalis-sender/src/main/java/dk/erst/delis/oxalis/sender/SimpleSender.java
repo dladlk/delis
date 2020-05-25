@@ -3,6 +3,7 @@ package dk.erst.delis.oxalis.sender;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -37,17 +38,25 @@ public class SimpleSender implements ISender {
 
 	@Override
 	public DelisResponse send(InputStream payloadStream) throws TransmissionLookupException, TransmissionException, SbdhException, IOException {
-		DelisTransmissionRequest tr = this.requestBuilder.build(payloadStream);
+		return send(payloadStream, Optional.empty());
+	}
+	
+	@Override
+	public DelisResponse send(InputStream payloadStream, Optional<ISendListener> listener) throws TransmissionLookupException, TransmissionException, SbdhException, IOException {
+		DelisTransmissionRequest tr = this.requestBuilder.build(payloadStream, listener);
 
 		DelisResponse response;
 
 		try {
+			listener.orElse(ISendListener.NONE).notifySendStepStart(SendStep.SEND);
 			if (tr.isAs4()) {
 				response = DelisResponse.of(messageSenderAs4.send(tr));
 			} else {
 				response = DelisResponse.of(messageSenderAs2.send(tr));
 			}
+			listener.orElse(ISendListener.NONE).notifySendStepResult(SendStep.SEND, response);
 		} catch (OxalisTransmissionException e) {
+			listener.orElse(ISendListener.NONE).notifySendStepError(SendStep.SEND, e);
 			throw new TransmissionException(e.getMessage(), e);
 		}
 

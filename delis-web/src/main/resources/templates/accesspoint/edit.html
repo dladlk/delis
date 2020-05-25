@@ -3,62 +3,80 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
-			Create new Access Point
+	<div class="card border-secondary">
+		<div class="card-header">
+			<span th:if="${accessPoint.id > 0}">Update access point</span>
+			<span th:if="${accessPoint.id == null || accessPoint.id == 0}">Create new access point</span>
 		</div>
 		<div class="card-body">
 
 			<form method="post" action="#" th:action="@{/accesspoint/save}" th:object="${accessPoint}">
 
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label">URL</label>
+					<label class="col-sm-2 col-form-label">URL* :</label>
 					<div class="col-sm-8">
-						<input type="text" th:field="*{url}" placeholder="Url"
-							   class="form-control" required="true"/>
+						<input id="url" type="text" th:field="*{url}" placeholder="Access point URL" class="form-control" th:classappend="${@invalids.append(validation, 'url')}" required="true"/>
+						<div th:replace="~{fragments/misc :: errors('url')}"/>
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label">Type</label>
+					<label class="col-sm-2 col-form-label">Type:</label>
 					<div class="col-sm-8">
-						<select placeholder="Type" th:field="*{type}" required="true">
+						<select placeholder="Type" th:field="*{type}" required="true" class="form-control" th:classappend="${(validation != null && validation?.isInvalid('type'))?'is-invalid':''}">
 							<option value="AS2">AS2</option>
 							<option value="AS4">AS4</option>
 						</select>
+						<div class="invalid-feedback" th:if="${validation?.isInvalid('type')}">
+							<div th:each="e: ${validation?.getErrorList('type')}" th:text="${e}">Error message</div>
+						</div>						
 					</div>
 				</div>
 
 
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label">Certificate</label>
+					<label class="col-sm-2 col-form-label">Certificate* :</label>
 					<div class="col-sm-8">
-						<textarea class="form-control" th:field="*{certificate}"
-								  placeholder="Certificate" rows="6" required="true"></textarea>
+						<textarea class="form-control" th:field="*{certificate}" placeholder="Certificate in PEM format" rows="6" required="true" th:classappend="${(validation != null && validation?.isInvalid('certificate'))?'is-invalid':''}"></textarea>
+						<div class="invalid-feedback" th:if="${validation?.isInvalid('certificate')}">
+							<div th:each="e: ${validation?.getErrorList('certificate')}" th:text="${e}">Error message</div>
+						</div>							   
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label">Service Description</label>
+					<label class="col-sm-2 col-form-label">Service Description* :</label>
 					<div class="col-sm-8">
-						<input type="text" th:field="*{serviceDescription}" placeholder="serviceDescription"
-							   class="form-control" required="true"/>
+						<input type="text" th:field="*{serviceDescription}" placeholder="Service description" class="form-control" required="true" th:classappend="${(validation != null && validation?.isInvalid('serviceDescription'))?'is-invalid':''}"/>
+						<div class="invalid-feedback" th:if="${validation?.isInvalid('serviceDescription')}">
+							<div th:each="e: ${validation?.getErrorList('serviceDescription')}" th:text="${e}">Error message</div>
+						</div>							   
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label">Technical Contact Url</label>
+					<label class="col-sm-2 col-form-label">Technical Contact URL* : </label>
 					<div class="col-sm-8">
-						<input type="text" th:field="*{technicalContactUrl}" placeholder="technicalContactUrl"
-							   class="form-control" required="true"/>
+						<input type="text" th:field="*{technicalContactUrl}" placeholder="Technical contact URL" class="form-control" required="true" th:classappend="${(validation != null && validation?.isInvalid('technicalContactUrl'))?'is-invalid':''}"/>
+						<div class="invalid-feedback" th:if="${validation?.isInvalid('technicalContactUrl')}">
+							<div th:each="e: ${validation?.getErrorList('technicalContactUrl')}" th:text="${e}">Error message</div>
+						</div>							   
 					</div>
 				</div>
 
 				<input type="hidden" th:field="*{id}" class="form-control" th:value="${accessPoint.id}"/>
+				
+				<a href="#" th:href="@{/accesspoint/list}" class="btn btn-secondary">Back</a>
 				<button type="submit" class="btn btn-primary">Save</button>
 			</form>
 
 		</div>
+		
+		<script>
+			$(document).ready(function(){
+				$('#url').focus();
+			});
+		</script>		
 		
 	</div>
 </body>

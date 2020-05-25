@@ -61,7 +61,7 @@ public class DocumentValidationTransformationServiceUnitTest {
 		when(ruleDocumentValidationDaoRepository.findAll(any(PageRequest.class))).then(d -> {
 			return new PageImpl<>(DefaultRuleBuilder.buildDefaultValidationRuleList());
 		});
-		when(ruleDocumentValidationDaoRepository.findAll()).then(d -> {
+		when(ruleDocumentValidationDaoRepository.findAllByActive(true)).then(d -> {
 			return DefaultRuleBuilder.buildDefaultValidationRuleList();
 		});
 

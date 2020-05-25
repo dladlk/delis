@@ -28,11 +28,11 @@ import lombok.ToString;
 })
 public class Identifier extends AbstractCreateUpdateEntity {
 
-	@ManyToOne(cascade = CascadeType.REFRESH)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "ORGANISATION_ID", nullable = false)
 	private Organisation organisation;
 	
-	@ManyToOne(cascade = CascadeType.REFRESH)
+	@ManyToOne(cascade = CascadeType.DETACH)
 	@JoinColumn(name = "IDENTIFIER_GROUP_ID", nullable = false)
 	private IdentifierGroup identifierGroup;
 	

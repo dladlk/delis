@@ -1,5 +1,6 @@
 package dk.erst.delis.web.transformationrule;
 
+import dk.erst.delis.config.rule.DefaultRuleBuilder;
 import dk.erst.delis.dao.RuleDocumentTransformationDaoRepository;
 import dk.erst.delis.data.entities.rule.RuleDocumentTransformation;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
@@ -41,21 +42,14 @@ public class TransformationRuleControllerTest {
 
     @Test
     @WithMockUser(username = "delis")
-    public void testList() throws Exception {
-        this.mockMvc.perform(get("/transformationrule/list"))
-                .andExpect(view().name("setup/index"))
-                .andExpect(model().attribute("transformationRuleList", notNullValue()));
-    }
-
-    @Test
-    @WithMockUser(username = "delis")
     public void testCreateNewPost() throws Exception {
-
+    	String path = DefaultRuleBuilder.buildDefaultTransformationRuleList().get(0).getRootPath();
+    	
         this.mockMvc.perform(post("/transformationrule/save")
-                .param("active", "true")
+                .param("active", "false")
                 .param("documentFormatFamilyFrom", "BIS3")
                 .param("documentFormatFamilyTo", "OIOUBL")
-                .param("rootPath", "rootPath")
+                .param("rootPath", path)
                 .param("config", "config"))
                 
                 .andExpect(redirectedUrl("/setup/index"));

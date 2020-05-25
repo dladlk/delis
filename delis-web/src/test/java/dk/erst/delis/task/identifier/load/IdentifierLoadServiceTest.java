@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import dk.erst.delis.dao.OrganisationDaoRepository;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.entities.organisation.SyncOrganisationFact;
+import dk.erst.delis.task.identifier.load.csv.IdentifierListParseException;
 
 
 @SpringBootTest
@@ -34,7 +35,7 @@ public class IdentifierLoadServiceTest {
     private OrganisationDaoRepository organisationDaoRepository;
 
     @Test
-    public void test() throws IOException {
+    public void test() throws IOException, IdentifierListParseException {
         Organisation testOrganization = createTestOrganization();
         List<String> lines = createTestIdentifiersLines();
         testOrganization = organisationDaoRepository.save(testOrganization);
@@ -66,23 +67,23 @@ public class IdentifierLoadServiceTest {
         return updateCount;
     }
 
-    private InputStream createTestCSVStream(List<String> lines) {
-        List<String> newLines = new ArrayList<>(lines);
-        newLines.add(0, "EAN;Name");
-        String csvString = StringUtils.join(newLines, "\n");
-        return new ByteArrayInputStream(csvString.getBytes());
-    }
+	private InputStream createTestCSVStream(List<String> lines) {
+		List<String> newLines = new ArrayList<>(lines);
+		newLines.add(0, "Number;Name");
+		String csvString = StringUtils.join(newLines, "\n") + "\r\n" + String.valueOf(lines.size());
+		return new ByteArrayInputStream(csvString.getBytes());
+	}
 
-    private List<String> createTestIdentifiersLines() {
-        List<String> lines = new ArrayList<>();
-        long timeStamp = System.currentTimeMillis();
-        int linesCount = 6;
-        for (int i = 0; i < linesCount; i++) {
-            long l = timeStamp + i;
-            lines.add(String.format("%d;%s", l, "test - " + l));
-        }
-        return lines;
-    }
+	private List<String> createTestIdentifiersLines() {
+		List<String> lines = new ArrayList<>();
+		long timeStamp = System.currentTimeMillis();
+		String identifiers[] = new String[] { "DK00000124", "00000116", "9785951802101", "0000000000017", "0000000000048", "4016138396201" };
+		for (int i = 0; i < identifiers.length; i++) {
+			long l = timeStamp + i;
+			lines.add(String.format("%s;%s", identifiers[i], "test - " + l));
+		}
+		return lines;
+	}
 
     private Organisation createTestOrganization() {
         Organisation organisation = new Organisation();

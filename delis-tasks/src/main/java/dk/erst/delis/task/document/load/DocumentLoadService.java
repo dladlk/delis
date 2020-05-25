@@ -11,8 +11,10 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,11 @@ import dk.erst.delis.data.enums.document.DocumentBytesType;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentProcessStepType;
 import dk.erst.delis.data.enums.document.DocumentStatus;
+import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.parse.DocumentInfoService;
 import dk.erst.delis.task.document.parse.DocumentInfoService.DocumentInfoData;
 import dk.erst.delis.task.document.parse.data.DocumentInfo;
+import dk.erst.delis.task.document.process.log.DocumentProcessStep;
 import dk.erst.delis.task.document.storage.DocumentBytesStorageService;
 import dk.erst.delis.task.identifier.resolve.IdentifierResolverService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,17 +55,20 @@ public class DocumentLoadService {
 	private DocumentBytesStorageService documentBytesStorageService;
 
 	private IdentifierResolverService identifierResolverService;
+	
+	private JournalDocumentService journalDocumentService;
 
 
 	@Autowired
 	public DocumentLoadService(DocumentDaoRepository documentDaoRepository, JournalDocumentDaoRepository journalDocumentDaoRepository, DocumentInfoService documentInfoService,
-			DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService) {
+			DocumentBytesStorageService documentBytesStorageService, IdentifierResolverService identifierResolverService, JournalDocumentService journalDocumentService) {
 		super();
 		this.documentDaoRepository = documentDaoRepository;
 		this.journalDocumentDaoRepository = journalDocumentDaoRepository;
 		this.documentInfoService = documentInfoService;
 		this.documentBytesStorageService = documentBytesStorageService;
 		this.identifierResolverService = identifierResolverService;
+		this.journalDocumentService = journalDocumentService;
 	}
 
 	public StatData loadFromInput(Path inputFolderPath) {
@@ -121,7 +128,7 @@ public class DocumentLoadService {
 				file = fileLoad;
 			}
 
-			
+			DocumentProcessStep step = DocumentProcessStep.buildDefineFormatStep();
 			DocumentInfoData pdid = documentInfoService.documentInfoData(xmlFilePath, file);
 			DocumentInfo info = pdid.getDocumentInfo();
 			File metadataFilePath = findMetadataFile(xmlFileParentPath);
@@ -157,6 +164,13 @@ public class DocumentLoadService {
 			jd.setSuccess(true);
 
 			journalDocumentDaoRepository.save(jd);
+			
+			if (document.getIngoingDocumentFormat().isUnsupported()) {
+				step.fillDefineFormatError(info);
+				List<DocumentProcessStep> stepList = new ArrayList<DocumentProcessStep>();
+				stepList.add(step);
+				journalDocumentService.saveDocumentStep(document, stepList);
+			}
 
 			return document;
 
@@ -226,6 +240,8 @@ public class DocumentLoadService {
 		
 		if (!file.delete()) {
 			log.error("Cannot delete file " + file);
+		} else {
+			log.info("File " + file + " is deleted");
 		}
 
 		if (metadataFile != null) {
@@ -237,6 +253,8 @@ public class DocumentLoadService {
 			
 			if (!metadataFile.delete()) {
 				log.error("Cannot metadata delete file " + metadataFile);
+			} else {
+				log.info("Metadata file " + metadataFile + " is deleted");
 			}
 		}
 
@@ -248,7 +266,9 @@ public class DocumentLoadService {
 			}
 
 			if (!fileSbd.delete()) {
-				log.error("Cannot SBD delete file " + fileSbd);
+				log.error("Cannot delete SBD file " + fileSbd);
+			} else {
+				log.info("SDB file " + fileSbd + " is deleted");
 			}
 		}
 	}

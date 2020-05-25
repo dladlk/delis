@@ -34,11 +34,11 @@ grafana:
 
   grafana.ini:
     server:
-      root_url: '%(protocol)s://%(domain)s:%(http_port)s/grafana/' #See https://github.com/helm/charts/issues/6264
+      root_url: 'https://edelivery-test.trueservice.dk/grafana/' #To have correct link in invitation email
       serve_from_sub_path: 'true'
-
-#root_url: %(protocol)s://%(domain)s:%(http_port)s/
-#root_url: http://localhost:3000/grafana/
+  persistence:
+    enabled: true
+    size: 200Mi
 
 prometheus:
   additionalServiceMonitors:
@@ -53,3 +53,36 @@ prometheus:
       - targetPort: 8080
         interval: 10s
         path: /delis-web-admin/actuator/prometheus
+  - name: delis-web-api-monitor
+    selector:
+      matchLabels:
+        app: "delis-api"
+    namespaceSelector:
+      matchNames:
+        - default
+    endpoints:
+      - targetPort: 8080
+        interval: 20s
+        path: /delis-web-api/actuator/prometheus
+  - name: delis-sender-service-monitor
+    selector:
+      matchLabels:
+        prometheus-app: delis-sender-service
+    namespaceSelector:
+      matchNames:
+        - default
+    endpoints:
+      - port: http
+        interval: 15s
+        path: /delis-sender-service/actuator/prometheus
+  - name: domibus-monitor
+    selector:
+      matchLabels:
+        app: dt1
+    namespaceSelector:
+      matchNames:
+        - default
+    endpoints:
+      - targetPort: 8080
+        interval: 10s
+        path: /domibus1/prometheus

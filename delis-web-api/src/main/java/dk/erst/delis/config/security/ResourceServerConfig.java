@@ -23,7 +23,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http
                 .authorizeRequests()
 
-                .antMatchers("/rest/open/**", "/status")
+                .antMatchers("/rest/open/**", "/status", "/actuator/**")
                 .permitAll()
 
                 .antMatchers("/rest/**")

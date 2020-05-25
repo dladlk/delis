@@ -3,45 +3,52 @@
 	xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{fragments/layout :: layout (~{::body})}">
 <body>
-	<div class="card border-primary">
-		<div class="card-header bg-primary text-white">
-			Users
-		</div>
-		<div class="card-body">
-			<table class="table table-striped table-bordered table-sm">
-				<tr>
-					<th>#</th>
-					<th>Login name</th>
-					<th>Organisation</th>
-					<th>Email</th>
-					<th>First name</th>
-					<th>Last name</th>
-					<th>IR Form</th>
-					<th></th>
-				</tr>
-				<tr th:each="user,iter : ${users}">
-					<td th:text="${user.id}"></td>
-					<td th:text="${user.username}"></td>
+<h4 class="m-2 text-secondary"> 
+	<a href="#" th:href="@{/user/list}" class="btn btn-outline-secondary btn-sm" title="Reload"><i class="fas fa-redo"></i></a> Users
+	<a style="float: right; line-height: 1.0;" class="btn btn-secondary" href="#" th:href="@{/user/create}">Create new</a>
+</h4>
+			<form action="#" th:action="@{/user/list}" method="post">
+			<table class="table table-hover table-bordered table-sm datatables-easy"
+				th:attr="dt-page=${@jsons.json(userPage)}"
+				>
+				<thead>
+					<tr>
+						<th dt-field="organisation.id" dt-orderfield="organisation.name" th:attr="dt-enum=${@jsons.json(organisationList)}">Organisation</th>
+						<th dt-field="username">Login name</th>
+						<th dt-field="firstName">First name</th>
+						<th dt-field="lastName">Last name</th>
+						<th dt-field="email">Email</th>
+						<th dt-field="lastLoginTime" dt-type="date">Last login</th>
+						<th dt-field="disabledIrForm" th:attr="dt-enum=${@jsons.json(shownHiddenStatusList)}">IR Form</th>
+						<th dt-field="disabled" th:attr="dt-enum=${@jsons.json(userStatusList)}">Actions</th>
+					</tr>
+				</thead>
+				<tr th:each="user,iter : ${userList}" th:with="expired=${!@userStatusService.isCredentialsNonExpired(user)}, locked=${!@userStatusService.isAccountNonLocked(user)}">
 					<td>
-						<a href="#" th:href="@{|/organisation/view/${user.organisation.id}|}" th:text="${user.organisation.code}" th:if="${user.organisation}"/>
+						<a href="#" th:href="@{|/organisation/view/${user.organisation.id}|}" th:text="${user.organisation.name}" th:if="${user.organisation}"/>
+						<span th:if="${user.organisation == null}">Administrator</span>
 					</td>
-					<td th:text="${user.email}"></td>
+					<td class="" th:classappend="${(expired||locked)?'text-danger':''}">
+						<a href="#" th:href="@{/user/view/__${user.id}__}" th:text="${user.username}"  th:classappend="${user.disabled?'delis-deactivated':''}"
+						>username</a>
+						<span th:if=${expired} title="User password is expired, please change it">Expired</span>
+						<span th:if=${locked} title="User account is locked due to many invalid attempts">Locked</span>
+					</td>
 					<td th:text="${user.firstName}"></td>
 					<td th:text="${user.lastName}"></td>
+					<td th:text="${user.email}"></td>
 
-					<td th:text="${user.disabledIrForm != null && user.disabledIrForm ? '': 'Yes'}"></td>
-					
 					<td>
-						<a href="#" th:href="@{|/users/update/${user.id}|}" th:text="Update"></a>
-						<a href="#" th:href="@{|/users/delete/${user.id}|}" th:text="Delete"></a>
+						<span th:text="${#dates.format(user.lastLoginTime, 'yyyy-MM-dd HH:mm:ss')}">2019-01-02</span>
+					</td>
+					<td th:text="${user.disabledIrForm != null && user.disabledIrForm ? 'Hidden': ''}"></td>
+					
+					<td class="no-wrap">
+						<a href="#" class="mr-2" th:href="@{|/user/view/${user.id}|}" th:text="View"></a>
+						<a href="#" th:href="@{|/user/update/${user.id}|}" th:text="Update"></a>
 					</td>
 				</tr>
 			</table>
-		</div>
-		<div class="card-footer">
-			<a href="#" th:href="@{/users/create}" class="btn btn-primary">Create new</a>
-		</div>
-		
-	</div>
+			</form>
 </body>
 </html>

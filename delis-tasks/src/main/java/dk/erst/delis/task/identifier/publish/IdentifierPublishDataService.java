@@ -1,29 +1,36 @@
 package dk.erst.delis.task.identifier.publish;
 
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
 
 import dk.erst.delis.data.entities.access.AccessPoint;
 import dk.erst.delis.data.entities.identifier.Identifier;
-import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.access.AccessPointType;
 import dk.erst.delis.task.codelist.CodeListDict;
-import dk.erst.delis.task.identifier.publish.data.*;
-import dk.erst.delis.task.organisation.setup.OrganisationSetupService;
+import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpProcessIdentifier;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
+import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSubscriptionProfileGroup;
 import dk.erst.delis.web.accesspoint.AccessPointService;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayInputStream;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.*;
 
 @Service
 @Slf4j
@@ -31,11 +38,7 @@ public class IdentifierPublishDataService {
 
 	private CodeListDict codeListDict;
 
-	@Autowired
 	private AccessPointService accessPointService;
-
-	@Autowired
-	private OrganisationSetupService organisationSetupService;
 
 	private static CertificateFactory certificateFactory;
 
@@ -55,47 +58,67 @@ public class IdentifierPublishDataService {
 	}
 
 	@Autowired
-	public IdentifierPublishDataService(CodeListDict codeListDict) {
+	public IdentifierPublishDataService(CodeListDict codeListDict, AccessPointService accessPointService) {
 		this.codeListDict = codeListDict;
+		this.accessPointService = accessPointService;
 	}
 
-	public SmpPublishData buildPublishData(Identifier identifier) {
+	public SmpPublishData buildPublishData(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		SmpPublishData publishData = new SmpPublishData();
-		String icdValue = codeListDict.getIdentifierTypeIcdValue(identifier.getType());
-		if (icdValue == null) {
-			throw new RuntimeException("Identifier type " + identifier.getType() + " is unknown in ICD code lists for identifier " + identifier);
-		}
-		ParticipantIdentifier participantIdentifier = ParticipantIdentifier.of(icdValue + ":" + identifier.getValue());
-		List<SmpPublishServiceData> serviceList = createServiceList(identifier);
+		ParticipantIdentifier participantIdentifier = buildParticipantIdentifier(identifier);
+		List<SmpPublishServiceData> serviceList = createServiceList(identifier, organisationSetupData);
 		publishData.setParticipantIdentifier(participantIdentifier);
 		publishData.setServiceList(serviceList);
 		return publishData;
 	}
 
-	private List<SmpPublishServiceData> createServiceList(Identifier identifier) {
+	public ParticipantIdentifier buildParticipantIdentifier(Identifier identifier) {
+		String icdValue = codeListDict.getIdentifierTypeIcdValue(identifier.getType());
+		if (icdValue == null) {
+			throw new RuntimeException("Identifier type " + identifier.getType() + " is unknown in ICD code lists for identifier " + identifier);
+		}
+		ParticipantIdentifier participantIdentifier = ParticipantIdentifier.of(icdValue + ":" + identifier.getValue());
+		return participantIdentifier;
+	}
+
+	protected List<SmpPublishServiceData> createServiceList(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		List<SmpPublishServiceData> result = new ArrayList<>();
-		Organisation organisation = identifier.getOrganisation();
-		OrganisationSetupData organisationSetupData = organisationSetupService.load(organisation);
 		List<SmpServiceEndpointData> endpointList = createEndpointList(organisationSetupData);
 		Set<OrganisationSubscriptionProfileGroup> subscribedProfiles = organisationSetupData.getSubscribeProfileSet();
+		
+		Map<SmpDocumentIdentifier, SmpPublishServiceData> documentIdentifierToServiceDataMap = new HashMap<SmpDocumentIdentifier, SmpPublishServiceData>();
+		
 		for (OrganisationSubscriptionProfileGroup subscribedProfile : subscribedProfiles) {
-			List<SmpPublishServiceData> serviceDataList = createServiceData(endpointList, subscribedProfile);
+			List<SmpPublishServiceData> serviceDataList = createServiceData(endpointList, subscribedProfile, documentIdentifierToServiceDataMap);
 			result.addAll(serviceDataList);
 		}
 		return result;
 	}
 
-	private List<SmpPublishServiceData> createServiceData(List<SmpServiceEndpointData> endpointList, OrganisationSubscriptionProfileGroup subscribedProfile) {
+	private List<SmpPublishServiceData> createServiceData(List<SmpServiceEndpointData> endpointList, OrganisationSubscriptionProfileGroup subscribedProfile, Map<SmpDocumentIdentifier, SmpPublishServiceData> documentIdentifierToServiceDataMap) {
 		List<SmpPublishServiceData> result = new ArrayList<>();
+		
 		for (String documentIdentifier : subscribedProfile.getDocumentIdentifiers()) {
-            SmpPublishServiceData serviceData = new SmpPublishServiceData();
-            serviceData.setDocumentIdentifier(SmpDocumentIdentifier.of(documentIdentifier));
+			SmpDocumentIdentifier smpDocumentIdentifier = SmpDocumentIdentifier.of(documentIdentifier);
+
+			SmpPublishServiceData serviceData = documentIdentifierToServiceDataMap.get(smpDocumentIdentifier);
+            if (serviceData == null) {
+				serviceData = new SmpPublishServiceData();
+				serviceData.setDocumentIdentifier(smpDocumentIdentifier);
+				serviceData.setProcessList(new ArrayList<SmpPublishProcessData>());
+				
+				documentIdentifierToServiceDataMap.put(smpDocumentIdentifier, serviceData);
+				result.add(serviceData);
+            }
+            
+            SmpPublishProcessData processData = new SmpPublishProcessData();
             SmpProcessIdentifier smpProcessIdentifier = new SmpProcessIdentifier();
             smpProcessIdentifier.setProcessIdentifierScheme(subscribedProfile.getProcessSchemeSMP());
             smpProcessIdentifier.setProcessIdentifierValue(subscribedProfile.getProcessId());
-            serviceData.setProcessIdentifier(smpProcessIdentifier);
-            serviceData.setEndpoints(endpointList);
-            result.add(serviceData);
+            processData.setProcessIdentifier(smpProcessIdentifier);
+            processData.setEndpoints(endpointList);
+            
+            serviceData.getProcessList().add(processData);
         }
         return result;
 	}
@@ -117,14 +140,13 @@ public class IdentifierPublishDataService {
 		SmpServiceEndpointData endpointData = new SmpServiceEndpointData();
 		Date serviceActivationDate = null;
 		Date serviceExpirationDate = null;
-		Blob certBlob = accessPoint.getCertificate();
 		byte[] certBytes = null;
 		try {
-			certBytes = Base64.getDecoder().decode(certBlob.getBytes(1L, (int) certBlob.length()));
+			certBytes = accessPoint.decodeCertificateToBytes();
 			X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certBytes));
 			serviceActivationDate = certificate.getNotBefore();
 			serviceExpirationDate = certificate.getNotAfter();
-		} catch (CertificateException | SQLException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
 		String transportProfile = transportProfilesMap.get(accessPoint.getType());
@@ -138,4 +160,5 @@ public class IdentifierPublishDataService {
 		endpointData.setCertificate(certBytes);
 		return endpointData;
 	}
+
 }

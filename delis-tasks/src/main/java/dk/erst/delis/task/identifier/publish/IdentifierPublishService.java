@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import dk.erst.delis.dao.JournalIdentifierDaoRepository;
 import dk.erst.delis.data.entities.identifier.Identifier;
 import dk.erst.delis.data.entities.journal.JournalIdentifier;
+import dk.erst.delis.data.enums.identifier.IdentifierPublishingStatus;
 import dk.erst.delis.task.identifier.publish.data.SmpDocumentIdentifier;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishData;
+import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.xml.SmpXmlServiceFactory;
+import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import lombok.extern.slf4j.Slf4j;
 import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
 
@@ -47,30 +50,34 @@ public class IdentifierPublishService {
 		this.smpLookupService = smpLookupService;
 	}
 
-	public boolean publishIdentifier(Identifier identifier) {
+	public IdentifierPublishingStatus publishIdentifier(Identifier identifier, OrganisationSetupData organisationSetupData) {
 		long startTotal = System.currentTimeMillis();
-		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier);
+		
+		SmpPublishData forPublish = identifierPublishDataService.buildPublishData(identifier, organisationSetupData);
 		SmpPublishData published = smpLookupService.lookup(forPublish.getParticipantIdentifier());
-		if (published == null) {
-			log.info(String.format("ServiceGroup by Identifier '%s' is absent in SMP", identifier.getValue()));
-		}
-		if (identifier.getStatus().isDeleted()) {
-			long startDelete = System.currentTimeMillis();
-			boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
-			if (isDeleted) {
-				addJournalIdentifierRecord(identifier, "Identifier is deleted", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
+		if (identifier.getStatus().isDeleted() || !organisationSetupData.isSmpIntegrationPublish()) {
+			IdentifierPublishingStatus deletionResultStatus = organisationSetupData.isSmpIntegrationPublish() ? IdentifierPublishingStatus.DONE : null; 
+			if (published != null) {
+				long startDelete = System.currentTimeMillis();
+				boolean isDeleted = deleteServiceGroup(forPublish.getParticipantIdentifier());
+				if (isDeleted) {
+					addJournalIdentifierRecord(identifier, "Identifier is deleted from SMP", System.currentTimeMillis() - startDelete, journalIdentifierDaoRepository);
+				}
+				return deletionResultStatus;
+			} else {
+				addJournalIdentifierRecord(identifier, "Identifier is absent in SMP", System.currentTimeMillis() - startTotal, journalIdentifierDaoRepository);
+				return deletionResultStatus;
 			}
-			return isDeleted;
 		}
 		if (!isPublishDataValid(forPublish)) {
 			log.info(String.format("Publish data created for identifier '%s' is invalid!", identifier.getValue()));
-			return false;
+			return IdentifierPublishingStatus.FAILED;
 		}
 		
 		long startPublishServiceGroup = System.currentTimeMillis();
 		if (!publishServiceGroup(forPublish.getParticipantIdentifier(), forPublish)) {
 			addJournalIdentifierRecord(identifier, "Failed to publish identifier", System.currentTimeMillis() - startPublishServiceGroup, journalIdentifierDaoRepository);
-			return false;
+			return IdentifierPublishingStatus.FAILED;
 		}
 		
 		int countDeleted = 0;
@@ -112,7 +119,7 @@ public class IdentifierPublishService {
 			addJournalIdentifierRecord(identifier, message, System.currentTimeMillis() - startTotal, journalIdentifierDaoRepository);
 		}
 		
-		return true;
+		return IdentifierPublishingStatus.DONE;
 	}
 
 	private void addJournalIdentifierRecord(Identifier identifier, String message, long durationMs, JournalIdentifierDaoRepository journalIdentifierDaoRepository) {
@@ -131,9 +138,16 @@ public class IdentifierPublishService {
 			return false;
 		}
 		for (SmpPublishServiceData serviceData : serviceList) {
-			if (serviceData.getEndpoints().isEmpty()) {
-				log.info(String.format("Service data for identifier '%s' has empty endpoint list.", publishData.getParticipantIdentifier().toString()));
-				return false;
+			if (serviceData.getProcessList().isEmpty()) {
+				log.info(String.format("Service data for identifier '%s' has empty process list.", publishData.getParticipantIdentifier().toString()));
+			} else {
+				List<SmpPublishProcessData> processList = serviceData.getProcessList();
+				for (SmpPublishProcessData smpPublishProcessData : processList) {
+					if (smpPublishProcessData.getEndpoints().isEmpty()) {
+						log.info(String.format("Service data for identifier '%s' and process %s has empty endpoint list.", publishData.getParticipantIdentifier().toString(), smpPublishProcessData.getProcessIdentifier().toString()));
+						return false;
+					}
+				}
 			}
 		}
 		return true;

@@ -6,7 +6,6 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.aop.interceptor.SimpleTraceInterceptor;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -46,7 +45,7 @@ public class DynamicTransmissionRequestBuilderTest {
 		
 		final Package matchPackage = LookupService.class.getPackage();
 		assertNotNull(matchPackage);
-		final SimpleTraceInterceptor tracer = new SimpleTraceInterceptor();
+		final MethodInterceptor tracer = new DummyMethodInterceptor();
 		
 		Injector injector = Guice.createInjector(Modules.override(new GuiceModuleLoader()).with(new AbstractModule() {
 			@Override
@@ -63,7 +62,7 @@ public class DynamicTransmissionRequestBuilderTest {
 				super.configure();
 				this.requestInjection(logMethods);
 				this.requestInjection(tracer);
-				this.bindInterceptor(Matchers.inPackage(matchPackage), Matchers.any(), logMethods, new SimpleTraceInterceptor());
+				this.bindInterceptor(Matchers.inPackage(matchPackage), Matchers.any(), logMethods, tracer);
 			}
 			
 		}, new As4InboundModule() {

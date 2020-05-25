@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +31,7 @@ import dk.erst.delis.data.entities.journal.JournalDocument;
 import dk.erst.delis.data.entities.organisation.Organisation;
 import dk.erst.delis.data.enums.document.DocumentStatus;
 import dk.erst.delis.document.sbdh.SBDHTranslator;
+import dk.erst.delis.task.document.JournalDocumentService;
 import dk.erst.delis.task.document.TestDocument;
 import dk.erst.delis.task.document.TestDocumentUtil;
 import dk.erst.delis.task.document.parse.DocumentInfoService;
@@ -43,6 +46,7 @@ public class DocumentLoadServiceTestIT {
 
 	private DocumentLoadService service;
 	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setupService() {
 		ConfigValueDaoRepository configRepository = TestUtil.getEmptyConfigValueDaoRepository();
@@ -66,6 +70,9 @@ public class DocumentLoadServiceTestIT {
 			log.info("Requested to save " + d);
 			return (JournalDocument) d.getArgument(0);
 		});
+		
+		JournalDocumentService journalDocumentService = mock(JournalDocumentService.class);
+		doNothing().when(journalDocumentService).saveDocumentStep(any(Document.class), any(List.class));
 
 		IdentifierResolverService identifierResolverService = mock(IdentifierResolverService.class);
 		when(identifierResolverService.resolve(any(String.class), any(String.class))).then(a -> {
@@ -90,7 +97,7 @@ public class DocumentLoadServiceTestIT {
 		});
 		DocumentBytesStorageService documentBytesStorageService = new DocumentBytesStorageService(config, documentBytesDaoRepositiry);
 
-		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentInfoService(new DocumentParseService()), documentBytesStorageService, identifierResolverService);
+		service = new DocumentLoadService(documentDaoRepository, journalDocumentDaoRepository, new DocumentInfoService(new DocumentParseService()), documentBytesStorageService, identifierResolverService, journalDocumentService);
 	}
 
 	private boolean fullLoadFromInputImitationDone = false;

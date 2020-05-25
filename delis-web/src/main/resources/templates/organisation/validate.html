@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{fragments/layout :: layout (~{::body})}">
+<body>
+	<style>
+		table.break-all td {
+			word-wrap: break-word;
+			word-break: break-all;
+			white-space: normal;
+		}
+		ul {
+			padding-left: 15px;
+			list-style: circle;
+		}
+		.delis-smp-process {
+			color: gray;
+			font-style: italic;
+		}
+		.delis-tree-EQUAL {
+			color: green;
+		}
+		.delis-tree-DIFF, .delis-tree-DIFF a, .delis-tree-MISS, .delis-tree-MISS a {
+			color: red;
+		}
+	</style>
+	
+	<h3 class="m-2 text-secondary"><a href="#" th:href="@{/organisation/view/__${organisation.id}__}" class="btn btn-outline-secondary" title="Back"><i class="fas fa-chevron-left"></i></a> 
+		<a href="#" th:href="@{/organisation/validate/__${organisation.id}__}" class="btn btn-outline-secondary" title="Reload"><i class="fas fa-redo"></i></a>
+		Validation of published data to SMP for <span th:text="${organisation.name}">Organisation name</span>
+			(<span th:text="${organisation.code}">Code</span>)</h3>
+		
+	<div class="card border-secondary">
+		<div class="card-body">
+			
+			<table class="table table-striped table-bordered table-sm break-all">
+				<tr>
+					<td class="container">
+						<div class="row">
+							<div class="col-md-3"><span class="font-weight-bold">Processed / total</span> : <span th:text="${resultList.processed}">9</span> / <span th:text="${resultList.total}">9</span></div>
+							
+							<div class="col-md-3"><span class="btn-sm" th:classappend="${resultList.matched > 0 ? 'btn-success':'btn-secondary'}">Matched</span> : <span th:text="${resultList.matched}">9</span></div>
+							
+							<div class="col-md-3"><span class="btn-sm" th:classappend="${resultList.notMatched > 0 ? 'btn-danger':'btn-secondary'}">Not matched</span> : <span th:text="${resultList.notMatched}">9</span></div>
+
+							<div class="col-md-2"><span class="font-weight-bold">Duration, sec</span> : <span th:text="${#numbers.formatDecimal(resultList.duration / 1000.0, 1, 1)}">9</span></div>
+						</div>
+					</td>
+				</tr>
+				<tr class="xcollapse" th:fragment="progress" th:remove="all">
+					<td>
+						<div class="progress mt-2 mb-2">
+							<div class="progress-bar" role="progressbar" style="width: 25%;" th:aria-valuenow="${resultList.total}" aria-valuemin="0" th:aria-valuemax="${resultList.total}">25%</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						Expected state of all active identifiers
+						<div class="btn btn-sm btn-outline-secondary ml-3" onclick="$('#details-expected').toggle()">Show</div>
+						<a class="btn btn-sm btn-outline-secondary ml-3 float-right" th:href="@{/organisation/setup/__${organisation.id}__}">To setup</a>					
+					</th>
+				</tr>
+				<tr id="details-expected" class="collapse">
+					<td>
+						<div class="ml-3">
+							<div th:replace="fragments/tree :: tree(tree=${expectedTree}, depth=${0})"  />
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			<table class="table table-striped table-bordered table-sm break-all">
+				<tr>
+					<th>Identifier</th>
+					<th>Match status</th>
+					<th>Duration, ms</th>
+				</tr>
+				<th:block th:each="e, iter: ${resultList.identifierResultList}"> 
+				<tr>
+					<td><span th:text="${e.identifier.value}" th:classappend="${e.identifier.status?.isDeleted()?'delis-deactivated':''}"></span></td>
+					<td>
+						<span th:text="${e.matchSuccess ? 'Matched':'Not matched'}" th:refid="${'details-'+iter.index}" class="cursor-pointer btn-sm" th:classappend="${e.matchSuccess?'btn-success':'btn-danger'}" onclick="$('#'+$(this).attr('refid')).toggle();"></span>
+					</td>
+					<td><span th:text="${e.duration}"></span> </td>
+				</tr>
+				<tr class="collapse" th:id="${'details-'+iter.index}">
+					<td colspan="3">
+						<div class="ml-3">
+							<div th:replace="fragments/tree :: tree(tree=${e.actualPublishedTree}, depth=${0})"  />						
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+	</div>
+	
+</body>
+</html>

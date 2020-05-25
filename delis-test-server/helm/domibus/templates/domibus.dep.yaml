@@ -20,7 +20,6 @@ spec:
       labels:
         app: '{{.Release.Name}}'
     spec:
-      restartPolicy: '{{.Values.dtx.restartPolicy}}'
       containers:
       - env:
         - name: DOMIBUS_HOME_OVERWRITE
@@ -117,6 +116,9 @@ spec:
         - name: DOMIBUS_PROPERTY_fsplugin_validation_endpoint
           value: "{{.Values.dtx.env.fsplugin_validation_endpoint}}"
 
+        - name: DOMIBUS_PROPERTY_fsplugin_payload_validation_endpoint
+          value: "{{.Values.dtx.env.fsplugin_payload_validation_endpoint}}"
+
         - name: MERGE_FS_PROPERTIES_ENV_PREFIX
           value: 'FS_PROPERTY_'
         - name: FS_PROPERTY_fsplugin_authentication_user
@@ -139,6 +141,7 @@ spec:
         image: '{{.Values.all.imagePrefix}}{{.Values.dtx.image}}:{{.Values.dtx.imageTag}}'
         imagePullPolicy: '{{.Values.dtx.imagePullPolicy}}'
         name: '{{.Release.Name}}'
+        restartPolicy: '{{.Values.dtx.restartPolicy}}'
         ports:
         - containerPort: 8080
           name: http

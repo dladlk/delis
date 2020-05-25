@@ -2,6 +2,7 @@ package dk.erst.delis.oxalis.sender;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
 import no.difi.vefa.peppol.sbdh.lang.SbdhException;
@@ -19,5 +20,7 @@ import no.difi.vefa.peppol.sbdh.lang.SbdhException;
 public interface ISender {
 
 	DelisResponse send(InputStream payloadStream) throws TransmissionLookupException, TransmissionException, SbdhException, IOException;
+
+	DelisResponse send(InputStream payloadStream, Optional<ISendListener> listener) throws TransmissionLookupException, TransmissionException, SbdhException, IOException;
 
 }

@@ -4,7 +4,8 @@
 
     dataTablesEasy.config = {
         tableClass: 'datatables-easy',
-        withButtonsClass: 'dt-with-buttons'
+        withButtonsClass: 'dt-with-buttons',
+        startDate: '2019-01-01'
     };
 
     dataTablesEasy.init = function () {
@@ -12,7 +13,7 @@
             return configureDataTable(this)
         });
     };
-
+    
     function configureDataTable(table) {
         var t = $(table);
         var pageData = getAttributeByPageDataContainer(t);
@@ -77,37 +78,32 @@
         	configButtons(dataTablesSettings);
         }
 
+        var footer = t.find('tfoot');
         var appDataTable = t
             .DataTable(dataTablesSettings)
             .on('order.dt', function (e, settings, order) {
-                pageData.order = columnDefs[order[0].col].field + '_' + order[0].dir;
-                dataTableRequest(this, pageData);
+                pageData.order = columnDefs[order[0].col].orderfield + '_' + order[0].dir;
+                dataTableRequest(footer, pageData);
             })
             .on('length.dt', function (e, settings, len) {
                 pageData.size = len;
-                dataTableRequest(this, pageData);
+                dataTableRequest(footer, pageData);
             })
             .on('page.dt', function () {
                 pageData.page = appDataTable.page.info().page + 1;
-                dataTableRequest(this, pageData);
+                dataTableRequest(footer, pageData);
             });
 
-        // overrideButtonColor();
         overrideClearButtonStyle();
 
-        appDataTable.columns().every(function (i) {
-            $('input', this.footer()).on('keypress', function (event) {
-                if (event.keyCode === 13) {
-                    doFilterAndRequest(this, pageData, columnDefs[i].field, this.value);
-                }
-            });
+        $('input.dt-filter', appDataTable.footer()).on('keypress', function (event) {
+            if (event.keyCode === 13) {
+                doFilterAndRequest(pageData, appDataTable);
+            }
         });
 
-        appDataTable.columns().every(function (i) {
-            $('select', this.footer()).on('change', function () {
-                var value = $.fn.dataTable.util.escapeRegex($(this).val());
-                doFilterAndRequest(this, pageData, columnDefs[i].field, value);
-            });
+        $('select.dt-filter', appDataTable.footer()).on('change', function () {
+            doFilterAndRequest(pageData, appDataTable);
         });
 
         new $.fn.dataTable.FixedHeader(appDataTable, {
@@ -117,20 +113,21 @@
 
     function initOrders(columnDefs, pageData) {
         var orderColDir = pageData.order;
-        var order = {};
+        var order = {
+        	col: 0,
+        	dir: "asc"
+        };
         if (orderColDir !== null) {
             var sort = orderColDir.split('_');
             for (var index in columnDefs) {
-                var dtInfo = columnDefs[index].field;
+                var dtInfo = columnDefs[index].orderfield;
                 var col = columnDefs[index].targets[0];
                 if (dtInfo === sort[0]) {
                     order.col = col;
                     order.dir = sort[1];
+                    break;
                 }
             }
-        } else {
-            order.col = 0;
-            order.dir = "asc";
         }
         return order;
     }
@@ -160,51 +157,79 @@
 
             if (searchable) {
                 if (columnEnum !== undefined) {
-                    selectFilter(this, columnEnum, searchValue !== undefined ? searchValue : null);
+                    selectFilter(this, field, columnEnum, searchValue !== undefined ? searchValue : null);
                 } else if (filterType === 'date') {
-                	$(this).html('<span class="form-control-date"/>');
-                	dateFilter(this, field, searchValue, pageData);
+                	$(this).html('<input type="text" readonly name="'+field+'" class="form-control form-control-sm dt-date" value="" placeholder="" />');
+                	dateFilter(tfoot, this, field, searchValue, pageData);
                 } else {
-                	$(this).html('<input type="text" name="'+field+'" class="form-control" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
+                	$(this).html('<input type="text" name="'+field+'" class="form-control form-control-sm dt-filter" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
                 }
             }
         });
     }
     
-    var DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-    var SHORT_DATE_FORMAT = 'DD-MM-YY';
+    var DATETIME_FORMAT = 'YYYYMMDD-HHmmss';
+    var SHORT_DATE_FORMAT = 'DD.MM.YY';
     
-    function dateFilter(filterContainer, field, searchValue, pageData) {
+    function dateFilter(footer, filterContainer, field, searchValue, pageData) {
         var drpSettings = {
             alwaysShowCalendars: true,
-            ranges: initRanges(moment('2019-01-01'))
+            ranges: initRanges(moment(dataTablesEasy.config.startDate))
         };
         
-    	if (searchValue !== undefined) {
+    	if (searchValue !== undefined && searchValue !== '') {
 	        var dateFromTo = searchValue.split('_');
-	        drpSettings.startDate = moment(dateFromTo[0]);
-	        drpSettings.endDate = moment(dateFromTo[1]);
+	        drpSettings.startDate = moment(dateFromTo[0], DATETIME_FORMAT);
+	        drpSettings.endDate = moment(dateFromTo[1], DATETIME_FORMAT);
+    	} else {
+    		var allRange = drpSettings.ranges['All'];
+	        drpSettings.startDate = allRange[0];
+	        drpSettings.endDate = allRange[1];
+			setDateInput(filterContainer, null, null);
     	}
-        var daterangepicker = $(filterContainer).daterangepicker(drpSettings, function(start, end){
-        	setDateInput(filterContainer, start, end);
-        	var dateRangeValue = start.format(DATETIME_FORMAT) + '_' + end.format(DATETIME_FORMAT);
-        	pageData.filterMap[field] = dateRangeValue; 
-        	dataTableRequest(filterContainer, pageData);
-        });
+        var daterangepicker = $(filterContainer).daterangepicker(drpSettings, 
+        	function(start, end){
+        		var dateRangeValue = setDateInput(filterContainer, start, end);
+		        pageData.filterMap[field] = dateRangeValue; 
+		        dataTableRequest(footer, pageData);
+        	}
+        );
         
         if (drpSettings.startDate) {
         	setDateInput(filterContainer, drpSettings.startDate, drpSettings.endDate);
         }
     }
     
+    function isAllRange(startDate, endDate) {
+    	if (!startDate.isSame(dataTablesEasy.config.startDate, 'day')){
+    		return false;
+    	}
+    	if (!endDate.isSame(moment(), 'day')){
+    		return false;
+    	}
+    	return true;
+    }
+    
     function setDateInput(container, startDate, endDate) {
-    	$(container).find('span').text(startDate.format(SHORT_DATE_FORMAT) + ' - ' + endDate.format(SHORT_DATE_FORMAT));
+    	var rangeText = 'All';
+    	var dateRangeValue = '';
+    	if (startDate && endDate && !isAllRange(startDate, endDate)) {
+    		rangeText = startDate.format(SHORT_DATE_FORMAT);
+    		var endDateText = endDate.format(SHORT_DATE_FORMAT);
+    		if (endDateText != rangeText) {
+    			rangeText += '-' + endDateText;  
+    		}
+    		dateRangeValue = startDate.format(DATETIME_FORMAT) + '_' + endDate.format(DATETIME_FORMAT);
+    	}
+    	$(container).find('input').val(rangeText);
+    	return dateRangeValue;
     }
 
-    function selectFilter(ownerSelect, e, searchValue) {
+    function selectFilter(ownerSelect, field, e, searchValue) {
         e = eval(e);
         var selectList = document.createElement("select");
-        selectList.setAttribute('class', 'form-control');
+        selectList.setAttribute('class', 'form-control form-control-sm dt-filter');
+        selectList.setAttribute('name', field);
 
         var option = document.createElement("option");
         option.value = "";
@@ -236,9 +261,8 @@
         ownerSelect.appendChild(selectList);
     }
 
-    function doFilterAndRequest(ownerEvent, pageData, field, value) {
-        pageData.filterMap[field] = value;
-        dataTableRequest(ownerEvent, pageData);
+    function doFilterAndRequest(pageData, appDataTable) {
+        dataTableRequest(appDataTable.footer(), pageData);
     }
 
     function configButtons(dataTablesSettings) {
@@ -268,23 +292,13 @@
         ];
     }
 
-    function overrideButtonColor() {
-        var btns = document.querySelector('div.dt-buttons.btn-group');
-        if (btns) {
-            var kbButtons = btns.getElementsByTagName("button");
-            for (var i = 0; i < kbButtons.length; i++) {
-                kbButtons[i].style.backgroundColor = '#f8f9fa';
-                kbButtons[i].style.color = 'black';
-            }
-        }
-    }
-
     function overrideClearButtonStyle() {
         var btns = document.querySelector('div.dt-buttons.btn-group');
         if (btns) {
-            var kbButtons = btns.getElementsByTagName("button");
+        	btns.className = 'dt-buttons'; // Remove btn-group to have small button
+            var kbButtons = btns.getElementsByClassName("btn"); // In IE 11, elements are created as tag a, in other browsers - as button.
             for (var i = 0; i < kbButtons.length; i++) {
-                kbButtons[i].className = 'btn btn-primary m-1';
+                kbButtons[i].className = 'btn btn-outline-primary btn-sm mt-2';
             }
         }
     }
@@ -309,26 +323,30 @@
             var cd = {};
             $.each(this.attributes, function () {
                 if (this.specified) {
-                    if (this.name.startsWith('dt-')) {
+                    if (startsWith(this.name, 'dt-')) {
                         cd[this.name.substring(3)] = buildColumnAttributeValue(this.name, this.value);
                         return;
                     }
                 }
             });
             if (!cd.hasOwnProperty('field')) {
-            	return;
+            	cd.orderable = false;
+            	cd.searchable = false;
+            } else {
+	            if (!cd.hasOwnProperty('orderable')) {
+	                cd.orderable = true;
+	            }
+	            if (!cd.hasOwnProperty('searchable')) {
+	                cd.searchable = true;
+	            }
             }
-            if (!cd.hasOwnProperty('orderable')) {
-                cd.orderable = true;
-            }
-            if (!cd.hasOwnProperty('searchable')) {
-                cd.searchable = true;
+            if (!cd.hasOwnProperty('orderfield')) {
+            	cd.orderfield = cd.field; 
             }
             cd.targets = [columnIndex];
             columnDefs.push(cd);
             columnIndex++;
         });
-        console.log(columnDefs);
         return columnDefs;
     }
 
@@ -336,14 +354,27 @@
         if (value === 'true' || value === 'false') {
             return eval(value);
         }
-        if (name.endsWith('-json')) {
+        if (endsWith(name, '-json')) {
             return eval('(' + value + ')');
         }
         return value;
     }
 
+    function updatePageData(footer, pageData) {
+    	$('input.dt-filter', footer).each(function (i) {
+    		var field = $(this).attr('name');
+    		var value = $(this).val();
+    		pageData.filterMap[field] = value;
+        });
+        $('select.dt-filter', footer).each(function (i) {
+        	var field = $(this).attr('name');
+            var value = $.fn.dataTable.util.escapeRegex($(this).val());
+            pageData.filterMap[field] = value;
+        });
+    }
+    
     function dataTableRequest(owner, pageData) {
-
+    	updatePageData(owner, pageData);
         if (pageData.page !== null) {
             $('<input>').attr({
                 type: 'hidden',
@@ -381,12 +412,7 @@
                 }).appendTo(owner);
             }
         }
-
-        var button = document.createElement("button");
-        button.setAttribute('type', 'submit');
-        button.style.visibility = 'hidden';
-        owner.parentElement.appendChild(button);
-        jQuery(button).trigger("click");
+        $(owner).closest('form').submit();
     }
     
     function initRanges(start) {
@@ -400,5 +426,17 @@
             'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         };
     }
+    
+    function startsWith(str, search, rawPos) {
+        var pos = rawPos > 0 ? rawPos|0 : 0;
+        return str.substring(pos, pos + search.length) === search;
+    }
+    
+	function endsWith(str, search, this_len) {
+		if (this_len === undefined || this_len > this.length) {
+			this_len = str.length;
+		}
+		return str.substring(this_len - search.length, this_len) === search;
+	}
 
 }());
