@@ -92,6 +92,8 @@ public class DefaultRuleBuilder {
 
 		result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T71.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_CATALOGUE_ONLY, "sch/bis3/catalogue_3_0/PEPPOLBIS-T19.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_CATALOGUE_RESPONSE, "sch/bis3/catalogue_response_3_0/PEPPOLBIS-T58.xslt", 10));
 
 		result.add(sch(DocumentFormat.CII, cius + "/CEN-EN16931-CII.xslt", 10));
 		result.add(sch(DocumentFormat.CII, cius + "/PEPPOL-EN16931-CII.xslt", 20));
