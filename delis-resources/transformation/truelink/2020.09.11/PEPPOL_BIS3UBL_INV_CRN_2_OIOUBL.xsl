@@ -34,8 +34,8 @@
 	<xsl:variable name="Converted" select="number(/*/cac:LegalMonetaryTotal/cbc:PayableAmount) &lt; 0"/>
 	
 	<!--Including main templates-->
-	<xsl:include href="resource://xml2xml/oio/invoice/PEPPOL/PEPPOL_BIS3UBL_INV_2_OIOUBL.xsl"/>
-	<xsl:include href="resource://xml2xml/oio/invoice/PEPPOL/PEPPOL_BIS3UBL_CRN_2_OIOUBL.xsl"/>
+	<xsl:include href="PEPPOL_BIS3UBL_INV_2_OIOUBL.xsl"/>
+	<xsl:include href="PEPPOL_BIS3UBL_CRN_2_OIOUBL.xsl"/>
 
    	<xsl:template match="/">
    	
