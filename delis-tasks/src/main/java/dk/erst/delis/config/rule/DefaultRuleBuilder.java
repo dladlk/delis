@@ -15,7 +15,8 @@ import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 
 public class DefaultRuleBuilder {
 	
-	private static final String CIUS_VERSION = "2020-06-30_v1.5.1";
+	private static final String CIUS_VERSION = "2020-11-10_v1.6.1";
+	private static final String PEPPOL_BIS3_OTHER_VERSION = "2020-11-02_v1.2.0";
 
     public static List<RuleDocumentTransformation> buildDefaultTransformationRuleList() {
         ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
@@ -76,11 +77,13 @@ public class DefaultRuleBuilder {
 		 * CEN part of these schematron files are actaully copied from another GitHub project:
 		 * 
 		 * https://github.com/CenPC434/validation
+		 *
+		 * 2020-11-11 Schematron files for InvoiceResponse, MRL, Catalogue, Catalogue Response - taken from https://www.digitaliser.dk/resource/5795845
 		 * 
-
 		 */
 		
 		String cius = "sch/cius/" + CIUS_VERSION;
+		String peppol_bis3_other = "sch/bis3/other/" + PEPPOL_BIS3_OTHER_VERSION;
 
 		String BIS3_PEPPOL = cius + "/PEPPOL-EN16931-UBL.xslt";
 		String BIS3_CEN = cius + "/CEN-EN16931-UBL.xslt";
@@ -90,10 +93,10 @@ public class DefaultRuleBuilder {
 		result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_CEN, 10));
 		result.add(sch(DocumentFormat.BIS3_CREDITNOTE, BIS3_PEPPOL, 20));
 
-		result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, "sch/bis3/invoice_response_3_0/PEPPOLBIS-T111.xslt", 10));
-		result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, "sch/bis3/message_level_response_3_0/PEPPOLBIS-T71.xslt", 10));
-		result.add(sch(DocumentFormat.BIS3_CATALOGUE_ONLY, "sch/bis3/catalogue_3_0/PEPPOLBIS-T19.xslt", 10));
-		result.add(sch(DocumentFormat.BIS3_CATALOGUE_RESPONSE, "sch/bis3/catalogue_response_3_0/PEPPOLBIS-T58.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T111.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T71.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_CATALOGUE_ONLY, peppol_bis3_other + "/PEPPOLBIS-T19.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_CATALOGUE_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T58.xslt", 10));
 
 		result.add(sch(DocumentFormat.CII, cius + "/CEN-EN16931-CII.xslt", 10));
 		result.add(sch(DocumentFormat.CII, cius + "/PEPPOL-EN16931-CII.xslt", 20));
