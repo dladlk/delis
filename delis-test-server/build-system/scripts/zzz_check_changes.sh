@@ -32,7 +32,7 @@ fi
 GIT_LOG_FILE=./log/${PROJECT_CODE}_git_log.txt
 
 DOCKER_IMAGE_NAME=${PROJECT_CODE}:latest
-DOCKER_CREATE_TIME=`docker image inspect ${DOCKER_IMAGE_NAME} --format="{{.Created}}"`
+DOCKER_CREATE_TIME=`docker image inspect ${DOCKER_IMAGE_NAME} --format="{{.Created}}"` || DOCKER_CREATE_TIME="2000-01-01T00:00:00.55671788Z"
 echo Docker image ${DOCKER_IMAGE_NAME} was last rebuilt ${DOCKER_CREATE_TIME}
 
 echo Check commits, done after this time, to one of: ${PROJECT_SCAN_PATH_LIST}
