@@ -102,5 +102,44 @@ public class PmodeUtil {
 
 		return pmode;
 	}
+	
+	public static PmodeData populateServicesActionsLegsDomibusValid(PmodeData pmode) {
+		PModeProfileGroup[] values = PModeProfileGroup.values();
+
+		List<PmodeData.Service> services = new ArrayList<>();
+		List<PmodeData.Action> actions = new ArrayList<>();
+		List<PmodeData.Leg> legs = new ArrayList<>();
+
+		for (PModeProfileGroup pModeProfileGroup : values) {
+			String code = pModeProfileGroup.getCode();
+
+			PmodeData.Service serviceTB = new PmodeData.Service(code + "TB", pModeProfileGroup.getProcessId(), pModeProfileGroup.getProcessSchemeSMP());
+			services.add(serviceTB);
+
+			String[] documentIdentifiers = pModeProfileGroup.getDocumentIdentifiers();
+
+			for (int i = 0; i < documentIdentifiers.length; i++) {
+				String docType = "";
+				if (documentIdentifiers.length > 1) {
+					String di = documentIdentifiers[i];
+					int startRootTag = di.indexOf("::") + 2;
+					int endRootTag = di.indexOf("##", startRootTag);
+					docType = di.substring(startRootTag, endRootTag);
+					docType = "_" + docType;
+				}
+
+				PmodeData.Action actionQns = new PmodeData.Action(code + docType + "Qns", "busdox-docid-qns::" + documentIdentifiers[i]);
+				actions.add(actionQns);
+				
+				legs.add(new PmodeData.Leg(actionQns.getName() + serviceTB.getName(), serviceTB.getName(), actionQns.getName()));
+			}
+		}
+
+		pmode.setServiceList(services.stream().sorted((e1, e2) -> e1.getName().compareTo(e2.getName())).collect(Collectors.toList()));
+		pmode.setActionList(actions.stream().sorted((e1, e2) -> e1.getName().compareTo(e2.getName())).collect(Collectors.toList()));
+		pmode.setLegList(legs.stream().sorted((e1, e2) -> e1.getName().compareTo(e2.getName())).collect(Collectors.toList()));
+
+		return pmode;
+	}
 
 }

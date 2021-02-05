@@ -35,8 +35,28 @@ public class PmodeXmlServiceTest {
 
 	@Autowired
 	private SpringTemplateEngineWrapper pmodeXmlTemplateEngineWrapper;
+	
+	@Test
+	/* Use this test method to generate domibus valid pmode */
+	public void testPmodeDomibusValid() throws Exception {
+		PmodeXmlService s = new PmodeXmlService(pmodeXmlTemplateEngineWrapper);
+		
+		PmodeData pmode = new PmodeData();
+//		String endpointUrl = "http://localhost:8080";
+//		pmode.setEndpointUrl(endpointUrl + "/services/msh");
+//		pmode.setPartyName("domibus_gw1");
+		String endpointUrl = "https://peppol-test.trueservice.dk";
+		pmode.setEndpointUrl(endpointUrl + "/services/msh");
+		pmode.setPartyName("PDK000253");
+		pmode = PmodeUtil.populateServicesActionsLegsDomibusValid(pmode);
+		String xml = s.build(pmode);
+		
+		System.out.println(xml);
+		assertNotNull(xml);
+	}
 
 	@Test
+	/* This method generates extra configuration where big part of the config is not used by domibus */
 	public void testPmode() throws Exception {
 		PmodeXmlService s = new PmodeXmlService(pmodeXmlTemplateEngineWrapper);
 
@@ -44,6 +64,9 @@ public class PmodeXmlServiceTest {
 		String endpointUrl = "http://localhost:8080";
 		pmode.setEndpointUrl(endpointUrl + "/services/msh");
 		pmode.setPartyName("domibus_gw1");
+//		String endpointUrl = "https://peppol-test.trueservice.dk";
+//		pmode.setEndpointUrl(endpointUrl + "/services/msh");
+//		pmode.setPartyName("PDK000253");
 		pmode = PmodeUtil.populateServicesActionsLegs(pmode);
 		String xml = s.build(pmode);
 
@@ -90,7 +113,7 @@ public class PmodeXmlServiceTest {
 		 * Check uniqueness of value for each action and service
 		 */
 	}
-
+	
 	private Set<String> buildNameSet(NodeList nodeList) {
 		Set<String> nameSet = new HashSet<String>();
 		Map<String, String> valueToNameMap = new HashMap<String, String>();
@@ -122,5 +145,5 @@ public class PmodeXmlServiceTest {
 		}
 		return nameSet;
 	}
-
+	
 }
