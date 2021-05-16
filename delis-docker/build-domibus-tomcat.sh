@@ -8,8 +8,8 @@ cp ${MERGE_ENV_PROPERTIES_JAR_PATH} ./${MERGE_ENV_PROPERTIES_JAR_PATH##*/}
 
 CEF_DISTR_ROOT=https://ec.europa.eu/cefdigital/artifact/content/repositories/public/eu/domibus/domibus-distribution
 
-DOMIBUS_VERSION=4.1.2
-DOMIBUS_VERSION_IMAGE=4.1.2
+DOMIBUS_VERSION=4.2
+DOMIBUS_VERSION_IMAGE=4.2.0
 DOMIBUS_WAR_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-tomcat-war.zip
 DOMIBUS_SETUP_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-tomcat-configuration.zip
 DOMIBUS_FS_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip
@@ -17,7 +17,7 @@ DOMIBUS_WS_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIB
 
 EXT_MERGE_ENV_PROPERTIES=${MERGE_ENV_PROPERTIES_JAR_PATH##*/}
 
-DOMIBUS_SUBVERSION=.2
+DOMIBUS_SUBVERSION=.0
 
 docker build \
 	--build-arg DOMIBUS_VERSION=$DOMIBUS_VERSION \
