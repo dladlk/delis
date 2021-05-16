@@ -330,7 +330,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ram:ApplicableHeaderTradeSettlement>
 			<ram:CreditorReferenceID>DK5678</ram:CreditorReferenceID>
 			<ram:PaymentReference>Payref1</ram:PaymentReference>
+			<!--
 			<ram:TaxCurrencyCode>EUR</ram:TaxCurrencyCode>
+			<ram:TaxCurrencyCode>DKK</ram:TaxCurrencyCode>
+			-->
 			<ram:InvoiceCurrencyCode>DKK</ram:InvoiceCurrencyCode>
 			<ram:SpecifiedTradeSettlementPaymentMeans>
 				<ram:TypeCode>48</ram:TypeCode>
@@ -411,7 +414,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<ram:AllowanceTotalAmount>150</ram:AllowanceTotalAmount>
 				<ram:TaxBasisTotalAmount>4000</ram:TaxBasisTotalAmount>
 				<ram:TaxTotalAmount currencyID="DKK">675.00</ram:TaxTotalAmount>
+				<!--
 				<ram:TaxTotalAmount currencyID="EUR">628.62</ram:TaxTotalAmount>
+				-->
 				<ram:RoundingAmount>0.00</ram:RoundingAmount>
 				<ram:GrandTotalAmount>4675</ram:GrandTotalAmount>
 				<ram:TotalPrepaidAmount>2337.5</ram:TotalPrepaidAmount>

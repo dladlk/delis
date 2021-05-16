@@ -19,10 +19,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ram:IssueDateTime>
 			<udt:DateTimeString format="102">20130410</udt:DateTimeString>
 		</ram:IssueDateTime>
-<!-- 		<ram:IncludedNote>
-			<ram:Content>Ordered through our website</ram:Content>
-			<ram:SubjectCode>AAI</ram:SubjectCode>
-		</ram:IncludedNote> -->
 	</rsm:ExchangedDocument>
 	<rsm:SupplyChainTradeTransaction>
 		<ram:IncludedSupplyChainTradeLineItem>
@@ -72,9 +68,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<ram:BilledQuantity unitCode="C62">1000</ram:BilledQuantity>
 			</ram:SpecifiedLineTradeDelivery>
 			<ram:SpecifiedLineTradeSettlement>
-				<!--Warning: InvoiceIssuerReference should not be present-->
-<!--			<ram:InvoiceIssuerReference>text</ram:InvoiceIssuerReference>
--->				<ram:ApplicableTradeTax>
+				<ram:ApplicableTradeTax>
 					<ram:TypeCode>VAT</ram:TypeCode>
 					<ram:CategoryCode>S</ram:CategoryCode>
 					<ram:RateApplicablePercent>25</ram:RateApplicablePercent>
@@ -347,7 +341,10 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 		<ram:ApplicableHeaderTradeSettlement>
 			<ram:CreditorReferenceID>DK5678</ram:CreditorReferenceID>
 			<ram:PaymentReference>Payref1</ram:PaymentReference>
+			<!--
 			<ram:TaxCurrencyCode>EUR</ram:TaxCurrencyCode>
+			<ram:TaxCurrencyCode>DKK</ram:TaxCurrencyCode>
+			-->
 			<ram:InvoiceCurrencyCode>DKK</ram:InvoiceCurrencyCode>
 			<ram:PayeeTradeParty>
 				<ram:ID>DK16356608</ram:ID>
@@ -365,48 +362,15 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 					<ram:CardholderName>Name</ram:CardholderName>
 				</ram:ApplicableTradeSettlementFinancialCard>
 			</ram:SpecifiedTradeSettlementPaymentMeans>
-<!-- 
- 			<ram:SpecifiedTradeSettlementPaymentMeans>
-				<ram:TypeCode>58</ram:TypeCode>
-				<ram:Information>Half prepaid</ram:Information>
-				<ram:PayerPartyDebtorFinancialAccount>
-					<ram:IBANID>RF1212341234123412</ram:IBANID>
-				</ram:PayerPartyDebtorFinancialAccount>
-			</ram:SpecifiedTradeSettlementPaymentMeans>
- -->
-<!--
-			<ram:SpecifiedTradeSettlementPaymentMeans>
-				<ram:TypeCode>30</ram:TypeCode>
-				<ram:Information>Half prepaid</ram:Information>
-				<ram:PayeePartyCreditorFinancialAccount>
-					<ram:IBANID>DK1212341234123412</ram:IBANID>
-					<ram:AccountName>name</ram:AccountName>
-					<ram:ProprietaryID>254854</ram:ProprietaryID>
-				</ram:PayeePartyCreditorFinancialAccount>
-			<ram:PayerSpecifiedDebitorFinancialInstitution>
-					<ram:BICID>text</ram:BICID>
-				</ram:PayerSpecifiedDebitorFinancialInstitution>
-				<ram:PayeeSpecifiedCreditorFinancialInstitution>
-					<ram:BICID>text</ram:BICID>
-				</ram:PayeeSpecifiedCreditorFinancialInstitution>
-			</ram:SpecifiedTradeSettlementPaymentMeans>
- -->
-			
 			<ram:ApplicableTradeTax>
 				<ram:CalculatedAmount>375</ram:CalculatedAmount>
 				<ram:TypeCode>VAT</ram:TypeCode>
-				<!--Not allowed for std rated-->
-<!--			<ram:ExemptionReason>text</ram:ExemptionReason>
--->				<ram:BasisAmount>1500</ram:BasisAmount>
+				<ram:BasisAmount>1500</ram:BasisAmount>
 				<ram:CategoryCode>S</ram:CategoryCode>
-				<!--Not allowed for std rated-->
-<!--			<ram:ExemptionReasonCode>code</ram:ExemptionReasonCode>
--->				<ram:TaxPointDate>
+				<ram:TaxPointDate>
 					<udt:DateString format="102">20130410</udt:DateString>
 				</ram:TaxPointDate>
-				<!--TaxPointDate and DueDateTypeCode mutually exclusive-->
-<!--			<ram:DueDateTypeCode>1</ram:DueDateTypeCode>
--->				<ram:RateApplicablePercent>25</ram:RateApplicablePercent>
+				<ram:RateApplicablePercent>25</ram:RateApplicablePercent>
 			</ram:ApplicableTradeTax>
 			<ram:ApplicableTradeTax>
 				<ram:CalculatedAmount>300</ram:CalculatedAmount>
@@ -469,7 +433,9 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 				<ram:AllowanceTotalAmount>150</ram:AllowanceTotalAmount>
 				<ram:TaxBasisTotalAmount>4000</ram:TaxBasisTotalAmount>
 				<ram:TaxTotalAmount currencyID="DKK">675.00</ram:TaxTotalAmount>
+				<!--
 				<ram:TaxTotalAmount currencyID="EUR">628.62</ram:TaxTotalAmount>
+				-->
 				<ram:RoundingAmount>0.00</ram:RoundingAmount>
 				<ram:GrandTotalAmount>4675</ram:GrandTotalAmount>
 				<ram:TotalPrepaidAmount>2337.5</ram:TotalPrepaidAmount>
@@ -477,11 +443,7 @@ WEVoVWI=</ram:AttachmentBinaryObject>
 			</ram:SpecifiedTradeSettlementHeaderMonetarySummation>
 			<ram:InvoiceReferencedDocument>
 				<ram:IssuerAssignedID>TOSL109</ram:IssuerAssignedID>
-<!--				<ram:FormattedIssueDateTime>
-				<udt:DateTimeString format="102">20180612</udt:DateTimeString>
-					<qdt:DateTimeString format="102">20180612</qdt:DateTimeString>
-				</ram:FormattedIssueDateTime>
--->				</ram:InvoiceReferencedDocument>
+			</ram:InvoiceReferencedDocument>
 		<ram:ReceivableSpecifiedTradeAccountingAccount>
 				<ram:ID>67543</ram:ID>
 			</ram:ReceivableSpecifiedTradeAccountingAccount>
