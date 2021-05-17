@@ -14,10 +14,7 @@
 	<packaging>jar</packaging>
 
 	<name>Delis :: DOMIBUS Util</name>
-	
-	<properties>
-		<skipTests>true</skipTests>
-	</properties>
+
 
 	<dependencies>
 		<dependency>
