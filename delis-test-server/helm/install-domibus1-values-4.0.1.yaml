@@ -1,7 +1,0 @@
-all:
-  imagePrefix: tlopenpeppol.azurecr.io/
-dtx:
-  imageTag: 4.0.1.10
-  imagePullSecret: tlopenpeppol.azurecr.io
-  env:
-    unsecureLoginAllowed: 'false'
