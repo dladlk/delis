@@ -30,7 +30,7 @@ public class CustomJmsReceiveTimeoutSetPostProcessor implements BeanPostProcesso
 
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
-        String timeoutProperty = domibusPropertyProvider.getDomainProperty(DOMIBUS_DISPATCHER_TIMEOUT);
+        String timeoutProperty = domibusPropertyProvider.getProperty(DOMIBUS_DISPATCHER_TIMEOUT);
 
         if (timeoutProperty != null && timeoutProperty.length() > 0) {
             try {
