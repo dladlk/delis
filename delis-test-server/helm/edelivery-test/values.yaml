@@ -9,8 +9,10 @@ tw:
   imageTag: latest
   imagePullPolicy: IfNotPresent
   env:
-    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m -Dgithub.client.clientId=ae3d961de8435398f7c6 -Dgithub.client.clientSecret=1dc4341d86ac7524ba4c8044296dd86daab9c84f
+    javaopts: -Xmx384m -XX:MaxMetaspaceSize=128m
     filesRoot: /data/fs
+    githubClientId: FILL_clientId
+    githubClientSecret: FILL_clientSecret
     keystoresRoot: /data/keystores
     filesDeploymentLogs: /data/deployment_logs
 bind:
