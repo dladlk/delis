@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>dk.erst.edelivery.domibus.plugin.fs</groupId>
-	<artifactId>delis-domibus-plugin</artifactId>
-	<version>4.1.2.1</version>
-	<name>Delis Domibus FS Plugin Extension</name>
+	<groupId>dk.erst.domibus</groupId>
+	<artifactId>delis-domibus-plugin-fs</artifactId>
+	<version>4.2.5.0</version>
+	<name>Domibus Delis FS Plugin Extension</name>
 	<description>
 		Adds custom validator for submissions: for service and payload
 	</description>
@@ -14,7 +14,7 @@
 	<properties>
 		<spring.version>5.1.3.RELEASE</spring.version>
 		<spring.security.version>4.2.6.RELEASE</spring.security.version>
-		<domibus.api.version>4.1.2</domibus.api.version>
+		<domibus.api.version>4.2.5</domibus.api.version>
 	</properties>
 
 	<dependencies>
