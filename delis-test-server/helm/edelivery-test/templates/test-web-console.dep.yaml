@@ -42,11 +42,11 @@ spec:
         - name: config.authSsoEnabled
           value: 'true'
         - name: config.authSsoUserList
-          value: ';dladlk;alexgeta;apalefisco;iegor-funtusov;olemad;tonsv2;hmkgithub;'
+          value: ';dladlk;apalefisco;olemad;'
         - name: github.client.clientId
-          value: ae3d961de8435398f7c6 
+          value: '{{.Values.tw.env.githubClientId}}'
         - name: github.client.clientSecret
-          value: 1dc4341d86ac7524ba4c8044296dd86daab9c84f
+          value: '{{.Values.tw.env.githubClientSecret}}'
         - name: SERVER_SERVLET_CONTEXT-PATH
           value: '/twc'
         - name: SERVER_TOMCAT_ACCESSLOG_ENABLED
