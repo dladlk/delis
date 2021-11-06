@@ -24,7 +24,8 @@ ENV DOMIBUS_FS_URL ${DOMIBUS_FS_URL}
 ARG DOMIBUS_WS_URL
 ENV DOMIBUS_WS_URL ${DOMIBUS_WS_URL}
 
-ENV MYSQL_CONNECTOR mysql-connector-java-5.1.40
+ENV MYSQL_ROOT_URL https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.19
+ENV MYSQL_CONNECTOR mysql-connector-java-8.0.19.jar
 ENV DOMIBUS_DIST /usr/local/domibusDist
 
 ENV DOCKERIZE_VERSION v0.6.1
@@ -43,11 +44,9 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-RUN wget https://dev.mysql.com/get/Downloads/Connector-J/$MYSQL_CONNECTOR.zip \
-    && unzip -d $DOMIBUS_DIST $MYSQL_CONNECTOR.zip \
-    && cp $DOMIBUS_DIST/$MYSQL_CONNECTOR/$MYSQL_CONNECTOR-bin.jar $CATALINA_HOME/lib \
-    && rm -r $DOMIBUS_DIST/$MYSQL_CONNECTOR \
-    && rm $MYSQL_CONNECTOR.zip
+RUN wget $MYSQL_ROOT_URL/$MYSQL_CONNECTOR \
+    && cp $MYSQL_CONNECTOR $CATALINA_HOME/lib \
+    && rm $MYSQL_CONNECTOR
     
 RUN wget ${DOMIBUS_WAR_URL} \
     && unzip -d $CATALINA_HOME/webapps ${DOMIBUS_WAR_URL##*/} \
