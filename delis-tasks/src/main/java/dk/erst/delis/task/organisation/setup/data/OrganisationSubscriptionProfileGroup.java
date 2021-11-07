@@ -2,8 +2,6 @@ package dk.erst.delis.task.organisation.setup.data;
 
 
 /*
- * !!! DUPLICATED AT PModeProfileGroup !!! 
- * 
  * Copied from https://www.galaxygw.com/peppol-documents/ 
  * 
  * which references https://github.com/OpenPEPPOL/documentation/tree/master/TransportInfrastructure
@@ -114,22 +112,6 @@ public enum OrganisationSubscriptionProfileGroup {
 					"urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1",
 					
 					"urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2::ApplicationResponse##urn:fdc:peppol.eu:poacc:trns:catalogue_response:3::2.1"
-					
-	}),	
-	
-	
-	
-	/*
-	 * PEPPOL BIS Catalogue without response 3.1
-	 * 
-	 * https://docs.peppol.eu/poacc/upgrade-3/profiles/1-catalogueonly/
-	 */
-	
-	BIS3_Catalogue_WO_Response("urn:fdc:peppol.eu:poacc:bis:catalogue_wo_response:3", 
-			
-			new String[] {
-					
-					"urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2::Catalogue##urn:fdc:peppol.eu:poacc:trns:catalogue:3::2.1",
 					
 	}),	
 	
