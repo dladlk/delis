@@ -1,0 +1,28 @@
+dtx:
+  envExt:
+    # To disable validation of certificate on receiving and sending, set it to false - but SMP certificate will be validated anyway. 
+    # Concept test PKI has defined CRL but it is not working - so it was tried to use these fields to stop SMP certificate validation 
+    # and it did not help. Instead, CRL protocol HTTP was excluded - see next comment.
+    - name: DOMIBUS_PROPERTY_domibus_receiver_certificate_validation_onsending
+      value: 'true'  
+    - name: DOMIBUS_PROPERTY_domibus_sender_certificate_validation_onsending
+      value: 'true'  
+    - name: DOMIBUS_PROPERTY_domibus_sender_certificate_validation_onreceiving
+      value: 'true'  
+    # Concept test PKI has defined CRL as http://contest.my/cr/root.crl - let's disable HTTP protocol to avoid issue with 
+    # SMP certificate validation...
+    - name: DOMIBUS_PROPERTY_domibus_certificate_crl_excludedProtocols
+      value: 'http'
+    
+    # New version of domibus requires this field to be defined, otherwise sending fails with error 
+    # 'No matching role found with value: urn:fdc:peppol.eu:2017:roles:ap:as4'.
+    # It looks like this is done to find proper process in PMode - as sender UserMessage defines only From Party role, 
+    # but not receiving party.
+    # Anyway, it looks like a strange way - as we could need different responder party roles for different sender party roles - but here we 
+    # can define only one of them...
+    # E.g. when another role was defined - 'urn:fdc:peppol.eu:2017:roles:ap:receiver', defined in PMode,
+    # sending via WSBackendService still failed because inside UserMessage it defined role 
+    # 'http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/initiator' and there were no process with these 2 roles combined.
+    # PMode is complex...
+    - name: DOMIBUS_PROPERTY_domibus_dynamicdiscovery_partyid_responder_role
+      value: 'http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder'
