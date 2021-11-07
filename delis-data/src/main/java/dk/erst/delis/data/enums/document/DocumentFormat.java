@@ -40,7 +40,7 @@ public enum DocumentFormat implements Named {
 
 	BIS3_CATALOGUE_ONLY("BIS3-CATO", "Catalogue", DocumentFormatConst.NS_UBL_CATALOGUE, DocumentType.CATALOGUE),
 
-	BIS3_CATALOGUE_WITHOUT_RESP("BIS3-CATWR", "Catalogue", DocumentFormatConst.NS_UBL_CATALOGUE, DocumentType.CATALOGUE),
+	BIS3_CATALOGUE_WITHOUT_RESPONSE("BIS3-CATWR", "Catalogue", DocumentFormatConst.NS_UBL_CATALOGUE, DocumentType.CATALOGUE),
 
 	BIS3_CATALOGUE_RESPONSE("BIS3-CATOR", "ApplicationResponse", DocumentFormatConst.NS_UBL_APPLICATION_RESPONSE, DocumentType.CATALOGUE_RESPONSE),
 
@@ -118,7 +118,7 @@ public enum DocumentFormat implements Named {
 	}
 
 	public boolean isBIS3Catalogue() {
-		return this == BIS3_CATALOGUE_ONLY || this == BIS3_CATALOGUE_WITHOUT_RESP;
+		return this == BIS3_CATALOGUE_ONLY || this == BIS3_CATALOGUE_WITHOUT_RESPONSE;
 	}
 
 	public boolean isBIS3CatalogueResponse() {
