@@ -30,7 +30,7 @@ import dk.erst.delis.data.enums.document.DocumentFormat;
 	
 	BIS3_CATALOGUE_ONLY("BIS3_Catalogue_Only.xml", DocumentFormat.BIS3_CATALOGUE_ONLY),
 
-	BIS3_CATALOGUE_WITHOUT_RESPONSE("BIS3_Catalogue_Without_Response.xml", DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE),
+	BIS3_CATALOGUE_WITHOUT_RESPONSE("BIS3_Catalogue_Without_Response.xml", DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESP),
 
 	BIS3_CATALOGUE_RESPONSE_ONLY("BIS3_CatalogueResponse_Example.xml", DocumentFormat.BIS3_CATALOGUE_RESPONSE),
 	
