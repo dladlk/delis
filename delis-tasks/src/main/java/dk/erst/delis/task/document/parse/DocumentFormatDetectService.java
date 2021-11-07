@@ -57,7 +57,7 @@ public class DocumentFormatDetectService {
 								return DocumentFormat.BIS3_CATALOGUE_ONLY;
 							}
 							if (info.getProfile().getId().equals(DocumentFormatConst.PROFILE_BIS3_CATALOGUE_WITHOUT_RESPONSE)) {
-								return DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESP;
+								return DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE;
 							}
 						}
 					} else if (f.isBIS3OR() || f.isBIS3CatalogueResponse()) {
