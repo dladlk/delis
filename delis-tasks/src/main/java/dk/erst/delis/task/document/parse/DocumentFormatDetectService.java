@@ -51,7 +51,16 @@ public class DocumentFormatDetectService {
 								}
 							}
 						}
-					} else if (f.isBIS3OR() || f.isBIS3Catalogue() || f.isBIS3CatalogueResponse()) {
+					} else if (f.isBIS3Catalogue()) {
+						if (info.getProfile() != null && info.getProfile().getId() != null) {
+							if (info.getProfile().getId().equals(DocumentFormatConst.PROFILE_BIS3_CATALOGUE_ONLY)) {
+								return DocumentFormat.BIS3_CATALOGUE_ONLY;
+							}
+							if (info.getProfile().getId().equals(DocumentFormatConst.PROFILE_BIS3_CATALOGUE_WITHOUT_RESPONSE)) {
+								return DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE;
+							}
+						}
+					} else if (f.isBIS3OR() || f.isBIS3CatalogueResponse()) {
 						return f;
 					}
 				}

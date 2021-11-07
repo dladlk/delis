@@ -20,6 +20,8 @@ public class DocumentParseServiceTest {
 				
 				TestDocument.BIS3_ORDER_ONLY, TestDocument.BIS3_ORDER_ORDERING, TestDocument.BIS3_ORDER_RESPONSE, TestDocument.BIS3_CATALOGUE_ONLY, TestDocument.BIS3_CATALOGUE_RESPONSE_ONLY,
 				
+				TestDocument.BIS3_CATALOGUE_WITHOUT_RESPONSE,
+				
 		};
 		DocumentParseService parser = new DocumentParseService();
 
