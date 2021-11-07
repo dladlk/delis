@@ -36,4 +36,5 @@ public class DocumentFormatConst {
 	public static final String PROFILE_BIS3_ORDER_ONLY = "urn:fdc:peppol.eu:poacc:bis:order_only:3";
 	public static final String PROFILE_BIS3_ORDERING = "urn:fdc:peppol.eu:poacc:bis:ordering:3";
 	public static final String PROFILE_BIS3_CATALOGUE_ONLY = "urn:fdc:peppol.eu:poacc:bis:catalogue_only:3";
+	public static final String PROFILE_BIS3_CATALOGUE_WITHOUT_RESPONSE = "urn:fdc:peppol.eu:poacc:bis:catalogue_wo_response:3";
 }

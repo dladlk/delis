@@ -56,6 +56,7 @@ public class DefaultRuleBuilder {
         result.add(xsd(DocumentFormat.BIS3_ORDER_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-OrderResponse-2.1.xsd"));
         
         result.add(xsd(DocumentFormat.BIS3_CATALOGUE_ONLY, "xsd/UBL_2.1/maindoc/UBL-Catalogue-2.1.xsd"));
+        result.add(xsd(DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-Catalogue-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_CATALOGUE_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
 
         result.add(xsd(DocumentFormat.CII, "xsd/CII_D16B_SCRDM_uncoupled/data/standard/CrossIndustryInvoice_100pD16B.xsd"));
@@ -96,6 +97,7 @@ public class DefaultRuleBuilder {
 		result.add(sch(DocumentFormat.BIS3_INVOICE_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T111.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_MESSAGE_LEVEL_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T71.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_CATALOGUE_ONLY, peppol_bis3_other + "/PEPPOLBIS-T19.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T19.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_CATALOGUE_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T58.xslt", 10));
 
 		result.add(sch(DocumentFormat.CII, cius + "/CEN-EN16931-CII.xslt", 10));

@@ -79,7 +79,7 @@ public class PmodeXmlServiceTest {
 		Document doc = builder.parse(new InputSource(new java.io.StringReader(xml)));
 
 		NodeList serviceList = doc.getElementsByTagName("service");
-		assertEquals(15 + 4 * 3, serviceList.getLength());
+		assertEquals(15 + 5 * 3, serviceList.getLength());
 		Set<String> serviceNames = buildNameSet(serviceList);
 		assertEquals(serviceList.getLength(), serviceNames.size());
 
@@ -89,7 +89,7 @@ public class PmodeXmlServiceTest {
 		assertEquals(actionList.getLength(), actionNames.size());
 
 		NodeList legConfigurationList = doc.getElementsByTagName("legConfiguration");
-		assertEquals(45 + ((7 * 2) * 3), legConfigurationList.getLength());
+		assertEquals(51 + ((7 * 2) * 3), legConfigurationList.getLength());
 		Set<String> legConfigurationNames = buildNameSet(legConfigurationList);
 		assertEquals(legConfigurationList.getLength(), legConfigurationNames.size());
 		for (int i = 0; i < legConfigurationList.getLength(); i++) {
@@ -103,7 +103,7 @@ public class PmodeXmlServiceTest {
 		}
 
 		NodeList legs = doc.getElementsByTagName("leg");
-		assertEquals(180 + ((7 * 2) * 3 * 4), legs.getLength());
+		assertEquals(180 + ((8 * 2) * 3 * 4), legs.getLength());
 		for (int i = 0; i < legs.getLength(); i++) {
 			String legName = legs.item(i).getAttributes().getNamedItem("name").getNodeValue();
 			assertTrue("Not found leg name " + legName, legConfigurationNames.contains(legName));

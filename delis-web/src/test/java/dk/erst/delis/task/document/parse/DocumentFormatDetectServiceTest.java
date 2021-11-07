@@ -47,7 +47,8 @@ public class DocumentFormatDetectServiceTest {
 		assertEquals(DocumentFormat.BIS3_ORDER_ONLY, s.defineDocumentFormat(tc("Order", "urn:oasis:names:specification:ubl:schema:xsd:Order-2", DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_ORDER_ONLY)));
 		assertEquals(DocumentFormat.BIS3_ORDER, s.defineDocumentFormat(tc("Order", "urn:oasis:names:specification:ubl:schema:xsd:Order-2", DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_ORDERING)));
 		assertEquals(DocumentFormat.BIS3_ORDER_RESPONSE, s.defineDocumentFormat(tc("OrderResponse", "urn:oasis:names:specification:ubl:schema:xsd:OrderResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_ORDER_RESPONSE_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_ORDERING)));
-		assertEquals(DocumentFormat.BIS3_CATALOGUE_ONLY, s.defineDocumentFormat(tc("Catalogue", "urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2", DocumentFormatConst.CUSTOMIZATION_BIS3_CATALOGUE_STARTS_WITH)));
+		assertEquals(DocumentFormat.BIS3_CATALOGUE_ONLY, s.defineDocumentFormat(tc("Catalogue", "urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2", DocumentFormatConst.CUSTOMIZATION_BIS3_CATALOGUE_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_CATALOGUE_ONLY)));
+		assertEquals(DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE, s.defineDocumentFormat(tc("Catalogue", "urn:oasis:names:specification:ubl:schema:xsd:Catalogue-2", DocumentFormatConst.CUSTOMIZATION_BIS3_CATALOGUE_STARTS_WITH, DocumentFormatConst.PROFILE_BIS3_CATALOGUE_WITHOUT_RESPONSE)));
 		assertEquals(DocumentFormat.BIS3_CATALOGUE_RESPONSE, s.defineDocumentFormat(tc("ApplicationResponse", "urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2", DocumentFormatConst.CUSTOMIZATION_BIS3_CATALOGUE_RESPONSE_STARTS_WITH)));
 	}
 
