@@ -39,7 +39,7 @@ public class DocumentBytes extends AbstractCreateEntity {
 	private DocumentBytesType type;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = true, length = 30)
+	@Column(nullable = true, length = 50)
 	private DocumentFormat format;
 
 	@Column(nullable = false)
