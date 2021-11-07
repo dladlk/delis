@@ -2,6 +2,8 @@ package dk.erst.delis.domibus.util.pmode;
 
 
 /*
+ * !!! DUPLICATED AT OrganisationSubscriptionProfileGroup !!!
+ *  
  * Copied from https://www.galaxygw.com/peppol-documents/ 
  * 
  * which references https://github.com/OpenPEPPOL/documentation/tree/master/TransportInfrastructure
