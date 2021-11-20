@@ -199,7 +199,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<ram:Name>SellerCompany</ram:Name>
 				<ram:Description>Export</ram:Description>
 				<ram:SpecifiedLegalOrganization>
-					<ram:ID schemeID="0088">5790000436101</ram:ID>
+					<ram:ID schemeID="0184">DK16356607</ram:ID>
 					<ram:TradingBusinessName>SellerCompany</ram:TradingBusinessName>
 				</ram:SpecifiedLegalOrganization>
 				<ram:DefinedTradeContact>
@@ -218,17 +218,17 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 					<ram:LineTwo>Om de hoek</ram:LineTwo>
 					<ram:LineThree>text</ram:LineThree>
 					<ram:CityName>Grootstad</ram:CityName>
-					<ram:CountryID>NL</ram:CountryID>
+					<ram:CountryID>DK</ram:CountryID>
 					<ram:CountrySubDivisionName>Overijssel</ram:CountrySubDivisionName>
 				</ram:PostalTradeAddress>
 				<ram:URIUniversalCommunication>
 					<ram:URIID schemeID="0088">5790000436057</ram:URIID>
 				</ram:URIUniversalCommunication>
 				<ram:SpecifiedTaxRegistration>
-					<ram:ID schemeID="VA">NL16356706</ram:ID>
+					<ram:ID schemeID="VA">DK16356706</ram:ID>
 				</ram:SpecifiedTaxRegistration>
 				<ram:SpecifiedTaxRegistration>
-					<ram:ID schemeID="FC">NL16356706</ram:ID>
+					<ram:ID schemeID="FC">DK16356706</ram:ID>
 				</ram:SpecifiedTaxRegistration>
 			</ram:SellerTradeParty>
 			<ram:BuyerTradeParty>
