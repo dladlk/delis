@@ -99,9 +99,9 @@ public class DefaultRuleBuilder {
 		result.add(sch(DocumentFormat.BIS3_CATALOGUE_ONLY, peppol_bis3_other + "/PEPPOLBIS-T19.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_CATALOGUE_WITHOUT_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T19.xslt", 10));
 		result.add(sch(DocumentFormat.BIS3_CATALOGUE_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T58.xslt", 10));
-		result.add(sch(DocumentFormat.BIS3_ORDER, peppol_bis3_other + "/PEPPOLBIS-T01.xslt", 10));
-		result.add(sch(DocumentFormat.BIS3_ORDER_ONLY, peppol_bis3_other + "/PEPPOLBIS-T01.xslt", 10));
-		result.add(sch(DocumentFormat.BIS3_ORDER_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T76.xslt", 10));
+		result.add(sch(DocumentFormat.BIS3_ORDER, peppol_bis3_other + "/PEPPOLBIS-T01.xslt", 20));
+		result.add(sch(DocumentFormat.BIS3_ORDER_ONLY, peppol_bis3_other + "/PEPPOLBIS-T01.xslt", 20));
+		result.add(sch(DocumentFormat.BIS3_ORDER_RESPONSE, peppol_bis3_other + "/PEPPOLBIS-T76.xslt", 20));
 
 		result.add(sch(DocumentFormat.CII, cius + "/CEN-EN16931-CII.xslt", 10));
 		result.add(sch(DocumentFormat.CII, cius + "/PEPPOL-EN16931-CII.xslt", 20));
