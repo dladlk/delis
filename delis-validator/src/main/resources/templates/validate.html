@@ -92,12 +92,21 @@
 						<small id="filesHelpBlock" class="form-text text-muted">
 						   Activate to validate only by CEN rules and skip PEPPOL validation schematron files.
 						</small>
+                    	
                     	<div class="form-check">
 	                   		<input type="checkbox" id="sendToREST" class="form-check-input" onchange="changeAction()"/>
 		                    <label for="sendToREST" class="form-check-label">Validate against REST version</label>
                     	</div>
 						<small id="filesHelpBlock" class="form-text text-muted">
 						   Imitates real-life usage - calls rest service with response just with HTTP status codes and header
+						</small>
+						
+                    	<div class="form-check">
+	                   		<input type="checkbox" id="flushCache" name="flushCache" class="form-check-input"/>
+		                    <label for="flushCache" class="form-check-label">Flush XSLT cache</label>
+                    	</div>
+						<small class="form-text text-muted">
+						   For dev purposes if XSLT is modified between calls.
 						</small>
                     </div>
                 </div>
