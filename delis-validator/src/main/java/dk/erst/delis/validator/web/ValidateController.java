@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import dk.erst.delis.task.document.parse.cachingtransformerfactory.CachingTransformerFactory;
 import dk.erst.delis.validator.service.ValidateResult;
 import dk.erst.delis.validator.service.ValidateService;
 import dk.erst.delis.validator.service.input.MultipartFileInput;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 public class ValidateController {
 
 	@Autowired
@@ -34,12 +37,23 @@ public class ValidateController {
 
 			@RequestParam(name = "skipPEPPOL", required = false) boolean skipPEPPOL,
 
+			@RequestParam(name = "flushCache", required = false) boolean flushCache,
+
 			Model model
 
 	) {
 
 		if (files == null || files.length == 0) {
 			return "Please select at least one XML file";
+		}
+
+		if (flushCache) {
+			try {
+				((CachingTransformerFactory) CachingTransformerFactory.getInstance()).flushCache();
+				log.info("XSLT cache is flushed");
+			} catch (Throwable t) {
+				log.error("Failed to flush cache", t);
+			}
 		}
 
 		List<ValidateResult> resultList = new ArrayList<ValidateResult>();
