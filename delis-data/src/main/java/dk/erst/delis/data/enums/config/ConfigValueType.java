@@ -6,6 +6,8 @@ public enum ConfigValueType {
 
 	STORAGE_INPUT_ROOT("config.storageDocumentInput","/delis/input"),
 
+	SEND_INPUT_ROOT("config.sendDocumentInput","/delis/send/input"),
+
 	STORAGE_DOCUMENT_ROOT("config.storageDocumentRoot","/delis/document"),
 
 	STORAGE_VALIDATION_ROOT("config.storageValidationRoot","../delis-resources/validation"),

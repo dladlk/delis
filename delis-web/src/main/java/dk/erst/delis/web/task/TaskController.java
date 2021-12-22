@@ -127,6 +127,19 @@ public class TaskController {
 		return "/task/index";
 	}
 	
+	@GetMapping("/task/sendDocumentLoad")
+	public String sendDocumentLoad(Model model) {
+		try {
+			StatData sd = taskScheduler.sendDocumentLoad();
+			String message = "Done loading of send folder for new documents to send in " + sd.toDurationString() + ": " + sd.toStatString();
+			model.addAttribute("message", message);
+		} catch (Exception e) {
+			log.error("Failed to invoke sendDocumentService.loadNewDocuments", e);
+			model.addAttribute("errorMessage", "Failed to load documents to send: " + e.getMessage());
+		}
+		return "/task/index";
+	}
+
 	@GetMapping("/task/sendDocumentValidate")
 	public String sendDocumentValidate(Model model) {
 		try {

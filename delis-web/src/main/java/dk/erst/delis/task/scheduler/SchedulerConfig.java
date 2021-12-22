@@ -36,6 +36,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 	@Value("${job.interval.sec.identifierPublish:-1}")
 	private long identifierPublish;
 
+	@Value("${job.interval.sec.sendLoad:-1}")
+	private long sendLoad;
+
 	@Value("${job.interval.sec.sentValidate:-1}")
 	private long sentValidate;
 	
@@ -85,6 +88,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
 		}
 		if (t.endsWith("identifierPublish")) {
 			return this.identifierPublish * 1000;
+		}
+		if (t.endsWith("sendDocumentLoad")) {
+			return this.sendLoad * 1000;
 		}
 		if (t.endsWith("sendDocumentValidate")) {
 			return this.sentValidate * 1000;
