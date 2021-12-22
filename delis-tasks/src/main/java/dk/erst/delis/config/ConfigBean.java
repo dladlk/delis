@@ -6,6 +6,7 @@ import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_PASSWORD;
 import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_URL;
 import static dk.erst.delis.data.enums.config.ConfigValueType.ENDPOINT_USER_NAME;
 import static dk.erst.delis.data.enums.config.ConfigValueType.IDENTIFIER_INPUT_ROOT;
+import static dk.erst.delis.data.enums.config.ConfigValueType.SEND_INPUT_ROOT;
 import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_DOCUMENT_ROOT;
 import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_INPUT_ROOT;
 import static dk.erst.delis.data.enums.config.ConfigValueType.STORAGE_TRANSFORMATION_ROOT;
@@ -69,9 +70,14 @@ public class ConfigBean {
 		String path = configValues.get(STORAGE_INPUT_ROOT);
 		return Paths.get(path);
 	}
-
+	
 	public Path getIdentifierInputPath() {
 		String path = configValues.get(IDENTIFIER_INPUT_ROOT);
+		return Paths.get(path);
+	}
+
+	public Path getSendInputPath() {
+		String path = configValues.get(SEND_INPUT_ROOT);
 		return Paths.get(path);
 	}
 

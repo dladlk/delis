@@ -162,6 +162,23 @@ public class TaskScheduler {
     }
     
     @Scheduled(fixedDelay = 5000L)
+    public StatData sendDocumentLoad() {
+        TaskResult task = taskSchedulerMonitor.build("sendDocumentLoad");
+        try {
+            StatData statData = sendDocumentService.loadNewDocuments();
+            if (!statData.isEmpty()) {
+            	log.info("sendDocumentLoad: " + statData);
+            }
+            task.success(statData);
+            return statData;
+        } catch (Exception e) {
+            log.error("TaskScheduler: sendDocumentLoad ==> Failed to invoke sendDocumentService.loadNewDocuments", e);
+            task.failure(e);
+            return StatData.error(e.getMessage());
+        }
+    }    
+    
+    @Scheduled(fixedDelay = 5000L)
     public StatData sendDocumentValidate() {
         TaskResult task = taskSchedulerMonitor.build("sendDocumentValidate");
         try {

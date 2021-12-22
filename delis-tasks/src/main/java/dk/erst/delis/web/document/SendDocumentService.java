@@ -20,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import dk.erst.delis.common.util.StatData;
+import dk.erst.delis.config.ConfigBean;
 import dk.erst.delis.dao.JournalSendDocumentDaoRepository;
 import dk.erst.delis.dao.SendDocumentDaoRepository;
 import dk.erst.delis.data.entities.document.SendDocument;
@@ -65,6 +66,8 @@ public class SendDocumentService {
 	private RuleService ruleService;
 	@Autowired
 	private SendDocumentBytesStorageService sendDocumentBytesStorageService;
+	@Autowired
+	private ConfigBean configBean;
 
 	DocumentFormatDetectService documentFormatDetectService = new DocumentFormatDetectService();
 
@@ -129,7 +132,7 @@ public class SendDocumentService {
 		File file = path.toFile();
 
 		SendDocumentData sendDocumentData;
-		try (InputStream is = new BufferedInputStream(new FileInputStream(file), (int)file.length())) {
+		try (InputStream is = new BufferedInputStream(new FileInputStream(file), (int) file.length())) {
 			is.mark(Integer.MAX_VALUE);
 			sendDocumentData = processSendDocument(validate, is);
 		}
@@ -157,7 +160,7 @@ public class SendDocumentService {
 		long durationMs = System.currentTimeMillis() - start;
 		saveJournal(sd, true, logMessage, SendDocumentProcessStepType.CREATE, durationMs);
 
-		try (InputStream is = new BufferedInputStream(new FileInputStream(file), (int)file.length())) {
+		try (InputStream is = new BufferedInputStream(new FileInputStream(file), (int) file.length())) {
 			is.mark(Integer.MAX_VALUE);
 			sendDocumentBytesStorageService.save(sd, SendDocumentBytesType.ORIGINAL, file.length(), is);
 		}
@@ -260,6 +263,63 @@ public class SendDocumentService {
 		return this.sendDocumentBytesStorageService.find(documentId, bytesId);
 	}
 
+	public StatData loadNewDocuments() {
+		StatData statData = new StatData();
+		try {
+			Path sendDocumentInputPath = configBean.getSendInputPath();
+			File sendInputDir = sendDocumentInputPath.toFile();
+			if (!sendInputDir.exists() || !sendInputDir.isDirectory()) {
+				return StatData.error("Folder " + sendInputDir + " does not exist or is not a directory");
+			}
+			for (File file : sendInputDir.listFiles()) {
+				if (file.isFile() && file.getName().toLowerCase().endsWith(".xml")) {
+					File fileLoad = new File(file.toString() + ".load");
+					if (!file.renameTo(fileLoad)) {
+						log.warn("Cannot rename file " + file + " before loading, skip it");
+						statData.increment("FAILED_RENAME_SKIPPED");
+						break;
+					} else {
+						log.info("Renamed file " + file + " to .load before processing");
+						file = fileLoad;
+					}
+					SendDocument sendDocument = null;
+					try {
+						sendDocument = this.sendFile(file.toPath(), file.getAbsolutePath(), false);
+						if (file != null && file.exists()) {
+							if (!file.delete()) {
+								log.warn("Send load file cannot be deleted, delete on exit: " + file);
+								file.deleteOnExit();
+							} else {
+								statData.increment("FAILED_DELETE_DO_ON_EXIT");
+							}
+						}
+					} catch (Throwable t) {
+						log.error("Failed to process send input file " + file.getAbsolutePath(), t);
+						statData.increment("UNEXPECTED_ERROR");
+					} finally {
+						if (sendDocument != null) {
+							if (sendDocument.getDocumentType() != null) {
+								statData.increment(sendDocument.getDocumentType().getCode());
+							} else {
+								statData.increment("UNDEFINED_DOCUMENTTYPE");
+							}
+						} else {
+							statData.increment("UNDEFINED_DOCUMENTTYPE");
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("Failed to load documents to send", e);
+			statData = StatData.error(e.getMessage());
+		}
+		long duration = System.currentTimeMillis() - statData.getStartMs();
+		if (duration > 500 || !statData.isEmpty()) {
+			log.info("Done loading of new documents: " + statData);
+		}
+		return statData;
+	}
+
 	public StatData validateNewDocuments() {
 		StatData statData = new StatData();
 		SendDocument sendDocument;
@@ -270,7 +330,7 @@ public class SendDocumentService {
 
 		long duration = System.currentTimeMillis() - statData.getStartMs();
 		if (duration > 500 || !statData.isEmpty()) {
-			log.info("Done validation of new documents: "+statData);
+			log.info("Done validation of new documents: " + statData);
 		}
 		return statData;
 	}

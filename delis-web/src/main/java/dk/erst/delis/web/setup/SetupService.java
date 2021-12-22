@@ -58,6 +58,7 @@ public class SetupService {
         ArrayList<ConfigValueData> configValueData = new ArrayList<>();
         configValueData.add(new ConfigValueData("Root Storage for Documents", "config.storageDocumentRoot",configBean.getDocumentRootPath(), ConfigValueType.STORAGE_DOCUMENT_ROOT.name()));
         configValueData.add(new ConfigValueData("Storage for Documents input", "config.storageDocumentInput",configBean.getStorageInputPath(), ConfigValueType.STORAGE_INPUT_ROOT.name()));
+        configValueData.add(new ConfigValueData("Storage for SendDocument input", "config.sendDocumentInput", configBean.getSendInputPath(), ConfigValueType.SEND_INPUT_ROOT.name()));
         configValueData.add(new ConfigValueData("Storage for Identifiers input", "config.storageIdentifiersInput", configBean.getIdentifierInputPath(), ConfigValueType.IDENTIFIER_INPUT_ROOT.name()));
         configValueData.add(new ConfigValueData("Storage for Validation files", "config.storageValidationRoot",configBean.getStorageValidationPath(), ConfigValueType.STORAGE_VALIDATION_ROOT.name()));
         configValueData.add(new ConfigValueData("Storage of Transformation files", "config.storageTransformationRoot",configBean.getStorageTransformationPath(), ConfigValueType.STORAGE_TRANSFORMATION_ROOT.name()));

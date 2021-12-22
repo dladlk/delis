@@ -90,6 +90,15 @@
 				</tr>
 				<tr>
 					<td>
+						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendDocumentLoad}">Load</a>
+					</td>
+					<td>
+						Scan SEND folder, resolve format, document details and save to SendDocument table with status = NEW.
+					</td>
+					<td th:text="${@taskSchedulerMonitor.getLast('sendDocumentLoad')}"></td>
+				</tr>
+				<tr>
+					<td>
 						<a href="#" class="btn btn-outline-primary btn-sm btn-block" th:href="@{/task/sendDocumentValidate}">Validate</a>
 					</td>
 					<td>
