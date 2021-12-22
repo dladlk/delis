@@ -36,7 +36,6 @@
 		
 		<junit.version>4.12</junit.version>
 		<jmockit.version>1.22</jmockit.version>
-		<log4j.version>1.2.14</log4j.version>
 		
         <cxf.version>3.2.4</cxf.version>
         <spring.version>4.3.17.RELEASE</spring.version>
@@ -285,12 +284,6 @@
                 <groupId>org.jmockit</groupId>
                 <artifactId>jmockit</artifactId>
                 <version>${jmockit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
                 <scope>test</scope>
             </dependency>
             <!-- End Test dependencies -->
