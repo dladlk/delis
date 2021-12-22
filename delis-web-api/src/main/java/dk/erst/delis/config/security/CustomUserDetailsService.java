@@ -1,5 +1,6 @@
 package dk.erst.delis.config.security;
 
+import dk.erst.delis.config.web.security.UserStatusService;
 import dk.erst.delis.dao.UserRepository;
 import dk.erst.delis.data.entities.user.User;
 
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,10 +20,13 @@ import java.util.Objects;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+	private final UserStatusService userStatusService; 
+    
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository, UserStatusService userStatusService) {
         this.userRepository = userRepository;
+		this.userStatusService = userStatusService;
     }
 
     @Override
@@ -40,10 +45,25 @@ public class CustomUserDetailsService implements UserDetailsService {
             authorities = AuthorityUtils.createAuthorityList(role);
         }
         String organisation = user.getOrganisation() != null ? user.getOrganisation().getName() : null;
-        return new CustomUserDetails(user, authorities, organisation, role);
+        return new CustomUserDetails(user, 
+        		
+				userStatusService.isEnabled(user), userStatusService.isAccountNonExpired(user),
+
+				userStatusService.isCredentialsNonExpired(user), userStatusService.isAccountNonLocked(user),
+        		
+        		authorities, organisation, role);
     }
 
     private enum Role {
         ROLE_ADMIN, ROLE_USER
     }
+    
+    public void successfulLogin(String userLogin) {
+		userRepository.resetInvalidLoginCountAndLogin(userLogin.toLowerCase(), Calendar.getInstance().getTime());
+
+	}
+
+	public void badCredentials(String userLogin) {
+		userRepository.updateInvalidLoginCount(userLogin.toLowerCase(), Calendar.getInstance().getTime());
+	}    
 }

@@ -1,11 +1,14 @@
 package dk.erst.delis.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,9 +23,11 @@ import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.stereotype.Component;
 
 import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
 import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Order
 @Configuration
@@ -102,4 +107,34 @@ public class OAuth2SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+	@Component
+	@Slf4j
+	public static class LoginSuccessListener implements ApplicationListener<AuthenticationSuccessEvent> {
+
+		@Autowired
+		private CustomUserDetailsService customUserDetailsService;
+
+		@Override
+		public void onApplicationEvent(AuthenticationSuccessEvent evt) {
+			String login = evt.getAuthentication().getName();
+			log.info("User " + login + " successfully logged in");
+			customUserDetailsService.successfulLogin(login);
+		}
+	}
+
+	@Component
+	@Slf4j
+	public static class LoginListener implements ApplicationListener<AuthenticationFailureBadCredentialsEvent> {
+
+		@Autowired
+		private CustomUserDetailsService customUserDetailsService;
+
+		@Override
+		public void onApplicationEvent(AuthenticationFailureBadCredentialsEvent evt) {
+			String userLogin = (String) evt.getAuthentication().getPrincipal();
+			log.info("Bad credentials for user " + userLogin);
+			customUserDetailsService.badCredentials(userLogin);
+		}
+	}
 }
