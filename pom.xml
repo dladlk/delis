@@ -53,7 +53,7 @@
         <commons-collections4.version>4.1</commons-collections4.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <bouncycastle.version>1.58</bouncycastle.version>
-        <quartz.version>2.3.0</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         <dozer.version>5.5.1</dozer.version>
         <jackson.version>2.9.5</jackson.version>
         <commons-test.version>4.2</commons-test.version>
