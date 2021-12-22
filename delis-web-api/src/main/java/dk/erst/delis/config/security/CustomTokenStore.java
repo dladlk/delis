@@ -383,9 +383,11 @@ public class CustomTokenStore implements TokenStore {
     }
 
     private long logDuration(long startTime, String logMessagePrefix) {
-        long currentTime = System.nanoTime();
-        long durationInMillis = Duration.ofNanos(currentTime - startTime).toMillis();
-        LOG.debug(logMessagePrefix + durationInMillis + " ms.");
+    	long currentTime = System.nanoTime();
+    	if (LOG.isDebugEnabled()) {
+	        long durationInMillis = Duration.ofNanos(currentTime - startTime).toMillis();
+	        LOG.debug(logMessagePrefix + durationInMillis + " ms.");
+    	}
         return currentTime;
     }
 }
