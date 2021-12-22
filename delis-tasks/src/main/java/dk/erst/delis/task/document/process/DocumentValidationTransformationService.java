@@ -160,7 +160,7 @@ public class DocumentValidationTransformationService {
 		try (FileInputStream xslStream = new FileInputStream(xslFilePath.toFile());
 			FileInputStream xmlStream = new FileInputStream(xmlPath.toFile());
 			FileOutputStream resultStream = new FileOutputStream(xmlOutPath.toFile())) {
-			XSLTUtil.apply(xslStream, xslFilePath, new CloseShieldInputStream(xmlStream), resultStream);
+			XSLTUtil.apply(xslStream, xslFilePath, CloseShieldInputStream.wrap(xmlStream), resultStream);
 			step.setSuccess(true);
 			step.setResult(xmlOutPath);
 		} catch (Exception e) {

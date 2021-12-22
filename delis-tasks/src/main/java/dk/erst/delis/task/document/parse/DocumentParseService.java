@@ -35,7 +35,7 @@ public class DocumentParseService {
 		long start = System.currentTimeMillis();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), Paths.get(DOCUMENT_INFO_XSLT_PATH), new CloseShieldInputStream(is), baos);
+			XSLTUtil.apply(this.getClass().getResourceAsStream(DOCUMENT_INFO_XSLT_PATH), Paths.get(DOCUMENT_INFO_XSLT_PATH), CloseShieldInputStream.wrap(is), baos);
 		} catch (Exception e) {
 			log.error("Failed to extract document header", e);
 			return null;

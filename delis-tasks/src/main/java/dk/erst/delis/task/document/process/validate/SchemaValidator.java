@@ -64,10 +64,10 @@ public class SchemaValidator {
 				parserFactory.setNamespaceAware(true);
 				XMLReader xmlReader = parserFactory.newSAXParser().getXMLReader();
 				xmlReader.setContentHandler(validatorHandler);
-				xmlReader.parse(new InputSource(new CloseShieldInputStream(xmlStream)));
+				xmlReader.parse(new InputSource(CloseShieldInputStream.wrap(xmlStream)));
 			} else {
 				Validator validator = schema.newValidator();
-				validator.validate(new StreamSource(new CloseShieldInputStream(xmlStream)));
+				validator.validate(new StreamSource(CloseShieldInputStream.wrap(xmlStream)));
 			}
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);

@@ -23,7 +23,7 @@ public class SchematronValidator {
 
 	public List<ErrorRecord> validate(InputStream xmlStream, InputStream schematronStream, ISchematronResultCollector collector, Path xslPath) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		XSLTUtil.apply(schematronStream, xslPath, new CloseShieldInputStream(xmlStream), baos);
+		XSLTUtil.apply(schematronStream, xslPath, CloseShieldInputStream.wrap(xmlStream), baos);
 
 		DocumentBuilderFactory factoryNoNS = DocumentBuilderFactory.newInstance();
 		factoryNoNS.setNamespaceAware(true);
