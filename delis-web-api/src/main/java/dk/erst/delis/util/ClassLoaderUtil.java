@@ -30,14 +30,14 @@ public class ClassLoaderUtil {
 
     private static final String BASE_ENTITY_PACKAGE = AbstractEntity.class.getPackage().getName();
 
-    public List<Class> findAllWebApiContentEntityClasses() {
+    public List<Class<?>> findAllWebApiContentEntityClasses() {
         ClassLoader loader = AbstractEntity.class.getClassLoader();
-        List<Class> entityClasses = new ArrayList<>();
+        List<Class<?>> entityClasses = new ArrayList<>();
         try {
             Resource[] resources = scan(loader);
             for (Resource resource : resources) {
                 MetadataReader reader = new CachingMetadataReaderFactory(loader).getMetadataReader(resource);
-                Class entity = ClassUtils.forName(reader.getClassMetadata().getClassName(), loader);
+                Class<?> entity = ClassUtils.forName(reader.getClassMetadata().getClassName(), loader);
                 if (Objects.nonNull(entity.getAnnotation(WebApiContent.class))) {
                     entityClasses.add(entity);
                 }
@@ -49,13 +49,13 @@ public class ClassLoaderUtil {
         return entityClasses;
     }
 
-    public String generateEntityByFullNameClass(Class entityName) {
+    public String generateEntityByFullNameClass(Class<?> entityName) {
         return Arrays.stream(entityName.getName().split("\\.")).reduce((first, last) -> last).orElse(null);
     }
 
-    public List<Field> getAllFieldsByEntity(Class entityClass) {
+    public List<Field> getAllFieldsByEntity(Class<?> entityClass) {
         List<Field> fields = new ArrayList<>();
-        Class nextClass = entityClass;
+        Class<?> nextClass = entityClass;
         do {
             Field[] innerFields = nextClass.getDeclaredFields();
             fields.addAll(Arrays.asList(innerFields));
@@ -65,12 +65,12 @@ public class ClassLoaderUtil {
         return fields;
     }
 
-    public Class findRepositoryByEntityMapper(String entityClass, ListableBeanFactory listableBeanFactory) {
+    public Class<?> findRepositoryByEntityMapper(String entityClass, ListableBeanFactory listableBeanFactory) {
         Repositories repositories = new Repositories(listableBeanFactory);
-        for (Class domainClass : repositories) {
+        for (Class<?> domainClass : repositories) {
             RepositoryInformation repositoryInformation = repositories.getRepositoryInformationFor(domainClass).orElse(null);
             if (Objects.nonNull(repositoryInformation)) {
-                Class domainType = repositoryInformation.getDomainType();
+                Class<?> domainType = repositoryInformation.getDomainType();
                 String domainName = generateEntityByFullNameClass(domainType);
                 if (Objects.isNull(domainName)) {
                     throwError(entityClass);
@@ -90,7 +90,7 @@ public class ClassLoaderUtil {
                 .getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX.concat(ClassUtils.convertClassNameToResourcePath(BASE_ENTITY_PACKAGE) + "/**/*.class"));
     }
 
-    private Class throwError(String entityClass) {
+    private Class<?> throwError(String entityClass) {
         log.error("invalid entity name : " + entityClass + " from request");
         throw new RestBadRequestException(Collections.singletonList(
                 new FieldErrorModel("WebRequest", HttpStatus.BAD_REQUEST.getReasonPhrase(), "invalid entity name from request")));

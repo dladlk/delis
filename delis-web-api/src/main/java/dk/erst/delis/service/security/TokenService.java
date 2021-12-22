@@ -1,13 +1,8 @@
 package dk.erst.delis.service.security;
 
-import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
-import dk.erst.delis.data.entities.tokens.OAuthRefreshToken;
-import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
-import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
-import dk.erst.delis.util.SecurityUtil;
+import java.util.Collection;
 
 import org.apache.commons.collections.CollectionUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,11 +10,12 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import dk.erst.delis.data.entities.tokens.OAuthAccessToken;
+import dk.erst.delis.data.entities.tokens.OAuthRefreshToken;
+import dk.erst.delis.persistence.repository.tokens.OAuthAccessTokenRepository;
+import dk.erst.delis.persistence.repository.tokens.OAuthRefreshTokenRepository;
+import dk.erst.delis.util.SecurityUtil;
 
 @Service
 public class TokenService {

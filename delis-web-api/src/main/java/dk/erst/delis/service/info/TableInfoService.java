@@ -33,7 +33,7 @@ public class TableInfoService {
 
     public ListContainer<TableInfoData> getTableInfoByAllEntities(String locale) {
         this.locale = locale;
-        List<Class> entityClasses = ClassLoaderUtil.findAllWebApiContentEntityClasses();
+        List<Class<?>> entityClasses = ClassLoaderUtil.findAllWebApiContentEntityClasses();
         if (CollectionUtils.isNotEmpty(entityClasses)) {
             return new ListContainer<>(
                     generateTableInfoDataList(entityClasses)
@@ -67,14 +67,15 @@ public class TableInfoService {
         return new DataContainer<>(new UniqueOrganizationNameData(Collections.singletonList(organisation)));
     }
 
-    private List<TableInfoData> generateTableInfoDataList(List<Class> entities) {
+    private List<TableInfoData> generateTableInfoDataList(List<Class<?>> entities) {
         return entities
                 .stream()
                 .map(this::generateTableInfoData)
                 .collect(Collectors.toList());
     }
 
-    private TableInfoData generateTableInfoData(Class entity) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private TableInfoData generateTableInfoData(Class<?> entity) {
         Map<String, List<EnumInfo>> entityEnumInfo = new HashMap<>();
         List<Field> fields = new ArrayList<>(Arrays.asList(entity.getDeclaredFields()));
         for (Field field : fields) {

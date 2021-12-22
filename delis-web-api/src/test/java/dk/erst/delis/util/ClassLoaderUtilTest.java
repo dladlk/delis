@@ -17,9 +17,9 @@ public class ClassLoaderUtilTest {
 
     @Test
     public void findAllWebApiContentEntityClassesTest() {
-        List<Class> listClasses = ClassLoaderUtil.findAllWebApiContentEntityClasses();
+        List<Class<?>> listClasses = ClassLoaderUtil.findAllWebApiContentEntityClasses();
         Assert.assertTrue(CollectionUtils.isNotEmpty(listClasses));
-        for (Class aClass : listClasses) {
+        for (Class<?> aClass : listClasses) {
             List<Field> fields = ClassLoaderUtil.getAllFieldsByEntity(aClass);
             Assert.assertTrue(CollectionUtils.isNotEmpty(fields));
             String entityName = ClassLoaderUtil.generateEntityByFullNameClass(aClass);

@@ -1,5 +1,15 @@
 package dk.erst.delis.config.security;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -10,8 +20,6 @@ import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultUserAuthenticationConverter;
 import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
-
-import java.util.*;
 
 public class CustomAccessTokenConverter implements AccessTokenConverter {
 
@@ -92,14 +100,14 @@ public class CustomAccessTokenConverter implements AccessTokenConverter {
             parameters.put("grant_type", (String)map.get("grant_type"));
         }
 
-        Set<String> resourceIds = new LinkedHashSet<>((Collection)(map.containsKey("aud") ? this.getAudience(map) : Collections.emptySet()));
+        Set<String> resourceIds = new LinkedHashSet<String>((Collection)(map.containsKey("aud") ? this.getAudience(map) : Collections.emptySet()));
         Collection<? extends GrantedAuthority> authorities = null;
         if (user == null && map.containsKey("authorities")) {
             String[] roles = (String[])((Collection)map.get("authorities")).toArray(new String[0]);
             authorities = AuthorityUtils.createAuthorityList(roles);
         }
 
-        OAuth2Request request = new OAuth2Request(parameters, clientId, authorities, true, scope, resourceIds, (String)null, (Set)null, (Map)null);
+        OAuth2Request request = new OAuth2Request(parameters, clientId, authorities, true, scope, resourceIds, (String)null, (Set)null, (Map<String, Serializable>)null);
         return new OAuth2Authentication(request, user);
     }
 
