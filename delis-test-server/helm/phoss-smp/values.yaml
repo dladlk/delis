@@ -2,7 +2,7 @@ namespace: default
 all:
   imagePrefix:
 smp:
-  image: cef-erst/peppol-smp-tomcat:5.4.4.0
+  image: cef-erst/peppol-smp-tomcat:5.4.5.0
   serviceType: NodePort
   contextName: 
   env:
