@@ -16,7 +16,7 @@
 
 	<properties>
 		<darrachequesne.datatables>5.0.0</darrachequesne.datatables>
-		<spring-data-jpa.version>2.0.9.RELEASE</spring-data-jpa.version>
+		<spring-data-jpa.version>2.0.14.RELEASE</spring-data-jpa.version>
 		<javax-persistence-version>2.1.0</javax-persistence-version>
 	</properties>
 
