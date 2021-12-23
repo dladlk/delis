@@ -6,5 +6,5 @@
 #   npx browserslist
 
 defaults
-ie 11
-not ie <= 10
+#ie 11
+#not ie <= 10
