@@ -1,17 +1,17 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { MatCheckboxChange, MatSelect } from '@angular/material';
-import { SuccessModel } from '../../../../model/system/success.model';
-import { DocumentInvoiceModel } from '../../../../model/content/document/document-invoice.model';
-import { DocumentInvoiceResponseFormModel } from '../../../../model/content/document/document-invoice-response-form.model';
-import { InvoiceResponseGenerationModel } from '../../../../model/content/document/invoice-response-generation.model';
-import { ErrorModel } from '../../../../model/system/error.model';
-import { InvoiceErrorRecordModel } from '../../../../model/content/document/invoice-error-record.model';
-import { DocumentInvoiceService } from '../../../../service/content/document-invoice.service';
-import { ErrorService } from '../../../../service/system/error.service';
-import { FileSaverService } from '../../../../service/system/file-saver.service';
-import { SpinnerService } from '../../../../service/system/spinner.service';
-import { DelisEntityDetailsObservable } from '../../../../observable/delis-entity-details.observable';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {MatCheckboxChange, MatSelect} from '@angular/material';
+import {SuccessModel} from '../../../../model/system/success.model';
+import {DocumentInvoiceModel} from '../../../../model/content/document/document-invoice.model';
+import {DocumentInvoiceResponseFormModel} from '../../../../model/content/document/document-invoice-response-form.model';
+import {InvoiceResponseGenerationModel} from '../../../../model/content/document/invoice-response-generation.model';
+import {ErrorModel} from '../../../../model/system/error.model';
+import {InvoiceErrorRecordModel} from '../../../../model/content/document/invoice-error-record.model';
+import {DocumentInvoiceService} from '../../../../service/content/document-invoice.service';
+import {ErrorService} from '../../../../service/system/error.service';
+import {FileSaverService} from '../../../../service/system/file-saver.service';
+import {SpinnerService} from '../../../../service/system/spinner.service';
+import {DelisEntityDetailsObservable} from '../../../../observable/delis-entity-details.observable';
 
 @Component({
   selector: 'app-ir-form',
@@ -276,8 +276,8 @@ export class IrFormComponent implements OnInit, OnDestroy {
               this.statusReasonEnabled = true;
               this.effectiveDateEnabled = true;
               this.statusActionEnabled = true;
-              const m = 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.';
-              this.statusReasonText = m;
+              this.statusReasonText = 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. ' +
+                'Send credit note for 3 unit.';
               this.initUseCase(useCaseId);
             }
           }
