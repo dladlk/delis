@@ -91,14 +91,14 @@
                   "maximumWarning": "6kb"
                 }
               ]
-            }
+            },
+            "development": {}
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "delis-web-angular:build"
           },
           "configurations": {
             "production": {
@@ -106,8 +106,12 @@
             },
             "dev": {
               "browserTarget": "delis-web-angular:build:dev"
+            },
+            "development": {
+              "browserTarget": "delis-web-angular:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -134,24 +138,10 @@
             ]
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "delis-web-angular:serve"
+            "protractorConfig": "e2e/protractor.conf.js"
           },
           "configurations": {
             "production": {
@@ -159,8 +149,12 @@
             },
             "dev": {
               "devServerTarget": "delis-web-angular:serve:dev"
+            },
+            "development": {
+              "devServerTarget": "delis-web-angular:serve:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
