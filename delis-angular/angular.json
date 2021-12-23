@@ -13,6 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "file-saver",
+              "chart.js"
+            ],
             "outputPath": "dist/delis-web-angular",
             "index": "src/index.html",
             "main": "src/main.ts",
