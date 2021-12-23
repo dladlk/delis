@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "../../../../../styles/styles";
 
 .ngx-mat-drp-presets-list {
@@ -11,12 +12,12 @@
   padding: 4%;
   cursor: pointer;
   background: #fafafa !important;
-  color: mat-color($primary) !important;
+  color: mat.get-color-from-palette($primary) !important;
   user-select: none;
   font-family: $delis-font-family, "system", serif !important;
 }
 
 .ngx-mat-drp-presets-list li:hover {
-  background: mat-color($primary) !important;
+  background: mat.get-color-from-palette($primary) !important;
   color: #fff !important;
 }

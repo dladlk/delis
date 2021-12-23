@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "delis_material";
 
 .delis-main-content {
@@ -14,7 +15,7 @@
 }
 
 .check-header-language {
-  color: mat-color($primary) !important;
+  color: mat.get-color-from-palette($primary) !important;
   margin-left: 1em;
 }
 
