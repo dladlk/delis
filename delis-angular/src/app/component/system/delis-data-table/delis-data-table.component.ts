@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
-import { MatPaginator, MatSort } from '@angular/material';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import {AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Location} from '@angular/common';
+import {MatPaginator, MatSort} from '@angular/material';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import * as moment from 'moment';
 
 import {
@@ -16,27 +16,27 @@ import {
   SHOW_DATE_FORMAT
 } from '../../../app.constants';
 
-import { DelisDataTableColumnModel } from '../../../model/content/delis-data-table-column.model';
-import { TableStateModel } from '../../../model/filter/table-state.model';
-import { HideColumnModel } from '../../../model/content/hide-column.model';
-import { AbstractEntityModel } from '../../../model/content/abstract-entity.model';
-import { SendDocumentFilterModel } from '../../../model/filter/send-document-filter.model';
-import { DocumentFilterModel } from '../../../model/filter/document-filter.model';
-import { IdentifierFilterModel } from '../../../model/filter/identifier-filter.model';
-import { Range } from '../date-range/model/model';
-import { StateService } from '../../../service/state/state-service';
-import { DelisService } from '../../../service/content/delis-service';
-import { DelisDataSource } from '../../content/delis-data-source';
-import { DocumentDataSource } from '../../content/document/document-data-source';
-import { IdentifierDataSource } from '../../content/identifier/identifier-data-source';
-import { SendDocumentDataSource } from '../../content/send-document/send-document-data-source';
-import { DataTableConfig } from '../../content/data-table-config';
-import { DaterangeObservable } from '../../../observable/daterange.observable';
-import { RefreshObservable } from '../../../observable/refresh.observable';
-import { ResetDaterangeObservable } from '../../../observable/reset-daterange.observable';
-import { DocumentErrorService } from '../../content/document/document-error.service';
-import { RedirectContentService } from '../../../service/content/redirect-content.service';
-import { RoutingStateService } from '../../../service/system/routing-state.service';
+import {DelisDataTableColumnModel} from '../../../model/content/delis-data-table-column.model';
+import {TableStateModel} from '../../../model/filter/table-state.model';
+import {HideColumnModel} from '../../../model/content/hide-column.model';
+import {AbstractEntityModel} from '../../../model/content/abstract-entity.model';
+import {SendDocumentFilterModel} from '../../../model/filter/send-document-filter.model';
+import {DocumentFilterModel} from '../../../model/filter/document-filter.model';
+import {IdentifierFilterModel} from '../../../model/filter/identifier-filter.model';
+import {Range} from '../date-range/model/model';
+import {StateService} from '../../../service/state/state-service';
+import {DelisService} from '../../../service/content/delis-service';
+import {DelisDataSource} from '../../content/delis-data-source';
+import {DocumentDataSource} from '../../content/document/document-data-source';
+import {IdentifierDataSource} from '../../content/identifier/identifier-data-source';
+import {SendDocumentDataSource} from '../../content/send-document/send-document-data-source';
+import {DataTableConfig} from '../../content/data-table-config';
+import {DaterangeObservable} from '../../../observable/daterange.observable';
+import {RefreshObservable} from '../../../observable/refresh.observable';
+import {ResetDaterangeObservable} from '../../../observable/reset-daterange.observable';
+import {DocumentErrorService} from '../../content/document/document-error.service';
+import {RedirectContentService} from '../../../service/content/redirect-content.service';
+import {RoutingStateService} from '../../../service/system/routing-state.service';
 
 const DOCUMENT_STATUS = 'documentStatus';
 const DATE_PATTERN = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/;
@@ -60,9 +60,9 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  private rangeUpdate$: Subscription;
-  private refreshUpdate$: Subscription;
-  private filter: TableStateModel;
+  private readonly rangeUpdate$: Subscription;
+  private readonly refreshUpdate$: Subscription;
+  filter: TableStateModel;
 
   statusErrors: string[] = [];
 
@@ -238,14 +238,14 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
           this.filter.dateRange = null;
         }
         if (redirectData.path === DOCUMENT_PATH) {
+          const filterDocumentStatus = this.enumFilterModel[DOCUMENT_STATUS];
           if (redirectData.statusError) {
-            this.enumFilterModel[DOCUMENT_STATUS].value = this.enumFilterModel[DOCUMENT_STATUS].list[1];
-            this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
+            filterDocumentStatus.value = filterDocumentStatus.list[1];
+            this.filter[DOCUMENT_STATUS] = filterDocumentStatus.value.name;
           }
           if (redirectData.documentStatus) {
-            const docStatusValue = this.enumFilterModel[DOCUMENT_STATUS].list.find(value => value.name === redirectData.documentStatus);
-            this.enumFilterModel[DOCUMENT_STATUS].value = docStatusValue;
-            this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
+            filterDocumentStatus.value = filterDocumentStatus.list.find(value => value.name === redirectData.documentStatus);
+            this.filter[DOCUMENT_STATUS] = filterDocumentStatus.value.name;
           }
         }
       } else {
@@ -268,7 +268,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
 
   onRowClicked(row) {
     this.filter.detailsState.currentId = row.id;
-    this.router.navigateByUrl('/' + this.path + '/details');
+    this.router.navigateByUrl('/' + this.path + '/details').then(() => {});
   }
 
   clear() {
@@ -292,7 +292,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.router.navigateByUrl('/' + this.path)
         .then(() => {
           this.router.navigated = false;
-          this.router.navigate([this.router.url]);
+          this.router.navigate([this.router.url]).then(() => {});
         });
   }
 
@@ -301,21 +301,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   back() {
-    this.router.navigateByUrl(this.routingState.getPreviousUrl());
+    this.router.navigateByUrl(this.routingState.getPreviousUrl()).then(() => {});
   }
-
-  gotoTop() {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }
-
-  gotoBottom() {
-    window.scrollTo(0, 10000);
-  }
-
   handleSortChange(event: any) {
     this.sort.direction = event.direction;
     this.sort.active = event.active;
@@ -344,15 +331,5 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
   onResize(event) {
     this.breakpointCols = (event.target.innerWidth <= 500) ? 1 : 8;
     this.breakpointColspan = (window.innerWidth <= 500) ? 1 : 3;
-  }
-
-  showHideColumns(columns: []) {
-    this.selectedDisplayedColumns = Object.assign([], this.allDisplayedColumns);
-    for (const col of columns) {
-      const indexSelectedDisplayedColumns: number = this.selectedDisplayedColumns.indexOf(col, 0);
-      if (indexSelectedDisplayedColumns > -1) {
-        this.selectedDisplayedColumns.splice(indexSelectedDisplayedColumns, 1);
-      }
-    }
   }
 }
