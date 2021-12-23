@@ -110,7 +110,7 @@ export const createTranslateLoader = (http: HttpClient) => {
       }
     })
   ],
-  entryComponents: [PickerOverlayComponent],
+  // entryComponents: [PickerOverlayComponent],
   providers: [
     {
       provide: DATE, useValue: new Date()
