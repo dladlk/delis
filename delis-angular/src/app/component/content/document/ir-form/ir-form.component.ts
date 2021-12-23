@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {MatCheckboxChange, MatSelect} from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatSelect } from '@angular/material/select';
 import {SuccessModel} from '../../../../model/system/success.model';
 import {DocumentInvoiceModel} from '../../../../model/content/document/document-invoice.model';
 import {DocumentInvoiceResponseFormModel} from '../../../../model/content/document/document-invoice-response-form.model';

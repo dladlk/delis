@@ -8,7 +8,8 @@ import {
   SimpleChanges,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { DateAdapter, MatCalendar } from '@angular/material';
+import { DateAdapter } from '@angular/material/core';
+import { MatCalendar } from '@angular/material/datepicker';
 import { ConfigStoreService } from '../service/config-store.service';
 import { LocaleService} from '../../../../service/system/locale.service';
 
