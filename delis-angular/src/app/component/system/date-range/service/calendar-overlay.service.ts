@@ -1,10 +1,10 @@
-import { Injectable, ElementRef, Injector } from '@angular/core';
-import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
-import { takeWhile } from 'rxjs/operators';
+import {ElementRef, Injectable, Injector} from '@angular/core';
+import {Overlay, OverlayConfig, OverlayRef} from '@angular/cdk/overlay';
+import {ComponentPortal, PortalInjector} from '@angular/cdk/portal';
+import {takeWhile} from 'rxjs/operators';
 
-import { CalendarOverlayConfig } from '../model/model';
-import { PickerOverlayComponent } from '../picker-overlay/picker-overlay.component';
+import {CalendarOverlayConfig} from '../model/model';
+import {PickerOverlayComponent} from '../picker-overlay/picker-overlay.component';
 
 const DEFAULT_CONFIG: CalendarOverlayConfig = {
   panelClass: 'ngx-mat-drp-overlay',
@@ -75,15 +75,13 @@ export class CalendarOverlayService {
         }
       ]);
 
-    const overlayConfig = new OverlayConfig({
+    return new OverlayConfig({
       hasBackdrop: config.hasBackdrop,
       backdropClass: config.backdropClass,
       panelClass: config.panelClass,
       scrollStrategy: this.overlay.scrollStrategies.block(),
       positionStrategy
     });
-
-    return overlayConfig;
   }
 
   private createInjector(overlayRef: OverlayRef): PortalInjector {
