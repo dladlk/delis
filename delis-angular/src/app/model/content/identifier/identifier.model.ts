@@ -1,6 +1,6 @@
 import { OrganisationModel } from '../organisation/organisation.model';
 import { IdentifierGroupModel } from './identifier-group.model';
-import { AbstractEntityModel } from "../abstract-entity.model";
+import { AbstractEntityModel } from '../abstract-entity.model';
 
 export class IdentifierModel extends AbstractEntityModel {
 

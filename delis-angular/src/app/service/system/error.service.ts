@@ -18,31 +18,31 @@ export class ErrorService {
     private logoutService: LogoutService) { }
 
   errorProcess(error: any): ErrorModel {
-    let errorModel = new ErrorModel();
+    const errorModel = new ErrorModel();
 
     try {
 
-      const getErrorMessages = (error: any) => {
-        if (error && error.error) {
-          if (error.error.hasOwnProperty('fieldErrors')) {
-            return error.error.fieldErrors;
+      const getErrorMessages = (errorContainer: any) => {
+        if (errorContainer && errorContainer.error) {
+          if (errorContainer.error.hasOwnProperty('fieldErrors')) {
+            return errorContainer.error.fieldErrors;
           }
         }
         return null;
       };
 
-      console.log('ErrorService.errorProcess is invoked with error status ' + error['status'] + ':');
+      console.log('ErrorService.errorProcess is invoked with error status ' + error.status + ':');
       console.log(error);
 
-      errorModel.status = String(error['status']);
+      errorModel.status = String(error.status);
 
-      switch (String(error['status'])) {
+      switch (String(error.status)) {
         case '401' : {
           this.logoutService.logout();
           break;
         }
         case '403' : {
-          let errorMessages = getErrorMessages(error);
+          const errorMessages = getErrorMessages(error);
           if (errorMessages && errorMessages.length) {
             errorModel.message = errorMessages[0].message;
           }
@@ -50,11 +50,11 @@ export class ErrorService {
         }
         case '409' : {
           if (error.error instanceof ArrayBuffer) {
-            let decodedString = this.getDecodedString(error.error);
+            const decodedString = this.getDecodedString(error.error);
             errorModel.message = decodedString.fieldErrors[0].message;
             errorModel.details = decodedString.fieldErrors[0].details;
           } else {
-            let errorMessages = getErrorMessages(error);
+            const errorMessages = getErrorMessages(error);
             if (errorMessages && errorMessages.length) {
               errorModel.message = errorMessages[0].message;
               errorModel.details = errorMessages[0].details;
@@ -65,7 +65,7 @@ export class ErrorService {
         case '500' : {
           if (error.hasOwnProperty('error')) {
             if (error.error instanceof ArrayBuffer) {
-              let decodedString = this.getDecodedString(error.error);
+              const decodedString = this.getDecodedString(error.error);
               errorModel.message = decodedString.message;
             } else {
               errorModel.message = error.error.message;
@@ -76,7 +76,7 @@ export class ErrorService {
           break;
         }
         default : {
-          let errorMessages = getErrorMessages(error);
+          const errorMessages = getErrorMessages(error);
           if (errorMessages && errorMessages.length) {
             errorModel.message = errorMessages.message;
           }
@@ -87,10 +87,10 @@ export class ErrorService {
       console.log(errorModel);
 
     } catch (unexpectedError) {
-      console.log('Unexpected error occured during error processing of:');
+      console.log('Unexpected error occurred during error processing of:');
       console.log(error);
 
-      console.log('Occured error: ');
+      console.log('Occurred error: ');
       console.log(unexpectedError);
     }
 
@@ -98,7 +98,7 @@ export class ErrorService {
   }
 
   getDecodedString(error: any) {
-    let decodedString = String.fromCharCode.apply(null, new Uint8Array(error));
+    const decodedString = String.fromCharCode.apply(null, new Uint8Array(error));
     return JSON.parse(decodedString);
   }
 }

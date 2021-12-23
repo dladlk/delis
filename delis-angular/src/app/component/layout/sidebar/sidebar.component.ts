@@ -17,7 +17,7 @@ export class SidebarComponent implements OnInit {
 
   public onSidenavClose = () => {
     this.sidenavClose.emit();
-  };
+  }
 
   addExpandClass(element: any) {
     if (element === this.showMenu) {

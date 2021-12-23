@@ -1,5 +1,5 @@
-import { MatSort } from "@angular/material";
-import { TableStateModel } from "./table-state.model";
+import {MatSort} from '@angular/material';
+import {TableStateModel} from './table-state.model';
 
 export class DocumentFilterModel extends TableStateModel {
 
@@ -21,4 +21,5 @@ export class DocumentFilterModel extends TableStateModel {
     this.documentType = 'ALL';
     this.senderName = null;
   }
+
 }

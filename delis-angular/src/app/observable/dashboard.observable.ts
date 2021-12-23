@@ -6,13 +6,13 @@ import { Observable, Subject } from 'rxjs';
 })
 export class DashboardObservable {
 
-    private _listeners = new Subject<any>();
+    private listeners = new Subject<any>();
 
     listen(): Observable<any> {
-        return this._listeners.asObservable();
+        return this.listeners.asObservable();
     }
 
     setDashboard(data: any) {
-        this._listeners.next(data);
+        this.listeners.next(data);
     }
 }

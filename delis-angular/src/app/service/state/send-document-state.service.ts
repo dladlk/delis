@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SendDocumentFilterModel } from "../../model/filter/send-document-filter.model";
-import { StateService } from "./state-service";
+import { SendDocumentFilterModel } from '../../model/filter/send-document-filter.model';
+import { StateService } from './state-service';
 
 @Injectable({
   providedIn: 'root'

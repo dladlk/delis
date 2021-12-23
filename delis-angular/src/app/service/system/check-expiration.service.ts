@@ -12,12 +12,12 @@ export class CheckExpirationService {
   }
 
   isExpired(): boolean {
-    let expiration = localStorage.getItem(this.EXPIRATION_DATE);
+    const expiration = localStorage.getItem(this.EXPIRATION_DATE);
     if (expiration === null) {
       return true;
     }
-    let now = new Date();
-    let expired = new Date(JSON.parse(expiration));
+    const now = new Date();
+    const expired = new Date(JSON.parse(expiration));
     return expired.getTime() < now.getTime();
   }
 

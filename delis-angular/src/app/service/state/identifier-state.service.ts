@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IdentifierFilterModel } from "../../model/filter/identifier-filter.model";
-import { StateService } from "./state-service";
+import { IdentifierFilterModel } from '../../model/filter/identifier-filter.model';
+import { StateService } from './state-service';
 
 @Injectable({
   providedIn: 'root'

@@ -14,16 +14,16 @@ export class ContentSelectInfoService {
 
   generateAllContentSelectInfo(token: string) {
     this.http.methodGet(this.configService.getConfigUrl() + '/rest/table-info/enums', null, token).subscribe(
-      (items: {}) => {
-        this.setContent(items['items']);
+      (items: {items: any}) => {
+        this.setContent(items.items);
       }
     );
   }
 
   generateUniqueOrganizationNameInfo(token: string) {
     this.http.methodGet(this.configService.getConfigUrl() + '/rest/table-info/organizations', null, token).subscribe(
-      (data: {}) => {
-        const organizations = data['data'];
+      (data: {data: any}) => {
+        const organizations = data.data;
         this.storage.set('organizations', organizations.uniqueOrganizationNames);
       }
     );

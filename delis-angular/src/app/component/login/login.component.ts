@@ -37,27 +37,27 @@ export class LoginComponent implements OnInit {
 
   public hasError = (controlName: string, errorName: string) => {
     return this.loginForm.controls[controlName].hasError(errorName);
-  };
+  }
 
   public login = (loginValue) => {
     if (this.loginForm.valid) {
       this.executeLogin(loginValue);
     }
-  };
+  }
 
   private executeLogin = (loginValue) => {
 
     this.auth.login(loginValue.username, loginValue.password).subscribe(
-      (data: {}) => {
+      (data: {data: LoginModel}) => {
         const now = new Date();
-        const loginData: LoginModel = data['data'];
+        const loginData: LoginModel = data.data;
         this.tokenService.setToken(loginData.accessToken);
         this.checkExpirationService.setExpiration(new Date(now.getTime() + (1000 * (loginData.expiration))));
         this.runtimeConfigService.setCurrentUser(loginData);
         this.contentSelectInfoService.generateAllContentSelectInfo(loginData.accessToken);
         this.contentSelectInfoService.generateUniqueOrganizationNameInfo(loginData.accessToken);
         this.errorStatus = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']).then(r => {});
       }, error => {
         this.errorStatus = true;
         if (error.status === 0) {

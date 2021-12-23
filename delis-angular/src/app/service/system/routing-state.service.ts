@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
-import { filter } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { DASHBOARD_PATH } from '../../app.constants';
 
@@ -31,7 +31,7 @@ export class RoutingStateService {
     }
 
     public getPreviousUrl(): string {
-        let previousUrl = this.history[this.history.length - 2] || '/' + DASHBOARD_PATH;
+        const previousUrl = this.history[this.history.length - 2] || '/' + DASHBOARD_PATH;
         if (this.history.length !== 0) {
             this.history.pop();
         }

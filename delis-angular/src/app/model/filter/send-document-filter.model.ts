@@ -1,6 +1,6 @@
-import { MatSort } from "@angular/material";
+import { MatSort } from '@angular/material';
 import { Range } from '../../component/system/date-range/model/model';
-import { TableStateModel } from "./table-state.model";
+import { TableStateModel } from './table-state.model';
 
 export class SendDocumentFilterModel extends TableStateModel {
 

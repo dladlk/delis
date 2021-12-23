@@ -1,4 +1,4 @@
-import { AbstractEntityModel } from "../abstract-entity.model";
+import { AbstractEntityModel } from '../abstract-entity.model';
 
 export class OrganisationModel extends AbstractEntityModel {
 
