@@ -11,19 +11,19 @@ export class RangeStoreService {
 
   rangeUpdate$: Subject<RangeUpdate> = new Subject<RangeUpdate>();
 
-  constructor(@Inject(DATE) private _fromDate: Date, @Inject(DATE) private _toDate: Date) { }
+  constructor(@Inject(DATE) private from: Date, @Inject(DATE) private to: Date) { }
 
   get fromDate(): Date {
-    return this._fromDate;
+    return this.from;
   }
 
   get toDate(): Date {
-    return this._toDate;
+    return this.to;
   }
 
   updateRange(rangeUpdate: RangeUpdate) {
-    this._fromDate = rangeUpdate.range.fromDate;
-    this._toDate = rangeUpdate.range.toDate;
+    this.from = rangeUpdate.range.fromDate;
+    this.to = rangeUpdate.range.toDate;
     this.rangeUpdate$.next(rangeUpdate);
   }
 }

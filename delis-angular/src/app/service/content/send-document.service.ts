@@ -47,7 +47,8 @@ export class SendDocumentService implements DelisService<SendDocumentModel, Send
   }
 
   downloadFileBySendDocumentAndDocumentBytes(id: number, bytesId): Observable<any> {
-    return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
+    const url = this.url + '/download/' + id + '/bytes/' + bytesId;
+    return this.httpRestService.downloadFileByDocumentAndDocumentBytes(url, this.tokenService.getToken());
   }
 
   private generateParams(filter: SendDocumentFilterModel): HttpParams {
@@ -82,7 +83,8 @@ export class SendDocumentService implements DelisService<SendDocumentModel, Send
       params = params.append('sentMessageId', filter.sentMessageId);
     }
     if (filter.dateRange !== null) {
-      params = params.append('createTime', String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime()));
+      const value = String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime());
+      params = params.append('createTime', value);
     }
     return params;
   }

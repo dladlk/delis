@@ -6,7 +6,7 @@ import { NgxDrpOptions } from '../model/model';
 })
 export class ConfigStoreService {
 
-  private _ngxDrpOptions: NgxDrpOptions;
+  private ngxDrpOptionsLocal: NgxDrpOptions;
   private defaultOptions = {
     excludeWeekends: false,
     animation: true,
@@ -18,10 +18,10 @@ export class ConfigStoreService {
   constructor() {}
 
   get ngxDrpOptions(): NgxDrpOptions {
-    return this._ngxDrpOptions;
+    return this.ngxDrpOptionsLocal;
   }
 
   set ngxDrpOptions(options: NgxDrpOptions) {
-    this._ngxDrpOptions = { ...this.defaultOptions, ...options };
+    this.ngxDrpOptionsLocal = { ...this.defaultOptions, ...options };
   }
 }

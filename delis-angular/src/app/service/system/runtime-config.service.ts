@@ -19,8 +19,8 @@ export class RuntimeConfigService {
 
   getUrl() {
     this.http.methodInnerGet('assets/config/runtime.json').subscribe(
-      (data: {}) => {
-        localStorage.setItem(this.LOCALE_URL, data['PARAM_API_URL']);
+      (data: {PARAM_API_URL: string}) => {
+        localStorage.setItem(this.LOCALE_URL, data.PARAM_API_URL);
       }
     );
   }

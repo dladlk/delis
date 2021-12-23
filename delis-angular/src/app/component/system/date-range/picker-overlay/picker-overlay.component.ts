@@ -109,8 +109,8 @@ export class PickerOverlayComponent implements OnInit {
 
   autoClose(event) {
     if (!this.minScreen) {
-      var target = event.target;
-      if (!target.closest(".ngx-mat-drp-calendar-container")) {
+      const target = event.target;
+      if (!target.closest('.ngx-mat-drp-calendar-container')) {
         this.disposeOverLay();
       }
     }
@@ -118,8 +118,8 @@ export class PickerOverlayComponent implements OnInit {
 
   autoCloseMin(event) {
     if (this.minScreen) {
-      var target = event.target;
-      if (!target.closest(".ngx-mat-drp-calendar-min-container")) {
+      const target = event.target;
+      if (!target.closest('.ngx-mat-drp-calendar-min-container')) {
         this.disposeOverLay();
       }
     }

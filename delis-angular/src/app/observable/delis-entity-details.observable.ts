@@ -6,13 +6,13 @@ import { Observable, Subject } from 'rxjs';
 })
 export class DelisEntityDetailsObservable {
 
-    private _listeners = new Subject<any>();
+    private listeners = new Subject<any>();
 
     listen(): Observable<any> {
-        return this._listeners.asObservable();
+        return this.listeners.asObservable();
     }
 
     loadCurrentId(id: any) {
-        this._listeners.next(id);
+        this.listeners.next(id);
     }
 }

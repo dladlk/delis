@@ -6,13 +6,13 @@ import { Observable, Subject } from 'rxjs';
 })
 export class ResetDaterangeObservable {
 
-    private _listeners = new Subject<any>();
+    private listeners = new Subject<any>();
 
     listen(): Observable<any> {
-        return this._listeners.asObservable();
+        return this.listeners.asObservable();
     }
 
     reset() {
-        this._listeners.next();
+        this.listeners.next();
     }
 }

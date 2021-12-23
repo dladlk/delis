@@ -6,16 +6,16 @@ import { Injectable } from '@angular/core';
 export class RedirectContentService {
 
     get redirectData(): any {
-        return this._redirectData;
+        return this.data;
     }
 
-    private _redirectData: any;
+    private data: any;
 
     updateRedirectData(data: any) {
-        this._redirectData = data;
+        this.data = data;
     }
 
     resetRedirectData() {
-        this._redirectData = undefined;
+        this.data = undefined;
     }
 }

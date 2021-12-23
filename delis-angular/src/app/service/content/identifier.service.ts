@@ -6,8 +6,8 @@ import { TokenService } from '../system/token.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { HttpRestService } from '../system/http-rest.service';
 import { IdentifierFilterModel } from '../../model/filter/identifier-filter.model';
-import { DelisService } from "./delis-service";
-import { IdentifierModel } from "../../model/content/identifier/identifier.model";
+import { DelisService } from './delis-service';
+import { IdentifierModel } from '../../model/content/identifier/identifier.model';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +54,8 @@ export class IdentifierService implements DelisService<IdentifierModel, Identifi
       params = params.append('name', filter.name);
     }
     if (filter.dateRange !== null) {
-      params = params.append('createTime', String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime()));
+      const paramValue = String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime());
+      params = params.append('createTime', paramValue);
     }
 
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());

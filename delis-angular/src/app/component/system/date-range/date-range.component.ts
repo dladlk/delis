@@ -40,20 +40,20 @@ export class DateRangeComponent implements OnInit {
   }
 
   setupPresets() {
+    const cleanDate = (nd: Date) => {
+      // nd.setUTCHours(0,0,0,0);
+      return nd;
+    };
     const newDateToday = () => {
       return cleanDate(new Date());
     };
     const newDate = (year: number, month: number, day: number) => {
       return cleanDate(new Date(year, month, day));
     };
-    const cleanDate = (nd: Date) => {
-      //nd.setUTCHours(0,0,0,0);
-      return nd;
-    };    
 
     const backDate = (numOfDays) => {
-      const today = newDateToday();
-      return new Date(today.setDate(today.getDate() - numOfDays));
+      const res = newDateToday();
+      return new Date(res.setDate(res.getDate() - numOfDays));
     };
 
     const today = newDateToday();

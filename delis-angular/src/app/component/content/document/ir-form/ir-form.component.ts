@@ -276,7 +276,8 @@ export class IrFormComponent implements OnInit, OnDestroy {
               this.statusReasonEnabled = true;
               this.effectiveDateEnabled = true;
               this.statusActionEnabled = true;
-              this.statusReasonText = 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.';
+              const m = 'Delivered quantity for line number 1 was 2 units but invoiced quantity is 5 units. Send credit note for 3 unit.';
+              this.statusReasonText = m;
               this.initUseCase(useCaseId);
             }
           }

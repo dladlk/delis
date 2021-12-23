@@ -24,7 +24,8 @@ export class DocumentService implements DelisService<DocumentModel, DocumentFilt
   getAll(filter: DocumentFilterModel): Observable<any> {
     let params = this.generateParams(filter);
     if (filter.dateRange !== null) {
-      params = params.append('createTime', String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime()));
+      const value = String(new Date(filter.dateRange.fromDate).getTime()) + ':' + String(new Date(filter.dateRange.toDate).getTime());
+      params = params.append('createTime', value);
     }
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
@@ -38,7 +39,8 @@ export class DocumentService implements DelisService<DocumentModel, DocumentFilt
   }
 
   downloadFileByDocumentAndDocumentBytes(id: number, bytesId): Observable<any> {
-    return this.httpRestService.downloadFileByDocumentAndDocumentBytes(this.url + '/download/' + id + '/bytes/' + bytesId, this.tokenService.getToken());
+    const url = this.url + '/download/' + id + '/bytes/' + bytesId;
+    return this.httpRestService.downloadFileByDocumentAndDocumentBytes(url, this.tokenService.getToken());
   }
 
   private generateParams(filter: DocumentFilterModel): HttpParams {

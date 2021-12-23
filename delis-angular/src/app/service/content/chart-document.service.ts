@@ -7,29 +7,29 @@ import { Range } from '../../component/system/date-range/model/model';
 export class ChartDocumentService {
 
   get chartType(): string {
-    return this._chartType;
+    return this.localChartType;
   }
 
   get range(): Range {
-    return this._range;
+    return this.localRange;
   }
 
-  private _range: Range;
-  private _chartType: string;
+  private localRange: Range;
+  private localChartType: string;
 
   updateRange(value: Range) {
-    this._range = value;
+    this.localRange = value;
   }
 
   updateChartType(chartType: string) {
-    this._chartType = chartType;
+    this.localChartType = chartType;
   }
 
   resetRange() {
-    this._range = undefined;
+    this.localRange = undefined;
   }
 
   resetChartType() {
-    this._chartType = undefined;
+    this.localChartType = undefined;
   }
 }

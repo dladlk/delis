@@ -66,12 +66,12 @@ export class HttpRestService {
       .set('grant_type', 'password');
     const headersMap = {
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
-      'Authorization': 'Basic ' + btoa(this.creds)
+      Authorization: 'Basic ' + btoa(this.creds)
     };
-    const headers = new HttpHeaders(headersMap);
+    const httpHeaders = new HttpHeaders(headersMap);
 
     return this.http.post(url, params.toString(), {
-      'headers': headers
+      headers: httpHeaders
     }).pipe(map(HttpRestService.extractData));
   }
 

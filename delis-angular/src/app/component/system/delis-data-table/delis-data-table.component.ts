@@ -243,7 +243,8 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
             this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
           }
           if (redirectData.documentStatus) {
-            this.enumFilterModel[DOCUMENT_STATUS].value = this.enumFilterModel[DOCUMENT_STATUS].list.find(value => value.name === redirectData.documentStatus);
+            const docStatusValue = this.enumFilterModel[DOCUMENT_STATUS].list.find(value => value.name === redirectData.documentStatus);
+            this.enumFilterModel[DOCUMENT_STATUS].value = docStatusValue;
             this.filter[DOCUMENT_STATUS] = this.enumFilterModel[DOCUMENT_STATUS].value.name;
           }
         }
@@ -287,7 +288,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.resetDaterangeObservable.reset();
     this.filter.detailsState.skip = true;
 
-    this.router.routeReuseStrategy.shouldReuseRoute = function() {return false; };
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.router.navigateByUrl('/' + this.path)
         .then(() => {
           this.router.navigated = false;

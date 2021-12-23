@@ -20,7 +20,8 @@ export class DelisTableDetailsHeaderComponent implements OnInit {
   @Input() header: string;
   @Input() stateService: StateService<TableStateModel>;
 
-  constructor(private router: Router, private routingState: RoutingStateService, private delisEntityDetailsObservable: DelisEntityDetailsObservable) { }
+  constructor(private router: Router, private routingState: RoutingStateService,
+              private delisEntityDetailsObservable: DelisEntityDetailsObservable) { }
 
   ngOnInit() {
     if (this.stateService !== undefined) {
