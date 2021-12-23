@@ -1,5 +1,5 @@
-@use '~@angular/material' as mat;
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@use '@angular/material' as mat;
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap');
 
 // !!! Remember to only ever include the @mat-core mixin only once; it should not be included for each theme.
