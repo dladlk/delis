@@ -6,8 +6,8 @@ import { HttpRestService } from '../system/http-rest.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { TokenService } from '../system/token.service';
 import { SendDocumentFilterModel } from '../../model/filter/send-document-filter.model';
-import { DelisService } from "./delis-service";
-import { SendDocumentModel } from "../../model/content/send-document/send-document.model";
+import { DelisService } from './delis-service';
+import { SendDocumentModel } from '../../model/content/send-document/send-document.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,12 +25,12 @@ export class SendDocumentService implements DelisService<SendDocumentModel, Send
   }
 
   getAll(filter: SendDocumentFilterModel): Observable<any> {
-    let params = this.generateParams(filter);
+    const params = this.generateParams(filter);
     return this.httpRestService.methodGet(this.url, params, this.tokenService.getToken());
   }
 
   getAllIds(filter: SendDocumentFilterModel): Observable<any> {
-    let params = this.generateParams(filter);
+    const params = this.generateParams(filter);
     return this.httpRestService.methodGet(this.url + '/next', params, this.tokenService.getToken());
   }
 

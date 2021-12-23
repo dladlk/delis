@@ -1,13 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class RedirectContentService {
 
     get redirectData(): any {
         return this._redirectData;
     }
+
+    private _redirectData: any;
 
     updateRedirectData(data: any) {
         this._redirectData = data;
@@ -16,6 +18,4 @@ export class RedirectContentService {
     resetRedirectData() {
         this._redirectData = undefined;
     }
-
-    private _redirectData: any;
 }

@@ -2,15 +2,15 @@ import { Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import { Location} from '@angular/common';
 import { ActivatedRoute, Router} from '@angular/router';
 import { TranslateService} from '@ngx-translate/core';
-import { Subscription} from "rxjs";
+import { Subscription} from 'rxjs';
 
 import { FileSaverService } from '../../../../service/system/file-saver.service';
 import { SendDocumentStateService } from '../../../../service/state/send-document-state.service';
 import { LocaleService } from '../../../../service/system/locale.service';
 import { ErrorService } from '../../../../service/system/error.service';
 import { SendDocumentService } from '../../../../service/content/send-document.service';
-import { RoutingStateService } from "../../../../service/system/routing-state.service";
-import { DelisEntityDetailsObservable } from "../../../../observable/delis-entity-details.observable";
+import { RoutingStateService } from '../../../../service/system/routing-state.service';
+import { DelisEntityDetailsObservable } from '../../../../observable/delis-entity-details.observable';
 import { SendDocumentModel } from '../../../../model/content/send-document/send-document.model';
 import { SendDocumentsBytesModel } from '../../../../model/content/send-document/send-documents-bytes.model';
 import { JournalSendDocumentModel } from '../../../../model/content/send-document/journal-send-document.model';
@@ -122,7 +122,7 @@ export class SendDocumentDetailsComponent implements OnInit, OnDestroy {
     }
 
     private initStateDetails(id: number) {
-        let stateDetails = this.stateService.getFilter().detailsState;
+        const stateDetails = this.stateService.getFilter().detailsState;
         this.currentIds = stateDetails.currentIds;
         if (this.currentIds.length !== 0) {
             this.isNextUp = id !== this.currentIds[0];

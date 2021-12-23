@@ -18,8 +18,8 @@ import { ConfigStoreService } from '../service/config-store.service';
 import { CalendarOverlayService } from '../service/calendar-overlay.service';
 import { Range, NgxDrpOptions, RangeUpdate } from '../model/model';
 import { DaterangeObservable } from '../../../../observable/daterange.observable';
-import { ResetDaterangeObservable } from "../../../../observable/reset-daterange.observable";
-import { ResetDaterangeForTodayObservable } from "../../../../observable/reset-daterange-for-today.observable";
+import { ResetDaterangeObservable } from '../../../../observable/reset-daterange.observable';
+import { ResetDaterangeForTodayObservable } from '../../../../observable/reset-daterange-for-today.observable';
 
 @Component({
   selector: 'app-ngx-mat-drp',
@@ -75,13 +75,13 @@ export class NgxMatDrpComponent implements OnInit, OnDestroy {
 
   formatSelectedDateRange(range: Range) {
     if (range.fromDate !== null && range.toDate !== null) {
-      const from: string = this.formatToDateString(range.fromDate,this.options.format);
-      const to: string = this.formatToDateString(range.toDate,this.options.format);
+      const from: string = this.formatToDateString(range.fromDate, this.options.format);
+      const to: string = this.formatToDateString(range.toDate, this.options.format);
       let rangeTitle = `${from} - ${to}`;
       if (from === to) {
         rangeTitle = from;
 
-        const todayFormat = this.formatToDateString(new Date(),this.options.format);
+        const todayFormat = this.formatToDateString(new Date(), this.options.format);
         if (from === todayFormat) {
           rangeTitle = 'td.picker.today';
         }

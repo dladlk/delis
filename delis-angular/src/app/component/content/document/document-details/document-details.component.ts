@@ -2,7 +2,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 
 import { ErrorModel } from '../../../../model/system/error.model';
 import { DocumentBytesModel } from '../../../../model/content/document/document-bytes.model';
@@ -18,7 +18,7 @@ import { FileSaverService } from '../../../../service/system/file-saver.service'
 import { ErrorDictionaryModel } from '../../../../model/content/document/error-dictionary.model';
 import { RuntimeConfigService } from 'src/app/service/system/runtime-config.service';
 import { DocumentErrorService } from '../document-error.service';
-import { DelisEntityDetailsObservable } from "../../../../observable/delis-entity-details.observable";
+import { DelisEntityDetailsObservable } from '../../../../observable/delis-entity-details.observable';
 
 import { DOCUMENT_PATH, DASHBOARD_PATH, SHOW_DATE_FORMAT } from '../../../../app.constants';
 

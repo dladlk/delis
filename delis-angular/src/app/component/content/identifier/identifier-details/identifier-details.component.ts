@@ -1,14 +1,14 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 
 import { ErrorService } from '../../../../service/system/error.service';
 import { IdentifierService } from '../../../../service/content/identifier.service';
 import { JournalIdentifierService } from '../../../../service/content/journal-identifier.service';
 import { IdentifierStateService } from '../../../../service/state/identifier-state.service';
-import { RoutingStateService } from "../../../../service/system/routing-state.service";
-import { DelisEntityDetailsObservable } from "../../../../observable/delis-entity-details.observable";
+import { RoutingStateService } from '../../../../service/system/routing-state.service';
+import { DelisEntityDetailsObservable } from '../../../../observable/delis-entity-details.observable';
 import { ErrorModel } from '../../../../model/system/error.model';
 import { IdentifierModel } from '../../../../model/content/identifier/identifier.model';
 import { JournalIdentifierModel } from '../../../../model/content/identifier/journal-identifier.model';

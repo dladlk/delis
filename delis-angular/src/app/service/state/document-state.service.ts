@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { DocumentFilterModel } from "../../model/filter/document-filter.model";
-import { StateService } from "./state-service";
+import { DocumentFilterModel } from '../../model/filter/document-filter.model';
+import { StateService } from './state-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentStateService implements StateService<DocumentFilterModel>{
+export class DocumentStateService implements StateService<DocumentFilterModel> {
 
   filter: DocumentFilterModel;
 

@@ -36,7 +36,7 @@ import { RefreshObservable } from '../../../observable/refresh.observable';
 import { ResetDaterangeObservable } from '../../../observable/reset-daterange.observable';
 import { DocumentErrorService } from '../../content/document/document-error.service';
 import { RedirectContentService } from '../../../service/content/redirect-content.service';
-import { RoutingStateService } from "../../../service/system/routing-state.service";
+import { RoutingStateService } from '../../../service/system/routing-state.service';
 
 const DOCUMENT_STATUS = 'documentStatus';
 const DATE_PATTERN = /([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/;
@@ -287,7 +287,7 @@ export class DelisDataTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.resetDaterangeObservable.reset();
     this.filter.detailsState.skip = true;
 
-    this.router.routeReuseStrategy.shouldReuseRoute = function(){return false;};
+    this.router.routeReuseStrategy.shouldReuseRoute = function() {return false; };
     this.router.navigateByUrl('/' + this.path)
         .then(() => {
           this.router.navigated = false;

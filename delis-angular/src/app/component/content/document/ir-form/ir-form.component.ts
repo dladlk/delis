@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from "rxjs";
+import { Subscription } from 'rxjs';
 import { MatCheckboxChange, MatSelect } from '@angular/material';
 import { SuccessModel } from '../../../../model/system/success.model';
 import { DocumentInvoiceModel } from '../../../../model/content/document/document-invoice.model';
@@ -11,7 +11,7 @@ import { DocumentInvoiceService } from '../../../../service/content/document-inv
 import { ErrorService } from '../../../../service/system/error.service';
 import { FileSaverService } from '../../../../service/system/file-saver.service';
 import { SpinnerService } from '../../../../service/system/spinner.service';
-import { DelisEntityDetailsObservable } from "../../../../observable/delis-entity-details.observable";
+import { DelisEntityDetailsObservable } from '../../../../observable/delis-entity-details.observable';
 
 @Component({
   selector: 'app-ir-form',

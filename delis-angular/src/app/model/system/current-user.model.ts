@@ -1,4 +1,4 @@
-import { LoginModel } from "./login.model";
+import { LoginModel } from './login.model';
 
 export class CurrentUserModel {
 

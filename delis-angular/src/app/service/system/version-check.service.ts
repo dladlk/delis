@@ -12,7 +12,7 @@ export class VersionCheckService {
 
   /**
    *  interval default 30 minutes
-   * */
+   */
   public initVersionCheck(frequency = 1800000) {
     setInterval(() => {
       this.checkVersion();

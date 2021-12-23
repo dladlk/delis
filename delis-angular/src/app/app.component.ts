@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RuntimeConfigService } from './service/system/runtime-config.service';
 import { LocaleService } from './service/system/locale.service';
 import { VersionCheckService } from './service/system/version-check.service';
-import { RoutingStateService } from "./service/system/routing-state.service";
+import { RoutingStateService } from './service/system/routing-state.service';
 
 @Component({
   selector: 'app-root',

@@ -60,18 +60,18 @@ export class HttpRestService {
   }
 
   methodLogin(url: string, login: string, password: string): Observable<any> {
-    let params = new HttpParams()
-      .set("username", login)
-      .set("password", password)
-      .set("grant_type", 'password');
-    let headersMap = {
+    const params = new HttpParams()
+      .set('username', login)
+      .set('password', password)
+      .set('grant_type', 'password');
+    const headersMap = {
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
       'Authorization': 'Basic ' + btoa(this.creds)
     };
-    let headers = new HttpHeaders(headersMap);
+    const headers = new HttpHeaders(headersMap);
 
     return this.http.post(url, params.toString(), {
-      headers: headers
+      'headers': headers
     }).pipe(map(HttpRestService.extractData));
   }
 

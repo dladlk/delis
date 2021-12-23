@@ -5,14 +5,14 @@ import { Observable } from 'rxjs';
 import { TokenService } from '../system/token.service';
 import { RuntimeConfigService } from '../system/runtime-config.service';
 import { HttpRestService } from '../system/http-rest.service';
-import { DelisService } from "./delis-service";
+import { DelisService } from './delis-service';
 import { DocumentFilterModel } from '../../model/filter/document-filter.model';
-import { DocumentModel } from "../../model/content/document/document.model";
+import { DocumentModel } from '../../model/content/document/document.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DocumentService implements DelisService<DocumentModel, DocumentFilterModel>{
+export class DocumentService implements DelisService<DocumentModel, DocumentFilterModel> {
 
   private readonly url: string;
 

@@ -37,13 +37,13 @@ export class LoginComponent implements OnInit {
 
   public hasError = (controlName: string, errorName: string) => {
     return this.loginForm.controls[controlName].hasError(errorName);
-  };
+  }
 
   public login = (loginValue) => {
     if (this.loginForm.valid) {
       this.executeLogin(loginValue);
     }
-  };
+  }
 
   private executeLogin = (loginValue) => {
 

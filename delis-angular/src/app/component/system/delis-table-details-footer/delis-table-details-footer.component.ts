@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router} from '@angular/router';
 import { StateService } from '../../../service/state/state-service';
 import { TableStateModel } from '../../../model/filter/table-state.model';
-import { DelisEntityDetailsObservable } from "../../../observable/delis-entity-details.observable";
-import { RoutingStateService } from "../../../service/system/routing-state.service";
+import { DelisEntityDetailsObservable } from '../../../observable/delis-entity-details.observable';
+import { RoutingStateService } from '../../../service/system/routing-state.service';
 
 @Component({
   selector: 'app-delis-table-details-footer',

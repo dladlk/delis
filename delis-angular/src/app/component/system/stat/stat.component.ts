@@ -30,7 +30,7 @@ export class StatComponent implements OnInit {
     if (this.dateEnd === undefined) {
       this.dateEnd = null;
     }
-    let data = {
+    const data = {
       dateStart: this.dateStart,
       dateEnd: this.dateEnd,
       statusError: this.statusError,

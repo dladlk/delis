@@ -1,6 +1,6 @@
-import { MatSort } from "@angular/material";
-import { Range } from "../../component/system/date-range/model/model";
-import { DetailsStateModel } from "./details-state.model";
+import { MatSort } from '@angular/material';
+import { Range } from '../../component/system/date-range/model/model';
+import { DetailsStateModel } from './details-state.model';
 
 export class TableStateModel {
 

@@ -58,7 +58,7 @@ export class TopnavComponent implements OnInit {
 
   public onToggleSidenav = () => {
     this.sidenavToggle.emit();
-  };
+  }
 
   onLoggedout() {
     this.router.navigate(['/logout']);
