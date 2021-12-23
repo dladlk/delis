@@ -7,10 +7,11 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { DateAdapter, MatPaginatorIntl } from '@angular/material';
+import { DateAdapter } from '@angular/material/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ChartsModule } from 'ng2-charts';
+import {ChartsModule, ThemeService} from 'ng2-charts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { DelisMaterialModule } from './core/delis-material.module';
@@ -109,8 +110,9 @@ export const createTranslateLoader = (http: HttpClient) => {
       }
     })
   ],
-  entryComponents: [PickerOverlayComponent],
+  // entryComponents: [PickerOverlayComponent],
   providers: [
+    ThemeService,
     {
       provide: DATE, useValue: new Date()
     },

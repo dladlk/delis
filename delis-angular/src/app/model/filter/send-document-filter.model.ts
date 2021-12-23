@@ -1,4 +1,4 @@
-import { MatSort } from '@angular/material';
+import { MatSort } from '@angular/material/sort';
 import { Range } from '../../component/system/date-range/model/model';
 import { TableStateModel } from './table-state.model';
 
