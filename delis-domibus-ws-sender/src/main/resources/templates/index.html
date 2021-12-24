@@ -93,7 +93,7 @@
 $('#file').on('change',function(){
     var fileName = $(this).val();
     var cleanFileName = fileName.replace('C:\\fakepath\\', " ");
-    $(this).next('.custom-file-label').html(cleanFileName);
+    $(this).next('.custom-file-label').text(cleanFileName);
 });
 
 (function() {
