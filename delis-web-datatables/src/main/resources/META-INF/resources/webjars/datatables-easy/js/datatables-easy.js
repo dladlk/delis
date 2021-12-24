@@ -162,7 +162,8 @@
                 	$(this).html('<input type="text" readonly name="'+field+'" class="form-control form-control-sm dt-date" value="" placeholder="" />');
                 	dateFilter(tfoot, this, field, searchValue, pageData);
                 } else {
-                	$(this).html('<input type="text" name="'+field+'" class="form-control form-control-sm dt-filter" value="' + (searchValue !== undefined ? searchValue : '') + '" placeholder="' + title + '" />');                	
+                	$(this).html('<input type="text" name="'+field+'" class="form-control form-control-sm dt-filter" value="' + (searchValue !== undefined ? searchValue : '') + '"/>');
+                	$(this).children('input').attr('placeholder', title);
                 }
             }
         });
