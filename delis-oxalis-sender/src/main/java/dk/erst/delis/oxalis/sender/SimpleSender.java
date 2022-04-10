@@ -12,10 +12,10 @@ import com.google.inject.name.Names;
 import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest;
 import dk.erst.delis.oxalis.sender.request.IDelisTransmissionRequestBuilder;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import no.difi.oxalis.api.lang.OxalisTransmissionException;
-import no.difi.oxalis.api.outbound.MessageSender;
-import no.difi.oxalis.api.persist.PersisterHandler;
-import no.difi.vefa.peppol.sbdh.lang.SbdhException;
+import network.oxalis.api.lang.OxalisTransmissionException;
+import network.oxalis.api.outbound.MessageSender;
+import network.oxalis.api.persist.PersisterHandler;
+import network.oxalis.vefa.peppol.sbdh.lang.SbdhException;
 
 public class SimpleSender implements ISender {
 

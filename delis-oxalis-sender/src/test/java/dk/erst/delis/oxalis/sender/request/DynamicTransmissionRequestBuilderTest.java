@@ -14,17 +14,17 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.util.Modules;
 
 import lombok.extern.slf4j.Slf4j;
-import no.difi.oxalis.api.lang.OxalisTransmissionException;
-import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.oxalis.as4.inbound.As4InboundModule;
-import no.difi.oxalis.as4.outbound.As4OutboundModule;
-import no.difi.oxalis.commons.guice.GuiceModuleLoader;
-import no.difi.vefa.peppol.common.lang.PeppolLoadingException;
-import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.common.model.ProcessIdentifier;
+import network.oxalis.api.lang.OxalisTransmissionException;
+import network.oxalis.api.lookup.LookupService;
+import network.oxalis.as4.inbound.As4InboundModule;
+import network.oxalis.as4.outbound.As4OutboundModule;
+import network.oxalis.commons.guice.GuiceModuleLoader;
+import network.oxalis.vefa.peppol.common.lang.PeppolLoadingException;
+import network.oxalis.vefa.peppol.common.model.DocumentTypeIdentifier;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.ProcessIdentifier;
 
 @Slf4j
 @Ignore

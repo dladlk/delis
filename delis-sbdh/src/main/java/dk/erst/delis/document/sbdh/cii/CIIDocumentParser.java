@@ -1,11 +1,11 @@
 package dk.erst.delis.document.sbdh.cii;
 
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.AbstractDocumentParser;
-import no.difi.oxalis.sniffer.identifier.ParticipantId;
-import no.difi.oxalis.sniffer.identifier.SchemeId;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.icd.api.Icd;
+import network.oxalis.sniffer.document.PlainUBLHeaderParser;
+import network.oxalis.sniffer.document.parsers.AbstractDocumentParser;
+import network.oxalis.sniffer.identifier.ParticipantId;
+import network.oxalis.sniffer.identifier.SchemeId;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.icd.api.Icd;
 import org.apache.commons.lang.math.NumberUtils;
 
 public class CIIDocumentParser extends AbstractDocumentParser {

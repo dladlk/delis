@@ -10,10 +10,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>delis-sbdh</artifactId>
+    <version>1.1.0</version>
 
     <packaging>jar</packaging>
 
     <name>Delis :: SBDH</name>
+    
+    <properties>
+    	<oxalis.version>5.1.0</oxalis.version>
+    	<vefa.version>2.1.0</vefa.version>
+    </properties>
 
     <profiles>
         <profile>
@@ -54,19 +60,19 @@
             <version>2.6</version>
         </dependency>    
         <dependency>
-            <groupId>no.difi.oxalis</groupId>
+            <groupId>network.oxalis</groupId>
             <artifactId>oxalis-document-sniffer</artifactId>
-            <version>4.0.3</version>
+            <version>${oxalis.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.difi.oxalis</groupId>
+            <groupId>network.oxalis</groupId>
             <artifactId>oxalis-api</artifactId>
-            <version>4.0.3</version>
+            <version>${oxalis.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.difi.vefa</groupId>
+            <groupId>network.oxalis.vefa</groupId>
             <artifactId>peppol-sbdh</artifactId>
-            <version>1.1.1</version>
+            <version>${vefa.version}</version>
         </dependency>
         
         <dependency>

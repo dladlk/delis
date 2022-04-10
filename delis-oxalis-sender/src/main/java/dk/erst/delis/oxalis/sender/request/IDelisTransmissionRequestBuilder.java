@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import dk.erst.delis.oxalis.sender.ISendListener;
 import dk.erst.delis.oxalis.sender.TransmissionLookupException;
-import no.difi.vefa.peppol.sbdh.lang.SbdhException;
+import network.oxalis.vefa.peppol.sbdh.lang.SbdhException;
 
 public interface IDelisTransmissionRequestBuilder {
 

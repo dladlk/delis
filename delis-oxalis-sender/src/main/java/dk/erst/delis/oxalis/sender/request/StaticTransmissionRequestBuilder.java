@@ -10,9 +10,9 @@ import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest.DelisTransmissionRequestBuilder;
 import lombok.Getter;
 import lombok.Setter;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.sbdh.lang.SbdhException;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.sbdh.lang.SbdhException;
 
 @Getter
 @Setter

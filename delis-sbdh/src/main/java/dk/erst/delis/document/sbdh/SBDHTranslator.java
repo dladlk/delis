@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import dk.erst.delis.document.domibus.MetadataBuilder;
 import dk.erst.delis.document.domibus.MetadataSerializer;
 import eu.domibus.plugin.fs.ebms3.UserMessage;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.sbdh.SbdWriter;
-import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.sbdh.SbdWriter;
+import network.oxalis.vefa.peppol.sbdh.util.XMLStreamUtils;
 
 public class SBDHTranslator {
 

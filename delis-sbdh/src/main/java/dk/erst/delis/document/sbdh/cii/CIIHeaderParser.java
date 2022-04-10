@@ -1,9 +1,9 @@
 package dk.erst.delis.document.sbdh.cii;
 
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
-import no.difi.oxalis.sniffer.identifier.CustomizationIdentifier;
-import no.difi.vefa.peppol.common.model.ProcessIdentifier;
+import network.oxalis.sniffer.document.PlainUBLHeaderParser;
+import network.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
+import network.oxalis.sniffer.identifier.CustomizationIdentifier;
+import network.oxalis.vefa.peppol.common.model.ProcessIdentifier;
 import org.w3c.dom.Document;
 
 import javax.xml.xpath.XPath;

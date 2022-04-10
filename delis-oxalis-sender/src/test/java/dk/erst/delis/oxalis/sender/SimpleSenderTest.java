@@ -21,15 +21,15 @@ import dk.erst.delis.oxalis.sender.request.LookupTransmissionRequestBuilder;
 import dk.erst.delis.oxalis.sender.request.StaticTransmissionRequestBuilder;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.oxalis.commons.guice.GuiceModuleLoader;
-import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.common.model.ProcessIdentifier;
-import no.difi.vefa.peppol.common.model.TransportProfile;
-import no.difi.vefa.peppol.mode.Mode;
+import network.oxalis.api.lookup.LookupService;
+import network.oxalis.commons.guice.GuiceModuleLoader;
+import network.oxalis.vefa.peppol.common.model.DocumentTypeIdentifier;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.ProcessIdentifier;
+import network.oxalis.vefa.peppol.common.model.TransportProfile;
+import network.oxalis.vefa.peppol.mode.Mode;
 
 @Slf4j
 public class SimpleSenderTest {

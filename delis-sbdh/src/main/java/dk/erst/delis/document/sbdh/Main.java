@@ -1,6 +1,6 @@
 package dk.erst.delis.document.sbdh;
 
-import no.difi.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.Header;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
