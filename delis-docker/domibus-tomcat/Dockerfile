@@ -7,7 +7,7 @@ RUN mvn -f ./jms-timeout clean install
 COPY ./delis-domibus-plugin-metrics-prometheus ./domibus-metrics-prometheus
 RUN mvn -f ./domibus-metrics-prometheus clean install
 
-FROM tomcat:8.5-jre8-slim
+FROM tomcat:8.5.78-jre8-openjdk-slim
 
 ARG DOMIBUS_VERSION
 ENV DOMIBUS_VERSION ${DOMIBUS_VERSION}
@@ -30,11 +30,12 @@ ENV DOMIBUS_DIST /usr/local/domibusDist
 
 ENV DOCKERIZE_VERSION v0.6.1
 
-RUN rm -r $CATALINA_HOME/webapps/ROOT/* && \
-	rm -r $CATALINA_HOME/webapps/docs && \
-	rm -r $CATALINA_HOME/webapps/examples && \
-	rm -r $CATALINA_HOME/webapps/host-manager && \
-	rm -r $CATALINA_HOME/webapps/manager
+#RUN ls -lr $CATALINA_HOME/webapps/
+
+#RUN rm -r $CATALINA_HOME/webapps/manager && \
+#	rm -r $CATALINA_HOME/webapps/docs && \
+#	rm -r $CATALINA_HOME/webapps/examples && \
+#	rm -r $CATALINA_HOME/webapps/host-manager
 
 RUN apt-get update && apt-get install -y \ 
 	wget \
