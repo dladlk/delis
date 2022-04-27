@@ -63,16 +63,16 @@ jobs:
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
         run: mvn --batch-mode package -DskipTests=true --file ./delis-domibus-ws-sender/pom.xml
 
-      - name: Prepare docker folder
-        run: rm -r -f ./docker && mkdir ./docker && cp ./delis-docker/delis-web/docker/Dockerfile ./docker && rm -r -f ./docker/app
+      # - name: Prepare docker folder
+      #   run: rm -r -f ./docker && mkdir ./docker && cp ./delis-docker/delis-web/docker/Dockerfile ./docker && rm -r -f ./docker/app
 
-      - name: Copy mvn jar and unpack
-        run: unzip ./delis-domibus-ws-sender/target/delis-domibus-ws-sender-0.0.1.jar -d ./docker/app
+      # - name: Copy mvn jar and unpack
+      #   run: unzip ./delis-domibus-ws-sender/target/delis-domibus-ws-sender-0.0.1.jar -d ./docker/app
 
-      - name: delis-domibus-ws-sender - build and push image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: ./docker
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # - name: delis-domibus-ws-sender - build and push image
+      #   uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      #   with:
+      #     context: ./docker
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
