@@ -32,6 +32,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
+          cache: 'maven'
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -46,17 +47,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache local Maven repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven2-
+      # - name: Cache local Maven repository
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.m2/repository
+      #     key: ${{ runner.os }}-maven2-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven2-
 
       - name: Build mvn
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: chmod +x ./mvnw && ./mvnw --batch-mode clean install -DskipTests=true
+        run: mvn --batch-mode package -DskipTests=true
 
       - name: Prepare docker folder
         run: rm -r -f ./docker && mkdir ./docker && cp ./delis-docker/delis-web/docker/Dockerfile ./docker && rm -r -f ./docker/app
