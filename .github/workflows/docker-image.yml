@@ -57,7 +57,7 @@ jobs:
 
       - name: Build mvn Delis
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: mvn --batch-mode package -DskipTests=true
+        run: mvn --batch-mode install -DskipTests=true
 
       - name: Build mvn Domibus Ws Sender
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
