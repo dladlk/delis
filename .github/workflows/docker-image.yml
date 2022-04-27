@@ -27,6 +27,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Setup java 8
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
@@ -44,13 +50,13 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-maven2-
 
       - name: Build mvn
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: chmod +x ./mvnw && ./mvnw clean install -DskipTests=true
+        run: chmod +x ./mvnw && ./mvnw --batch-mode clean install -DskipTests=true
 
       - name: Prepare docker folder
         run: rm -r -f ./docker && mkdir ./docker && cp ./delis-docker/delis-web/docker/Dockerfile ./docker && rm -r -f ./docker/app
