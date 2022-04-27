@@ -50,7 +50,7 @@ jobs:
 
       - name: Build mvn
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: ./mvnw clean install -DskipTests=true
+        run: chmod +x ./mvnw && ./mvnw clean install -DskipTests=true
 
       - name: Prepare docker folder
         run: rm -r -f ./docker && mkdir ./docker && cp ./delis-docker/delis-web/docker/Dockerfile ./docker && rm -r -f ./docker/app
