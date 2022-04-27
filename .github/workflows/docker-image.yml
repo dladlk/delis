@@ -55,9 +55,13 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-maven2-
 
-      - name: Build mvn
+      - name: Build mvn Delis
 #        if: steps.cache-primes.outputs.cache-hit != 'true'
         run: mvn --batch-mode package -DskipTests=true
+
+      - name: Build mvn Domibus Ws Sender
+#        if: steps.cache-primes.outputs.cache-hit != 'true'
+        run: mvn --batch-mode package -DskipTests=true --file ./delis-domibus-ws-sender/pom.xml
 
       - name: Prepare docker folder
         run: rm -r -f ./docker && mkdir ./docker && cp ./delis-docker/delis-web/docker/Dockerfile ./docker && rm -r -f ./docker/app
