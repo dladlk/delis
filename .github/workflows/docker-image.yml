@@ -10,7 +10,10 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['dev']
+    # branches: 
+    #   - 'dev'
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
@@ -36,31 +39,25 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}-domibus-ws-sender
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}          
 
       - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v1
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Cache local Maven repository
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.m2/repository
-      #     key: ${{ runner.os }}-maven2-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven2-
-
       - name: Build mvn Delis
-#        if: steps.cache-primes.outputs.cache-hit != 'true'
         run: mvn --batch-mode install -DskipTests=true
 
       - name: Build mvn Domibus Ws Sender
-#        if: steps.cache-primes.outputs.cache-hit != 'true'
         run: mvn --batch-mode package -DskipTests=true --file ./delis-domibus-ws-sender/pom.xml
 
       - name: Prepare docker folder
