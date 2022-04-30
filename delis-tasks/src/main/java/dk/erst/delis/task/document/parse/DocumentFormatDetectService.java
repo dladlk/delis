@@ -22,7 +22,7 @@ public class DocumentFormatDetectService {
 			if (!f.isUnsupported()) {
 				if (f.getRootTag().equals(rootTag) && f.getNamespace().equals(namespace)) {
 					if (f.isOIOUBL()) {
-						if (DocumentFormatConst.CUSTOMIZATION_OIOUBL.equals(info.getCustomizationID())) {
+						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_OIOUBL_PREFIX)) {
 							return f;
 						}
 					} else if (f.isBIS3()) {
