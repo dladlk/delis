@@ -42,8 +42,11 @@ public class DefaultRuleBuilder {
         /*
          * XSD rules
          */
-        result.add(xsd(DocumentFormat.OIOUBL_INVOICE, "xsd/UBL_2.0/maindoc/UBL-Invoice-2.0.xsd"));
-        result.add(xsd(DocumentFormat.OIOUBL_CREDITNOTE, "xsd/UBL_2.0/maindoc/UBL-CreditNote-2.0.xsd"));
+        /*
+         * Since 2022-05-01 OIOUBL is validated by UBL_2.1 XSD instead of UBL_2.0
+         */
+        result.add(xsd(DocumentFormat.OIOUBL_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
+        result.add(xsd(DocumentFormat.OIOUBL_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
 
         result.add(xsd(DocumentFormat.BIS3_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
@@ -65,8 +68,8 @@ public class DefaultRuleBuilder {
          * Schematron
          */
 
-		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_Invoice_Schematron.xsl", 10));
-		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2019-04-08_v1.11.1.35666/OIOUBL_CreditNote_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2022-04-19_v1.12.1.5bab84f/OIOUBL_Invoice_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2022-04-19_v1.12.1.5bab84f/OIOUBL_CreditNote_Schematron.xsl", 10));
 
 		
 		/*
