@@ -23,7 +23,7 @@ public class DocumentFormatConst {
 	 */
 //	public static final String CUSTOMIZATION_BIS3_STARTS_WITH = "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3";
 	public static final String CUSTOMIZATION_BIS3_STARTS_WITH = "urn:cen.eu:en16931:2017";
-	public static final String CUSTOMIZATION_OIOUBL = "OIOUBL-2.02";
+	public static final String CUSTOMIZATION_OIOUBL_PREFIX = "OIOUBL-2."; // Support all OIOUBL-2.0, 2.01, 2.02, 2.1
 	public static final String CUSTOMIZATION_BIS3_IR_STARTS_WITH = "urn:fdc:peppol.eu:poacc:trns:invoice_response:3";
 	public static final String CUSTOMIZATION_BIS3_MLR_STARTS_WITH = "urn:fdc:peppol.eu:poacc:trns:mlr:3";
 	
