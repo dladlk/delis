@@ -68,8 +68,8 @@ public class DefaultRuleBuilder {
          * Schematron
          */
 
-		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2022-04-19_v1.12.1.5bab84f/OIOUBL_Invoice_Schematron.xsl", 10));
-		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2022-04-19_v1.12.1.5bab84f/OIOUBL_CreditNote_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2022-05-11_v1.12.2.bb920ae/OIOUBL_Invoice_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2022-05-11_v1.12.2.bb920ae/OIOUBL_CreditNote_Schematron.xsl", 10));
 
 		
 		/*

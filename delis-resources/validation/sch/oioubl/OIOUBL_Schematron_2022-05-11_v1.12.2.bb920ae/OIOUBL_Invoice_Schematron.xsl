@@ -128,7 +128,7 @@
    <!--SCHEMA METADATA-->
    <xsl:template match="/">
       <Schematron>
-         <Information>Checking OIOUBL-2.1 Invoice, 2022-04-19, Version 1.12.1.5bab84f</Information>
+         <Information>Checking OIOUBL-2.1 Invoice, 2022-05-11, Version 1.12.2.bb920ae</Information>
          <xsl:apply-templates select="/" mode="M11"/>
          <xsl:apply-templates select="/" mode="M15"/>
          <xsl:apply-templates select="/" mode="M16"/>
@@ -24124,18 +24124,22 @@
             </Xpath>
          </Error>
       </xsl:if>
+      <xsl:variable name="CalculatedVat"
+                    select="(cbc:TaxableAmount div 100) * cac:TaxCategory/cbc:Percent"/>
       <!--REPORT -->
-      <xsl:if test="cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0">
+      <xsl:if test="cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0 and $CalculatedVat &gt;= 0.005">
          <Error>
             <xsl:attribute name="context">
                <xsl:value-of select="concat(name(parent::*),'/',name())"/>
             </xsl:attribute>
-            <Pattern>cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0</Pattern>
+            <Pattern>cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0 and $CalculatedVat &gt;= 0.005</Pattern>
             <Description>[F-LIB381] Invalid VAT TaxAmount - When TaxCategory/ID are 'StandardRated' and TaxableAmount &gt; 0 (<xsl:text/>
                <xsl:value-of select="cbc:TaxableAmount"/>
                <xsl:text/>) TaxAmount can't be '(<xsl:text/>
                <xsl:value-of select="cbc:TaxAmount"/>
-               <xsl:text/>)'</Description>
+               <xsl:text/>)' unless calculated vat '(<xsl:text/>
+               <xsl:value-of select="$CalculatedVat"/>
+               <xsl:text/>)' are less then 0.005</Description>
             <Xpath>
                <xsl:for-each select="ancestor-or-self::*">/<xsl:value-of select="name()"/>[<xsl:value-of select="count(preceding-sibling::*[name(.)=name(current())])+1"/>]</xsl:for-each>
             </Xpath>
@@ -31861,18 +31865,22 @@
             </Xpath>
          </Error>
       </xsl:if>
+      <xsl:variable name="CalculatedVat"
+                    select="(cbc:TaxableAmount div 100) * cac:TaxCategory/cbc:Percent"/>
       <!--REPORT -->
-      <xsl:if test="cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0">
+      <xsl:if test="cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0 and $CalculatedVat &gt;= 0.005">
          <Error>
             <xsl:attribute name="context">
                <xsl:value-of select="concat(name(parent::*),'/',name())"/>
             </xsl:attribute>
-            <Pattern>cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0</Pattern>
+            <Pattern>cac:TaxCategory/cbc:ID = 'StandardRated' and cbc:TaxableAmount &gt; 0 and cbc:TaxAmount = 0 and $CalculatedVat &gt;= 0.005</Pattern>
             <Description>[F-LIB381] Invalid VAT TaxAmount - When TaxCategory/ID are 'StandardRated' and TaxableAmount &gt; 0 (<xsl:text/>
                <xsl:value-of select="cbc:TaxableAmount"/>
                <xsl:text/>) TaxAmount can't be '(<xsl:text/>
                <xsl:value-of select="cbc:TaxAmount"/>
-               <xsl:text/>)'</Description>
+               <xsl:text/>)' unless calculated vat '(<xsl:text/>
+               <xsl:value-of select="$CalculatedVat"/>
+               <xsl:text/>)' are less then 0.005</Description>
             <Xpath>
                <xsl:for-each select="ancestor-or-self::*">/<xsl:value-of select="name()"/>[<xsl:value-of select="count(preceding-sibling::*[name(.)=name(current())])+1"/>]</xsl:for-each>
             </Xpath>
