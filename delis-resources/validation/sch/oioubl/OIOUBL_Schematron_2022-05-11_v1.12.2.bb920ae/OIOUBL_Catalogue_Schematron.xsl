@@ -128,7 +128,7 @@
    <!--SCHEMA METADATA-->
    <xsl:template match="/">
       <Schematron>
-         <Information>Checking OIOUBL-2.02 Catalogue, 2022-04-19, Version 1.12.1.5bab84f</Information>
+         <Information>Checking OIOUBL-2.02 Catalogue, 2022-05-11, Version 1.12.2.bb920ae</Information>
          <xsl:apply-templates select="/" mode="M10"/>
          <xsl:apply-templates select="/" mode="M12"/>
          <xsl:apply-templates select="/" mode="M13"/>
