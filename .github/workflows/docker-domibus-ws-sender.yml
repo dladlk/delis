@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: domibus-ws-sender: build, create and publish a Docker image 
+name: domibus-ws-sender - docker
 
 on:
   push:
