@@ -70,5 +70,5 @@ jobs:
           context: ./docker
           push: true
           tags: |
-            dladlk/delis-validator:${{ env.IMAGE_VERSION }}
-            dladlk/delis-validator:latest
+            ${{ env.REGISTRY }}/dladlk/delis-validator:${{ env.IMAGE_VERSION }}
+            ${{ env.REGISTRY }}/dladlk/delis-validator:latest
