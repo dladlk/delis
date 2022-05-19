@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: domibus-ws-sender - docker
+name: image - domibus-ws-sender
 
 on:
   push:
