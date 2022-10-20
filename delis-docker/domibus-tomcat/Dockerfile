@@ -72,15 +72,15 @@ RUN wget ${DOMIBUS_FS_URL} \
     && mkdir $CATALINA_HOME/domibus/plugins \
     && mkdir $CATALINA_HOME/domibus/plugins/config \
     && mkdir $CATALINA_HOME/domibus/plugins/lib \
-    && cp $DOMIBUS_DIST/conf/domibus/plugins/config/tomcat/* $CATALINA_HOME/domibus/plugins/config \
-	&& cp $DOMIBUS_DIST/conf/domibus/plugins/lib/* $CATALINA_HOME/domibus/plugins/lib \
+    && cp $DOMIBUS_DIST/conf/domibus/plugins/config/tomcat/*.properties $CATALINA_HOME/domibus/plugins/config/ \
+	&& cp $DOMIBUS_DIST/conf/domibus/plugins/lib/*.jar $CATALINA_HOME/domibus/plugins/lib \
     && rm -r $DOMIBUS_DIST \
     && rm ${DOMIBUS_FS_URL##*/}
     
 RUN wget ${DOMIBUS_WS_URL} \
     && unzip -d $DOMIBUS_DIST ${DOMIBUS_WS_URL##*/} \
-    && cp $DOMIBUS_DIST/conf/domibus/plugins/config/tomcat/* $CATALINA_HOME/domibus/plugins/config \
-	&& cp $DOMIBUS_DIST/conf/domibus/plugins/lib/* $CATALINA_HOME/domibus/plugins/lib \
+    && cp $DOMIBUS_DIST/conf/domibus/plugins/config/tomcat/*.properties $CATALINA_HOME/domibus/plugins/config \
+	&& cp $DOMIBUS_DIST/conf/domibus/plugins/lib/*.jar $CATALINA_HOME/domibus/plugins/lib \
     && rm -r $DOMIBUS_DIST \
     && rm ${DOMIBUS_WS_URL##*/}
 
