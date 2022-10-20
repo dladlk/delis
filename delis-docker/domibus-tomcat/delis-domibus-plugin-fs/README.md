@@ -1,4 +1,4 @@
-# Custom FS plugin loocs for environment variable 
+# Custom FS plugin looks for environment variable
 # fsplugin.validation.endpoint
 
 If it is present, fs plugin regards it as rest endpoint and sends request to validate "partyTo" for each new file
