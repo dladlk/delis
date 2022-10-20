@@ -65,11 +65,11 @@
     <distributionManagement>
         <repository>
             <id>cefdigital-releases</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/eDelivery/</url>
         </repository>
         <snapshotRepository>
             <id>cefdigital-snapshots</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery-snapshots/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/eDelivery-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     -->
@@ -78,7 +78,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>cefdigital-releases</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/groups/public/</url>
         </pluginRepository>
         <pluginRepository>
             <id>SmartBearPluginRepository</id>
@@ -92,7 +92,7 @@
     <repositories>
         <repository>
             <id>cefdigital-releases</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -103,7 +103,7 @@
         </repository>
         <repository>
             <id>cefdigital-snapshots</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery-snapshots/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/eDelivery-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
