@@ -1,6 +1,6 @@
 package eu.domibus.plugin.fs;
 
-import org.apache.tika.io.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.File;

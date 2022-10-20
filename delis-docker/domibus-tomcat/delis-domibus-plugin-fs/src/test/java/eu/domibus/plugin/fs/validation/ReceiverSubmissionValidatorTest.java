@@ -20,12 +20,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import eu.domibus.api.property.DomibusPropertyProvider;
+import eu.domibus.api.util.DomibusStringUtil;
+import eu.domibus.ext.services.FileUtilExtService;
 import eu.domibus.plugin.Submission;
 import eu.domibus.plugin.fs.FSMessage;
 import eu.domibus.plugin.fs.FSMessageTransformer;
+import eu.domibus.plugin.fs.FSMimeTypeHelper;
+import eu.domibus.plugin.fs.FSMimeTypeHelperImpl;
 import eu.domibus.plugin.fs.FSPayload;
 import eu.domibus.plugin.fs.FSTestHelper;
 import eu.domibus.plugin.fs.ebms3.ObjectFactory;
+import eu.domibus.plugin.fs.ebms3.ProcessingType;
 import eu.domibus.plugin.fs.ebms3.UserMessage;
 import eu.domibus.plugin.validation.SubmissionValidationException;
 
@@ -45,9 +50,10 @@ public class ReceiverSubmissionValidatorTest {
         try {
 			metadataFile = FSTestHelper.copyResource(this.getClass(), tempDirectory, resourceName);
             UserMessage metadata = getUserMessage(metadataFile);
+            metadata.setProcessingType(ProcessingType.PUSH);
             final Map<String, FSPayload> fsPayloads = new HashMap<>();
             FSMessage fsMessage = new FSMessage(fsPayloads, metadata);
-            FSMessageTransformer transformer = new FSMessageTransformer();
+            FSMessageTransformer transformer = buildFSMessageTransformer();
             Submission submission = transformer.transformToSubmission(fsMessage);
 
             DelisSubmissionValidator validator = new DelisSubmissionValidator(Mockito.mock(DomibusPropertyProvider.class));
@@ -80,7 +86,7 @@ public class ReceiverSubmissionValidatorTest {
             UserMessage metadata = getUserMessage(metadataFile);
             final Map<String, FSPayload> fsPayloads = new HashMap<>();
             FSMessage fsMessage = new FSMessage(fsPayloads, metadata);
-            FSMessageTransformer transformer = new FSMessageTransformer();
+            FSMessageTransformer transformer = buildFSMessageTransformer();
             Submission submission = transformer.transformToSubmission(fsMessage);
 
             DelisSubmissionValidator validator = new DelisSubmissionValidator(Mockito.mock(DomibusPropertyProvider.class));
@@ -97,6 +103,17 @@ public class ReceiverSubmissionValidatorTest {
             tempDirectory.delete();
         }
     }
+
+	protected FSMessageTransformer buildFSMessageTransformer() {
+		FileUtilExtService fileUtilExtService = new FileUtilExtService() {
+			@Override
+			public String sanitizeFileName(String fileName) {
+				return DomibusStringUtil.sanitizeFileName(fileName);
+			}
+		};
+		FSMimeTypeHelper fsMimeTypeHelper = new FSMimeTypeHelperImpl();
+		return new FSMessageTransformer(fsMimeTypeHelper, fileUtilExtService);
+	}
 
 
     public static UserMessage getUserMessage(File file) throws Exception {

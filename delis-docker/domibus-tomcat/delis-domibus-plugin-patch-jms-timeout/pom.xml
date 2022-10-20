@@ -6,13 +6,14 @@
 
     <groupId>dk.erst.domibus</groupId>
     <artifactId>delis-domibus-plugin-patch-jms-timeout</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 
     <packaging>jar</packaging>
 
     <properties>
-        <domibus.version>4.2.5</domibus.version>
+        <domibus.version>5.0.1</domibus.version>
         <java.version>1.8</java.version>
+        <spring.version>5.3.20</spring.version>
     </properties>
 
     <dependencies>
@@ -20,37 +21,43 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.1.3.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>5.1.3.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
-            <version>5.1.3.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.1.3.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.collections/google-collections -->
-        <dependency>
+<!--         <dependency>
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
             <version>1.0-rc2</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>eu.domibus</groupId>
             <artifactId>domibus-api</artifactId>
             <version>${domibus.version}</version>
         </dependency>
+        <dependency>
+            <groupId>eu.domibus</groupId>
+            <artifactId>domibus-logging</artifactId>
+            <version>${domibus.version}</version>
+        </dependency>
+        
     </dependencies>
     
 	<build>
@@ -76,7 +83,7 @@
     <repositories>
         <repository>
             <id>cefdigital-releases</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -86,7 +93,7 @@
         </repository>
         <repository>
             <id>cefdigital-snapshots</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery-snapshots/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/eDelivery-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>

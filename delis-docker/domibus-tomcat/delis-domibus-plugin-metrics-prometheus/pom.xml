@@ -5,13 +5,13 @@
 
 	<groupId>dk.erst.domibus</groupId>
 	<artifactId>delis-domibus-plugin-metrics-prometheus</artifactId>
-	<version>4.2.5.0</version>
+	<version>5.0.1.0</version>
 
 	<name>domibus-metrics-prometheus</name>
 	<description>Adds prometheus metrics export</description>
 
 	<properties>
-		<domibus.version>4.2.5</domibus.version>
+		<domibus.version>5.0.1</domibus.version>
 		<prometheus.version>0.8.0</prometheus.version>
         <dropwizard.metrics.version>4.0.3</dropwizard.metrics.version>
 	</properties>
@@ -85,7 +85,7 @@
     <repositories>
         <repository>
             <id>cefdigital-releases</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/groups/public/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/groups/public/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
@@ -96,7 +96,7 @@
         </repository>
         <repository>
             <id>cefdigital-snapshots</id>
-            <url>https://ec.europa.eu/cefdigital/artifact/content/repositories/eDelivery-snapshots/</url>
+            <url>https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/eDelivery-snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
