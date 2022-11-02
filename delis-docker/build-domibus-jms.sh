@@ -8,7 +8,7 @@ cp ${MERGE_ENV_PROPERTIES_JAR_PATH} ./${MERGE_ENV_PROPERTIES_JAR_PATH##*/}
 
 CEF_DISTR_ROOT=https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/public/eu/domibus/domibus-distribution
 DOMIBUS_VERSION_IMAGE=5.0
-DOMIBUS_SUBVERSION=.1
+DOMIBUS_SUBVERSION=.1.1
 
 EXT_MERGE_ENV_PROPERTIES=${MERGE_ENV_PROPERTIES_JAR_PATH##*/}
 

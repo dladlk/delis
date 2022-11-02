@@ -84,8 +84,8 @@ RUN wget ${DOMIBUS_WS_URL} \
     && rm -r $DOMIBUS_DIST \
     && rm ${DOMIBUS_WS_URL##*/}
 
-COPY --from=plugin_compiler fs-plugin/src/main/resources/delis-domibus-plugin.xml  $CATALINA_HOME/domibus/plugins/config/delis-domibus-plugin-fs.xml
-COPY --from=plugin_compiler fs-plugin/target/delis-domibus-plugin-fs-5.0.1.0.jar $CATALINA_HOME/domibus/plugins/lib/delis-domibus-plugin-fs-5.0.1.0.jar
+COPY --from=plugin_compiler fs-plugin/src/main/resources/delis-domibus-fs-plugin.xml  $CATALINA_HOME/domibus/plugins/config/delis-domibus-fs-plugin.xml
+COPY --from=plugin_compiler fs-plugin/target/delis-domibus-plugin-fs-5.0.1.1.jar $CATALINA_HOME/domibus/plugins/lib/delis-domibus-plugin-fs-5.0.1.1.jar
 
 # Chandes to reduce timeout of jms queues checking
 COPY --from=plugin_compiler jms-timeout/target/delis-domibus-plugin-patch-jms-timeout-1.1.jar $CATALINA_HOME/domibus/plugins/lib/delis-domibus-plugin-patch-jms-timeout-1.1.jar

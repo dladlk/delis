@@ -9,7 +9,7 @@ cp ${MERGE_ENV_PROPERTIES_JAR_PATH} ./${MERGE_ENV_PROPERTIES_JAR_PATH##*/}
 CEF_DISTR_ROOT=https://ec.europa.eu/digital-building-blocks/artifact/content/repositories/public/eu/domibus/domibus-distribution
 
 DOMIBUS_VERSION=5.0.1
-DOMIBUS_VERSION_IMAGE=5.0
+DOMIBUS_VERSION_IMAGE=5.0.1
 DOMIBUS_WAR_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-tomcat-war.zip
 DOMIBUS_SETUP_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-tomcat-configuration.zip
 DOMIBUS_FS_URL=${CEF_DISTR_ROOT}/${DOMIBUS_VERSION}/domibus-distribution-${DOMIBUS_VERSION}-default-fs-plugin.zip

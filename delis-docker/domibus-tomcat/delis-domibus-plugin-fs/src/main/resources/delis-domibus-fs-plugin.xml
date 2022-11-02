@@ -21,6 +21,8 @@
 	
 	 -->
 
+ 	<bean id="backendFSPlugin" class="eu.domibus.plugin.fs.DelisFSPluginImpl"/>
+ 
     <bean id="delisSumbissionValidator" class="eu.domibus.plugin.fs.validation.DelisSubmissionValidator"/>
 
     <bean id="backendFSPluginDelisValidatorList" class="eu.domibus.plugin.validation.DefaultSubmissionValidatorList">

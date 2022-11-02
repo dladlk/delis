@@ -68,6 +68,7 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 	private void validatePayload(Submission submission) throws SubmissionValidationException {
 		String xmlValidationEndpoint = getValidationEndpoint(FSPLUGIN_XML_VALIDATION_ENDPOINT, false);
 		if (xmlValidationEndpoint == null) {
+			LOG.warn("No XML validation endpoint is defined via config property " + FSPLUGIN_XML_VALIDATION_ENDPOINT);
 			return;
 		}
 		long startCallTime = System.currentTimeMillis();
@@ -136,6 +137,7 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 	private void validateService(Submission submission) throws SubmissionValidationException {
 		String serviceValidationEndpoint = getValidationEndpoint(FSPLUGIN_SERVICE_VALIDATION_ENDPOINT, true);
 		if (serviceValidationEndpoint == null) {
+			LOG.warn("No service validation endpoint is defined via config property " + FSPLUGIN_SERVICE_VALIDATION_ENDPOINT);
 			return;
 		}
 		String serviceValidationUrl = serviceValidationEndpoint + composeParameters(submission);
