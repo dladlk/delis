@@ -137,6 +137,9 @@ spec:
 {{ with .Values.dtx.envExt }}
 {{ toYaml . | indent 8 -}}
 {{- end }}          
+{{ with .Values.dtx.envExt2 }}
+{{ toYaml . | indent 8 -}}
+{{- end }}          
 
         image: '{{.Values.all.imagePrefix}}{{.Values.dtx.image}}:{{.Values.dtx.imageTag}}'
         imagePullPolicy: '{{.Values.dtx.imagePullPolicy}}'

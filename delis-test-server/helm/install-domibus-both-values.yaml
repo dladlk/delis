@@ -1,5 +1,5 @@
 dtx:
-  envExt:
+  envExt2:
     # To disable validation of certificate on receiving and sending, set it to false - but SMP certificate will be validated anyway. 
     # Concept test PKI has defined CRL but it is not working - so it was tried to use these fields to stop SMP certificate validation 
     # and it did not help. Instead, CRL protocol HTTP was excluded - see next comment.
