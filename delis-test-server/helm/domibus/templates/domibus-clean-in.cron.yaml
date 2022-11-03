@@ -7,10 +7,13 @@ metadata:
   namespace: '{{.Values.namespace}}'
 spec:
   schedule: '{{.Values.cleanIn.schedule}}'
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
+      backoffLimit: 0
       template:
         spec:
+          restartPolicy: Never
           containers:
           - name: {{.Release.Name}}-clean-in
             image: {{.Values.cleanIn.image}}
@@ -18,6 +21,13 @@ spec:
             command:
             - /bin/sh
             - -c
-            - date; echo Hello from the Kubernetes cluster
-          restartPolicy: Never
+            - date; ls /data/IN/ -l; rmdir /data/IN/* || echo 'Surpressed non-0 exit code'
+            volumeMounts:
+            - mountPath: /data
+              name: domibus-fs
+              subPath: dynconcepttestparty0{{.Values.partyIndex}}gw
+          volumes:
+          - name: domibus-fs
+            hostPath:
+              path: /data/fs-plugin
 {{- end }}
