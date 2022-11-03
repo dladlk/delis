@@ -60,3 +60,8 @@ jmx:
   serviceType: ClusterIP
   env:
     javaopts: -Xmx384m -XX:MaxMetaspaceSize=200m
+
+cleanIn:
+    enabled: true
+    image: busybox:1.28
+    schedule: '* * * * *'
