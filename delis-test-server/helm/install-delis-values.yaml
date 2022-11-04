@@ -30,3 +30,11 @@ delisApi:
           value: "true"
         - name: spring.jpa.show-sql
           value: "false"
+delisValidator:
+    env:
+        - name: delis.validation-artifact-folder
+          value: /delis-resources/validation
+        - name: delis.validator.persist.mode
+          value: "NONE"
+        - name: delis.validator.persist.folder
+          value: "/tmp/"
