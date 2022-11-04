@@ -3,10 +3,12 @@ package dk.erst.delis.validator.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,15 +67,26 @@ public class ValidateService {
 	}
 
 	public ValidateResult validateFile(IValidateFileInput file, boolean skipPEPPOL) {
+		return validateFile(file, skipPEPPOL, null);
+	}
+
+	public ValidateResult validateFile(IValidateFileInput file, boolean skipPEPPOL, Boolean compressedObj) {
 		ValidateResult result = new ValidateResult();
+
+		boolean compressed = compressedObj != null && compressedObj.booleanValue();
 
 		File tempFile = null;
 		try {
+			log.info("Saving file " + file.getOriginalFilename() + " as " + (compressed ? "compressed" : "") + " file " + tempFile);
 			result.setFileName(file.getOriginalFilename());
 
 			tempFile = File.createTempFile("manual_upload_" + file.getName() + "_", ".xml");
 			try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-				StreamUtils.copy(file.getInputStream(), fos);
+				InputStream inputStream = file.getInputStream();
+				if (compressed) {
+					inputStream = new GZIPInputStream(inputStream);
+				}
+				StreamUtils.copy(inputStream, fos);
 			}
 			log.info("Saved file " + file.getOriginalFilename() + " as test file " + tempFile);
 		} catch (IOException e) {

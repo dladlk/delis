@@ -31,14 +31,16 @@ public class ValidateRestController {
 
 			@RequestParam("file") MultipartFile file,
 
-			@RequestParam(name = "skipPEPPOL", required = false) boolean skipPEPPOL
+			@RequestParam(name = "skipPEPPOL", required = false) boolean skipPEPPOL,
+
+			@RequestParam(name = "compressed", required = false) Boolean compressed
 
 	) {
 
 		log.info("Requested to validate file " + file.getOriginalFilename());
 
 		MultipartFileInput input = new MultipartFileInput(file);
-		ValidateResult result = validateService.validateFile(input, skipPEPPOL);
+		ValidateResult result = validateService.validateFile(input, skipPEPPOL, compressed);
 
 		log.info("Validation result: " + result);
 
