@@ -64,4 +64,4 @@ jmx:
 cleanIn:
     enabled: true
     image: busybox:1.28
-    schedule: '* * * * *'
+    schedule: '11 1 * * *'
