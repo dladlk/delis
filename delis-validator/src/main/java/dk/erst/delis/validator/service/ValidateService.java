@@ -77,10 +77,11 @@ public class ValidateService {
 
 		File tempFile = null;
 		try {
+			tempFile = File.createTempFile("manual_upload_" + file.getName() + "_", ".xml");
+
 			log.info("Saving file " + file.getOriginalFilename() + " as " + (compressed ? "compressed" : "") + " file " + tempFile);
 			result.setFileName(file.getOriginalFilename());
 
-			tempFile = File.createTempFile("manual_upload_" + file.getName() + "_", ".xml");
 			try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 				InputStream inputStream = file.getInputStream();
 				if (compressed) {
