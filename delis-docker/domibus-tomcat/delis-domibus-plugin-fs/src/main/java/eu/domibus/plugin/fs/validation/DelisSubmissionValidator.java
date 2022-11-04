@@ -5,9 +5,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.activation.DataHandler;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import eu.domibus.api.model.Property;
 import eu.domibus.api.property.DomibusPropertyProvider;
 import eu.domibus.logging.DomibusLogger;
 import eu.domibus.logging.DomibusLoggerFactory;
+import eu.domibus.messaging.MessageConstants;
 import eu.domibus.plugin.Submission;
 import eu.domibus.plugin.Submission.Payload;
+import eu.domibus.plugin.Submission.TypedProperty;
 import eu.domibus.plugin.validation.SubmissionValidationException;
 import eu.domibus.plugin.validation.SubmissionValidator;
 
@@ -72,56 +74,85 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 			return;
 		}
 		long startCallTime = System.currentTimeMillis();
-
-		int responseStatusCode = -1;
-		String responseBody = null;
-		String reasonCode = null;
-		try {
-			ResponseEntity<String> response = null;
-			Payload payload = submission.getPayloads().iterator().next();
-
-			DataHandler dataHandler = payload.getPayloadDatahandler();
-			LOG.info("PAYLOAD_VALIDATOR: CALL " + xmlValidationEndpoint);
-			
-			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			body.add("file", new InputStreamResource(dataHandler.getInputStream()) {
-		        @Override
-		        public String getFilename(){
-		            return submission.getMessageId();
-		        }
-
-		        @Override
-		        public long contentLength() throws IOException {
-		            return -1;
-		        }
-		    });
-			
-			HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body);
-			response = new RestTemplate().postForEntity(xmlValidationEndpoint, requestEntity, String.class);
-			reasonCode = getHeaderValue(response.getHeaders(), REASON_HEADER);
-			responseStatusCode = response.getStatusCodeValue();
-			responseBody = response.getBody();
-		} catch (HttpClientErrorException e) {
-			reasonCode = getHeaderValue(e.getResponseHeaders(), REASON_HEADER);
-			responseStatusCode = e.getRawStatusCode();
-			responseBody = e.getResponseBodyAsString();
-			
-			if (responseStatusCode != 412) {
+		
+        Set<Submission.Payload> payloads = submission.getPayloads();
+        if (payloads == null || payloads.isEmpty()) {
+            LOG.debug("There are no payloads to validate");
+            return;
+        }
+        for (Payload payload : payloads) {
+	        int responseStatusCode = -1;
+			String responseBody = null;
+			String reasonCode = null;
+			try {
+				ResponseEntity<String> response = null;
+				
+				LOG.info("PAYLOAD_VALIDATOR: VALIDATE " + payload.getContentId());
+				LOG.info("PAYLOAD_VALIDATOR: CALL " + xmlValidationEndpoint);
+	
+				
+				MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+				body.add("compressed", isPayloadCompressed(payload));				
+				body.add("file", new InputStreamResource(payload.getPayloadDatahandler().getInputStream()) {
+			        @Override
+			        public String getFilename(){
+			            return submission.getMessageId();
+			        }
+	
+			        @Override
+			        public long contentLength() throws IOException {
+			            return payload.getPayloadSize();
+			        }
+			    });
+				
+				HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body);
+				response = new RestTemplate().postForEntity(xmlValidationEndpoint, requestEntity, String.class);
+				reasonCode = getHeaderValue(response.getHeaders(), REASON_HEADER);
+				responseStatusCode = response.getStatusCodeValue();
+				responseBody = response.getBody();
+			} catch (HttpClientErrorException e) {
+				reasonCode = getHeaderValue(e.getResponseHeaders(), REASON_HEADER);
+				responseStatusCode = e.getRawStatusCode();
+				responseBody = e.getResponseBodyAsString();
+				
+				if (responseStatusCode != 412) {
+					LOG.error("PAYLOAD_VALIDATOR: CALL FAILED to " + xmlValidationEndpoint + ", consider result as valid", e);
+				}
+			} catch (Exception e) {
 				LOG.error("PAYLOAD_VALIDATOR: CALL FAILED to " + xmlValidationEndpoint + ", consider result as valid", e);
+				return;
+			} finally {
+				LOG.info("PAYLOAD_VALIDATOR: CALL DONE in " + (System.currentTimeMillis() - startCallTime) + " with status " + responseStatusCode + ", reasonCode " + reasonCode + ", body " + responseBody);
 			}
-		} catch (Exception e) {
-			LOG.error("PAYLOAD_VALIDATOR: CALL FAILED to " + xmlValidationEndpoint + ", consider result as valid", e);
-			return;
-		} finally {
-			LOG.info("PAYLOAD_VALIDATOR: CALL DONE in " + (System.currentTimeMillis() - startCallTime) + " with status " + responseStatusCode + ", reasonCode " + reasonCode + ", body " + responseBody);
-		}
+	
+			if (responseStatusCode == 412) {
+				RuntimeException runtimeException = new RuntimeException(responseBody);
+				throw new SubmissionValidationException(reasonCode, runtimeException);
+			} else if (responseStatusCode != 200) {
+				LOG.error("PAYLOAD_VALIDATOR: Payload validation service returned unexpected HTTP code " + responseStatusCode + ", consider payload as valid");
+			}
+        }
+	}
+	
+	protected boolean isPayloadCompressed(Payload payload) {
+        boolean payloadCompressed = false;
+        
+        String mimeType = null;
 
-		if (responseStatusCode == 412) {
-			RuntimeException runtimeException = new RuntimeException(responseBody);
-			throw new SubmissionValidationException(reasonCode, runtimeException);
-		} else if (responseStatusCode != 200) {
-			LOG.error("PAYLOAD_VALIDATOR: Payload validation service returned unexpected HTTP code " + responseStatusCode + ", consider payload as valid");
-		}
+        if (payload.getPayloadProperties() != null) {
+            for (final TypedProperty property : payload.getPayloadProperties()) {
+                if (Property.MIME_TYPE.equalsIgnoreCase(property.getKey())) {
+                    mimeType = property.getValue();
+                }
+                if (MessageConstants.COMPRESSION_PROPERTY_KEY.equalsIgnoreCase(property.getKey()) && MessageConstants.COMPRESSION_PROPERTY_VALUE.equalsIgnoreCase(property.getValue())) {
+                    payloadCompressed = true;
+                }
+            }
+        }
+        
+		LOG.info("Resolved payloadCompression=" + payloadCompressed + " and mimeType=" + mimeType);
+        
+        return payloadCompressed;
 	}
 	
 	private String getHeaderValue(HttpHeaders headers, String headerName) {
