@@ -1,5 +1,5 @@
 dtx:
-  imageTag: 5.0.1.1
+  imageTag: 5.0.1.2
   env:
     unsecureLoginAllowed: 'false'
 
@@ -49,3 +49,9 @@ dtx:
 
     - name: DOMIBUS_PROPERTY_domibus_metrics_sl4j_reporter_enable
       value: 'false'
+
+    - name: FS_PROPERTY_fsplugin_messages_location_in_onefolder
+      value: 'true'
+    - name: FS_PROPERTY_fsplugin_messages_location_in_onefolder_includerecipient
+      value: 'false'
+
