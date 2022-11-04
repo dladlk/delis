@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>dk.erst.domibus</groupId>
-	<artifactId>delis-domibus-plugin-metrics-prometheus</artifactId>
-	<version>5.0.1.0</version>
+	<artifactId>delis-domibus-prometheus-plugin</artifactId>
+	<version>5.0.1.1</version>
 
-	<name>domibus-metrics-prometheus</name>
+	<name>delis-domibus-prometheus-plugin</name>
 	<description>Adds prometheus metrics export</description>
 
 	<properties>

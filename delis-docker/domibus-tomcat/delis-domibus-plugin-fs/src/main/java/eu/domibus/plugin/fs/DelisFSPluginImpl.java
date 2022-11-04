@@ -24,8 +24,8 @@ import eu.domibus.plugin.fs.worker.FSSendMessagesService;
 
 public class DelisFSPluginImpl extends FSPluginImpl {
 
-	private static final String FSPLUGIN_MESSAGES_LOCATION_IN_ONE_FOLDER_INCLUDE_RECIPIENT = "fsplugin.messages.location.in.oneFolderIncludeRecipient";
-	private static final String FSPLUGIN_MESSAGES_LOCATION_IN_ONE_FOLDER = "fsplugin.messages.location.in.oneFolder";
+	private static final String FSPLUGIN_MESSAGES_LOCATION_IN_ONE_FOLDER_INCLUDE_RECIPIENT = "fsplugin.messages.location.in.onefolder.includerecipient";
+	private static final String FSPLUGIN_MESSAGES_LOCATION_IN_ONE_FOLDER = "fsplugin.messages.location.in.onefolder";
 	
 	private static final DomibusLogger LOG = DomibusLoggerFactory.getLogger(DelisFSPluginImpl.class);
 	

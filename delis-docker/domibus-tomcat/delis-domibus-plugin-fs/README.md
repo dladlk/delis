@@ -1,12 +1,31 @@
-# Custom FS plugin looks for environment variable
-# fsplugin.validation.endpoint
+# Default Domibus FS Plugin customization
 
-If it is present, fs plugin regards it as rest endpoint and sends request to validate "partyTo" for each new file
+- pre-validation of receiver and profile via external REST service with params /RECEIVER/SERVICE/ACTION
+- pre-validation of XML payload via external REST service
+- default FS Plugin subfolders in MAIN/IN folders tuning - skip creation of RECEIVER/MESSAGEID subfolders, but either just MESSAGEID or RECEIVER_MESSAGEID subfolder
 
-Endpoint should be path to delis server + path to checking rest service (currently it is /rest/open/receivercheck)
+## Configuration options
 
-#Example: fsplugin.validation.endpoint = http://delis:8080/rest/open/receivercheck
+```
+#
+# Validation
+#
 
-If no identifier exists for the party or other error, document will be rejected.
+# Receipient and action/profile validatation endpoint URL
+# E.g.: https://edelivery.trueservice.dk/validator/validate
+fsplugin.validation.endpoint=
 
-Note. Need to test it in real life to ensure that party type and id corresponds to ones we expect.  
+# XML XSD/schematron validation endpoint URL
+fsplugin.payload.validation.endpoint=
+
+
+#
+# MAIN/IN folder storage tuning
+#
+
+# If true - received payload and metadata will be stored in single subfolder of IN, otherwise - as by default in RECEIPIENTID/MESSAGEID folders
+fsplugin.messages.location.in.onefolder=false
+
+# If true - subfolder in IN will be built as RECIPIENTID_MESSAGEID, if false - just MESSAGEID
+fsplugin.messages.location.in.onefolder.includerecipient=true
+```

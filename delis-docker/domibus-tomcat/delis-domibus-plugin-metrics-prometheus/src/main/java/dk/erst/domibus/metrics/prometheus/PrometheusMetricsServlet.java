@@ -3,6 +3,7 @@ package dk.erst.domibus.metrics.prometheus;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -15,6 +16,7 @@ import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.dropwizard.DropwizardExports;
 import io.prometheus.client.exporter.MetricsServlet;
 
+@WebServlet("/prometheus")
 public class PrometheusMetricsServlet extends MetricsServlet {
 
 	private static final long serialVersionUID = 7922253448362163590L;

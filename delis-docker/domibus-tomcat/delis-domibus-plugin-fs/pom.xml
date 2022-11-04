@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>dk.erst.domibus</groupId>
-	<artifactId>delis-domibus-plugin-fs</artifactId>
+	<artifactId>delis-domibus-fs-plugin</artifactId>
 	<version>5.0.1.1</version>
 	<name>Domibus Delis FS Plugin Extension</name>
 	<description>
