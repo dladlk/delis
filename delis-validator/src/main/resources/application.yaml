@@ -18,3 +18,4 @@ delis:
           xml: DELIS_INVALID_XML
           xsd: DELIS:INVALID_BY_XSD
           sch: DELIS:INVALID_BY_SCHEMATRON
+spring.servlet.multipart.max-file-size: -1
