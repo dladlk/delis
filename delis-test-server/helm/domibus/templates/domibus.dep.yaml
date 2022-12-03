@@ -42,7 +42,7 @@ spec:
         - name: DOMIBUS_PROPERTY_DOMIBUS_SECURITY_KEY_PRIVATE_PASSWORD
           value: '{{.Values.dtx.env.keypassword}}'
         - name: DOMIBUS_PROPERTY_domibus_database_schema
-          value: 'domibus{{.Values.partyIndex}}'
+          value: '{{.Values.dtx.env.databaseschema}}'
         - name: DOMIBUS_PROPERTY_DOMIBUS_DATABASE_SERVERNAME
           value: '{{.Values.dtx.env.databasehost}}'
         - name: DOMIBUS_PROPERTY_DOMIBUS_DATABASE_PORT
