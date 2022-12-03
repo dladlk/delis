@@ -26,3 +26,14 @@ dtx:
     # PMode is complex...
     - name: DOMIBUS_PROPERTY_domibus_dynamicdiscovery_partyid_responder_role
       value: 'http://docs.oasis-open.org/ebxml-msg/ebms/v3.0/ns/core/200704/responder'
+
+    - name: DOMIBUS_PROPERTY_domibus_metrics_sl4j_reporter_enable
+      value: 'false'
+
+    - name: DOMIBUS_PROPERTY_domibus_alert_retry_max__attempts
+      value: '0'
+
+    - name: FS_PROPERTY_fsplugin_messages_location_in_onefolder
+      value: 'true'
+    - name: FS_PROPERTY_fsplugin_messages_location_in_onefolder_includerecipient
+      value: 'false'

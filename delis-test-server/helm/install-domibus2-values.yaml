@@ -1,4 +1,6 @@
 dtx:
-  imageTag: 4.2.5.1
+  imageTag: 5.0.2.0
   env:
     unsecureLoginAllowed: 'true'
+    databaseschema: 'domibus25'
+
