@@ -8,10 +8,12 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
-import javax.xml.datatype.DatatypeFactory;
+//import javax.xml.datatype.DatatypeFactory;
 
 import org.apache.commons.io.input.CloseShieldInputStream;
 
+import com.helger.commons.datetime.XMLOffsetDate;
+import com.helger.commons.datetime.XMLOffsetTime;
 import com.helger.ubl21.UBL21Reader;
 import com.helger.ubl21.UBL21Writer;
 
@@ -62,7 +64,7 @@ public class ApplicationResponseBuilder {
 	private oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_21.ObjectFactory cbcFactory;
 	private oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_21.ObjectFactory cacFactory;
 //	private JAXBContext jaxbContext;
-	private DatatypeFactory datatypeFactory;
+//	private DatatypeFactory datatypeFactory;
 
 	public ApplicationResponseBuilder() {
 		arFactory = new oasis.names.specification.ubl.schema.xsd.applicationresponse_21.ObjectFactory();
@@ -71,14 +73,14 @@ public class ApplicationResponseBuilder {
 //
 		try {
 //			jaxbContext = JAXBContext.newInstance(ApplicationResponseType.class.getPackage().getName());
-			datatypeFactory = DatatypeFactory.newInstance();
+//			datatypeFactory = DatatypeFactory.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to build JAXBContext or DatatypeFactory: " + e.getMessage(), e);
 		}
 	}
 
 	public void extractBasicData(InputStream rejectedXmlInput, OutputStream out) throws Exception {
-		XSLTUtil.apply(ApplicationResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), new CloseShieldInputStream(rejectedXmlInput), out);
+		XSLTUtil.apply(ApplicationResponseBuilder.class.getResourceAsStream(INVOCIE_RESPONSE_TEMPLATE_XSLT), Paths.get(INVOCIE_RESPONSE_TEMPLATE_XSLT), CloseShieldInputStream.wrap(rejectedXmlInput), out);
 	}
 
 //	@SuppressWarnings("unchecked")
@@ -160,10 +162,10 @@ public class ApplicationResponseBuilder {
 			d.setId(ar.getID().getValue());
 		}
 		if (ar.getIssueDate() != null) {
-			d.setIssueDate(ar.getIssueDate().getValue().toXMLFormat());
+			d.setIssueDate(ar.getIssueDate().getValue().toString());
 		}
 		if (ar.getIssueTime() != null) {
-			d.setIssueTime(ar.getIssueTime().getValue().toXMLFormat());
+			d.setIssueTime(ar.getIssueTime().getValue().toString());
 		}
 		if (ar.getNote() != null && !ar.getNote().isEmpty()) {
 			d.setNote(ar.getNote().get(0).getValue());
@@ -191,7 +193,7 @@ public class ApplicationResponseBuilder {
 					rb.id(rt.getID().getValue());
 				}
 				if (rt.getIssueDate() != null) {
-					rb.issueDate(rt.getIssueDate().getValue().toXMLFormat());
+					rb.issueDate(rt.getIssueDate().getValue().toString());
 				}
 				if (rt.getDocumentTypeCode() != null) {
 					rb.documentTypeCode(rt.getDocumentTypeCode().getValue());
@@ -246,7 +248,7 @@ public class ApplicationResponseBuilder {
 			rb.responseDescription(responseType.getDescription().get(0).getValue());
 		}
 		if (responseType.getEffectiveDate() != null) {
-			rb.effectiveDate(responseType.getEffectiveDate().getValue().toXMLFormat());
+			rb.effectiveDate(responseType.getEffectiveDate().getValue().toString());
 		}
 		if (responseType.getStatus() != null && !responseType.getStatus().isEmpty()) {
 			List<StatusType> list = responseType.getStatus();
@@ -344,13 +346,13 @@ public class ApplicationResponseBuilder {
 		if (d.getIssueDate() != null) {
 			if (ar.getIssueDate() == null)
 				ar.setIssueDate(cbcFactory.createIssueDateType());
-			ar.getIssueDate().setValue(datatypeFactory.newXMLGregorianCalendar(d.getIssueDate()));
+			ar.getIssueDate().setValue(XMLOffsetDate.parse(d.getIssueDate()));
 		}
 
 		if (d.getIssueTime() != null) {
 			if (ar.getIssueTime() == null)
 				ar.setIssueTime(cbcFactory.createIssueTimeType());
-			ar.getIssueTime().setValue(datatypeFactory.newXMLGregorianCalendar(d.getIssueTime()));
+			ar.getIssueTime().setValue(XMLOffsetTime.parse(d.getIssueTime()));
 		}
 
 		if (d.getNote() != null) {
@@ -421,7 +423,7 @@ public class ApplicationResponseBuilder {
 				if (refType.getIssueDate() == null) {
 					refType.setIssueDate(cbcFactory.createIssueDateType());
 				}
-				refType.getIssueDate().setValue(datatypeFactory.newXMLGregorianCalendar(dr.getDocumentReference().getIssueDate()));
+				refType.getIssueDate().setValue(XMLOffsetDate.parse(dr.getDocumentReference().getIssueDate()));
 			}
 
 			refType.setDocumentTypeCode(cbcFactory.createDocumentTypeCodeType());
@@ -485,7 +487,7 @@ public class ApplicationResponseBuilder {
 				if (responseType.getEffectiveDate() == null) {
 					responseType.setEffectiveDate(cbcFactory.createEffectiveDateType());
 				}
-				responseType.getEffectiveDate().setValue(datatypeFactory.newXMLGregorianCalendar(response.getEffectiveDate()));
+				responseType.getEffectiveDate().setValue(XMLOffsetDate.parse(response.getEffectiveDate()));
 			}
 
 			ArrayList<ResponseStatus> statusList = response.getStatus();

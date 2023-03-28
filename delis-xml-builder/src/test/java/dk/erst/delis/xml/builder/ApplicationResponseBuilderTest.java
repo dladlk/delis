@@ -67,11 +67,11 @@ public class ApplicationResponseBuilderTest {
 			DocumentReferenceType documentReferenceType = response.getDocumentResponse().get(0).getDocumentReference().get(0);
 			if (i == 0) {
 				assertEquals("20150483", documentReferenceType.getID().getValue());
-				assertEquals("2018-04-01", documentReferenceType.getIssueDate().getValue().toXMLFormat());
+				assertEquals("2018-04-01", documentReferenceType.getIssueDate().getValue().toString());
 				assertEquals("380", documentReferenceType.getDocumentTypeCode().getValue());
 			} else {
 				assertEquals("20150483", documentReferenceType.getID().getValue());
-				assertEquals("2017-10-01", documentReferenceType.getIssueDate().getValue().toXMLFormat());
+				assertEquals("2017-10-01", documentReferenceType.getIssueDate().getValue().toString());
 				assertEquals("381", documentReferenceType.getDocumentTypeCode().getValue());
 			}
 		}
@@ -92,7 +92,7 @@ public class ApplicationResponseBuilderTest {
 		assertNotNull(res);
 
 		ApplicationResponseType r = builder.parse(new ByteArrayInputStream(bytes));
-		assertEquals(d.getIssueDate(), r.getDocumentResponse().get(0).getDocumentReference().get(0).getIssueDate().getValue().toXMLFormat());
+		assertEquals(d.getIssueDate(), r.getDocumentResponse().get(0).getDocumentReference().get(0).getIssueDate().getValue().toString());
 
 		/*
 		 * Check that condition is not created for empty attributes
