@@ -17,6 +17,7 @@ public class DefaultRuleBuilder {
 	
 	private static final String CIUS_VERSION = "2021-11-03_v1.8.0";
 	private static final String PEPPOL_BIS3_OTHER_VERSION = "2021-11-03_v1.8.0";
+	private static final String OIOUBL_SCEMATRON_VERSION = "OIOUBL_Schematron_2023-02-06_v1.13.2.50919c6";
 
     public static List<RuleDocumentTransformation> buildDefaultTransformationRuleList() {
         ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
@@ -47,6 +48,8 @@ public class DefaultRuleBuilder {
          */
         result.add(xsd(DocumentFormat.OIOUBL_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
         result.add(xsd(DocumentFormat.OIOUBL_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
+        result.add(xsd(DocumentFormat.OIOUBL_ORDER, "xsd/UBL_2.1/maindoc/UBL-Order-2.1.xsd"));
+        result.add(xsd(DocumentFormat.OIOUBL_CATALOGUE, "xsd/UBL_2.1/maindoc/UBL-Catalogue-2.1.xsd"));
 
         result.add(xsd(DocumentFormat.BIS3_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
@@ -68,8 +71,10 @@ public class DefaultRuleBuilder {
          * Schematron
          */
 
-		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/OIOUBL_Schematron_2022-05-11_v1.12.2.bb920ae/OIOUBL_Invoice_Schematron.xsl", 10));
-		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/OIOUBL_Schematron_2022-05-11_v1.12.2.bb920ae/OIOUBL_CreditNote_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_INVOICE, "sch/oioubl/"+OIOUBL_SCEMATRON_VERSION+"/OIOUBL_Invoice_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_CREDITNOTE, "sch/oioubl/"+OIOUBL_SCEMATRON_VERSION+"/OIOUBL_CreditNote_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_ORDER, "sch/oioubl/"+OIOUBL_SCEMATRON_VERSION+"/OIOUBL_Order_Schematron.xsl", 10));
+		result.add(sch(DocumentFormat.OIOUBL_CATALOGUE, "sch/oioubl/"+OIOUBL_SCEMATRON_VERSION+"/OIOUBL_Catalogue_Schematron.xsl", 10));
 
 		
 		/*
