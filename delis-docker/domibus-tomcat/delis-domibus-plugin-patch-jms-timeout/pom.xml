@@ -13,7 +13,7 @@
     <properties>
         <domibus.version>5.0.1</domibus.version>
         <java.version>1.8</java.version>
-        <spring.version>5.3.20</spring.version>
+        <spring.version>5.3.26</spring.version>
     </properties>
 
     <dependencies>
