@@ -5,7 +5,7 @@
     <parent>
         <artifactId>delis</artifactId>
         <groupId>dk.erst.delis</groupId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -54,19 +54,16 @@
             <version>2.6</version>
         </dependency>    
         <dependency>
-            <groupId>no.difi.oxalis</groupId>
+            <groupId>network.oxalis</groupId>
             <artifactId>oxalis-document-sniffer</artifactId>
-            <version>4.0.3</version>
         </dependency>
         <dependency>
-            <groupId>no.difi.oxalis</groupId>
+            <groupId>network.oxalis</groupId>
             <artifactId>oxalis-api</artifactId>
-            <version>4.0.3</version>
         </dependency>
         <dependency>
-            <groupId>no.difi.vefa</groupId>
+            <groupId>network.oxalis.vefa</groupId>
             <artifactId>peppol-sbdh</artifactId>
-            <version>1.1.1</version>
         </dependency>
         
         <dependency>

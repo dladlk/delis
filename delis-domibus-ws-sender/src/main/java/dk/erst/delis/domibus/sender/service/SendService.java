@@ -39,8 +39,8 @@ import eu.domibus.plugin.webService.generated.StatusRequest;
 import eu.domibus.plugin.webService.generated.SubmitRequest;
 import eu.domibus.plugin.webService.generated.SubmitResponse;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.sbdh.SbdReader;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.sbdh.SbdReader;
 
 @Service
 @Slf4j

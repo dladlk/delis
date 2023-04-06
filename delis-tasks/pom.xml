@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>dk.erst.delis</groupId>
 		<artifactId>delis</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</parent>
 
 	<artifactId>delis-tasks</artifactId>
@@ -17,7 +17,7 @@
 	<name>Delis :: Tasks</name>
 
     <properties>
-		<delis.version>1.0.0</delis.version>
+		<delis.version>1.1.0</delis.version>
 	</properties>
 
 	<dependencies>
@@ -63,24 +63,20 @@
 		
 		<!-- Difi -->
 		<dependency>
-			<groupId>no.difi.vefa</groupId>
+			<groupId>network.oxalis.vefa</groupId>
 			<artifactId>peppol-common</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>no.difi.commons</groupId>
-			<artifactId>commons-bdx</artifactId>
-			<version>0.9.5</version>
+			<groupId>network.oxalis.peppol</groupId>
+			<artifactId>peppol-bdx</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>no.difi.commons</groupId>
-			<artifactId>commons-busdox</artifactId>
-			<version>0.9.5</version>
+			<groupId>network.oxalis.peppol</groupId>
+			<artifactId>peppol-busdox</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>no.difi.vefa</groupId>
+			<groupId>network.oxalis.vefa</groupId>
 			<artifactId>peppol-lookup</artifactId>
-			<version>1.1.1</version>
 		</dependency>		
 		
         <!-- OpenCSV for IdentifierLoadService -->

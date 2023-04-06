@@ -12,12 +12,12 @@ import dk.erst.delis.oxalis.sender.ISendListener;
 import dk.erst.delis.oxalis.sender.SendStep;
 import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.oxalis.api.lang.OxalisTransmissionException;
-import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.sbdh.SbdReader;
-import no.difi.vefa.peppol.sbdh.lang.SbdhException;
+import network.oxalis.api.lang.OxalisTransmissionException;
+import network.oxalis.api.lookup.LookupService;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.sbdh.SbdReader;
+import network.oxalis.vefa.peppol.sbdh.lang.SbdhException;
 
 @Slf4j
 public class LookupTransmissionRequestBuilder implements IDelisTransmissionRequestBuilder {

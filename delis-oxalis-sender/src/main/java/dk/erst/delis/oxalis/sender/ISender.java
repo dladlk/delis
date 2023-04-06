@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
-import no.difi.vefa.peppol.sbdh.lang.SbdhException;
+import network.oxalis.vefa.peppol.sbdh.lang.SbdhException;
 
 /**
  * TransmissionLookupException - failed to lookup for receiver

@@ -18,8 +18,8 @@ import dk.erst.delis.sender.result.IResultProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.oxalis.commons.guice.GuiceModuleLoader;
+import network.oxalis.api.lookup.LookupService;
+import network.oxalis.commons.guice.GuiceModuleLoader;
 
 @Component
 @Slf4j

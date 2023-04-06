@@ -11,13 +11,13 @@
 	</parent>
 	<groupId>dk.erst.delis</groupId>
 	<artifactId>delis-validator</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>Delis :: Validator</name>
 	<description>Spring-boot web application for REST service to validate documents by schema and schematron</description>
 
 	<properties>
 		<java.version>1.8</java.version>
-		<delis.version>1.0.0</delis.version>
+		<delis.version>1.1.0</delis.version>
 		<swagger.version>2.9.2</swagger.version>
 	</properties>
 

@@ -17,7 +17,7 @@ import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.xml.SmpXmlServiceFactory;
 import dk.erst.delis.task.organisation.setup.data.OrganisationSetupData;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
 
 /*
  * Orchestration service, responsible for decision which action should be taken (PUT or DELETE), 

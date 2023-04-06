@@ -3,15 +3,15 @@ package dk.erst.delis.oxalis.sender.response;
 import java.security.cert.X509Certificate;
 
 import lombok.Getter;
-import no.difi.oxalis.api.model.TransmissionIdentifier;
-import no.difi.oxalis.api.outbound.TransmissionResponse;
-import no.difi.oxalis.api.timestamp.Timestamp;
-import no.difi.oxalis.as4.inbound.As4EnvelopeHeader;
-import no.difi.oxalis.as4.inbound.As4InboundMetadata;
-import no.difi.vefa.peppol.common.model.Digest;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.TransportProfile;
+import network.oxalis.api.model.TransmissionIdentifier;
+import network.oxalis.api.outbound.TransmissionResponse;
+import network.oxalis.api.timestamp.Timestamp;
+import network.oxalis.as4.inbound.As4EnvelopeHeader;
+import network.oxalis.as4.inbound.As4InboundMetadata;
+import network.oxalis.vefa.peppol.common.model.Digest;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.TransportProfile;
 
 @Getter
 public class DelisResponse extends As4InboundMetadata {

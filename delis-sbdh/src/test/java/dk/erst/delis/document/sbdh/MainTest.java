@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
 
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.sbdh.SbdReader;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.sbdh.SbdReader;
 
 public class MainTest {
 

@@ -1,8 +1,8 @@
 package dk.erst.delis.domibus.sender.service;
 
 import eu.domibus.common.model.org.oasis_open.docs.ebxml_msg.ebms.v3_0.ns.core._200704.*;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
 
 import java.util.List;
 

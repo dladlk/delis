@@ -1,7 +1,7 @@
 package dk.erst.delis.document.sbdh.ubl;
 
-import no.difi.oxalis.sniffer.document.PlainUBLParser;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.sniffer.document.PlainUBLParser;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
 
 public class DelisOrderResponseDocumentParser extends DelisOrderDocumentParser {
 

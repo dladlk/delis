@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
-import no.difi.vefa.peppol.common.model.ArgumentIdentifier;
-import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.InstanceIdentifier;
-import no.difi.vefa.peppol.common.model.InstanceType;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.common.model.ProcessIdentifier;
+import network.oxalis.vefa.peppol.common.model.ArgumentIdentifier;
+import network.oxalis.vefa.peppol.common.model.DocumentTypeIdentifier;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.InstanceIdentifier;
+import network.oxalis.vefa.peppol.common.model.InstanceType;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.ProcessIdentifier;
 
 @Data
 public class DocumentSBDHeader implements Serializable {

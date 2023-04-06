@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +19,22 @@ import dk.erst.delis.task.identifier.publish.data.SmpPublishProcessData;
 import dk.erst.delis.task.identifier.publish.data.SmpPublishServiceData;
 import dk.erst.delis.task.identifier.publish.data.SmpServiceEndpointData;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.peppol.common.lang.PeppolLoadingException;
-import no.difi.vefa.peppol.common.model.DocumentTypeIdentifier;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.common.model.ProcessIdentifier;
-import no.difi.vefa.peppol.common.model.ProcessMetadata;
-import no.difi.vefa.peppol.common.model.ServiceMetadata;
-import no.difi.vefa.peppol.common.model.TransportProfile;
-import no.difi.vefa.peppol.lookup.LookupClient;
-import no.difi.vefa.peppol.lookup.LookupClientBuilder;
-import no.difi.vefa.peppol.lookup.api.LookupException;
-import no.difi.vefa.peppol.lookup.api.MetadataLocator;
-import no.difi.vefa.peppol.lookup.provider.DefaultProvider;
-import no.difi.vefa.peppol.security.api.CertificateValidator;
-import no.difi.vefa.peppol.security.lang.PeppolSecurityException;
+import network.oxalis.vefa.peppol.common.lang.PeppolLoadingException;
+import network.oxalis.vefa.peppol.common.model.DocumentTypeIdentifier;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.ProcessIdentifier;
+import network.oxalis.vefa.peppol.common.model.ProcessMetadata;
+import network.oxalis.vefa.peppol.common.model.ServiceInformation;
+import network.oxalis.vefa.peppol.common.model.ServiceMetadata;
+import network.oxalis.vefa.peppol.common.model.TransportProfile;
+import network.oxalis.vefa.peppol.lookup.LookupClient;
+import network.oxalis.vefa.peppol.lookup.LookupClientBuilder;
+import network.oxalis.vefa.peppol.lookup.api.LookupException;
+import network.oxalis.vefa.peppol.lookup.api.MetadataLocator;
+import network.oxalis.vefa.peppol.lookup.provider.DefaultProvider;
+import network.oxalis.vefa.peppol.security.api.CertificateValidator;
+import network.oxalis.vefa.peppol.security.lang.PeppolSecurityException;
 
 @Service
 @Slf4j
@@ -95,7 +97,7 @@ public class SmpLookupService {
 	private DefaultProvider createMetadataProvider() {
 		return new DefaultProvider(){
             @Override
-            public URI resolveDocumentIdentifiers(URI location, ParticipantIdentifier participant) {
+            public List<URI> resolveDocumentIdentifiers(URI location, ParticipantIdentifier participant) {
                 URI newUri = null;
                 try {
                     newUri = new URI(location.toString()+ "/"+participant.urlencoded());
@@ -103,10 +105,10 @@ public class SmpLookupService {
 					log.error("Failed to build URI for location=" + location + ", participant=" + participant);
                 }
                 log.info("Resolved URI to document identifiers: "+newUri);
-                return newUri;
+                return Arrays.asList(new URI[] { newUri });
             }
             @Override
-            public URI resolveServiceMetadata(URI location, ParticipantIdentifier participantIdentifier, DocumentTypeIdentifier documentTypeIdentifier) {
+            public List<URI> resolveServiceMetadata(URI location, ParticipantIdentifier participantIdentifier, DocumentTypeIdentifier documentTypeIdentifier) {
             	URI result = location;
                 try {
                     result = new URI(location.toString()+String.format("/%s/services/%s", participantIdentifier.urlencoded(), documentTypeIdentifier.urlencoded()));
@@ -114,7 +116,7 @@ public class SmpLookupService {
 					log.error("Failed to build URI for location=" + location + ", participant=" + participantIdentifier + ", documentTypeIdentifier=" + documentTypeIdentifier);
                 }
 				log.info("Resolved URI to service metadata: " + result);
-                return result;
+				return Arrays.asList(new URI[] { result });
             }
         };
 	}
@@ -154,10 +156,12 @@ public class SmpLookupService {
 		for (ServiceMetadata serviceMetadata : serviceMetadataList) {
 			SmpPublishServiceData smpPublishServiceData = new SmpPublishServiceData();
 			smpPublishServiceData.setProcessList(new ArrayList<SmpPublishProcessData>());
-			DocumentTypeIdentifier documentTypeIdentifier = serviceMetadata.getDocumentTypeIdentifier();
+			
+			ServiceInformation<Endpoint> serviceInformation = serviceMetadata.getServiceInformation();
+			DocumentTypeIdentifier documentTypeIdentifier = serviceInformation.getDocumentTypeIdentifier();
 			SmpDocumentIdentifier documentIdentifier = SmpDocumentIdentifier.of(documentTypeIdentifier.getIdentifier());
 			smpPublishServiceData.setDocumentIdentifier(documentIdentifier);
-			for (ProcessMetadata<Endpoint> processMetadata : serviceMetadata.getProcesses()) {
+			for (ProcessMetadata<Endpoint> processMetadata : serviceInformation.getProcesses()) {
 				if(processMetadata.getProcessIdentifier().isEmpty()) {
 					continue;
 				}

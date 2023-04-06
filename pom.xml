@@ -6,7 +6,7 @@
 
     <groupId>dk.erst.delis</groupId>
     <artifactId>delis</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
     
     <name>Delis :: Parent</name>
@@ -31,8 +31,13 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<delis.version>1.0.0</delis.version>
+		<delis.version>1.1.0</delis.version>
 		<lombok.version>1.18.4</lombok.version>
+
+		<oxalis.version>5.5.0</oxalis.version>
+		<oxalis.as4.version>5.5.0</oxalis.as4.version>
+		<oxalis.vefa.version>2.5.0</oxalis.vefa.version>
+		<oxalis.peppol.version>1.1.0</oxalis.peppol.version>
 		
 		<junit.version>4.13.2</junit.version>
 		<jmockit.version>1.22</jmockit.version>
@@ -272,6 +277,75 @@
                 <artifactId>jsr305</artifactId>
                 <version>3.0.0</version>
             </dependency>
+            
+            
+            <!-- Oxalis -->
+	        <dependency>
+	            <groupId>network.oxalis</groupId>
+	            <artifactId>oxalis-commons</artifactId>
+	            <version>${oxalis.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>network.oxalis</groupId>
+	            <artifactId>oxalis-as4</artifactId>
+	            <version>${oxalis.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>network.oxalis</groupId>
+	            <artifactId>oxalis-api</artifactId>
+	            <version>${oxalis.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>network.oxalis</groupId>
+	            <artifactId>oxalis-outbound</artifactId>
+	            <version>${oxalis.version}</version>
+	        </dependency>	        
+	        <dependency>
+	            <groupId>network.oxalis</groupId>
+	            <artifactId>oxalis-document-sniffer</artifactId>
+	            <version>${oxalis.version}</version>
+	        </dependency>
+
+
+	        <dependency>
+	            <groupId>network.oxalis.vefa</groupId>
+	            <artifactId>peppol-common</artifactId>
+	            <version>${oxalis.vefa.version}</version>
+	        </dependency>            
+	        <dependency>
+	            <groupId>network.oxalis.vefa</groupId>
+	            <artifactId>peppol-sbdh</artifactId>
+	            <version>${oxalis.vefa.version}</version>
+	        </dependency>            
+	        <dependency>
+	            <groupId>network.oxalis.vefa</groupId>
+	            <artifactId>peppol-lookup</artifactId>
+	            <version>${oxalis.vefa.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>network.oxalis.vefa</groupId>
+	            <artifactId>peppol-security</artifactId>
+	            <version>${oxalis.vefa.version}</version>
+	        </dependency>	        
+
+	        <dependency>
+	            <groupId>network.oxalis.peppol</groupId>
+	            <artifactId>peppol-bdx</artifactId>
+	            <version>${oxalis.peppol.version}</version>
+	        </dependency>	        
+	        <dependency>
+	            <groupId>network.oxalis.peppol</groupId>
+	            <artifactId>peppol-sbdh</artifactId>
+	            <version>${oxalis.peppol.version}</version>
+	        </dependency>	        
+	        <dependency>
+	            <groupId>network.oxalis.peppol</groupId>
+	            <artifactId>peppol-busdox</artifactId>
+	            <version>${oxalis.peppol.version}</version>
+	        </dependency>	        
+
+            
+            <!-- END Oxalis --> 
 
             <!-- Test dependencies -->
             <dependency>

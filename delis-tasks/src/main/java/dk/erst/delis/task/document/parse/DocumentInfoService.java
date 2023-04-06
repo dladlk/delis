@@ -17,9 +17,9 @@ import dk.erst.delis.task.document.parse.data.DocumentSBDHeader;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.peppol.sbdh.SbdReader;
-import no.difi.vefa.peppol.sbdh.SbdReader.Type;
-import no.difi.vefa.peppol.sbdh.util.XMLStreamUtils;
+import network.oxalis.vefa.peppol.sbdh.SbdReader;
+import network.oxalis.vefa.peppol.sbdh.SbdReader.Type;
+import network.oxalis.vefa.peppol.sbdh.util.XMLStreamUtils;
 
 @Service
 @Slf4j

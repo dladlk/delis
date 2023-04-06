@@ -20,13 +20,13 @@ import dk.erst.delis.document.sbdh.ubl.DelisInvoiceDocumentParser;
 import dk.erst.delis.document.sbdh.ubl.DelisOrderDocumentParser;
 import dk.erst.delis.document.sbdh.ubl.DelisOrderResponseDocumentParser;
 import dk.erst.delis.document.sbdh.ubl.DelisUBLHeaderParser;
-import no.difi.oxalis.sniffer.PeppolStandardBusinessHeader;
-import no.difi.oxalis.sniffer.document.HardCodedNamespaceResolver;
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
-import no.difi.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.ProcessIdentifier;
-import no.difi.vefa.peppol.common.model.Scheme;
+import network.oxalis.sniffer.PeppolStandardBusinessHeader;
+import network.oxalis.sniffer.document.HardCodedNamespaceResolver;
+import network.oxalis.sniffer.document.PlainUBLHeaderParser;
+import network.oxalis.sniffer.document.parsers.PEPPOLDocumentParser;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.ProcessIdentifier;
+import network.oxalis.vefa.peppol.common.model.Scheme;
 
 public class DelisSbdhParser {
 

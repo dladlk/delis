@@ -11,7 +11,7 @@
 	<groupId>dk.erst.delis</groupId>
 	<artifactId>delis-sender-service</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<name>Delis :: Oxalis Sender Service</name>
 
@@ -19,7 +19,7 @@
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<delis.version>1.0.0</delis.version>
+		<delis.version>1.1.0</delis.version>
 	</properties>
 
 	<dependencies>

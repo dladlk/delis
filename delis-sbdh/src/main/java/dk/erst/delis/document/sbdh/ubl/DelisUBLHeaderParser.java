@@ -1,6 +1,6 @@
 package dk.erst.delis.document.sbdh.ubl;
 
-import no.difi.oxalis.sniffer.document.PlainUBLHeaderParser;
+import network.oxalis.sniffer.document.PlainUBLHeaderParser;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 

@@ -15,13 +15,10 @@ import com.google.inject.util.Modules;
 
 import dk.erst.delis.oxalis.sender.ISendListener;
 import dk.erst.delis.oxalis.sender.SimpleSenderTest;
-import dk.erst.delis.oxalis.sender.request.DelisTransmissionRequest;
-import dk.erst.delis.oxalis.sender.request.IDelisTransmissionRequestBuilder;
-import dk.erst.delis.oxalis.sender.request.LookupTransmissionRequestBuilder;
-import no.difi.oxalis.api.lookup.LookupService;
-import no.difi.oxalis.as4.inbound.As4InboundModule;
-import no.difi.oxalis.as4.outbound.As4OutboundModule;
-import no.difi.oxalis.commons.guice.GuiceModuleLoader;
+import network.oxalis.api.lookup.LookupService;
+import network.oxalis.as4.inbound.As4InboundModule;
+import network.oxalis.as4.outbound.As4OutboundModule;
+import network.oxalis.commons.guice.GuiceModuleLoader;
 
 @Ignore
 public class LookupTransmissionRequestBuilderTest {

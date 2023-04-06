@@ -10,7 +10,7 @@ import dk.erst.delis.oxalis.sender.TransmissionLookupException;
 import dk.erst.delis.oxalis.sender.response.DelisResponse;
 import dk.erst.delis.sender.document.IDocumentData;
 import lombok.extern.slf4j.Slf4j;
-import no.difi.vefa.peppol.sbdh.lang.SbdhException;
+import network.oxalis.vefa.peppol.sbdh.lang.SbdhException;
 
 @Service
 @Slf4j

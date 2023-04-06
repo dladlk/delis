@@ -14,8 +14,8 @@ import eu.domibus.plugin.fs.ebms3.PayloadInfo;
 import eu.domibus.plugin.fs.ebms3.Property;
 import eu.domibus.plugin.fs.ebms3.Service;
 import eu.domibus.plugin.fs.ebms3.UserMessage;
-import no.difi.vefa.peppol.common.model.Header;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.Header;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
 
 public class MetadataBuilder {
 

@@ -20,7 +20,7 @@ import dk.erst.delis.web.identifier.IdentifierService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
 
 @Service
 public class ValidatePublishedService {

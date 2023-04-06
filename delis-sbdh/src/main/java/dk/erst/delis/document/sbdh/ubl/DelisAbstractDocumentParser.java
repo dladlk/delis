@@ -2,12 +2,12 @@ package dk.erst.delis.document.sbdh.ubl;
 
 import org.w3c.dom.Element;
 
-import no.difi.oxalis.sniffer.document.PlainUBLParser;
-import no.difi.oxalis.sniffer.document.parsers.AbstractDocumentParser;
-import no.difi.oxalis.sniffer.identifier.ParticipantId;
-import no.difi.oxalis.sniffer.identifier.SchemeId;
-import no.difi.vefa.peppol.common.model.ParticipantIdentifier;
-import no.difi.vefa.peppol.icd.api.Icd;
+import network.oxalis.sniffer.document.PlainUBLParser;
+import network.oxalis.sniffer.document.parsers.AbstractDocumentParser;
+import network.oxalis.sniffer.identifier.ParticipantId;
+import network.oxalis.sniffer.identifier.SchemeId;
+import network.oxalis.vefa.peppol.common.model.ParticipantIdentifier;
+import network.oxalis.vefa.peppol.icd.api.Icd;
 
 public abstract class DelisAbstractDocumentParser extends AbstractDocumentParser {
 

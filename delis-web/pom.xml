@@ -14,14 +14,14 @@
     
     <groupId>dk.erst.delis</groupId>
     <artifactId>delis-web</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     
     <packaging>jar</packaging>
 	
 	<name>Delis :: Web</name>
 
     <properties>
-		<delis.version>1.0.0</delis.version>
+		<delis.version>1.1.0</delis.version>
 		<swagger.version>2.9.2</swagger.version>
 	</properties>
 

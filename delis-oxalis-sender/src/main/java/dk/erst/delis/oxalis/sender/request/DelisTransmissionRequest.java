@@ -6,9 +6,9 @@ import java.io.Serializable;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import no.difi.oxalis.api.outbound.TransmissionRequest;
-import no.difi.vefa.peppol.common.model.Endpoint;
-import no.difi.vefa.peppol.common.model.Header;
+import network.oxalis.api.outbound.TransmissionRequest;
+import network.oxalis.vefa.peppol.common.model.Endpoint;
+import network.oxalis.vefa.peppol.common.model.Header;
 
 @Getter
 @Builder
