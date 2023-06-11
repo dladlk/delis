@@ -60,7 +60,7 @@
         <bouncycastle.version>1.70</bouncycastle.version>
         <quartz.version>2.3.2</quartz.version>
         <dozer.version>5.5.1</dozer.version>
-        <jackson.version>2.9.10.8</jackson.version>
+        <jackson.version>2.12.7.1</jackson.version>
         <commons-test.version>4.2</commons-test.version>
         <mysql.version>8.0.15</mysql.version>
     </properties>
