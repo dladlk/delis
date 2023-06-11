@@ -6,6 +6,7 @@ import dk.erst.delis.data.entities.rule.RuleDocumentValidation;
 import dk.erst.delis.data.enums.document.DocumentFormat;
 import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 import dk.erst.delis.task.document.parse.cachingtransformerfactory.CachingTransformerFactory;
+import dk.erst.delis.task.document.process.validate.SchemaValidator;
 import dk.erst.delis.web.transformationrule.TransformationRuleService;
 import dk.erst.delis.web.validationrule.ValidationRuleService;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,7 @@ public class RuleService {
 	public void refreshValidationList () {
 		validationList = buildValidationRuleList();
 		flushTransformerCache();
+		SchemaValidator.flushCache();
 	}
 
 	private void flushTransformerCache() {

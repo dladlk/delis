@@ -6,6 +6,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -32,10 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 public class SchemaValidator {
 
 	private static final boolean DETECT_LOCATION = true;
+	
+	private static final Map<Path, Schema> SCHEMA_CACHE = new ConcurrentHashMap<Path, Schema>();
 
-	@SuppressWarnings("resource")
 	public List<ErrorRecord> validate(InputStream xmlStream, Path schemaFileName, RuleDocumentValidation ruleDocumentValidation) throws IOException, SAXException {
-		SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 		List<ErrorRecord> errors = new ArrayList<>();
 
 		Schema schema = null;
@@ -44,19 +46,7 @@ public class SchemaValidator {
 			locationHandler = new CurrentLocationContentHandler();
 		}
 		try {
-			try {
-				URL url = this.getClass().getResource(schemaFileName.toString());
-				if (url != null) {
-					schema = factory.newSchema(url);
-				}
-			} catch (Exception var9) {
-				/*
-				 * Fails if schema is not a resource but a file
-				 */
-			}
-			if (schema == null) {
-				schema = factory.newSchema(schemaFileName.toFile());
-			}
+			schema = getSchema(schemaFileName);
 			if (DETECT_LOCATION) {
 				ValidatorHandler validatorHandler = schema.newValidatorHandler();
 				validatorHandler.setContentHandler(locationHandler);
@@ -103,6 +93,36 @@ public class SchemaValidator {
 		return errors;
 	}
 
+	protected Schema getSchema(Path schemaFileName) throws SAXException {
+		Schema schema = SCHEMA_CACHE.get(schemaFileName);
+		if (schema == null) {
+			long start = System.currentTimeMillis();
+			schema = buildSchema(schemaFileName);
+			SCHEMA_CACHE.put(schemaFileName, schema);
+			log.info("Built XSD schema object for " + schemaFileName + " in " + (System.currentTimeMillis() - start) + " ms");
+		}
+		return schema;
+	}
+	
+	protected Schema buildSchema(Path schemaFileName) throws SAXException {
+		SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+		Schema schema = null;
+		try {
+			URL url = this.getClass().getResource(schemaFileName.toString());
+			if (url != null) {
+				schema = factory.newSchema(url);
+			}
+		} catch (Exception var9) {
+			/*
+			 * Fails if schema is not a resource but a file
+			 */
+		}
+		if (schema == null) {
+			schema = factory.newSchema(schemaFileName.toFile());
+		}
+		return schema;
+	}
+
 	public static void cleanupXsdErrorRecord(IErrorInfo er) {
 		String message = er.getMessage();
 		String code = er.getCode();
@@ -120,6 +140,10 @@ public class SchemaValidator {
 		if (oneOfIndex > 0) {
 			er.setMessage(message.substring(0, oneOfIndex));
 		}
-
 	}
+	
+    public static void flushCache() {
+    	SCHEMA_CACHE.clear();
+    }
+	
 }
