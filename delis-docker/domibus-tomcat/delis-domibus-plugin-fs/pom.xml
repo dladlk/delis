@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>dk.erst.domibus</groupId>
 	<artifactId>delis-domibus-fs-plugin</artifactId>
-	<version>5.0.1.1</version>
+	<version>5.0.1.2</version>
 	<name>Domibus Delis FS Plugin Extension</name>
 	<description>
 		Adds custom validator for submissions: for service and payload

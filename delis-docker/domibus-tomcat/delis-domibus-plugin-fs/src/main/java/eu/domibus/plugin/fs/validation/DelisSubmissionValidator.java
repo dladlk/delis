@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -92,8 +93,29 @@ public class DelisSubmissionValidator implements SubmissionValidator {
 	
 				
 				MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-				body.add("compressed", isPayloadCompressed(payload));				
-				body.add("file", new InputStreamResource(payload.getPayloadDatahandler().getInputStream()) {
+				body.add("compressed", isPayloadCompressed(payload));
+				/*
+				 * At least in CXF 3.4.6, payload data handler contains input stream instance of class 
+				 * 
+				 * org.apache.cxf.io.CachedOutputStream
+				 * 
+				 * which has a threshold (by default set in org.apache.cxf.io.CachedOutputStream.setDefaultThreshold(int)
+				 * 
+				 * to 128 KB) which defines size of attachment, after which internal implementation
+				 * 
+				 * in-memory ByteArrayOutputStream is substituted with FileOutputStream ( see 
+				 * 
+				 * method org.apache.cxf.io.CachedOutputStream.enforceLimits() )
+				 * 
+				 * If it happened, when the new InputStream is closed, the temporarily file is DELETED from 
+				 * 
+				 * file system (see org.apache.cxf.io.CachedOutputStream.TransferableFileInputStream.close() ).
+				 * 
+				 * Let's prevent it during payload validation, so it is closed when payload is persisted 
+				 * 
+				 * on file system.
+				 */
+				body.add("file", new InputStreamResource(CloseShieldInputStream.wrap(payload.getPayloadDatahandler().getInputStream())) {
 			        @Override
 			        public String getFilename(){
 			            return submission.getMessageId();
