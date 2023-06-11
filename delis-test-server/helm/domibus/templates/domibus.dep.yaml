@@ -134,6 +134,10 @@ spec:
         - name: DOMIBUS_PROPERTY_domibus_alert_sender_smtp_password
           value: '{{.Values.dtx.env.domibus_alert_sender_smtp_password}}'
 
+        - name: DOMIBUS_PROPERTY_domibus_metrics_monitor_jms_queues
+          value: 'false'
+
+
 {{ with .Values.dtx.envExt }}
 {{ toYaml . | indent 8 -}}
 {{- end }}          

@@ -1,5 +1,5 @@
 dtx:
-  imageTag: 5.0.1.2
+  imageTag: 5.0.2.1
   env:
     unsecureLoginAllowed: 'false'
     databaseschema: 'domibus1'
