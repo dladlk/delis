@@ -42,11 +42,11 @@ public class PmodeXmlServiceTest {
 		PmodeXmlService s = new PmodeXmlService(pmodeXmlTemplateEngineWrapper);
 		
 		PmodeData pmode = new PmodeData();
-//		String endpointUrl = "http://localhost:8080";
-//		pmode.setEndpointUrl(endpointUrl + "/services/msh");
-//		pmode.setPartyName("domibus_gw1");
-		String endpointUrl = "https://peppol-test.trueservice.dk";
+		String endpointUrl = "http://localhost:9080";
 		pmode.setEndpointUrl(endpointUrl + "/services/msh");
+//		pmode.setPartyName("domibus_gw1");
+//		String endpointUrl = "https://peppol-test.trueservice.dk";
+		pmode.setEndpointUrl(endpointUrl + "/domibus/services/msh");
 		pmode.setPartyName("PDK000253");
 		pmode = PmodeUtil.populateServicesActionsLegsDomibusValid(pmode);
 		String xml = s.build(pmode);

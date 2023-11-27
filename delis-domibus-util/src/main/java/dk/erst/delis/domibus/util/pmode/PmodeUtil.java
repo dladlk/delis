@@ -108,6 +108,7 @@ public class PmodeUtil {
 
 		List<PmodeData.Service> services = new ArrayList<>();
 		List<PmodeData.Action> actions = new ArrayList<>();
+		Map<String, PmodeData.Action> actionMap = new HashMap<String, PmodeData.Action>();
 		List<PmodeData.Leg> legs = new ArrayList<>();
 
 		for (PModeProfileGroup pModeProfileGroup : values) {
@@ -128,8 +129,13 @@ public class PmodeUtil {
 					docType = "_" + docType;
 				}
 
-				PmodeData.Action actionQns = new PmodeData.Action(code + docType + "Qns", "busdox-docid-qns::" + documentIdentifiers[i]);
-				actions.add(actionQns);
+				PmodeData.Action actionQns = actionMap.get(documentIdentifiers[i]);
+				if (actionQns == null) {
+					PModeProfileActionCode actionCode = PModeProfileActionCode.getInstance(documentIdentifiers[i]);
+					actionQns = new PmodeData.Action(actionCode.name() + "Qns", "busdox-docid-qns::" + documentIdentifiers[i]);
+					actions.add(actionQns);
+					actionMap.put(documentIdentifiers[i], actionQns);
+				}
 				
 				legs.add(new PmodeData.Leg(actionQns.getName() + serviceTB.getName(), serviceTB.getName(), actionQns.getName()));
 			}
