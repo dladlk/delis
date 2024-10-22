@@ -66,7 +66,7 @@ public class ValidateController {
 
 		fillModel(model);
 
-		return "/validate/validate";
+		return "validate/validate";
 	}
 
 	private static List<DocumentFormat> filterOut(DocumentFormat[] values, DocumentFormat exceptFormat) {
@@ -207,7 +207,7 @@ public class ValidateController {
 		
 		model.addAttribute("customTitle", customTitle);
 
-		return "/validate/validate";
+		return "validate/validate";
 	}
 
 	private void deleteFile(File f) {

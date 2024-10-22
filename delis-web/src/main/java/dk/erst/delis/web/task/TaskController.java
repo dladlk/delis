@@ -37,7 +37,7 @@ public class TaskController {
 
 	@GetMapping("/task/index")
 	public String index() {
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/identifierLoad")
@@ -49,7 +49,7 @@ public class TaskController {
 			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
 			log.error(e.getMessage(), e);
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/identifierPublish")
@@ -57,12 +57,12 @@ public class TaskController {
 		try {
 			StatData statData = taskScheduler.identifierPublish();
 			model.addAttribute("message", "Done publish to SMP in " + statData.toDurationString() + ": " + statData);
-			return "/task/index";
+			return "task/index";
 		} catch (Throwable e) {
 			model.addAttribute("errorMessage", e.getClass().getSimpleName() + ": " + e.getMessage());
 			log.error(e.getMessage(), e);
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/documentLoad")
@@ -72,7 +72,7 @@ public class TaskController {
 		File inputFolderFile = inputFolderPath.toFile();
 		if (!inputFolderFile.exists() || !inputFolderFile.isDirectory()) {
 			model.addAttribute("errorMessage", "Document input folder " + inputFolderPath + " does not exist or is not a directory");
-			return "/task/index";
+			return "task/index";
 		}
 
 		try {
@@ -85,7 +85,7 @@ public class TaskController {
 			model.addAttribute("errorMessage", "Failed to load documents from folder " + inputFolderPath + ": " + e.getMessage());
 		}
 
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/documentValidate")
@@ -98,7 +98,7 @@ public class TaskController {
 			log.error("Failed to invoke documentListProcessService.processLoaded", e);
 			model.addAttribute("errorMessage", "Failed to process loaded documents: " + e.getMessage());
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/documentDeliver")
@@ -111,7 +111,7 @@ public class TaskController {
 			log.error("Failed to invoke documentDeliveryService.processValidated", e);
 			model.addAttribute("errorMessage", "Failed to deliver validated documents: " + e.getMessage());
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/documentCheckDelivered")
@@ -124,7 +124,7 @@ public class TaskController {
 			log.error("Failed to invoke documentDeliveryCheckService.process", e);
 			model.addAttribute("errorMessage", "Failed to check document delivery: " + e.getMessage());
 		}
-		return "/task/index";
+		return "task/index";
 	}
 	
 	@GetMapping("/task/sendDocumentLoad")
@@ -137,7 +137,7 @@ public class TaskController {
 			log.error("Failed to invoke sendDocumentService.loadNewDocuments", e);
 			model.addAttribute("errorMessage", "Failed to load documents to send: " + e.getMessage());
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/sendDocumentValidate")
@@ -150,7 +150,7 @@ public class TaskController {
 			log.error("Failed to invoke sendDocumentService.validateNewDocuments", e);
 			model.addAttribute("errorMessage", "Failed to validate sent documents: " + e.getMessage());
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/sendFailedProcess")
@@ -163,7 +163,7 @@ public class TaskController {
 			log.error("Failed to invoke sendDocumentFailedProcessService.processFailedDocuments", e);
 			model.addAttribute("errorMessage", "Failed to process failed sent documents: " + e.getMessage());
 		}
-		return "/task/index";
+		return "task/index";
 	}
 
 	@GetMapping("/task/exportHistory")
@@ -192,6 +192,6 @@ public class TaskController {
 	@GetMapping("/task/unimplemented")
 	private String unimplemented(Model model) {
 		model.addAttribute("errorMessage", "Not implemented");
-		return "/task/index";
+		return "task/index";
 	}
 }

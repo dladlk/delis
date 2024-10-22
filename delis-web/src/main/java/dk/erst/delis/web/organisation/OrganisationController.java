@@ -78,7 +78,7 @@ public class OrganisationController {
 	public String list(Model model) {
 		model.addAttribute("organisationList", organisationService.getOrganisations());
 		model.addAttribute("orgStatMap", organisationStatisticsService.loadOrganisationIdentifierStatMap());
-		return "/organisation/list";
+		return "organisation/list";
 	}
 	
 	@GetMapping("/organisation/create")
