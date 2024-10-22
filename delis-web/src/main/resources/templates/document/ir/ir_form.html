@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{/document/ir/ir_scripts}"/>
+<th:block th:replace="~{document/ir/ir_scripts}"/>
 
 <div>
 	
@@ -21,13 +21,13 @@
 		</div>
 		
 
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('ucl', 'Use case', 'invoiceResponseUseCaseList', 'usecase', ~{::section#ucl})}">
+		<div th:replace="~{document/ir/ir_layout::dynamicSelect('ucl', 'Use case', 'invoiceResponseUseCaseList', 'usecase', ~{::section#ucl})}">
 			<section id="ucl">See <a href="https://github.com/OpenPEPPOL/poacc-upgrade-3/tree/master/rules/examples/Invoice%20reponse%20use%20cases" target="_blank">
 				Invoice Response use cases</a> for details
 			</section>
 		</div>
 			
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('irs', 'Status', 'invoiceStatusCodeList', 'status', ~{::section#irs})}">
+		<div th:replace="~{document/ir/ir_layout::dynamicSelect('irs', 'Status', 'invoiceStatusCodeList', 'status', ~{::section#irs})}">
 			<section id="irs">
 				<div class="font-italic">//DocumentResponse/Response/ResponseCode</div>
 				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/UNCL4343-T111/" target="_blank">
@@ -52,7 +52,7 @@
 			</div>
 		</div>
 		
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
+		<div th:replace="~{document/ir/ir_layout::dynamicSelect('scr', 'Reason', 'statusReasonList', 'reason', ~{::section#scr})}">
 			<section id="scr">
 				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusReason"]</div>
 				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusReason/" target="_blank">
@@ -60,7 +60,7 @@
 			</section>
 		</div>
 
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('sca', 'Action', 'statusActionList', 'action', ~{::section#sca})}">
+		<div th:replace="~{document/ir/ir_layout::dynamicSelect('sca', 'Action', 'statusActionList', 'action', ~{::section#sca})}">
 			<section id="sca">
 				<div class="font-italic">//DocumentResponse/Response/Status/StatusReasonCode[listID="OPStatusAction"]</div>
 				See <a href="http://docs.peppol.eu/poacc/upgrade-3/codelist/OPStatusAction/" target="_blank">
@@ -68,7 +68,7 @@
 			</section>
 		</div>
 
-		<div th:replace="~{/document/ir/ir_layout::dynamicSelect('sca2', 'Action 2', 'statusActionList', 'action2', ~{::section#sca2})}">
+		<div th:replace="~{document/ir/ir_layout::dynamicSelect('sca2', 'Action 2', 'statusActionList', 'action2', ~{::section#sca2})}">
 			<section id="sca2">
 				Some use cases suppose 2 actions
 			</section>
