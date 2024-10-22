@@ -27,7 +27,7 @@ public class DomibusUtilController {
 
 	@GetMapping("/setup/domibus")
 	public String view() {
-		return "/setup/domibus";
+		return "setup/domibus";
 	}
 
 	@PostMapping("/setup/domibus/pmode")

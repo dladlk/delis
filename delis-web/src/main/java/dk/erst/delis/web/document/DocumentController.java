@@ -163,7 +163,7 @@ public class DocumentController extends AbstractEasyListController<Document> imp
 		model.addAttribute("documentList", list);
 		model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
 		model.addAttribute("statusList", DocumentStatus.values());
-		return "/document/list";
+		return "document/list";
 	}
 
 	@PostMapping("/document/updatestatuses")
@@ -202,7 +202,7 @@ public class DocumentController extends AbstractEasyListController<Document> imp
 
 		applicationResponseFormController.fillModel(model, document);
 
-		return "/document/view";
+		return "document/view";
 	}
 
 	@PostMapping("/document/upload")

@@ -132,7 +132,7 @@ public class SendDocumentController extends AbstractEasyListController<SendDocum
 		model.addAttribute("documentBytes", documentService.getDocumentBytes(document));
 		model.addAttribute("lastJournalList", documentService.getDocumentRecords(document));
 
-		return "/document/send/view";
+		return "document/send/view";
 	}
 
 	@PostMapping("/document/send/upload")

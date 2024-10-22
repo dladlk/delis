@@ -57,7 +57,7 @@ public class ValidatePublishedController {
 		model.addAttribute("expectedTree", expectedTree);
 		ValidatePublishedTreeBuilder.buildActualTreeList(resultList, expectedTree);
 
-		return "/organisation/validate";
+		return "organisation/validate";
 	}
 
 }

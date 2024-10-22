@@ -57,7 +57,7 @@ public class SetupController {
 		model.addAttribute("validationChange", buildChangedRuleMap(valRules, ruleService.getValidationList()));
 		model.addAttribute("transformationChange", buildChangedRuleMap(transRules, ruleService.getTransformationList()));
 		
-		return "/setup/index";
+		return "setup/index";
 	}
 	
 	@Getter
@@ -105,14 +105,14 @@ public class SetupController {
 	public String create(Model model) {
 		model.addAttribute("configValue", new ConfigValue());
 		model.addAttribute("configValueTypeList", ConfigValueType.values());
-		return "/setup/config_value_edit";
+		return "setup/config_value_edit";
 	}
 	
 	@PostMapping("/setup/config/save")
 	public String save(@ModelAttribute ConfigValue configValue, Model model) {
 		if (StringUtils.isEmpty(configValue.getValue()) || configValue.getConfigValueType() == null) {
 			model.addAttribute("errorMessage", "Type and value are mandatory");
-			return "/setup/config_value_edit";
+			return "setup/config_value_edit";
 		}
 
 		setupService.save(configValue);
@@ -133,6 +133,6 @@ public class SetupController {
 		ConfigValue configValueForType = setupService.getConfigValueForType(typeName);
 		model.addAttribute("configValue", configValueForType);
 
-		return "/setup/config_value_edit";
+		return "setup/config_value_edit";
 	}
 }

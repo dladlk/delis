@@ -60,7 +60,7 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
     	List<ErrorDictionary> similarErrorList = errorDictionaryStatRepository.findSimilar(id);
     	model.addAttribute("similarErrorList", similarErrorList);
     	
-    	return "/errordict/view";
+    	return "errordict/view";
     }
     
     @Getter
@@ -81,7 +81,7 @@ public class ErrorDictionaryController extends AbstractEasyListController<ErrorD
         model.addAttribute("documentList", list);
         model.addAttribute("selectedIdList", new DocumentStatusBachUdpateInfo());
         model.addAttribute("statusList", DocumentStatus.values());
-        return "/document/list";
+        return "document/list";
     }
 
     
