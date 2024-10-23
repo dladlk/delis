@@ -1,0 +1,19 @@
+### Rewrite Rules Added by CyberPanel Rewrite Rule Generator
+
+RewriteEngine On
+RewriteCond %{HTTPS}  !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+
+# index.html in current directory, followed by /index.html (in root)
+DirectoryIndex index.html /index.html
+
+# Abort early if request is already for index.html in the root
+RewriteRule ^index\.html$ - [L]
+
+# Route all non-file/directory to index.html in the root
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.html [L]
+
+
+### End CyberPanel Generated Rules.

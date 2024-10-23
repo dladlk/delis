@@ -1,0 +1,1 @@
+This folder conains resources, needed for building/updating delis-test on vpsserver.
