@@ -17,7 +17,7 @@ public class DefaultRuleBuilder {
 	
 	private static final String CIUS_VERSION = "2021-11-03_v1.8.0";
 	private static final String PEPPOL_BIS3_OTHER_VERSION = "2021-11-03_v1.8.0";
-	private static final String OIOUBL_SCEMATRON_VERSION = "OIOUBL_Schematron_2023-02-06_v1.13.2.50919c6";
+	private static final String OIOUBL_SCEMATRON_VERSION = "OIOUBL_Schematron_2024-06-21_v1.14.2.1f1a049f";
 
     public static List<RuleDocumentTransformation> buildDefaultTransformationRuleList() {
         ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
