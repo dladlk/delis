@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>DELIS Test Resources</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="row col-lg-12 mt-2">
+        <h3 class="text-muted">DELIS project test resources</h3>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-lg-6">
+			
+			<div class="card mb-1">
+				<div class="card-header">
+					DELIS parts
+				</div>
+				<div class="card-body">
+					  <h4><a href="/delis" target="_blank">DELIS</a></h4>
+					  <p>Main web GUI for DELIS on Angular, based on clear bootstrap</p>
+
+					  <h4><a href="/dcm" target="_blank">DELIS Catalogue</a></h4>
+					  <p>Peppol Catalogue GUI</p>
+
+					  <h4><a href="/delis-web-api/status" target="_blank">DELIS Web Api</a></h4>
+					  <p>REST web api for GUI</p>
+
+					  <h4><a href="/delis-web-admin" target="_blank">DELIS Setup Cockpit</a></h4>
+					  <p>Setup for DELIS application on SpringBoot</p>
+
+					  <h4><a href="/delis-sender-service/status" target="_blank">DELIS Sender Service</a></h4>
+					  <p>Sender service for DELIS application on SpringBoot to track status</p>
+
+					  <h4><a href="/delis-validator/validate" target="_blank">DELIS Validator</a></h4>
+					  <p>Validation service for BIS3/CII formats</p>
+
+				</div>
+			</div>
+
+        </div>
+
+        <div class="col-lg-6">
+			<div class="card mb-1">
+				<div class="card-header">
+					SMP
+				</div>
+				<div class="card-body">
+					  <h4><a href="https://smp.edelivery-test.trueservice.dk/" target="_blank">Phoss SMP 5.4.5</a></h4>
+					  <p>PEPPOL compliant SMP implementation, used by internal AS4 and AS2 access points</p>
+				</div>
+			</div>
+
+			<div class="card mb-1">
+				<div class="card-header">
+					Test Utilities
+				</div>
+				<div class="card-body">
+					  <h4><a href="/twc" target="_blank">CEF-ERST Test console</a></h4>
+					  <p>Lookup utilities, upload/download files to Access Points, PMode generation, SMP publishing</p>
+
+                                          <h4><a href="/xml-builder" target="_blank">XML Builder</a></h4>
+					  <p>XML Builder prototype dummy GUI</p>
+
+
+				</div>
+			</div>
+
+        </div>
+      </div>
+      
+      <div class="row mt-3">
+        <div class="col-lg-6">
+			<div class="card border-primary mb-1">
+				<div class="card-header border-primary">
+					Corner Blue
+				</div>
+				<div class="card-body">
+				  <h4><a href="/domibus1" target="_blank">DOMIBUS 5.0.1 - blue</a></h4>
+				  <p>AS4 access point 1 (clustered, mutliple intsances)</p>
+
+				  <h4><a href="/jmx1" target="_blank">ActiveMQ 5.14.3 - blue</a></h4>
+				  <p>External JMS (Java Messaging Service)</p>
+
+				  <h4><a href="/delis-domibus-ws-sender" target="_blank">DOMIBUS WS Sender 1</a></h4>
+				  <p>REST interface with Swagger to send documents from AS4 access point 1</p>
+
+				  <h4><a href="/oxalis1/status" target="_blank">OXALIS 6.0.0 - blue</a></h4>
+				  <p>AS4 access point 1</p>
+				</div>
+			</div>
+		</div>
+        <div class="col-lg-6">
+			<div class="card border-danger mb-1">
+				<div class="card-header border-danger">
+					Corner Red
+				</div>
+				<div class="card-body">
+				  <h4><a href="/domibus2" target="_blank">DOMIBUS 5.0.2 - red</a></h4>
+				  <p>Internal AS4 access point 2</p>
+
+				  <h4><a href="/oxalis2/status" target="_blank">OXALIS 4.0.4 - red</a></h4>
+				  <p>Internal AS2 access point 2</p>
+				</div>
+			</div>
+			<div class="card mb-1">
+				<div class="card-header">
+					Monitoring
+				</div>
+				<div class="card-body">
+				  <h4><a href="/grafana" target="_blank">Grafana</a></h4>
+				  <p>Prometheus-operator managed Grafana</p>
+
+				  <h4><a href="/delis-web-admin/actuator/prometheus" target="_blank">DELIS Setup Cockpit metrics</a></h4>
+				  <p>Spring Boot Actuator with micrometer-registry-prometheus</p>
+
+				  <h4><a href="/delis-web-api/actuator/prometheus" target="_blank">DELIS Web-API metrics</a></h4>
+				  <p>Spring Boot Actuator with micrometer-registry-prometheus</p>
+
+				  <h4><a href="/delis-sender-service/actuator/prometheus" target="_blank">DELIS Sender Service metrics</a></h4>
+				  <p>Spring Boot Actuator with micrometer-registry-prometheus</p>
+
+				</div>
+			</div>
+		</div>
+      
+      </div>
+      
+    </div>
+</html>
