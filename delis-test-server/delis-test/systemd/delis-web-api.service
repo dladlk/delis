@@ -1,0 +1,26 @@
+[Unit]
+Description=delis-web-api
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=no
+RestartSec=10
+User=delis
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx600m -jar /usr/lib/delis/delis-web-api-1.1.0.jar
+
+# Output paths
+StandardOutput=append:/var/log/delis-web-api.log
+StandardError=inherit
+
+# Environment Variables 
+Environment=SERVER_SERVLET_CONTEXT_PATH=/delis-web-api 
+Environment=SERVER_PORT=9083 
+Environment=DELIS_VALIDATION_ARTIFACT_FOLDER=/data/delis-resources/validation
+Environment=SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/delis?useSSL=false
+Environment=SPRING_DATASOURCE_USERNAME=delis
+Environment=SPRING_DATASOURCE_PASSWORD=delis
+
+[Install]
+WantedBy=multi-user.target

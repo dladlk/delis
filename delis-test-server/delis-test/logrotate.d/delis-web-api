@@ -1,0 +1,26 @@
+/var/log/delis-web-api.log {
+
+  # If any of the files listed above is missing, skip them silently without
+  # emitting any errors
+  missingok
+
+  # If file exists but is empty, don't rotate it
+  notifempty
+
+  daily
+
+  rotate 7
+
+  # If file is growing too big, rotate immediately
+  maxsize 100M
+
+  # If file size is too small, don't rotate at all
+  minsize 1M
+
+  # Compress logs, as they are text and compression will save a lot of disk space
+  compress
+
+  # Don't compress the log immediately to avoid errors about "file size changed while zipping"
+  delaycompress
+
+}

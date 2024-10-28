@@ -1,0 +1,22 @@
+[Unit]
+Description=delis-twc
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=no
+RestartSec=10
+User=delis
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx387m -jar /usr/lib/delis/cef-test-web-0.1.3.jar --spring.config.location=classpath:/application.properties,classpath:/application.yaml,file:/etc/delis/delis-twc.properties
+
+# Output paths
+StandardOutput=append:/var/log/delis-twc.log
+StandardError=inherit
+
+# Environment Variables 
+Environment=SERVER_SERVLET_CONTEXT_PATH=/twc 
+Environment=SERVER_PORT=9084 
+
+[Install]
+WantedBy=multi-user.target

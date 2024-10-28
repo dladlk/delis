@@ -1,0 +1,23 @@
+
+[Unit]
+Description=delis-cm
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=no
+RestartSec=10
+User=delis
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx600m -jar /usr/lib/delis/cm-all-1.0.0.jar --spring.config.location=classpath:/application.properties,file:/etc/delis/delis-cm.properties
+
+# Output paths
+StandardOutput=append:/var/log/delis-cm.log
+StandardError=inherit
+
+# Environment Variables 
+Environment=SERVER_SERVLET_CONTEXT_PATH=/dcm
+Environment=SERVER_PORT=9085 
+
+[Install]
+WantedBy=multi-user.target

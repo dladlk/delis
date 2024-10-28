@@ -1,0 +1,23 @@
+[Unit]
+Description=delis-validator
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=no
+RestartSec=10
+User=delis
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx800m -jar /usr/lib/delis/delis-validator-1.1.0.jar
+
+# Output paths
+StandardOutput=append:/var/log/delis-validator.log
+StandardError=inherit
+
+# Environment Variables 
+Environment=SERVER_SERVLET_CONTEXT_PATH=/delis-validator 
+Environment=SERVER_PORT=9081 
+Environment=DELIS_VALIDATION_ARTIFACT_FOLDER=/delis-resources/validation
+
+[Install]
+WantedBy=multi-user.target

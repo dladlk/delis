@@ -4,16 +4,10 @@ RewriteEngine On
 RewriteCond %{HTTPS}  !=on
 RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 
-# index.html in current directory, followed by /index.html (in root)
-DirectoryIndex index.html /index.html
-
-# Abort early if request is already for index.html in the root
-RewriteRule ^index\.html$ - [L]
-
-# Route all non-file/directory to index.html in the root
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . index.html [L]
-
+RewriteRule ^/?delis-validator(.*)$ http://localhost:9081/delis-validator$1 [P,L]
+RewriteRule ^/?delis-web-admin(.*)$ http://localhost:9082/delis-web-admin$1 [P,L]
+RewriteRule ^/?delis-web-api(.*)$ http://localhost:9083/delis-web-api$1 [P,L]
+RewriteRule ^/?twc(.*)$ http://localhost:9084/twc$1 [P,L]
+RewriteRule ^/?dcm(.*)$ http://localhost:9085/dcm$1 [P,L]
 
 ### End CyberPanel Generated Rules.
