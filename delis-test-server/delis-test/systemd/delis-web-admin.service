@@ -8,7 +8,7 @@ Type=simple
 Restart=no
 RestartSec=10
 User=delis
-ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx1200m -jar /usr/lib/delis/delis-web-1.1.0.jar
+ExecStart=/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx1200m -jar /usr/lib/delis/delis-web-1.1.0.jar --spring.config.location=classpath:/application.properties,file:/etc/delis/delis-web-admin.properties
 
 # Output paths
 StandardOutput=append:/var/log/delis-web-admin.log
@@ -21,8 +21,6 @@ Environment=DELIS_VALIDATION_ARTIFACT_FOLDER=/data/delis-resources/validation
 Environment=SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/delis?useSSL=false
 Environment=SPRING_DATASOURCE_USERNAME=delis
 Environment=SPRING_DATASOURCE_PASSWORD=delis
-Environment=SPRING_MAIL_USERNAME=trueservice.edelivery.test@gmail.com
-Environment=SPRING_MAIL_PASSWORD=vCesOPwO7M4s
 
 [Install]
 WantedBy=multi-user.target
