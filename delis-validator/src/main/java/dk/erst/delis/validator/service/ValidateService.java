@@ -83,11 +83,18 @@ public class ValidateService {
 			result.setFileName(file.getOriginalFilename());
 
 			try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-				InputStream inputStream = file.getInputStream();
-				if (compressed) {
-					inputStream = new GZIPInputStream(inputStream);
+				InputStream inputStream = null;
+				try {
+					inputStream = file.getInputStream();
+					if (compressed) {
+						inputStream = new GZIPInputStream(inputStream);
+					}
+					StreamUtils.copy(inputStream, fos);
+				} finally {
+					if (inputStream != null) {
+						inputStream.close();
+					}
 				}
-				StreamUtils.copy(inputStream, fos);
 			}
 			log.info("Saved file " + file.getOriginalFilename() + " as test file " + tempFile);
 		} catch (IOException e) {
