@@ -18,6 +18,7 @@ public class DefaultRuleBuilder {
 	private static final String CIUS_VERSION = "2021-11-03_v1.8.0";
 	private static final String PEPPOL_BIS3_OTHER_VERSION = "2021-11-03_v1.8.0";
 	private static final String OIOUBL_SCEMATRON_VERSION = "OIOUBL_Schematron_2024-06-21_v1.14.2.1f1a049f";
+	private static final String OIOUBL3_SCEMATRON_VERSION = "OIOUBL3_2024-12-06_v3.0.1.1e7815bf";
 
     public static List<RuleDocumentTransformation> buildDefaultTransformationRuleList() {
         ArrayList<RuleDocumentTransformation> result = new ArrayList<>();
@@ -51,6 +52,9 @@ public class DefaultRuleBuilder {
         result.add(xsd(DocumentFormat.OIOUBL_ORDER, "xsd/UBL_2.1/maindoc/UBL-Order-2.1.xsd"));
         result.add(xsd(DocumentFormat.OIOUBL_CATALOGUE, "xsd/UBL_2.1/maindoc/UBL-Catalogue-2.1.xsd"));
 
+		result.add(xsd(DocumentFormat.OIOUBL3_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
+		result.add(xsd(DocumentFormat.OIOUBL3_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
+        
         result.add(xsd(DocumentFormat.BIS3_INVOICE, "xsd/UBL_2.1/maindoc/UBL-Invoice-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_CREDITNOTE, "xsd/UBL_2.1/maindoc/UBL-CreditNote-2.1.xsd"));
         result.add(xsd(DocumentFormat.BIS3_INVOICE_RESPONSE, "xsd/UBL_2.1/maindoc/UBL-ApplicationResponse-2.1.xsd"));
@@ -76,6 +80,11 @@ public class DefaultRuleBuilder {
 		result.add(sch(DocumentFormat.OIOUBL_ORDER, "sch/oioubl/"+OIOUBL_SCEMATRON_VERSION+"/OIOUBL_Order_Schematron.xsl", 10));
 		result.add(sch(DocumentFormat.OIOUBL_CATALOGUE, "sch/oioubl/"+OIOUBL_SCEMATRON_VERSION+"/OIOUBL_Catalogue_Schematron.xsl", 10));
 
+		result.add(sch(DocumentFormat.OIOUBL3_INVOICE, "sch/oioubl3/" + OIOUBL3_SCEMATRON_VERSION + "/EN16931-UBL-validation.xslt", 10));
+		result.add(sch(DocumentFormat.OIOUBL3_CREDITNOTE, "sch/oioubl3/" + OIOUBL3_SCEMATRON_VERSION + "/EN16931-UBL-validation.xslt", 10));
+
+		result.add(sch(DocumentFormat.OIOUBL3_INVOICE, "sch/oioubl3/" + OIOUBL3_SCEMATRON_VERSION + "/OIOUBL-Invoice.xslt", 20));
+		result.add(sch(DocumentFormat.OIOUBL3_CREDITNOTE, "sch/oioubl3/" + OIOUBL3_SCEMATRON_VERSION + "/OIOUBL-Creditnote.xslt", 20));
 		
 		/*
 		 * Schematron files for CEN BIS3/CII are generated basing on next GitHub project:

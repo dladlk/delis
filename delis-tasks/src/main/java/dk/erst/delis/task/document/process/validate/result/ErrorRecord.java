@@ -52,7 +52,9 @@ public class ErrorRecord implements IErrorInfo {
 		if (location == null)
 			return null;
 
-		return location.replaceAll("\\[namespace(.*?)\\]", "").replaceAll("\\/\\*\\:", "/");
+		String res = location.replaceAll("\\[namespace(.*?)\\]", "").replaceAll("\\/\\*\\:", "/");
+		res = res.replaceAll("Q\\{[^\\}]+\\}", ""); // OIOUBL3 failed-assert have location like location="/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]"  
+		return res;
 	}
 
 	public static String cleanupIndexes(String location) {

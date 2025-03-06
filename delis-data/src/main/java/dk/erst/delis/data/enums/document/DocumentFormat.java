@@ -30,7 +30,11 @@ public enum DocumentFormat implements Named {
 
 	OIOUBL_INVOICE("OIO-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE, DocumentType.INVOICE),
 
+	OIOUBL3_INVOICE("OIO3-IN", "Invoice", DocumentFormatConst.NS_UBL_INVOICE, DocumentType.INVOICE),
+
 	OIOUBL_CREDITNOTE("OIO-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
+
+	OIOUBL3_CREDITNOTE("OIO3-CN", "CreditNote", DocumentFormatConst.NS_UBL_CREDITNOTE, DocumentType.CREDITNOTE),
 
 	OIOUBL_ORDER("OIO-OR", "Order", DocumentFormatConst.NS_UBL_ORDER, DocumentType.ORDER),
 
@@ -95,6 +99,10 @@ public enum DocumentFormat implements Named {
 
 	public boolean isOIOUBL() {
 		return this == OIOUBL_CREDITNOTE || this == DocumentFormat.OIOUBL_INVOICE || this == OIOUBL_ORDER || this == OIOUBL_CATALOGUE;
+	}
+
+	public boolean isOIOUBL3() {
+		return this == OIOUBL3_INVOICE || this == OIOUBL3_CREDITNOTE;
 	}
 	
 	public boolean isCII() {

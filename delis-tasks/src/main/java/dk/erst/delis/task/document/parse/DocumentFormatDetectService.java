@@ -25,6 +25,13 @@ public class DocumentFormatDetectService {
 						if (info.getCustomizationID() != null && info.getCustomizationID().startsWith(DocumentFormatConst.CUSTOMIZATION_OIOUBL_PREFIX)) {
 							return f;
 						}
+					} else if (f.isOIOUBL3()) {
+						if (f == DocumentFormat.OIOUBL3_INVOICE && info.getCustomizationID() != null && info.getCustomizationID().equals(DocumentFormatConst.CUSTOMIZATION_OIOUBL3_INVOICE)) {
+							return f;
+						}
+						if (f == DocumentFormat.OIOUBL3_CREDITNOTE && info.getCustomizationID() != null && info.getCustomizationID().equals(DocumentFormatConst.CUSTOMIZATION_OIOUBL3_CREDITNOTE)) {
+							return f;
+						}
 					} else if (f.isBIS3()) {
 						// Consider document as BIS3 if its customizationID starts with configured (agreed on a meeting with Ole 2018.12.12
 						// Reason - BIS3 customizationID will get subversion later

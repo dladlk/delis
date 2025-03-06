@@ -42,7 +42,7 @@ public class SVRLSchematronResultCollector implements ISchematronResultCollector
 				log.debug(String.format("%d) [%s] %s\n\tlocation = %s", i, flag, message, location));
 			}
 			
-			DocumentErrorCode errorCode = documentFormat.isCII() ? DocumentErrorCode.CII_SCH : DocumentErrorCode.BIS3_SCH;
+			DocumentErrorCode errorCode = documentFormat.isCII() ? DocumentErrorCode.CII_SCH :  documentFormat.isOIOUBL3() ? DocumentErrorCode.OIOUBL3_SCH : DocumentErrorCode.BIS3_SCH;
 			errorList.add(new ErrorRecord(errorCode, id, message, flag, location));
 		}
 		return errorList;
