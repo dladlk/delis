@@ -6,7 +6,7 @@ import dk.erst.delis.data.enums.document.DocumentFormatFamily;
 public class SchematronResultCollectorFactory {
 
 	public static ISchematronResultCollector getCollector(DocumentFormat df) {
-		if (df.getDocumentFormatFamily() == DocumentFormatFamily.OIOUBL) {
+		if (df.getDocumentFormatFamily() == DocumentFormatFamily.OIOUBL && !df.isOIOUBL3()) {
 			return OIOUBLSchematronResultCollector.INSTANCE;
 		}
 		return new SVRLSchematronResultCollector(df);

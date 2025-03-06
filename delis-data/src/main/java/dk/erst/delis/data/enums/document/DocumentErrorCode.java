@@ -15,6 +15,10 @@ public enum DocumentErrorCode implements Named {
 	OIOUBL_XSD,
 	
 	OIOUBL_SCH,
+
+	OIOUBL3_XSD,
+	
+	OIOUBL3_SCH,
 	
 	OTHER,
 	

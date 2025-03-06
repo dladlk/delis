@@ -24,8 +24,7 @@ public class BundleUtil {
 	 * To avoid such unexpected behaviour, let's fix encoding to ISO-8859-1.
 	 */
 	private static ResourceBundle getBundle(String name) {
-		InputStream inputStream = BundleUtil.class.getClassLoader().getResourceAsStream(name);
-		try {
+		try (InputStream inputStream = BundleUtil.class.getClassLoader().getResourceAsStream(name)){
 			return new PropertyResourceBundle(new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1));
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to read resource " + name, e);
