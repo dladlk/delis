@@ -15,8 +15,8 @@ import dk.erst.delis.data.enums.rule.RuleDocumentValidationType;
 
 public class DefaultRuleBuilder {
 	
-	private static final String CIUS_VERSION = "2021-11-03_v1.8.0";
-	private static final String PEPPOL_BIS3_OTHER_VERSION = "2021-11-03_v1.8.0";
+	private static final String CIUS_VERSION = "2025-01-23_v1.14.0";
+	private static final String PEPPOL_BIS3_OTHER_VERSION = "2025-02-12_v1.2.11";
 	private static final String OIOUBL_SCEMATRON_VERSION = "OIOUBL_Schematron_2024-06-21_v1.14.2.1f1a049f";
 	private static final String OIOUBL3_SCEMATRON_VERSION = "OIOUBL3_2024-12-06_v3.0.1.1e7815bf";
 
