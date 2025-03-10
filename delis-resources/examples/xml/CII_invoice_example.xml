@@ -348,9 +348,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				<ram:TypeCode>VAT</ram:TypeCode>
 				<ram:BasisAmount>1500</ram:BasisAmount>
 				<ram:CategoryCode>S</ram:CategoryCode>
+			    <!--	
 				<ram:TaxPointDate>
 					<udt:DateString format="102">20130410</udt:DateString>
 				</ram:TaxPointDate>
+				-->
+				<!--TaxPointDate and DueDateTypeCode mutually exclusive-->
 				<ram:RateApplicablePercent>25</ram:RateApplicablePercent>
 			</ram:ApplicableTradeTax>
 			<ram:ApplicableTradeTax>
